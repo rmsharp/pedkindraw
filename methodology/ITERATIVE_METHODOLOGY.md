@@ -1,0 +1,636 @@
+# Iterative Session Methodology
+
+A universal framework for producing high-quality work through structured, self-correcting sessions. Each session follows a fixed phase sequence, accumulates knowledge, and feeds lessons back into the process for the next session.
+
+---
+
+## Origin and Findings
+
+This methodology was extracted from an 11-session UI/UX design series and subsequently validated across 1100+ sessions spanning implementation, CI integration, plugin architecture, code review, planning, and audit work. The original results:
+
+| Metric | Session 1 | Sessions 2-11 |
+|--------|-----------|---------------|
+| Iterations to approval | 4 | 1 (every session) |
+| Stakeholder corrections | 5 | 0-1 average (one outlier at 3) |
+| Defects found in existing work | 0 | 2 → 15 (monotonically increasing) |
+| Research depth | Partial, prompted | Comprehensive, proactive |
+
+The broader validation (Sessions 12-1100+) confirmed these results hold across domains and added critical findings:
+
+| Finding | Sessions | Impact |
+|---------|----------|--------|
+| Handoff evaluation is the primary compounding mechanism | 34-52 | 14 consecutive clean deliveries after adoption |
+| Speed is not evidence of quality | 50 | Fast completion without verification shipped broken code |
+| Discipline doesn't transfer across workstreams automatically | 38, 43 | Same mistakes repeated on new workstreams despite mastery on the old one |
+| Code review is a distinct session type | 51-52 | Plans that audit code before implementation prevent entire classes of bugs |
+| Close-out accountability (knowing you'll be judged) changes behavior | 46-52 | Handoff quality improved measurably when sessions knew they'd be scored |
+| Build success is not runtime verification | 151-153 | Two consecutive sessions shipped code that compiled cleanly but broke at runtime (registration order, version collision). Both noted "no runtime verification" in self-assessment without treating it as a defect. |
+
+**What changed between session 1 and session 2 was not skill — it was methodology.** The same person, using the same tools, on the same type of problem, achieved radically different outcomes by changing HOW they worked. The initial five changes:
+
+1. **Completing all research before any creative work** (eliminated interleaving-caused rework)
+2. **Reading implementations, not just descriptions** (eliminated assumption-based errors)
+3. **Presenting designs for approval before implementing** (eliminated wasted implementation)
+4. **Converting every failure into a numbered anti-pattern** (eliminated repeated mistakes)
+5. **Tracking performance quantitatively across sessions** (eliminated self-congratulatory narratives)
+
+And the sixth, discovered later but equally load-bearing:
+
+6. **Evaluating the previous session's handoff and knowing yours will be evaluated** (created accountability-driven handoff quality improvement)
+
+These six changes account for the entire improvement. They are domain-independent. This document codifies them into a reusable framework.
+
+A further validation revealed a seventh finding:
+
+7. **Protocol discipline is perishable** — methodology that produced 14 consecutive clean deliveries can degrade to 1/10 scores within 12 hours if sessions stop re-internalizing it (see §Protocol Erosion)
+
+---
+
+## When to Use This Methodology
+
+Use this methodology when:
+
+- **You are doing the same TYPE of work repeatedly** — designing APIs, building features, fixing bugs in a subsystem, writing design documents, conducting audits
+- **Quality matters more than speed** — the cost of rework exceeds the cost of upfront research
+- **Knowledge compounds** — what you learn in session N makes session N+1 better
+- **The work has a stakeholder** — someone who approves or rejects the output
+
+Do NOT use this methodology for:
+
+- One-off tasks with no repetition (the self-improvement loop has nothing to feed into)
+- Trivial tasks where the overhead exceeds the work itself
+- Exploratory research with no defined deliverable
+
+---
+
+## The 9 Universal Principles
+
+These are the load-bearing ideas. Everything else in this document is an implementation of one or more of these principles.
+
+### 1. Complete-Then-Create
+
+Finish ALL research before ANY creative work. No interleaving. The temptation to start creating after partial research is always present and always produces worse results.
+
+**Evidence:** Session 1 interleaved research with design and took 4 iterations. Session 2 completed all research first and achieved first-pass approval. Every subsequent session followed this discipline and maintained single-iteration approval.
+
+### 2. Self-Correcting Loop
+
+Every failure becomes a numbered anti-pattern. Every success becomes a named pattern. The methodology prompt itself evolves after each session. Knowledge compounds; mistakes do not repeat.
+
+**Mechanism:** What Went Wrong → Anti-Pattern #N → Added to prompt → Next session checks for it.
+
+### 3. Hard Phase Gates
+
+You cannot enter the next phase until the previous one is complete. The gates are not suggestions — they are structural controls. The most valuable gate is between Present and Implement: no implementation begins without stakeholder approval.
+
+**Evidence:** Session 7 designed an entire view around the wrong tool. The Present gate caught this before any implementation was wasted. Without the gate, the implementation would have been built, tested, and THEN discovered to be wrong.
+
+### 4. Knowledge Compounding
+
+Reference tables, pattern libraries, anti-pattern lists, and cross-session citations. Later sessions build on earlier sessions by citation, not by re-derivation. Prediction chains form: "Session 4 predicted X would apply to satellite; Session 10 confirmed it."
+
+**Mechanism:** Each session reads ALL previous session outputs before starting. The cost is fixed (one research pass); the value grows with each session. (See [§Knowledge Accumulation System](FRAMEWORK_APPARATUS.md#knowledge-accumulation-system).)
+
+### 5. Honest Accounting
+
+What Went Right AND What Went Wrong, tracked quantitatively across all sessions. Performance comparison tables with trajectory narratives. No escape from the numbers.
+
+**Mechanism:** A performance comparison table spans all sessions with consistent metrics. Trajectory narratives interpret the numbers honestly: "Session 7 was the worst since Session 1" is stated plainly, not hidden. (See [§Honest Accounting Framework](FRAMEWORK_APPARATUS.md#honest-accounting-framework).)
+
+### 6. Scope Validation Before Execution
+
+"Am I solving the right problem?" before "Am I solving the problem right?" A well-executed solution to the wrong problem is worse than a rough solution to the right problem, because it looks correct and resists correction.
+
+**Mechanism:** The Splitting Test, Domain-Ecosystem Validation, and Role/Mode Classification — all applied before any design work begins. (See [§Scope Validation System](FRAMEWORK_APPARATUS.md#scope-validation-system).)
+
+### 7. Ascending Verification
+
+Move from cheap-but-unreliable verification (assumptions, names, descriptions) to expensive-but-reliable verification (implementation reading, domain validation, mechanical code-level checks). Each level was added to the methodology after the previous level's failure mode was exposed in a real session.
+
+**Evidence:** Assumption-based verification failed in session 1 (waterfall name). Description-based failed in session 5 (WSPR scope). Implementation reading failed in session 7 (domain mismatch). Agent claims failed in session 9 (false variant support). Each failure added a verification level. (The seven levels are in [§Verification Hierarchy](FRAMEWORK_APPARATUS.md#verification-hierarchy).)
+
+### 8. Handoff Accountability
+
+Every session evaluates the previous session's handoff AND writes its own handoff knowing the next session will evaluate it. This bidirectional accountability is the primary mechanism that makes sessions compound. Without it, each session is isolated — knowledge doesn't flow forward because there's no incentive to write good handoff notes and no feedback loop to improve them.
+
+**Mechanism:** Session N+1 scores Session N's handoff (1-10) with specific evidence: what helped, what was missing, what was wrong. Session N+1 then writes its own handoff knowing Session N+2 will do the same. The score creates accountability; the specific evidence creates actionable improvement.
+
+**Evidence:** Sessions 34-52 adopted this pattern and produced 14 consecutive clean deliveries. Sessions 46, 47, and 52 all skipped the evaluation until prompted — every time, it was because evaluation felt like "meta-work" rather than real work. Making it a structural step (not advisory) fixed the skip pattern.
+
+**The evaluation IS the methodology.** The phases, gates, and patterns are valuable. But the session-over-session compounding — where session 40 is dramatically better than session 10 — comes from the handoff accountability loop. Without it, you have a good process. With it, you have a process that gets better every time it runs.
+
+### 9. Session Scope Bounding
+
+Every session has exactly ONE deliverable. When it's complete, you close out. You do not start the next thing. Quality degrades when a session attempts multiple deliverables — the second and third items receive less research, less verification, and less careful implementation than the first.
+
+**The unit of "one deliverable" is one intent, not one layer.** The original "one horizontal layer per session" granularity was, in practice, a proxy for verifiability: a single sequential agent could only reliably verify a small blast radius. When a session has high-parallelism verification available — and only under the gates defined in the Session Runner's §Vertical Slice Sessions — the deliverable MAY be a **verified vertical slice**: one capability end to end (data + service + clients + tests) rather than one horizontal layer. One capability never means a second capability, a plan bundled with its implementation, or two platform cutovers — those remain separate sessions. Recoverability, not verifiability, is the ceiling on slice size, and the allowance is evidence-gated: per-boundary verification artifacts must actually land in-session, or the session reverts to horizontal scope. (Adopted via issues [#20](https://github.com/KJ5HST/methodology/issues/20)/[#21](https://github.com/KJ5HST/methodology/issues/21).)
+
+**Many hands, one closer.** The deliverable may be built by many actors — sub-agents, lighter tiers, parallel workers — but exactly one session closes it out: one Phase 0, one claim, one close-out, one receipt. Workers are layers of that deliverable, not sessions, and a working tree has one writer at a time. "One closer" is the invariant that keeps the handoff loop (Principle 8) intact under fan-out; the contract is [§Parallel Actors](#parallel-actors).
+
+**Mechanism:** Identify the single deliverable at session start. If scope expands mid-session ("while I'm at it..."), commit what you have and note the expansion for a future session.
+
+**Evidence:** Sessions that attempted multiple deliverables consistently produced lower-quality work on the later items. The "1 and done" rule eliminates this by structurally preventing scope expansion.
+
+---
+
+## The 6 Phases
+
+Every session follows these phases in order. Phases are sequential and gated — you cannot skip a phase or enter the next one early.
+
+**Session shape does not change the phase model.** A vertical-slice session (Principle 9) runs the same six phases once, for its ONE capability — the slice bundles *layers* of one deliverable, never a plan with its implementation (failure mode #18's discriminator) and never a second capability (failure mode #26). The vertical-slice allowance adds a gate; it removes no phase.
+
+### Phase 1: Pre-Flight
+
+**Purpose:** Verify the workspace is clean, the prior state is understood, and nothing is broken before you touch anything — apart from the append-only ledger backfill in step 4, which records commits that already exist.
+
+**Steps:**
+1. Read all governing documents (safety rules, process docs, style guides) — **in full, not skimmed. Every section.**
+2. Read prior session notes (what was the last session doing? what's in progress?)
+3. Check the current state of the workspace (version control status, recent changes)
+4. **Detect ghost sessions and reconcile the ledger:** Compare session notes against the change history. If there are changes between the last documented session and now that have no corresponding notes, report it — ghost sessions (crashed or ended without writing notes) leave the next session blind. Then reconcile the authoritative ledger (`CHANGELOG.md`) against the change history: first check whether any commit has ever recorded it (if none, self-provision the ledger from its seed and reconcile from the root — an unrecorded ledger on a repo with real history is a defect, not "current"); otherwise locate its frontier (the newest ledger-touching commit), and treat both the commits since it with no entry **and** any prior Phase 1B stub still marked `CHANGELOG: pending` as unrecorded actions. **Backfill them before new work** — a source-tagged entry marked as a reconcile backfill. List the merges since the frontier too (`git log --merges <frontier>..HEAD`) — the gap excludes merge commits, so a merge is an action only this line surfaces — and check that each merged pull request has a ledger entry. Reconcile backstops commit-bearing actions; non-commit actions (releases, tags, PR/issue events, access grants) are the close-out write-gate's responsibility. Also reconcile the close-out receipt (`HANDOFFS.md`) the same way: locate its frontier (`git log -1 --format=%H -- HANDOFFS.md`); a frontier block still `status: pending` (an unfinished Phase 1B stub) or a commit in the undocumented set with no receipt at all is the unrecorded counterpart, reconstructed as a best-effort block from the change history (and `SESSION_NOTES.md` if it survived), marked `status: reconciled`, and noted in the report — this only catches sessions that left a commit or a 1B stub, not a session with no commit and no claim. This is the one write Pre-Flight permits — it records commits that already exist, not new work; the backfill is not this session's deliverable and licenses no work beyond the one assigned task (failure mode #17).
+5. Verify the artifact you will modify exists and is in a known-good state
+6. Spot-check 2-3 ADJACENT artifacts to confirm they are also healthy
+7. **Report findings to the stakeholder before proceeding**
+
+**Gate:** Pre-Flight Pass — workspace is clean, prior work is understood, the ledger is reconciled with the change history, no broken artifacts. If any artifact is broken, report it and get direction before continuing.
+
+**Anti-patterns to avoid:**
+- Starting work without reading prior session notes
+- Assuming the workspace is clean because it was clean last time
+- Skipping the adjacent artifact check (this is how cross-session damage goes undetected)
+- Skimming governing documents instead of reading them (reading "the gist" misses the specific steps that prevent specific failures)
+- Starting new work while the ledger lags the change history (undocumented commits not yet backfilled)
+
+### Phase 1B: Claim the Session
+
+*Phase 1B is an inserted activity between Phase 1 (Pre-Flight) and Phase 2 (Research); the letter suffix marks it as a bridge step that does not subdivide a numbered phase — Pre-Flight remains Phase 1 in full, and there is no "Phase 1A." This mirrors `SESSION_RUNNER.md`'s **1B: Claim the Session** and keeps the "6 phases" count intact.*
+
+**Purpose:** Leave a trace before any work begins, so that even a catastrophic failure (crash, context loss, timeout) produces evidence of what was attempted.
+
+**Steps:**
+1. Write a stub to the session notes file with: session identifier, task description, start time, status "IN PROGRESS", and a `CHANGELOG: pending` ledger marker (the crash breadcrumb the next session's Pre-Flight reconcile reads); the claim commit's ledger entry says *(in progress)*, and Phase 6 records the rest
+2. Open a `HANDOFFS.md` close-out receipt stub — a durable receipt block with `status: pending` — and commit it with the claim; unlike the transient session-notes stub it survives a fresh clone, so it is the crash breadcrumb the next session's reconcile greps. Phase 6 completes it to `status: complete`
+3. Both stubs are overwritten/completed during Phase 6 with the full close-out
+
+**Why this phase exists:** In a 1100+ session series, multiple sessions crashed or ended without completing close-out. These "ghost sessions" left zero trace — no notes, no self-assessment, no handoff. The next session had no idea what was attempted, what state was left behind, or what to watch for. By writing a stub FIRST, even total failures leave a breadcrumb.
+
+**This phase takes 30 seconds. Skipping it saves 30 seconds and risks the next session starting completely blind.**
+
+### Phase 2: Research
+
+**Purpose:** Build a complete understanding of the problem space, available tools, prior art, and constraints BEFORE any creative work.
+
+**This is the most critical phase.** The quality of research directly determines the quality of the output. Incomplete research produces rework; complete research produces first-pass approval.
+
+**Steps:**
+1. **Read project `CONTEXT.md` if it exists.** A project-level domain glossary at the repo root captures load-bearing vocabulary, constraints, and architecture-decision pointers that a fresh reader needs before exploring code. If present, read it first — it is the cheapest grounding pass available. If absent, skip this step. If during this session you discover a project-specific term that would have helped to know up front, propose adding it to `CONTEXT.md` during close-out (Phase 6 hygiene). See `CONTEXT_TEMPLATE.md` for the template; maintenance can use Pocock's `/grill-with-docs` (cited in `RECOMMENDED_SKILLS.md`).
+2. **Study the domain.** Read requirements, use case documents, specifications. Extract: who is the user? What is their workflow? What do they need most? What do they NOT need?
+3. **Inventory available tools/components.** Build a reference table of everything you could use. Include capabilities, constraints, sizes, dependencies.
+4. **Read implementations, not just descriptions.** A component's name or description tells you what it IS. Its implementation tells you how it BEHAVES. Read the actual code/config/spec for every component you might use.
+5. **Review ALL prior work in this series.** Read every previous session's output. Extract reusable patterns and avoidable mistakes. Note which patterns apply to your current work and which don't.
+6. **Challenge the scope.** (See [§Scope Validation System](FRAMEWORK_APPARATUS.md#scope-validation-system).) Is this the right problem to solve? Does this work item encompass things that should be separate?
+7. **Validate domain fit.** (See [§Domain-Ecosystem Validation](FRAMEWORK_APPARATUS.md#domain-ecosystem-validation).) Are you using the right tools for this domain, or substituting generic equivalents for domain-specific tools?
+8. **Verify capability claims.** (See [§Verification Hierarchy](FRAMEWORK_APPARATUS.md#verification-hierarchy).) For any critical capability ("this component supports X"), verify by reading the implementation. Do not trust names, descriptions, or third-party summaries.
+
+**Gate:** Research Complete — `CONTEXT.md` read (if present), all components inventoried AND their implementations read, all prior work reviewed, scope validated, domain fit confirmed.
+
+**The Complete-Then-Create Rule:** Do NOT begin Phase 3 until all 8 steps are done. The temptation to start creating after steps 1–4 is strong. Resist it. Steps 5–8 routinely surface insights that change the entire approach.
+
+### Phase 2B: Pre-Create Grill (Optional)
+
+*Phase 2B is an inserted activity between Phase 2 (Research) and Phase 3 (Create), mirroring the **Phase 1B** precedent above: the letter suffix marks a bridge step and does not subdivide Phase 2 — Research remains Phase 2 in full, and there is no "Phase 2A." The "6 phases" count is unchanged.*
+
+**Purpose:** Before designing a solution, surface every load-bearing decision the stakeholder has not yet made — by asking, not by guessing. Catches misalignment one phase earlier than Phase 4 (Present), where the failure mode is "stakeholder rejects the design because a foundational assumption was wrong."
+
+**When this applies:**
+- UX or interaction-model work where the right behavior is not derivable from existing patterns
+- Novel features with no precedent in the codebase
+- Sessions started without a pre-written plan from the stakeholder
+- Anything where the agent is about to design from inference rather than specification
+
+**When to skip:**
+- The stakeholder handed you a complete plan or specification
+- The work is mechanical (rename, lint cleanup, dependency bump, well-defined bug fix)
+- An equivalent feature already exists in the codebase and the stakeholder has confirmed "do it the same way"
+
+**Why this phase exists:** Phase 4 (Present) catches misalignment by showing the stakeholder a complete design. Phase 2B catches it earlier — before any design exists — by asking instead of inferring. The cost difference is large: a wrong inference at Phase 3 is rework of the design document; a wrong inference confirmed at Phase 4 is a new design cycle. UX rollbacks (designs that ship and revert because the interaction model was wrong) are the canonical failure this phase prevents.
+
+**Running the grill.** The methodology recommends Pocock's `/grill-me` skill — see `RECOMMENDED_SKILLS.md`. Methodology owns *when* to grill and *why*; the skill owns *how* to conduct the interview. When the skill is unavailable, the operative discipline is: enumerate every decision the design will encode, draft each with a recommended answer plus real alternatives, present them one at a time, and stop only when every load-bearing decision has an explicit answer locked into the Phase 3 Create document.
+
+**This phase is explicitly optional, not a gate.** Mechanical sessions should skip it. Adding ceremony to well-defined work erodes the protocol. The discipline is recognizing when *this* session has high misalignment risk — not running the grill on every session.
+
+### Phase 3: Create
+
+**Purpose:** Design the solution in a document — NOT in implementation artifacts. The design IS the deliverable of this phase. Implementation is mechanical work in Phase 5.
+
+**Steps:**
+1. Define the solution approach, referencing patterns from prior sessions where applicable
+2. For each component/tool included, document WHY it was included (what user need it serves)
+3. For each component/tool EXCLUDED, document WHY it was excluded (what made it unnecessary or wrong)
+4. Calculate or estimate quantitative measures (balance, sizing, performance, etc.)
+5. Identify gaps — things the solution needs that don't exist yet
+6. Write the solution as a complete document that could be handed to someone else for implementation
+
+**Gate:** Design document is complete and internally consistent. All inclusions and exclusions are justified. Quantitative measures are calculated, not estimated.
+
+**Anti-patterns to avoid:**
+- Rubber-stamping the existing state (rearranging what's already there instead of designing from first principles)
+- Including components because they're available, not because the user needs them ("filler")
+- Designing from component names instead of component implementations
+- Forcing proven patterns from prior sessions when they don't fit the current problem
+
+### Phase 4: Present
+
+**Purpose:** Show the complete design to the stakeholder and STOP. Get explicit approval before any implementation.
+
+**Steps:**
+1. Present the design document to the stakeholder
+2. Highlight key decisions and their rationale
+3. Explicitly identify areas of uncertainty or domain knowledge gaps
+4. Ask for feedback — "What did I get wrong? What am I missing?"
+5. **STOP. Do not proceed to implementation until explicit approval.**
+
+**Gate:** Stakeholder Approval — explicit go-ahead to implement. If the stakeholder requests changes, return to Phase 3, revise the design, and present again.
+
+**Why this gate exists:** Implementation is expensive. A flawed design caught at the Present gate costs zero implementation effort. A flawed design caught after implementation costs all the implementation effort plus the rework effort. This gate has the highest ROI of any step in the methodology.
+
+**Anti-patterns to avoid:**
+- Presenting and immediately starting implementation ("I'll just get started while they review")
+- Treating silence as approval
+- Presenting a summary instead of the full design (the stakeholder needs to see the details to catch domain-specific errors)
+
+### Phase 5: Implement
+
+**Purpose:** Execute the approved design mechanically. This phase is bounded and predictable because the creative work was done in Phase 3.
+
+**Steps:**
+1. **Safety commit.** Before modifying any files, create a commit/snapshot of the current state. This is your rollback point. Non-negotiable.
+2. **Enumerate the change set.** List every file you will modify and every file you will NOT modify. The NOT list is as important as the WILL list — it prevents scope creep during implementation.
+3. **Implement the approved design.** Follow the design document. Do not redesign during implementation. If you discover something that requires a design change, STOP implementing and return to Phase 3.
+4. **Build and verify.** After implementation, verify the artifact works as designed.
+
+**Gate:** Implementation matches the approved design. Build succeeds. The artifact functions correctly.
+
+**Anti-patterns to avoid:**
+- Skipping the safety commit ("it's a small change")
+- Redesigning during implementation (this is the most common source of compounding errors)
+- Implementing beyond the approved design ("while I'm here, I'll also fix...")
+- Not enumerating the change set (leads to accidental modification of unrelated files)
+- **Treating speed as evidence of quality.** Finishing faster than expected is a signal to verify harder, not a signal to celebrate. Session 50 completed all 4 phases quickly and shipped broken code because fast completion felt like quality. If implementation goes faster than expected, spend the saved time on verification.
+- **Treating build success as verification.** A successful build proves compilation, dependency resolution, and static correctness. It does not prove that services register in the right order, that runtime dispatch reaches the right handler, or that components don't shadow each other at load time. If the deliverable involves runtime integration — not just source code changes — the verification must include running the application.
+
+### Phase 6: Verify and Close
+
+**Purpose:** Confirm the work is correct, nothing else broke, all knowledge is captured, and the next session is set up for success.
+
+**Steps:**
+1. **Evaluate the previous session's handoff.** (See Principle 8: Handoff Accountability.) Score it 1-10. Document what helped, what was missing, what was wrong, and the ROI. Write this to the session notes — the previous session's author cannot improve without feedback.
+2. **Verify the artifact.** Does it match the design? Does it build? Does it function?
+   - **Runtime smoke test.** For any change that affects runtime behavior — service registration, plugin loading, dependency injection, config resolution, handler dispatch — launch the application and verify in logs or at the running endpoint. Compilation and build success verify syntax and dependency resolution; they do not verify integration, load order, or runtime dispatch. A self-assessment that notes "no runtime verification" without treating it as a defect is a red flag — it means the session recognized the gap but chose to ship anyway.
+   - **If runtime verification is impossible** (requires hardware, external service, or CI), state this explicitly in the session notes. Do not silently skip it.
+3. **Verify adjacent artifacts.** Check 2-3 artifacts that were NOT modified. Are they still healthy? Cross-artifact regression is the most insidious failure mode because nobody is looking for it.
+4. **Self-assess.** Write What Went Right / What Went Wrong. (See [§Honest Accounting Framework](FRAMEWORK_APPARATUS.md#honest-accounting-framework).) Be specific and honest.
+5. **Update the performance comparison table.** (See [§Performance Tracking](FRAMEWORK_APPARATUS.md#performance-tracking).) Add this session's metrics.
+6. **Update the pattern library and anti-pattern list.** (See [§Knowledge Accumulation System](FRAMEWORK_APPARATUS.md#knowledge-accumulation-system).) If you discovered a new pattern or made a new mistake, name it and add it.
+7. **Write handoff notes for the next session.** (See below.) You will be judged on these — the next session will score your handoff just as you scored your predecessor's. Write them both to `SESSION_NOTES.md` (the transient scratchpad) and as a durable ` ```handoff ` receipt block in `HANDOFFS.md` — set `status: complete` and fill the six minimum requirements (the sixth *is* `self_score`) plus `predecessor_score`. The receipt is the machine-checkable proof the handoff exists (the canonical-only `bin/check-handoff` asserts its structure — copy it in if you want it — never its quality); a skipped receipt is caught at the next Pre-Flight reconcile with no tooling.
+8. **Record every action, then commit.** Before committing: (a) remove any debug instrumentation added during this session (tagged debug logs per `/diagnose` — see `RECOMMENDED_SKILLS.md` — and ad-hoc prints); (b) prepend a dated, source-tagged entry to the authoritative ledger `CHANGELOG.md` for **each action this session took** — one per commit *and* per non-commit action (release, tag/branch op, PR open, upstream issue close, access grant, decline/grooming decision): `### YYYY-MM-DD · [issue #<N>] | [BL-<id>] | [ad hoc]` + a one-line outcome, newest on top, removing any completed `BACKLOG.md` item in the same commit. If `CHANGELOG.md` is absent, create it from the bootstrap seed; the only exemptions are a project that records "no CHANGELOG" in `CLAUDE.md` and a session whose diff is empty with no action taken. "Too small to log" is failure mode #27, not an exception. Where the project declares quality gates (`.quality-gates.json`), (c) run them — `quality_ratchet.py --run` — and cite the summary line in the close-out receipt, so the session's claim of "tests pass" is a measured number the next Orient can compare against the results file (§Mechanical Gates Bind Every Actor). Then commit with a structured message referencing the session. (Failure mode #17: the ledger records what the session did; it does not authorize a second deliverable.)
+
+**Minimum handoff requirements (Step 7):** The next session starts with zero context. Your handoff is their only connection to your work. A handoff that doesn't include ALL of the following is incomplete. "Done — pick next task" is not a handoff; it's an abdication that forces the next session to rediscover context you already had.
+
+| # | Requirement | Why It Matters |
+|---|-------------|----------------|
+| 1 | **Current state** of the deliverable | Next session knows what's done and what isn't |
+| 2 | **What was done** with artifact identifiers | Traceability — next session can verify |
+| 3 | **What's next** — specific and actionable | Next session doesn't waste time on task discovery |
+| 4 | **Key files** with locations (line numbers, sections) | Next session reads the right files immediately |
+| 5 | **Gotchas** to watch for | Next session avoids known traps |
+| 6 | **Self-assessment score** with breakdown | Accountability and calibration |
+
+- **Re-read files before making claims.** Do not write gap analysis from memory. If you haven't read the file in the last 5 minutes, read it again before citing it. (Sessions 38, 40, and 43 wrote incorrect handoff claims from stale memory.)
+- **Never write "need to verify" in a handoff.** If you don't know, investigate NOW during close-out. Deferred verification is deferred work.
+- **Never claim credit for work you didn't do.** If a deliverable was input (provided to you), not output (produced by you), say so explicitly. Fabricating accomplishments is a trust-destroying failure. (See [§Honest Accounting Framework](FRAMEWORK_APPARATUS.md#honest-accounting-framework).)
+
+**Write to files FIRST, then summarize verbally.** A verbal summary not written to persistent files is worthless — the next session cannot read the conversation.
+
+**Gate:** All verification passes. Previous session's handoff is evaluated. Session document is complete with honest accounting (the shape is in [§Session Document Template](FRAMEWORK_APPARATUS.md#session-document-template)). Handoff notes are written to files (not just spoken).
+
+---
+
+## Session Types
+
+The 6-phase model assumes a full Research→Create→Present→Implement→Verify cycle. Not all sessions follow this pattern. The methodology recognizes four session types:
+
+### Implementation Sessions (Standard)
+Follow all 6 phases. The deliverable is working code, a design document, or an artifact.
+
+### Review/Audit Sessions
+The deliverable is an analysis document — a code review, audit report, or plan. These sessions follow Phases 1-4 (Pre-Flight, Research, Create the analysis, Present) and skip Phase 5 (Implement). Phase 6 still fires in full — including its handoff receipt (`HANDOFFS.md`) and its step-8 ledger entry: a review or audit that commits its report has taken an action, so `CHANGELOG.md` records it like any other session (failure mode #27).
+
+A review or audit whose subject adds, renames, or removes a concept, artifact, file, step, or numbered-set member owes a whole-corpus completeness sweep in addition to the diff review — not only what changed, but what the change made stale elsewhere (`FRAMEWORK_LEARNINGS.md` Learning #10; `workstreams/AUDIT_WORKSTREAM.md`'s Verification Checklist is the operative step).
+
+**Code review is a distinct deliverable, not overhead.** Reviews that produce actionable plans (exact code snippets, line numbers, implementation order) have higher ROI than vague feedback. A review session's output should be detailed enough that a subsequent implementation session can execute it mechanically.
+
+### Planning/Preparation Sessions
+The deliverable is a plan or handoff document that sets up a future implementation session. These sessions invest heavily in Phase 2 (Research) and produce a Phase 3 design document that another session will implement. The value is front-loaded: a good plan collapses multi-session implementation work into a single session. Close-out is unchanged: the plan is an action, so it earns its `HANDOFFS.md` receipt and its `CHANGELOG.md` ledger entry (Phase 6 step 8, failure mode #27) exactly as committed code does.
+
+**Speed warning:** High-quality plans can make implementation sessions complete very fast. This is the plan's success, not evidence that verification can be skipped. (See Phase 5 anti-patterns: "Treating speed as evidence of quality.")
+
+### Debugging Sessions
+The deliverable is a closed bug — a regression fixed, a flake stabilized, an incident root-caused. Debugging has a different epistemic structure than the other three types: you are *searching for a hidden cause*, not building toward a known shape. Treating debugging as "implementation with a bug-shaped requirement" hides this distinction and produces predictable failures (instrumentation left in commits, single-hypothesis tunnel vision, feedback loops too slow to be useful, "fixes" that pass without a regression test).
+
+The 6 phases still apply, but Phase 2 (Research) is dominated by building a feedback loop that makes the bug observable on demand, and Phase 6 (Verify) expands to remove the debug instrumentation, write the `HANDOFFS.md` receipt, *and* record the closed bug in `CHANGELOG.md` before commit (the cleanup, handoff-receipt, and ledger gates at `SESSION_RUNNER.md` §Phase 3D/3F, failure mode #27).
+
+The methodology recommends Pocock's `/diagnose` skill for the actual debugging workflow — see `RECOMMENDED_SKILLS.md`. Methodology recognizes debugging as a session type; `/diagnose` runs it. When the skill is unavailable, the operative rules are: build the feedback loop before forming hypotheses, change one variable at a time, write the regression test before the fix, remove all debug instrumentation before commit.
+
+---
+
+## Multi-Session Campaigns
+
+Some deliverables cannot be produced in one session even when the work is decomposed correctly: paper-wide claim verification across hundreds of citations; security hardening across dozens of endpoints; familiarization with an inherited 40-module codebase. The 6 phases bound a single session and **Principle 9: Session Scope Bounding** bounds what one session may produce. Cross-session coordination toward a single deliverable operates at a different scale.
+
+A **campaign** is a multi-session work pattern with a reusable template. The template prescribes a session sequence, a deliverable contract at each session boundary, and exit criteria for the campaign as a whole. Each session within a campaign still runs the 6 phases; the campaign coordinates *across* sessions toward a deliverable that no single session could produce.
+
+A campaign is **not** a workstream. Workstreams adapt the 6 phases to a domain (what does Phase 2 research look like for UI design vs. for research papers vs. for system audits). Campaigns sequence sessions toward one specific deliverable type within a workstream. One workstream may host many campaigns.
+
+A campaign template is **not** a planning-session output. A planning session produces a bespoke plan for one campaign instance; a campaign template is reusable across every campaign of its type. The planning session for an individual campaign uses the template as its starting point, not its alternative.
+
+### When to write or invoke a campaign
+
+Use a campaign when **all three** apply:
+
+1. The deliverable cannot be produced in one session even under correct decomposition.
+2. The campaign shape is, or will be, repeatable.
+3. Cross-session coordination — shared schemas, checkpoint deliverables, calibration rules — is load-bearing for quality.
+
+Do **not** use a campaign when: the work fits in one session; the deliverable is genuinely one-off (no expectation of repetition); or the right artifact is a domain adaptation, in which case the answer is a new workstream.
+
+If a deliverable has the multi-session shape but no campaign template exists yet, the first run produces both a planning-session plan AND a draft template; the second run tightens the template from experience. This is the same compounding mechanism the methodology applies at the session and workstream layers, applied at the campaign layer.
+
+### Where campaign templates live
+
+Campaign templates live in `workstreams/` alongside their parent workstream, under the naming convention `*_CAMPAIGN.md`. A blank starting point is `workstreams/TEMPLATE_CAMPAIGN.md`. A campaign template always extends a parent workstream — its `Relationship to Other Documents` table names that parent — and references the master framework for principles, phases, and gates.
+
+The first realized example is [`workstreams/RESEARCH_EXHAUSTIVE_VERIFICATION_CAMPAIGN.md`](workstreams/RESEARCH_EXHAUSTIVE_VERIFICATION_CAMPAIGN.md): a campaign template that decomposes exhaustive primary-source verification into a planning → execution → consolidation sequence, supporting both creation (writing) and audit (reviewing) modes.
+
+---
+
+## Parallel Actors
+
+Fan-out comes in two shapes, told apart by who closes out:
+
+- **Shape A — one session, many hands.** One accountable session (the *lead*) runs Phase 0, the claim and all of close-out. Workers run no phase and write no record; their output enters the repository only through the lead's commits.
+- **Shape B — many sessions, many closers.** Two or more independent sessions, each running the full runner on its own deliverable, on its own branch or worktree, at the same time. Integration is a merge.
+
+Both reduce to one rule: **a working tree has one writer** (`SAFEGUARDS.md` §Blast Radius Limits). Actors that edit, build or test against shared state at once read each other's side effects as defects (failure mode #29).
+
+**Shape A — the fan-out contract** is the vertical-slice contract (`SESSION_RUNNER.md` §Vertical Slice Sessions, gates a–d) plus three gates:
+
+- **(e) One closer.** Exactly one session runs Phase 0, the claim and close-out for the whole fan-out. Workers write none of `SESSION_NOTES.md`, `HANDOFFS.md`, `CHANGELOG.md`, `.quality-gates.json` or any manifest; the lead's receipt and ledger cover every unit, one bullet per unit with its integration commit, and the lead's evaluation and learnings are the only ones.
+- **(f) Pre-declared units with disjoint write scopes.** The gate (a) contract names the units and the files each owns. Shared and integration files — index or module files, lockfiles, generated tables, the records above — belong to the lead alone. A worker that needs a file outside its scope stops and returns the need.
+- **(g) Serial integration, one unit per checkpoint.** The lead integrates in dependency order, one unit per checkpoint commit under the full matrix (gates b and c), reviews each unit's diff before it lands, and re-derives load-bearing worker claims itself: a worker-authored test is unverified until the lead has watched it fail on the regression and pass on the fix.
+
+Workers return content by default — or work in an isolated worktree whose diff the lead applies — and commit nothing to the integration branch. A "worker context" that waives the ledger gate is not adopted: it is `--no-verify` with a nicer name. Read-only fan-out — research passes, adversarial lenses against a frozen, committed tree — is unrestricted in count; a lens that would mutate the tree to prove a point hands the mutation to the lead, who makes it serially. Units return content sized for integration, never transcripts: the lead's context is the ceiling (failure mode #28).
+
+**Capability tiers.** The runner's capability-tiered review (`SESSION_RUNNER.md` §Vertical Slice Sessions) states the gate; its elaboration lives here. Keep on the strongest tier any unit whose correctness rests on judgment across interacting constraints no gate expresses — cross-file invariants, numbered-set integrity, brand-neutral wording. Delegating drafting is not delegating accountability. A single-tier slice satisfies gates (c) and (d) exactly as before. Which agent built a unit is orthogonal to the slice test (failure mode #26): the pre-declared contract, the per-boundary checkpoints and "one capability, one layer set" hold whoever built each unit, and reviewing everything at the end instead of at each boundary is failure mode #26 wearing a division-of-labor costume. Like everything in the slice section, it sharpens a boundary and licenses skipping none (failure mode #17).
+
+**Shape B — two lines that join.**
+
+- **Identity.** Each repository's `main` uses bare `S<N>`; a session claimed on any other branch of the same repository writes `S<N>-<seq>` (`S24-ratchet`), so two live sequences never share a name. Two concurrent sessions on *one* branch is Shape A's failure, not Shape B, and git's non-fast-forward rejection is what catches it.
+- **The ledgers merge.** The `.gitattributes` seed merges `CHANGELOG.md` by union, so two prepended entries both survive; order across a merge is ours-then-theirs, not by date, and is never re-sorted. `HANDOFFS.md` is deliberately not under union — union fuses two prepended receipts into one block — so its conflict stays visible and is resolved keep-both with `git merge-file --union --diff3`. GitHub's merge button applies neither, so merge locally; the hooks skip a merge commit, so run `bin/check-ledger --all` and `bin/check-handoff --all` on the result. A `.quality-gates.json` conflict resolves to each gate's tighter threshold, then `--run`.
+- **Session notes are rewritten, not merged.** `SESSION_NOTES.md` is branch-local transient state — overwritten every session, by its seed's own definition — so each line keeps its own, and the integrating session rewrites it at its Phase 3D close-out rather than merging two sets of notes.
+- **A merge is one action with one receipt.** The merging session records the merge — one ledger entry and one receipt naming the merged range and its sequence tag — and checks that every merged pull request already has a ledger entry, backfilling any that does not. No per-commit `status: reconciled` receipt is owed for a merged branch: its commits are covered by its own receipts, or by the merging entry if it ran no runner.
+- **Feedback across lines.** Phase 3A scores the newest receipt in your own sequence; a session that merges another sequence also scores that sequence's last receipt in one line of its own receipt — the only score a concurrent line receives.
+
+**Ceiling, stated plainly.** One writer per tree is an instruction: no hook can see a second agent. Its mechanical forms are the harness's per-worker isolation (a worktree per worker — recommended, not shipped) and, for Shape B, git's push rejection. Union never asks, so a semantically wrong merge is caught only by the two checkers and the integrating session's own read. And concurrency trades some of Principle 8's compounding for throughput: no successor on the same line scores a concurrent session's handoff.
+
+---
+
+## Recommended Skills
+
+> **Methodology recommends; methodology does not reimplement.**
+>
+> If a discipline can be expressed as a Claude Code skill — whether a built-in like `/verify` or `/code-review`, or a community skill from a repo such as [`github.com/mattpocock/skills`](https://github.com/mattpocock/skills) — methodology **cites the skill** at the relevant phase or workstream rather than re-documenting the discipline in its own voice. Methodology owns *what to do and when* (phases, gates, anti-patterns, failure modes, session-type definitions). Skills own *how to do it* (the actual workflow invoked by the slash command).
+
+The canonical index is `RECOMMENDED_SKILLS.md`. Each entry names the skill, its source (Claude Code built-in or external repo URL), the phase or workstream where methodology recommends it, and (for external skills) a known-good commit SHA so adopters can pin a version that has been verified to behave as documented.
+
+Inline pointers in this document and in the workstream files reference skills by their slash-command name (`/verify`, `/grill-me`, `/code-review`) without re-describing them. To learn what a skill does, run it or read its `SKILL.md` at the source URL listed in the index. **When a recommended skill is unavailable in your environment, the methodology's own rules** (the phase body, the failure mode, the anti-pattern) **remain the operative guidance.** The citation is a recommendation, not a hard dependency.
+
+**A skill is not a phase.** A recommended skill that pulls a session across a hard gate — e.g., `/to-issues` followed immediately by `/tdd`, or any skill that produces an artifact and then continues to the next artifact in the same session — is failure mode #2 (keep-going) wearing a tool costume. **Close out first.** The methodology recommends skills as sharper instruments for specific phases; it does not authorize them to widen a session's scope beyond its ONE declared deliverable. A vertical-slice session (Principle 9) does not change this: the slice's layer set is pre-declared in its contract, and a skill that carries the session beyond that declared set — or across any hard gate — is the same failure mode. This applies whether the skill appears in `RECOMMENDED_SKILLS.md` or the adopter installed it independently — the methodology's gates bind every session, regardless of which tools are loaded.
+
+---
+
+## Matching Reasoning Effort to Stakes
+
+> **Match reasoning effort to the stakes, not the task label.**
+>
+> Set your agent's reasoning depth by the work's *blast radius × irreversibility × compounding cost* — the same risk lens the methodology already uses to size a vertical slice (Principle 9) and to place its hardest gate (Principle 3). High on any axis — wide blast radius (changes ripple across many call sites or readers), low reversibility (migrations, cutovers, published claims, operator-approval boundaries), or high compounding cost (a planning or architecture error every later session inherits) — warrants your agent's deepest-reasoning mode (max-effort, extended-reasoning, or a larger thinking budget, depending on the toolchain). The marginal cost is latency and tokens; the cost of a shallow decision on heavy work is rework that compounds. Set the mode at session start — not after a problem appears.
+
+Cheap, reversible, mechanical work — a one-line fix, a rename the compiler catches, a reversible config tweak — does not need it; a lighter setting is the honest default there. The axis runs both ways.
+
+Methodology owns *when and why* to raise the tier (this rule); your agent owns *how* (the specific effort or model mechanism — see `RECOMMENDED_SKILLS.md` for concrete example settings). Within a pre-declared vertical slice, that mechanism can vary *by layer* too — see `SESSION_RUNNER.md` §Vertical Slice Sessions, capability-tiered review, for the elective pattern and its guardrails. And a higher tier is not a license: like a skill, a deeper-reasoning mode sharpens a phase — it never authorizes skipping orientation, the stub, close-out, or any hard gate, nor widening a session beyond its one declared deliverable (failure mode #17, `SESSION_RUNNER.md` Protocol erosion). Reason harder; stop at the same gates.
+
+---
+
+## Mechanical Gates Bind Every Actor
+
+> **Enforce quality on the artifact, not on the actor.**
+>
+> A gate that is a question the actor asks itself ("did I verify this?") does not scale under N agents — it multiplies. Ten of the twelve quality gates below are such questions, and a more capable agent or a sharper adversarial reviewer changes the *judge*, not the *class* of gate. Where a rule can be expressed mechanically — a test suite that must pass, a coverage floor, a complexity ceiling, a size budget, a link check, a count that must not drop — it is expressed mechanically, and the mechanical form binds **every** actor: every tier, every agent, every human, every session.
+
+Four consequences, none of them new principles:
+
+1. **Verification a gate expresses is never re-done by judgment and never waived by tier, agent, or human.** The capability-tiered pattern in `SESSION_RUNNER.md` §Vertical Slice Sessions already says this for one case — a lighter tier may build a layer only where an objective gate proves it. This section generalizes it: the same gates for everyone is the rule, not the elective. Under fan-out, the same gates judge every unit; who may write, and how two lines of sessions join, is [§Parallel Actors](#parallel-actors).
+2. **Judgment is reserved for what no gate expresses** — what changed, why, and the risk — and that decision belongs to the stakeholder after implementation as well as before (Principle 3's Present → Implement gate, and its mirror at delivery).
+3. **Automated checks never pass by default or by timeout.** A gate that cannot run reports *unmeasured*, not *pass* (Principle 5).
+4. **Thresholds only tighten.** A threshold that can be lowered under pressure is a suggestion. Loosening one to make a change pass is failure mode #17 in mechanical form and requires plan-mode approval in its own commit (`SAFEGUARDS.md` §Blast Radius Limits).
+
+Where the binding happens today is worth stating beside the claim: the shipped enforcement point is a pre-commit hook that each clone opts into and that `git commit --no-verify` bypasses on the record, and merge and rebase commits skip it. That binds every actor who commits through an enabled hook; it does not bind one who never sets it. The manifest's git history and the dashboard's read of it are what make a loosening *visible* regardless; a CI job that runs the gates and the ratchet comparison against the base branch is what makes the claim hold for everyone, and a project that wants the word "every" to be literal wires one.
+
+The methodology recommends; it does not reimplement: it ships no linter, complexity tool, or coverage runner. It ships the *ratchet* — a declared, machine-readable gate manifest per project (`.quality-gates.json`) and a small checker (`quality_ratchet.py`) that refuses a commit loosening any declared threshold and runs the declared gates on demand — and this rule. Which tools produce the numbers is the project's choice (`BOOTSTRAP.md` Step 10). The dashboard reports gate outcomes and loosening history, advisory as always; the gate is the pre-commit check, where it belongs. Ceiling, stated plainly: a gate proves what it measures and nothing else — a coverage floor can be cleared by assertions that assert nothing, so a floor without a faithfulness check beside it (Learning #12) measures effort, not quality.
+
+---
+
+## The Session Runner
+
+The 6 phases and 9 principles define WHAT to do and WHY. In practice, they need an **operational wrapper** — a cockpit checklist — that ensures they're actually followed. This is the Session Runner (`SESSION_RUNNER.md` in the project root).
+
+The Session Runner adds structural controls that the phases alone don't provide:
+
+| Control | What It Prevents |
+|---------|-----------------|
+| **Mandatory orientation** | Starting work without understanding current state |
+| **"1 and done" rule** | Scope creep and quality degradation on second/third deliverables |
+| **Automatic close-out** | Skipping the handoff evaluation and self-assessment |
+| **Known failure modes table** | Repeating documented tendencies |
+| **Handoff accountability** | Writing perfunctory handoff notes |
+
+**The relationship:** The master framework (this document) is the flight manual — theory, principles, why things work. The Session Runner is the cockpit checklist — step-by-step procedure for every session. The workstream documents are mission-specific procedures. All three layers are needed.
+
+For AI agents, the Session Runner is especially critical because agents face context degradation (compaction) mid-session and start each session with zero shared context. The Session Runner compensates for these constraints with explicit orientation steps and persistent file-based handoffs.
+
+---
+
+## Quality Gates (Summary)
+
+| # | Gate | Between | Question It Answers |
+|---|------|---------|---------------------|
+| 1 | Pre-Flight Pass | Start → Research | Is the workspace clean, prior work understood, ghost sessions detected, and the ledger reconciled with the change history? |
+| 2 | Session Claimed | After task received → Before work | Will this session leave a trace even if it crashes? |
+| 3 | Previous Handoff Evaluated | Start of Close-Out | Have I scored the previous session's handoff with specific evidence? |
+| 4 | Research Complete | Research → Create | Have I read everything I need to make good decisions? |
+| 5 | Scope Validated | Within Research | Am I solving the right problem? |
+| 6 | Stakeholder Approval | Present → Implement | Does the stakeholder agree this is the right solution? |
+| 7 | Safety Commit | Before Implementation | Can I roll back if something goes wrong? |
+| 8 | Runtime Verification | After Implementation | Have I run the code and verified it works (not just compiles)? |
+| 9 | Cross-Artifact Verification | After Implementation | Did I break anything I wasn't working on? |
+| 10 | Handoff Meets Minimum Bar | Before Close | Does the handoff include all 6 required items? |
+| 11 | Handoff Notes Written to Files | Before Close | Will the next session be set up for success? (Knowing I'll be scored.) |
+| 12 | Session Learnings Documented | Before Close | Will the methodology itself benefit from what I learned? |
+
+---
+
+## The Self-Improvement Loop
+
+This is the mechanism that makes the methodology get better over time. It operates at three timescales.
+
+### Within a Session
+
+**What Went Right / What Went Wrong** sections are written at the end of every session. These are not perfunctory — they require root cause analysis.
+
+Bad: "The design needed revisions."
+Good: "The designer included dxCluster based on a syllogism: 'hunting requires spots → dxCluster shows spots → dxCluster serves hunting.' The middle term was wrong — this domain uses a different spot ecosystem. Root cause: no step existed for domain-ecosystem validation."
+
+### Between Sessions (The Handoff Accountability Loop)
+
+The most important between-session mechanism is the **handoff evaluation**. Each session opens by scoring the previous session's handoff (1-10) with specific evidence: what helped, what was missing, what was wrong. Each session closes by writing its own handoff knowing the next session will do the same.
+
+This creates a bidirectional accountability loop:
+- **Outgoing:** Write excellent handoff notes because you know they'll be scored
+- **Incoming:** Evaluate the handoff honestly because your evaluation improves the next one
+
+Without this loop, handoff notes are perfunctory ("here's what I did, good luck"). With it, handoff notes include gotchas, file references with line numbers, and explicit warnings about traps — because the author knows a poor handoff will earn a 3/10.
+
+### Between Sessions (Prompt Evolution)
+
+Failures become **numbered anti-patterns** added to the methodology prompt:
+```
+Anti-pattern #29: Domain-tool mismatch — a panel can be functionally correct
+for a general task but wrong for a domain's specific ecosystem. Reading code
+tells you what a tool DOES; domain knowledge tells you if it's the RIGHT tool.
+```
+
+Successes become **named patterns** with usage guidance:
+```
+Pattern: "Star panel CENTER" — Each profile has ONE defining panel that
+belongs in CENTER of Operate. It differentiates this profile from all others.
+When to Use: Every profile — identify the star early. It's the single
+most important design decision.
+```
+
+### Across the Full Series ([Performance Tracking](FRAMEWORK_APPARATUS.md#performance-tracking))
+
+A **performance comparison table** spans all sessions with consistent metrics. The trajectory narrative interprets the data honestly:
+
+```
+Session 7 was the worst since Session 1 on user corrections (3 vs the 0
+standard). The defining failure — treating dxCluster as a POTA hunting
+tool — revealed a blind spot in the methodology.
+```
+
+**Recommendations tracking** creates accountability:
+
+| # | Recommendation (from Session N) | Status in Session N+1 | How Addressed |
+|---|--------------------------------|----------------------|---------------|
+| 1 | Add domain-ecosystem validation | Done | Explicit section in design doc |
+| 2 | Write user testing questions | Not done | Regression — see What Went Wrong |
+
+---
+
+## Protocol Erosion
+
+**Methodology discipline is perishable.** It does not maintain itself. Each session must actively re-internalize the protocol, not assume it's "already known."
+
+### The Erosion Pattern
+
+In a 1100+ session series, the following pattern was observed twice:
+
+1. **Foundation phase (sessions 1-10):** Methodology is new. Every step feels necessary. Quality improves rapidly. Failures are caught and converted to anti-patterns. Discipline is high because the methodology is unfamiliar.
+
+2. **Peak phase (sessions 10-50):** Methodology is internalized. 14+ consecutive clean deliveries. Zero stakeholder corrections. Handoffs score 8-9/10. The process feels effortless.
+
+3. **Erosion phase (sessions 50+):** Each session shaves off "just one" step. The handoff gets a little shorter. The evaluation gets skipped. The governing documents get skimmed instead of read. Individually, each omission is minor. Over 5-10 sessions, the whole protocol collapses. Scores drop from 9/10 to 1/10. "Ghost sessions" appear — sessions that produce no notes at all.
+
+**The cascade:** Minimal handoff → next session starts blind → skips orientation (nothing useful to orient on) → produces bad work → writes another minimal handoff → cycle repeats. Within 12 hours, a methodology that produced 14 consecutive clean deliveries can degrade to sessions that produce nothing.
+
+### Why It Happens
+
+The erosion is driven by a cognitive bias: **familiarity breeds contempt for process.** When a session has done 40 successful sessions following the protocol, re-reading the governing documents feels like overhead. But the protocol was never optional — it was always the thing producing the results. The session just stopped noticing because the correlation was invisible.
+
+A second factor: **workstream transfer amnesia.** Discipline built on one type of work (e.g., plugin development) doesn't automatically transfer when switching to another type (e.g., bug fixing). The checklist is the same, but the cognitive context resets. Sessions that were disciplined on workstream A repeat early mistakes on workstream B.
+
+### Detection
+
+| Warning Sign | What It Means | Response |
+|--------------|---------------|----------|
+| Handoff notes are <5 lines | Minimal handoff pattern active | Expand to meet all 6 minimum requirements |
+| No evaluation of predecessor's handoff | Cross-session accountability broken | Stop. Write the evaluation before self-assessing |
+| Session notes have gaps in numbering | Ghost session already happened | Document what you can infer from the change history |
+| Self-assessment not written to persistent notes | Close-out discipline breaking down | Write to file before summarizing verbally |
+| Scores dropping session-over-session | Multiple erosion factors compounding | Re-read the entire methodology. Reset to full protocol. |
+| "This step doesn't apply to my session" | The erosion in action | The step applies. Do it. Every step exists because a session failed without it. |
+
+**If you detect 2+ warning signs:** Stop working. Re-read the methodology from the top. The cost of pausing is minutes. The cost of continued erosion is a cascade of failed sessions and lost stakeholder trust.
+
+### Prevention
+
+1. **Treat the methodology as if you've never read it.** Every session. The cost of re-reading is 2 minutes. The cost of assuming you know it is a failed session.
+2. **The handoff evaluation creates structural accountability.** If you write a bad handoff, the next session documents exactly how it failed. This feedback loop only works if both sides complete their steps.
+3. **Write the session stub before starting work (Phase 1B).** This is 30 seconds of insurance against catastrophic session loss.
+4. **The methodology is not improvable-by-subtraction during a session.** Every step exists because a real session failed without it. If you think a step is unnecessary, that thought IS the erosion happening.
+
+---
+
+## Reference Apparatus
+
+The apparatus these principles operate — the tables you fill in, the tests you run, the scales you
+score against — lives in [`FRAMEWORK_APPARATUS.md`](FRAMEWORK_APPARATUS.md), a sibling read **on
+demand** rather than every session. Six sections moved there intact, content unchanged; a seventh
+holds the `CHANGELOG.md` rules the starter-kit seed used to carry:
+
+| Section | What it gives you |
+|---|---|
+| **Knowledge Accumulation System** | Reference tables, pattern library, anti-pattern list, cross-session citations |
+| **Honest Accounting Framework** | What Went Right / What Went Wrong, the performance comparison table, the trajectory narrative |
+| **Scope Validation System** | The Splitting Test, Domain-Ecosystem Validation, Role/Mode Classification |
+| **Verification Hierarchy** | The seven ascending levels of verification |
+| **Session Document Template** | The copy-paste template for a session document |
+| **Performance Tracking** | Cross-session metric columns, their interpretation, maturity and erosion indicators |
+| **The Action Ledger** | The rules for a project's `CHANGELOG.md`: entry format, source tags, reading and archiving |
+
+Nothing was condensed or dropped, and every point of need above links onward — Principles 4–7,
+Phase 2 steps 6–8, Phase 6 steps 4–6 with its honest-accounting bullet and its gate, and the
+*Across the Full Series* heading. This file is read to understand the methodology, that
+one while operating it: the split `SESSION_RUNNER.md` made when its learnings became
+`FRAMEWORK_LEARNINGS.md`.
+
+---
+
+## Adapting to Your Domain
+
+This methodology is domain-independent. The phases, gates, and self-improvement loop work for any repeated process. What changes per domain is:
+
+1. **What you research in Phase 2** (components for UI, APIs for backend, schemas for data, etc.)
+2. **What you create in Phase 3** (layout for UI, architecture doc for systems, implementation plan for features)
+3. **What scope validation looks like** (mode-splitting for UI, bounded context analysis for architecture, etc.)
+4. **What verification looks like** (visual inspection for UI, contract testing for APIs, load testing for performance)
+5. **What the reference tables contain** (panel sizes for UI, endpoint contracts for APIs, table schemas for data)
+
+See the `workstreams/` directory for domain-specific adaptations:
+- `DESIGN_WORKSTREAM.md` — UI/UX design, visual design, layout work
+- `ARCHITECTURE_WORKSTREAM.md` — System architecture, API design, data modeling
+- `DEVELOPMENT_WORKSTREAM.md` — Feature implementation, bug fix campaigns
+- `AUDIT_WORKSTREAM.md` — Code audits, system reviews, security assessments
+- `RESEARCH_DOCUMENTATION_WORKSTREAM.md` — Research papers, technical reports, dissertations, regulatory analyses
+- `TEMPLATE_WORKSTREAM.md` — Blank template for creating new workstreams
+
+See `HOW_TO_USE.md` for practical examples and lifecycle guidance.
