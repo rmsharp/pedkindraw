@@ -11,11 +11,8 @@ not recording it is failure mode #27. Old entries may be archived, never deleted
 `FRAMEWORK_APPARATUS.md` §The Action Ledger, which `bin/sync`
 keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
-<!-- METHODOLOGY-SEED-SENTINEL: fresh ledger, no entries yet. While this line is present AND
-     there are no dated (### YYYY-MM-DD) entries below, this is a freshly-seeded ledger, not a
-     stale or abandoned one — the freshness check keys on this exact token plus the absence of
-     any `### <real-date>` header. Delete this line when you add your first real entry. -->
-
 ---
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
+
+### 2026-11-10 · [ad hoc] S1 claim (in progress): Phase 5a set-up of nprcgenekeepr's `docs/planning/standalone-pedigree-package-plan.md` (ruling R15; Mark's picks: four commits, the TDD contract copied word for word). The methodology sync is committed (`26bd620`: `bin/sync --layout new`, methodology `34067813`, 31 files under `methodology/`); `CLAUDE.md` next. No R package files, no push (5b, a new session).

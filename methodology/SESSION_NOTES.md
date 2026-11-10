@@ -9,13 +9,13 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** [None — project just started]
-**Status:** Ready for first session
-**Plan:** [Link to plan document, if any]
-**Priority:** [HIGH / MEDIUM / LOW]
+**Task:** Phase 5a, set-up: methodology files (`bin/sync --layout new`) and `CLAUDE.md`
+**Status:** IN PROGRESS (Session 1)
+**Plan:** `/Users/rmsharp/Development/nprcgenekeepr/docs/planning/standalone-pedigree-package-plan.md` Phase 5, ruling R15
+**Priority:** HIGH
 
 ### What You Must Do
-[The next session's specific instructions go here. Be concrete.]
+Session 1 is in progress; its close-out replaces this block.
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -29,3 +29,9 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+
+### What Session 1 Did
+**Deliverable:** Phase 5a set-up: methodology files under `methodology/` and `CLAUDE.md` (IN PROGRESS)
+**Started:** 2026-11-10 17:48 CST
+**Status:** Session claimed. The sync is committed (`26bd620`, 31 files); `CLAUDE.md` is next.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.

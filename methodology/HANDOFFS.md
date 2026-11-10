@@ -17,10 +17,6 @@ reconcile-on-read backstop — this makes a skipped handoff *detectable* rather 
 > never semantic quality. Faithfulness is still scored 1–10 by the next session (Phase 3A). A
 > well-formed but hollow receipt passes the check and is caught only by that human judgement.
 
-<!-- METHODOLOGY-SEED-SENTINEL: fresh receipt ledger, no receipts yet. While this line is present AND
-     there are no `session:` blocks below, this is a freshly-seeded file, not a stale or abandoned one.
-     Delete this line when you add your first real receipt. -->
-
 ## How to write a receipt
 
 **At Phase 1B (claim the session)** — write the stub block below with `status: pending`, filling what
@@ -196,3 +192,12 @@ manifest existed are not re-judged.
 ---
 
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
+
+```handoff
+session: S1
+date: 2026-11-10
+status: pending
+active_task: Phase 5a set-up (nprcgenekeepr plan Phase 5, R15): methodology sync committed 26bd620; CLAUDE.md next
+what_was_done: pending
+commit: pending
+```
