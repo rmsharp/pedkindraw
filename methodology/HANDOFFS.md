@@ -196,8 +196,18 @@ manifest existed are not re-judged.
 ```handoff
 session: S1
 date: 2026-11-10
-status: pending
-active_task: Phase 5a set-up (nprcgenekeepr plan Phase 5, R15): methodology sync committed 26bd620; CLAUDE.md next
-what_was_done: pending
+status: complete
+self_score: 8
+active_task: Phase 5a DONE; next is Phase 5b, the R package skeleton test-first, in a new session (nprcgenekeepr plan Phase 5, R15)
+what_was_done: bin/sync --layout new committed as 26bd620 (31 files under methodology/, methodology 34067813); claim 8e48839; CLAUDE.md 4ef233f (template, nprcgenekeepr's TDD contract word for word, R-package Build/Test/Verify, plan constraints); close-out adds Learning 1
+next_steps: Phase 5b: picker for LICENSE YEAR and Authors@R; pre-RED scope picker and TDD gates; DESCRIPTION, LICENSE, NAMESPACE, testthat 3e, dated renv, .lintr, .Rbuildignore, .gitignore, R-CMD-check on Linux/macOS/Windows, at most 5 files per commit; R CMD check --as-cran 0/0/0, push master once, gh run list
+key_files: CLAUDE.md:40 (TDD contract), CLAUDE.md:86 (phase-gate format), CLAUDE.md:109 (Build/Test/Verify), methodology/SESSION_NOTES.md:11 (ACTIVE TASK for 5b), /Users/rmsharp/Development/nprcgenekeepr/docs/planning/standalone-pedigree-package-plan.md:289 (Phase 5)
+gotchas: .Rbuildignore must exclude methodology/ and CLAUDE.md; no .gitignore yet, so dashboard and context-budget outputs show untracked; seeded .context-budget.json uses bare paths (UNMEASURED, exit 1); expected New submission NOTE under --as-cran; nprcgenekeepr plan status line not updated
+runtime_smoke: n/a — docs-only; methodology_dashboard.py exit 0; context_budget.py CLAUDE.md ok, seed paths unmeasured; .quality-gates.json declares 0 gates
+changelog_ref: 4ef233f
 commit: pending
 ```
+Session 1, Claude Opus 5.5, single tier. No predecessor (Session 1). Self-score 8: + every governing file
+read before proposing, dry run before writing, the contract taken by `sed` and diff-checked identical, the
+orient tools run to find what the next session meets (budget paths, `.gitignore`); − the plan's closing choice
+was prose, not a picker, and Mark had to ask for one (Learning 1); − the budget-path gap is handed on, not fixed.

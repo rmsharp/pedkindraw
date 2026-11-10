@@ -147,7 +147,9 @@ This project runs **Strict Test-Driven Development** (see the "Development Proce
      methodology/FRAMEWORK_LEARNINGS.md and replace them with a one-line pointer (read on demand).
      See methodology/BOOTSTRAP.md Step 5. -->
 
-(none yet)
+| # | Lesson | From | When to apply |
+|---|---|---|---|
+| 1 | A plan that waits for Mark's go, or offers him a choice, ends in one `AskUserQuestion` picker (go / alternative / hold, each option naming the exact actions), never a question in the prose. Mark: "I cannot tell what you are asking; provide a picker." | Session 1 | Every plan, scope or approach decision, as for the TDD phase gates |
 
 ### Project-specific Failure Modes
 
