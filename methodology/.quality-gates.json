@@ -13,5 +13,15 @@
     "extract": "TOTAL\\s+\\d+\\s+\\d+\\s+(\\d+(?:\\.\\d+)?)%",
     "why": "measured 82.5% on 2026-01-01; a floor without a faithfulness check beside it measures effort, not quality — pair it with a mutation spot-check in review"
   },
-  "gates": []
+  "gates": [
+    {
+      "name": "renv-lock-no-latest-repository",
+      "direction": "max",
+      "threshold": 0,
+      "unit": "lines",
+      "command": "grep -c 'packagemanager.posit.co/cran/latest' renv.lock || true",
+      "extract": "^(\\d+)",
+      "why": "S2 (2026-11-10): packages installed under renv's default Posit 'latest' were locked with 'latest' as their source, so a fresh-clone restore would miss the dated repository (nprcgenekeepr S1111). Measured 0 after reinstalling from the dated repository."
+    }
+  ]
 }

@@ -10,7 +10,7 @@ pedkindraw.Rcheck/
 methodology/dashboard.html
 methodology/dashboard_history.jsonl
 methodology/.context-budget-history.jsonl
-methodology/.quality-gates-results.json
+.quality-gates-results.json
 __pycache__/
 
 # testthat debris from interactive runs.

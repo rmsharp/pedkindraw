@@ -15,6 +15,7 @@
 ^methodology$
 ^CLAUDE.*\.md$
 ^scratchpad$
+^\.quality-gates-results\.json$
 # Build and check output, and testthat debris from interactive runs.
 ^pedkindraw_.*\.tar\.gz$
 ^pedkindraw\.Rcheck$
