@@ -2,8 +2,8 @@
 
 **Date:** 2026-11-11 · **Session:** S4 · **Type:** planning session (`methodology/SESSION_RUNNER.md` §Planning
 Sessions; `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`). No package code was written or changed.
-**Status:** plan written S4. Step H0 (this plan, and the hand-over note in nprcgenekeepr) DONE S4. Steps H1 and H2
-are next, one session each, before Phase 6b.
+**Status:** plan written S4. Step H0 DONE S4: this plan (`0283214`) and the hand-over note in nprcgenekeepr
+(nprcgenekeepr `3d262d628`, not pushed). Steps H1 and H2 are next, one session each, before Phase 6b.
 **Measured at:** pedkindraw `a262439` (the S4 claim); nprcgenekeepr `71217b296` (S1153's close-out; clean tree, idle).
 
 ---
@@ -82,7 +82,8 @@ each copy says so and lists the five files that do resolve here. Text written he
 as `nprcgenekeepr:<path>` (this plan's own convention). Rewriting every path in the copies was rejected (section 7).
 
 **Old line citations stay true.** Notes and receipts written before the copy cite nprcgenekeepr's files by absolute
-path (for example `methodology/SESSION_NOTES.md:39-40`), and those files are frozen, so the citations keep resolving.
+path (for example the S3 receipt's `key_files` in `methodology/HANDOFFS.md`), and those files are frozen, so the
+citations keep resolving.
 Citations written after H1 use this repository's copies, whose line numbers differ by the provenance note's length.
 
 ---
@@ -93,7 +94,7 @@ Search: `git -C ../nprcgenekeepr grep -il -e pedkindraw -e "standalone pedigree"
 (33 files), then each hit read, then every repository path the governing documents cite (Appendix A). The search
 misses the two older studies, which predate the name; they were found through the plan's citations.
 
-### 3.1 Copied here (Mark's S4 pick: five documents, 2,224 lines)
+### 3.1 Copied here (Mark's S4 pick: five documents, 2,228 lines at `3d262d628`)
 
 | nprcgenekeepr file | Lines | Last changed | Needed here by |
 |---|---:|---|---|
@@ -103,8 +104,9 @@ misses the two older studies, which predate the name; they were found through th
 | `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` | 202 | `42d617267` 2026-10-02 | Phase 12 (plan: "gap analysis rows 7, 12"); plan §1.2 |
 | `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md` | 491 | `42d617267` 2026-10-02 | plan §1.2; "Later, optional" (plan: "the scoping doc §7 steps 3-4 are the checklist") |
 
-The plan file changes once more before it is copied: H0b writes the hand-over note into its status block. H1 copies
-every file at the H0b commit, so the copy equals nprcgenekeepr's last version.
+The plan file changed once more before it is copied: H0b wrote the hand-over note into its status block
+(nprcgenekeepr `3d262d628`; now 428 lines, so the five total 2,228). H1 copies every file at that commit, so each copy
+equals nprcgenekeepr's last version.
 
 ### 3.2 Stays in nprcgenekeepr, cited by path
 
@@ -135,7 +137,7 @@ synced methodology files:
 | `DIVERGENCE.md:4` | "nprcgenekeepr `docs/planning/standalone-pedigree-package-plan.md` section 5" | the copy here (H1) |
 | `tools/compareWithNprcgenekeepr.R:1`, `tools/compareResultsWithNprcgenekeepr.R:2` | header comments citing nprcgenekeepr's plan | the copy here (H1; comments only) |
 | `tools/compareResultsWithNprcgenekeepr.R:15,90` | `tools/pedigreeComparison/data` in the clone | unchanged (section 3.2) |
-| `methodology/SESSION_NOTES.md:39-40` | Phase 6b's pointers into nprcgenekeepr's plan and contract | each session rewrites its notes; H1's hand-off uses the copies |
+| `methodology/SESSION_NOTES.md` (the Phase 6b block) | Phase 6b's pointers into nprcgenekeepr's plan and contract | each session rewrites its notes; H1's hand-off uses the copies |
 | `methodology/CHANGELOG.md`, `methodology/HANDOFFS.md` (S1-S3 entries) | history citing nprcgenekeepr's plan | unchanged: history, and the cited file is frozen |
 | `.Rbuildignore` | no `^docs$` | `^docs$` added S4 with this plan, so `docs/` stays out of the built package |
 | `methodology/ROADMAP.md` | the unfilled seed | filled (H2) |
@@ -177,8 +179,8 @@ its entry is at most 1,000 B; `R CMD build .` here leaves `docs/` out of the tar
 ### H1 -- Copy the five documents and point this repository at them (one session)
 
 **Steps.**
-1. Orient. Record the source commit `C`: the H0b commit (this plan's close-out writes its hash into
-   `methodology/SESSION_NOTES.md`). Check the five files are unchanged since: `git -C ../nprcgenekeepr log --oneline
+1. Orient. The source commit `C` is the H0b commit, nprcgenekeepr `3d262d628`. Check the five files are unchanged
+   since: `git -C ../nprcgenekeepr log --oneline
    C..HEAD -- <the five paths>` prints nothing. If it prints a commit, copy at that commit instead and say why.
 2. **Commit 1** (2 files): the plan and the contract, byte for byte:
    `git -C ../nprcgenekeepr show "C:<path>" > <path>`.
@@ -291,7 +293,7 @@ its entry is at most 1,000 B; `R CMD build .` here leaves `docs/` out of the tar
 | Move the files: delete them in nprcgenekeepr | one copy only | nprcgenekeepr's ledgers, receipts and learnings cite them by path; deleting breaks its history | Mark said "copy" |
 | Leave planning in nprcgenekeepr and read it by path (today) | no work | its status needs nprcgenekeepr sessions, which never come; already stale | Mark's direction |
 | Rewrite every nprcgenekeepr path in the copies to `nprcgenekeepr:<path>` | each path unambiguous | 24 code-file citations plus `BACKLOG.md`, `CLAUDE.md` and tool paths, edited by hand; the copies stop matching their sources byte for byte | the provenance note does the same job with no edits and keeps the copies checkable with `diff` |
-| Copy only the plan and the contract | 678 lines instead of 2,224 | Phases 12-14 and 16 would read the studies from the clone | Mark's S4 pick: five documents |
+| Copy only the plan and the contract | 682 lines instead of 2,228 | Phases 12-14 and 16 would read the studies from the clone | Mark's S4 pick: five documents |
 | GitHub issues instead of `BACKLOG.md` | the methodology checks issues first | public; outward-facing per item | Mark's S4 pick: `BACKLOG.md` |
 | Copy `tools/pedigreeComparison/` too | the Phase 1 pedigrees local | 52 files, 5.9 MB, for finished Phases 1-2; the results check needs the clone regardless | not needed |
 | Do H1 and H2 in this session | fewer sessions | bundles the plan with its execution (failure mode #18) | planning sessions stop at the plan |

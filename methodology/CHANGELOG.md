@@ -15,6 +15,18 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] S4 commit in nprcgenekeepr: the hand-over note (plan step H0b), `3d262d628`, not pushed
+- **Change:** nprcgenekeepr's `docs/planning/standalone-pedigree-package-plan.md` status block records Phase 5 DONE (S1-S2) and Phase 6a DONE (S3) and freezes that copy ("not updated here again"); its `BACKLOG.md` item shrinks from 24 lines to 11, tagged RECURRING: the drift watch (plan section 5) is the one duty left there; its own `methodology/CHANGELOG.md` entry (760 B) records it and says the later items moved up 13 lines.
+- **Commit/PR:** nprcgenekeepr `3d262d628`
+- **Session:** S4 · **Verified:** nprcgenekeepr idle (S1153 closed at `71217b296`, clean tree); its readers `test_docsAuditLooseEnds.R`, `test_docsAuditSixRulings.R`, `test_archivePointersResolve.R`, `test_contextBudgetLedgers.R`, `test_handoffsReceiptPlacement.R`: 37 blocks, 0 failed; `tools/changelog_entry_limit.py` 0 over; its context-budget pre-commit hook passed.
+- **Model:** Claude Opus 5.5
+
+### 2026-11-11 · [ad hoc] S4 DONE: plan to move pedkindraw's planning from nprcgenekeepr into this repository; step H0 done
+- **Change:** `docs/planning/planning-handover-plan.md`: Mark's direction; pedkindraw's repository carries its own plan from now on, nprcgenekeepr's copies frozen; five documents copied at the same paths (plan, contract, comparison study, gap analysis, split scoping study; 2,228 lines), tools and history left in nprcgenekeepr; an inventory by search (33 files) and by citation; steps H1 (copy and re-point) and H2 (bring up to date, `methodology/ROADMAP.md`, a new `methodology/BACKLOG.md`), each with DONE, surface and session boundary, before Phase 6b. `^docs$` in `.Rbuildignore`. `CLAUDE.md` Learning 6 (search by citation, not only by name). Mark's picks: plan, then note; `BACKLOG.md`; five documents.
+- **Commit/PR:** `a262439` (claim), `0283214` (plan, `.Rbuildignore`), close-out
+- **Session:** S4 · **Verified:** `R CMD build` leaves `docs/` out, file list identical to S3's checked tarball; H1's copy and `cmp` commands dry-run, five files byte-identical at nprcgenekeepr `3d262d628`; `quality_ratchet: 2/2 pass`.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-10 · [ad hoc] S4 claim (in progress): plan moving pedkindraw's planning from nprcgenekeepr into this repository (`docs/planning/`), then the hand-over note in nprcgenekeepr. Mark picked "Plan, then note" at the orient picker. Phase 0 reconcile: nothing to backfill.
 
 ### 2026-11-10 · [ad hoc] S3 hand-off changed by Mark's direction: the next session plans moving pedkindraw's planning from nprcgenekeepr into this repository; Phase 6b follows

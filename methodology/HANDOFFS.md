@@ -196,11 +196,23 @@ manifest existed are not re-judged.
 ```handoff
 session: S4
 date: 2026-11-10
-status: pending
-active_task: plan moving pedkindraw's planning from nprcgenekeepr into this repository, then the hand-over note in nprcgenekeepr (Mark's pick)
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: the plan to move pedkindraw's planning from nprcgenekeepr into this repository is written and its step H0 DONE (the hand-over note in nprcgenekeepr); next is step H1, copying the five documents and re-pointing CLAUDE.md, DIVERGENCE.md and the tools, then H2, then Phase 6b
+what_was_done: claim a262439; H0a 0283214 (docs/planning/planning-handover-plan.md: Mark's direction, the decision table, an inventory by search and by citation, steps H0-H2 each with DONE, surface and session boundary, risks, alternatives; ^docs$ in .Rbuildignore); H0b in nprcgenekeepr 3d262d628 (plan status block records Phase 5 and 6a DONE and freezes that copy; BACKLOG.md item shrunk to the RECURRING drift watch; its CHANGELOG entry, 760 B); close-out records both hashes in the plan and adds CLAUDE.md Learning 6. Mark's picks: Plan, then note; methodology/BACKLOG.md; five documents. Nothing pushed
+next_steps: H1 (one session; plan section 4): check the five nprcgenekeepr files unchanged since 3d262d628; commit 1 plan and contract and commit 2 the three studies, each via git show 3d262d628:<path> and checked with cmp; commit 3 a provenance note under each title (diff shows only added lines); commit 4 CLAUDE.md:22-23 and :136, DIVERGENCE.md:4, the two tool header comments; DONE: both tools exit 0, test suite, R CMD check --as-cran 0/0/allowed NOTE, no docs/ in the tarball; no push. Then H2 (rulings R16 on confirmed by picker first; plan, contract, ROADMAP.md, new BACKLOG.md, pre-history pointer entry), then Phase 6b (methodology/SESSION_NOTES.md, THEN block)
+key_files: docs/planning/planning-handover-plan.md:55 (decision and path rule), docs/planning/planning-handover-plan.md:97 (the five files), docs/planning/planning-handover-plan.md:128 (pedkindraw lines to change), docs/planning/planning-handover-plan.md:179 (H1), docs/planning/planning-handover-plan.md:210 (H2), methodology/SESSION_NOTES.md:11 (ACTIVE TASK, H1), methodology/SESSION_NOTES.md:55 (H2 and 6b), CLAUDE.md:22 (governing documents to re-point), CLAUDE.md:136 (now false; H1 rewrites it), .Rbuildignore:23 (^docs$), /Users/rmsharp/Development/nprcgenekeepr/BACKLOG.md:40 (the shrunk item)
+gotchas: paths inside the copies are nprcgenekeepr's except the five copied files, so the provenance note must say so and the paths are not rewritten; the copies' line numbers shift by the note's length while older citations stay right because they name nprcgenekeepr's frozen files; zsh aborts a whole command on an unmatched glob; the nprcgenekeepr commit is not pushed (Mark's call) and moved its later BACKLOG items up 13 lines (#138 now :70, S1153's receipt says :83); S3's close-out and all S4 commits are unpushed (6b's push carries them); pedkindraw.Rproj and the context-budget fix still wait on Mark (H2 lists them in BACKLOG.md)
+runtime_smoke: n/a, documents only. R CMD build leaves docs/ out (file list identical to S3's checked tarball); H1's copy and cmp commands dry-run in the scratchpad, all five byte-identical at 3d262d628; nprcgenekeepr readers 5 files, 37 blocks, 0 failed; quality_ratchet: 2/2 pass · 0 fail · 0 unmeasured · results 28dd5b310acd · manifest 114e971f4452
+changelog_ref: CHANGELOG.md "2026-11-11 · [ad hoc] S4 DONE: plan to move pedkindraw's planning from nprcgenekeepr into this repository; step H0 done"
 commit: pending
 ```
+Session 4, Claude Opus 5.5, single tier. Predecessor S3 scored 9: Mark's direction verbatim, the right starting files
+and the two-writers gotcha; it missed the two older studies (they predate the name), `^docs$`, and nprcgenekeepr's
+commit rules. Self-score 8: + inventory by citation as well as name, every pedkindraw line listed with before and
+after, H1's commands dry-run; the nprcgenekeepr commit followed its rules. − first picker rested on a premise Mark
+settled in a word; four line citations needed fixing before commit; one zsh glob abort.
 
 ```handoff
 session: S3
