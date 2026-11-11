@@ -108,11 +108,11 @@ This file supersedes general coding instincts.
 
 ## Build / Test / Verify
 
-The build-equivalent for this R package (`methodology/SAFEGUARDS.md` "Verify the Build Equivalent"). **None of these runs until Phase 5b creates the package.** Run each from the repository root.
+The build-equivalent for this R package (`methodology/SAFEGUARDS.md` "Verify the Build Equivalent"). Phase 5b created the package (Session 2). Run each from the repository root.
 
 | Purpose | Command | Pass criteria |
 |---|---|---|
-| Full package check (every phase's DONE gate) | `R CMD build . && R CMD check --as-cran pedkindraw_*.tar.gz` | 0 errors, 0 warnings, 0 notes |
+| Full package check (every phase's DONE gate) | `R CMD build . && R CMD check --as-cran pedkindraw_*.tar.gz` | 0 errors, 0 warnings, 0 notes. One exception until the package is on CRAN (Mark, S2): the NOTE from "checking CRAN incoming feasibility" may appear if its only content is the Maintainer line and "New submission". Any other NOTE fails. |
 | Test suite | `Rscript -e 'testthat::test_local()'` | All tests pass |
 | Documentation | `Rscript -e 'roxygen2::roxygenise()'`, then `git status` | `NAMESPACE` and `man/` unchanged |
 | Lint | `Rscript -e 'lintr::lint_package()'` | No lints |
