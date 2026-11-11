@@ -1,0 +1,33 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## Copied from nprcgenekeepr R/isFounder.R at nprcgenekeepr commit
+## baef1e12c. Changes: help text only; the function's code is unchanged. The
+## example no longer loads nprcgenekeepr.
+
+#' Identify the founders in a pedigree
+#'
+#' Part of Pedigree Curation
+#'
+#' A founder is an animal whose sire and dam are both unknown (\code{NA}).
+#' Animals with exactly one known parent (partial parentage) are
+#' \strong{not} founders.
+#'
+#' @param ped a pedigree \code{data.frame} with (at least) the columns
+#' \code{sire} and \code{dam}.
+#' @return A logical vector with one element per row of \code{ped} that is
+#' \code{TRUE} for each animal whose sire and dam are both \code{NA}. The
+#' result never contains \code{NA}.
+#'
+#' @seealso \code{\link{getFounders}} for the founder \code{id} values.
+#' @export
+#' @examples
+#' ped <- data.frame(
+#'   id = c("A", "B", "C", "D", "E", "F", "G"),
+#'   sire = c(NA, NA, "A", "A", NA, "D", "D"),
+#'   dam = c(NA, NA, "B", "B", NA, "E", "E"),
+#'   stringsAsFactors = FALSE
+#' )
+#' isFounder(ped)
+isFounder <- function(ped) {
+  is.na(ped$sire) & is.na(ped$dam)
+}
