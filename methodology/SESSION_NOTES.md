@@ -11,7 +11,8 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ## ACTIVE TASK
 **Task:** step H1 of `docs/planning/planning-handover-plan.md`: copy the five planning documents from nprcgenekeepr
 into this repository and point `CLAUDE.md`, `DIVERGENCE.md` and the two tools at the copies.
-**Status:** READY. Plan written and H0 DONE in S4 (plan `0283214`; the hand-over note in nprcgenekeepr `3d262d628`).
+**Status:** IN PROGRESS (S5, claimed 2026-11-11 00:22 CST; Mark's orient pick "H1 only"). Plan written and H0 DONE in
+S4 (plan `0283214`; the hand-over note in nprcgenekeepr `3d262d628`).
 Mark's S4 picks (all by picker, first try after one clarification): "Plan, then note"; open work in a
 `methodology/BACKLOG.md` file; five documents copied. Then H2 (bring the plan up to date; roadmap and backlog), then
 Phase 6b. **Session boundary:** H1 is one session; Mark may fold H2 into it at the orient picker (plan section 4).
@@ -140,6 +141,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *Session history accumulates below this line. Newest session at the top.*
 *S1-S3's entries were removed in S3 and S4 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
+
+### What Session 5 Did
+**Deliverable:** step H1 of `docs/planning/planning-handover-plan.md`: copy the five planning documents from
+nprcgenekeepr `3d262d628` and point `CLAUDE.md`, `DIVERGENCE.md` and the two tools at the copies (IN PROGRESS)
+**Started:** 2026-11-11 00:22 CST · **Model:** Claude Opus 5.5
+**Status:** Session claimed. Work beginning. Mark's orient pick (picker): "H1 only".
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
 
 ### Session 3 Handoff Evaluation (by Session 4)
 **Score: 9/10.**

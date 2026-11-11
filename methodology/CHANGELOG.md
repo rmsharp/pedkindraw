@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] S5 claim (in progress): plan step H1, copy the five planning documents from nprcgenekeepr `3d262d628` and point this repository at them. Mark picked "H1 only" at the orient picker. Phase 0 reconcile: nothing to backfill.
+
 ### 2026-11-11 · [ad hoc] S4 commit in nprcgenekeepr: the hand-over note (plan step H0b), `3d262d628`, not pushed
 - **Change:** nprcgenekeepr's `docs/planning/standalone-pedigree-package-plan.md` status block records Phase 5 DONE (S1-S2) and Phase 6a DONE (S3) and freezes that copy ("not updated here again"); its `BACKLOG.md` item shrinks from 24 lines to 11, tagged RECURRING: the drift watch (plan section 5) is the one duty left there; its own `methodology/CHANGELOG.md` entry (760 B) records it and says the later items moved up 13 lines.
 - **Commit/PR:** nprcgenekeepr `3d262d628`
