@@ -4,8 +4,14 @@
 ## nprcgenekeepr commit baef1e12c. Changes: each read of a rhesus file through
 ## system.file(..., package = "nprcgenekeepr") reads test_path("fixtures", ...)
 ## instead (6; the source's lines 325-326, 508-509, 647-648, 794-795, 1183-1184,
-## 1188-1190). qcdRhesusPed() reads a saved file (helper-qcdRhesusPed.R). The
-## comments below name nprcgenekeepr's documents, sessions and files.
+## 1188-1190). qcdRhesusPed() reads a saved file (helper-qcdRhesusPed.R). Five
+## tests assign the layout inside expect_message(), the testthat edition 3 way
+## (plan R29): under edition 2 expect_message() returned the value, under 3 it
+## returns the message (the source's lines 1622-1623, 1644-1645, 1662-1663,
+## 1678-1679, 1950-1951). Two tests handle the layout's same-row collision
+## warning the way the source's lines 820-826 do, where nprcgenekeepr lets it
+## through (plan R33; lines 2074 and 2365). The comments below name
+## nprcgenekeepr's documents, sessions and files.
 
 ## Tests for makePedigreeMatingLayout() -- Pedigree Diagram Option 2, Slice 3
 ## (docs/planning/pedigree-diagram-option2-layout-design-plan.md, Migration
@@ -1618,8 +1624,8 @@ test_that(
     sex = c("M", "F", "M", "F"), gen = c(0L, 0L, 1L, 0L),
     stringsAsFactors = FALSE
   )
-  result <- expect_message(
-    makePedigreeMatingLayout(ped, edgeStyle = "direct"), "P5"
+  expect_message(
+    result <- makePedigreeMatingLayout(ped, edgeStyle = "direct"), "P5"
   )
   expect_false("P5" %in% result$nodes$id)
   expect_true(all(c("P1", "P2", "C1") %in% result$nodes$id))
@@ -1640,8 +1646,8 @@ test_that(
     sex = c("M", "F"), gen = c(0L, 0L),
     stringsAsFactors = FALSE
   )
-  result <- expect_message(
-    makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  expect_message(
+    result <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
   )
   expect_equal(nrow(result$nodes), 0L)
   expect_equal(nrow(result$edges), 0L)
@@ -1658,8 +1664,8 @@ test_that(
     sex = c("M", "F"), gen = c(0L, 0L),
     stringsAsFactors = FALSE
   )
-  result <- expect_message(
-    makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")
+  expect_message(
+    result <- makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")
   )
   expect_equal(nrow(result$nodes), 0L)
   expect_equal(nrow(result$edges), 0L)
@@ -1674,8 +1680,8 @@ test_that(
     id = "A", sire = NA_character_, dam = NA_character_,
     sex = "M", gen = 0L, stringsAsFactors = FALSE
   )
-  result <- expect_message(
-    makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  expect_message(
+    result <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
   )
   expect_equal(nrow(result$nodes), 0L)
   expect_equal(nrow(result$edges), 0L)
@@ -1946,8 +1952,8 @@ test_that(
   )
   kmat <- matrix(c(0.5, 0.0, 0.0, 0.5), nrow = 2L,
                   dimnames = list(c("A", "B"), c("A", "B")))
-  result <- expect_message(
-    makePedigreeMatingLayout(ped, edgeStyle = "direct",
+  expect_message(
+    result <- makePedigreeMatingLayout(ped, edgeStyle = "direct",
                               kinshipMatrix = kmat)
   )
   expect_equal(nrow(result$nodes), 0L)
@@ -2070,7 +2076,13 @@ test_that(
    keep theirs", {
   qcd <- qcdRhesusPed()
   qcd$status <- ifelse(seq_len(nrow(qcd)) %% 7L == 0L, "DECEASED", "ALIVE")
-  nodes <- makePedigreeMatingLayout(qcd)$nodes
+  nodes <- withCallingHandlers(
+    makePedigreeMatingLayout(qcd),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )$nodes
   jog <- grepl("^__jog_", nodes$id)
   expect_gt(sum(jog), 0L)
   expect_false(anyNA(nodes$deceased))
@@ -2361,7 +2373,13 @@ test_that(
   qcd <- qcdRhesusPed()
   qcd$affected <- seq_len(nrow(qcd)) %% 3L == 0L
   qcd$affected2 <- seq_len(nrow(qcd)) %% 5L == 0L
-  nodes <- makePedigreeMatingLayout(qcd)$nodes
+  nodes <- withCallingHandlers(
+    makePedigreeMatingLayout(qcd),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )$nodes
   jog <- grepl("^__jog_", nodes$id)
   expect_gt(sum(jog), 0L)
   expect_true("affectedSections" %in% names(nodes))
