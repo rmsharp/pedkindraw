@@ -15,6 +15,12 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] Backfilled (pointer): pedkindraw's history before this repository existed, in nprcgenekeepr S667-S1150
+- **Change:** none here; a pointer. The work that led to pedkindraw ran in nprcgenekeepr's sessions: S667 (the split scoping study), S741 (the kinship2 gap analysis), S742 (Mark's rulings R1-R3: the package will be built), S1117 (Mark lifted the delay), S1121 (the plan), S1122-S1125 (the comparison, plan Phases 1-2), S1126 (input style, R7), S1128 (the contract, name and repository, R10-R13, plan Phase 4), S1129 (nprcgenekeepr's license scoping), S1130 (the clean-room plan and C2), S1140 (the clean-room rewrite finished), S1149 (pedkindraw's license, R14), S1150 (R15; the empty repository cloned). Their records: nprcgenekeepr's `methodology/CHANGELOG.md` and `methodology/HANDOFFS.md`, and its `methodology/archive/` for S667-S742. The plan's status block and section 2 summarize them.
+- **Commit/PR:** nprcgenekeepr's commits; none here
+- **Session:** S6 (hand-over plan step H2) · **Verified:** each session found in nprcgenekeepr at `3d262d628` (its `CHANGELOG.md`, its `HANDOFFS.md` or `git grep` in its `methodology/archive/`); S1127 in the hand-over plan's range was nprcgenekeepr's own CRAN check, not pedkindraw work, so it is left out.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-11 · [ad hoc] S6 claim (in progress): plan step H2, bring the copied plan and contract up to date, fill `methodology/ROADMAP.md`, create `methodology/BACKLOG.md`, add the pre-repository pointer entry. Mark picked "Do step H2" at the orient picker. Phase 0 reconcile: nothing to backfill.
 
 ### 2026-11-11 · [ad hoc] S5 DONE: plan step H1, the five planning documents copied from nprcgenekeepr and this repository pointed at them
