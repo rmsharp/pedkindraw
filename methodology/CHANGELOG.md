@@ -15,6 +15,12 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-10 · [ad hoc] S3 hand-off changed by Mark's direction: the next session plans moving pedkindraw's planning from nprcgenekeepr into this repository; Phase 6b follows
+- **Change:** Mark, after the close-out: "next session make a plan to copy information held within nprcgenekeepr into this repository into standard methodology ledgers and other files. Update nprcgenekeepr that this repository will work going forward following the original plan but updating it if needed." Recorded as the ACTIVE TASK in `methodology/SESSION_NOTES.md` (Phase 6b moved below it) and in the S3 receipt's `next_steps`. Nothing written in nprcgenekeepr: its session S1153 was in progress.
+- **Commit/PR:** this commit
+- **Session:** S3 · **Verified:** S3 read the plan for a hand-over point and found none (§1.3, Phase 17, §5).
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-10 · [ad hoc] S3 push: `master` to GitHub at `b332309` (carrying S2's `618b8a6` and close-out), CI green on five jobs
 - **Change:** pushed `32d525c..b332309`. R-CMD-check run `42960032938`: macOS release, Windows release, Linux devel, release and oldrel-1 all `Status: OK`, each `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 122 ]`. Notices only: Node 20 deprecated under `actions/checkout@v4`; `ubuntu-latest` moving to Ubuntu 26. The S3 close-out commit is not pushed; Phase 6b's push carries it.
 - **Commit/PR:** push of `618b8a6`..`b332309`

@@ -9,6 +9,30 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
+**Task (Mark's direction after S3's close-out, his words):** "next session make a plan to copy information held within
+nprcgenekeepr into this repository into standard methodology ledgers and other files. Update nprcgenekeepr that this
+repository will work going forward following the original plan but updating it if needed."
+**Status:** READY. A planning session: the plan is the deliverable (`methodology/SESSION_RUNNER.md:110-155`, Planning
+Sessions: deepest reasoning mode, plan in `docs/planning/`, a grep-based inventory, each phase with DONE, verification,
+surface and session boundary). Phase 6b (below) waits until after it. In Phase 1, state back how you read Mark's second
+sentence (the nprcgenekeepr note written this session, or as the plan's first step) and let him confirm by picker.
+**Why:** the plan, rulings, status line and backlog item for pedkindraw live only in nprcgenekeepr, and no phase there
+ever hands them over (S3 read the whole plan: §1.3 `:42-44` moves sessions here, nothing moves planning; Phase 17 `:342`
+says "its own plan first" without saying where; the drift rule §5 `:353-359` has no end date).
+**Starting points for the inventory (S3's reading, not yet a grep inventory):** in nprcgenekeepr,
+`docs/planning/standalone-pedigree-package-plan.md` (424 lines), `docs/planning/pedkindraw-api-contract.md` (254),
+the item at `BACKLOG.md:40`, `docs/research/pedigree-package-comparison-2026-11.md` (Phases 1-3 evidence),
+`docs/planning/cleanroom-rewrite-plan.md` (C2: Phases 7, 8, 10 copy its results), `tools/pedigreeComparison/` (the
+Phase 1 pedigrees `tools/compareResultsWithNprcgenekeepr.R` reads from the clone), and its `CHANGELOG.md` entries for
+S1121-S1150. Search it all: `git -C ../nprcgenekeepr grep -il -e pedkindraw -e "standalone pedigree"`. In pedkindraw:
+no `BACKLOG.md` and no `docs/` yet; `methodology/ROADMAP.md` is the unfilled seed; `CLAUDE.md:133-138` (plan
+constraints; `:136` says nprcgenekeepr sessions update its plan, which Mark's direction changes).
+**Gotcha:** an nprcgenekeepr session (S1153) was IN PROGRESS when S3 ended (its `methodology/SESSION_NOTES.md:99-103`;
+commits `0a567d619`, `40e9b52ed`, `23c82bb27` landed during S3). Before writing in nprcgenekeepr, check its ACTIVE TASK
+is not IN PROGRESS and its `git status` is clean (one writer per working tree, failure mode #29), and follow its own
+ledger rules for that commit (a `CHANGELOG.md` entry there).
+
+## THEN: Phase 6b (after the plan above)
 **Task:** Phase 6b, the second half of the pedigree-basics copy slice: the 11 functions that repair and trim pedigrees
 **Status:** READY. Phase 6a DONE in S3 (10 relationship functions; CI run `42960032938` 5/5 `Status: OK`, PASS 122 each).
 Mark split Phase 6 in S3 (picker): 6a = 10 functions now, 6b = 11 next. `toCharacter()` stays out (Mark, S3; R13).
