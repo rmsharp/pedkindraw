@@ -3,4 +3,6 @@
 ## baef1e12c, saved by tools/makeTestFixtures.R (Mark's pick in S3: test
 ## files, not package datasets).
 lacy1989Ped <- readRDS(test_path("fixtures", "lacy1989Ped.rds"))
+pedSix <- readRDS(test_path("fixtures", "pedSix.rds"))
+qcPed <- readRDS(test_path("fixtures", "qcPed.rds"))
 smallPed <- readRDS(test_path("fixtures", "smallPed.rds"))
