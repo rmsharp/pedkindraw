@@ -1,0 +1,428 @@
+# Plan: a kinship2-like standalone pedigree package built from nprcgenekeepr's code
+
+**Date:** 2026-11-02 · **Session:** S1121 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
+§Planning Sessions; `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`). No package code was written or
+changed. **Status:** plan approved in scope by Mark's rulings below; Phase 1 DONE (S1122-S1123,
+`docs/research/pedigree-package-comparison-2026-11.md`); Phase 2 DONE (S1124-S1125, the same doc's sections 8-10);
+Phase 3 DONE (S1126, the same doc's section 11: R7 ruled); Phase 4 DONE (S1128: `docs/planning/pedkindraw-api-contract.md`,
+rulings R10-R13, repository `rmsharp/pedkindraw`); License line ruled S1149 (R14: MIT, as nprcgenekeepr); Phase 5
+(skeleton) DONE in the clone at `/Users/rmsharp/Development/pedkindraw` (R15, S1150; pedkindraw S1-S2); Phase 6a DONE
+(pedkindraw S3: 10 of Phase 6's functions; Mark split Phase 6 there). **Frozen 2026-11-11:** from here on this plan is
+carried in pedkindraw's repository (Mark's direction, pedkindraw S3-S4), whose sessions follow it and change it where
+needed in their own copy (`docs/planning/` there; the move is that repository's `docs/planning/planning-handover-plan.md`).
+This copy is not updated here again. nprcgenekeepr's one standing duty is section 5's last line.
+**Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
+
+---
+
+## 1. Context
+
+### 1.1 Purpose (Mark's words, S742, recorded in `BACKLOG.md`)
+
+"A standalone near-equivalent of kinship2 carrying nprcgenekeepr's enhanced features --
+particularly the pedigree drawing, annotation ability, and interactivity; nprcgenekeepr may
+eventually consume it, but that is NOT the primary goal." The package is a sibling product
+first, not an extraction nprcgenekeepr must depend on.
+
+### 1.2 What changed since the earlier analyses
+
+The scoping doc (`docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`, S667) and the
+gap analysis (`docs/research/kinship2-feature-gap-analysis-2026-09-20.md`, S741) are dated records.
+Since then:
+
+| Change | Evidence | Effect on this plan |
+|---|---|---|
+| The drawing is one exported, script-callable function: `drawPedigreeDiagram(layout, edgeStyle, onClick)` | `R/drawPedigreeDiagram.R:46` (S1030); the module's render is one call to it (`R/modPedigree.R:736-744`); the 8 `visNetwork::` drawing calls live in `R/drawPedigreeDiagram.R:103-239` (`:206` is a comment), the module keeps only `visNetworkOutput`/`renderVisNetwork` (`R/modPedigree.R:691,740`) | S742's "lift the decorations into a script-callable renderer" -- the one substantive new-work item -- is **done**. The renderer is copied, not built. |
+| Deceased slash and up to four affected conditions per animal | `R/deceasedSlash.R` (S1028), `R/affectedConditions.R` (S1029) | Gap analysis Finding #3's two "kinship2-only rendering details" are down to one (the dashed repeat-arc convention). |
+| The layout solver hands constraints to `quadprog::solve.QP.compact()` | S1060, `R/makePedigreeDiagramData.R` | The layout core is no longer "base R + stats only" (scoping doc §2.2): it needs `quadprog` and `Matrix`. |
+| nprcgenekeepr 3.0.0, which ships `visNetwork` and the Diagram tab, is on CRAN (2026-11-01) | `BACKLOG.md` CRAN item | Scoping doc revisit condition 2 is met. |
+| Mark lifted the delay on this item | S1117, 2026-11-02 | Revisit conditions 1 and 3 no longer hold it. |
+| The layout engine has gone quiet | `git log --since=2026-09-03 -- R/makePedigreeDiagramData.R R/positionTreeApportion.R`: 29 commits in 60 days, 7 in the last 30, last 2026-10-27 (`499280c15`) | A copy taken now is unlikely to be overtaken weekly, as it would have been in September. |
+| **kinship2 has a maintained continuation on Bioconductor: Pedixplorer** | Bioconductor page read 2026-11-02: Pedixplorer 1.8.0 (Bioconductor 3.23), "Routines to handle family data with a Pedigree object" (kinship2's own CRAN description, nearly word for word), maintainer Louis Le Nezet, citation names Le Nezet, Jason Sinnwell, Terry Therneau; in Bioconductor since 3.19; Artistic-2.0; imports `shiny`, `plotly`, `htmlwidgets`, `ggplot2`, `igraph`, `S4Vectors`, `quadprog`, `Matrix` and others | The S667 claim "nothing offers an interactive kinship2-parity drawing" must be re-tested: Pedixplorer has its own Shiny app and plotly drawing. The comparison (Phase 1-2) covers it. That it is kinship2's continuation is an inference from the description and authors, not a statement found on the page. |
+| ggpedigree 1.2.0 (CRAN, 2026-05-30) absorbed kinship2's layout helpers and draws with `ggplot2` and `plotly` | CRAN page read 2026-11-02 ("Due to the impending deprecation of kinship2 ..." is ggpedigree's own wording; kinship2's CRAN page carries no such notice: 1.9.6.2, published 2025-09-04) | Third comparator. |
+
+### 1.3 Constraints
+
+- **Methodology boundary.** Sessions that work in the new repository write that repository's
+  `SESSION_NOTES.md`, `HANDOFFS.md`, `CHANGELOG.md` (`SESSION_RUNNER.md` §Phase 0, session-notes boundary).
+  Phases 1-4 run here; Phases 5 onward run in the new repository.
+- **Strict TDD** (`CLAUDE.md`) carries into the new repository's `CLAUDE.md`.
+- **Blast radius:** at most 5 files per commit (`SAFEGUARDS.md`). Copy phases move dozens of files, so
+  each is a series of checkpoint commits, never one large commit.
+- **nprcgenekeepr is not changed by this plan** (Mark's "copy" ruling, §2) beyond its docs and
+  `BACKLOG.md`.
+- **License.** nprcgenekeepr is MIT (`LICENSE`: 2017-2026, R. Mark Sharp). Code the new package would
+  copy includes ports from kinship2, which is GPL (>= 2) on CRAN: `shrinkPedigree()` and its helpers
+  are "internal port[s] of kinship2's" `findUnavailable`, `excludeUnavailFounders`, `findAvailNonInform`,
+  `findAvailAffected` (`R/shrinkPedigree.R:218-332`), and `kinship()`'s `chrtype = "x"` branch and MZ-twin
+  correction are "ported from kinship2" (`R/kinship.R:62,85,145`); `kinship()` itself credits Terry
+  Therneau's original code (`R/kinship.R:17,74`; Therneau is an `aut` in `DESCRIPTION`). Which license
+  the new package can carry is Mark's decision at Phase 4; this plan records the facts and gives no legal
+  opinion.
+  **S1128:** the contract's section 3 found more: `kinship()`'s base is copied from Therneau's 2003 `kinship.s` (CRAN
+  package `kinship`, GPL (>= 2)), and the layout solver's terms 1-2 and `comparePedigreeStructure()`'s mate-pair step
+  are re-expressed from kinship2. Mark ruled R11 (§2): those parts are rewritten from the published methods.
+  **S1149:** the rewrite exists (S1140; C2), so Mark ruled R14 (§2): MIT, as nprcgenekeepr.
+
+---
+
+## 2. Rulings
+
+| # | Ruling | When | By |
+|---|---|---|---|
+| R1 | The package WILL be built; sibling product first, nprcgenekeepr adoption optional and later | S742 | Mark |
+| R2 | Drawing surface IN (now: copy `drawPedigreeDiagram()`, already built) | S742 | Mark |
+| R3 | Parity closers IN: export the shrink helpers and `bitSize`; port `familycheck` and `ibdMatrix`; user-suppliable layout hints. OUT: block-sparse `makekinship` | S742 | Mark |
+| R4 | The work starts with an in-depth comparison, building on the existing ones | S1121 | Mark |
+| R5 | Comparators: kinship2, Pedixplorer, ggpedigree | S1121 | Mark |
+| R6 | The comparison includes timing, memory footprint and capacity | S1121 | Mark |
+| R7 | Input style: **data frames** as nprcgenekeepr takes them (pedigree and twins table), **plus converters** from kinship2 `pedigree` and Pedixplorer `Pedigree` objects; kinship2 and Pedixplorer optional (Suggests), never required. Chosen from four prototypes' measured costs (comparison doc section 11); S742 and S1121 had left it open until a prototype of each existed | S1121, S1126 | Mark |
+| R8 | Code home: **copy**. The new package starts from a copy; nprcgenekeepr is unchanged until Mark later decides to have it use the new package. Two copies meanwhile, under the drift rule (§5) | S1121 | Mark |
+| R9 | Heavy colony tools stay in nprcgenekeepr: `qcStudbook()` and `groupAddAssign()` are not copied; the new package gets a short pedigree checker and a short unrelated-set finder, sized by the comparison | S1121 | Mark |
+| R10 | Name: **pedkindraw** (checked free on CRAN incl. archived names, Bioconductor, GitHub) | S1128 | Mark |
+| R11 | The parts derived from kinship2 or Therneau's `kinship` package (contract section 3) are rewritten from the published methods, results still matching nprcgenekeepr's; fallback: copy under GPL (>= 2), or ask the authors first. The license is ruled once the rewrite exists | S1128 | Mark |
+| R12 | Repository `rmsharp/pedkindraw`, public, created empty by Claude | S1128 | Mark |
+| R13 | The file readers stay out (32 outside packages instead of 47) | S1128 | Mark |
+| C2 | R11's rewrite is done once, in nprcgenekeepr, by the clean-room process of `docs/planning/cleanroom-rewrite-plan.md`; pedkindraw copies the results like any other nprcgenekeepr code: Phase 7 after that plan's Phase 8, Phase 8 after its Phases 5 and 14, Phase 10 after its Phase 11 (its section 4.8) | S1130 | Mark |
+| R14 | License: **MIT**, as nprcgenekeepr: `License: MIT + file LICENSE`, the `LICENSE` file naming R. Mark Sharp as copyright holder. Basis: all of pedkindraw's code is copied from nprcgenekeepr (C2), whose S1140 sweep found no file matching kinship2, kinship or Therneau's 2003 code, so R11's condition (the rewrite exists) is met. Consequence: Phase 12 writes `familyCheck()` and `ibdMatrix()` from kinship2's documentation, never its source (as R11 says). The `YEAR` line was not asked (nprcgenekeepr's reads 2017-2026). Picked over GPL (>= 2) and over holding for an outside check; Claude's recommendation | S1149 | Mark |
+| R15 | Phase 5 runs in a local clone, `/Users/rmsharp/Development/pedkindraw` (Claude cloned the empty repository S1150), as **two sessions** Mark starts there: 5a the methodology files and `CLAUDE.md`, then 5b the R skeleton, test-first. 5b may **push once** to `rmsharp/pedkindraw` after a clean local `R CMD check --as-cran`, then reads the GitHub checks. Reason for the split: Claude Code reads `CLAUDE.md` only when a session starts (methodology `BOOTSTRAP.md`, First Session Checklist) | S1150 | Mark |
+
+The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
+section 10 item 1 records it.
+Settled by C2 (S1130): the layout solver's terms 1-2 and the mate-pair step are rewritten too (that plan's batches D and A).
+
+---
+
+## 3. Evidence inventory (measured this session)
+
+Reproduce with the script in Appendix A (`codetools::findGlobals()` closure over the loaded package,
+as in the scoping doc §8 cmd 1, extended to whole call graphs).
+
+### 3.1 Dependency closure of each kinship2-matching group
+
+Seeds are nprcgenekeepr's matches for kinship2 functions (gap analysis table). "Functions" is every
+package function the seeds reach, transitively; "lines" sums those functions' bodies (roxygen excluded).
+
+| Group (kinship2 match) | Seeds | Functions (exported) | Lines | Files | Outside packages |
+|---|---|---:|---:|---:|---|
+| drawing (`align.pedigree`, `plot.pedigree`, `legendPlot`, `pedigree.legend`) | `makePedigreeMatingLayout`, `makePedigreeDiagramData`, `drawPedigreeDiagram` | 57 (4) | 3,492 | 9 | Matrix, quadprog, stats, utils, visNetwork |
+| kinship (`kinship`) | `kinship` | 5 (1) | 303 | 2 | Matrix |
+| kindepth | `findGeneration` | 2 (1) | 42 | 2 | -- |
+| makefamid | `findPedigreeNumber` | 2 (1) | 36 | 2 | -- |
+| fixParents | `addParents`, `correctParentSex`, `addBackSecondParents`, `getIdsWithOneParent` | 9 (6) | 147 | 9 | data.table |
+| pedigree.shrink | `shrinkPedigree` | 9 (2) | 217 | 2 | -- |
+| pedigree.trim | `trimPedigree`, `removeUnknownAnimals`, `removeUninformativeFounders`, `getProbandPedigree`, `getDescendantPedigree` | 16 (13) | 149 | 16 | data.table |
+| twins (`pedigree(relation =)`) | `readTwinRelations`, `checkTwinRelations` | 8 (3) | 135 | 6 | readxl, stats, stringi, utils |
+| **Union of the above (the copy set)** | 18 seeds | **94 (25)** | **4,162** | **37** | data.table, Matrix, quadprog, readxl, stats, stringi, utils, visNetwork |
+| *Excluded by R9:* `pedigree()`'s checks | `qcStudbook` | 47 (28) alone; union + it = 134 (49), 71 files | 1,067 alone | 41 alone | adds anytime, lifecycle, lubridate |
+| *Excluded by R9:* `pedigree.unrelated` | `groupAddAssign` | 49 (15) alone; union + it = 142 (40), 66 files | 1,150 alone | 31 alone | adds lubridate |
+
+### 3.2 The copy set: 37 files, by functions reached
+
+`makePedigreeDiagramData.R` 23 · `positionTreeApportion.R` 13 · `shrinkPedigree.R` 8 ·
+`affectedConditions.R` 6 · `penaltyCrossprod.R` 6 · `kinship.R` 4 · `readWithFinalNewline.R` 3 ·
+`deceasedSlash.R` 2 · one each: `addBackSecondParents.R`, `addIdRecords.R`, `addParents.R`,
+`checkTwinRelations.R`, `correctParentSex.R`, `drawPedigreeDiagram.R`, `findGeneration.R`,
+`findPedigreeNumber.R`, `getDescendantPedigree.R`, `getFounders.R`, `getIdsWithOneParent.R`,
+`getOffspring.R`, `getParents.R`, `getProbandPedigree.R`, `hasBothParents.R`, `isAddedRecord.R`,
+`isEmpty.R`, `isFounder.R`, `muffleIncompleteFinalLine.R`, `mzTwinGroups.R`, `orderRootSubtrees.R`,
+`rbindFill.R`, `readExcelPOSIXToCharacter.R`, `readTwinRelations.R`, `removeUninformativeFounders.R`,
+`removeUnknownAnimals.R`, `toCharacter.R`, `trimPedigree.R`, `walkPedigree.R`.
+Plus `R/comparePedigreeStructure.R` (378 lines, the fidelity checks against kinship2): no seed reaches it, but
+its tests move (§3.3), so it moves with the engine in Phase 8.
+File sizes of the largest (`wc -l`, with roxygen): `makePedigreeDiagramData.R` 3,209, `positionTreeApportion.R`
+437, `kinship.R` 441, `shrinkPedigree.R` 368, `drawPedigreeDiagram.R` 278, `affectedConditions.R` 201.
+
+The 25 exported functions reached (each has a `man/*.Rd`, all 25 checked present):
+`addBackSecondParents`, `addIdRecords`, `addParents`, `checkTwinRelations`, `correctParentSex`,
+`drawPedigreeDiagram`, `findGeneration`, `findPedigreeNumber`, `getDescendantPedigree`, `getFounders`,
+`getIdsWithOneParent`, `getOffspring`, `getParents`, `getProbandPedigree`, `hasBothParents`, `isFounder`,
+`kinship`, `makePedigreeDiagramData`, `makePedigreeMatingLayout`, `readTwinRelations`,
+`removeUninformativeFounders`, `removeUnknownAnimals`, `shrinkPedigree`, `toCharacter`, `trimPedigree`.
+
+Parity-closer internals (R3), present today: `.bitSizeOf` `R/shrinkPedigree.R:203`, `.findUnavailable`
+`:226`, `.excludeUnavailFounders` `:257`, `.strayMarryinIds` `:302`, `.findAvailNonInform` `:313`,
+`.findAvailAffected` `:339`.
+
+### 3.3 Tests
+
+- 123 of the test files call at least one copy-set function (46,107 of 107,924 test lines); most are app
+  and genetics tests that only use `kinship()` on the way, and stay.
+- **47 files (17,283 lines) have a copy-set function as their subject.** Of these, 4 are app tests of
+  the Diagram tab and stay with the module: `test-e2e-pedigree-module.R` 1,532, `test-e2e-pedigree-tutorial.R`
+  230, `test-e2e-pedigree-detailed.R` 135, `test-e2e-pedigree-canvas-drawing.R` 94. The other **43 files
+  (15,292 lines)** move: largest `test_positionMatingUnitForest.R` 3,054, `test_makePedigreeMatingLayout.R`
+  2,398, `test_resolveEdgeNodeCollisions.R` 1,408, `test_comparePedigreeStructure.R` 1,240,
+  `test_addRectilinearWaypoints.R` 910, `test_solveJointQP.R` 582, `test_buildMatingUnitForest.R` 568,
+  `test_makePedigreeDiagramData.R` 487, `test_diagramSolverEquivalence.R` 395, `test_orderRootSubtrees.R`
+  379, `test_correctParentSex.R` 361, `test_drawPedigreeDiagram.R` 349, `test_shrinkPedigree.R` 347,
+  `test_kinship.R` 235, plus helpers `helper-live-render-positions.R` 187, `helper-comparePedigreeStructure.R`
+  131, `helper-walkPedigree.R` 92 and 26 smaller files (full list: Appendix A, `subject.R`).
+- Fixture: the obfuscated rhesus pedigree, `inst/extdata/examples/obfuscated_rhesus_mhc_ped*.csv` (5 files:
+  plain, `_affected`, `_name`, `_twins`, `_with_genotypes`), is named by 23 test files, 8 of them moving; most
+  often `test_positionMatingUnitForest.R` (16 lines) and `test-e2e-pedigree-module.R` (14, stays).
+- Package datasets the 43 moving files name: `lacy1989Ped` 8 files, `smallPed` 6, `pedOne` 5, `qcPed` 3,
+  `pedWithGenotype` 2, `rhesusPedigree` 2, `examplePedigree` 1, `pedSix` 1. They also call non-copied
+  functions to build fixtures: `qcStudbook()` 8 calls in 2 files, `getPedigree()` 3, `getGenotypes()` 3,
+  `convertDate()`, `getFocalAnimalPed()`, `removeDuplicates()` 2 each, `create_wkbk()`, `modInputServer()`,
+  `runQcStudbook()` 1 each; Phases 6-10 replace those with saved fixture files or copied datasets.
+- Fidelity tests use `kinship2` (`Suggests:`); they move with the engine.
+
+### 3.4 Documentation that names the copy set
+
+Lines naming the three drawing functions, `shrinkPedigree()` or `kinship(`: `vignettes/a2interactive.Rmd` 33,
+`vignettes/articles/kinship2-fidelity-validation.qmd` 25, `data-raw/kinship2FidelityValidation.R` 20,
+`vignettes/articles/pedigree-diagram.qmd` 10;
+`_pkgdown.yml:176,249,327,328,414`. These stay in nprcgenekeepr (R8); the new package writes its own (Phase 16).
+
+### 3.5 Machine for every measurement in Phases 1-2
+
+Apple M2 Max, 12 cores, 96 GiB (`sysctl hw.memsize` 103,079,215,104 B), R 4.6.2 (2026-10-29).
+
+---
+
+## 4. Phases
+
+Every phase is **one session** unless marked otherwise; close out when its DONE criteria hold. Where a
+phase is marked "estimate", the session count is a guess, not a measurement.
+
+### Phase 1 -- Comparison A: computation, timing, memory, capacity (this repository)
+
+**Goal:** for every pedigree computation kinship2, Pedixplorer and ggpedigree (with its computation
+companion `BGmisc`, where it exports a match) offer, and nprcgenekeepr's 25 copy-set exports: what each
+takes, returns and refuses, whether they agree on the same input, how fast, how much memory, and how large
+a pedigree each can handle.
+
+**Steps.**
+1. Install kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23) and ggpedigree 1.2.0 into a scratch
+   library (`R_LIBS=<scratch>`), never into renv or the personal library; stop if the install lands
+   anywhere else (memory: renv guard, S1111). Record exact versions.
+2. Enumerate each package's exports live (`getNamespaceExports()`; Pedixplorer's S4 generics and methods
+   too) and extend the 2026-09-20 table to one row per function across all four packages: arguments, input
+   conventions (id type, missing-parent code, sex codes incl. hermaphrodite/unknown, affected and deceased
+   coding, twins, partial parentage), return shape, errors on bad input.
+3. **Same-input runs.** Test pedigrees, each saved once as CSV under `tools/pedigreeComparison/data/`:
+   kinship2's `sample.ped`; `smallPed` (17); `lacy1989Ped`; the obfuscated rhesus pedigree (375);
+   `examplePedigree` (3,694 rows); and synthetic pedigrees of 1,000, 10,000, 30,000 and 100,000 animals from
+   one seeded generator written in this phase (primate-colony shape: overlapping generations, many half
+   sibs, a share of unknown parents). Compare: kinship matrices (autosomal, X, MZ twins: max absolute
+   difference), generation depth, family ids, trim and shrink results, unrelated sets.
+4. **Timing and memory.** Each measurement in a fresh `Rscript` process: one unmeasured warm-up, then
+   the median of 3; elapsed seconds, R heap peak (`gc(reset = TRUE)` then "max used", as
+   `tools/perf/harness.R:45-49` does), and process peak resident memory (`/usr/bin/time -l`, "maximum
+   resident set size"). Read `uptime` first and do not time under load; run nothing else meanwhile.
+   (The heap peak alone cannot rank two designs; the process peak is the cross-package figure.)
+5. **Capacity.** For each function and package, the largest synthetic size that finishes within 120 s
+   and 32 GB process peak, and how the next size failed (error, time, memory). A dense kinship matrix of
+   n animals is 8 n^2 bytes (100,000 animals = 80 GB), so expect every dense method to stop below that.
+
+**DONE:** `docs/research/pedigree-package-comparison-2026-11.md` Part A (computation): the function table
+with every row filled; an agreement table; a timing / memory / capacity table per function with versions
+and the machine; the generator and run scripts under `tools/pedigreeComparison/` (build-ignored,
+`.Rbuildignore:57`). No `R/` change.
+**Verification:** each number in the doc is reproduced by a script named next to it; re-run one row of
+each table from a fresh shell before close-out.
+**Surface:** this Mac only (§3.5). It cannot show other platforms' speed or a smaller machine's memory
+limit; capacity figures are this Mac's and the doc says so.
+**Session boundary:** estimate 1-2 sessions. If the table and the timing runs do not both fit, close out
+after the table and agreement checks and leave timing and capacity to a second session.
+**Done (S1122-S1123):** two sessions, split as above. Mark's rulings in the second: synthetic sizes 300 and
+3,000 added (shrinking already failed 120 s at 1,000 in two packages), and each run gated on at least half the
+CPU idle instead of `uptime`'s load (macOS's own background work kept the load at 3-35 with most cores free).
+
+### Phase 2 -- Comparison B: drawing, interactivity, drawing capacity (this repository)
+
+**Goal:** the same pedigrees drawn by kinship2 (`plot.pedigree`), Pedixplorer (its static plot, its plotly
+plot and its Shiny app), ggpedigree (ggplot2 and plotly) and nprcgenekeepr (`makePedigreeMatingLayout()` +
+`drawPedigreeDiagram()`).
+
+**Steps.** A feature matrix: sex symbols incl. unknown and hermaphrodite; affected status, several
+conditions; deceased; MZ/DZ twins; consanguineous matings; repeat appearances (loops); legend; name labels;
+hover text; search and select; click to re-center; export (PNG, SVG, PDF, stand-alone HTML); use from a
+script vs only from an app. Side-by-side images for each pedigree, opened for Mark with `open`. Check each
+drawing's edges against the pedigree programmatically for the 17- and 375-animal pedigrees (memory:
+verify diagrams against ground truth). **Timing / memory / capacity for drawing:** layout time in R
+(Phase 1 method); render time in Chrome (chromote: from load to the network's `stabilized` event or the
+plot's equivalent); browser memory (`Performance.getMetrics`, `JSHeapUsedSize`); the largest pedigree each
+draws within 120 s, and the largest that is still readable (Mark judges from the pictures). nprcgenekeepr's
+app caps the Diagram at 750 animals, 400 with rectilinear edges (`R/modPedigree.R:454,466`); measure `drawPedigreeDiagram()` without
+the cap.
+
+**First session (S1124):** the pictures, the feature table and the line checks (comparison doc section 8;
+`tools/pedigreeComparison/runDrawing.R`), split at Mark's pick. Mark ruled the pictures stay out of git: the
+folder below is git-ignored and `runDrawing.R` remakes it in about a minute. Left for the second session: layout
+time in R, render time and memory in Chrome, the largest drawable and the largest readable, and the closing
+paragraph.
+
+**DONE:** Part B of the comparison doc, images under `docs/research/pedigree-package-comparison-2026-11/`,
+and a one-paragraph answer to "what would the new package offer that none of the three does", based on the
+evidence. **Surface:** this Mac's Chrome via chromote; cannot show other browsers, Windows, or screen
+readers. **Session boundary:** estimate 1-2 sessions.
+**Done (S1124-S1125):** two sessions, split as above. Mark's rulings in the second: synthetic sizes 300, 1,000,
+2,000 and 3,000 plus rhesus375; a drawing counts only when R and the browser together finish within 120 s; the
+plotly versions timed in Chrome; Pedixplorer also timed with its parent alignment off, as it refuses the synthetic
+colonies with it on. Found (doc section 9): no package draws 2,000 animals within 120 s, the best reach 1,000;
+Mark judged only nprcgenekeepr's drawing readable, up to 1,000 animals zoomed in. The closing answer (doc section
+10): what is left to offer is the drawing, not the computation, and the size limit stays near 1,000 animals.
+
+### Phase 3 -- Input-style prototype and Mark's pick (this repository; decision session)
+
+**Goal:** settle R7. Throwaway prototypes in the scratchpad, not in `R/`: (a) data frames as nprcgenekeepr
+takes them; (b) a kinship2 `pedigree` object; (c) a Pedixplorer `Pedigree` S4 object; (d) data frames plus
+one converter from (b) and (c). Each draws the same pedigree and computes its kinship. Measure what each
+costs (lines of adapter code; extra dependencies, e.g. `S4Vectors` for (c)) and what each loses
+(partial parentage, legal here and refused by kinship2's `pedigree()`; sex `H`; the twins sidecar).
+Mark picks via `AskUserQuestion`, with a per-option table of measured costs.
+**DONE:** the ruling recorded in the comparison doc and in this plan's §2 (R7 closed). **Surface:** local.
+**Session boundary:** one session.
+**Done S1126:** R7 ruled (data frames plus converters); comparison doc section 11 and findings 30-35.
+
+### Phase 4 -- API contract, name, license, repository (this repository; design session)
+
+**Goal:** an interface catalogue (`ARCHITECTURE_WORKSTREAM.md` §Interface Catalog): every export of the new
+package with its arguments, return and errors, in the picked input style; the short checker and short
+unrelated-set finder (R9) sized from Phase 1; whether the file readers come along (§2 open item).
+Mark decides: the **name** (Claude first checks it is free on CRAN, Bioconductor and GitHub; taken
+already: kinship2, Pedixplorer, ggpedigree, pedtools, visPedigree), the **license** (with §1.3's facts in
+front of him), and who creates the **GitHub repository** (Mark, or Claude with `gh repo create` once Mark
+approves; creating it is outward-facing).
+**DONE:** `docs/planning/<name>-api-contract.md`; the repository exists, empty. **Session boundary:** one session.
+**Done S1128:** `docs/planning/pedkindraw-api-contract.md`; R10-R13; https://github.com/rmsharp/pedkindraw created
+empty. The license is open (R11).
+
+### Phase 5 -- Skeleton (new repository; two sessions there, R15)
+
+**License line:** ruled S1149 (R14): `License: MIT + file LICENSE`, `LICENSE` naming R. Mark Sharp as copyright holder
+(the `YEAR` line was not asked; nprcgenekeepr's reads 2017-2026).
+Bootstrap the methodology from the methodology repository; `CLAUDE.md` carrying this project's strict TDD
+contract and Build/Test/Verify table; `DESCRIPTION`, `LICENSE`, `NAMESPACE`; `testthat` 3rd edition; `renv`
+on a dated repository (this project's `CLAUDE.md` S1111 ruling); `lintr` settings copied; GitHub Actions
+`R-CMD-check` on Linux, macOS and Windows.
+**DONE:** `R CMD check --as-cran` 0 errors, 0 warnings, 0 notes locally and on CI for the empty package.
+**Surface:** this Mac and GitHub Actions. CRAN's own machines are not reached until Phase 17.
+**Split (R15, S1150):** **5a**, set-up only: from the clone, `/Users/rmsharp/Development/methodology/bin/sync
+/Users/rmsharp/Development/pedkindraw --layout new` (S1150's dry run: 31 files, all under `methodology/`), committed
+as one commit; then `CLAUDE.md` from `methodology/CLAUDE_TEMPLATE.md` plus the contract and table above; commit, stop.
+**5b**, a new session: the R skeleton test-first, one push, the GitHub checks. Mark decides `LICENSE`'s `YEAR` line
+and the `Authors@R` list (neither asked yet). The clone's branch is `master`, git's default (no commits yet).
+**Session boundary:** two sessions (R15).
+
+### Phases 6-10 -- Copy slices (new repository; one slice per session)
+
+Each slice copies a group's tests first (RED: they fail because the functions are missing), then the code
+(GREEN), in commits of at most 5 files. Each copied file's header names its source path and the
+nprcgenekeepr commit it came from. Fixtures built with non-copied functions (§3.3: `qcStudbook()` 8 calls in 2 files, 8 other functions
+1-3 calls each) are replaced by saved fixture files. **DONE for each slice:** the copied tests pass with the same pinned values,
+and the slice's functions give identical results to nprcgenekeepr at the source commit on the Phase 1
+pedigrees (`identical()` for data frames, max absolute difference 0 for kinship), checked by a script;
+`R CMD check --as-cran` 0/0/0; CI green.
+
+| Phase | Slice | Files (from §3.2) | Outside packages |
+|---|---|---|---|
+| 6 | Pedigree basics: generations, family ids, parents/offspring/founders, walking, trimming, parent repair | `findGeneration`, `findPedigreeNumber`, `getParents`, `getOffspring`, `getFounders`, `isFounder`, `hasBothParents`, `walkPedigree`, `trimPedigree`, `getProbandPedigree`, `getDescendantPedigree`, `removeUnknownAnimals`, `removeUninformativeFounders`, `addParents`, `correctParentSex`, `addBackSecondParents`, `getIdsWithOneParent`, `addIdRecords`, `isAddedRecord`, `rbindFill`, `isEmpty`, `toCharacter` | data.table (keep or replace: decide at Phase 4) |
+| 7 | Kinship and twins (estimate: 2 sessions) | copy `checkTwinRelations.R`; **write** `kinship()` and its MZ grouping from the published methods (R11, contract section 3); no readers (R13) | Matrix |
+| 8 | Layout engine (estimate: 2 sessions, engine then collisions/waypoints tests) | `makePedigreeDiagramData.R`, `positionTreeApportion.R`, `orderRootSubtrees.R`, `penaltyCrossprod.R`, `affectedConditions.R`, `deceasedSlash.R`, `comparePedigreeStructure.R`; tests from §3.3 and the rhesus fixtures | quadprog, Matrix; kinship2 in Suggests for the fidelity tests |
+| 9 | Renderer | `drawPedigreeDiagram.R` and its drawing script; `test_drawPedigreeDiagram.R`, the live-render helper | visNetwork; chromote in Suggests |
+| 10 | Shrink | **write** `shrinkPedigree()` and its helpers from the published method (R11) | -- |
+
+**Surface:** this Mac and the new repository's CI. Browser tests run where Chrome is present and skip
+elsewhere (this project's S1117 pattern); say so in each slice's handoff.
+
+### Phases 11-15 -- New work (new repository; strict TDD, one session each)
+
+| Phase | Work | Source |
+|---|---|---|
+| 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3) | R3, R11 |
+| 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions) | R3, R11; gap analysis rows 7, 12 |
+| 13 | Short pedigree checker and short unrelated-set finder | R9; sized at Phase 1, specified at Phase 4 |
+| 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2) | R7 |
+| 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build | R3 |
+
+### Phase 16 -- Documentation (new repository)
+
+README, a getting-started vignette, a drawing vignette, pkgdown site, NEWS; the Phase 1-2 timing, memory and
+capacity tables summarized with their dates and machine.
+
+### Phase 17 -- CRAN submission (new repository; its own plan first)
+
+Modeled on `docs/planning/cran-3.0.0-submission-plan.md`. The readers stay out (R13), so the linux-arm64 read problem
+this project met (`readWithFinalNewline()`, S1093) does not apply.
+
+### Later, optional -- nprcgenekeepr uses the new package
+
+Only on Mark's decision (R8). Its own plan; the scoping doc §7 steps 3-4 are the checklist.
+
+---
+
+## 5. Drift rule while two copies exist (R8)
+
+From Phase 6 on, a change to a copied function in either repository is either made in the other repository
+too (in a session of its own there) or recorded as a row in the new repository's `DIVERGENCE.md` (function,
+both commits, why). The new repository carries `tools/compareWithNprcgenekeepr.R`, which lists every copied
+function whose body differs from the installed nprcgenekeepr's; every difference it lists must have a row.
+In nprcgenekeepr, a fix to a copied function that is not yet mirrored gets a `BACKLOG.md` line naming it.
+
+---
+
+## 6. Risks
+
+| Risk | Where it bites | Countermeasure |
+|---|---|---|
+| The comparison finds Pedixplorer already offers what the package was for | Phase 2 | Phase 2's DONE includes the "what is left to offer" paragraph; if little is left, Mark decides before Phase 3 whether to continue. |
+| Copied tests depend on nprcgenekeepr datasets and `qcStudbook()` | Phases 6-10 | Saved fixture files; §3.3 lists the datasets. |
+| License incompatibility of ported kinship2 code | Phase 4 | Facts in §1.3; Mark decides before any copy. |
+| Two copies drift | Phase 6 onward | §5. |
+| Timing figures distorted by machine load | Phases 1-2 | Fresh process, warm-up, median of 3, `uptime` first, nothing else running. |
+| The copy is overtaken by engine changes during Phases 1-5 | Phases 6-10 | Each slice names its source commit; diff against the latest nprcgenekeepr before starting a slice. |
+
+## 7. Alternatives considered
+
+| Alternative | Why not |
+|---|---|
+| Move the code and have nprcgenekeepr import it (scoping doc Option C) | Mark ruled copy (R8): every diagram fix would span two repositories and nprcgenekeepr's next release would wait on the new package's CRAN acceptance. |
+| Carry `qcStudbook()` / `groupAddAssign()` | R9: +40 / +48 functions of colony logic and three more dependencies for two kinship2 functions. |
+| Decide the input style now | R7: a prototype was the S742 condition, and Pedixplorer's S4 object is a third candidate nobody had seen. |
+| Compare with kinship2 only | R5: misses Pedixplorer, which would decide whether the package is still needed. |
+
+## 8. Scope boundary
+
+This plan does not: write or change package code; change nprcgenekeepr's `R/`, `tests/`, `DESCRIPTION` or
+docs; pick the name, license or input style; create a repository; re-open any ruled pedigree-layout design
+(`docs/planning/pedigree-diagram-*` stand as written).
+
+---
+
+## Appendix A -- Commands behind §3
+
+Run from the project root. `S` is a scratch directory.
+
+```r
+# closure.R: dependency closure per seed group (abridged; the S1121 script also printed per-file counts)
+Sys.setenv(NOT_CRAN = "true"); suppressMessages(pkgload::load_all(".", quiet = TRUE))
+ns <- asNamespace("nprcgenekeepr"); imp <- parent.env(ns); all <- ls(ns, all.names = TRUE)
+fns <- all[vapply(all, function(f) is.function(get(f, ns)), logical(1))]
+G <- lapply(setNames(fns, fns), function(f) {
+  x <- codetools::findGlobals(get(f, ns), merge = FALSE); unique(c(x$functions, x$variables)) })
+closure <- function(seeds) { seen <- character(); todo <- seeds
+  while (length(todo)) { f <- todo[1]; todo <- todo[-1]; if (f %in% seen) next
+    seen <- c(seen, f); todo <- c(todo, setdiff(intersect(G[[f]], fns), seen)) }; seen }
+lines <- function(f) { s <- attr(get(f, ns), "srcref"); if (is.null(s)) 0L else s[3] - s[1] + 1L }
+file  <- function(f) basename(utils::getSrcFilename(attr(get(f, ns), "srcref"), TRUE))
+# outside packages: `pkg::` in deparse(get(f, ns)) plus imports found in parent.env(ns)
+cl <- closure(c("makePedigreeMatingLayout", "makePedigreeDiagramData", "drawPedigreeDiagram",
+  "kinship", "findGeneration", "findPedigreeNumber", "addParents", "correctParentSex",
+  "addBackSecondParents", "getIdsWithOneParent", "shrinkPedigree", "trimPedigree",
+  "removeUnknownAnimals", "removeUninformativeFounders", "getProbandPedigree",
+  "getDescendantPedigree", "readTwinRelations", "checkTwinRelations"))
+length(cl); sum(cl %in% getNamespaceExports(ns)); sum(vapply(cl, lines, 1L))
+length(unique(vapply(cl, file, "")))   # 94, 25, 4162, 37
+```
+
+- Subject tests (`subject.R`): test and helper files whose name (without `test_`, `test-`, `helper-`)
+  equals a copy-set function or source file, or starts with `diagram`, `maleLeft`, `solveJointQP`,
+  `perfBudget_diagram`, `live-render`, `comparePedigree`, `drawPedigree`, `pedigreeDiagram`, `e2e-pedigree`.
+- Fixture readers: `git grep -c 'obfuscated_rhesus_mhc_ped' -- tests/testthat` (23 files).
+- Churn: `git log --since=2026-09-03 --oneline -- R/makePedigreeDiagramData.R R/positionTreeApportion.R | wc -l`
+  (29); `--since=2026-10-03` (7).
+- Comparator versions: `https://cran.r-project.org/package=kinship2`, `https://cran.r-project.org/package=ggpedigree`,
+  `https://bioconductor.org/packages/release/bioc/html/Pedixplorer.html`, read 2026-11-02.
