@@ -196,11 +196,25 @@ manifest existed are not re-judged.
 ```handoff
 session: S8
 date: 2026-11-11
-status: pending
-active_task: plan Phase 7, kinship and twins (kinship(), checkTwinRelations(), mzTwinGroups(), mzTwinIdsAbsentMessage), copied test-first from nprcgenekeepr; IN PROGRESS
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 7
+predecessor_score: 8
+active_task: plan Phase 7 is DONE (kinship(), checkTwinRelations(), mzTwinGroups(), mzTwinIdsAbsentMessage); next is Phase 8, the layout engine (makePedigreeMatingLayout(), makePedigreeDiagramData(); the plan estimates 2 sessions), READY
+what_was_done: claim cfea7c1; RED fddfa73 fixture pedOne, 2b687f7 Suggests kinship2 and withr (renv: five cached dependencies came back latest, reinstalled by name), 0e13f79 and aa38423 34 tests in 4 files copied from nprcgenekeepr baef1e12c (R26; one changed for testthat edition 3, R29) plus helper-outcome.R; GREEN 9050dd9 Imports Matrix methods stats, 74ac842 mzTwinGroups.R, 7c45113 checkTwinRelations(), 75b55c8 kinship() with @importClassesFrom Matrix ddiMatrix dgCMatrix (R27), code unchanged and help rewritten, 5596306 and 33067bf runCases() Phase 7 cases (30 in all) and kinship's largest difference; REFACTOR 16a8799 fidelity tool header, lookup for S7's nested ifelse, size range; pushed once (14 commits, c71b74a..16a8799), CI run 43106941979 5/5 Status OK first attempt; close-out fb9b9ae plan (status, R26-R29, 7 row, Done 7), contract section 5, ROADMAP.md, BACKLOG.md, CLAUDE.md (Learnings 3, 9 updated; 10, 11 new); close-out 2 these notes, this receipt, the ledger, gate test-suite-warnings-zero (not pushed). Mark's picks: Start Phase 7, 34 behavior tests, Import the 2 classes, Add kinship2 and withr, Expect both warnings, three TDD gates
+next_steps: Phase 8 (methodology/SESSION_NOTES.md ACTIVE TASK; plan :367 the row, :389 Done 7; contract :128-129): check nprcgenekeepr's seven Phase 8 files still match baef1e12c (its S1155 is active); measure the set (Learning 9 survey plus a grep for ::, tests per file); picker on the two-session split; pre-RED picker; RED reading WARN as well as FAIL; GREEN with Imports quadprog (already locked) and runCases() cases bounded in size and checked to reach their branches; DONE as Phase 7, push once, read CI; close-out updates plan, ROADMAP.md, BACKLOG.md
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK, Phase 8), docs/planning/standalone-pedigree-package-plan.md:367 (Phase 8 row), docs/planning/standalone-pedigree-package-plan.md:389 (Done 7), docs/planning/standalone-pedigree-package-plan.md:120 (R26-R29), docs/planning/pedkindraw-api-contract.md:129 (makePedigreeMatingLayout), tools/compareResultsWithNprcgenekeepr.R:128 (cases), tools/compareResultsWithNprcgenekeepr.R:94 (size bound), methodology/BACKLOG.md:11 (Phase 8 item), CLAUDE.md:165 (Learning 10), CLAUDE.md:166 (Learning 11)
+gotchas: nprcgenekeepr runs testthat edition 2 and pedkindraw 3 (R29, Learning 10): a copied expect_warning() around a call that warns twice leaks a WARN here, and a test run from the scratchpad falls back to edition 2 and hides it; the Phase 1 pedigrees reach 100,000 animals, so layout cases need a size bound like kinship's (tool :94-103), and the results file is about 60 MB per package; codetools misses pkg::fn calls (Learning 9); renv rebuild = TRUE rebuilds only the named packages (Learning 3); zsh = and glob traps and Rscript -e backslashes (use a script file); commit 33067bf overstates (kinship.R:183 was reached by smallPed's one animal); R/drawPedigreeDiagram.R (Phase 9) already differs from baef1e12c in nprcgenekeepr; 2 close-out commits unpushed
+runtime_smoke: tests 133 FAIL 0 WARN 0 SKIP 0 PASS 446 (the kinship2 comparison ran); lint 0; roxygen leaves NAMESPACE and man/ unchanged; R CMD check --as-cran Status 1 NOTE, the allowed one (Maintainer, New submission), dependencies in R code OK, examples OK and kinship()'s prints what its comment says; results tool 360 of 360 identical, 132 kinship matrices largest difference 0, exit 0; drift tool 24 same, exit 0; coverage 98.62% (kinship.R 97.06%); new gate measured 1 on the source form of the test and 0 as committed; CI run 43106941979 5/5 Status OK, PASS 446 each; quality_ratchet: 3/3 pass · 0 fail · 0 unmeasured · results 959da9c9c7a2 · manifest 5e17b07ed47f
+changelog_ref: CHANGELOG.md "2026-11-11 · [ad hoc] S8 DONE: plan Phase 7, kinship and twins copied test-first from nprcgenekeepr's clean-room code"
+commit: fb9b9ae
 ```
+Session 8, Claude Opus 5.5, single tier. Predecessor S7 scored 8: its measured Phase 7 set and the Matrix gotcha made
+the survey a check, every cited line was right; it missed testthat's edition difference (no session had looked) and the
+pedigrees' size, and said checkTwinRelations() needs nothing outside base (it calls stats::setNames()). Self-score 7:
++ the Matrix question settled from R's check code before asking, the edition difference found by experiment and made a
+ruling, a learning and a gate shown to fail, every copied line asserted, the fidelity cases checked for reach and two
+variants added, a byte-identical refactor, CI green first try; − two pickers needed clarifying, the named zsh traps and
+the Rscript -e backslash trap hit again, a misread grep cost several runs, and a pushed commit message overstates a gap.
 
 ```handoff
 session: S7

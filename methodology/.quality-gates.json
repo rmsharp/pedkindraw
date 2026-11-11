@@ -32,6 +32,16 @@
       "extract": "^(\\d+)",
       "timeout_seconds": 300,
       "why": "S3 (2026-11-10): CLAUDE.md requires no lints; measured 0 with the package loaded first (Learning 4: without it, lintr reports 10 false 'no visible global function' lints on the uninstalled package)."
+    },
+    {
+      "name": "test-suite-warnings-zero",
+      "direction": "max",
+      "threshold": 0,
+      "unit": "warnings",
+      "command": "Rscript -e 'Sys.setenv(NOT_CRAN = \"true\"); df <- as.data.frame(testthat::test_local(\".\", reporter = \"silent\", stop_on_failure = FALSE)); cat(\"test warnings:\", sum(df$warning), \"\\n\")'",
+      "extract": "test warnings: (\\d+)",
+      "timeout_seconds": 300,
+      "why": "S8 (2026-11-11): nprcgenekeepr's tests run on testthat edition 2 and pedkindraw's on edition 3 (plan R29, Learning 10), so a copied test can pass yet leak a warning (S8: hasBothParents() warns twice, edition 3's expect_warning() catches one). Measured 0 after expecting both."
     }
   ]
 }
