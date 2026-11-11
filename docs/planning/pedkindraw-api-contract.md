@@ -3,16 +3,18 @@
 > **Copied into pedkindraw (pedkindraw S5, 2026-11-11).** Copied unchanged from nprcgenekeepr's
 > `docs/planning/pedkindraw-api-contract.md` at nprcgenekeepr commit `3d262d628`,
 > by step H1 of `docs/planning/planning-handover-plan.md`.
-> From here on this copy is the live one: pedkindraw's sessions update it (step H2 of the hand-over plan first),
-> and nprcgenekeepr's copy is frozen.
+> From here on this copy is the live one: pedkindraw's sessions update it, and nprcgenekeepr's copy is frozen.
+> Step H2 of the hand-over plan (pedkindraw S6) brought it up to date: sections 3 (one line), 4, 5, 9 and 10.
 > **Paths in this file name nprcgenekeepr's files** (`R/`, `tests/`, `BACKLOG.md`, `methodology/`,
 > `tools/pedigreeComparison/` and so on), except these five, copied into pedkindraw at the same paths:
 > `docs/planning/standalone-pedigree-package-plan.md`, `docs/planning/pedkindraw-api-contract.md`,
 > `docs/research/pedigree-package-comparison-2026-11.md`,
 > `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` and
-> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`.
-> A line number cited in one of these five is its line in nprcgenekeepr; in pedkindraw's copy, every line below
-> the title sits lower by the length of that copy's note (this one adds 14 lines, counting the blank line above).
+> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`. Text added in pedkindraw (H2 on) says whose
+> file a path names: "pedkindraw's", "nprcgenekeepr's" or `nprcgenekeepr:<path>`.
+> A line number cited in one of these five is its line in nprcgenekeepr. In this copy the lines down to the end of
+> section 3 sit lower by this note (16 lines, counting the blank line above); below that, H2's edits moved
+> them further, so find a cited line by its words.
 
 **Date:** 2026-11-03 · **Session:** S1128 · **Type:** design session
 (`methodology/workstreams/ARCHITECTURE_WORKSTREAM.md` §Interface Catalog). No package code was written or changed.
@@ -81,6 +83,8 @@ to either twin's self-kinship. Its tests are nprcgenekeepr's own and are copied 
 against nprcgenekeepr at the source commit (`identical()` for data frames, largest kinship difference 0).
 **One fact for the license ruling:** Claude, which will write the rewrite, has read both the kinship2 code and
 nprcgenekeepr's in this session, so the rewrite is not independent of them.
+**Superseded by C2** (plan section 2, S1130): the rewrite was done once, by nprcgenekeepr's clean-room process
+(finished S1140), and pedkindraw copies its results (plan Phases 7, 8 and 10).
 
 ---
 
@@ -93,8 +97,9 @@ e.g. `name`). A twins table has `id1`, `id2`, `code` (`"MZ twin"`, `"DZ twin"`, 
 known parent. Errors are `stop()` calls whose message names the function or the argument; nothing returns a
 problem table except `checkPedigree()`.
 
-**Names and arguments of copied functions stay exactly as in nprcgenekeepr** (`kinship(id, father.id, mother.id)`
-beside `findGeneration(id, sire, dam)` included). Reason: the plan's checks compare each copied function with
+**Names and arguments of copied functions stay exactly as in nprcgenekeepr** (`kinship(id, fatherId, motherId)`
+beside `findGeneration(id, sire, dam)` included; `fatherId` and `motherId` were `father.id` and `mother.id` until
+nprcgenekeepr's clean-room ruling C13). Reason: the plan's checks compare each copied function with
 nprcgenekeepr's (Phases 6-10), and the drift tool compares bodies (plan section 5); renaming now would make every
 function a divergence from the first day. Making the names consistent is a review step before the first CRAN
 release (section 6), the last point at which it costs users nothing.
@@ -128,15 +133,19 @@ release (section 6), the last point at which it costs users nothing.
 export can be added later without breaking anyone, while removing one cannot (Claude's proposal; nprcgenekeepr
 exports it).
 
-### 4.2 Rewritten exports (R11): same contract as nprcgenekeepr's
+### 4.2 Rewritten exports (R11, C2): copied from nprcgenekeepr's clean-room rewrite
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
-| `kinship(id, father.id, mother.id, pdepth, sparse = FALSE, twinRelations = NULL, chrtype = "autosome", sex = NULL)` | vectors; `pdepth` from `findGeneration()`; optional twins; `chrtype = "x"` needs `sex` | square kinship matrix named by `id`; a `Matrix` sparse matrix when `sparse = TRUE` | stops on duplicate ids, a bad `sex` vector, an MZ id not in `id` | 7 |
+| `kinship(id, fatherId, motherId, pdepth, sparse = FALSE, twinRelations = NULL, chrtype = "autosome", sex = NULL)` | vectors; `pdepth` from `findGeneration()`; optional twins; `chrtype = "x"` needs `sex` | square kinship matrix named by `id`; a `Matrix` sparse matrix when `sparse = TRUE` | stops on duplicate ids, a bad `sex` vector, an MZ id not in `id` | 7 |
 | `shrinkPedigree(ped, genotyped, affected = NULL, maxBits = 16L)` | pedigree, logical per row | list `ped`, `idTrimmed`, `idList` (`unavail`, `noninform`, `affected`), `bitSize`, `genotyped`, `pedSizeOriginal`, `pedSizeIntermed`, `pedSizeFinal` | stops on missing columns, wrong lengths, NA in `genotyped` | 10 |
 
 Unchanged behaviour is the contract: an animal with one known parent is legal (X chromosome included), and
 `shrinkPedigree()` breaks ties the same way every time.
+The clean-room functions pedkindraw copies (C2) differ from nprcgenekeepr 3.0.0's, and the copies carry the
+differences (`nprcgenekeepr:docs/planning/cleanroom-rewrite-plan.md` section 2): the parent argument names above (C13);
+a plain error for each kind of malformed input to `kinship()` (C11) and to `shrinkPedigree()` (C15), beyond the
+errors listed; `shrinkPedigree()`'s ties go to the first id in byte order, whatever the locale (C16).
 
 ### 4.3 New exports, parity with kinship2 (R3)
 
@@ -193,14 +202,16 @@ Layout hints (R3) are Phase 15, whose design session comes first. Nothing else f
 
 | Component | Depends on | Depended on by | Note |
 |---|---|---|---|
-| Pedigree basics (Phase 6) | `data.table` (only `addIdRecords()`), `stats`, `utils` | everything | `data.table` adds 1 package; kept so the copied functions return what nprcgenekeepr's do (a later replacement is a recorded divergence) |
+| Pedigree basics (Phase 6) | `data.table` (only `addIdRecords()`, Phase 6b) | everything | `data.table` adds 1 package; kept so the copied functions return what nprcgenekeepr's do (a later replacement is a recorded divergence) |
 | Kinship and twins (Phase 7) | `Matrix` | layout, `findUnrelated()` | |
 | Layout engine (Phase 8) | `quadprog`, `Matrix` | renderer | |
 | Renderer (Phase 9) | `visNetwork` | users | `chromote` in Suggests for browser tests |
 | Converters (Phase 14) | kinship2, Pedixplorer (Suggests) | users | |
 
 **Imports:** `data.table`, `Matrix`, `quadprog`, `visNetwork`, `stats`, `utils`: 32 packages to install, measured
-this session. **Suggests:** kinship2 (also the fidelity tests), Pedixplorer, `testthat`, `chromote`, and what
+this session. Each is added by the phase that first needs it; `stats` and `utils` only once a copied function uses
+them, and none of Phase 6's does (pedkindraw S2-S3; an unused import is a check NOTE). **Suggests:** kinship2 (also
+the fidelity tests), Pedixplorer, `testthat`, `mockery` (the copied tests' stand-ins, Phase 6), `chromote`, and what
 the vignettes need (Phase 16). No circular dependencies: each phase's slice uses only earlier slices.
 
 ---
@@ -242,12 +253,12 @@ it, an export or argument is removed only after one release with a `.Deprecated(
 
 ## 9. What this changes in the plan
 
-| Phase | Before | After this contract |
+| Phase | Before | After this contract (and C2) |
 |---|---|---|
-| 5 | `DESCRIPTION`, `LICENSE` | Starts with Mark's ruling on the License line (R11 leaves it open; the empty package needs one). |
-| 7 | copy `kinship.R`, `mzTwinGroups.R`, `checkTwinRelations.R`, readers if kept | copy `checkTwinRelations.R`; **write** `kinship()` and its twin grouping from the published methods (R11); no readers (R13). Estimate: 2 sessions. |
-| 8 | copy the layout engine | copy it; whether R11 covers `.solveJointQP()`'s terms 1-2 and `comparePedigreeStructure()`'s mate-pair step is Mark's to confirm before Phase 8 (section 10) |
-| 10 | copy `shrinkPedigree.R` | **write** it from the published method (R11) |
+| 5 | `DESCRIPTION`, `LICENSE` | Starts with Mark's ruling on the License line (R11 leaves it open; the empty package needs one). Ruled S1149: MIT (plan R14). |
+| 7 | copy `kinship.R`, `mzTwinGroups.R`, `checkTwinRelations.R`, readers if kept | copy `checkTwinRelations.R` and nprcgenekeepr's clean-room `kinship.R` and `mzTwinGroups.R` (C2); no readers (R13). |
+| 8 | copy the layout engine | copy it, with nprcgenekeepr's clean-room `.solveJointQP()` and mate-pair step (C2; section 10 item 2) |
+| 10 | copy `shrinkPedigree.R` | copy nprcgenekeepr's clean-room `shrinkPedigree.R` (C2) |
 | 11 | export the shrink helpers and `bitSize` | export the rewrite's helpers (section 4.3) |
 | 12 | port `familycheck`, `ibdMatrix` | write `familyCheck()` and `ibdMatrix()` from their documented behaviour (R11) |
 | 13, 14 | sized at Phase 1, specified here | section 4.4, 4.5 |
@@ -260,7 +271,9 @@ it, an export or argument is removed only after one release with a `.Deprecated(
 1. **License** (R11): ruled S1149, plan R14: MIT, as nprcgenekeepr (`License: MIT + file LICENSE`, copyright holder
    R. Mark Sharp). The rewrite existed (S1140, plan C2), so neither fallback was needed.
 2. **R11's reach into the layout engine**: `.solveJointQP()` terms 1-2 and `comparePedigreeStructure()`'s mate-pair
-   step are re-expressed from kinship2 (section 3). Mark confirms before Phase 8 whether they are rewritten.
+   step are re-expressed from kinship2 (section 3). Closed by C2 (S1130): both were rewritten by nprcgenekeepr's
+   clean-room process (its batches D and A, integrated S1139 and S1134), and Phase 8 copies them (the plan says so
+   under its rulings table).
 3. **nprcgenekeepr's own license**: it ships the same code (section 3) under MIT. Separate work, recorded as its
    own `BACKLOG.md` item (Mark's ruling, S1128); nothing here changes it.
 4. **Argument names** (section 6): reviewed before the first CRAN release.
