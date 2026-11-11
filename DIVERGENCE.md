@@ -11,5 +11,9 @@ file's header lists its help-text changes.
 
 | Function | pedkindraw commit | nprcgenekeepr commit | Why |
 |---|---|---|---|
+| `.conditionSectionsHandler()` | `d120883` (not copied) | `baef1e12c` | In nprcgenekeepr's `R/affectedConditions.R`, not yet in pedkindraw's: only `drawPedigreeDiagram()` uses it, so Phase 9 copies it with that function (plan R32, S9) and deletes this row |
+| `.diagramAfterDrawing()` | `d120883` (not copied) | `baef1e12c` | The same: drawing only, Phase 9 (R32) |
+| `.diagramHeight()` | `d120883` (not copied) | `baef1e12c` | The same: drawing only, Phase 9 (R32) |
 
-No rows yet: the copied functions match nprcgenekeepr at `baef1e12c` (S3, Phase 6a).
+Every other copied function matches nprcgenekeepr at `baef1e12c`. The three rows above are a deferred copy, not a
+change: `R/affectedConditions.R` holds the source file's lines 1-75 only (S9, Phase 8).
