@@ -9,55 +9,71 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** Phase 6, the first copy slice: pedigree basics (nprcgenekeepr plan Phases 6-10, row 6)
-**Status:** READY. Phase 5 DONE: 5a in S1, 5b in S2 (local check 0/0/1, where the 1 is the allowed "New submission" NOTE; CI run `42930770118` all five jobs `Status: OK`).
-**Plan:** `/Users/rmsharp/Development/nprcgenekeepr/docs/planning/standalone-pedigree-package-plan.md:306-326` (slice rules and DONE),
-`:318` (the Phase 6 row), `:116` (§3.2 copy set), `:143` (§3.3 tests and fixtures), `:353` (§5 drift rule).
-Contract `/Users/rmsharp/Development/nprcgenekeepr/docs/planning/pedkindraw-api-contract.md:88-116` (§4.1 copied exports; Phase 6 rows),
-`:178-190` (§5 dependencies: `data.table` kept, `stats`, `utils`).
-**Priority:** HIGH (next plan phase). One small item is waiting on Mark's call (see Gotchas: the context-budget paths).
+**Task:** Phase 6b, the second half of the pedigree-basics copy slice: the 11 functions that repair and trim pedigrees
+**Status:** READY. Phase 6a DONE in S3 (10 relationship functions; CI run `42960032938` 5/5 `Status: OK`, PASS 122 each).
+Mark split Phase 6 in S3 (picker): 6a = 10 functions now, 6b = 11 next. `toCharacter()` stays out (Mark, S3; R13).
+**Plan:** `/Users/rmsharp/Development/nprcgenekeepr/docs/planning/standalone-pedigree-package-plan.md:306-326` (slice rules
+and DONE), `:318` (Phase 6 row). Contract `/Users/rmsharp/Development/nprcgenekeepr/docs/planning/pedkindraw-api-contract.md:88-116`
+(§4.1 rows), `:113` (`addIdRecords()` is copied but **not exported**), `:182` (§5: `data.table` only for `addIdRecords()`).
+**Priority:** HIGH (finishes plan Phase 6; Phase 7, kinship and twins, waits on it).
+
+### The 6b set (measured in S3 with codetools at nprcgenekeepr `baef1e12c`)
+- **Functions (11):** `addParents`, `rbindFill` (internal), `correctParentSex`, `isAddedRecord` (internal), `removeUnknownAnimals`,
+  `hasBothParents`, `getIdsWithOneParent`, `addIdRecords` (internal here, exported there), `addBackSecondParents`,
+  `removeUninformativeFounders`, `trimPedigree`. They call only each other and 6a's functions (`getFounders`, `isEmpty`,
+  `getProbandPedigree`). Only `addIdRecords()` uses `data.table` (`rbindlist`, via `@importFrom`); none uses `stats` or `utils`.
+- **Tests (8 files, 56 tests):** `test_addParents.R` 2, `test_correctParentSex.R` 24, `test_isAddedRecord.R` 14,
+  `test_removeUnknownAnimals.R` 11, `test_addIdRecords.R` 2, `test_addBackSecondParents.R` 1,
+  `test_removeUninformativeFounders.R` 1, `test_trimPedigree.R` 1. `hasBothParents` and `getIdsWithOneParent` have no test
+  file of their own; `test_addBackSecondParents.R` reaches them.
+- **10 of the 56 test nprcgenekeepr-only functions** (blocks by line at `baef1e12c`): `test_correctParentSex.R:122-137`,
+  `:285-303`, `:323-327`, `:328-334`, `:335-341`, `:344-348`, `:356-361` (`qcStudbook()`), `:349-355` (`runQcStudbook()`);
+  `test_isAddedRecord.R:113-127` (`convertDate()`), `:129-141` (`removeDuplicates()`). They test the colony QC pipeline,
+  not the copied functions, so saved fixtures can't stand in for them. **Ask Mark** (pre-RED picker, plain words): leave
+  them out and list them in each file's header (my recommendation), or another way.
+- **Fixtures:** `pedOne`, `pedSix`, `qcPed` (all `.RData` in nprcgenekeepr `data/`) plus `smallPed` (already saved):
+  `Rscript tools/makeTestFixtures.R ../nprcgenekeepr <commit> pedOne pedSix qcPed`, then add them to
+  `tests/testthat/helper-fixtures.R:5-6`.
+- **Help pages:** every example needs rewriting as in 6a. `addBackSecondParents`, `getIdsWithOneParent`,
+  `removeUninformativeFounders`, `trimPedigree` use `examplePedigree` through `qcStudbook()`; `correctParentSex`,
+  `addIdRecords`, `hasBothParents` use `pedOne`; `removeUnknownAnimals` uses `smallPed`. `addIdRecords.R:17` `@export`
+  becomes not exported (contract `:113`; keep its `@importFrom data.table rbindlist` at `:16`). Once `trimPedigree` exists,
+  `R/getProbandPedigree.R:21-23` may go back to `@inheritParams trimPedigree` (closer to nprcgenekeepr; edit its header).
 
 ### What You Must Do
-1. Orient (`CLAUDE.md:3-12`). Pick nprcgenekeepr's **source commit** for the slice and record it. Its `R/`, `tests/` and
-   `DESCRIPTION` are unchanged from `617420377` to `e96085bd4` (checked in S2). Docs-only nprcgenekeepr sessions were running then.
-2. Pre-RED pickers, **in plain words** (`CLAUDE.md` Learning 2): the slice's scope. Phase 6 lists 22 functions, which is likely
-   more than 5-file commits fit in one session (an estimate, not measured). Also whether `toCharacter` is in it (see Gotchas).
-   Then the `TDD: PRE-RED→RED` gate (`CLAUDE.md:86`).
-3. RED: copy the slice's nprcgenekeepr tests (plan:308-309). They fail because the functions are missing. Fixtures built with
-   functions not copied (`qcStudbook()` and the others in §3.3) become saved fixture files. Each copied file's header names its
-   nprcgenekeepr path and the source commit (`CLAUDE.md:136`).
-4. GREEN: copy the code. `DESCRIPTION` gains `Imports: data.table, stats, utils`. Then `renv` with the dated repository set
-   **before** installing and snapshotting (Learning 3; `options(repos = c(CRAN = "https://packagemanager.posit.co/cran/2026-10-31"))`),
-   `renv::snapshot(dev = TRUE)`, and `python3 methodology/quality_ratchet.py --run` must stay 1/1.
-   The drift rule starts here: `tools/compareWithNprcgenekeepr.R` and `DIVERGENCE.md` (`CLAUDE.md:137`).
-5. DONE (plan:310-313): the copied tests pass with the same pinned values; a script shows `identical()` results against
-   nprcgenekeepr on the Phase 1 pedigrees; `R CMD check --as-cran` 0/0/0 under the S2 rule (`CLAUDE.md:115`); push; CI green.
+1. Orient. Pick the source commit: nprcgenekeepr moved to `0a567d619` during S3 (S1153, new test files only). Run
+   `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- R tests data DESCRIPTION` and check the 6b files are unchanged.
+2. Pre-RED picker: the 10 nprcgenekeepr-only tests (above). Then the `TDD: PRE-RED→RED` gate (`CLAUDE.md:86`).
+3. RED: fixtures, then the 8 test files with the copy script pattern (S3's was in its scratchpad; the edits are listed in
+   each 6a test header, e.g. `tests/testthat/test_walkPedigree.R:1-6`). Every edit matched an exact line, counted.
+4. GREEN: the 11 R files (code unchanged; header and help text only); `Imports: data.table` in `DESCRIPTION`; install it
+   with the dated repository set **and** `rebuild = TRUE` (Learning 3, `CLAUDE.md:155`), `renv::snapshot(dev = TRUE)`, gate.
+   Add the 11 functions to `runCases()` (`tools/compareResultsWithNprcgenekeepr.R:44`, the `cases` list). The drift tool
+   needs no change: it finds copied files by their headers.
+5. DONE: as 6a (below), then push once and read each CI job's `Status:` line.
 
 ### Gotchas
-- **Two commits are not pushed:** `618b8a6` (quality gate and ignore fixes) and the S2 close-out. R15 allowed 5b one push
-  (done at `32d525c`). Phase 6's push carries them. `git status` will say "ahead of 'origin/master' by 2 commits".
-- **`toCharacter` conflict:** plan:318 lists it in Phase 6, but contract ruling R13 (contract:38) keeps it out because only
-  the file readers use it. Ask Mark before copying it.
-- **CI never shows the "New submission" NOTE:** r-lib's `check-r-package` sets `_R_CHECK_CRAN_INCOMING_=false`, so the CRAN
-  incoming checks (title, spelling, version) run only in the local check. Read the local `Status:` line, not just CI's.
-  CI also passes on NOTEs (it errors only on warnings). Grep the run log for `Status:`, as S2 did:
-  `gh run view <id> --log | grep 'Status: '`.
-- **Coverage:** `covr::package_coverage()` stops with an error on a package with no R code ("cannot open file .../R/pedkindraw").
-  It works once `R/` exists, so Phase 6 is the first session that can measure coverage.
-- **renv:** the project library is outside the repository
-  (`~/Library/Caches/org.R-project.R/R/renv/library/pedkindraw-f12fe1bc/`). roxygen2, lintr and covr are installed
-  there but not in `renv.lock` (an explicit snapshot records only `DESCRIPTION`'s packages, as in nprcgenekeepr), so a fresh
-  clone's `renv::restore()` won't install them. `renv/settings.json` has `"snapshot.dev": false`, so a plain
-  `renv::snapshot()` drops testthat. Always pass `dev = TRUE`.
-- **`.Rbuildignore` additions for Phase 6:** `^tools$` and `^DIVERGENCE\.md$`, or the check lists them as non-standard
-  top-level files. nprcgenekeepr's is at its `.Rbuildignore:57`.
-- **`pedkindraw.Rproj` is untracked.** It appeared during S2 and S2 didn't make it (RStudio, probably). `.Rbuildignore`
-  already excludes it. Commit it or gitignore it: Mark's call. S2 didn't touch it.
-- **roxygen2** makes an empty `man/` folder; `R CMD build` removes it ("Removed empty directory"). It goes away once there are Rd files.
-- **Context budget (waiting on Mark):** `methodology/.context-budget.json` names bare paths, so `context_budget.py` reads them
-  as missing (UNMEASURED, exit 1). Mark ruled in S2 that it gets a short session of its own, not part of 5b.
-- nprcgenekeepr was not touched. Its plan's status line (plan:8-9) still says Phase 5 is next. Updating it, and its
-  BACKLOG item, is an nprcgenekeepr session's job (`CLAUDE.md:133-135`).
+- **Lint** only works with the package loaded (Learning 4, `CLAUDE.md:156`): the command in `CLAUDE.md:118` does that,
+  and so does the new gate `lint-package-zero`. A bare `lintr::lint_package()` gives false "no visible global function" lints.
+- **renv cache trap** (Learning 3): `mockery` came back with Posit "latest" as its source although the dated repository was
+  set; the gate failed it, and `renv::install("mockery", rebuild = TRUE)` fixed it. Expect the same for `data.table`.
+- **Running R in nprcgenekeepr's folder from here** loads pedkindraw's library unless renv's variables are undone
+  (Learning 5; `renvFreeEnv()` at `tools/compareResultsWithNprcgenekeepr.R:137`). nprcgenekeepr is installed in its own
+  renv library, not in pedkindraw's.
+- **The results tool refuses** if the clone's file for any copied function changed since that file's header commit. If
+  nprcgenekeepr changes one of them, either copy the change (a new commit in the header) or check out the old commit.
+- **`$?` after a pipe** is the last command's status, not the tool's. S3 printed `tail`'s status twice by mistake; capture
+  the tool's exit code without a pipe.
+- **A finding for nprcgenekeepr, not fixed here:** `test_findPedigreeNumber.R`'s first expectation checks ids containing
+  "1", and the Lacy pedigree's ids are letters, so it passes without checking anything (0 ids match; S3). An nprcgenekeepr
+  session may want a `BACKLOG.md` line. pedkindraw copied it unchanged.
+- **CI notices** (not failures): Node 20 is deprecated under `actions/checkout@v4`; `ubuntu-latest` moves to Ubuntu 26
+  (from 2026-10-19). `.github/workflows/R-CMD-check.yaml` may need `actions/checkout@v5` some day.
+- **The S3 close-out commit is not pushed** (as in S2); 6b's push carries it.
+- **Still waiting on Mark:** `pedkindraw.Rproj` (untracked, not made by a session: commit or ignore); the context-budget
+  path fix (its own short session, Mark's S2 ruling).
+- nprcgenekeepr was not touched. Its plan's status line (`plan:8-9`) still says Phase 5 is next; updating it is an
+  nprcgenekeepr session's job (`CLAUDE.md:136`).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -71,51 +87,47 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1's entry was removed in S2 (FM #28): its durable record is the S1 receipt in `HANDOFFS.md` and the S1 entries in `CHANGELOG.md`.*
+*S1's and S2's entries were removed in S3 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+entries in `CHANGELOG.md`.*
+
+### Session 2 Handoff Evaluation (by Session 3)
+**Score: 8/10.**
+- **What helped:** the exact plan and contract line numbers; the `toCharacter` conflict, flagged as Mark's call (the
+  closure confirmed nothing in Phase 6 calls it); `^tools$` and `^DIVERGENCE\.md$` for `.Rbuildignore` (both needed);
+  covr working once `R/` exists (it did); the two unpushed commits; reading CI's `Status:` lines (done again).
+- **What was wrong:** step 4's "`DESCRIPTION` gains `Imports: data.table, stats, utils`" came from contract §5 without a
+  check. None of the 21 functions uses `stats` or `utils`, and `data.table` only in `addIdRecords()`; adding them unused
+  would have caused a check NOTE.
+- **What was missing:** that every copied example loads nprcgenekeepr or its datasets (all 8 in 6a needed rewriting);
+  that the copied tests need `mockery` and one needs `stringi`; that Learning 3's fix also applies to a cached package.
+  The lint trap could not have been seen with no R code.
+- **ROI:** high. Orientation and the scope research went straight to measuring instead of searching.
 
 ### What Session 3 Did
-**Deliverable:** Phase 6, the first copy slice: pedigree basics (nprcgenekeepr plan Phase 6), scope by Mark's pre-RED picker (IN PROGRESS)
+**Deliverable:** Phase 6a, the first half of the pedigree-basics copy slice, test-first (DONE)
 **Started:** 2026-11-10 19:15 CST · **Model:** Claude Opus 5.5
-**Status:** Session claimed. Work beginning. Mark picked "Start Phase 6" at the orient picker.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
-
-### Session 1 Handoff Evaluation (by Session 2)
-**Score: 9/10.**
-- **What helped:** every nprcgenekeepr pointer was exact (`DESCRIPTION:83,87`, `.Rbuildignore:1-2,40,47,77,168`,
-  `.gitignore:42-43,112`, `R-CMD-check.yaml:47-51`, `renv.lock:4-7`; re-checked in S2). The `.Rbuildignore` list made the
-  first check clean with no rework. Several predictions were right and labelled as predictions: the dashboard files would be
-  untracked, a "New submission" NOTE would appear, the first push would make `master` the default branch.
-  The two open questions for Mark (YEAR, `Authors@R`) were named.
-- **What was missing:** the renv trap. `CLAUDE.md` says to set the dated repository before snapshotting, but not before
-  installing; renv's default "latest" got into the lock (now Learning 3 and a gate). Also not mentioned: covr fails with
-  no R code, and r-lib's CI action switches off the CRAN incoming check.
-- **What was wrong:** nothing found.
-- **ROI:** high. Reading took minutes and saved the research the pointers had already done.
-
-### What Session 2 Did
-**Deliverable:** Phase 5b, the R package skeleton test-first (nprcgenekeepr plan Phase 5, R15) (DONE)
-**Started:** 2026-11-10 18:05 CST · **Model:** Claude Opus 5.5
-**Mark's picks (all by picker):** start 5b; `LICENSE` YEAR 2017-2026; `Authors@R` Mark alone (others join with their code);
-the "New submission" NOTE is allowed and no other; the context-budget fix waits for its own session; each TDD gate
-"proceed" (REFACTOR with no changes).
-**Commits:** `774c3c4` claim · `3c008b4` RED (`tests/testthat.R`, `tests/testthat/test_package.R`: 4 tests on DESCRIPTION
-and LICENSE) · `652b984` GREEN 1 (`DESCRIPTION` 0.0.1, `LICENSE`, `NAMESPACE`) · `a21da76` GREEN 2 (`.Rbuildignore`,
-`.gitignore`, `.lintr`) · `66b275f` GREEN 3 (renv, 25 packages, identical to nprcgenekeepr's lock) · `32d525c` GREEN 4
-(`.github/workflows/R-CMD-check.yaml`, `CLAUDE.md:115` NOTE rule) · `618b8a6` quality gate · close-out commit.
-Pushed `master` once at `32d525c` (it became GitHub's default branch). CI run `42930770118`: 5/5 success, each `Status: OK`.
-**Verified:** RED failed for the right reason ("pedkindraw has no DESCRIPTION file", 4/4). GREEN: 13 expectations pass with
-the package loaded and installed (`pedkindraw.Rcheck/tests/testthat.Rout`: FAIL 0 PASS 13). roxygen2 changes nothing.
-lintr finds no lints. `R CMD check --as-cran`: 0 errors, 0 warnings, 1 NOTE (Maintainer plus "New submission"), with and
-without renv. The tarball holds only `DESCRIPTION`, `LICENSE`, `NAMESPACE` and the tests. Coverage: n/a (no R code).
-`quality_ratchet: 1/1 pass · 0 fail · 0 unmeasured · results d088b0dff568 · manifest eac7a277c6cd`. Dashboard 41 → 70, no high risk.
+**Mark's picks (all by picker, each my recommendation, first try):** start Phase 6; split it 10 now / 11 next; leave
+`toCharacter` out; test fixtures plus typed examples (no package datasets); RED with `stringi` replaced by base R; GREEN;
+REFACTOR with no changes.
+**Commits:** `1274024` claim · RED `1017c25` (fixtures, `tools/makeTestFixtures.R`, `^tools$`), `518cba5`, `7c22e4b`,
+`430effe` (10 test files, 48 tests; `mockery` in Suggests) · GREEN `844542d`, `7357272` (10 R files), `8d76336`, `0565f7f`
+(`NAMESPACE`, 8 help pages), `b332309` (drift tool, results tool, `DIVERGENCE.md`) · close-out (CLAUDE.md Learnings 3-5,
+lint command and tool rows; gate `lint-package-zero`). Pushed `32d525c..b332309` once.
+**Verified:** RED failed for the right reason (42 "could not find function", 1 knock-on, 1 namespace check). GREEN: 52
+tests, 122 expectations, 0 skipped; the 9 copied test files give the same expectation counts as nprcgenekeepr's
+(7, 3, 24, 6, 3, 4, 24, 8, 30). Fixtures `identical()` to nprcgenekeepr's datasets. Drift tool: 10 functions, 0 differ
+(control: 2 planted changes caught, exit 1; comment-only change ignored). Results tool: 120 results on 12 Phase 1
+pedigrees, 120 identical (control: altered `getParents` gave 22 differences, exit 1). roxygen2 changes nothing; 0 lints
+(package loaded); coverage 100%; `R CMD check --as-cran` 0 errors, 0 warnings, 1 NOTE (Maintainer plus "New submission"
+only); examples ran with the expected output. CI `42960032938`: 5/5 `Status: OK`, `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 122 ]`.
+`quality_ratchet: 2/2 pass · 0 fail · 0 unmeasured · results 28dd5b310acd · manifest 114e971f4452`.
 **Self-assessment: 8/10.**
-+ Every gate and decision went through a picker. RED failed for the right reason before any package file existed.
-+ The version test uses R's own rule (parts of 1234 or more; leading zeros), read from `tools:::.check_package_CRAN_incoming`.
-+ Inspecting the lock found the renv "latest" trap; fixed until a re-snapshot was stable and identical to nprcgenekeepr's.
-  Learning 3 plus a gate that was shown to fail on a bad lock.
-+ Read the "New submission" status from CI's logs instead of trusting the green badge.
-− The first decisions picker used shorthand. Mark: "I do not understand your descriptions." One rewrite (Learning 2).
-− The first snapshot was taken without setting the dated repository, though `CLAUDE.md` says to. The inspection caught it,
-  not the habit.
-− The `.gitignore` line for the ratchet's results file guessed `methodology/`. The tool writes to the root; fixed in `618b8a6`.
-**Ledger:** `CHANGELOG.md` S2 entries (DONE; push and CI).
++ Measured before asking: the call graph, the closure, each test's needs; the split and the `stats`/`utils` correction came
+  from evidence. Every picker answered first time in plain words.
++ Every claim of sameness has a check that was shown to fail: expectation counts, `identical()` fixtures, and negative
+  controls for both tools.
+− The renv cache trap recurred despite Learning 3 (the gate caught it, not the habit); Learning 3 now covers it.
+− Twice printed a piped `$?` as a tool's exit code; both caught and re-run before relying on them.
+− The results tool took three tries to start its child process (renv variables, `<NA>`, `env` option order), and its first
+  header reader was fragile; all fixed before the commit.
+**Ledger:** `CHANGELOG.md` S3 entries (DONE; push and CI).

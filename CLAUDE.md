@@ -33,7 +33,7 @@ Repository: https://github.com/rmsharp/pedkindraw (public). License: MIT, `LICEN
 - `testthat` 3rd edition; `roxygen2` writes `NAMESPACE` and `man/`; `lintr` with nprcgenekeepr's settings copied (Phase 5b).
 - `renv`, its lock on a dated Posit Package Manager repository (nprcgenekeepr's S1111 ruling; see Build / Test / Verify).
 - GitHub Actions `R-CMD-check` on Linux, macOS and Windows (Phase 5b).
-- Imports, each arriving with the phase that first needs it (contract section 5): `data.table` (6), `Matrix` (7), `quadprog` (8), `visNetwork` (9), `stats`, `utils`. Suggests: `testthat`, `kinship2` (fidelity tests, converters), `Pedixplorer` (converters), `chromote` (browser tests), and what the vignettes need (16). kinship2 and Pedixplorer are never required (R7).
+- Imports, each arriving with the phase that first needs it (contract section 5): `data.table` (6), `Matrix` (7), `quadprog` (8), `visNetwork` (9), `stats`, `utils` (each only once a copied function uses it: none of Phase 6's does, and an unused import is a check NOTE). Suggests: `testthat`, `mockery` (the copied tests' stand-ins, 6), `kinship2` (fidelity tests, converters), `Pedixplorer` (converters), `chromote` (browser tests), and what the vignettes need (16). kinship2 and Pedixplorer are never required (R7).
 
 ---
 
@@ -115,10 +115,11 @@ The build-equivalent for this R package (`methodology/SAFEGUARDS.md` "Verify the
 | Full package check (every phase's DONE gate) | `R CMD build . && R CMD check --as-cran pedkindraw_*.tar.gz` | 0 errors, 0 warnings, 0 notes. One exception until the package is on CRAN (Mark, S2): the NOTE from "checking CRAN incoming feasibility" may appear if its only content is the Maintainer line and "New submission". Any other NOTE fails. |
 | Test suite | `Rscript -e 'testthat::test_local()'` | All tests pass |
 | Documentation | `Rscript -e 'roxygen2::roxygenise()'`, then `git status` | `NAMESPACE` and `man/` unchanged |
-| Lint | `Rscript -e 'lintr::lint_package()'` | No lints |
+| Lint | `Rscript -e 'suppressMessages(pkgload::load_all(".", quiet = TRUE)); lintr::lint_package()'` | No lints (gate `lint-package-zero`). Load the package first: Learning 4 |
 | Coverage | `Rscript -e 'covr::package_coverage()'` | >80% for new code (TDD Rules) |
 | CI (after a push) | `gh run list --limit 10` | Every run `completed success`, on Linux, macOS and Windows |
-| Fidelity (Phases 6-10) | the slice's comparison script against nprcgenekeepr at the source commit | `identical()` for data frames; largest kinship difference 0 |
+| Fidelity (Phases 6-10) | `Rscript tools/compareResultsWithNprcgenekeepr.R ../nprcgenekeepr` (each slice adds its functions to `runCases()`) | Exit 0: every result `identical()`; largest kinship difference 0. It refuses a clone whose copied files changed since the copy's commit |
+| Drift (plan section 5) | `Rscript tools/compareWithNprcgenekeepr.R ../nprcgenekeepr` | Exit 0: every copied function the same, or its difference has a `DIVERGENCE.md` row |
 
 **Fast single-file test:** `Rscript -e 'Sys.setenv(NOT_CRAN = "true"); suppressMessages(pkgload::load_all(".", quiet=TRUE)); testthat::test_file("tests/testthat/test_X.R", reporter="summary")'`. Set `NOT_CRAN` first: without it, a file with a top-level `skip_on_cran()` silently skips instead of running (nprcgenekeepr Learning 417).
 
@@ -134,7 +135,7 @@ The build-equivalent for this R package (`methodology/SAFEGUARDS.md` "Verify the
 
 - **nprcgenekeepr is not changed** by this work (R8, plan section 1.3). Sessions here write this repository's `methodology/SESSION_NOTES.md`, `methodology/HANDOFFS.md` and `methodology/CHANGELOG.md`; the plan's status line and its `BACKLOG.md` item in nprcgenekeepr are updated by sessions there.
 - **Copied code (Phases 6-10):** each slice copies its tests first (RED: they fail because the functions are missing), then the code (GREEN). Each copied file's header names its nprcgenekeepr source path and the nprcgenekeepr commit it came from.
-- **Drift rule (plan section 5), from Phase 6 on:** a change to a copied function in either repository is made in the other too (in a session of its own there) or recorded as a row in `DIVERGENCE.md` (function, both commits, why). `tools/compareWithNprcgenekeepr.R` lists every copied function whose body differs from the installed nprcgenekeepr's; every difference it lists must have a row.
+- **Drift rule (plan section 5), from Phase 6 on:** a change to a copied function in either repository is made in the other too (in a session of its own there) or recorded as a row in `DIVERGENCE.md` (function, both commits, why). `tools/compareWithNprcgenekeepr.R` lists every copied function whose arguments or code differ from nprcgenekeepr's, read from the local clone with git (nprcgenekeepr is installed nowhere here); every difference it lists must have a row.
 
 ### Development Process Contract override
 
@@ -151,7 +152,9 @@ This project runs **Strict Test-Driven Development** (see the "Development Proce
 |---|---|---|---|
 | 1 | A plan that waits for Mark's go, or offers him a choice, ends in one `AskUserQuestion` picker (go / alternative / hold, each option naming the exact actions), never a question in the prose. Mark: "I cannot tell what you are asking; provide a picker." | Session 1 | Every plan, scope or approach decision, as for the TDD phase gates |
 | 2 | Write picker questions and options in plain words: say what the thing is, why it matters and what each choice does. Don't use shorthand from your own notes ("CRAN incoming", "budget paths", "seed paths unmeasured"). Mark, on such a picker: "I do not understand your descriptions." The plain rewrite was answered at once. | Session 2 | Every `AskUserQuestion`, including the TDD gates |
-| 3 | Set the dated repository before `renv::install()` as well as before `renv::snapshot()`. renv's default installs from Posit's "latest" (newer versions) and records "latest" as each package's source, and a re-snapshot keeps it. Fix: reinstall from the dated repository with `rebuild = TRUE`, then snapshot again. Gate: `renv-lock-no-latest-repository` in `methodology/.quality-gates.json`. | Session 2 | Any renv install, snapshot or date change |
+| 3 | Set the dated repository before `renv::install()` as well as before `renv::snapshot()`. renv's default installs from Posit's "latest" (newer versions) and records "latest" as each package's source, and a re-snapshot keeps it. Fix: reinstall from the dated repository with `rebuild = TRUE`, then snapshot again. Gate: `renv-lock-no-latest-repository` in `methodology/.quality-gates.json`. S3: setting the date is not enough for a package already in renv's cache: renv links the cache copy, which keeps the source it was first installed from (`mockery` came back "latest"). Install a package new to this project with `rebuild = TRUE` from the start, and run the gate after every snapshot. | Sessions 2, 3 | Any renv install, snapshot or date change |
+| 4 | Load the package before linting: `lintr::lint_package()` on a package that is not installed cannot find its namespace, so `object_usage_linter` reports every call to a function in another file as "no visible global function definition" (10 false lints in S3; 0 after `pkgload::load_all()`). nprcgenekeepr hides this because it is installed in its own renv library. Gate: `lint-package-zero`. | Session 3 | Every lint run |
+| 5 | An R process started from inside this project's renv passes `RENV_PROJECT` and `R_LIBS_USER` to its children, so Rscript run in nprcgenekeepr's folder still loads pedkindraw's library. Start such a child with renv's saved `RENV_DEFAULT_*` values put back (the text `<NA>` means unset) and `RENV_PROJECT` unset; `env` takes every `-u` before the first `NAME=value`. Worked example: `renvFreeEnv()` in `tools/compareResultsWithNprcgenekeepr.R`. | Session 3 | Any script that runs R in another project's folder |
 
 ### Project-specific Failure Modes
 

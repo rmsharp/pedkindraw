@@ -15,6 +15,18 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-10 · [ad hoc] S3 push: `master` to GitHub at `b332309` (carrying S2's `618b8a6` and close-out), CI green on five jobs
+- **Change:** pushed `32d525c..b332309`. R-CMD-check run `42960032938`: macOS release, Windows release, Linux devel, release and oldrel-1 all `Status: OK`, each `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 122 ]`. Notices only: Node 20 deprecated under `actions/checkout@v4`; `ubuntu-latest` moving to Ubuntu 26. The S3 close-out commit is not pushed; Phase 6b's push carries it.
+- **Commit/PR:** push of `618b8a6`..`b332309`
+- **Session:** S3 · **Verified:** `gh run view 42960032938 --log | grep 'Status: '` gave 5 × `Status: OK`.
+- **Model:** Claude Opus 5.5
+
+### 2026-11-10 · [ad hoc] S3 DONE: Phase 6a, the 10 relationship functions copied test-first (nprcgenekeepr plan Phase 6, first half)
+- **Change:** Mark split Phase 6 (picker): 6a = `findGeneration`, `findPedigreeNumber`, `getParents`, `getOffspring`, `getFounders`, `isFounder`, `getProbandPedigree`, `getDescendantPedigree` (exported) and `isEmpty`, `walkPedigree` (internal), all copied from nprcgenekeepr `baef1e12c`; 6b (11 repair and trim functions) next. `toCharacter` stays out; sample pedigrees are test fixtures, not package datasets (both Mark's picks). RED: fixtures `lacy1989Ped`, `smallPed` (`tools/makeTestFixtures.R`), 10 test files (48 tests; `stringi` replaced by base R with identical values; `mockery` in Suggests). GREEN: the 10 R files with code unchanged and help text rewritten (examples type their own pedigree); `NAMESPACE` and 8 help pages; `tools/compareWithNprcgenekeepr.R` (drift), `tools/compareResultsWithNprcgenekeepr.R` (results), `DIVERGENCE.md` (no rows). REFACTOR: no changes. Close-out: `CLAUDE.md` Learnings 4 (lint needs the package loaded) and 5 (child R processes inherit renv), Learning 3 widened (cached packages), lint command and tool rows; gate `lint-package-zero`.
+- **Commit/PR:** `1274024` (claim), `1017c25`, `518cba5`, `7c22e4b`, `430effe` (RED), `844542d`, `7357272`, `8d76336`, `0565f7f`, `b332309` (GREEN), close-out
+- **Session:** S3 · **Verified:** 52 tests, 122 expectations, 0 skipped, the copied files' counts equal nprcgenekeepr's; results tool 120/120 `identical()` on 12 Phase 1 pedigrees and drift tool 0 differ, each with a negative control that failed; roxygen2 changes nothing; 0 lints; coverage 100%; `R CMD check --as-cran` 0 errors, 0 warnings, 1 allowed NOTE; `quality_ratchet: 2/2 pass`.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-10 · [ad hoc] S3 claim (in progress): Phase 6 of nprcgenekeepr's `docs/planning/standalone-pedigree-package-plan.md`, the first copy slice (pedigree basics), test-first; scope by Mark's pre-RED picker. Mark picked "Start Phase 6" at the orient picker. Phase 0 reconcile: nothing to backfill.
 
 ### 2026-11-10 · [ad hoc] S2 push: `master` to GitHub once at `32d525c` (R15), CI green on five jobs

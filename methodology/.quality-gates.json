@@ -22,6 +22,16 @@
       "command": "grep -c 'packagemanager.posit.co/cran/latest' renv.lock || true",
       "extract": "^(\\d+)",
       "why": "S2 (2026-11-10): packages installed under renv's default Posit 'latest' were locked with 'latest' as their source, so a fresh-clone restore would miss the dated repository (nprcgenekeepr S1111). Measured 0 after reinstalling from the dated repository."
+    },
+    {
+      "name": "lint-package-zero",
+      "direction": "max",
+      "threshold": 0,
+      "unit": "lints",
+      "command": "Rscript -e 'suppressMessages(pkgload::load_all(\".\", quiet = TRUE)); cat(length(lintr::lint_package()), \"\\n\")'",
+      "extract": "^(\\d+)",
+      "timeout_seconds": 300,
+      "why": "S3 (2026-11-10): CLAUDE.md requires no lints; measured 0 with the package loaded first (Learning 4: without it, lintr reports 10 false 'no visible global function' lints on the uninstalled package)."
     }
   ]
 }

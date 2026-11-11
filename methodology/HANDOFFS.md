@@ -196,11 +196,25 @@ manifest existed are not re-judged.
 ```handoff
 session: S3
 date: 2026-11-10
-status: pending
-active_task: Phase 6, the first copy slice: pedigree basics (nprcgenekeepr plan Phase 6), scope by Mark's pre-RED picker
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 8
+active_task: Phase 6a DONE (10 relationship functions); next is Phase 6b, the 11 functions that repair and trim pedigrees, in a new session (Mark split Phase 6 in S3)
+what_was_done: claim 1274024; RED 1017c25 (lacy1989Ped and smallPed fixtures from nprcgenekeepr baef1e12c, tools/makeTestFixtures.R), 518cba5, 7c22e4b, 430effe (10 test files, 48 tests, mockery in Suggests; all failing on missing functions); GREEN 844542d, 7357272 (10 R files, code unchanged, help text rewritten), 8d76336, 0565f7f (NAMESPACE, 8 help pages), b332309 (tools/compareWithNprcgenekeepr.R, tools/compareResultsWithNprcgenekeepr.R, DIVERGENCE.md); REFACTOR no changes; pushed 32d525c..b332309, CI 42960032938 5/5 Status OK; close-out adds CLAUDE.md Learnings 4-5, Learning 3 widened, the lint command and tool rows, gate lint-package-zero
+next_steps: Phase 6b: pick the source commit (nprcgenekeepr is at 0a567d619; check the 6b files unchanged since baef1e12c); pre-RED picker on the 10 tests that exercise qcStudbook, runQcStudbook, convertDate and removeDuplicates (leave out with header notes, recommended); fixtures pedOne, pedSix, qcPed via tools/makeTestFixtures.R; copy 8 test files then 11 R files (addIdRecords not exported); Imports data.table installed with rebuild = TRUE; add the 11 to runCases(); DONE as 6a, push, CI
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK with the 6b set), tools/compareResultsWithNprcgenekeepr.R:44 (cases list to extend), tools/compareResultsWithNprcgenekeepr.R:137 (renvFreeEnv), tools/makeTestFixtures.R:1 (usage), tests/testthat/helper-fixtures.R:5 (fixture loading), R/getProbandPedigree.R:21 (ped written out; may inherit from trimPedigree in 6b), CLAUDE.md:118 (lint command), CLAUDE.md:155 (Learnings 3-5), /Users/rmsharp/Development/nprcgenekeepr/docs/planning/pedkindraw-api-contract.md:113 (addIdRecords not exported)
+gotchas: lint needs the package loaded (Learning 4); renv cache keeps a package's first source, so install new packages with rebuild = TRUE (Learning 3); R run in nprcgenekeepr's folder from here inherits pedkindraw's renv variables (Learning 5); the results tool refuses a clone whose copied files changed; a piped $? is not the tool's exit code; nprcgenekeepr's test_findPedigreeNumber.R first expectation matches no ids (finding for nprcgenekeepr, copied unchanged); CI notices on Node 20 and Ubuntu 26; close-out commit not pushed; pedkindraw.Rproj and the context-budget fix still Mark's
+runtime_smoke: R CMD check --as-cran installs the package, runs the 8 examples (expected output) and the tests installed (FAIL 0 PASS 122): 0 errors, 0 warnings, 1 allowed NOTE; CI 5/5 Status OK with PASS 122 each; results tool 120/120 identical on 12 Phase 1 pedigrees; drift tool 0 differ; quality_ratchet: 2/2 pass · 0 fail · 0 unmeasured · results 28dd5b310acd · manifest 114e971f4452
+changelog_ref: CHANGELOG.md "2026-11-10 · [ad hoc] S3 DONE: Phase 6a, the 10 relationship functions copied test-first (nprcgenekeepr plan Phase 6, first half)"
 commit: pending
 ```
+Session 3, Claude Opus 5.5, single tier. Predecessor S2 scored 8: exact pointers, and the toCharacter, .Rbuildignore and
+covr notes were all right; its Imports line (data.table, stats, utils) was copied from the contract unchecked (only
+data.table is used, and only in 6b); it missed the nprcgenekeepr-bound examples and the mockery and stringi needs.
+Self-score 8: + measured the call graph and each test's needs before every picker, all answered first time; every
+sameness claim has a check shown to fail (expectation counts, identical fixtures, two negative controls). − the renv
+cache trap recurred (the gate caught it); twice read a piped $? as a tool's exit code; the results tool took three tries
+to start its child process.
 
 ```handoff
 session: S2
