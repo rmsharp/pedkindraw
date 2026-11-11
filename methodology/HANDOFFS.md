@@ -196,11 +196,24 @@ manifest existed are not re-judged.
 ```handoff
 session: S2
 date: 2026-11-10
-status: pending
-active_task: Phase 5b, the R package skeleton test-first (nprcgenekeepr plan Phase 5, R15), in progress
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 5 DONE (5b this session); next is Phase 6, the first copy slice (pedigree basics), in a new session
+what_was_done: claim 774c3c4; RED 3c008b4 (4 tests on DESCRIPTION and LICENSE, failing for want of the package); GREEN 652b984 DESCRIPTION 0.0.1, LICENSE 2017-2026, NAMESPACE; a21da76 .Rbuildignore, .gitignore, .lintr; 66b275f renv on Posit 2026-10-31 (25 packages, identical to nprcgenekeepr's lock); 32d525c R-CMD-check workflow and the CLAUDE.md NOTE rule; pushed master once at 32d525c, CI run 42930770118 5/5 Status OK; REFACTOR no changes; 618b8a6 quality gate renv-lock-no-latest-repository and ignore fixes; CLAUDE.md Learnings 2-3
+next_steps: Phase 6: record the nprcgenekeepr source commit (R/, tests/, DESCRIPTION unchanged 617420377..e96085bd4); plain-words pre-RED picker on the slice's scope (22 functions, toCharacter in or out per R13); RED copies the slice's tests with source headers and saved fixtures; GREEN copies the code, adds Imports data.table, stats, utils, renv with the dated repo set before install and snapshot(dev = TRUE); add tools/compareWithNprcgenekeepr.R, DIVERGENCE.md and their .Rbuildignore lines; DONE per plan:310-313
+key_files: CLAUDE.md:115 (check pass rule with the allowed NOTE), CLAUDE.md:136 (copied-file headers), CLAUDE.md:137 (drift rule), tests/testthat/test_package.R:5 (file-reading helper), /Users/rmsharp/Development/nprcgenekeepr/docs/planning/standalone-pedigree-package-plan.md:318 (Phase 6 row), /Users/rmsharp/Development/nprcgenekeepr/docs/planning/pedkindraw-api-contract.md:88 (copied exports), /Users/rmsharp/Development/nprcgenekeepr/.Rbuildignore:57 (^tools$)
+gotchas: 618b8a6 and the close-out are not pushed (Phase 6's push carries them); plan:318 lists toCharacter but contract:38 (R13) excludes it; CI's check-r-package turns off the CRAN incoming check, so read the local Status line; covr errors until R/ exists; roxygen2, lintr, covr are in the renv library but not the lock; snapshot.dev is false, so always snapshot(dev = TRUE); pedkindraw.Rproj is untracked and not S2's (Mark's call); the context-budget path fix awaits its own session
+runtime_smoke: R CMD check --as-cran installs and loads the package and runs the tests installed (FAIL 0 PASS 13), 0 errors, 0 warnings, 1 allowed NOTE; CI 5/5 Status OK; quality_ratchet: 1/1 pass · 0 fail · 0 unmeasured · results d088b0dff568 · manifest eac7a277c6cd
+changelog_ref: CHANGELOG.md "2026-11-10 · [ad hoc] S2 DONE: Phase 5b, the R package skeleton test-first (nprcgenekeepr plan Phase 5, R15)"
 commit: pending
 ```
+Session 2, Claude Opus 5.5, single tier. Predecessor S1 scored 9: exact pointers and labelled predictions,
+nothing wrong; it missed the renv "latest" trap, covr on an empty package, and CI's disabled incoming check.
+Self-score 8: + every decision and gate by picker; RED failing for the right reason; R's own version rule read
+from its source; the renv lock fixed until stable and gated; CI read past the green badge. − the first picker
+used shorthand Mark couldn't follow (Learning 2); the first snapshot skipped the dated repository CLAUDE.md asks
+for; one ignore line guessed the ratchet's output path.
 
 ```handoff
 session: S1

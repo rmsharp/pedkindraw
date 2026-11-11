@@ -150,6 +150,8 @@ This project runs **Strict Test-Driven Development** (see the "Development Proce
 | # | Lesson | From | When to apply |
 |---|---|---|---|
 | 1 | A plan that waits for Mark's go, or offers him a choice, ends in one `AskUserQuestion` picker (go / alternative / hold, each option naming the exact actions), never a question in the prose. Mark: "I cannot tell what you are asking; provide a picker." | Session 1 | Every plan, scope or approach decision, as for the TDD phase gates |
+| 2 | Write picker questions and options in plain words: say what the thing is, why it matters and what each choice does. Don't use shorthand from your own notes ("CRAN incoming", "budget paths", "seed paths unmeasured"). Mark, on such a picker: "I do not understand your descriptions." The plain rewrite was answered at once. | Session 2 | Every `AskUserQuestion`, including the TDD gates |
+| 3 | Set the dated repository before `renv::install()` as well as before `renv::snapshot()`. renv's default installs from Posit's "latest" (newer versions) and records "latest" as each package's source, and a re-snapshot keeps it. Fix: reinstall from the dated repository with `rebuild = TRUE`, then snapshot again. Gate: `renv-lock-no-latest-repository` in `methodology/.quality-gates.json`. | Session 2 | Any renv install, snapshot or date change |
 
 ### Project-specific Failure Modes
 
