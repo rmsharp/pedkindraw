@@ -1,0 +1,2397 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## Copied from nprcgenekeepr tests/testthat/test_makePedigreeMatingLayout.R at
+## nprcgenekeepr commit baef1e12c. Changes: each read of a rhesus file through
+## system.file(..., package = "nprcgenekeepr") reads test_path("fixtures", ...)
+## instead (6; the source's lines 325-326, 508-509, 647-648, 794-795, 1183-1184,
+## 1188-1190). qcdRhesusPed() reads a saved file (helper-qcdRhesusPed.R). The
+## comments below name nprcgenekeepr's documents, sessions and files.
+
+## Tests for makePedigreeMatingLayout() -- Pedigree Diagram Option 2, Slice 3
+## (docs/planning/pedigree-diagram-option2-layout-design-plan.md, Migration
+## Path step 2). The new EXPORTED wrapper combining Slice 1's
+## .buildMatingUnitForest() and Slice 2's .positionMatingUnitForest() into
+## the visNetwork-ready list(nodes, edges) shape makePedigreeDiagramData()
+## already returns, plus the duplicateNodeId -> realId lookup table D6
+## needs. Edge routing (owner-directed, S461): direct parent -> union and
+## union -> child edges, no waypoint nodes (issue #142 tracks the fuller
+## rectilinear mate-line/sibship-bar style as a deferred, additive
+## follow-up).
+
+## ---- test helpers (not exported, local to this file) ------------------
+
+.nodeKind <- function(ids) {
+  ifelse(grepl("^__union_", ids), "union",
+         ifelse(grepl("^__dup_", ids), "duplicate", "individual"))
+}
+
+## ---- input validation ---------------------------------------------------
+
+test_that("makePedigreeMatingLayout rejects non-data-frame input", {
+  expect_error(makePedigreeMatingLayout(list(a = 1)), "data frame")
+})
+
+test_that(
+  "makePedigreeMatingLayout rejects a pedigree missing required columns", {
+  noGen <- data.frame(id = "A", sire = NA, dam = NA, sex = "M",
+                       stringsAsFactors = FALSE)
+  expect_error(makePedigreeMatingLayout(noGen), "gen")
+})
+
+## ---- return shape ---------------------------------------------------
+
+test_that(
+  "makePedigreeMatingLayout returns a list with nodes/edges/duplicateToReal", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  result <- makePedigreeMatingLayout(trio)
+  expect_true(is.list(result))
+  ## isolatedIds added issue #164 / P5-suppression plan (Phase 1, S644):
+  ## always present, character(0) when nothing was suppressed (this trio
+  ## has no isolated individual). conditions and conditionsNotDrawn added
+  ## S1029 (more than one affected condition), also always present.
+  expect_setequal(names(result),
+                   c("nodes", "edges", "duplicateToReal", "isolatedIds",
+                     "conditions", "conditionsNotDrawn"))
+  expect_equal(result$isolatedIds, character(0))
+})
+
+## ---- node population: one row per real individual, duplicate, union ---
+
+test_that(
+  "makePedigreeMatingLayout's nodes has exactly one row per real
+   individual, duplicate, and mating unit", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1", "C2", "C3"),
+    sire = c(NA, NA, "P1", "P1", "P1"), dam = c(NA, NA, "P2", "P2", "P2"),
+    sex = c("M", "F", "M", "F", "M"), gen = c(0L, 0L, 1L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(trio)
+  ## Track 2 flips the default to "rectilinear" -- pin "direct" explicitly
+  ## since this block tests the direct-style node-population invariant
+  ## (one row per real individual/duplicate/mating unit, no waypoints).
+  result <- makePedigreeMatingLayout(trio, edgeStyle = "direct")
+  expect_equal(nrow(result$nodes), nrow(trio) + nrow(forest$duplicates) +
+                 nrow(forest$matingUnits))
+  expect_setequal(result$nodes$id,
+                   c(trio$id, forest$duplicates$id, forest$matingUnits$id))
+})
+
+## ---- shape/label: duplicates read as their real individual ------------
+
+test_that(
+  "makePedigreeMatingLayout maps sex to shape identically for a real
+   individual and all of their duplicate nodes, matching
+   makePedigreeDiagramData()'s own shape convention", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  dupIds <- forest$duplicates$id[forest$duplicates$realId == "8LKBV9"]
+  expect_equal(length(dupIds), 1L)  # CHANGED from 2L, Track 4 (gen-first D2)
+
+  realShape <- result$nodes$shape[result$nodes$id == "8LKBV9"]
+  dupShapes <- result$nodes$shape[result$nodes$id %in% dupIds]
+  expect_equal(realShape, "square")
+  expect_true(all(dupShapes == "square"))
+})
+
+test_that(
+  "makePedigreeMatingLayout labels every real and duplicate node with the
+   real individual's own id (a duplicate reads as that individual, not a
+   synthetic id)", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  dupRows <- result$nodes[result$nodes$id %in% forest$duplicates$id, ]
+  dupRealId <- forest$duplicates$realId[match(dupRows$id, forest$duplicates$id)]
+  expect_equal(dupRows$label, dupRealId)
+
+  realRows <- result$nodes[result$nodes$id %in% loopPed$id, ]
+  expect_equal(realRows$label, realRows$id)
+})
+
+test_that(
+  "makePedigreeMatingLayout gives union nodes an empty label and a size
+   visibly smaller than real/duplicate nodes, so they don't read as an
+   animal (D6, verified live via this session's own chromote POC)", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(trio)
+  result <- makePedigreeMatingLayout(trio)
+  unionRow <- result$nodes[result$nodes$id == forest$matingUnits$id, ]
+  realRow <- result$nodes[result$nodes$id == "P1", ]
+  expect_equal(unionRow$label, "")
+  expect_true(unionRow$size < realRow$size)
+})
+
+## ---- title/tooltip content (D6) ----------------------------------------
+
+test_that(
+  "makePedigreeMatingLayout's title for a real individual matches
+   makePedigreeDiagramData()'s own ID/Sex/Generation/Sire/Dam format", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = factor(c("M", "F", "M"), levels = c("F", "M", "H", "U")),
+    gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  result <- makePedigreeMatingLayout(trio)
+  childTitle <- result$nodes$title[result$nodes$id == "C1"]
+  expect_true(grepl("ID:</b> C1", childTitle, fixed = TRUE))
+  expect_true(grepl("Sex:</b> Male", childTitle, fixed = TRUE))
+  expect_true(grepl("Generation:</b> 1", childTitle, fixed = TRUE))
+  expect_true(grepl("Sire:</b> P1", childTitle, fixed = TRUE))
+  expect_true(grepl("Dam:</b> P2", childTitle, fixed = TRUE))
+})
+
+test_that(
+  "makePedigreeMatingLayout's title for a duplicate node repeats its real
+   individual's own content plus a duplicate-occurrence cue", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = factor(c("M", "F", "F", "F", "M", "F", "F", "M"),
+                 levels = c("F", "M", "H", "U")),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  realTitle <- result$nodes$title[result$nodes$id == "8LKBV9"]
+  dupIds <- forest$duplicates$id[forest$duplicates$realId == "8LKBV9"]
+  for (dupId in dupIds) {
+    dupTitle <- result$nodes$title[result$nodes$id == dupId]
+    expect_true(grepl("ID:</b> 8LKBV9", dupTitle, fixed = TRUE))
+    expect_true(grepl("Sex:</b> Male", dupTitle, fixed = TRUE))
+    expect_true(grepl("duplicate", dupTitle, ignore.case = TRUE))
+  }
+})
+
+test_that(
+  "makePedigreeMatingLayout's title for a union node reports its
+   offspring count", {
+  ped <- data.frame(
+    id = c("P1", "P2", "C1", "C2", "C3"),
+    sire = c(NA, NA, "P1", "P1", "P1"), dam = c(NA, NA, "P2", "P2", "P2"),
+    sex = c("M", "F", "M", "F", "M"), gen = c(0L, 0L, 1L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  result <- makePedigreeMatingLayout(ped)
+  unionTitle <- result$nodes$title[result$nodes$id == forest$matingUnits$id]
+  expect_true(grepl("3", unionTitle, fixed = TRUE))
+})
+
+## ---- edges: child edges, duplicate connectors, mate lines ---------------
+
+test_that(
+  "makePedigreeMatingLayout's edges include Slice 1's own child edges
+   unchanged, with dashes = FALSE", {
+  ped <- data.frame(
+    id = c("P1", "P2", "C1", "C2", "C3"),
+    sire = c(NA, NA, "P1", "P1", "P1"), dam = c(NA, NA, "P2", "P2", "P2"),
+    sex = c("M", "F", "M", "F", "M"), gen = c(0L, 0L, 1L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  ## Track 2 flips the default to "rectilinear" -- pin "direct" explicitly:
+  ## this block tests Slice 1's own unrewritten child edges.
+  result <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  childRows <- result$edges[!result$edges$dashes &
+                               result$edges$to %in% c("C1", "C2", "C3"), ]
+  expect_setequal(paste(childRows$from, childRows$to),
+                   paste(forest$childEdges$from, forest$childEdges$to))
+})
+
+test_that(
+  "makePedigreeMatingLayout's edges include a dashed connector between each
+   duplicate node and its real individual", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  ## A duplicate id can also be a mate-line edge's endpoint (its solid edge
+  ## to the union where it's positioned) -- filter to the DASHED connector
+  ## specifically, not every edge touching a duplicate id. The connector's
+  ## from/to are x-ordered (ascending), not always dup->real (found S575
+  ## owner review, root-caused/fixed S577 -- see the x-ordering test below)
+  ## -- so check {from, to} SET membership, not a fixed column.
+  dupConnectors <- result$edges[
+    (result$edges$from %in% forest$duplicates$id |
+       result$edges$to %in% forest$duplicates$id) & result$edges$dashes, ]
+  expect_equal(nrow(dupConnectors), nrow(forest$duplicates))
+  expect_true(all(dupConnectors$dashes))
+  pairOk <- vapply(seq_len(nrow(dupConnectors)), function(i) {
+    dupId <- if (dupConnectors$from[i] %in% forest$duplicates$id) {
+      dupConnectors$from[i]
+    } else {
+      dupConnectors$to[i]
+    }
+    realId <- forest$duplicates$realId[forest$duplicates$id == dupId]
+    setequal(c(dupConnectors$from[i], dupConnectors$to[i]), c(dupId, realId))
+  }, logical(1L))
+  expect_true(all(pairOk))
+})
+
+test_that(
+  "makePedigreeMatingLayout's duplicate-node connector edges are x-ordered
+   (from.x <= to.x), matching kinship2's own arcconnect() convention (nested
+   in plot.pedigree: 'tx <- sort(tx)' before drawing) of sorting the pair by
+   x first so the arc always bows toward ancestors regardless of which
+   occurrence is the duplicate -- found S575 (owner review of a published
+   comparison artifact: nprcgenekeepr's arc bows the wrong way relative to
+   kinship2), root-caused and fixed S577. vis-network's curvedCW bow
+   direction (Edge._getViaCoordinates in the bundled vis-network.min.js)
+   depends on which endpoint is 'from', so the OLD always-from=dup,
+   always-to=real convention bowed the wrong way whenever the duplicate
+   happened to land to the right of its real self (measured S577: 33 of 52
+   same-row connectors on the real bundled fixture) -- neither a blanket
+   from/to swap nor a blanket curvedCW->curvedCCW swap would have fixed
+   this, since it is position-dependent, not a uniform flip.", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  isDupConnector <- (result$edges$from %in% forest$duplicates$id |
+                        result$edges$to %in% forest$duplicates$id) &
+    result$edges$dashes
+  dupConnectors <- result$edges[isDupConnector, ]
+  ## This fixture has exactly 1 duplicate (8LKBV9's non-anchor occurrence at
+  ## __union_4), deliberately chosen because it already exercises the
+  ## PRE-FIX-broken case: the duplicate lands to the right of its real self
+  ## (x 150 vs 60), so the pre-fix from=dup/to=real ordering bowed away from
+  ## ancestors.
+  expect_equal(nrow(dupConnectors), 1L)
+  nodes <- result$nodes
+  fromX <- nodes$x[match(dupConnectors$from, nodes$id)]
+  toX <- nodes$x[match(dupConnectors$to, nodes$id)]
+  expect_true(all(fromX <= toX))
+  ## Migration Path Phase 2 cutover (QP joint-solver, this session): found
+  ## during GREEN that the new engine's different coordinate distribution
+  ## flips WHICH side of this pair has the smaller x AGAIN -- 8LKBV9 (the
+  ## real occurrence) now sits to the LEFT of her own duplicate, the
+  ## opposite of the Walker/BJL-era arrangement this fixture was chosen to
+  ## exercise. The smaller-x-becomes-from invariant itself (asserted above,
+  ## unchanged) is what matters -- re-measured directly, not assumed.
+  ## CHANGED S679 (Decision 1, order-consistent seeding): the duplicate
+  ## is now seeded ADJACENT to its unit's anchor, which on this fixture
+  ## lands it back to the LEFT of the real 8LKBV9 -- the pair flips
+  ## again, the invariant above still holds. Re-measured live.
+  expect_equal(dupConnectors$from, "__dup_8LKBV9_1")
+  expect_equal(dupConnectors$to, "8LKBV9")
+})
+
+test_that(
+  "makePedigreeMatingLayout's duplicate-node connector edges are x-ordered
+   on the real 375-individual bundled fixture -- confirms the fix at scale,
+   not just the small deterministic case above (found S575, fixed S577)", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  result <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  isDupConnector <- (result$edges$from %in% forest$duplicates$id |
+                        result$edges$to %in% forest$duplicates$id) &
+    result$edges$dashes
+  dupConnectors <- result$edges[isDupConnector, ]
+  expect_equal(nrow(dupConnectors), nrow(forest$duplicates))
+  nodes <- result$nodes
+  fromX <- nodes$x[match(dupConnectors$from, nodes$id)]
+  toX <- nodes$x[match(dupConnectors$to, nodes$id)]
+  expect_true(all(fromX <= toX))
+})
+
+test_that(
+  "makePedigreeMatingLayout's duplicate-node connector edges render as a
+   curved arc (smooth.enabled = TRUE, smooth.type = \"curvedCW\"), visually
+   distinct from the straight child/mate-line edges (smooth.enabled left NA,
+   inheriting the widget's global smooth = FALSE) -- matches the kinship2/
+   reference-pedigree convention of an arched dashed connector back to a
+   duplicated individual's primary occurrence (found S468, fixed S469)", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  ## Membership check on {from, to}, not a fixed column -- the connector's
+  ## from/to are x-ordered, not always dup->real (found S575, fixed S577).
+  isDupConnector <- (result$edges$from %in% forest$duplicates$id |
+                        result$edges$to %in% forest$duplicates$id) &
+    result$edges$dashes
+  dupConnectors <- result$edges[isDupConnector, ]
+  otherEdges <- result$edges[!isDupConnector, ]
+  expect_true(nrow(dupConnectors) > 0L)
+  expect_true(all(c("smooth.enabled", "smooth.type") %in% names(result$edges)))
+  expect_true(all(dupConnectors$smooth.enabled %in% TRUE))
+  expect_true(all(dupConnectors$smooth.type %in% "curvedCW"))
+  expect_true(all(is.na(otherEdges$smooth.enabled)))
+})
+
+test_that(
+  "makePedigreeMatingLayout's duplicate-node connector arc survives
+   edgeStyle = \"rectilinear\" -- .addRectilinearWaypoints() must not drop
+   or misalign the new smooth.* columns when it rbinds its own fresh
+   waypoint edges onto the passed-through direct-style edges (found S468,
+   fixed S469)", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed, edgeStyle = "rectilinear")
+  ## Membership check on {from, to}, not a fixed column -- the connector's
+  ## from/to are x-ordered, not always dup->real (found S575, fixed S577).
+  isDupConnector <- (result$edges$from %in% forest$duplicates$id |
+                        result$edges$to %in% forest$duplicates$id) &
+    result$edges$dashes
+  dupConnectors <- result$edges[isDupConnector, ]
+  expect_true(nrow(dupConnectors) > 0L)
+  expect_true(all(c("smooth.enabled", "smooth.type") %in% names(result$edges)))
+  expect_true(all(dupConnectors$smooth.enabled %in% TRUE))
+  expect_true(all(dupConnectors$smooth.type %in% "curvedCW"))
+})
+
+test_that(
+  "makePedigreeMatingLayout's edges include a solid mate-line edge from
+   each mating unit's anchor AND non-anchor parent to the union node --
+   using the non-anchor's DUPLICATE id when one was placed at this unit,
+   so the mate-line reaches the node actually positioned there", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  mu <- forest$matingUnits
+
+  for (i in seq_len(nrow(mu))) {
+    unitId <- mu$id[i]
+    mateEdges <- result$edges[!result$edges$dashes & result$edges$to == unitId, ]
+    expect_equal(nrow(mateEdges), 2L, info = unitId)
+    expect_true(mu$anchor[i] %in% mateEdges$from, info = unitId)
+
+    dupRow <- which(forest$duplicates$realId == mu$nonAnchor[i] &
+                       forest$duplicates$matingUnitId == unitId)
+    expectedNonAnchorNode <- if (length(dupRow) == 1L) {
+      forest$duplicates$id[dupRow]
+    } else {
+      mu$nonAnchor[i]
+    }
+    expect_true(expectedNonAnchorNode %in% mateEdges$from, info = unitId)
+  }
+})
+
+## ---- x/y geometry: a deterministic, monotonic scale of Slice 2's own
+## x/gen (not hardcoded scale constants, so a later visual-legibility
+## tweak to the scale factor doesn't force a test rewrite) ----------------
+
+test_that(
+  "makePedigreeMatingLayout's y is a fixed positive linear scale of gen,
+   and x is a fixed scale of Slice 2's own x", {
+  ped <- data.frame(
+    id = c("R1", "R2", sprintf("D%d", 1:4)),
+    sire = c(NA, NA, "R1", "D1", "D2", "D3"),
+    dam = c(NA, NA, "R2", NA, NA, NA),
+    sex = c("M", "F", rep("M", 4)),
+    gen = c(0L, 0L, 1:4),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  slice2Pos <- .positionMatingUnitForest(ped, forest)
+  result <- makePedigreeMatingLayout(ped)
+
+  merged <- merge(result$nodes, slice2Pos, by = "id", suffixes = c("", ".s2"))
+  expect_true(nrow(merged) > 0L)
+
+  ## y: a single positive scale factor recovers gen from y for every node.
+  yScale <- unique(merged$y[merged$gen == 1L]) / 1L
+  expect_length(yScale, 1L)
+  expect_true(yScale > 0)
+  expect_equal(merged$y, merged$gen * yScale)
+
+  ## x: a single scale factor recovers Slice 2's own x for every node
+  ## (skip if Slice 2's x happens to be all-zero for this fixture).
+  nonZero <- which(abs(merged$x.s2) > 1e-9)
+  skip_if(length(nonZero) == 0L, "no non-zero x in this fixture")
+  xScale <- merged$x[nonZero[1L]] / merged$x.s2[nonZero[1L]]
+  expect_true(xScale > 0)
+  expect_equal(merged$x, merged$x.s2 * xScale)
+})
+
+## ---- duplicateToReal lookup ---------------------------------------------
+
+test_that(
+  "makePedigreeMatingLayout's duplicateToReal lookup matches Slice 1's own
+   duplicates table exactly", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  expect_setequal(names(result$duplicateToReal), forest$duplicates$id)
+  expect_equal(
+    unname(result$duplicateToReal[forest$duplicates$id]),
+    forest$duplicates$realId
+  )
+})
+
+## ---- full real fixture (scale check) -------------------------------------
+
+test_that(
+  "makePedigreeMatingLayout on the full real 375-individual bundled
+   fixture produces exactly the 782 nodes established by Track 4 as
+   amended by Decision 2 (CHANGED from 740L -- gen-first D2 selection
+   drops the duplicate count to 102; CHANGED S678 from 714L -- spouse
+   duplication raises it to 170), with no NA x/y and the expected edge
+   composition", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  ## Track 2 flips the default to "rectilinear" -- pin "direct" explicitly,
+  ## since 782 is specifically the direct-style node count (375 real +
+  ## 170 duplicates + 237 mating units).
+  result <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
+
+  expect_equal(nrow(result$nodes), 782L)
+  expect_false(any(is.na(result$nodes$x)))
+  expect_false(any(is.na(result$nodes$y)))
+
+  expectedEdges <- nrow(forest$childEdges) + nrow(forest$duplicates) +
+    2L * nrow(forest$matingUnits)
+  expect_equal(nrow(result$edges), expectedEdges)
+  expect_length(result$duplicateToReal, nrow(forest$duplicates))
+})
+
+## ---- edgeStyle parameter (issue #142 Slice 2) ---------------------------
+
+test_that(
+  "makePedigreeMatingLayout defaults to edgeStyle = \"rectilinear\" (Track 2,
+   docs/planning/pedigree-diagram-kinship2-fidelity-remediation-plan.md) --
+   identical to calling with edgeStyle explicitly \"rectilinear\", inserts
+   __drop_/__bar_/__proj_ waypoint ids, and gains color.border on every
+   node (the invisible-waypoint contract) alongside no edge columns beyond
+   the existing contract plus the duplicate-connector arc's smooth.*
+   override columns (contract updated S469 for the duplicate-node-arc fix,
+   found S468) plus color/width (S549 Finding #2, fixed S555 -- ALWAYS
+   present once any mating unit exists, since consanguinity is a
+   structural fact of the required sire/dam columns, unlike the optional
+   name/twinRelations sidecars; both NA here since this fixture has no
+   consanguineous mating) and color.background (Track 1,
+   docs/planning/pedigree-diagram-kinship2-fidelity-remediation-plan.md,
+   found S569 -- ALWAYS present now, unconditional on the affected column's
+   presence)", {
+  ped <- data.frame(
+    id = c("R1", "R2", sprintf("D%d", 1:4)),
+    sire = c(NA, NA, "R1", "D1", "D2", "D3"),
+    dam = c(NA, NA, "R2", NA, NA, NA),
+    sex = c("M", "F", rep("M", 4L)),
+    gen = c(0L, 0L, 1:4),
+    stringsAsFactors = FALSE
+  )
+  default <- makePedigreeMatingLayout(ped)
+  explicit <- makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")
+  expect_equal(default, explicit)
+  expect_true(any(grepl("^__drop_|^__bar_|^__proj_", default$nodes$id)))
+  expect_setequal(names(default$nodes),
+                   c("id", "label", "shape", "title", "size",
+                     "color.background", "deceased", "x", "y",
+                     "color.border"))
+  expect_setequal(names(default$edges),
+                   c("from", "to", "dashes", "smooth.enabled", "smooth.type",
+                     "smooth.roundness", "color", "width"))
+})
+
+test_that(
+  "makePedigreeMatingLayout rejects an invalid edgeStyle value", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  expect_error(makePedigreeMatingLayout(trio, edgeStyle = "curvy"),
+               "should be one of")
+})
+
+test_that(
+  "makePedigreeMatingLayout with edgeStyle = \"rectilinear\" produces
+   exactly the same result as calling .addRectilinearWaypoints() directly
+   on the direct-style output (confirms the wiring, not a reimplementation
+   of Slice 1's own already-tested waypoint geometry)", {
+  ped <- data.frame(
+    id = c("P1", "P2", "C1", "C2", "C3"),
+    sire = c(NA, NA, "P1", "P1", "P1"), dam = c(NA, NA, "P2", "P2", "P2"),
+    sex = c("M", "F", "M", "F", "M"), gen = c(0L, 0L, 1L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  pos <- .positionMatingUnitForest(ped, forest)
+  direct <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  expected <- .addRectilinearWaypoints(direct$nodes, direct$edges, forest,
+                                        pos)
+
+  result <- makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")
+  expect_equal(result$nodes, expected$nodes)
+  expect_equal(result$edges, expected$edges)
+  expect_equal(result$duplicateToReal, direct$duplicateToReal)
+  expect_true(any(grepl("^__drop_|^__bar_", result$nodes$id)))
+})
+
+test_that(
+  "makePedigreeMatingLayout on the full real 375-individual bundled
+   fixture produces exactly 1,450 nodes under edgeStyle = \"rectilinear\"
+   (CHANGED from 1,474 -- issue #166's scoped revert, S652, see below) --
+   composition: 375 real + 237 union + 102 duplicate + 251 __bar_ + 237
+   __drop_ + 56 __proj_ (dogleg parent/union-gen-mismatch waypoints,
+   D1/D2-driven, unaffected by this revert) = 1,258 pre-jog-repair, plus
+   .resolveEdgeNodeCollisions()'s 192 __jog_ waypoints (CHANGED from 216
+   -- the revert REDUCES this count, see below) = 1,450; every count
+   re-confirmed live through the actual public entry point, not just the
+   internal helper, never hand-derived.
+
+   Track 7 Phase 3 CHANGE (docs/planning/pedigree-diagram-track7-phase3-
+   child-centering-plan.md, S652 -- issue #166, scoped revert): deleting
+   Track 7 Phase 1's anchor/mate-midpoint recenter loop reverts every
+   qualifying union's x to Tier 2's unconditional child-midpoint. Net
+   effect on this fixture: .findEdgeNodeCollisions()'s own pre-jog-repair
+   baseline SHRINKS from 107 to 95 colliding edges (1,764 -> 1,759
+   obstacle-pairs, test_resolveEdgeNodeCollisions.R) -- restoring
+   positions closer to the pre-Track-7 baseline needs 24 FEWER __jog_
+   waypoints (216 -> 192). The existing jog-repair mechanism (Track 2,
+   unchanged by this revert) still fully resolves every remaining
+   collision to 0 residual -- confirmed directly, not assumed.
+   Union/duplicate/bar/drop/proj counts are all UNCHANGED by this revert
+   (re-verified live) -- it only ever moves an already-existing
+   qualifying union's x, it adds or removes no node.
+
+   Track 7 Phase 1/2 history (S647/S649, both superseded by the above for
+   this node-count assertion): widening/recentering 34 qualifying mating
+   units originally grew the baseline from 76 to 104 then 107 colliding
+   edges (1,715 -> 1,748 -> 1,764 obstacle-pairs), needing up to 216
+   __jog_ waypoints (154 -> 210 -> 216) -- the jog-repair mechanism
+   (Track 2, unaffected by any of this) always fully resolved every one
+   to 0 residual. The separate curved-duplicate-connector heuristic
+   residual (47, unrelated to mating-unit x/y at all) is unaffected
+   throughout.
+
+   Track 3's parent-span clamp -- which this test's own docstring used to
+   credit for part of the pre-cutover collision-count reduction (150 ->
+   105 colliding edges, issue #160 comment 1,
+   docs/planning/pedigree-diagram-same-row-collision-avoidance-plan.md
+   sec2.2/sec2.3) -- no longer exists anywhere in this codebase; Track
+   2's own detect-and-jog mechanism is untouched by this migration.", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  ## Curved-duplicate-connector collisions remain as disclosed,
+  ## unconfirmed-by-coordinate-math heuristic residuals (Track 2's own
+  ## documented posture) -- makePedigreeMatingLayout() warns, non-fatal.
+  result <- withCallingHandlers(
+    makePedigreeMatingLayout(ped, edgeStyle = "rectilinear"),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )
+  ## CHANGED from 1450L -- Track 7 Phase 4's duplicate-side push
+  ## (docs/planning/pedigree-diagram-track7-phase4-union-duplicate-
+  ## proximity-plan.md §5.3) moves 3 duplicates, introducing 3 new
+  ## same-row collisions that the existing (unchanged) jog-repair
+  ## mechanism resolves with 6 new __jog_ waypoint nodes (2 per repaired
+  ## edge) -- 1450 + 6 = 1456. Re-measured by actually running the fixed
+  ## engine, never hand-derived.
+  ## CHANGED AGAIN to 1460L -- the duplicate-vs-unrelated-individual
+  ## proximity fix (docs/planning/pedigree-diagram-duplicate-individual-
+  ## proximity-plan.md, design ratified S658, Option B, implementation
+  ## S660) moves 2 more duplicates (TTE0Z7/__dup_MY1AEU_2,
+  ## M0YNUR/__dup_L31S6S_5), introducing 2 new same-row collisions the
+  ## existing jog-repair mechanism resolves with 4 new __jog_ waypoint
+  ## nodes (2 per repaired edge) -- 1456 + 4 = 1460. Re-measured by
+  ## actually running the fixed engine, never hand-derived.
+  ## CHANGED AGAIN to 1450L -- the B1-individual-vs-unrelated-individual
+  ## proximity fix (docs/planning/pedigree-diagram-b1-individual-
+  ## proximity-plan.md, design ratified S661, implementation S662) moves
+  ## 19 B1/genuine individuals apart, and (unlike the duplicate-side fix
+  ## above) this REMOVES same-row collisions rather than adding them: 5
+  ## edges that previously needed a jog repair no longer collide with
+  ## anything on their row once their endpoint moves, each removing 2
+  ## __jog_ waypoint nodes -- 1460 - 10 = 1450. Re-measured by actually
+  ## running the fixed engine, never hand-derived.
+  ## CHANGED AGAIN to 1446L -- S666's conditional-shift rule (mating-union
+  ## true-midpoint placement, docs/planning/pedigree-diagram-parent-
+  ## symmetric-placement-plan.md) repositions the real fixture's qualifying
+  ## unions/parents, removing 2 more same-row collisions that previously
+  ## needed a jog repair (each removing 2 __jog_ waypoint nodes) --
+  ## 1450 - 4 = 1446. Re-measured by actually running the fixed engine,
+  ## never hand-derived.
+  ## CHANGED AGAIN to 1436L -- S667's disconnected-component separation
+  ## (docs/planning/pedigree-diagram-disconnected-component-separation-
+  ## plan.md "REVISED DESIGN"): the real fixture's 5 unrelated families are
+  ## now laid out as separate blocks (the 4 small ones no longer interleave
+  ## with each other), removing 5 more same-row collisions that previously
+  ## needed a jog repair (each removing 2 __jog_ waypoint nodes) --
+  ## 1446 - 10 = 1436. Re-measured by actually running the fixed engine,
+  ## never hand-derived.
+  ## CHANGED AGAIN to 1792L -- Migration Path Phase 3 (S675, QP joint-solver
+  ## with the owner-ratified kinship2-parity floors, docs/planning/
+  ## pedigree-diagram-joint-qp-solver-plan.md Decision 3 as amended): the
+  ## QP centres every union between its parents (Decision 4 term 3) instead
+  ## of on its children's mean, so mate lines and sibship bars now span
+  ## other same-row nodes far more often -- 266 same-row colliding edges
+  ## pre-repair vs 88 (test_resolveEdgeNodeCollisions.R), every one still
+  ## resolved by the unchanged jog-repair mechanism, at 534 __jog_ waypoints
+  ## (267 repairs, 2 per edge) instead of 178: 1258 + 534 = 1792. The
+  ## 375/237/102/251/237/56 real/union/duplicate/bar/drop/proj counts are
+  ## all UNCHANGED (the QP adds or removes no node). Re-measured by actually
+  ## running the amended engine, never hand-derived; the 3x jog growth is a
+  ## disclosed, order-driven consequence of Decision 1 (the QP honours Phase
+  ## A's provisional order), recorded for the owner's visual review.
+  ## CHANGED AGAIN to 1636L -- Decision 2 spouse duplication (S678,
+  ## provisional-order design Phase 1): every B2-shaped non-anchor
+  ## occurrence now renders through a same-row __dup_ node, so the long
+  ## off-row mate lines and D2 dogleg projections disappear -- __proj_
+  ## 56 -> 0 (the dogleg no longer fires in practice), jog repairs
+  ## 267 -> 183 (534 -> 366 waypoints), duplicates 102 -> 170:
+  ## 375 + 237 + 170 + 251 + 237 + 0 + 366 = 1636. Composition
+  ## re-measured by actually running the changed engine, never
+  ## hand-derived.
+  ## CHANGED S679 to 1600L -- Decision 1 order-consistent seeding
+  ## (provisional-order design Phase 2): locally-contiguous
+  ## anchor--dot--mate ranks shorten the same-row edges the jog-repair
+  ## pass has to detour around, jog repairs 183 -> 165 (366 -> 330
+  ## waypoints): 375 + 237 + 170 + 251 + 237 + 0 + 330 = 1600. Every
+  ## other component count unchanged (the seeding adds or removes no
+  ## node). Re-measured live.
+  ## CHANGED S683 to 1460L -- term 4 (duplicate proximity) now skips
+  ## spouse (B2) duplicates (owner-ratified amendment to the S675
+  ## no-weight-tuning mandate; the wDup-on-spouse-duplicates BACKLOG
+  ## item): marry-in triples hang over their own children's parents
+  ## again, shortening the same-row edges the jog-repair pass detours
+  ## around -- jog repairs 165 -> 95 (330 -> 190 waypoints):
+  ## 375 + 237 + 170 + 251 + 237 + 0 + 190 = 1460. Every other
+  ## component count unchanged (the term skip adds or removes no node).
+  ## Re-measured live.
+  ## CHANGED S690 to 1456L -- Shape A root-subtree ordering pass wired in
+  ## (docs/planning/pedigree-diagram-root-subtree-ordering-plan.md,
+  ## Phase 2: .orderRootSubtrees() reorders each component's rootIds
+  ## before .buildForestChildrenOf()): related founder subtrees now sit
+  ## adjacent, shortening the same-row edges the jog-repair pass detours
+  ## around -- jog repairs 95 -> 93 (190 -> 186 waypoints):
+  ## 375 + 237 + 170 + 251 + 237 + 0 + 186 = 1456. Every other
+  ## component count unchanged (the reorder adds or removes no node).
+  ## CHANGED S859 to 1460L -- male-left for a one-mate-each couple whose mate
+  ## is a duplicate node (4 more jog nodes; 2 repairs x 2 waypoints).
+  ## Re-measured live, never hand-derived.
+  expect_equal(nrow(result$nodes), 1460L)
+  expect_false(any(is.na(result$nodes$x)))
+  expect_false(any(is.na(result$nodes$y)))
+  ## CHANGED from 216L (Track 7 Phase 1+2) down to 192L (issue #166's
+  ## scoped revert, S652), then up to 198L -- Track 7 Phase 4's
+  ## duplicate-side push adds 6 new __jog_ waypoints (192 + 6 = 198,
+  ## same cause as the node-count change above). Re-measured by actually
+  ## running the fixed engine, never hand-derived.
+  ## CHANGED AGAIN to 202L -- same cause as the node-count change above
+  ## (198 + 4 = 202).
+  ## CHANGED AGAIN to 192L -- same cause as the node-count change above
+  ## (202 - 10 = 192): the B1-individual-vs-unrelated-individual proximity
+  ## fix removes 5 jog repairs (10 waypoints) it makes unnecessary.
+  ## CHANGED AGAIN to 188L -- same cause as the node-count change above
+  ## (192 - 4 = 188): S666's conditional-shift rule removes 2 more jog
+  ## repairs it makes unnecessary.
+  ## CHANGED AGAIN to 178L -- same cause as the node-count change above
+  ## (188 - 10 = 178): S667's disconnected-component separation removes 5
+  ## more jog repairs it makes unnecessary.
+  ## CHANGED AGAIN to 534L -- same cause as the node-count change above
+  ## (Migration Path Phase 3, S675: 267 jog repairs x 2 waypoints).
+  ## CHANGED AGAIN to 366L -- same cause as the node-count change above
+  ## (Decision 2, S678: 183 jog repairs x 2 waypoints).
+  ## CHANGED AGAIN to 330L -- same cause as the node-count change above
+  ## (Decision 1, S679: 165 jog repairs x 2 waypoints).
+  ## CHANGED AGAIN to 190L -- same cause as the node-count change above
+  ## (S683 spouse-duplicate term-4 skip: 95 jog repairs x 2 waypoints).
+  ## CHANGED AGAIN to 186L -- same cause as the node-count change above
+  ## (S690 root-subtree ordering: 93 jog repairs x 2 waypoints).
+  ## CHANGED AGAIN to 190L -- S859 male-left for duplicate-node mates.
+  expect_equal(sum(grepl("^__jog_", result$nodes$id)), 190L)
+})
+
+## ---- S905: the bundled fixture as the app's QC step delivers it -------
+## The live app never lays out the raw CSV: modInput runs the QC step
+## first, and that step reorders the rows. Row order alone moves the
+## rectilinear waypoint count (BACKLOG row-order item, found S472, owner
+## ruling S898: accept the dependence and pin what the app renders). The
+## test above pins the raw-CSV row order; the two below pin the QC'd order
+## the app actually draws. qcdRhesusPed() is in helper-qcdRhesusPed.R.
+test_that(
+  "the QC'd copy of the bundled rhesus fixture differs from the raw CSV in
+   row order only: same 375 ids and the same sire/dam/sex cells", {
+  raw <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  qcd <- qcdRhesusPed()
+  expect_equal(nrow(qcd), 375L)
+  expect_setequal(qcd$id, raw$id)
+  ## Without a real reorder the two tests would compare one input twice.
+  expect_false(identical(qcd$id, raw$id))
+  rawRow <- match(qcd$id, raw$id)
+  for (col in c("sire", "dam", "sex")) {
+    expect_identical(as.character(qcd[[col]]),
+                     as.character(raw[[col]][rawRow]))
+  }
+})
+
+test_that(
+  "makePedigreeMatingLayout on the QC'd bundled fixture (what the live app
+   draws) produces 1,412 nodes under edgeStyle = \"rectilinear\" (142
+   __jog_ waypoints) and 782 under \"direct\"; the raw-CSV row order gives
+   1,460 and 782, so row order alone moves only the rectilinear count", {
+  qcd <- qcdRhesusPed()
+  direct <- makePedigreeMatingLayout(qcd, edgeStyle = "direct")
+  expect_equal(nrow(direct$nodes), 782L)
+  ## Same disclosed curved-duplicate-connector warning as the raw-order
+  ## test above; makePedigreeMatingLayout() warns and carries on.
+  rectilinear <- withCallingHandlers(
+    makePedigreeMatingLayout(qcd, edgeStyle = "rectilinear"),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_equal(nrow(rectilinear$nodes), 1412L)
+  expect_equal(sum(grepl("^__jog_", rectilinear$nodes$id)), 142L)
+  expect_false(any(is.na(rectilinear$nodes$x)))
+  expect_false(any(is.na(rectilinear$nodes$y)))
+})
+
+## ---- orderBySex parameter: REMOVED (Walker/BJL cutover, Phase 3) -------
+## issue #145 Slice 1's own orderBySex toggle (docs/planning/issue145-
+## sire-dam-left-right-placement-plan.md) is removed from
+## makePedigreeMatingLayout()'s public signature this session. The Phase
+## 1b design note (docs/planning/pedigree-diagram-walker-bjl-phase1b-
+## mixed-gen-reconciliation.md:434) already found this parameter
+## "restructured, not preserved unchanged -- eliminated as a separate
+## pass": the new engine folds the male-left/female-right swap
+## unconditionally into Tier 3's B1 derived-point formula (S8.1), with no
+## way to disable it -- .positionMatingUnitForestBJL() (now
+## .positionMatingUnitForest()) never had an orderBySex parameter at all.
+## Grep-confirmed (this session) zero real callers anywhere in R/ or
+## inst/ ever passed orderBySex, so removing the now-dead parameter
+## (rather than keeping it as a silently inert no-op) is the honest
+## choice -- owner-directed via AskUserQuestion. See NEWS.Rmd.
+test_that("makePedigreeMatingLayout() has no orderBySex argument", {
+  expect_false("orderBySex" %in% names(formals(makePedigreeMatingLayout)))
+})
+
+## ---- Issue #133 -- affected/phenotype/genotype status encoding (D1-D8,
+## docs/planning/issue133-affected-status-pedigree-diagram-plan.md) --------
+## Independent implementation of the same optional-column contract
+## makePedigreeDiagramData() gets (D4 -- this function, not that one, is
+## what the live Diagram tab actually renders, R/modPedigree.R:446).
+## Duplicate nodes inherit their real individual's color (matching how
+## they already inherit shape/title); mating-unit nodes get no coloring
+## (a union is not an individual).
+##
+## Track 1 (docs/planning/pedigree-diagram-kinship2-fidelity-remediation-
+## plan.md, found S569): an ABSENT affected column no longer leaves
+## color.background unset on real/duplicate nodes -- they now get an
+## explicit white (#FFFFFF) fill unconditionally, matching kinship2's own
+## "unfilled" default. Mating-unit dot nodes stay NA either way (owner
+## decision, S570) -- they are not individuals and were never part of the
+## affected-status convention. The tooltip's Affected line is unaffected
+## by this change -- still absent when the column itself is absent.
+
+test_that(
+  "makePedigreeMatingLayout sets color.background for affected == TRUE real
+   individuals, propagates the same color to their duplicate nodes, and
+   leaves mating-unit nodes uncolored (D4)", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    affected = c(TRUE, FALSE, NA, FALSE, TRUE, FALSE, FALSE, FALSE),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  expect_true("color.background" %in% names(result$nodes))
+
+  realColor <- result$nodes$color.background[result$nodes$id == "8LKBV9"]
+  expect_equal(realColor, "#CC79A7")
+
+  dupIds <- forest$duplicates$id[forest$duplicates$realId == "8LKBV9"]
+  dupColors <- result$nodes$color.background[result$nodes$id %in% dupIds]
+  expect_true(length(dupColors) > 0L)
+  expect_true(all(dupColors == "#CC79A7"))
+
+  unitColor <- result$nodes$color.background[
+    result$nodes$id %in% forest$matingUnits$id
+  ]
+  expect_true(length(unitColor) > 0L)
+  expect_true(all(is.na(unitColor)))
+})
+
+test_that(
+  "makePedigreeMatingLayout's title for a real individual and every one of
+   its duplicate nodes both gain the Affected: Yes/No/Unknown line", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    affected = c(TRUE, FALSE, NA, FALSE, TRUE, FALSE, FALSE, FALSE),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  realTitle <- result$nodes$title[result$nodes$id == "8LKBV9"]
+  expect_true(grepl("Affected:</b> Yes", realTitle, fixed = TRUE))
+
+  dupIds <- forest$duplicates$id[forest$duplicates$realId == "8LKBV9"]
+  for (dupId in dupIds) {
+    dupTitle <- result$nodes$title[result$nodes$id == dupId]
+    expect_true(grepl("Affected:</b> Yes", dupTitle, fixed = TRUE))
+  }
+
+  unaffectedTitle <- result$nodes$title[result$nodes$id == "8DKELJ"]
+  expect_true(grepl("Affected:</b> No", unaffectedTitle, fixed = TRUE))
+  unknownTitle <- result$nodes$title[result$nodes$id == "G8EBU9"]
+  expect_true(grepl("Affected:</b> Unknown", unknownTitle, fixed = TRUE))
+})
+
+test_that(
+  "makePedigreeMatingLayout coerces a non-logical affected column via
+   as.logical() rather than erroring", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    affected = c("TRUE", "FALSE", "nonsense"),
+    stringsAsFactors = FALSE
+  )
+  result <- makePedigreeMatingLayout(trio)
+  realRows <- result$nodes[result$nodes$id %in% trio$id, ]
+  colors <- setNames(realRows$color.background, realRows$id)
+  expect_equal(colors[["P1"]], "#CC79A7")
+  expect_equal(colors[["P2"]], "#FFFFFF")
+  expect_equal(colors[["C1"]], "#FFFFFF")
+})
+
+test_that(
+  "makePedigreeMatingLayout defaults every real/duplicate node to an
+   explicit white (#FFFFFF) color.background when the ped has no affected
+   column at all (Track 1, docs/planning/pedigree-diagram-kinship2-
+   fidelity-remediation-plan.md), leaves mating-unit dot nodes NA, and
+   leaves the tooltip's Affected line absent, unchanged", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  ## Track 2 flips the default to "rectilinear" -- pin "direct" explicitly:
+  ## the sibling test just below already covers this property surviving
+  ## edgeStyle = "rectilinear" separately.
+  result <- makePedigreeMatingLayout(trio, edgeStyle = "direct")
+  expect_true("color.background" %in% names(result$nodes))
+
+  realRows <- result$nodes[result$nodes$id %in% trio$id, ]
+  expect_true(all(realRows$color.background == "#FFFFFF"))
+
+  unitRows <- result$nodes[!(result$nodes$id %in% trio$id), ]
+  expect_true(nrow(unitRows) > 0L)
+  expect_true(all(is.na(unitRows$color.background)))
+
+  expect_false(any(grepl("Affected", result$nodes$title, fixed = TRUE)))
+})
+
+test_that(
+  "makePedigreeMatingLayout's affected-status color.background survives
+   edgeStyle = \"rectilinear\" -- .addRectilinearWaypoints() must preserve
+   pre-existing node coloring rather than reset it to NA (found this
+   session reading R/makePedigreeDiagramData.R:1117-1119 -- a blanket
+   overwrite that would otherwise silently erase Slice 1's own coloring
+   the moment the Diagram tab is switched to rectilinear mode)", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    affected = c(TRUE, FALSE, NA, FALSE, TRUE, FALSE, FALSE, FALSE),
+    stringsAsFactors = FALSE
+  )
+  result <- makePedigreeMatingLayout(loopPed, edgeStyle = "rectilinear")
+  expect_true("color.background" %in% names(result$nodes))
+
+  realColor <- result$nodes$color.background[result$nodes$id == "8LKBV9"]
+  expect_equal(realColor, "#CC79A7")
+
+  ## Waypoint nodes keep their own, unrelated fully-transparent contract
+  ## (issue #142) -- unaffected by #133's coloring.
+  waypointRows <- result$nodes[grepl("^__drop_|^__bar_|^__proj_",
+                                      result$nodes$id), ]
+  expect_true(nrow(waypointRows) > 0L)
+  expect_true(all(waypointRows$color.background == "rgba(0,0,0,0)"))
+})
+
+test_that(
+  "makePedigreeMatingLayout's Track 1 default white fill survives
+   edgeStyle = \"rectilinear\" for a ped with no affected column at all --
+   .addRectilinearWaypoints() must preserve it rather than reset to NA,
+   same precedent as the affected-column case above", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  result <- makePedigreeMatingLayout(loopPed, edgeStyle = "rectilinear")
+  expect_true("color.background" %in% names(result$nodes))
+
+  realColor <- result$nodes$color.background[result$nodes$id == "8LKBV9"]
+  expect_equal(realColor, "#FFFFFF")
+
+  ## Waypoint nodes keep their own, unrelated fully-transparent contract
+  ## (issue #142) -- unaffected by Track 1's coloring.
+  waypointRows <- result$nodes[grepl("^__drop_|^__bar_|^__proj_",
+                                      result$nodes$id), ]
+  expect_true(nrow(waypointRows) > 0L)
+  expect_true(all(waypointRows$color.background == "rgba(0,0,0,0)"))
+})
+
+## Issue #136 -- name (non-ID) node labels, Slice 2 (D3/D4/D5/D7/D10,
+## docs/planning/issue136-name-labels-pedigree-diagram-plan.md). Mirrors
+## makePedigreeDiagramData()'s own contract (D7: implement in both), but
+## also covers the duplicate-node label-parity DONE criterion this function
+## alone is responsible for (a real individual's duplicate occurrences must
+## read as that individual, name included, not just their bare id -- :906's
+## existing precedent for the id-only case).
+
+test_that(
+  "makePedigreeMatingLayout augments a real individual's label with its
+   name, two-line 'id\\nname' form (D3), when a name column is present", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    name = c("Apollo", "Willow", NA_character_),
+    stringsAsFactors = FALSE
+  )
+  result <- makePedigreeMatingLayout(trio)
+  labels <- setNames(result$nodes$label, result$nodes$id)
+  expect_equal(labels[["P1"]], "P1\nApollo")
+  expect_equal(labels[["P2"]], "P2\nWillow")
+  expect_equal(labels[["C1"]], "C1")  ## D4 fallback -- NA name
+})
+
+test_that(
+  "makePedigreeMatingLayout gives a duplicate-occurrence node the SAME
+   augmented label as its real individual (D7 parity) -- a duplicate must
+   read as that individual, name included, not just its bare id", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    name = c(NA, NA, NA, NA, "Kepler", NA, NA, NA),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  result <- makePedigreeMatingLayout(loopPed)
+  dupIds <- forest$duplicates$id[forest$duplicates$realId == "8LKBV9"]
+  expect_equal(length(dupIds), 1L)  # CHANGED from 2L, Track 4 (gen-first D2)
+
+  realLabel <- result$nodes$label[result$nodes$id == "8LKBV9"]
+  dupLabels <- result$nodes$label[result$nodes$id %in% dupIds]
+  expect_equal(realLabel, "8LKBV9\nKepler")
+  expect_true(all(dupLabels == "8LKBV9\nKepler"))
+})
+
+test_that(
+  "makePedigreeMatingLayout leaves a mating-union node's label empty (D11)
+   regardless of whether a name column is present -- a union is not an
+   individual", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    name = c("Apollo", "Willow", "Comet"),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(trio)
+  result <- makePedigreeMatingLayout(trio)
+  unionRow <- result$nodes[result$nodes$id == forest$matingUnits$id, ]
+  expect_equal(unionRow$label, "")
+})
+
+test_that(
+  "makePedigreeMatingLayout truncates a name longer than the 15-character
+   budget with an ellipsis (D10), and carries the FULL, un-truncated,
+   HTML-escaped name in the tooltip", {
+  longName <- "Grand-Champion-Xerxes-Constantinopolous-The-Magnificent-III"
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    name = c(longName, NA_character_, NA_character_),
+    stringsAsFactors = FALSE
+  )
+  result <- makePedigreeMatingLayout(trio)
+  label <- result$nodes$label[result$nodes$id == "P1"]
+  title <- result$nodes$title[result$nodes$id == "P1"]
+  expect_equal(label, paste0("P1\n", substr(longName, 1L, 15L), "..."))
+  expect_true(grepl(paste0("Name:</b> ", longName), title, fixed = TRUE))
+})
+
+test_that(
+  "makePedigreeMatingLayout produces byte-identical labels/titles for a ped
+   with no name column at all -- backward compatible with every pre-#136
+   fixture/test (the existing pins at :112,115,132,437-438 all still
+   hold)", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  result <- makePedigreeMatingLayout(trio)
+  realRows <- result$nodes[result$nodes$id %in% trio$id, ]
+  expect_equal(realRows$label, realRows$id)
+  expect_false(any(grepl("Name:", result$nodes$title, fixed = TRUE)))
+})
+
+## Issue #137 -- twin/zygosity connector edges, Slice 2 (D6/D7/D9,
+## docs/planning/issue137-twin-zygosity-pedigree-diagram-plan.md). Mirrors
+## makePedigreeDiagramData()'s own D6 styling contract, plus this function's
+## own two extra obligations: D7 (a twin connector always targets the two
+## individuals' REAL node ids, never a __dup_ occurrence, even when one twin
+## is also a duplicated multi-mate parent elsewhere in the diagram) and D9
+## (.addRectilinearWaypoints()'s newEdges construction must not crash with
+## "undefined columns selected" when twin data adds a new `label` edge
+## column). twinRelations is NOT validated internally (checkTwinRelations()
+## is a caller-side concern, same precedent cited in
+## test_makePedigreeDiagramData.R). The default-vs-explicit exact-edge-
+## -column-names backward-compat guard already at :419-442 above continues
+## to hold unmodified -- twinRelations absent adds no new columns.
+
+## Track 2 (issue #160 comment 1, docs/planning/pedigree-diagram-same-row-
+## collision-avoidance-plan.md sec2.2, this session): twin/zygosity
+## connectors are explicitly one of the same-row straight-edge types
+## .resolveEdgeNodeCollisions() proactively covers. Confirmed live this
+## session: all 3 connectors on this real Slice 1 fixture pair genuinely
+## collide with an unrelated node on their own row (verified via direct
+## coordinate inspection before updating this test, not assumed), so each
+## is now split into a 3-segment jog (from -> __jog_N_a -> __jog_N_b ->
+## to) by the SAME repair mechanism as any other straight edge -- while
+## still preserving its own color/label/dashes identity on every segment
+## (the D2-dogleg color-preservation precedent, Track C/S563, generalized
+## here; found and fixed this session after an earlier version of
+## .resolveEdgeNodeCollisions() blanket-reset color and silently dropped
+## the connectors' own identity entirely).
+
+test_that(
+  "makePedigreeMatingLayout adds a distinctly-styled MZ/DZ/UZ connector edge
+   per twin pair on the real Slice 1 fixture pair, using kinship2's own
+   'MZ'/'DZ'/'?' labels, all sharing the same Okabe-Ito #009E73 color (D6,
+   D10, found unwired S494, fixed S506) -- under the Walker/BJL engine
+   (Phase 3 cutover, this session) the MZ pair genuinely collides with an
+   unrelated node on its own row and is Track 2 jogged (3 segments,
+   color/label/dashes preserved); DZ and '?' have re-jogged and un-jogged
+   across engine changes (see the CHANGED trail below) -- under Decision 2
+   spouse duplication (S678) all three connectors collide on the denser
+   duplicate-populated rows and render as 3-segment jogs --
+   re-measured directly, not assumed", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped_twins.csv"),
+    stringsAsFactors = FALSE
+  )
+  twinRelations <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_twin_relations.csv"),
+    stringsAsFactors = FALSE
+  )
+  result <- withCallingHandlers(
+    makePedigreeMatingLayout(ped, twinRelations = twinRelations),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )
+  connectors <- result$edges[!is.na(result$edges$label), ]
+  ## CHANGED from 9L (3 pairs x 3 jog segments each), then 7L (DZ no
+  ## longer jogged: 3 (MZ) + 1 (DZ) + 3 ("?")), then 5L (S647's
+  ## capped-search position changes also un-jogged "?": 3 (MZ) + 1 (DZ) +
+  ## 1 ("?")) -- NOW BACK TO 7L (B1-individual-vs-unrelated-individual
+  ## proximity fix, S662, docs/planning/pedigree-diagram-b1-individual-
+  ## proximity-plan.md: BRI2MW/677E7M was one of the 15 previously-
+  ## undocumented exact-tie pairs the fix resolves on the real fixture
+  ## this twins fixture shares ids with; moving BRI2MW re-collides its own
+  ## "?" connector with an unrelated node on its row, so it re-jogs: 3
+  ## (MZ) + 1 (DZ) + 3 ("?")). Re-measured directly, not assumed.
+  ## CHANGED S678 BACK TO 9L (Decision 2 spouse duplication): the new
+  ## same-row duplicates re-collide the DZ connector too, so all 3
+  ## connectors jog: 3 (MZ) + 3 (DZ) + 3 ("?"). Re-measured directly.
+  expect_equal(nrow(connectors), 9L)
+
+  .expectJoggedConnector <- function(connectors, fromId, toId, label,
+                                      dashPattern) {
+    seg <- connectors[connectors$label == label, ]
+    expect_equal(nrow(seg), 3L)
+    expect_true(all(seg$color == "#009E73"))
+    expect_true(all(vapply(seg$dashes, identical, logical(1L), dashPattern)))
+    ## The 3 segments chain fromId -> ... -> toId through 2 new __jog_
+    ## waypoints (never a __dup_ occurrence -- D7's own contract).
+    expect_true(fromId %in% seg$from)
+    expect_true(toId %in% seg$to)
+    expect_true(all(grepl("^__jog_", setdiff(c(seg$from, seg$to),
+                                              c(fromId, toId)))))
+  }
+
+  .expectJoggedConnector(connectors, "E06FRB", "HV7LZ3", "MZ", FALSE)
+
+  ## DZ: CHANGED from a 3-segment jog to a single direct edge, then
+  ## CHANGED S678 back to a 3-segment jog (Decision 2's same-row
+  ## duplicates re-collide it) -- re-measured each time.
+  .expectJoggedConnector(connectors, "8GSXTQ", "P844CW", "DZ", c(4L, 4L))
+
+  ## "?" CHANGED AGAIN (S662, B1-individual-vs-unrelated-individual
+  ## proximity fix): S647 had left this connector un-jogged (a single
+  ## direct BRI2MW->677E7M edge). This session's fix moves BRI2MW to
+  ## resolve its own exact tie with an unrelated individual on the real
+  ## fixture this twins fixture shares ids with -- the moved position
+  ## newly collides with a different node on its row, so the "?"
+  ## connector re-jogs into 3 segments, same pattern as MZ above.
+  ## Re-measured directly, not assumed.
+  .expectJoggedConnector(connectors, "BRI2MW", "677E7M", "?", c(14L, 8L))
+})
+
+test_that(
+  "makePedigreeMatingLayout's twin connector targets the two individuals'
+   REAL node ids, never a __dup_ occurrence id, even when one twin is also
+   a duplicated multi-mate parent elsewhere in the diagram (D7, Dragon 3)", {
+  ## TW1 mates with both M1 and M2 (2 distinct mating units) -- Slice 1's
+  ## own .buildMatingUnitForest() anchors M1/M2 (fewer total mating units)
+  ## and gives TW1 a real "free" occurrence at one unit plus a __dup_TW1_1
+  ## node at the other. TW2 is TW1's MZ twin, unrelated to any mating unit.
+  ## This ped deliberately does NOT satisfy checkTwinRelations()'s own
+  ## shared-parents/matching-sex domain rules -- the render function does
+  ## not validate twinRelations (see file-header comment above), so this
+  ## test exercises rendering mechanics only, not domain validity.
+  d7Ped <- data.frame(
+    id = c("TW1", "TW2", "M1", "M2", "C1", "C2"),
+    sire = c(NA, NA, NA, NA, "M1", "M2"),
+    dam  = c(NA, NA, NA, NA, "TW1", "TW1"),
+    sex = c("F", "F", "M", "M", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+  twinRelations <- data.frame(
+    id1 = "TW1", id2 = "TW2", code = "MZ twin", stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(d7Ped)
+  expect_true(any(forest$duplicates$realId == "TW1"))  ## sanity: Dragon 3
+                                                          ## scenario is real
+
+  ## Track 2 flips the default to "rectilinear" -- pin "direct" explicitly:
+  ## the sibling test just below already covers edgeStyle = "rectilinear"
+  ## with twinRelations present separately.
+  result <- makePedigreeMatingLayout(d7Ped, twinRelations = twinRelations,
+                                      edgeStyle = "direct")
+  connector <- result$edges[result$edges$label %in% "MZ", ]
+  expect_equal(nrow(connector), 1L)
+  expect_equal(connector$from, "TW1")
+  expect_equal(connector$to, "TW2")
+  expect_false(grepl("^__dup_", connector$from))
+  expect_false(grepl("^__dup_", connector$to))
+  expect_equal(connector$color, "#009E73")
+
+  ## Pre-existing child/mate edges gain label = NA and color = NA alongside
+  ## the connector.
+  nonConnector <- result$edges[!result$edges$label %in% "MZ", ]
+  expect_true(all(is.na(nonConnector$label)))
+  expect_true(all(is.na(nonConnector$color)))
+})
+
+test_that(
+  "makePedigreeMatingLayout's edgeStyle = \"rectilinear\" does not crash
+   with 'undefined columns selected' when twinRelations is present (D9) --
+   the connector edge is not part of .buildMatingUnitForest()'s
+   childEdges/matingUnits structure the waypoint routing logic rewrites,
+   and keeps its #009E73 color whether it passes through unchanged or (as
+   under the Walker/BJL engine, Phase 3 cutover, this session) gets
+   Track-2 jogged for a genuine same-row collision -- Dragon: found S506,
+   .addRectilinearWaypoints() blanket-reset every kept edge's color to NA
+   before this fix", {
+  d7Ped <- data.frame(
+    id = c("TW1", "TW2", "M1", "M2", "C1", "C2"),
+    sire = c(NA, NA, NA, NA, "M1", "M2"),
+    dam  = c(NA, NA, NA, NA, "TW1", "TW1"),
+    sex = c("F", "F", "M", "M", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+  twinRelations <- data.frame(
+    id1 = "TW1", id2 = "TW2", code = "MZ twin", stringsAsFactors = FALSE
+  )
+  ## Walker/BJL cutover (Phase 3, this session): found during GREEN that
+  ## TW1/TW2 now genuinely collide with an unrelated node on their own row
+  ## under the new engine's different coordinate distribution (they did
+  ## not under the OLD algorithm) -- the connector is Track 2 jogged into
+  ## 3 segments, same as the "genuinely collide" pattern already
+  ## documented for the real-fixture twin connectors elsewhere in this
+  ## file. Re-measured directly, not assumed.
+  result <- withCallingHandlers(
+    makePedigreeMatingLayout(d7Ped, edgeStyle = "rectilinear",
+                              twinRelations = twinRelations),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )
+  connector <- result$edges[result$edges$label %in% "MZ", ]
+  expect_equal(nrow(connector), 3L)
+  expect_true(all(connector$color == "#009E73"))
+  expect_true(all(vapply(connector$dashes, identical, logical(1L), FALSE)))
+  expect_true("TW1" %in% connector$from)
+  expect_true("TW2" %in% connector$to)
+  expect_true(all(grepl("^__jog_", setdiff(c(connector$from, connector$to),
+                                            c("TW1", "TW2")))))
+})
+
+## ---- Finding #2 (S549 kinship2 supplement audit): consanguineous-mating
+## visual marker (BACKLOG.md Housekeeping) -- kinship2's own plot method
+## draws a mating between two blood-related individuals with a doubled/
+## thickened connecting line; makePedigreeMatingLayout() renders every
+## mating unit identically regardless of kinship(sire, dam). Detected
+## directly from the sire/dam/gen columns this function already requires
+## (a structural fact of the pedigree, unlike the optional name/
+## twinRelations sidecars above) -- not gated behind a UI toggle, matching
+## kinship2's own unconditional convention. Styling: Okabe-Ito colorblind-
+## safe vermillion (#D55E00, unused elsewhere in this file -- #009E73 is
+## the twin connector, #CC79A7 is affected, #2B7CE9 is the waypoint-edge
+## blue) plus a thicker width (4 vs vis.js's own default ~1), applied to
+## the 2 spouse-to-union mate-line edges. Scoped to edgeStyle = "direct"
+## this session (owner-directed hold, S555) -- edgeStyle = "rectilinear"
+## propagation is a follow-up BACKLOG item.
+
+test_that(
+  "makePedigreeMatingLayout marks the 2 mate-line edges of a
+   consanguineous mating unit (kinship(sire, dam) > 0) with a distinct
+   color/width, using the real loop fixture's own genuine father-daughter
+   mating (8LKBV9 x FJIB3R, kinship = 0.25)", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  consanguineousUnit <- forest$matingUnits$id[
+    forest$matingUnits$sire == "8LKBV9" & forest$matingUnits$dam == "FJIB3R"
+  ]
+  expect_equal(length(consanguineousUnit), 1L)
+
+  result <- makePedigreeMatingLayout(loopPed)
+  expect_true("color" %in% names(result$edges))
+  expect_true("width" %in% names(result$edges))
+  mateEdges <- result$edges[result$edges$to == consanguineousUnit, ]
+  expect_equal(nrow(mateEdges), 2L)
+  expect_equal(mateEdges$color, rep("#D55E00", 2L))
+  expect_equal(mateEdges$width, rep(4, 2L))
+})
+
+test_that(
+  "makePedigreeMatingLayout leaves every mate-line edge of a
+   NON-consanguineous mating unit at NA color/width, even on a fixture
+   that has one genuinely consanguineous unit elsewhere (selective
+   marking, not a blanket style change)", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  consanguineousUnit <- forest$matingUnits$id[
+    forest$matingUnits$sire == "8LKBV9" & forest$matingUnits$dam == "FJIB3R"
+  ]
+  otherUnits <- setdiff(forest$matingUnits$id, consanguineousUnit)
+  expect_equal(length(otherUnits), 3L)
+
+  result <- makePedigreeMatingLayout(loopPed)
+  expect_true("color" %in% names(result$edges))
+  expect_true("width" %in% names(result$edges))
+  otherMateEdges <- result$edges[result$edges$to %in% otherUnits, ]
+  expect_equal(nrow(otherMateEdges), 6L)
+  expect_equal(otherMateEdges$color, rep(NA_character_, 6L))
+  expect_equal(otherMateEdges$width, rep(NA_real_, 6L))
+})
+
+test_that(
+  "makePedigreeMatingLayout leaves every mate-line edge at NA color/width
+   on a pedigree with no consanguineous mating at all (no false
+   positives)", {
+  ped <- data.frame(
+    id = c("R1", "R2", sprintf("D%d", 1:4)),
+    sire = c(NA, NA, "R1", "D1", "D2", "D3"),
+    dam = c(NA, NA, "R2", NA, NA, NA),
+    sex = c("M", "F", rep("M", 4L)),
+    gen = c(0L, 0L, 1:4),
+    stringsAsFactors = FALSE
+  )
+  ## Track 2 flips the default to "rectilinear" -- pin "direct" explicitly:
+  ## `!dashes` selects EVERY non-dashed edge, which under rectilinear also
+  ## catches the new waypoint-touching edges (explicit, non-NA color by
+  ## design -- test_addRectilinearWaypoints.R's own D1/D2 vis.js
+  ## color-inherit fix), unlike the sibling tests above that select by
+  ## `to == unit` and so are unaffected either way.
+  result <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  expect_true("color" %in% names(result$edges))
+  expect_true("width" %in% names(result$edges))
+  mateEdges <- result$edges[!result$edges$dashes, ]
+  expect_true(nrow(mateEdges) > 0L)
+  expect_true(all(is.na(mateEdges$color)))
+  expect_true(all(is.na(mateEdges$width)))
+})
+
+test_that(
+  "makePedigreeMatingLayout never treats a mating unit with a dangling
+   (no own row in 'ped') parent as consanguineous -- kinship() cannot be
+   evaluated for an id absent from 'ped', so the safe default is FALSE,
+   and no crash occurs (mirrors the issue #154 dangling-parent precedent
+   already established for the D2 dogleg loop)", {
+  ped <- data.frame(
+    id = c("GRANDSIRE", "SIRE", "CHILD"),
+    sire = c(NA, "GRANDSIRE", "SIRE"),
+    dam = c(NA, NA, "DANGLING_DAM"),
+    sex = c("M", "M", "F"),
+    gen = c(0L, 1L, 2L),
+    stringsAsFactors = FALSE
+  )
+  ## Track 2 flips the default to "rectilinear" -- pin "direct" explicitly,
+  ## since this block asserts raw (unrewritten) mate-edge color/width.
+  result <- expect_error(
+    makePedigreeMatingLayout(ped, edgeStyle = "direct"), NA
+  )
+  expect_true("color" %in% names(result$edges))
+  expect_true("width" %in% names(result$edges))
+  mateEdges <- result$edges[!result$edges$dashes, ]
+  expect_true(nrow(mateEdges) > 0L)
+  expect_true(all(is.na(mateEdges$color)))
+  expect_true(all(is.na(mateEdges$width)))
+})
+
+## ---- Track C (kinship2 supplement full-reproduction plan,
+## docs/planning/kinship2-supplement-full-reproduction-plan.md §5; S549
+## Finding #2's own deferred follow-up, BACKLOG.md Housekeeping): finish
+## edgeStyle = "rectilinear" consanguineous-marker propagation onto D2
+## dogleg-rerouted projection edges. Originally (S563), this fixture forced
+## exactly one dogleg via an anchor-side gen mismatch (A anchored 2 units
+## at differing gens under the old founder/mate-count D2 tie-break) and
+## caught a real marker-propagation gap on the doglegged side.
+##
+## Track 4 (gen-aware D2, this session): CHANGED -- under the gen-first
+## tie-break, X (gen 3) now beats A (gen 1) for the A x X union (X anchors
+## it instead), so A no longer anchors any unit whose gen differs from his
+## own; the consanguineous union A x Y (both gen 1) is the only unit A
+## anchors, and it already matches his own raw gen. Track 4's own
+## structural invariant (§2.3: genOf[[anchor]] == unitGen, unconditionally)
+## makes the anchor-side D2 dogleg permanently unreachable for ANY fixture,
+## not just this one -- .addRectilinearWaypoints()'s D2 loop is retained
+## (dead code under the current invariant, kept for defensive symmetry
+## with the non-anchor side, which never had this guarantee), but nothing
+## can trigger it anymore. This test now confirms exactly that: 0
+## projection nodes, and the marker propagates correctly on the
+## now-exclusively-direct paths on both sides.
+
+test_that(
+  "makePedigreeMatingLayout (edgeStyle = \"rectilinear\") propagates a
+   consanguineous mating unit's color/width marker onto both direct
+   edges, with 0 D2 projection nodes -- Track 4's structural invariant
+   makes the anchor-side dogleg this fixture used to force (S563)
+   permanently unreachable", {
+  ped <- data.frame(
+    id   = c("P1", "P2", "A", "Y", "X", "W", "C1", "C2", "GC"),
+    sire = c(NA, NA, "P1", "P1", NA, NA, "A", "Y", "A"),
+    dam  = c(NA, NA, "P2", "P2", NA, NA, "X", "W", "Y"),
+    sex  = c("M", "F", "M", "F", "F", "M", "F", "M", "M"),
+    gen  = c(0L, 0L, 1L, 1L, 3L, 1L, 4L, 2L, 2L),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  consangUnit <- forest$matingUnits$id[
+    forest$matingUnits$sire == "A" & forest$matingUnits$dam == "Y"
+  ]
+  expect_equal(length(consangUnit), 1L)
+  expect_equal(forest$matingUnits$anchor[forest$matingUnits$id == consangUnit],
+               "A")
+  ## A x X's anchor CHANGED from A to X (gen-first: X's gen 3 beats A's 1)
+  ## -- the mechanism that used to force A's own dogleg no longer applies.
+  otherUnit <- forest$matingUnits$id[
+    forest$matingUnits$sire == "A" & forest$matingUnits$dam == "X"
+  ]
+  expect_equal(forest$matingUnits$anchor[forest$matingUnits$id == otherUnit],
+               "X")
+
+  result <- makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")
+  projNodeId <- sprintf("__proj_A_%s", consangUnit)
+  expect_false(projNodeId %in% result$nodes$id)
+  expect_false(any(grepl("^__proj_", result$nodes$id)))
+
+  ## A's side: a plain direct edge into the union, carrying the marker.
+  aEdge <- result$edges[result$edges$from == "A" &
+                            result$edges$to == consangUnit, ]
+  expect_equal(nrow(aEdge), 1L)
+  expect_equal(aEdge$color, "#D55E00")
+  expect_equal(aEdge$width, 4)
+
+  ## Y's side: her duplicate-node edge, carrying the marker (unchanged
+  ## from before -- her side never doglegged either way).
+  yEdge <- result$edges[grepl("^__dup_Y_", result$edges$from) &
+                            result$edges$to == consangUnit, ]
+  expect_equal(nrow(yEdge), 1L)
+  expect_equal(yEdge$color, "#D55E00")
+  expect_equal(yEdge$width, 4)
+})
+
+test_that(
+  "makePedigreeMatingLayout's consanguinity marker coexists correctly
+   with twinRelations (D6/D7's own twin connector edges) -- no column
+   conflict, no crash, both features render independently", {
+  ## Extends the existing D7 twin-connector fixture (:857-864 above) with
+  ## one added consanguineous mating: TW1 (already TW2's declared MZ
+  ## twin, mating with unrelated M1/M2) ALSO mates with her own daughter
+  ## C1 (from the TW1 x M1 union) to produce C3.
+  d7Ped <- data.frame(
+    id = c("TW1", "TW2", "M1", "M2", "C1", "C2", "C3"),
+    sire = c(NA, NA, NA, NA, "M1", "M2", "TW1"),
+    dam  = c(NA, NA, NA, NA, "TW1", "TW1", "C1"),
+    sex = c("F", "F", "M", "M", "F", "M", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 1L, 2L),
+    stringsAsFactors = FALSE
+  )
+  twinRelations <- data.frame(
+    id1 = "TW1", id2 = "TW2", code = "MZ twin", stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(d7Ped)
+  consanguineousUnit <- forest$matingUnits$id[
+    forest$matingUnits$sire == "TW1" & forest$matingUnits$dam == "C1"
+  ]
+  expect_equal(length(consanguineousUnit), 1L)
+
+  ## Walker/BJL cutover (Phase 3, this session): found during GREEN that
+  ## TW1/TW2 now genuinely collide with an unrelated node on their own row
+  ## under the new engine (same finding as the sibling D7 fixture test
+  ## above) -- the connector is Track 2 jogged into 3 segments, re-measured
+  ## directly.
+  result <- withCallingHandlers(
+    makePedigreeMatingLayout(d7Ped, twinRelations = twinRelations),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )
+
+  ## The twin connector still renders correctly, unaffected by the
+  ## consanguinity marker below.
+  connector <- result$edges[result$edges$label %in% "MZ", ]
+  expect_equal(nrow(connector), 3L)
+  expect_true(all(connector$color == "#009E73"))
+
+  ## The consanguineous union's own mate edges are marked, distinctly
+  ## from the twin connector's color. (result$edges$dashes is a list
+  ## column here -- twinRelations makes some rows carry a numeric dash
+  ## pattern -- so filter by 'to' alone, not '!dashes'.)
+  mateEdges <- result$edges[result$edges$to == consanguineousUnit, ]
+  expect_equal(nrow(mateEdges), 2L)
+  expect_equal(mateEdges$color, rep("#D55E00", 2L))
+  expect_equal(mateEdges$width, rep(4, 2L))
+})
+
+## ---- isolated-individual suppression (issue #164, Dragon 1-3, plan
+## docs/planning/pedigree-diagram-isolated-individual-suppression-plan.md,
+## Phase 1 implemented S644) -----------------------------------------------
+##
+## An isolated individual (.findIsolatedIds() -- no known parent, never a
+## parent, not twinRelations-connected -- P5's exact profile) is no longer
+## rendered, matching kinship2's own align.pedigree() convention. When
+## suppression would empty the diagram entirely (issue #164's own crash
+## condition -- every individual isolated), the function returns a
+## fully-typed empty result instead of crashing (Dragon 3, ratified 3B).
+## edgeStyle = "direct" is used throughout this section to keep assertions
+## focused on suppression, not routing (same-row collision/jog behavior is
+## covered exhaustively elsewhere in this file).
+
+test_that(
+  "makePedigreeMatingLayout suppresses an isolated individual (P5's exact
+   profile) from an otherwise-connected pedigree, reporting it via
+   isolatedIds, leaving the connected individuals' nodes/edges unaffected",
+  {
+  ped <- data.frame(
+    id = c("P1", "P2", "C1", "P5"),
+    sire = c(NA, NA, "P1", NA), dam = c(NA, NA, "P2", NA),
+    sex = c("M", "F", "M", "F"), gen = c(0L, 0L, 1L, 0L),
+    stringsAsFactors = FALSE
+  )
+  result <- expect_message(
+    makePedigreeMatingLayout(ped, edgeStyle = "direct"), "P5"
+  )
+  expect_false("P5" %in% result$nodes$id)
+  expect_true(all(c("P1", "P2", "C1") %in% result$nodes$id))
+  expect_equal(result$isolatedIds, "P5")
+  ## C1's parent-child relationship is unaffected by P5's suppression.
+  expect_true(any(result$edges$to == "C1" | result$edges$from == "C1" |
+                     grepl("C1", result$edges$to) |
+                     grepl("C1", result$edges$from)))
+})
+
+test_that(
+  "makePedigreeMatingLayout no longer crashes on issue #164's own minimal
+   reproduction (a 2-row all-founder pedigree, every individual isolated)
+   -- returns a fully-typed empty result plus isolatedIds instead", {
+  ## Verbatim from https://github.com/rmsharp/nprcgenekeepr/issues/164
+  ped <- data.frame(
+    id = c("A", "B"), sire = c(NA, NA), dam = c(NA, NA),
+    sex = c("M", "F"), gen = c(0L, 0L),
+    stringsAsFactors = FALSE
+  )
+  result <- expect_message(
+    makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  )
+  expect_equal(nrow(result$nodes), 0L)
+  expect_equal(nrow(result$edges), 0L)
+  expect_length(result$duplicateToReal, 0L)
+  expect_setequal(result$isolatedIds, c("A", "B"))
+})
+
+test_that(
+  "makePedigreeMatingLayout's issue #164 fix holds under edgeStyle =
+   'rectilinear' too -- the crash was unconditional, before the edgeStyle
+   branch, per the issue's own text", {
+  ped <- data.frame(
+    id = c("A", "B"), sire = c(NA, NA), dam = c(NA, NA),
+    sex = c("M", "F"), gen = c(0L, 0L),
+    stringsAsFactors = FALSE
+  )
+  result <- expect_message(
+    makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")
+  )
+  expect_equal(nrow(result$nodes), 0L)
+  expect_equal(nrow(result$edges), 0L)
+  expect_setequal(result$isolatedIds, c("A", "B"))
+})
+
+test_that(
+  "makePedigreeMatingLayout also handles issue #164's single-individual
+   variant ('also reproduces with a single individual') -- same
+   fully-typed empty-result contract", {
+  ped <- data.frame(
+    id = "A", sire = NA_character_, dam = NA_character_,
+    sex = "M", gen = 0L, stringsAsFactors = FALSE
+  )
+  result <- expect_message(
+    makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  )
+  expect_equal(nrow(result$nodes), 0L)
+  expect_equal(nrow(result$edges), 0L)
+  expect_equal(result$isolatedIds, "A")
+})
+
+test_that(
+  "makePedigreeMatingLayout does NOT suppress a twin pair that has no
+   sire, no dam, and no children -- structurally isolated by the
+   parent/child predicate alone, but genuinely connected via twinRelations
+   (found empirically S643)", {
+  ped <- data.frame(
+    id = c("TW1", "TW2"), sire = c(NA, NA), dam = c(NA, NA),
+    sex = c("F", "F"), gen = c(0L, 0L),
+    stringsAsFactors = FALSE
+  )
+  twinRelations <- data.frame(
+    id1 = "TW1", id2 = "TW2", code = "MZ twin", stringsAsFactors = FALSE
+  )
+  result <- expect_no_message(
+    makePedigreeMatingLayout(ped, edgeStyle = "direct",
+                              twinRelations = twinRelations)
+  )
+  expect_true(all(c("TW1", "TW2") %in% result$nodes$id))
+  expect_equal(result$isolatedIds, character(0))
+  connector <- result$edges[result$edges$label %in% "MZ", ]
+  expect_equal(nrow(connector), 1L)
+  expect_equal(connector$color, "#009E73")
+})
+
+test_that(
+  "makePedigreeMatingLayout emits no suppression message when nothing is
+   isolated", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  result <- expect_no_message(
+    makePedigreeMatingLayout(trio, edgeStyle = "direct")
+  )
+  expect_equal(result$isolatedIds, character(0))
+})
+
+## ---- S666 RED: conditional-shift rule, end-to-end vs kinship2 -----------
+## docs/planning/pedigree-diagram-parent-symmetric-placement-plan.md's own
+## Impact Analysis table: "end-to-end assertion using Track B full itself,
+## compared numerically against kinship2::align.pedigree() (the exact
+## method used to find this defect) rather than only structural edge-list
+## comparison." kinship2 ground truth is computed INLINE, live, in this
+## test -- not a hardcoded literal -- so it can never drift from whatever
+## kinship2 version is actually installed.
+## RETIRED (Migration Path Phase 2, docs/planning/pedigree-diagram-joint-qp-
+## solver-plan.md Decision 3/Rationale): this test pinned our engine's
+## individual-only x positions to an EXACT bit-match (up to origin shift)
+## against a fresh kinship2::align.pedigree() run on Track B full -- true
+## while both engines shared kinship2's own uniform 1-unit adjacent-pair
+## floor. Decision 3 deliberately replaces that with this project's own
+## radius-based clearance table (individual-individual floor 0.4167, not
+## 1.0), and Decision 4 adds two objective terms (union centering, duplicate
+## proximity) kinship2 has no analogue for -- both disclosed divergences,
+## not defects. Measured directly this session: up to 2.08 raw-unit
+## deviation from kinship2 on this exact fixture, not floating-point noise.
+## No future re-derivation restores bit-exactness -- permanently superseded
+## by design. (The census script, data-raw/pedigreeDrawingErrorCensus.R,
+## remains the project's own kinship2-baseline comparison mechanism.)
+
+## ---- Prep D-1 (S744): optional precomputed kinshipMatrix argument --------
+## The layout core's ONE genetics back-reference is the internal
+## kinship() call that flags consanguineous mating units (S549 Finding #2,
+## fixed S555). Prep D-1 (queued S738 from the accepted package-split
+## disposition; scoping doc pedigree-diagram-package-split-scoping-2026-09-02
+## §4 D3 option ii) inverts it: makePedigreeMatingLayout() gains an optional
+## `kinshipMatrix` argument -- a precomputed kinship matrix with row/col
+## names = individual ids. Default NULL computes kinship(ped$id, ped$sire,
+## ped$dam, ped$gen, twinRelations = twinRelations) exactly as before, so
+## no existing caller changes. When supplied, the internal kinship() call
+## is bypassed entirely -- the injected matrix is the sole consanguinity
+## source (twinRelations continues to drive connector edges only; a caller
+## wanting twin-corrected consanguinity bakes it into the matrix).
+## edgeStyle = "direct" throughout -- these tests assert raw mate-edge
+## color/width, not routing (file-local precedent, e.g. the dangling-parent
+## consanguinity test above).
+
+test_that(
+  "makePedigreeMatingLayout(kinshipMatrix = <kinship()'s own result>)
+   returns output identical to the default NULL path (the injected matrix
+   is a drop-in, not a behavior change) on the real loop fixture", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  kmat <- kinship(loopPed$id, loopPed$sire, loopPed$dam, loopPed$gen)
+  default <- makePedigreeMatingLayout(loopPed, edgeStyle = "direct")
+  injected <- makePedigreeMatingLayout(loopPed, edgeStyle = "direct",
+                                        kinshipMatrix = kmat)
+  expect_identical(injected, default)
+})
+
+test_that(
+  "makePedigreeMatingLayout with an all-zero kinshipMatrix marks NO mating
+   unit on a fixture whose default path genuinely marks one -- proving the
+   internal kinship() call is bypassed, not merely supplemented", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  ids <- loopPed$id
+  zeroKmat <- matrix(0.0, nrow = length(ids), ncol = length(ids),
+                      dimnames = list(ids, ids))
+  forest <- .buildMatingUnitForest(loopPed)
+  consanguineousUnit <- forest$matingUnits$id[
+    forest$matingUnits$sire == "8LKBV9" & forest$matingUnits$dam == "FJIB3R"
+  ]
+  expect_equal(length(consanguineousUnit), 1L)
+
+  result <- makePedigreeMatingLayout(loopPed, edgeStyle = "direct",
+                                      kinshipMatrix = zeroKmat)
+  expect_true("color" %in% names(result$edges))
+  expect_true("width" %in% names(result$edges))
+  mateEdges <- result$edges[result$edges$to == consanguineousUnit, ]
+  expect_equal(nrow(mateEdges), 2L)
+  expect_equal(mateEdges$color, rep(NA_character_, 2L))
+  expect_equal(mateEdges$width, rep(NA_real_, 2L))
+})
+
+test_that(
+  "makePedigreeMatingLayout marks a mating unit the default path would
+   NEVER mark when the injected kinshipMatrix says the pair is kin --
+   consanguinity flags derive from the injected matrix alone", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  ids <- trio$id
+  kmat <- matrix(0.0, nrow = 3L, ncol = 3L, dimnames = list(ids, ids))
+  diag(kmat) <- 0.5
+  kmat["P1", "P2"] <- 0.25
+  kmat["P2", "P1"] <- 0.25
+  forest <- .buildMatingUnitForest(trio)
+  unitId <- forest$matingUnits$id[
+    forest$matingUnits$sire == "P1" & forest$matingUnits$dam == "P2"
+  ]
+  expect_equal(length(unitId), 1L)
+
+  result <- makePedigreeMatingLayout(trio, edgeStyle = "direct",
+                                      kinshipMatrix = kmat)
+  mateEdges <- result$edges[result$edges$to == unitId, ]
+  expect_equal(nrow(mateEdges), 2L)
+  expect_equal(mateEdges$color, rep("#D55E00", 2L))
+  expect_equal(mateEdges$width, rep(4, 2L))
+})
+
+test_that(
+  "makePedigreeMatingLayout leaves a mating unit safely unmarked (no
+   error) when the injected kinshipMatrix omits one of its parents --
+   the same match() dangling-id guard the default path already has", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    stringsAsFactors = FALSE
+  )
+  kmat <- kinship(loopPed$id, loopPed$sire, loopPed$dam, loopPed$gen)
+  ## Drop the consanguineous unit's dam entirely: its flag cannot be
+  ## evaluated, so the safe default is FALSE -- mirroring the dangling-
+  ## parent precedent above.
+  kmatPartial <- as.matrix(kmat)
+  keep <- rownames(kmatPartial) != "FJIB3R"
+  kmatPartial <- kmatPartial[keep, keep]
+  forest <- .buildMatingUnitForest(loopPed)
+  consanguineousUnit <- forest$matingUnits$id[
+    forest$matingUnits$sire == "8LKBV9" & forest$matingUnits$dam == "FJIB3R"
+  ]
+
+  result <- expect_error(
+    makePedigreeMatingLayout(loopPed, edgeStyle = "direct",
+                              kinshipMatrix = kmatPartial), NA
+  )
+  mateEdges <- result$edges[result$edges$to == consanguineousUnit, ]
+  expect_equal(nrow(mateEdges), 2L)
+  expect_equal(mateEdges$color, rep(NA_character_, 2L))
+  expect_equal(mateEdges$width, rep(NA_real_, 2L))
+})
+
+test_that(
+  "makePedigreeMatingLayout rejects an invalid kinshipMatrix (not
+   matrix-like, or missing row/col names) with a clear error naming the
+   argument -- never a silent fall-through to the default path", {
+  trio <- data.frame(
+    id = c("P1", "P2", "C1"),
+    sire = c(NA, NA, "P1"), dam = c(NA, NA, "P2"),
+    sex = c("M", "F", "M"), gen = c(0L, 0L, 1L),
+    stringsAsFactors = FALSE
+  )
+  ## A matrix with no dimnames: ids cannot be matched.
+  expect_error(
+    makePedigreeMatingLayout(trio, edgeStyle = "direct",
+                              kinshipMatrix = matrix(0.0, 3L, 3L)),
+    "kinshipMatrix"
+  )
+  ## Not a matrix at all.
+  expect_error(
+    makePedigreeMatingLayout(trio, edgeStyle = "direct",
+                              kinshipMatrix = c(P1 = 0.5, P2 = 0.5)),
+    "kinshipMatrix"
+  )
+})
+
+test_that(
+  "makePedigreeMatingLayout with an injected kinshipMatrix still renders
+   twinRelations connector edges, while the matrix alone decides the
+   consanguinity marker (an all-zero matrix suppresses the marker the
+   default twin-threaded kinship() path would compute)", {
+  ## The D7 fixture above: TW1 (MZ twin of TW2) mates with her own
+  ## daughter C1 -- consanguineous under the default path.
+  d7Ped <- data.frame(
+    id = c("TW1", "TW2", "M1", "M2", "C1", "C2", "C3"),
+    sire = c(NA, NA, NA, NA, "M1", "M2", "TW1"),
+    dam  = c(NA, NA, NA, NA, "TW1", "TW1", "C1"),
+    sex = c("F", "F", "M", "M", "F", "M", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 1L, 2L),
+    stringsAsFactors = FALSE
+  )
+  twinRelations <- data.frame(
+    id1 = "TW1", id2 = "TW2", code = "MZ twin", stringsAsFactors = FALSE
+  )
+  ids <- d7Ped$id
+  zeroKmat <- matrix(0.0, nrow = length(ids), ncol = length(ids),
+                      dimnames = list(ids, ids))
+
+  result <- makePedigreeMatingLayout(d7Ped, edgeStyle = "direct",
+                                      twinRelations = twinRelations,
+                                      kinshipMatrix = zeroKmat)
+  ## Twin connector still renders -- twinRelations' connector role is
+  ## untouched by the injection.
+  connector <- result$edges[result$edges$label %in% "MZ", ]
+  expect_true(nrow(connector) >= 1L)
+  expect_true(all(connector$color == "#009E73"))
+  ## But no consanguinity marker anywhere: the all-zero injected matrix
+  ## wins over what kinship(..., twinRelations) would have computed.
+  expect_false(any(result$edges$color %in% "#D55E00"))
+})
+
+test_that(
+  "makePedigreeMatingLayout's all-isolated typed-empty-result contract
+   (issue #164) is unchanged when a kinshipMatrix is supplied", {
+  ped <- data.frame(
+    id = c("A", "B"), sire = c(NA, NA), dam = c(NA, NA),
+    sex = c("M", "F"), gen = c(0L, 0L),
+    stringsAsFactors = FALSE
+  )
+  kmat <- matrix(c(0.5, 0.0, 0.0, 0.5), nrow = 2L,
+                  dimnames = list(c("A", "B"), c("A", "B")))
+  result <- expect_message(
+    makePedigreeMatingLayout(ped, edgeStyle = "direct",
+                              kinshipMatrix = kmat)
+  )
+  expect_equal(nrow(result$nodes), 0L)
+  expect_equal(nrow(result$edges), 0L)
+  expect_length(result$duplicateToReal, 0L)
+  expect_setequal(result$isolatedIds, c("A", "B"))
+})
+
+## ---- S1028 -- deceased marker (BACKLOG.md "Two kinship2 drawing features",
+## feature 1 of 2) ------------------------------------------------------------
+## kinship2 draws a diagonal slash through a deceased animal's symbol. The
+## owner's rulings (S1028): the marker is for an animal whose `status` reads
+## DECEASED and for nothing else. The exit date cannot say: it is filled for a
+## shipment as well as a death (the 3,694-animal ExamplePedigree.csv has 1,990
+## exit dates = 1,625 DECEASED + 365 SHIPPED), and a pedigree with no `status`
+## column marks nobody. The layout's nodes carry a logical `deceased` column,
+## never NA; R/modPedigree.R draws the slash from it. A repeat-appearance
+## node reads as its real animal (as it does for fill and label); a mating
+## union dot and a waypoint node are not animals and are never marked.
+
+.deceasedFixture <- function(status = NULL) {
+  ped <- data.frame(
+    id = c("P1", "P2", "C1", "C2", "C3"),
+    sire = c(NA, NA, "P1", "P1", "P1"),
+    dam = c(NA, NA, "P2", "P2", "P2"),
+    sex = c("M", "F", "F", "M", "F"),
+    gen = c(0L, 0L, 1L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+  if (!is.null(status)) ped$status <- status
+  ped
+}
+
+test_that(
+  "makePedigreeMatingLayout marks only an animal whose status reads DECEASED:
+   the nodes get a logical deceased column, TRUE for P1 alone, never NA", {
+  ped <- .deceasedFixture(c("DECEASED", "ALIVE", "SHIPPED", "UNKNOWN", NA))
+  nodes <- makePedigreeMatingLayout(ped)$nodes
+  expect_true("deceased" %in% names(nodes))
+  expect_type(nodes$deceased, "logical")
+  expect_false(anyNA(nodes$deceased))
+  expect_equal(nodes$deceased[match(ped$id, nodes$id)],
+               c(TRUE, FALSE, FALSE, FALSE, FALSE))
+})
+
+test_that(
+  "makePedigreeMatingLayout reads a factor status, the type qcStudbook()
+   returns, the same way as a character one", {
+  ped <- .deceasedFixture(factor(
+    c("DECEASED", "ALIVE", "SHIPPED", "UNKNOWN", NA),
+    levels = c("ALIVE", "DECEASED", "SHIPPED", "UNKNOWN")
+  ))
+  nodes <- makePedigreeMatingLayout(ped)$nodes
+  expect_type(nodes$deceased, "logical")
+  expect_equal(nodes$deceased[match(ped$id, nodes$id)],
+               c(TRUE, FALSE, FALSE, FALSE, FALSE))
+})
+
+test_that(
+  "makePedigreeMatingLayout marks nobody, and still returns the deceased
+   column, when the pedigree has no status column", {
+  nodes <- makePedigreeMatingLayout(.deceasedFixture())$nodes
+  expect_true("deceased" %in% names(nodes))
+  expect_identical(nodes$deceased, rep(FALSE, nrow(nodes)))
+})
+
+test_that(
+  "makePedigreeMatingLayout gives every repeat-appearance node of a DECEASED
+   animal the mark, and no mating-union dot or waypoint node ever has it,
+   in both edge styles", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    status = c("ALIVE", "ALIVE", "ALIVE", "ALIVE",
+               "DECEASED", "ALIVE", "ALIVE", "ALIVE"),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  dupIds <- forest$duplicates$id[forest$duplicates$realId == "8LKBV9"]
+  expect_true(length(dupIds) > 0L)
+
+  for (style in c("rectilinear", "direct")) {
+    nodes <- makePedigreeMatingLayout(loopPed, edgeStyle = style)$nodes
+    expect_true("deceased" %in% names(nodes), info = style)
+    marked <- nodes$id[nodes$deceased %in% TRUE]
+    expect_setequal(marked, c("8LKBV9", dupIds))
+    notAnimal <- grepl("^__(union|drop|bar)_", nodes$id)
+    expect_true(any(notAnimal), info = style)
+    expect_false(any(nodes$deceased[notAnimal] %in% TRUE), info = style)
+  }
+})
+
+test_that(
+  "makePedigreeMatingLayout's empty result, when every animal is isolated,
+   still carries the deceased column, as a zero-length logical", {
+  ped <- data.frame(
+    id = c("X", "Y"), sire = c(NA, NA), dam = c(NA, NA),
+    sex = c("M", "F"), gen = c(0L, 0L),
+    status = c("DECEASED", "ALIVE"), stringsAsFactors = FALSE
+  )
+  result <- suppressMessages(makePedigreeMatingLayout(ped))
+  expect_equal(nrow(result$nodes), 0L)
+  expect_true("deceased" %in% names(result$nodes))
+  expect_identical(result$nodes$deceased, logical(0L))
+})
+
+## S1028 mutation gap: the collision repair adds __jog_ waypoint nodes through
+## .matchColumns(), which backfills a column the new node lacks; a logical
+## column used to be backfilled with NA, so the jog nodes (142 on the QC'd
+## bundled fixture under the default style) read deceased NA, not FALSE. No
+## other fixture here produces a jog node.
+
+test_that(
+  "makePedigreeMatingLayout gives the __jog_ waypoint nodes of the QC'd bundled
+   fixture a deceased value of FALSE, never NA, while real DECEASED animals
+   keep theirs", {
+  qcd <- qcdRhesusPed()
+  qcd$status <- ifelse(seq_len(nrow(qcd)) %% 7L == 0L, "DECEASED", "ALIVE")
+  nodes <- makePedigreeMatingLayout(qcd)$nodes
+  jog <- grepl("^__jog_", nodes$id)
+  expect_gt(sum(jog), 0L)
+  expect_false(anyNA(nodes$deceased))
+  expect_false(any(nodes$deceased[jog]))
+  expect_gt(sum(nodes$deceased), 0L)
+})
+
+## ---- S1029 -- more than one affected condition (BACKLOG.md "A kinship2
+## drawing feature the Diagram tab still lacks") ------------------------------
+## kinship2 shades up to four conditions per animal as separate sections of the
+## symbol. Owner ruling S1029: every pedigree column whose name starts with
+## "affected" is a condition, in file order, the first four drawn (QC lower-
+## cases a header and drops its spaces, periods and underscores, so
+## `Affected_2` arrives as `affected2` and `Affected Diabetes` as
+## `affecteddiabetes`). `affected` alone behaves exactly as before. With two
+## or more conditions the layout's nodes carry `affectedSections`, one
+## character per condition ("1" affected, "0" unaffected or unknown), and the
+## real and repeat-appearance nodes are filled white: R/modPedigree.R paints
+## the sections. `conditions` (column, label, color) feeds the legend and
+## `conditionsNotDrawn` names any column past the fourth.
+
+.conditionsFixture <- function(...) {
+  ped <- data.frame(
+    id = c("P1", "P2", "C1", "C2", "C3"),
+    sire = c(NA, NA, "P1", "P1", "P1"),
+    dam = c(NA, NA, "P2", "P2", "P2"),
+    sex = c("M", "F", "F", "M", "F"),
+    gen = c(0L, 0L, 1L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+  extra <- list(...)
+  for (name in names(extra)) ped[[name]] <- extra[[name]]
+  ped
+}
+
+## Three conditions, the named one first in the file so that file order, not
+## alphabetical order and not "bare affected first", is what is pinned.
+.threeConditionFixture <- function() {
+  .conditionsFixture(
+    affecteddiabetes = c(TRUE, FALSE, NA, TRUE, FALSE),
+    affected = c(FALSE, FALSE, TRUE, TRUE, NA),
+    affected2 = c(TRUE, TRUE, FALSE, NA, FALSE)
+  )
+}
+
+test_that(
+  ".conditionColumns finds every column starting 'affected', in file order,
+   and no other column", {
+  ped <- .conditionsFixture(
+    affected3 = TRUE, name = "x", affected = TRUE,
+    affecteddiabetes = TRUE, status = "ALIVE", affected2 = TRUE,
+    affected5 = TRUE, affected6 = TRUE
+  )
+  expect_equal(.conditionColumns(ped),
+               c("affected3", "affected", "affecteddiabetes", "affected2",
+                 "affected5", "affected6"))
+  expect_equal(.conditionColumns(.conditionsFixture()), character(0L))
+})
+
+test_that(
+  ".conditionColumns reads a header's case as written: Affected2 is not a
+   condition (QC lower-cases a header; a raw data frame is taken as given,
+   as `affected` always was)", {
+  ped <- .conditionsFixture(affected = TRUE, Affected2 = TRUE)
+  expect_equal(.conditionColumns(ped), "affected")
+})
+
+test_that(
+  ".conditionLabels names a condition from the rest of its column name:
+   Affected, Affected 2, Affected (diabetes)", {
+  expect_equal(
+    .conditionLabels(c("affected", "affected2", "affected10",
+                       "affecteddiabetes", "affected_diabetes",
+                       "affected.type2")),
+    c("Affected", "Affected 2", "Affected 10", "Affected (diabetes)",
+      "Affected (diabetes)", "Affected (type2)")
+  )
+})
+
+test_that(
+  ".conditionColors starts with the affected pink and gives four colors,
+   all different", {
+  expect_equal(.conditionColors,
+               c("#CC79A7", "#E69F00", "#56B4E9", "#009E73"))
+})
+
+test_that(
+  "makePedigreeMatingLayout lists no condition, and gives the nodes no
+   affectedSections column, for a pedigree with no 'affected' column", {
+  result <- makePedigreeMatingLayout(.conditionsFixture())
+  expect_s3_class(result$conditions, "data.frame")
+  expect_identical(names(result$conditions), c("column", "label", "color"))
+  expect_equal(nrow(result$conditions), 0L)
+  expect_identical(result$conditionsNotDrawn, character(0L))
+  expect_false("affectedSections" %in% names(result$nodes))
+})
+
+test_that(
+  "makePedigreeMatingLayout lists the one condition of a bare 'affected'
+   column, pink, and adds no affectedSections column (unchanged output)", {
+  ped <- .conditionsFixture(affected = c(TRUE, FALSE, NA, TRUE, FALSE))
+  result <- makePedigreeMatingLayout(ped)
+  expect_equal(result$conditions$column, "affected")
+  expect_equal(result$conditions$label, "Affected")
+  expect_equal(result$conditions$color, "#CC79A7")
+  expect_false("affectedSections" %in% names(result$nodes))
+  expect_equal(result$nodes$color.background[match(ped$id, result$nodes$id)],
+               c("#CC79A7", "#FFFFFF", "#FFFFFF", "#CC79A7", "#FFFFFF"))
+})
+
+test_that(
+  "makePedigreeMatingLayout draws a lone named condition the way it draws
+   'affected': a pink fill, a label naming the condition, no sections", {
+  ped <- .conditionsFixture(
+    affecteddiabetes = c(TRUE, FALSE, NA, TRUE, FALSE)
+  )
+  result <- makePedigreeMatingLayout(ped)
+  expect_equal(result$conditions$column, "affecteddiabetes")
+  expect_equal(result$conditions$label, "Affected (diabetes)")
+  expect_equal(result$conditions$color, "#CC79A7")
+  expect_false("affectedSections" %in% names(result$nodes))
+  expect_equal(result$nodes$color.background[match(ped$id, result$nodes$id)],
+               c("#CC79A7", "#FFFFFF", "#FFFFFF", "#CC79A7", "#FFFFFF"))
+})
+
+test_that(
+  "makePedigreeMatingLayout lists three conditions in file order, each with
+   its label and its own color, pink first", {
+  result <- makePedigreeMatingLayout(.threeConditionFixture())
+  expect_equal(result$conditions$column,
+               c("affecteddiabetes", "affected", "affected2"))
+  expect_equal(result$conditions$label,
+               c("Affected (diabetes)", "Affected", "Affected 2"))
+  expect_equal(result$conditions$color, c("#CC79A7", "#E69F00", "#56B4E9"))
+  expect_identical(result$conditionsNotDrawn, character(0L))
+})
+
+test_that(
+  "makePedigreeMatingLayout gives each animal an affectedSections string,
+   one character per condition in file order: 1 affected, 0 unaffected or
+   unknown", {
+  ped <- .threeConditionFixture()
+  nodes <- makePedigreeMatingLayout(ped)$nodes
+  expect_true("affectedSections" %in% names(nodes))
+  expect_type(nodes$affectedSections, "character")
+  expect_false(anyNA(nodes$affectedSections))
+  expect_equal(nodes$affectedSections[match(ped$id, nodes$id)],
+               c("101", "001", "010", "110", "000"))
+})
+
+test_that(
+  "makePedigreeMatingLayout fills the real nodes white once there are two
+   or more conditions, even for an affected animal: the sections carry the
+   color", {
+  ped <- .threeConditionFixture()
+  nodes <- makePedigreeMatingLayout(ped)$nodes
+  expect_true(all(nodes$color.background[match(ped$id, nodes$id)] ==
+                    "#FFFFFF"))
+})
+
+test_that(
+  "makePedigreeMatingLayout gives the tooltip one Yes/No/Unknown line per
+   condition, in file order, each named as in the legend", {
+  ped <- .threeConditionFixture()
+  nodes <- makePedigreeMatingLayout(ped)$nodes
+  title <- nodes$title[nodes$id == "C1"]
+  expect_true(grepl("Affected (diabetes):</b> Unknown", title, fixed = TRUE))
+  expect_true(grepl("Affected:</b> Yes", title, fixed = TRUE))
+  expect_true(grepl("Affected 2:</b> No", title, fixed = TRUE))
+  pos <- vapply(c("Affected (diabetes):", "Affected:", "Affected 2:"),
+                function(s) regexpr(s, title, fixed = TRUE)[[1L]], numeric(1L))
+  expect_true(all(pos > 0) && !is.unsorted(pos))
+  title2 <- nodes$title[nodes$id == "P1"]
+  expect_true(grepl("Affected (diabetes):</b> Yes", title2, fixed = TRUE))
+  expect_true(grepl("Affected:</b> No", title2, fixed = TRUE))
+  expect_true(grepl("Affected 2:</b> Yes", title2, fixed = TRUE))
+})
+
+test_that(
+  "makePedigreeMatingLayout labels the tooltip of a lone named condition
+   with its name", {
+  ped <- .conditionsFixture(
+    affecteddiabetes = c(TRUE, FALSE, NA, TRUE, FALSE)
+  )
+  nodes <- makePedigreeMatingLayout(ped)$nodes
+  expect_true(grepl("Affected (diabetes):</b> Yes",
+                    nodes$title[nodes$id == "P1"], fixed = TRUE))
+  expect_true(grepl("Affected (diabetes):</b> Unknown",
+                    nodes$title[nodes$id == "C1"], fixed = TRUE))
+})
+
+test_that(
+  "makePedigreeMatingLayout draws the first four conditions and names the
+   rest in conditionsNotDrawn, with no tooltip line for them", {
+  ped <- .conditionsFixture(
+    affected = c(TRUE, FALSE, FALSE, FALSE, FALSE),
+    affected2 = c(FALSE, TRUE, FALSE, FALSE, FALSE),
+    affected3 = c(FALSE, FALSE, TRUE, FALSE, FALSE),
+    affected4 = c(FALSE, FALSE, FALSE, TRUE, FALSE),
+    affected5 = c(TRUE, TRUE, TRUE, TRUE, TRUE),
+    affected6 = c(TRUE, TRUE, TRUE, TRUE, TRUE)
+  )
+  result <- makePedigreeMatingLayout(ped)
+  expect_equal(result$conditions$column,
+               c("affected", "affected2", "affected3", "affected4"))
+  expect_equal(result$conditions$color,
+               c("#CC79A7", "#E69F00", "#56B4E9", "#009E73"))
+  expect_equal(result$conditionsNotDrawn, c("affected5", "affected6"))
+  expect_equal(result$nodes$affectedSections[match(ped$id, result$nodes$id)],
+               c("1000", "0100", "0010", "0001", "0000"))
+  expect_false(any(grepl("Affected 5", result$nodes$title, fixed = TRUE)))
+})
+
+test_that(
+  "makePedigreeMatingLayout reads a condition column that is not logical
+   with as.logical(), as it does 'affected': what does not parse is
+   unknown, drawn open, and nothing stops", {
+  ped <- .conditionsFixture(
+    affected = c(TRUE, FALSE, NA, TRUE, FALSE),
+    affected2 = c("TRUE", "no", "maybe", "FALSE", "TRUE")
+  )
+  nodes <- makePedigreeMatingLayout(ped)$nodes
+  expect_equal(nodes$affectedSections[match(ped$id, nodes$id)],
+               c("11", "00", "00", "10", "01"))
+})
+
+test_that(
+  "makePedigreeMatingLayout gives every repeat-appearance node of an animal
+   its sections, and every mating-union, drop, bar or waypoint node an empty
+   string, never NA, in both edge styles", {
+  loopPed <- data.frame(
+    id = c("5A6DFT", "8DKELJ", "G8EBU9", "8P17E3",
+           "8LKBV9", "FJIB3R", "9VGCCV", "GA204Z"),
+    sire = c(NA, NA, NA, NA, "5A6DFT", "8LKBV9", "8LKBV9", "8LKBV9"),
+    dam = c(NA, NA, NA, NA, "8DKELJ", "G8EBU9", "8P17E3", "FJIB3R"),
+    sex = c("M", "F", "F", "F", "M", "F", "F", "M"),
+    gen = c(0L, 0L, 0L, 0L, 1L, 2L, 2L, 3L),
+    affected = c(FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE),
+    affected2 = c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(loopPed)
+  dupIds <- forest$duplicates$id[forest$duplicates$realId == "8LKBV9"]
+  expect_true(length(dupIds) > 0L)
+
+  for (style in c("rectilinear", "direct")) {
+    nodes <- makePedigreeMatingLayout(loopPed, edgeStyle = style)$nodes
+    expect_true("affectedSections" %in% names(nodes), info = style)
+    expect_false(anyNA(nodes$affectedSections), info = style)
+    got <- setNames(nodes$affectedSections, nodes$id)
+    expect_equal(got[["8LKBV9"]], "10", info = style)
+    expect_equal(got[["5A6DFT"]], "01", info = style)
+    expect_true(all(got[dupIds] == "10"), info = style)
+    animals <- c(loopPed$id, forest$duplicates$id)
+    notAnimal <- !(nodes$id %in% animals)
+    expect_true(any(notAnimal), info = style)
+    expect_true(all(got[notAnimal] == ""), info = style)
+  }
+})
+
+test_that(
+  "makePedigreeMatingLayout's empty result, when every animal is isolated,
+   still carries affectedSections as a zero-length character vector, and
+   still lists the conditions", {
+  ped <- data.frame(
+    id = c("X", "Y"), sire = c(NA, NA), dam = c(NA, NA),
+    sex = c("M", "F"), gen = c(0L, 0L),
+    affected = c(TRUE, FALSE), affected2 = c(FALSE, TRUE),
+    stringsAsFactors = FALSE
+  )
+  result <- suppressMessages(makePedigreeMatingLayout(ped))
+  expect_equal(nrow(result$nodes), 0L)
+  expect_true("affectedSections" %in% names(result$nodes))
+  expect_identical(result$nodes$affectedSections, character(0L))
+  expect_equal(nrow(result$conditions), 2L)
+})
+
+## The collision repair adds __jog_ waypoint nodes through .matchColumns(),
+## which backfills a column the new node lacks (S1028 found it gave a logical
+## column NA). Only the QC'd bundled fixture makes jog nodes under the default
+## style (142 of them), so a section string that went missing there would be
+## NA, not "".
+
+test_that(
+  "makePedigreeMatingLayout gives the __jog_ waypoint nodes of the QC'd
+   bundled fixture an empty section string, never NA, while real animals keep
+   theirs", {
+  qcd <- qcdRhesusPed()
+  qcd$affected <- seq_len(nrow(qcd)) %% 3L == 0L
+  qcd$affected2 <- seq_len(nrow(qcd)) %% 5L == 0L
+  nodes <- makePedigreeMatingLayout(qcd)$nodes
+  jog <- grepl("^__jog_", nodes$id)
+  expect_gt(sum(jog), 0L)
+  expect_true("affectedSections" %in% names(nodes))
+  expect_false(anyNA(nodes$affectedSections))
+  expect_true(all(nodes$affectedSections[jog] == ""))
+  animals <- nodes$affectedSections[nodes$id %in% qcd$id]
+  expect_true(all(animals %in% c("00", "01", "10", "11")))
+  expect_true("11" %in% animals)
+})
+
+## S1029 mutation gaps: a loosened prefix test (any column CONTAINING
+## "affected") and an unescaped name both passed every test above.
+
+test_that(
+  ".conditionColumns takes only a column that STARTS with 'affected': a column
+   such as 'unaffected' or 'notaffected' is not a condition", {
+  ped <- .conditionsFixture(unaffected = TRUE, notaffected = TRUE,
+                            affected = TRUE)
+  expect_equal(.conditionColumns(ped), "affected")
+  expect_equal(.conditionColumns(.conditionsFixture(unaffected = TRUE)),
+               character(0L))
+})
+
+test_that(
+  "makePedigreeMatingLayout escapes markup in a condition's name in the
+   tooltip, as it does for an id", {
+  ped <- .conditionsFixture(
+    `affected<i>x` = c(TRUE, FALSE, NA, TRUE, FALSE)
+  )
+  title <- makePedigreeMatingLayout(ped)$nodes$title[1L]
+  expect_true(grepl("Affected (&lt;i&gt;x):</b>", title, fixed = TRUE))
+  expect_false(grepl("<i>x", title, fixed = TRUE))
+})
