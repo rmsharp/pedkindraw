@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] S9 claim (in progress): plan Phase 8, the layout engine copy slice (`makePedigreeDiagramData()`, `makePedigreeMatingLayout()` and their 7 source files), first of its two sessions: the split by picker, then the first half test-first. Mark picked "Start Phase 8" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `3d08c4a` is HEAD, no merges; S8's receipt complete, its gate citation matches the last run, results `959da9c9c7a2`). nprcgenekeepr is at `d5b884750`: 13 files changed since `baef1e12c`, none of the 7 Phase 8 sources.
+
 ### 2026-11-11 · [ad hoc] S8 push: `master` to GitHub once at `16a8799` (14 commits, S7's two close-out commits through S8's REFACTOR), CI green on five jobs at the first attempt
 - **Change:** `git push origin master` (`c71b74a..16a8799`); CI run `43106941979`: 5/5 `Status: OK`, `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 446 ]` each (macOS, Windows, Ubuntu 26.04 devel, release and oldrel-1; the Ubuntu DNS failure of S7's run did not recur).
 - **Commit/PR:** none (push); the close-out commits after it are not pushed

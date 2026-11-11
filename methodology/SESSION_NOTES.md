@@ -95,6 +95,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S7's entries were removed in S3-S8 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 9 Did
+**Deliverable:** plan Phase 8, the layout engine copy slice, first of its two sessions: settle the split by picker,
+then copy the first half test-first (IN PROGRESS)
+**Started:** 2026-11-11 16:07 CST · **Model:** Claude Opus 5.5 · Mark picked "Start Phase 8" at the orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 7 Handoff Evaluation (by Session 8)
 **Score: 8/10.**
 - **What helped:** the measured Phase 7 set (three files, what `kinship()` reads, the 8 `test_kinship*.R` files and
