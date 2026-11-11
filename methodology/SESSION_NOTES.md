@@ -114,6 +114,14 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1's and S2's entries were removed in S3 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 4 Did
+**Deliverable:** the plan to move pedkindraw's planning from nprcgenekeepr into this repository (`docs/planning/`), then
+the hand-over note in nprcgenekeepr (its plan status line and backlog item) (IN PROGRESS)
+**Started:** 2026-11-10 23:59 CST · **Model:** Claude Opus 5.5
+**Status:** Session claimed. Work beginning. Mark picked "Plan, then note" (picker) after saying nprcgenekeepr is idle
+(S1153 closed at `71217b296`, clean tree).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 2 Handoff Evaluation (by Session 3)
 **Score: 8/10.**
 - **What helped:** the exact plan and contract line numbers; the `toCharacter` conflict, flagged as Mark's call (the

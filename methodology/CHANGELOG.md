@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-10 · [ad hoc] S4 claim (in progress): plan moving pedkindraw's planning from nprcgenekeepr into this repository (`docs/planning/`), then the hand-over note in nprcgenekeepr. Mark picked "Plan, then note" at the orient picker. Phase 0 reconcile: nothing to backfill.
+
 ### 2026-11-10 · [ad hoc] S3 hand-off changed by Mark's direction: the next session plans moving pedkindraw's planning from nprcgenekeepr into this repository; Phase 6b follows
 - **Change:** Mark, after the close-out: "next session make a plan to copy information held within nprcgenekeepr into this repository into standard methodology ledgers and other files. Update nprcgenekeepr that this repository will work going forward following the original plan but updating it if needed." Recorded as the ACTIVE TASK in `methodology/SESSION_NOTES.md` (Phase 6b moved below it) and in the S3 receipt's `next_steps`. Nothing written in nprcgenekeepr: its session S1153 was in progress.
 - **Commit/PR:** this commit

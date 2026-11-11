@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S4
+date: 2026-11-10
+status: pending
+active_task: plan moving pedkindraw's planning from nprcgenekeepr into this repository, then the hand-over note in nprcgenekeepr (Mark's pick)
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S3
 date: 2026-11-10
 status: complete
