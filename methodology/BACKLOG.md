@@ -14,7 +14,7 @@ issues).*
       `addBackSecondParents`, `removeUninformativeFounders`, `trimPedigree`. 8 test files, 56 tests; fixtures
       `pedOne`, `pedSix`, `qcPed`; `Imports: data.table`. 10 of the 56 tests exercise nprcgenekeepr-only functions
       (`qcStudbook()`, `runQcStudbook()`, `convertDate()`, `removeDuplicates()`): Mark decides at the pre-RED picker.
-      The measured set and the steps: `methodology/SESSION_NOTES.md`, "THEN: Phase 6b". Its push carries every
+      The measured set and the steps: `methodology/SESSION_NOTES.md`, ACTIVE TASK. Its push carries every
       unpushed commit since S3.
 
 - [ ] **Phases 7-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: the copy
@@ -29,6 +29,13 @@ issues).*
       untracked since pedkindraw S2 and made by no session. `.Rbuildignore` already keeps `*.Rproj` out of the built
       package and `.gitignore` ignores only `.Rproj.user`, so either choice is one small commit: `git add` it, or add
       `pedkindraw.Rproj` to `.gitignore`.
+
+- [ ] **The dashboard does not see `methodology/BACKLOG.md`** (DECISION NEEDED, Effort S) -- the synced
+      `methodology/methodology_dashboard.py` (v2.23.0) looks for `BACKLOG.md` only at the root, `docs/` and
+      `docs/planning/` (`_BACKLOG_LOCATIONS`, and `BACKLOG.md` is not among the names it moves into `methodology/`),
+      so its compliance table shows Backlog ✗ although this file exists (S6). The runner reads it here ("look beside
+      this runner"), so Phase 0 is not affected. Synced files are not edited here: report it to the methodology
+      repository (outward-facing, Mark's call), or leave it.
 
 - [ ] **Whether pedkindraw copies nprcgenekeepr's colony overview** (DECISION NEEDED -- later, Effort L, a guess) --
       nprcgenekeepr is building a colony overview (its issue #138; `nprcgenekeepr:docs/planning/colony-overview-design.md`,
