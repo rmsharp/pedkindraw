@@ -92,6 +92,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S6's entries were removed in S3-S7 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 8 Did
+**Deliverable:** plan Phase 7, the kinship-and-twins copy slice (`kinship()`, `checkTwinRelations()`, `mzTwinGroups()`
+and `mzTwinIdsAbsentMessage`), tests first (IN PROGRESS)
+**Started:** 2026-11-11 11:26 CST · **Model:** Claude Opus 5.5 · Mark picked "Start Phase 7" at the orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 6 Handoff Evaluation (by Session 7)
 **Score: 8/10.**
 - **What helped:** every cited line was right at S7's start (`CLAUDE.md:88`, `:120`, `:138`, `:157-162`; plan `:344`,

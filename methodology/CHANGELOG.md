@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] S8 claim (in progress): plan Phase 7, copy kinship and twins (`kinship()`, `checkTwinRelations()`, `mzTwinGroups()`, `mzTwinIdsAbsentMessage`), tests first. Mark picked "Start Phase 7" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `9f455d6` is HEAD; S7's receipt complete, its gate citation matches the results file). nprcgenekeepr is at `b0c7b0b71`: 9 files changed since `baef1e12c`, none copied here and none of Phase 7's sources or tests.
+
 ### 2026-11-11 · [ad hoc] S7 push: `master` to GitHub once at `c71b74a` (29 commits, S3's close-out through S7's REFACTOR), CI green on five jobs after re-running the three Ubuntu jobs
 - **Change:** `git push origin master` (`b332309..c71b74a`); CI run `43052891573` attempt 1 failed on all three Ubuntu jobs while installing R (the Ubuntu 26.04 runners could not resolve Ubuntu's package servers; no check ran), macOS and Windows `Status: OK`; `gh run rerun 43052891573 --failed`, attempt 2: 5/5 `Status: OK`, `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 347 ]` each.
 - **Commit/PR:** none (push and CI re-run); the close-out commits after it are not pushed

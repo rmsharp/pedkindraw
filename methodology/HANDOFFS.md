@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S8
+date: 2026-11-11
+status: pending
+active_task: plan Phase 7, kinship and twins (kinship(), checkTwinRelations(), mzTwinGroups(), mzTwinIdsAbsentMessage), copied test-first from nprcgenekeepr; IN PROGRESS
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S7
 date: 2026-11-11
 status: complete
