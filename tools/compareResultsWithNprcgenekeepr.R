@@ -34,6 +34,37 @@ runCases <- function(ns, dataDir) {
     ids[unique(round(seq(1L, length(ids), length.out = min(n, length(ids)))))]
   }
   fn <- function(name) get(name, envir = ns, inherits = FALSE)
+  ## Phase 7: made-up twins for a pedigree without a twins table of its own:
+  ## a UZ pair of the first two animals; the first two animals of each of the
+  ## first three full sibships, MZ when of one sex and DZ otherwise; and a
+  ## chained MZ trio (A-B, B-C) from the first sibship with three of one sex.
+  madeUpTwins <- function(p) {
+    pair <- function(a, b, code) {
+      data.frame(id1 = p$id[[a]], id2 = p$id[[b]], code = code)
+    }
+    rows <- list(pair(1L, 2L, "UZ twin"))
+    both <- which(!is.na(p$sire) & !is.na(p$dam))
+    family <- paste(p$sire[both], p$dam[both])
+    sibships <- split(both, factor(family, levels = unique(family)))
+    sibships <- sibships[lengths(sibships) >= 2L]
+    for (s in utils::head(sibships, 3L)) {
+      oneSex <- identical(p$sex[[s[[1L]]]], p$sex[[s[[2L]]]])
+      rows <- c(rows, list(pair(s[[1L]], s[[2L]],
+        if (oneSex) "MZ twin" else "DZ twin"
+      )))
+    }
+    for (s in sibships) {
+      for (sex in unique(p$sex[s])) {
+        trio <- s[p$sex[s] == sex]
+        if (length(trio) >= 3L) {
+          rows <- c(rows, list(pair(trio[[1L]], trio[[2L]], "MZ twin"),
+                               pair(trio[[2L]], trio[[3L]], "MZ twin")))
+          return(do.call(rbind, rows))
+        }
+      }
+    }
+    do.call(rbind, rows)
+  }
   files <- list.files(dataDir, pattern = "\\.csv$", full.names = TRUE)
   files <- files[!grepl("twinRelations", files, fixed = TRUE)]
   results <- list()
@@ -54,6 +85,40 @@ runCases <- function(ns, dataDir) {
     swapped <- ifelse(ped$sex == "M", "F", ifelse(ped$sex == "F", "M", ped$sex))
     oneParent <- ped
     oneParent$dam[seq(1L, nrow(ped), by = 3L)] <- NA
+    ## Phase 7 (pedkindraw S8): kinship on the whole pedigree up to 2,000
+    ## animals; above that, on the pedigree of 100 spread animals and their
+    ## ancestors (154 to 942 animals; the example's 417 hold two animals of
+    ## unknown sex with parents, the X chromosome's NA branch), so the saved
+    ## results stay a few hundred megabytes.
+    kin <- if (nrow(ped) <= 2000L) {
+      ped
+    } else {
+      fn("getProbandPedigree")(spread(ped$id, 100L), ped)
+    }
+    kin$gen <- fn("findGeneration")(kin$id, kin$sire, kin$dam)
+    ## The pedigree's own twins table where it has one (rhesus375), else
+    ## made-up twins; then inputs checkTwinRelations() or kinship() stops on.
+    twinsFile <- sub("\\.csv$", "_twinRelations.csv", file)
+    twins <- if (file.exists(twinsFile)) {
+      utils::read.csv(twinsFile, colClasses = "character")
+    } else {
+      madeUpTwins(kin)
+    }
+    mzOfMixedSex <- twins
+    mzOfMixedSex$code[mzOfMixedSex$code == "DZ twin"] <- "MZ twin"
+    selfPair <- twins[1L, ]
+    selfPair$id2 <- selfPair$id1
+    founders <- kin$id[is.na(kin$sire) & is.na(kin$dam)]
+    badTwins <- list(
+      twins[, c("id1", "id2")], selfPair,
+      data.frame(id1 = "no such animal", id2 = kin$id[[1L]], code = "UZ twin"),
+      data.frame(id1 = kin$id[[1L]], id2 = kin$id[[2L]], code = "XZ twin"),
+      data.frame(id1 = founders[[1L]], id2 = founders[[2L]], code = "MZ twin")
+    )
+    kinOf <- function(...) {
+      fn("kinship")(kin$id, kin$sire, kin$dam, kin$gen, ...)
+    }
+    stopsWith <- function(f) tryCatch(f(), error = conditionMessage)
     cases <- list(
       findGeneration = function() {
         fn("findGeneration")(ped$id, ped$sire, ped$dam)
@@ -133,6 +198,62 @@ runCases <- function(ns, dataDir) {
             removeUninformative = f[[1L]], addBackParents = f[[2L]]
           )
         })
+      },
+      ## Phase 7 (pedkindraw S8).
+      mzTwinIdsAbsentMessage = function() fn("mzTwinIdsAbsentMessage"),
+      mzTwinGroups = function() {
+        mz <- twins[twins$code == "MZ twin", ]
+        n <- nrow(kin)
+        list(
+          fn("mzTwinGroups")(match(mz$id1, kin$id), match(mz$id2, kin$id), n),
+          fn("mzTwinGroups")(c(n, 2L, n - 1L), c(3L, 3L, 1L), n)
+        )
+      },
+      checkTwinRelations = function() {
+        lapply(c(list(twins, mzOfMixedSex), badTwins), function(t) {
+          stopsWith(function() fn("checkTwinRelations")(kin, t))
+        })
+      },
+      kinship = function() {
+        list(
+          kinOf(), kinOf(sparse = TRUE), kinOf(chrtype = "x", sex = kin$sex),
+          kinOf(chrtype = "x", sex = kin$sex, sparse = TRUE)
+        )
+      },
+      kinshipFounders = function() {
+        ## Founders only: no two animals related, so sparse = TRUE gives a
+        ## ddiMatrix, the branch the whole pedigrees do not reach.
+        none <- rep(NA_character_, length(founders))
+        depth <- rep(0L, length(founders))
+        list(
+          fn("kinship")(founders, none, none, depth, sparse = TRUE),
+          fn("kinship")(founders, none, none, depth, sparse = TRUE,
+            chrtype = "x", sex = kin$sex[match(founders, kin$id)]
+          )
+        )
+      },
+      kinshipTwins = function() {
+        list(
+          kinOf(twinRelations = twins),
+          kinOf(twinRelations = twins, sparse = TRUE),
+          kinOf(twinRelations = twins, chrtype = "x", sex = kin$sex)
+        )
+      },
+      kinshipErrors = function() {
+        lapply(list(
+          function() {
+            fn("kinship")(c(kin$id, kin$id[[1L]]), c(kin$sire, NA),
+                          c(kin$dam, NA), c(kin$gen, 0L))
+          },
+          function() kinOf(chrtype = "x"),
+          function() kinOf(sex = kin$sex[-1L], chrtype = "x"),
+          function() {
+            kinOf(twinRelations = data.frame(
+              id1 = "no such animal", id2 = kin$id[[1L]], code = "MZ twin"
+            ))
+          },
+          function() kinOf(sparse = NA)
+        ), stopsWith)
       }
     )
     for (name in names(cases)) {
@@ -229,7 +350,8 @@ renvFreeEnv <- function() {
 }
 
 runChild <- function(folder, outFile) {
-  ## One change of folder for one child process; withr is not a dependency.
+  ## One change of folder for one child process; withr is only a test
+  ## dependency (Suggests).
   old <- setwd(folder) # nolint: undesirable_function_linter.
   on.exit(setwd(old)) # nolint: undesirable_function_linter.
   status <- system2("env", c(
@@ -258,4 +380,36 @@ cat(sprintf(
 if (!all(same)) {
   cat("Differ:\n", paste0("  ", names(same)[!same], "\n"), sep = "")
 }
-quit(status = if (all(same)) 0L else 1L)
+## Phase 7: the plan's DONE line also asks for kinship's largest absolute
+## difference (0 follows from identical(), but is shown). Every matrix in the
+## kinship results, dense or Matrix sparse, cell by cell; NA in both is equal.
+## Matrix (pedkindraw's import) gives the sparse results their as.matrix().
+invisible(loadNamespace("Matrix"))
+matrices <- function(x) {
+  if (is.matrix(x) || methods::is(x, "Matrix")) {
+    return(list(as.matrix(x)))
+  }
+  if (is.list(x) && !is.data.frame(x)) {
+    return(unlist(lapply(x, matrices), recursive = FALSE))
+  }
+  list()
+}
+kinshipKeys <- grep(" :: kinship", names(ours), fixed = TRUE, value = TRUE)
+largest <- 0.0
+count <- 0L
+for (key in kinshipKeys) {
+  a <- matrices(ours[[key]]$value)
+  b <- matrices(theirs[[key]]$value)
+  for (i in seq_along(a)) {
+    if (!identical(dim(a[[i]]), dim(b[[i]])) ||
+          !identical(is.na(a[[i]]), is.na(b[[i]]))) {
+      largest <- Inf
+    } else {
+      largest <- max(largest, abs(a[[i]] - b[[i]]), na.rm = TRUE)
+    }
+    count <- count + 1L
+  }
+}
+cat(sprintf("kinship: %d matrices, largest absolute difference %g\n",
+            count, largest))
+quit(status = if (all(same) && largest == 0.0) 0L else 1L)
