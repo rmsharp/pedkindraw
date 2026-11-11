@@ -1,0 +1,50 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## Copied from nprcgenekeepr R/addIdRecords.R at nprcgenekeepr commit
+## baef1e12c. Changes: help text only; the function's code is unchanged.
+## @export becomes @noRd: pedkindraw does not export addIdRecords() (contract
+## section 4.1), so it has no help page.
+
+#' Add ego records with NA parent IDs
+#'
+#' @param ids character vector of IDs to be added as Ego records having
+#' NAs for parent IDs
+#' @param fullPed the full (untrimmed) pedigree dataframe, the source of the
+#' records to add. It must have the same columns as \code{partialPed}.
+#' @param partialPed a trimmed pedigree dataframe with uninformative founders
+#' removed.
+#' @return Pedigree with Ego records added having NAs for parent IDs. It is a
+#' \code{data.table} once any record is added and a plain dataframe when
+#' none is.
+#'
+#' @importFrom data.table rbindlist
+#' @noRd
+#' @examples
+#' uPedOne <- data.frame(
+#'   id = c("d1", "s2", "d2", "o1", "o2", "o3", "o4"),
+#'   sire = c("s0", "s4", NA, "s1", "s1", "s2", "s2"),
+#'   dam = c("d0", "d4", NA, "d1", "d2", "d2", "d2"),
+#'   sex = c("F", "M", "F", "F", "F", "F", "M"),
+#'   stringsAsFactors = FALSE
+#' )
+#' pedOne <- data.frame(
+#'   id = c("s1", "d1", "s2", "d2", "o1", "o2", "o3", "o4"),
+#'   sire = c(NA, "s0", "s4", NA, "s1", "s1", "s2", "s2"),
+#'   dam = c(NA, "d0", "d4", NA, "d1", "d2", "d2", "d2"),
+#'   sex = c("M", "F", "M", "F", "F", "F", "F", "M"),
+#'   stringsAsFactors = FALSE
+#' )
+#' pedOne[!pedOne$id %in% uPedOne$id, ]
+#' newPed <- addIdRecords(ids = "s1", pedOne, uPedOne)
+#' pedOne[!pedOne$id %in% newPed$id, ]
+#' newPed[newPed$id == "s1", ]
+#'
+addIdRecords <- function(ids, fullPed, partialPed) {
+  if (length(ids[!all(is.na(ids))]) > 0L) {
+    addToPed <- fullPed[is.element(fullPed$id, ids), ]
+    addToPed$sire <- NA
+    addToPed$dam <- NA
+    partialPed <- rbindlist(list(partialPed, addToPed))
+  }
+  partialPed[!duplicated(partialPed$id), ]
+}
