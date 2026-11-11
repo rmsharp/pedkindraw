@@ -15,6 +15,12 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] S5 DONE: plan step H1, the five planning documents copied from nprcgenekeepr and this repository pointed at them
+- **Change:** `docs/planning/standalone-pedigree-package-plan.md`, `docs/planning/pedkindraw-api-contract.md` and the three studies in `docs/research/` copied byte for byte from nprcgenekeepr `3d262d628` (2,228 lines), each with a provenance note under its title (copied unchanged; the plan and contract are now the live copies, the studies dated records not edited; paths name nprcgenekeepr's files except the five; the line shift each note adds). `CLAUDE.md` governing documents and plan-constraints line, `DIVERGENCE.md:4` and the two tools' header comments point at the copies. Close-out: the hand-over plan marks H1 DONE and three of its H2 citations are corrected; `CLAUDE.md` Learning 7 (citations go stale through later edits). Mark's pick: "H1 only". Not pushed.
+- **Commit/PR:** `b8b72f7` (claim), `f2249d0`, `ec910a6`, `38633f1`, `3e192e9`, close-out
+- **Session:** S5 · **Verified:** `cmp` silent for all five; after the notes, `diff` shows added lines only; drift tool exit 0 (10 same); results tool exit 0 (120 of 120 identical); tests PASS 122; `R CMD check --as-cran` 1 NOTE, the allowed one; tarball 0 `/docs/` entries; `quality_ratchet: 2/2 pass`.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-11 · [ad hoc] S5 claim (in progress): plan step H1, copy the five planning documents from nprcgenekeepr `3d262d628` and point this repository at them. Mark picked "H1 only" at the orient picker. Phase 0 reconcile: nothing to backfill.
 
 ### 2026-11-11 · [ad hoc] S4 commit in nprcgenekeepr: the hand-over note (plan step H0b), `3d262d628`, not pushed

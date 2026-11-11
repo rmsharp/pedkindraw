@@ -3,7 +3,9 @@
 **Date:** 2026-11-11 · **Session:** S4 · **Type:** planning session (`methodology/SESSION_RUNNER.md` §Planning
 Sessions; `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`). No package code was written or changed.
 **Status:** plan written S4. Step H0 DONE S4: this plan (`0283214`) and the hand-over note in nprcgenekeepr
-(nprcgenekeepr `3d262d628`, not pushed). Steps H1 and H2 are next, one session each, before Phase 6b.
+(nprcgenekeepr `3d262d628`, not pushed). Step H1 DONE S5: the five documents copied (`f2249d0`, `ec910a6`), their
+provenance notes (`38633f1`), this repository pointed at them (`3e192e9`); not pushed. Step H2 is next, one session,
+before Phase 6b.
 **Measured at:** pedkindraw `a262439` (the S4 claim); nprcgenekeepr `71217b296` (S1153's close-out; clean tree, idle).
 
 ---
@@ -176,7 +178,7 @@ holds and H2's commits follow H1's.
 its entry is at most 1,000 B; `R CMD build .` here leaves `docs/` out of the tarball. **Surface:** this Mac; docs only.
 **Not pushed** in either repository (pedkindraw's next push is Phase 6b's; nprcgenekeepr's is Mark's).
 
-### H1 -- Copy the five documents and point this repository at them (one session)
+### H1 -- Copy the five documents and point this repository at them (S5; DONE)
 
 **Steps.**
 1. Orient. The source commit `C` is the H0b commit, nprcgenekeepr `3d262d628`. Check the five files are unchanged
@@ -217,7 +219,7 @@ its entry is at most 1,000 B; `R CMD build .` here leaves `docs/` out of the tar
    - **§1.3:** "Phases 1-4 run here; Phases 5 onward run in the new repository" rewritten for this repository as the
      plan's home; the nprcgenekeepr-boundary line kept.
    - **§2, new rulings from R16,** each with its session and "Mark": S2 the allowed check NOTE until the package is
-     on CRAN (`CLAUDE.md:115`); S2 `LICENSE` YEAR 2017-2026 and Mark alone in `Authors@R`; S2 the context-budget fix
+     on CRAN (`CLAUDE.md:117`); S2 `LICENSE` YEAR 2017-2026 and Mark alone in `Authors@R`; S2 the context-budget fix
      waits for its own session; S3 Phase 6 split into 6a (10 functions) and 6b (11); S3 `toCharacter()` stays out
      (R13; it settles the conflict between plan Phase 6's row and contract R13); S3 sample pedigrees are test
      fixtures, not package datasets, and examples type their own pedigree; S3 the copied tests' `stringi` calls
@@ -230,10 +232,10 @@ its entry is at most 1,000 B; `R CMD build .` here leaves `docs/` out of the tar
      (`R/kinship.R` and `R/mzTwinGroups.R`; the layout solver; `R/shrinkPedigree.R`), nothing waits, "write ...
      from the published methods" no longer applies.
    - **§5:** "differs from the installed nprcgenekeepr's" becomes "read from the local clone with git", as the tool
-     does (`CLAUDE.md:138`).
+     does (`CLAUDE.md:140`).
 3. **Commit 2** (1 file), the contract: §5's Imports (`stats` and `utils` only once a copied function uses them;
    none in Phase 6, S2's finding); §9's rows 7, 8 and 10 as in the plan; §10 item 2 closed by C2 (the plan says so at
-   `:88`; the contract still lists it open).
+   `:108` of this repository's copy; the contract still lists it open).
 4. **Commit 3** (3 files):
    - `methodology/ROADMAP.md`: current milestone (the copy slices, Phases 6-10), planned (Phases 11-17, pointing to
      the plan's §4), what is built (Phase 6a's 8 exports and 2 internals; the drift and results tools), completed

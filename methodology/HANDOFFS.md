@@ -196,18 +196,23 @@ manifest existed are not re-judged.
 ```handoff
 session: S5
 date: 2026-11-11
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: step H1 of docs/planning/planning-handover-plan.md (copy the five planning documents from nprcgenekeepr 3d262d628; re-point CLAUDE.md, DIVERGENCE.md and the two tools), IN PROGRESS
-what_was_done: pending
-next_steps: pending
-key_files: docs/planning/planning-handover-plan.md:179 (H1 steps and DONE)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 9
+predecessor_score: 9
+active_task: step H1 of the hand-over plan is DONE (the five planning documents copied from nprcgenekeepr 3d262d628 and this repository pointed at them); next is step H2, bringing the copied plan and contract up to date and opening methodology/ROADMAP.md and methodology/BACKLOG.md, then Phase 6b
+what_was_done: claim b8b72f7; f2249d0 plan and contract, ec910a6 three studies (byte for byte, cmp silent); 38633f1 a provenance note under each title (16, 14, 13, 13, 13 lines; diff against the source shows added lines only); 3e192e9 CLAUDE.md governing documents and plan-constraints line, DIVERGENCE.md:4 and the two tools' header comments point at docs/planning/; close-out marks H1 DONE in the hand-over plan, corrects three H2 citations there (C2 :88 -> the copy's :108; CLAUDE.md :115 -> :117, :138 -> :140), adds CLAUDE.md Learning 7. Mark's pick: H1 only. Nothing pushed
+next_steps: H2 (one session; hand-over plan :212-268): picker first confirming rulings R16 on (:221-228); commit 1 the plan (status block :19-29, the note's status-block sentence :6-9 and its stated count :17, section 1.3 :64, rulings after R15 :104, Phase 5 :309, Phase 6-10 rows :338-342, section 5 :378); commit 2 the contract (section 5 :192, section 9 :248-250, section 10 item 2 :262); commit 3 ROADMAP.md, new BACKLOG.md (:243-249), pointer entry (:250-252); DONE :254-263, no push. Then Phase 6b (methodology/SESSION_NOTES.md, THEN block)
+key_files: docs/planning/planning-handover-plan.md:212 (H2), docs/planning/standalone-pedigree-package-plan.md:3 (provenance note), docs/planning/standalone-pedigree-package-plan.md:19 (status block), docs/planning/pedkindraw-api-contract.md:3 (note), docs/planning/pedkindraw-api-contract.md:258 (open items), methodology/ROADMAP.md:1 (the seed), CLAUDE.md:21 (governing documents), CLAUDE.md:138 (what sessions here keep up to date), CLAUDE.md:161 (Learning 7), methodology/SESSION_NOTES.md:11 (ACTIVE TASK, H2)
+gotchas: line numbers move with every edit, H2's own included (Learning 7), so find each cited line by its quoted words; line numbers inside the copied text are nprcgenekeepr's (plan +16 here, contract +14, studies +13); rewriting the plan's status block makes its provenance note's sentence at :6-9 false and may change the note's stated length at :17; the studies must stay unchanged (H2 DONE reads git log -- docs/research); zsh aborts on an unmatched glob and reads a bare word starting with = as a command path; 11 commits unpushed (Phase 6b's push carries them) and nprcgenekeepr 3d262d628 unpushed (Mark's); pedkindraw.Rproj and the context-budget path fix wait on Mark
+runtime_smoke: n/a, documents and comments only; the two tools still run: drift exit 0 (10 same, 0 differ), results exit 0 (120 of 120 identical); testthat FAIL 0 PASS 122; R CMD check --as-cran Status 1 NOTE, the allowed one; tarball 0 /docs/ entries; quality_ratchet: 2/2 pass · 0 fail · 0 unmeasured · results 28dd5b310acd · manifest 114e971f4452
+changelog_ref: CHANGELOG.md "2026-11-11 · [ad hoc] S5 DONE: plan step H1, the five planning documents copied from nprcgenekeepr and this repository pointed at them"
+commit: 3e192e9
 ```
+Session 5, Claude Opus 5.5, single tier. Predecessor S4 scored 9: exact commands with the source commit and dry-run
+results, exact commit-4 lines, the path and line-shift gotchas that shaped the note; it missed `CLAUDE.md:21` and the
+copied status block's "not updated here again", and its H2 step cited C2 at a pre-H0b line. Self-score 9: + every
+DONE criterion checked with output, byte-level note insert, three stale H2 citations fixed and Learning 7; − the note
+script wrote four files before the fifth failed its width check (restored, rerun), one zsh `=` slip.
 
 ```handoff
 session: S4
