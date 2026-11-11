@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S6
+date: 2026-11-11
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: step H2 of docs/planning/planning-handover-plan.md (bring the copied plan and contract up to date; fill methodology/ROADMAP.md; create methodology/BACKLOG.md; pointer entry in methodology/CHANGELOG.md), IN PROGRESS
+what_was_done: pending
+next_steps: pending
+key_files: docs/planning/planning-handover-plan.md:212 (H2 steps and DONE)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S5
 date: 2026-11-11
 status: complete

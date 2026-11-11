@@ -12,7 +12,7 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 **Task:** step H2 of `docs/planning/planning-handover-plan.md` (`:212-268`): bring this repository's copies of the plan
 and the contract up to date, fill `methodology/ROADMAP.md`, create `methodology/BACKLOG.md`, and add one pointer entry
 to `methodology/CHANGELOG.md` for the work done in nprcgenekeepr before this repository existed.
-**Status:** READY. H1 DONE in S5: the five documents copied byte for byte from nprcgenekeepr `3d262d628` (`f2249d0`
+**Status:** IN PROGRESS (S6, claimed 2026-11-11 00:35 CST; Mark's orient pick "Do step H2"). H1 DONE in S5: the five documents copied byte for byte from nprcgenekeepr `3d262d628` (`f2249d0`
 plan and contract, `ec910a6` three studies), a provenance note under each title (`38633f1`), `CLAUDE.md`,
 `DIVERGENCE.md` and the two tools pointed at the copies (`3e192e9`). Mark's S5 pick (orient picker): "H1 only".
 **Session boundary:** H2 is one session; Phase 6b follows in a new session (hand-over plan `:266`).
@@ -146,6 +146,14 @@ The user rates every session's handoff. Your handoff will be scored on:
 *Session history accumulates below this line. Newest session at the top.*
 *S1-S4's entries were removed in S3-S5 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
+
+### What Session 6 Did
+**Deliverable:** step H2 of `docs/planning/planning-handover-plan.md`: bring the copied plan and contract up to date,
+fill `methodology/ROADMAP.md`, create `methodology/BACKLOG.md`, add the pointer entry to `methodology/CHANGELOG.md`
+(IN PROGRESS)
+**Started:** 2026-11-11 00:35 CST · **Model:** Claude Opus 5.5
+**Status:** Session claimed. Work beginning. Mark's orient pick (picker): "Do step H2".
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
 
 ### Session 4 Handoff Evaluation (by Session 5)
 **Score: 9/10.**
