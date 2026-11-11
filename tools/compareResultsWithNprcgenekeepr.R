@@ -13,9 +13,12 @@
 ## uses its own renv library (nprcgenekeepr needs its imports, pedkindraw does
 ## not have them). The pedigrees are the clone's
 ## tools/pedigreeComparison/data/*.csv, read with every column as character
-## and an empty field as NA; the twins table is not a pedigree and is skipped.
+## and an empty field as NA. A twins table (<pedigree>_twinRelations.csv, so
+## far rhesus375's) is not a pedigree: it is skipped as one, and read with its
+## pedigree for the Phase 7 cases.
 ##
-## Exit status 0 when every result is identical, 1 otherwise.
+## Exit status 0 when every result is identical and the kinship matrices'
+## largest absolute difference is 0 (the plan's DONE line), 1 otherwise.
 
 ## The cases: one result per pedigree and function, each a list of the value
 ## and any warning messages. Runs inside a child process; `ns` is the loaded
@@ -82,12 +85,15 @@ runCases <- function(ns, dataDir) {
     ## so these made-up variants reach the branches the pedigrees do not:
     ## founders' records dropped, M and F swapped, every third dam unknown.
     noFounders <- ped[!is.na(ped$sire) | !is.na(ped$dam), ]
-    swapped <- ifelse(ped$sex == "M", "F", ifelse(ped$sex == "F", "M", ped$sex))
+    flip <- c(M = "F", F = "M")
+    swapped <- ped$sex
+    toFlip <- ped$sex %in% names(flip)
+    swapped[toFlip] <- flip[ped$sex[toFlip]]
     oneParent <- ped
     oneParent$dam[seq(1L, nrow(ped), by = 3L)] <- NA
     ## Phase 7 (pedkindraw S8): kinship on the whole pedigree up to 2,000
     ## animals; above that, on the pedigree of 100 spread animals and their
-    ## ancestors (154 to 942 animals; the example's 417 hold two animals of
+    ## ancestors (310 to 942 animals; the example's 417 hold two animals of
     ## unknown sex with parents, the X chromosome's NA branch), so the saved
     ## results stay a few hundred megabytes.
     kin <- if (nrow(ped) <= 2000L) {
