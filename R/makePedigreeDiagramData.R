@@ -1,0 +1,3138 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## Copied from nprcgenekeepr R/makePedigreeDiagramData.R at nprcgenekeepr commit
+## baef1e12c. Its layout solver, from the source's line 1328
+## (.separationOrder()) to .solveJointQP(), is nprcgenekeepr's clean-room
+## rewrite (plan C2). Changes: help text only; the code is unchanged. The
+## examples of makePedigreeDiagramData() and makePedigreeMatingLayout() type
+## their own pedigree (the values of nprcgenekeepr's lacy1989Ped, with sexes)
+## instead of loading nprcgenekeepr (the source's lines 34-35 and 1637-1639).
+## Its comments name nprcgenekeepr's documents, sessions and app.
+
+#' Convert a pedigree data frame into visNetwork-ready diagram data
+#'
+#' Builds the node and edge tables consumed by \code{visNetwork::visNetwork()}
+#' from a pedigree data frame: one node per individual, sex-coded to a node
+#' shape, positioned by generation; one directed edge per known sire and one
+#' per known dam, pointing from parent to child.
+#'
+#' @param ped data frame with \code{id}, \code{sire}, \code{dam}, \code{sex},
+#'   and \code{gen} columns (\code{sire}/\code{dam} \code{NA} for unknown
+#'   parents; \code{gen} an integer generation number, 0 for founders, as
+#'   produced by \code{\link{findGeneration}}). Two optional columns are
+#'   used when present: a logical \code{affected} column, which adds an
+#'   affected-status line to \code{title} and fills affected nodes with
+#'   \code{color.background} \code{"#CC79A7"} (all other nodes are white,
+#'   \code{"#FFFFFF"}); and a character \code{name} column, which is shown
+#'   in \code{label} (long names are truncated) and in \code{title}.
+#' @param twinRelations optional data.frame with columns \code{id1},
+#'   \code{id2}, \code{code} (see \code{\link{checkTwinRelations}}). Not
+#'   validated here; validate with \code{\link{checkTwinRelations}} first.
+#'   \code{NULL} (default) adds no connector edges, so \code{edges} has
+#'   only \code{from} and \code{to}.
+#' @return A list with two data frames: \code{nodes} (\code{id}, \code{label},
+#'   \code{shape}, \code{level}, \code{title}, \code{color.background})
+#'   and \code{edges} (\code{from}, \code{to}, plus
+#'   \code{dashes}/\code{label}/\code{color} when \code{twinRelations} is
+#'   supplied). \code{title} is an HTML hover-tooltip string giving ID, sex,
+#'   generation, sire, and dam (and affected status and name when those
+#'   optional columns are present).
+#'
+#' @examples
+#' ## Seven animals: C and D are full siblings, and so are F and G, D's
+#' ## offspring
+#' ped <- data.frame(
+#'   id = c("A", "B", "C", "D", "E", "F", "G"),
+#'   sire = c(NA, NA, "A", "A", NA, "D", "D"),
+#'   dam = c(NA, NA, "B", "B", NA, "E", "E"),
+#'   sex = c("M", "F", "F", "M", "F", "M", "F"),
+#'   stringsAsFactors = FALSE
+#' )
+#' ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+#' diagramData <- makePedigreeDiagramData(ped)
+#' ## One node per animal, and one edge per known parent
+#' nrow(diagramData$nodes)
+#' nrow(diagramData$edges)
+#'
+#' @export
+makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
+  if (!is.data.frame(ped)) {
+    stop("makePedigreeDiagramData() requires 'ped' to be a data frame.")
+  }
+  required <- c("id", "sire", "dam", "sex", "gen")
+  missingCols <- setdiff(required, names(ped))
+  if (length(missingCols) > 0L) {
+    stop("makePedigreeDiagramData() requires 'ped' to have columns: ",
+         toString(required), ". Missing: ",
+         toString(missingCols))
+  }
+
+  shapeMap <- c(F = "dot", M = "square", H = "star", U = "triangle")
+  shapes <- unname(shapeMap[as.character(ped$sex)])
+  shapes[is.na(shapes)] <- "diamond"
+
+  # nolint start: commented_code_linter, nonportable_path_linter.
+  # Same sex vocabulary as the Diagram tab's own shape-to-sex legend (issue
+  # #132, R/modPedigree.R) -- an unmapped sex code falls back to its
+  # "Other / Unrecorded" label, not just "diamond" shape.
+  sexLabelMap <- c(F = "Female", M = "Male", H = "Hermaphrodite",
+                    U = "Unknown")
+  sexLabels <- unname(sexLabelMap[as.character(ped$sex)])
+  sexLabels[is.na(sexLabels)] <- "Other / Unrecorded"
+  # nolint end
+
+  sireLabels <- ifelse(is.na(ped$sire), "Unknown", .escapeHtml(ped$sire))
+  damLabels <- ifelse(is.na(ped$dam), "Unknown", .escapeHtml(ped$dam))
+
+  titles <- sprintf(
+    paste0("<b>ID:</b> %s<br><b>Sex:</b> %s<br><b>Generation:</b> %s",
+           "<br><b>Sire:</b> %s<br><b>Dam:</b> %s"),
+    .escapeHtml(ped$id), sexLabels, ped$gen, sireLabels, damLabels
+  )
+
+  # Issue #133 (D1-D8): affected is an OPTIONAL logical column (kinship2
+  # naming parity). Absent column => zero change to output below (D1/§4
+  # backward-compat contract). Coerce defensively via as.logical() rather
+  # than assume a clean logical input -- affected is not yet a
+  # qcStudbook()-recognized column, so a raw CSV import could hand it a
+  # character/other value; anything that doesn't parse becomes NA, matching
+  # kinship2's own NA-tolerant contract rather than erroring.
+  hasAffected <- "affected" %in% names(ped)
+  affected <- if (hasAffected) as.logical(ped$affected) else rep(NA, nrow(ped))
+  if (hasAffected) {
+    titles <- paste0(titles,
+                      sprintf("<br><b>Affected:</b> %s",
+                              .affectedLabel(affected)))
+  }
+
+  # Issue #136 (D1-D5, D10): name is an OPTIONAL character column. Absent
+  # column => zero change to output below (backward-compat contract,
+  # same as affected above). Coerce defensively via as.character() (the
+  # affected precedent) -- name is not a qcStudbook()-recognized-required
+  # column, so a raw CSV import or a direct API caller could hand it a
+  # factor.
+  hasName <- "name" %in% names(ped)
+  label <- ped$id
+  if (hasName) {
+    name <- as.character(ped$name)
+    label <- .nameLabel(ped$id, name)
+    titles <- paste0(titles, .nameTooltipLine(name))
+  }
+
+  nodes <- data.frame(
+    id = ped$id,
+    label = label,
+    shape = shapes,
+    level = ped$gen,
+    title = titles,
+    stringsAsFactors = FALSE
+  )
+  # D3 Option 1: single dominant-trait color, only affected == TRUE gets
+  # a fill (D8 color, Okabe-Ito reddish-purple -- colorblind-safe,
+  # distinct from both the GVA heatmap's red/yellow/green risk convention
+  # and the existing #2B7CE9 waypoint-edge blue). FALSE/NA get an explicit
+  # open/unfilled (white) color.background, matching kinship2's own
+  # "unfilled if 0/NA" pedigree-drawing convention -- BACKLOG.md
+  # Housekeeping (found S552): leaving color.background NA here let
+  # visNetwork fall back to ITS OWN default fill, which does not read as
+  # open/unfilled, fixed in .affectedColor() below. Track 1
+  # (docs/planning/pedigree-diagram-kinship2-fidelity-remediation-plan.md,
+  # found S569): unconditional now -- an absent affected column defaults
+  # every node to the same explicit white fill instead of vis.js's own
+  # default (`affected` above is already an all-NA vector in that case).
+  nodes$color.background <- .affectedColor(affected)
+
+  hasSire <- !is.na(ped$sire)
+  hasDam <- !is.na(ped$dam)
+  edges <- data.frame(
+    from = c(ped$sire[hasSire], ped$dam[hasDam]),
+    to = c(ped$id[hasSire], ped$id[hasDam]),
+    stringsAsFactors = FALSE
+  )
+
+  # Issue #137 (D1, D6, D7): twinRelations is an OPTIONAL sidecar data.frame
+  # -- absent (NULL, default) => zero change to edges above (backward-compat
+  # contract, same as #133/#136's own optional-column precedents).
+  if (!is.null(twinRelations)) {
+    edges$dashes <- rep(FALSE, nrow(edges))
+    edges$label <- rep(NA_character_, nrow(edges))
+    edges$color <- rep(NA_character_, nrow(edges))
+    edges <- rbind(edges, .buildTwinConnectorEdges(twinRelations))
+  }
+
+  list(nodes = nodes, edges = edges)
+}
+
+#' Escape HTML special characters for use in a vis.js node tooltip
+#'
+#' vis.js renders a node's \code{title} field as innerHTML, so raw
+#' \code{&}/\code{<}/\code{>} characters in an id/sire/dam value would
+#' otherwise corrupt the tooltip markup (issue #135).
+#'
+#' @param x character vector.
+#' @return character vector with \code{&}, \code{<}, \code{>} escaped.
+#' @noRd
+.escapeHtml <- function(x) {
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  x <- gsub(">", "&gt;", x, fixed = TRUE)
+  x
+}
+
+#' Map an affected-status vector to a vis.js node fill color (issue #133 D8)
+#'
+#' \code{TRUE} gets the D8 accent color (filled); \code{FALSE}/\code{NA} get
+#' an explicit white, matching kinship2's own "unfilled if 0/NA"
+#' pedigree-drawing convention (BACKLOG.md Housekeeping, found S552).
+#' Leaving \code{color.background} \code{NA} for the \code{FALSE}/\code{NA}
+#' case does NOT render as open/unfilled -- vis.js falls back to its own
+#' default node fill instead, which reads as "a different solid color," not
+#' "no fill." Shared by both \code{\link{makePedigreeDiagramData}} and
+#' \code{\link{makePedigreeMatingLayout}} (a small pure leaf utility, unlike
+#' the two functions' own deliberately-duplicated node-building logic --
+#' same sharing precedent as \code{.escapeHtml()} above).
+#'
+#' @param affected logical vector, \code{NA} allowed.
+#' @return character vector: \code{"#CC79A7"} where \code{affected} is
+#'   \code{TRUE}, \code{"#FFFFFF"} otherwise (\code{FALSE} or \code{NA}).
+#' @noRd
+.affectedColor <- function(affected) {
+  ifelse(!is.na(affected) & affected, "#CC79A7", "#FFFFFF")
+}
+
+#' Map an affected-status vector to a human-readable Yes/No/Unknown label
+#' (issue #133 D3 Option 0)
+#'
+#' @param affected logical vector, \code{NA} allowed.
+#' @return character vector: \code{"Yes"}, \code{"No"}, or \code{"Unknown"}.
+#' @noRd
+.affectedLabel <- function(affected) {
+  label <- c("No", "Yes")[as.integer(affected) + 1L]
+  label[is.na(affected)] <- "Unknown"
+  label
+}
+
+#' Character budget for a displayed name before it is truncated (issue
+#' #136 D10) -- empirically calibrated (Slice 2 Pre-RED, a live chromote
+#' render against the real fixture's tightest measured node spacing, see
+#' \code{docs/planning/issue136-name-labels-pedigree-diagram-plan.md} sec
+#' 2.3/D10). 15 characters shows every name in the bundled example fixture
+#' unspoiled (max 8 characters) while bounding a pathological outlier to
+#' roughly the same overlap footprint the existing id-only label already
+#' has at the fixture's 25th-percentile adjacent-node gap.
+#' @noRd
+.nameLabelCharBudget <- 15L
+
+#' Build a real individual's diagram label from id and an optional name
+#' (issue #136 D3/D4/D5/D10)
+#'
+#' Augments \code{id} with \code{name} on a second line
+#' (\code{"id\\nname"}, D3 -- confirmed hands-on this session that the
+#' bundled vis.js renders an embedded newline as two lines). Falls back to
+#' the bare \code{id} when \code{name} is \code{NA} or empty (D4 -- not
+#' every center records a name, and synthesized rows, e.g. \code{U####}
+#' placeholders, never have one). A name longer than
+#' \code{\link{.nameLabelCharBudget}} is truncated with a trailing
+#' \code{"..."} (D10); the full name is never dropped, only shortened on
+#' the canvas label -- \code{\link{.nameTooltipLine}} carries it in full.
+#' Shared by both \code{\link{makePedigreeDiagramData}} and
+#' \code{\link{makePedigreeMatingLayout}} (same sharing precedent as
+#' \code{.affectedColor()}/\code{.affectedLabel()} above); the latter also
+#' applies this to duplicate-occurrence nodes using their real
+#' individual's own id/name (D7 label parity).
+#'
+#' @param id character vector.
+#' @param name character vector, same length as \code{id}; \code{NA}
+#'   allowed.
+#' @param budget integer scalar, the truncation budget (D10).
+#' @return character vector, same length as \code{id}.
+#' @noRd
+.nameLabel <- function(id, name, budget = .nameLabelCharBudget) {
+  hasName <- !is.na(name) & nzchar(name)
+  truncated <- ifelse(nchar(name) > budget,
+                       paste0(substr(name, 1L, budget), "..."), name)
+  ifelse(hasName, paste0(id, "\n", truncated), id)
+}
+
+#' Build the hover-tooltip Name line for an optional name column (issue
+#' #136 D10)
+#'
+#' Empty string when \code{name} is \code{NA} or empty (no line added --
+#' matches \code{.nameLabel()}'s own D4 fallback condition). Always
+#' carries the FULL, HTML-escaped name, never truncated -- truncation
+#' (D10) applies to the on-canvas label only.
+#'
+#' @param name character vector, \code{NA} allowed.
+#' @return character vector, same length as \code{name}.
+#' @noRd
+.nameTooltipLine <- function(name) {
+  hasName <- !is.na(name) & nzchar(name)
+  ifelse(hasName, sprintf("<br><b>Name:</b> %s", .escapeHtml(name)), "")
+}
+
+#' Build twin/zygosity connector edges from a twinRelations table (issue
+#' #137 D6/D7, \code{docs/planning/
+#' issue137-twin-zygosity-pedigree-diagram-plan.md})
+#'
+#' \code{from}/\code{to} are \code{twinRelations$id1}/\code{id2} literally
+#' -- both already validated (by the caller-side
+#' \code{\link{checkTwinRelations}}, not called here, matching the
+#' \code{applyKinshipOverrides()}/\code{checkKinshipOverrides()} precedent)
+#' to be real individual ids, so no duplicate-node lookup is needed (D7):
+#' a real individual's own node id is always the same string regardless of
+#' how many \code{__dup_}-prefixed occurrence nodes
+#' \code{\link{makePedigreeMatingLayout}} additionally creates for them
+#' elsewhere in the diagram.
+#'
+#' Styling (D6, D10 -- exact colors/dash-pixel patterns decided at this
+#' slice's own Pre-RED, deferred by the design doc): \code{"MZ twin"} is
+#' solid (\code{dashes = FALSE}, label \code{"MZ"}); \code{"DZ twin"} is a
+#' short dash (\code{c(4L, 4L)}, label \code{"DZ"}); \code{"UZ twin"} is a
+#' long/sparse dash (\code{c(14L, 8L)}, label \code{"?"} -- a deliberate
+#' callback to kinship2's own UZ glyph, \code{docs/planning/
+#' issue137-twin-zygosity-pedigree-diagram-plan.md} sec 2.1). The
+#' \code{dashes} column is a list-column (\code{I(list(...))}) since a
+#' single boolean cannot represent 2 distinct non-boolean dash patterns --
+#' confirmed via a live \code{rbind()}/\code{jsonlite} test this slice's own
+#' Pre-RED that a plain logical \code{dashes} value and a numeric-vector
+#' dash pattern coerce and serialize correctly in the same column.
+#'
+#' @param twinRelations data.frame with columns \code{id1}, \code{id2},
+#'   \code{code} (see \code{\link{checkTwinRelations}}). Not validated here.
+#' @return data.frame with columns \code{from}, \code{to}, \code{label},
+#'   \code{dashes} (a list-column), \code{color}.
+#' @noRd
+.buildTwinConnectorEdges <- function(twinRelations) {
+  dashPattern <- list(`MZ twin` = FALSE, `DZ twin` = c(4L, 4L),
+                       `UZ twin` = c(14L, 8L))
+  labelFor <- c(`MZ twin` = "MZ", `DZ twin` = "DZ", `UZ twin` = "?")
+  df <- data.frame(
+    from = twinRelations$id1,
+    to = twinRelations$id2,
+    label = unname(labelFor[twinRelations$code]),
+    # D10: all 3 codes share one Okabe-Ito colorblind-safe color
+    # (bluish-green) -- only the dash pattern + label distinguish MZ/DZ/UZ,
+    # matching D6's own decision structure (found never wired, S494; fixed
+    # S506).
+    color = "#009E73",
+    stringsAsFactors = FALSE
+  )
+  df$dashes <- I(lapply(twinRelations$code, function(code) {
+    dashPattern[[code]]
+  }))
+  df
+}
+
+#' Find fully-isolated individuals in a pedigree (issue #164 /
+#' P5-suppression plan, Dragon 1, RATIFIED S643,
+#' \code{docs/planning/pedigree-diagram-isolated-individual-suppression-
+#' plan.md})
+#'
+#' An individual is isolated iff they have no known parent (\code{sire} and
+#' \code{dam} both \code{NA}/empty) AND they are never named as anyone
+#' else's \code{sire}/\code{dam} (never a parent themselves) AND they are
+#' not connected via \code{twinRelations} -- i.e. literally zero edges,
+#' matching kinship2's own \code{align.pedigree()} convention (this
+#' package's mating-unit model only recognizes a union via a shared child,
+#' so a parent with no children is not, on its own, "mated"). A dangling
+#' parent reference (a \code{sire}/\code{dam} value with no own row in
+#' \code{ped}) still counts as having a parent edge -- a child of a
+#' trimmed-away parent is correctly not isolated. Not validated here
+#' (matches \code{\link{.buildTwinConnectorEdges}}'s own "not validated
+#' here" convention) -- called only from within
+#' \code{\link{makePedigreeMatingLayout}}, downstream of that function's
+#' own \code{is.data.frame()}/required-columns validation.
+#'
+#' @param ped data frame with (at least) \code{id}, \code{sire}, \code{dam}
+#'   columns.
+#' @param twinRelations optional data.frame with columns \code{id1},
+#'   \code{id2} (see \code{\link{checkTwinRelations}}). \code{NULL}
+#'   (default): the twin exclusion is a no-op.
+#' @return character vector of isolated ids (possibly empty).
+#' @noRd
+.findIsolatedIds <- function(ped, twinRelations = NULL) {
+  ids <- as.character(ped$id)
+  sire <- as.character(ped$sire)
+  dam <- as.character(ped$dam)
+  hasParent <- (!is.na(sire) & nzchar(sire)) | (!is.na(dam) & nzchar(dam))
+  isParent <- ids %in% c(sire[!is.na(sire) & nzchar(sire)],
+                          dam[!is.na(dam) & nzchar(dam)])
+  twinIds <- if (!is.null(twinRelations)) {
+    c(as.character(twinRelations$id1), as.character(twinRelations$id2))
+  } else {
+    character()
+  }
+  ids[!hasParent & !isParent & !(ids %in% twinIds)]
+}
+
+#' Transform a pedigree into a mating-unit forest (Option 2 layout, D1/D2)
+#'
+#' Internal helper for the kinship2-parity pedigree layout (Pedigree
+#' Diagram Option 2,
+#' \code{docs/planning/pedigree-diagram-option2-layout-design-plan.md}).
+#' Performs the CraneFoot-style transformation (Makinen et al. 2005):
+#' collapses every distinct \code{(sire, dam)} pair with at least one
+#' recorded child into its own mating-unit node, re-parents every such
+#' child to a single edge from that mating unit (instead of two edges to
+#' sire and dam), and creates a duplicate node for every individual
+#' occurrence beyond their own first (free) mating-unit occurrence --
+#' resolving both multi-mate/half-sib fan-out and inbreeding-loop safety
+#' via the same mechanism (D1). The free occurrence is granted only to a
+#' B1-shaped non-anchor (no own parent edge, no own single-parent direct
+#' child); a B2-shaped non-anchor is duplicated at every occurrence, so
+#' her real node keeps its own place in the tree while a same-row
+#' duplicate stands in at each of her units (kinship2-style spouse
+#' duplication -- provisional-order design Decision 2, S678). A dangling
+#' parent (no own row in \code{ped}) mints no duplicate at all (S682):
+#' no occurrence of a dangling individual ever renders, so a
+#' \code{__dup_} whose \code{realId} never renders would be a broken
+#' connector endpoint, not a second occurrence.
+#' Anchor selection (D2) is deterministic,
+#' not searched: prefer a non-founder parent over a founder; if tied,
+#' prefer the parent with fewer total distinct mating units; remaining
+#' ties broken by ascending id sort. A rare structural collision (both
+#' parents of a shared mating unit already anchor a different,
+#' earlier-processed unit) is resolved by letting one individual anchor a
+#' second unit, matching D3 step 2's own documented allowance for this
+#' case (verified against the real, bundled 375-individual fixture at
+#' design time -- see the design doc's Session 459 corrections to its
+#' own \sQuote{Impact Analysis} and \sQuote{Here be dragons} sections).
+#' When NEITHER parent of a mating unit has its own row in \code{ped}
+#' (both dangling, issue #154), there is no individual to recursively
+#' position as anchor -- \code{anchor}/\code{nonAnchor} are \code{NA}
+#' rather than an arbitrarily-picked dangling id, and
+#' \code{\link{.positionMatingUnitForest}} treats such a unit as its own
+#' independent root instead of trying to reach it via a (nonexistent)
+#' anchor individual.
+#'
+#' This function computes structure only -- it assigns no x/y
+#' coordinates. It is consumed by a future positioning function (D3, a
+#' separate implementation slice).
+#'
+#' @param ped data frame with \code{id}, \code{sire}, \code{dam}, \code{sex},
+#'   and \code{gen} columns, same contract as
+#'   \code{\link{makePedigreeDiagramData}}. No real \code{id} may start
+#'   with the reserved \code{"__union_"} or \code{"__dup_"} prefixes.
+#' @return A list with three data frames: \code{matingUnits} (\code{id},
+#'   \code{sire}, \code{dam}, \code{anchor}, \code{nonAnchor} --
+#'   \code{anchor}/\code{nonAnchor} both \code{NA} when neither parent has
+#'   its own row in \code{ped} --, \code{gen});
+#'   \code{duplicates} (\code{id}, \code{realId}, \code{matingUnitId});
+#'   \code{childEdges} (\code{from}, \code{to} -- \code{from} is a
+#'   mating-unit id, or a single known parent's real id under the D5
+#'   partial-parentage fallback).
+#' @noRd
+.buildMatingUnitForest <- function(ped) {
+  if (!is.data.frame(ped)) {
+    stop(".buildMatingUnitForest() requires 'ped' to be a data frame.")
+  }
+  required <- c("id", "sire", "dam", "sex", "gen")
+  missingCols <- setdiff(required, names(ped))
+  if (length(missingCols) > 0L) {
+    stop(".buildMatingUnitForest() requires 'ped' to have columns: ",
+         toString(required), ". Missing: ", toString(missingCols))
+  }
+
+  ids <- as.character(ped$id)
+  reserved <- grepl("^__union_|^__dup_|^__drop_|^__bar_|^__proj_", ids)
+  if (any(reserved)) {
+    stop(".buildMatingUnitForest() found real id(s) using a reserved ",
+         "'__union_'/'__dup_'/'__drop_'/'__bar_'/'__proj_' prefix, which ",
+         "must be unique to package-generated nodes: ",
+         toString(ids[reserved]))
+  }
+
+  sire <- as.character(ped$sire)
+  dam <- as.character(ped$dam)
+  hasSire <- !is.na(sire)
+  hasDam <- !is.na(dam)
+  hasBoth <- hasSire & hasDam
+  genOf <- stats::setNames(ped$gen, ids)
+
+  # D1 step 1: identify mating units, ordered by first-appearance row
+  # order (matching D4's "data row order" determinism precedent). A
+  # control-character separator (never a legal pedigree id character)
+  # guarantees paste0("AB", "C") and paste0("A", "BC") key differently.
+  pairKey <- rep(NA_character_, length(ids))
+  pairKey[hasBoth] <- paste(sire[hasBoth], dam[hasBoth], sep = "\u0001")
+  uniqueKeys <- unique(pairKey[hasBoth])
+  nUnits <- length(uniqueKeys)
+
+  if (nUnits == 0L) {
+    matingUnits <- data.frame(id = character(), sire = character(),
+                               dam = character(), anchor = character(),
+                               nonAnchor = character(), gen = integer(),
+                               stringsAsFactors = FALSE)
+    duplicates <- data.frame(id = character(), realId = character(),
+                              matingUnitId = character(),
+                              stringsAsFactors = FALSE)
+  } else {
+    firstRow <- match(uniqueKeys, pairKey)
+    unitSire <- sire[firstRow]
+    unitDam <- dam[firstRow]
+    unionIds <- sprintf("__union_%d", seq_len(nUnits))
+
+    mateCountTab <- table(c(unitSire, unitDam))
+
+    # D2: deterministic anchor preference between 2 candidates -- prefer
+    # deeper gen (subsumes founder-preference: a founder always has
+    # gen == 0, the shallowest possible value), then fewer total mating
+    # units, then ascending id.
+    preferAnchor <- function(a, b) {
+      ga <- genOf[[a]]
+      gb <- genOf[[b]]
+      if (ga != gb) return(ga > gb)
+      ca <- mateCountTab[[a]]
+      cb <- mateCountTab[[b]]
+      if (ca != cb) return(ca < cb)
+      # method = "radix": a/b are character ids -- plain `<` invokes the
+      # session's own locale-dependent Scollate() (Learning 585), method =
+      # "radix" is byte-order and locale-independent (issue #162).
+      order(c(a, b), method = "radix")[1L] == 1L
+    }
+
+    parentIds <- unique(c(unitSire, unitDam))
+    anchorOf <- character(nUnits)
+    nonAnchorOf <- character(nUnits)
+    for (u in seq_len(nUnits)) {
+      p1 <- unitSire[u]
+      p2 <- unitDam[u]
+      p1Real <- p1 %in% ids
+      p2Real <- p2 %in% ids
+      # A dangling parent (no own row here) can never anchor -- there is
+      # no individual to recursively position for them (D3 only
+      # positions real ids). Their real mate wins outright. When NEITHER
+      # parent is real (issue #154), there is no positionable anchor at
+      # all -- anchor/nonAnchor are left NA rather than arbitrarily
+      # forcing a dangling id into anchor (which
+      # .positionMatingUnitForest()'s recursive descent could then never
+      # reach).
+      winner <- if (!p1Real && !p2Real) {
+        NA_character_
+      } else if (p1Real != p2Real) {
+        if (p1Real) p1 else p2
+      } else if (preferAnchor(p1, p2)) {
+        p1
+      } else {
+        p2
+      }
+      anchorOf[u] <- winner
+      nonAnchorOf[u] <- if (is.na(winner)) {
+        NA_character_
+      } else if (identical(winner, p1)) {
+        p2
+      } else {
+        p1
+      }
+    }
+
+    # A dangling parent's own gen is unknown here -- fall back to
+    # whichever known parent's gen is available (na.rm = TRUE). If BOTH
+    # are dangling (issue #154), pmax(NA, NA, na.rm = TRUE) returns NA,
+    # not -Inf, so both are covered explicitly rather than relying on
+    # is.infinite() alone.
+    unitGen <- pmax(unname(genOf[unitSire]), unname(genOf[unitDam]),
+                     na.rm = TRUE)
+    unitGen[is.na(unitGen) | is.infinite(unitGen)] <- 0L
+
+    matingUnits <- data.frame(
+      id = unionIds, sire = unitSire, dam = unitDam,
+      anchor = anchorOf, nonAnchor = nonAnchorOf,
+      gen = unitGen,
+      stringsAsFactors = FALSE
+    )
+
+    # Duplicate assignment: the free (un-duplicated) non-anchor occurrence
+    # is granted ONLY to a B1-shaped individual -- no own parent edge and
+    # no own single-parent direct child, the same structural test Phase
+    # A's b1Ids applies, evaluated from 'ped' here at forest-build time
+    # (provisional-order design Decision 2, docs/planning/pedigree-
+    # diagram-provisional-order-plan.md, kinship2-style spouse
+    # duplication: a marry-in mate with her own place in the tree is
+    # plotted twice). A B2-shaped non-anchor gets a __dup_ node at EVERY
+    # non-anchor occurrence; her real node keeps rendering on its own gen
+    # row under her own parents, connected by the curved duplicate
+    # connectors. A DANGLING non-anchor (no own row in 'ped') mints NO
+    # duplicate at any occurrence (S682, replacing the S461-era
+    # free-first-then-duplicate policy): no occurrence of a dangling
+    # individual ever renders, so a __dup_ whose realId never renders is
+    # not a second occurrence but a broken connector endpoint -- dupEdges
+    # would mint its curved connector with from = NA/to = NA, which
+    # crashed .resolveEdgeNodeCollisions()'s curved pass live under the
+    # app's DEFAULT Rectilinear style (found S681, the strict-lineal
+    # twin-fixture trim). A B1-shaped individual keeps the free-slot
+    # policy: first (deterministic-order) non-anchor occurrence free
+    # unless they anchor somewhere, every occurrence beyond that
+    # duplicated (the rare double-anchor collision above still grants an
+    # extra free slot to whoever it affects).
+    isB2Shaped <- function(p) {
+      i <- match(p, ids)
+      if (is.na(i)) return(FALSE)
+      if (hasSire[i] || hasDam[i]) return(TRUE)
+      any((hasSire & !hasDam & sire == p) | (!hasSire & hasDam & dam == p),
+          na.rm = TRUE)
+    }
+    hasAnchorAnywhere <- stats::setNames(parentIds %in% unique(anchorOf),
+                                   parentIds)
+    freeConsumed <- stats::setNames(rep(FALSE, length(parentIds)), parentIds)
+    dupCounter <- stats::setNames(rep(0L, length(parentIds)), parentIds)
+    dupId <- character()
+    dupRealId <- character()
+    dupUnitId <- character()
+    for (u in seq_len(nUnits)) {
+      for (p in c(unitSire[u], unitDam[u])) {
+        if (identical(anchorOf[u], p)) next
+        # S682: a dangling parent renders no occurrence at all -- never
+        # mint a __dup_ for one (see the policy comment above).
+        if (is.na(match(p, ids))) next
+        needsDuplicate <- if (isB2Shaped(p)) {
+          TRUE
+        } else if (hasAnchorAnywhere[[p]]) {
+          TRUE
+        } else if (freeConsumed[[p]]) {
+          TRUE
+        } else {
+          freeConsumed[[p]] <- TRUE
+          FALSE
+        }
+        if (needsDuplicate) {
+          dupCounter[[p]] <- dupCounter[[p]] + 1L
+          dupId <- c(dupId, sprintf("__dup_%s_%d", p, dupCounter[[p]]))
+          dupRealId <- c(dupRealId, p)
+          dupUnitId <- c(dupUnitId, unionIds[u])
+        }
+      }
+    }
+    duplicates <- data.frame(id = dupId, realId = dupRealId,
+                              matingUnitId = dupUnitId,
+                              stringsAsFactors = FALSE)
+  }
+
+  # D1 step 3 / D5: re-parent children with both parents known to their
+  # mating unit (single edge); children with exactly one known parent
+  # keep today's direct one-edge fallback; a 0-parent founder gets no
+  # incoming edge.
+  unitOfRow <- rep(NA_character_, length(ids))
+  if (nUnits > 0L) {
+    unitOfRow[hasBoth] <- matingUnits$id[match(pairKey[hasBoth], uniqueKeys)]
+  }
+  oneParent <- xor(hasSire, hasDam)
+  childEdges <- data.frame(
+    from = c(unitOfRow[hasBoth],
+             ifelse(hasSire[oneParent], sire[oneParent], dam[oneParent])),
+    to = c(ids[hasBoth], ids[oneParent]),
+    stringsAsFactors = FALSE
+  )
+
+  list(matingUnits = matingUnits, duplicates = duplicates,
+       childEdges = childEdges)
+}
+
+
+#' Weakly-connected components of the drawn pedigree graph
+#'
+#' Internal helper for the disconnected-component separation fix (S667,
+#' \code{docs/planning/pedigree-diagram-disconnected-component-
+#' separation-plan.md}, "REVISED DESIGN -- Session 667"). Partitions the
+#' nodes the layout
+#' actually draws -- every real id in \code{ped} plus every mating-unit id
+#' in \code{forest$matingUnits} -- into weakly-connected components over the
+#' edges it actually draws: mating unit <-> its real sire, mating unit <->
+#' its real dam, and every \code{forest$childEdges} row (a unit or a real
+#' parent -> a real child). A duplicate node rides with its \code{realId}.
+#' An orphan unit's siblings (issue #154, both parents dangling) are joined
+#' through their unit even though no real parent row exists -- exactly as
+#' they are drawn.
+#'
+#' Components are ordered by the smallest \code{ped} row index among their
+#' real members: kinship2's own family order (\code{align.pedigree()} lays
+#' unrelated families out in pedigree order -- verified bit-exact on a
+#' 3-family fixture, \code{test_positionMatingUnitForest.R}). Labeling is
+#' vectorized min-label propagation to a fixed point (no closure state).
+#'
+#' @param ped data frame with at least an \code{id} column.
+#' @param forest the list returned by \code{\link{.buildMatingUnitForest}}
+#'   for this same \code{ped}.
+#' @return A list of character vectors, one per component in display
+#'   order, each holding that component's real ids, mating-unit ids, and
+#'   duplicate ids.
+#' @noRd
+.forestComponents <- function(ped, forest) {
+  realIds <- as.character(ped$id)
+  nodes <- c(realIds, forest$matingUnits$id)
+  ## Label = index into 'nodes'; real ids come first in ped row order, so a
+  ## component's minimum label IS its first real member's ped row.
+  label <- stats::setNames(seq_along(nodes), nodes)
+
+  mu <- forest$matingUnits
+  ce <- forest$childEdges
+  edgeA <- c(rep(mu$id, 2L), ce$from)
+  edgeB <- c(mu$sire, mu$dam, ce$to)
+  keep <- edgeA %in% nodes & edgeB %in% nodes
+  edgeA <- edgeA[keep]
+  edgeB <- edgeB[keep]
+
+  if (length(edgeA) > 0L) {
+    repeat {
+      before <- label
+      shared <- pmin(label[edgeA], label[edgeB])
+      minA <- tapply(shared, edgeA, min)
+      minB <- tapply(shared, edgeB, min)
+      label[names(minA)] <- pmin(label[names(minA)], minA)
+      label[names(minB)] <- pmin(label[names(minB)], minB)
+      if (identical(label, before)) break
+    }
+  }
+
+  comps <- split(nodes, label)
+  comps <- unname(comps[order(as.integer(names(comps)))])
+  ## A duplicate rides with the mating unit it duplicates INTO, not its
+  ## realId: a dangling parent's duplicate (S461 -- the parent has no own
+  ## row, so realId is not a node at all) would otherwise belong to no
+  ## component and vanish from the output. Found by the pre-existing
+  ## dangling-parent duplicate test during GREEN (S667). A real parent's
+  ## unit is always in that parent's own component, so this is the same
+  ## assignment for every non-dangling duplicate. (Since S682 the forest
+  ## mints no dangling-realId duplicates at all, so every duplicate's
+  ## realId is now a rendered node -- the matingUnitId assignment rule
+  ## stays, both as the correct grouping and as robustness.)
+  dups <- forest$duplicates
+  lapply(comps, function(members) {
+    c(members, dups$id[dups$matingUnitId %in% members])
+  })
+}
+
+#' Restrict a mating-unit forest to one component's members
+#'
+#' Internal helper for the disconnected-component separation fix (S667).
+#' Keeps \code{matingUnits}/\code{duplicates} whose \code{id} and
+#' \code{childEdges} whose \code{to} are in \code{members}, so unit ids stay
+#' identical to the caller's forest (which \code{makePedigreeMatingLayout()}
+#' keeps using for its edges after positioning).
+#'
+#' @param forest the list returned by \code{\link{.buildMatingUnitForest}}.
+#' @param members one element of \code{\link{.forestComponents}}' result.
+#' @return A forest list of the same shape, restricted to \code{members}.
+#' @noRd
+.subsetForest <- function(forest, members) {
+  list(
+    matingUnits = forest$matingUnits[forest$matingUnits$id %in% members, ,
+                                     drop = FALSE],
+    duplicates = forest$duplicates[forest$duplicates$id %in% members, ,
+                                   drop = FALSE],
+    childEdges = forest$childEdges[forest$childEdges$to %in% members, ,
+                                   drop = FALSE]
+  )
+}
+
+#' Pack independently-positioned components left to right, per-row
+#'
+#' Internal helper for the disconnected-component separation fix (S667).
+#' Each component keeps its own internal layout; component \code{i} is
+#' translated right by the smallest shift that leaves at least
+#' \code{minSep} between the rightmost already-placed node and its own
+#' leftmost node on EVERY row (gen) the two share -- per-row contour
+#' packing, which is exactly what \code{kinship2::align.pedigree()} does
+#' (a family wide only at a deep row lets a shallower family tuck in above
+#' it; bit-exact on the D1 fixture, \code{test_positionMatingUnitForest.R}).
+#' When two components share no row at all, the whole extents are
+#' separated by \code{minSep} instead (kinship2-unverified, disclosed in
+#' the design doc; errs toward more separation).
+#'
+#' @param positions a list of position data frames (\code{id}, \code{x},
+#'   \code{gen}), one per component, in display order.
+#' @param minSep the engine's own minimum same-row separation.
+#' @return One position data frame, all components combined.
+#' @noRd
+.packComponents <- function(positions, minSep) {
+  placed <- positions[[1L]]
+  for (i in seq_along(positions)[-1L]) {
+    nxt <- positions[[i]]
+    sharedGens <- intersect(unique(placed$gen), unique(nxt$gen))
+    shift <- if (length(sharedGens) > 0L) {
+      max(vapply(sharedGens, function(g) {
+        max(placed$x[placed$gen == g]) + minSep - min(nxt$x[nxt$gen == g])
+      }, numeric(1L)))
+    } else {
+      max(placed$x) + minSep - min(nxt$x)
+    }
+    nxt$x <- nxt$x + shift
+    placed <- rbind(placed, nxt)
+  }
+  rownames(placed) <- NULL
+  placed
+}
+
+#' Build a non-anchor-node resolver for one \code{forest}
+#'
+#' A mating unit's non-anchor party (\code{matingUnits$nonAnchor}) may be
+#' rendered either as her own real id, or -- if this occurrence is her
+#' duplicated occurrence (\code{forest$duplicates}) -- as the
+#' \code{__dup_*} placeholder node standing in for her at this unit.
+#' \code{.addRectilinearWaypoints()}'s D2 dogleg block uses it (factored out
+#' at Migration Path Phase 1); \code{.solveJointQP()} applies the same rule
+#' in its own code since the clean-room rewrite. \code{dupKey} is built
+#' once, matching the
+#' pre-extraction code's own performance characteristic (computed outside
+#' any per-unit loop).
+#'
+#' @param duplicates the \code{duplicates} data frame from
+#'   \code{\link{.buildMatingUnitForest}} (\code{id}, \code{realId},
+#'   \code{matingUnitId}).
+#' @return A function \code{(nonAnchorRealId, unitId)} returning the id of
+#'   the node actually rendered for that non-anchor party at that unit --
+#'   \code{nonAnchorRealId} itself, or the matching \code{__dup_*} id.
+#' @noRd
+.nonAnchorNodeResolver <- function(duplicates) {
+  dupKey <- paste0(duplicates$realId, duplicates$matingUnitId)
+  function(nonAnchorRealId, unitId) {
+    dupIdx <- match(paste0(nonAnchorRealId, unitId), dupKey)
+    if (is.na(dupIdx)) nonAnchorRealId else duplicates$id[dupIdx]
+  }
+}
+
+
+#' Position a mating-unit forest via a genuine Buchheim-Junger-Leipert
+#' apportioning engine (Option 2 layout, D3/D4/D5)
+#'
+#' Internal helper for the kinship2-parity pedigree layout (Pedigree
+#' Diagram Walker/BJL redesign, issue #141). Production implementation as
+#' of Phase 3's cutover (\code{docs/planning/pedigree-diagram-walker-bjl-
+#' apportioning-redesign-plan.md} Migration Path Phase 3): replaces the
+#' OLD Reingold-Tilford/Walker-style contour-merge implementation outright
+#' (deleted in the same commit), as amended by \code{docs/planning/
+#' pedigree-diagram-walker-bjl-phase1b-mixed-gen-reconciliation.md}'s S3
+#' mechanism (Candidate 2b) and S8's seam-resolution formula.
+#'
+#' Three strictly ordered tiers, each fully reconciled before the next
+#' tier reads it (S3.1/S3.4):
+#' \itemize{
+#'   \item \strong{Tier 1} -- genuine-tree BJL
+#'     (\code{\link{.positionTreeApportion}}, Phase 1a, UNCHANGED) via a
+#'     \code{CHILDREN(individual)} accessor (S3.2): a mating unit's real
+#'     children are reattached directly onto its anchor -- the unit
+#'     itself is NEVER a tree-recursion node. A B1 (free-pass) individual
+#'     is excluded from the recursion entirely (never a root, never
+#'     anyone's child) -- represented only via a Tier-3 derived point.
+#'     Terminated by a reinstated, gen-grouped \code{sweepMinSep()}
+#'     backstop (S3.1.1), run ONCE.
+#'   \item \strong{Tier 2} -- for every ANCHORED unit,
+#'     \code{x_raw = midpoint(real children's FINAL Tier-1 x)}; an
+#'     exact-tie sweep (gen, id radix order) among all ANCHORED units +
+#'     genuine nodes at the same gen (S3.3.3/S3.4).
+#'   \item \strong{Tier 3} -- for every B1/B3 non-anchor occurrence, a
+#'     fallback derived point off its own unit's FINAL x
+#'     (\code{unitX + 0.4 * minSep}). B2 (M has her own parent edge or
+#'     her own D5 direct child) gets NO derived point of her own -- since
+#'     Decision 2 (S678) she is duplicated at every non-anchor
+#'     occurrence, so the node rendered at the unit is a \code{__dup_*}
+#'     point.
+#' }
+#'
+#' \strong{Order-consistent seeding (Decision 1, S679)} -- \code{docs/
+#' planning/pedigree-diagram-provisional-order-plan.md} Migration Path
+#' Phase 2: after the tier seeds above, every anchored unit's union dot
+#' and rendered mate-node are RE-seeded at the QP objective's own ideal
+#' points (mate adjacent to its anchor at a gap-proportional inset,
+#' union at half the inset, side from the unit's own children's mean,
+#' two-unit anchors split left/right; a 3+-unit anchor's extra units
+#' keep the tier fallback seeds). \code{\link{.solveJointQP}} -- which
+#' this function hands its assembled provisional positions to as its
+#' final step -- discards every provisional MAGNITUDE and preserves only
+#' each row's left-to-right RANK, so the seeds' one job is giving the QP
+#' an order whose anchor--dot--mate triples are locally contiguous
+#' wherever the mate-node is placeable.
+#'
+#' Track 3 (the parent-span clamp on a union's finalUnitX) and the
+#' Track-3-Engagement-Gate post-hoc duplicate-occurrence nudge
+#' (\code{.computeDupNudge()}, deleted in this same commit) are both gone
+#' by construction: every ANCHORED mating unit's x is now,
+#' unconditionally, the exact midpoint of its own real children's final x
+#' (Tier 2 above), no clamp/nudge exceptions.
+#'
+#' @param ped data frame with \code{id}, \code{sire}, \code{dam},
+#'   \code{sex}, and \code{gen} columns, same contract as
+#'   \code{\link{makePedigreeDiagramData}}.
+#' @param forest the list returned by \code{\link{.buildMatingUnitForest}}
+#'   for this same \code{ped}.
+#' @return A data frame with one row per node (\code{id}, \code{x},
+#'   \code{gen}): every real individual in \code{ped}, every duplicate
+#'   node in \code{forest$duplicates}, and every mating-unit node in
+#'   \code{forest$matingUnits}.
+#' @noRd
+.positionMatingUnitForest <- function(ped, forest) {
+  ## Same input-validation contract the OLD implementation carried --
+  ## preserved across the Phase 3 cutover (found during GREEN: BJL's own
+  ## Phase 2a/2b tests never exercised these malformed-input cases, since
+  ## every fixture there was already valid by construction).
+  if (!is.data.frame(ped)) {
+    stop(".positionMatingUnitForest() requires 'ped' to be a data frame.")
+  }
+  required <- c("id", "sire", "dam", "sex", "gen")
+  missingCols <- setdiff(required, names(ped))
+  if (length(missingCols) > 0L) {
+    stop(".positionMatingUnitForest() requires 'ped' to have columns: ",
+         toString(required), ". Missing: ", toString(missingCols))
+  }
+
+  ped$gen[is.na(ped$gen)] <- 0L
+  minSep <- 1L
+
+  ## ---- S667: disconnected-component separation --------------------------
+  ## docs/planning/pedigree-diagram-disconnected-component-
+  ## separation-plan.md, "REVISED DESIGN -- Session 667" (path wrapped so
+  ## commented_code_linter does not parse it as arithmetic, S652 precedent).
+  ## Two or more weakly-connected families
+  ## are each laid out ALONE by this same engine (recursively: every tier,
+  ## the S666 correction pass, the Decision-1 seeding, and the final joint
+  ## .solveJointQP() solve all run per family), then packed left-to-right
+  ## in ped row order with
+  ## a per-row minSep gap -- kinship2::align.pedigree()'s own treatment of
+  ## unrelated families (bit-exact on Track B shrunk and 3 synthetic
+  ## multi-family fixtures, test_positionMatingUnitForest.R). Before this,
+  ## all families shared the super-root's sibling packing with no notion of
+  ## family: each B1 mate's anchor + minSep target landed on the OTHER
+  ## family and the then-live B1/B3 de-collision pass (deleted by the QP
+  ## migration -- see the Phase 2 note below Tier 3) pushed her further into it
+  ## (Track B shrunk rendered P1 . C4 . P2 . P6 across one row). A single
+  ## component takes the unchanged path below; Track B full (2 components)
+  ## is identical either way, up to translation. Runs after the gen-NA fix
+  ## above so every per-component call sees consistent gens.
+  components <- .forestComponents(ped, forest)
+  if (length(components) > 1L) {
+    perComponent <- lapply(components, function(members) {
+      .positionMatingUnitForest(
+        ped[as.character(ped$id) %in% members, , drop = FALSE],
+        .subsetForest(forest, members)
+      )
+    })
+    return(.packComponents(perComponent, minSep))
+  }
+
+  matingUnits <- forest$matingUnits
+  duplicates <- forest$duplicates
+  childEdges <- forest$childEdges
+  unitIds <- matingUnits$id
+  realIds <- as.character(ped$id)
+  genOf <- stats::setNames(ped$gen, realIds)
+  sireOf <- stats::setNames(as.character(ped$sire), realIds)
+  damOf <- stats::setNames(as.character(ped$dam), realIds)
+  sexOf <- stats::setNames(as.character(ped$sex), realIds)
+  male <- sexCodes[["male"]]
+  female <- sexCodes[["female"]]
+  anchorOf <- stats::setNames(matingUnits$anchor, unitIds)
+  nonAnchorOf <- stats::setNames(matingUnits$nonAnchor, unitIds)
+
+  ## ---- S3.2 CHILDREN(individual) ---------------------------------------
+  directChildrenOf <- function(id) {
+    childEdges$to[childEdges$from == id & childEdges$from %in% realIds]
+  }
+  hasOwnDirectChild <- function(id) length(directChildrenOf(id)) > 0L
+  unitChildrenOf <- function(id) {
+    myUnits <- unitIds[!is.na(anchorOf) & anchorOf == id]
+    if (length(myUnits) == 0L) return(character(0L))
+    unlist(lapply(myUnits, function(u) childEdges$to[childEdges$from == u]),
+           use.names = FALSE)
+  }
+  childrenOf <- function(id) c(directChildrenOf(id), unitChildrenOf(id))
+
+  ## S3.3.1 classification primitives. 'neverAnchorIds' is restricted to
+  ## sire/dam of an ANCHORED unit, matching the shipped freePassIds
+  ## computation above (orphan units, issue #154, contribute no
+  ## "non-anchor side" to contrast against). B1 (S3.3.1) additionally
+  ## requires !hasParentEdge(M) -- a conjunct the OLD, shipped freePassIds
+  ## does not need (its own 'neverAnchorIds' pool already excludes real
+  ## children by construction: 'nonAnchorSides' only ever lists a unit's
+  ## own sire/dam, never a unit's real children), but 2b's own B1 pool
+  ## must check directly: a non-anchor party who has her own real parent
+  ## edge (e.g. a "grandchild" reachable both as a reattached real child
+  ## AND as a non-anchor co-parent elsewhere) is B2, not B1 -- she must
+  ## get NO Tier-3 derived point at all.
+  hasParentEdge <- function(id) !is.na(sireOf[[id]]) || !is.na(damOf[[id]])
+  anchoredUnits <- matingUnits[!is.na(matingUnits$anchor), , drop = FALSE]
+  everAnchor <- unique(anchoredUnits$anchor)
+  nonAnchorSides <- c(anchoredUnits$sire, anchoredUnits$dam)
+  neverAnchorIds <- setdiff(unique(nonAnchorSides), everAnchor)
+  ## A dangling non-anchor (no own row in 'ped', S461 -- e.g. an
+  ## unrecorded co-parent) has no identity to render at all: the OLD,
+  ## shipped .positionMatingUnitForest() drops such an id from its final
+  ## output entirely (confirmed directly this session against its own
+  ## F0/D/[S(dangling) x D]/C fixture -- 'S' contributes zero rows), so
+  ## 2b does the same. The 'id %in% realIds' check must come first: '&&'
+  ## short-circuits, so hasParentEdge()/hasOwnDirectChild() (which index
+  ## sireOf/damOf/childEdges by 'id') are never reached for a dangling id.
+  b1Ids <- Filter(function(id) {
+    id %in% realIds && !hasOwnDirectChild(id) && !hasParentEdge(id)
+  }, neverAnchorIds)
+
+  ## qualifies() (S8.1) -- relocated here from its original position just
+  ## before Tier 3 (S666) so the new conditional-shift correction pass
+  ## below can call it: it depends only on structural fields already
+  ## defined above (anchorOf/nonAnchorOf/matingUnits/anchoredUnits/sexOf/
+  ## realIds/hasOwnDirectChild), never on tier1X or unitX, so this move is
+  ## a pure relocation with no behavior change. Its original Tier-3 caller
+  ## (the b1AnchorRelativeX() qualifying branch) was later deleted by
+  ## Decision 1's order-consistent seeding (see the Tier 3 comment below),
+  ## leaving that conditional-shift pass as qualifies()'s only caller.
+  qualifies <- function(unitId) {
+    p <- anchorOf[[unitId]]
+    m <- nonAnchorOf[[unitId]]
+    if (is.na(p) || is.na(m)) return(FALSE)
+    sireId <- matingUnits$sire[matingUnits$id == unitId]
+    damId <- matingUnits$dam[matingUnits$id == unitId]
+    if (!(sireId %in% realIds) || !(damId %in% realIds)) return(FALSE)
+    mateCountP <- sum(anchoredUnits$sire == p | anchoredUnits$dam == p)
+    mateCountM <- sum(anchoredUnits$sire == m | anchoredUnits$dam == m)
+    unambiguousOppositeSex <-
+      (identical(sexOf[[p]], male) && identical(sexOf[[m]], female)) ||
+      (identical(sexOf[[p]], female) && identical(sexOf[[m]], male))
+    mateCountP == 1L && mateCountM == 1L && !hasOwnDirectChild(p) &&
+      unambiguousOppositeSex
+  }
+
+  founderIds <- Filter(function(id) !hasParentEdge(id), realIds)
+  ## issue #154 (both-dangling case): a mating unit whose anchor is NA
+  ## (BOTH sire and dam dangling -- no real row for either) has no real
+  ## parent for CHILDREN()/unitChildrenOf() to ever reach it through
+  ## (anchorOf is never matched by a real id), so its own real children
+  ## would otherwise never enter the recursion at all -- and, since such
+  ## a child's own sire/dam ARE non-NA (dangling id strings, not NA
+  ## values), hasParentEdge() is TRUE for them, excluding them from
+  ## founderIds too. Left unhandled, a pedigree with no genuine founder at
+  ## all (every real individual's only "parents" are dangling) leaves
+  ## rootIds empty, crashing .buildForestChildrenOf() -- the OLD
+  ## algorithm's own issue #154 fix (mergeSubtrees() on an empty rootIds)
+  ## has no BJL equivalent yet; this is that equivalent. Such a child
+  ## becomes an independent root directly.
+  orphanUnitIds <- unitIds[is.na(anchorOf)]
+  orphanChildIds <- if (length(orphanUnitIds) > 0L) {
+    unique(unlist(lapply(orphanUnitIds, function(u) {
+      childEdges$to[childEdges$from == u]
+    }), use.names = FALSE))
+  } else {
+    character(0L)
+  }
+  rootIds <- union(setdiff(founderIds, b1Ids), orphanChildIds)
+
+  ## Root-subtree ordering pass (Shape A, S690 -- docs/planning/
+  ## pedigree-diagram-root-subtree-ordering-plan.md): permute rootIds so
+  ## subtrees joined by many duplicate connectors sit near each other.
+  ## Per-component scope is inherited from the recursion above; the
+  ## engine's own minSep is the rigid-proxy gap and maxSweeps stays at
+  ## the function's default.
+  rootIds <- .orderRootSubtrees(rootIds, childrenOf, matingUnits,
+                                duplicates, minSep)
+
+  forestChildrenOf <- .buildForestChildrenOf(rootIds, childrenOf,
+                                              superRootId = "__super_root__")
+  tier1X <- .positionTreeApportion("__super_root__", forestChildrenOf)
+  tier1X <- tier1X[names(tier1X) != "__super_root__"]
+
+  ## S3.1.1: reinstated sweepMinSep() backstop, gen-grouped, real
+  ## individuals only -- same push semantics as the shipped sweepMinSep()
+  ## above, including its exact order(x, ids, method = "radix") tie-break.
+  ## Factored into a closure (S666) so it can run a SECOND time, after the
+  ## conditional-shift correction pass below -- that pass can move a real
+  ## Tier 1 individual (a shifted child's whole subtree) into an exact tie
+  ## with an unrelated, unshifted Tier 1 individual at the same gen, a
+  ## collision class the old Tier-3 B1-only de-collision pass (deleted by
+  ## the QP migration -- see the Phase 2 note below Tier 3) never
+  ## saw. Reusing this SAME existing mechanism -- not a new one -- is
+  ## exactly the plan doc's own "route corrected targets through the
+  ## existing collision-avoidance machinery, never around it" requirement,
+  ## generalized from the B1 case it names to this Tier 1 case (found live
+  ## this session: 8 new exact ties on the real 375-individual fixture
+  ## without this second pass).
+  dispGenOf <- genOf[names(tier1X)]
+  sweepMinSepBackstop <- function() {
+    for (g in sort(unique(dispGenOf))) {
+      rowIds <- names(tier1X)[dispGenOf == g]
+      if (length(rowIds) < 2L) next
+      rowIds <- rowIds[order(tier1X[rowIds], rowIds, method = "radix")]
+      for (i in 2L:length(rowIds)) {
+        prevX <- tier1X[[rowIds[i - 1L]]]
+        if (tier1X[[rowIds[i]]] < prevX + minSep) {
+          tier1X[[rowIds[i]]] <<- prevX + minSep
+        }
+      }
+    }
+  }
+  sweepMinSepBackstop()
+
+  ## ---- S666: conditional-shift rule (Option 3, chain-case) --------------
+  ## docs/planning/pedigree-diagram-parent-symmetric-placement-plan.md's
+  ## "CHAIN RULE -- RESOLVED (Session 665)" section. Runs on tier1X BEFORE
+  ## Tier 2 derives any union's x, so Tier 2 (below), the Tier-3/Decision-1
+  ## provisional seeding, and the final joint .solveJointQP() solve
+  ## (further below) mechanically
+  ## inherit the corrected values -- this is the only edit site the rule
+  ## needs. Processes every qualifying unit with >=1 real child exactly
+  ## once, in ascending order of the ANCHOR's own gen (a chain parent is
+  ## always a strictly lower generation than the pair she anchors, so this
+  ## ordering alone makes "root" and "non-root, using a fresh anchor value"
+  ## compose correctly at any chain depth -- no separate chain-detection
+  ## step is needed). tier1X is mutated in place and always read live
+  ## (never a cached/stale copy) -- the one genuinely chain-specific
+  ## requirement a single-link case cannot exercise.
+  ## Found live on the real 375-individual fixture (55/60 qualifying units
+  ## initially wrong, some by 20+ raw units): qualifies() alone is NOT
+  ## sufficient here. In the ORIGINAL (pre-S652) Track 7 Phase 1 code,
+  ## qualifies() was only ever called from inside a `for (fp in b1Ids)`
+  ## loop, so "the mate IS a genuine B1 free-pass point" was always true
+  ## by construction of the CALLER, never checked by qualifies() itself.
+  ## This new pass calls qualifies() in a different context (over ALL
+  ## anchored units, not just B1-derived ones), where that guarantee no
+  ## longer holds automatically -- e.g. __union_196's own "mate" (270UK6)
+  ## has a real parent edge and renders at her own genuine Tier 1 position
+  ## 2 gens away, not via the B1 anchor-relative formula at all, so the
+  ## formula-derived "mateFresh" below would be meaningless for her.
+  ## Require nonAnchorOf %in% b1Ids explicitly, matching the established
+  ## qualifyingB1 <- Filter(qualifies, b1Ids) pattern already used
+  ## elsewhere in this file (e.g. the Obligation 2 test).
+  ## subtreeIds() returns id plus every descendant reachable via
+  ## childrenOf() (real tree children only) -- used to translate a
+  ## shifted non-root child's whole subtree rigidly via a single
+  ## vectorized tier1X update in the caller, rather than a self-mutating
+  ## <<- recursion.
+  subtreeIds <- function(id) {
+    kids <- childrenOf(id)
+    c(id, unlist(lapply(kids, subtreeIds), use.names = FALSE))
+  }
+  correctableUnitIds <- Filter(
+    function(u) qualifies(u) && nonAnchorOf[[u]] %in% b1Ids,
+    intersect(anchoredUnits$id, unique(childEdges$from))
+  )
+  correctionOrder <- correctableUnitIds[
+    order(genOf[anchorOf[correctableUnitIds]], correctableUnitIds,
+          method = "radix")
+  ]
+  for (u in correctionOrder) {
+    p <- anchorOf[[u]]
+    m <- nonAnchorOf[[u]]
+    sign <- if (identical(sexOf[[p]], female) &&
+                  identical(sexOf[[m]], male)) -1L else 1L
+    kids <- childEdges$to[childEdges$from == u]
+    if (hasParentEdge(p)) {
+      ## Non-root anchor (already positioned as someone else's real
+      ## child): shift the union's own children -- each child's entire
+      ## subtree, rigidly -- so their mean lands on the true parent
+      ## midpoint (anchor unchanged; mate freshly derived from the
+      ## anchor's CURRENT value, not touched directly here).
+      mateFresh <- tier1X[[p]] + sign * minSep
+      trueMid <- mean(c(tier1X[[p]], mateFresh))
+      delta <- trueMid - mean(tier1X[kids])
+      ids <- unlist(lapply(kids, subtreeIds), use.names = FALSE)
+      tier1X[ids] <- tier1X[ids] + delta
+    } else {
+      ## Root anchor (free to move): shift anchor and mate equally so
+      ## their midpoint lands on the (unchanged) children's mean.
+      childrenMean <- mean(tier1X[kids])
+      mateRaw <- tier1X[[p]] + sign * minSep
+      shift <- childrenMean - mean(c(tier1X[[p]], mateRaw))
+      tier1X[[p]] <- tier1X[[p]] + shift
+    }
+  }
+  sweepMinSepBackstop()
+
+  ## ---- Tier 2: union-point derivation + exact-tie sweep (S3.3.3/S3.4) --
+  ## Includes every unit with >=1 real child -- not just anchoredUnits --
+  ## so an orphan unit (anchor NA, issue #154's both-dangling case above)
+  ## still gets a valid, finite x (its own children's midpoint), matching
+  ## the OLD algorithm's own output contract. qualifies()/Tier 3 below
+  ## still uses anchoredUnits specifically -- an orphan unit can never be
+  ## a Tier-3 B1 formula's own qualifying anchor (its anchorOf is NA, the
+  ## qualifies() gate's own first check already excludes it), so this
+  ## broadening is scoped to x-derivation only, no Tier-3 behavior change.
+  ## Reads the S666-corrected tier1X above -- every qualifying union's own
+  ## unitX, AND every non-qualifying unit downstream of a shifted
+  ## individual (e.g. a shifted child's own further, non-qualifying
+  ## mating), mechanically picks up the correction here, no special-casing
+  ## needed.
+  unitX <- stats::setNames(rep(NA_real_, length(unitIds)), unitIds)
+  xDerivableUnits <- matingUnits[matingUnits$id %in%
+                                    unique(childEdges$from), , drop = FALSE]
+  for (u in xDerivableUnits$id) {
+    kids <- childEdges$to[childEdges$from == u]
+    unitX[[u]] <- mean(tier1X[kids])
+  }
+
+  ## ---- Tier 3: B1/B3 fallback seeds (S3.3.3; Decision 1, S679) ---------
+  ## Decision 1 of the provisional-order design (docs/planning/pedigree-
+  ## diagram-provisional-order-plan.md, Migration Path Phase 2,
+  ## PRE-RED-ratified S679) replaces the Tier-3 SEED formulas: the
+  ## order-consistent seeding loop below re-seeds every anchored unit's
+  ## union and rendered mate at the QP objective's own ideal points, so
+  ## only their within-row RANK survives into .solveJointQP()'s adjacent-
+  ## pair constraints. This fallback keeps the pre-Decision-1 children's-
+  ## mean offset only for the occurrences that loop deliberately does not
+  ## seed: a 3+-unit anchor's extra units beyond the two-unit left/right
+  ## split (the design's disclosed polygamous exception) and any unit
+  ## whose anchor carries no Tier-1 position. The old qualifying branch
+  ## (b1AnchorRelativeX(), anchor +/- minSep, S8.1/Track 7) is deleted
+  ## rather than bypassed: qualifies() demands a single-unit anchor
+  ## (mateCountP == 1L), and the seeding loop always re-seeds single- and
+  ## two-unit anchors, so that branch could never fire again --
+  ## qualifies() itself stays, unchanged, for the S666 conditional-shift
+  ## pass above.
+  derivedX <- function(unitId) {
+    unname(unitX[[unitId]]) + minSep * 0.4
+  }
+
+  b1UnitOf <- stats::setNames(character(length(b1Ids)), b1Ids)
+  for (fp in b1Ids) {
+    ownUnits <- matingUnits$id[matingUnits$sire == fp | matingUnits$dam == fp]
+    dupUnits <- duplicates$matingUnitId[duplicates$realId == fp]
+    b1UnitOf[[fp]] <- setdiff(ownUnits, dupUnits)[1L]
+  }
+
+  ## ---- Migration Path Phase 2 (docs/planning/pedigree-diagram-joint-qp-
+  ## solver-plan.md, "Cutover on small fixtures only"): the five collision-
+  ## avoidance passes formerly here (the shared B1/B3 exact-tie
+  ## de-collision pass with its bidirectional nearest-free-slot search,
+  ## S647; the B1-vs-unrelated-individual proximity pass, S661/S662;
+  ## the Track 7 Phase 2 union sweep, S648/S649; the duplicate de-collision
+  ## + Track 7 Phase 4 union-vs-duplicate push, S654/S658) are REPLACED by
+  ## one joint .solveJointQP() call below (Decision 1/2 of the plan doc) --
+  ## deleted here, not merely bypassed, since Decision 1 stops Phase A
+  ## (this function) at the raw Tier 2/Tier 3 FORMULA values, before any of
+  ## these passes would run; a call site with nothing left to call is dead
+  ## code by construction, and this project's own 0-lint close-out gate
+  ## (CLAUDE.md) forces removing it now rather than at the plan's own
+  ## nominal Phase 4 boundary. tier3X below is therefore each B1/B3
+  ## occurrence's RAW derivedX() value -- never de-collided -- used only to
+  ## fix provisional left-to-right rank for the QP's own row constraints
+  ## (Decision 3), its magnitude discarded once Phase B runs.
+  tier3X <- stats::setNames(numeric(length(b1Ids)), b1Ids)
+  tier3Gen <- stats::setNames(integer(length(b1Ids)), b1Ids)
+  for (fp in b1Ids) {
+    unitId <- b1UnitOf[[fp]]
+    tier3X[[fp]] <- derivedX(unitId)
+    tier3Gen[[fp]] <- unname(matingUnits$gen[matingUnits$id == unitId])
+  }
+
+  dupIds <- if (nrow(duplicates) > 0L) duplicates$id else character(0L)
+  if (length(dupIds) > 0L) {
+    tier3X <- c(tier3X, stats::setNames(numeric(length(dupIds)), dupIds))
+    tier3Gen <- c(tier3Gen, stats::setNames(integer(length(dupIds)), dupIds))
+    for (i in seq_len(nrow(duplicates))) {
+      dupId <- duplicates$id[i]
+      unitId <- duplicates$matingUnitId[i]
+      tier3X[[dupId]] <- derivedX(unitId)
+      tier3Gen[[dupId]] <- unname(matingUnits$gen[matingUnits$id == unitId])
+    }
+  }
+  tier3Ids <- c(b1Ids, dupIds)
+
+  ## ---- Decision 1 (S679): order-consistent seeding ---------------------
+  ## docs/planning/pedigree-diagram-provisional-order-plan.md, Migration
+  ## Path Phase 2 (PRE-RED-ratified S679). .solveJointQP() below discards
+  ## every provisional MAGNITUDE and keeps only each row's left-to-right
+  ## RANK (the row becomes a fixed chain of hard adjacent-pair
+  ## constraints), so the one job left to these seeds is handing the QP
+  ## an order its objective can actually centre: anchor, union dot and
+  ## rendered mate locally contiguous wherever the mate-node is
+  ## placeable. Per anchor, its units ordered by their children's mean
+  ## (ties by id, radix):
+  ##   * side -- one unit: the side of the unit's own children's mean
+  ##     relative to the anchor (falling back to the existing sex rule,
+  ##     female anchor + male mate renders left, on an exact tie), except
+  ##     that a unit the S666 pass handled always takes the sex rule (the
+  ##     sweep after that pass can push the anchor past its children in
+  ##     a crowded row, which would flip the children's-mean side, S856), and
+  ##     so does any one-mate-each unit qualifies() accepts (S859: when both
+  ##     partners have parents of their own the mate is a duplicate node, the
+  ##     S666 pass skips the unit, and the children's mean drew the male
+  ##     right); two
+  ##     units: leftmost-children unit left, the other right (kinship2's
+  ##     lspouse/rspouse split); 3+ units: first two as above, extras
+  ##     keep their Tier 2/Tier 3 fallback seeds (the design's disclosed
+  ##     polygamous exception -- see the class-(b) structural-residual
+  ##     test in test_positionMatingUnitForest.R).
+  ##   * inset -- mateOff = min(0.9 * minSep, 0.45 * gap), gap = distance
+  ##     from the anchor to the nearest same-row genuine node on the
+  ##     chosen side (post-S666 tier1X). The 0.9 keeps a seed strictly
+  ##     inside the anchor's own >= minSep gap so it can never tie a
+  ##     genuine node's integer position; the 0.45 * gap cap keeps two
+  ##     facing insets from overshooting across each other into inverted
+  ##     nesting (both failure modes measured -- design doc, Evidence).
+  ##     No same-row genuine neighbour on that side: the full 0.9 inset
+  ##     applies uncapped.
+  ##   * seeds -- placeable mate-node (a B1 derived point or a __dup_*
+  ##     node): mate at anchor + side * mateOff, union at half the
+  ##     inset. Genuine same-row mate (her own Tier-1 position): union
+  ##     at the true midpoint -- structurally unreachable while
+  ##     Decision 2 (S678) duplicates every B2-shaped non-anchor, kept
+  ##     for robustness exactly like the D2 dogleg it parallels.
+  ##     Dangling, unrendered mate: the union alone takes the inset
+  ##     midpoint.
+  ## Tier 1 (BJL + sweepMinSepBackstop() + the S666 conditional shift) is
+  ## untouched -- genuine individuals' seeds and ranks are exactly as
+  ## before; orphan units (anchor NA, issue #154) keep their children's-
+  ## mean seeds.
+  resolveNnode <- .nonAnchorNodeResolver(duplicates)
+  unitsByAnchor <- split(anchoredUnits$id, anchoredUnits$anchor)
+  for (a in names(unitsByAnchor)) {
+    if (!(a %in% names(tier1X))) next
+    us <- unitsByAnchor[[a]]
+    ux <- unitX[us]
+    ux[is.na(ux)] <- tier1X[[a]]
+    us <- us[order(ux, us, method = "radix")]
+    for (k in seq_along(us)) {
+      u <- us[k]
+      m <- nonAnchorOf[[u]]
+      nn <- if (!is.na(m)) resolveNnode(m, u) else NA_character_
+      sexSide <- if (identical(sexOf[[a]], female) && !is.na(m) &&
+                       m %in% realIds && identical(sexOf[[m]], male)) {
+        -1.0
+      } else {
+        1.0
+      }
+      side <- if (length(us) == 1L) {
+        childSide <- sign(unitX[[u]] - tier1X[[a]])
+        ## correctableUnitIds: see the side bullet above (S856).
+        if (u %in% correctableUnitIds || qualifies(u) || childSide == 0.0) {
+          sexSide
+        } else {
+          childSide
+        }
+      } else if (k == 1L) {
+        -1.0
+      } else if (k == 2L) {
+        1.0
+      } else {
+        0.0
+      }
+      if (side == 0.0) next
+      mateOff <- 0.9 * minSep
+      uGen <- matingUnits$gen[matingUnits$id == u]
+      rowX <- tier1X[names(dispGenOf)[dispGenOf == uGen]]
+      beyond <- if (side > 0.0) {
+        rowX[rowX > tier1X[[a]] + 1e-9]
+      } else {
+        rowX[rowX < tier1X[[a]] - 1e-9]
+      }
+      if (length(beyond) > 0L) {
+        mateOff <- min(mateOff, 0.45 * min(abs(beyond - tier1X[[a]])))
+      }
+      ## * 0.5 rather than / 2: bit-identical (both operands are exact
+      ## powers of two) and clean under implicit_integer_linter.
+      unionOff <- mateOff * 0.5
+      if (!is.na(nn) && nn %in% names(tier1X)) {
+        unitX[[u]] <- (tier1X[[a]] + tier1X[[nn]]) * 0.5
+      } else if (!is.na(nn) && nn %in% names(tier3X)) {
+        tier3X[[nn]] <- tier1X[[a]] + side * mateOff
+        unitX[[u]] <- tier1X[[a]] + side * unionOff
+      } else {
+        unitX[[u]] <- tier1X[[a]] + side * unionOff
+      }
+    }
+  }
+
+  ## ---- Phase B: one joint QP solve replaces this function's own former
+  ## final assembly (the old return statement) as the FINAL x for every
+  ## node in this component (Decision 1/2). provisionalPos below is
+  ## exactly the vector the old return statement used to build -- its
+  ## values now feed .solveJointQP() as provisional order/rank input only.
+  genuineIds <- names(tier1X)
+  ids <- c(genuineIds, unitIds, tier3Ids)
+  x <- c(unname(tier1X[genuineIds]), unname(unitX[unitIds]),
+         unname(tier3X[tier3Ids]))
+  gen <- c(unname(dispGenOf[genuineIds]), unname(matingUnits$gen),
+           unname(tier3Gen[tier3Ids]))
+  provisionalPos <- data.frame(id = ids, x = x, gen = gen,
+                                stringsAsFactors = FALSE)
+  .solveJointQP(provisionalPos, matingUnits, duplicates, childEdges,
+                minSep = minSep)
+}
+
+## Written from the specification cleanroom/spec/C/SPEC.md (the clean-room
+## rewrite); "SPEC.md" below is that file.
+
+## The nodes' row positions in the order of SPEC.md's separation rules: by
+## gen, then by first position x, then by id in byte order.
+.separationOrder <- function(id, x, gen) {
+  order(gen, x, id, method = "radix")
+}
+
+## The separation constraints x[right] - x[left] >= gap, as a data frame of
+## the row positions left and right and the gap, in SPEC.md's numbering.
+.separationConstraints <- function(id, x, gen, isUnion, minSep) {
+  ord <- .separationOrder(id, x, gen)
+  left <- ord[-length(ord)]
+  right <- ord[-1L]
+  same <- gen[left] == gen[right]
+  left <- left[same]
+  right <- right[same]
+  gap <- minSep / c(1.0, 2.0, 4.0)[1L + isUnion[left] + isUnion[right]]
+  data.frame(left = left, right = right, gap = as.double(gap))
+}
+
+## The row position of the reference node: the leftmost node of the row with
+## the most nodes, the first such row by gen.
+.referenceNode <- function(id, x, gen) {
+  ord <- .separationOrder(id, x, gen)
+  rowsGen <- sort(unique(gen))
+  counts <- tabulate(match(gen, rowsGen), length(rowsGen))
+  widest <- rowsGen[which.max(counts)]
+  ord[gen[ord] == widest][1L]
+}
+
+## The rows of P for one placed mating (mates, union, offspring), each a
+## list of its columns and values; NULL when the mating is not placed.
+.matingTerms <- function(m, id, matingUnits, duplicates, childEdges,
+                         wSpouse, alignChild, wUnion) {
+  anchor <- matingUnits$anchor[m]
+  if (is.na(anchor)) return(NULL)
+  unionId <- matingUnits$id[m]
+  nonAnchor <- matingUnits$nonAnchor[m]
+  dupRow <- which(duplicates$realId %in% nonAnchor &
+                    duplicates$matingUnitId %in% unionId)
+  other <- if (length(dupRow) > 0L) duplicates$id[dupRow[1L]] else nonAnchor
+  s <- match(other, id)
+  if (is.na(s)) return(NULL)
+  a <- match(anchor, id)
+  u <- match(unionId, id)
+  offspring <- match(childEdges$to[childEdges$from %in% unionId], id)
+  offspring <- offspring[!is.na(offspring)]
+  w <- sqrt(length(offspring)^(-alignChild))
+  c(
+    list(list(cols = c(a, s), vals = c(sqrt(wSpouse), -sqrt(wSpouse))),
+         list(cols = c(u, a, s),
+              vals = c(sqrt(wUnion), -sqrt(wUnion) / 2.0,
+                       -sqrt(wUnion) / 2.0))),
+    lapply(offspring, function(o) {
+      list(cols = c(o, a, s), vals = c(w, -w / 2.0, -w / 2.0))
+    })
+  )
+}
+
+## The penalty table P of SPEC.md's objective: one row per term, one column
+## per node, in the nodes' row order.
+.penaltyMatrix <- function(id, matingUnits, duplicates, childEdges,
+                           reference, wSpouse, alignChild, wUnion, wDup) {
+  matingTerms <- lapply(seq_len(nrow(matingUnits)), .matingTerms, id = id,
+                        matingUnits = matingUnits, duplicates = duplicates,
+                        childEdges = childEdges, wSpouse = wSpouse,
+                        alignChild = alignChild, wUnion = wUnion)
+  singleParents <- setdiff(childEdges$from, matingUnits$id)
+  pulled <- duplicates$realId %in% id &
+    !(duplicates$realId %in% childEdges$to) &
+    !(duplicates$realId %in% singleParents)
+  dupTerms <- lapply(which(pulled), function(r) {
+    list(cols = match(c(duplicates$id[r], duplicates$realId[r]), id),
+         vals = c(sqrt(wDup), -sqrt(wDup)))
+  })
+  terms <- c(unlist(matingTerms, recursive = FALSE), dupTerms,
+             list(list(cols = reference, vals = 1e-5)))
+  cols <- lapply(terms, `[[`, "cols")
+  pmat <- matrix(0.0, length(terms), length(id))
+  pmat[cbind(rep(seq_along(terms), lengths(cols)), unlist(cols))] <-
+    unlist(lapply(terms, `[[`, "vals"))
+  pmat
+}
+
+#' Joint QP solve for one weakly-connected pedigree component (Option C)
+#'
+#' Migration Path Phase 1 of \code{docs/planning/
+#' pedigree-diagram-joint-qp-solver-plan.md} -- one \code{quadprog} solve
+#' (one \code{quadprog::solve.QP.compact()} call)
+#' positioning every node of one component simultaneously,
+#' replacing \code{.positionMatingUnitForest()}'s five former collision-
+#' avoidance passes (deleted at Migration Path Phase 2, S674, when this
+#' function was wired in as that function's final assembly step -- one
+#' call per weakly-connected component).
+#'
+#' \strong{Decision 1 (two phases):} \code{provisionalPos} is
+#' \code{.positionMatingUnitForest()}'s OWN, unmodified output for this
+#' component -- Phase A. Its \code{x} values fix each row's (gen's)
+#' left-to-right order (Decision 3); its \code{gen} column is reused
+#' unchanged as the row key (Decision 5: row = generation, unmodified by
+#' this design). \strong{Decision 2 (variable set):} one QP variable per
+#' node already in \code{provisionalPos$id} -- no node is added or removed.
+#' Node \code{kind} is two-valued: \code{"union"} for an id in
+#' \code{matingUnits$id}, \code{"individual"} for everything else (genuine,
+#' B1 free-pass, and duplicate nodes all render as the same 25px shape and
+#' share one clearance value). \strong{Decision 3 (constraints):} within
+#' each row, sorted by \code{provisionalPos$x} (ties broken by id, radix --
+#' the same tie-break \code{sweepMinSepBackstop()} uses), each adjacent
+#' pair gets one hard inequality \code{x[i+1] - x[i] >= minSepFor(kind_i,
+#' kind_{i+1})}. \strong{Decision 3 as amended at Migration Path Phase 3
+#' (S675, owner-ratified):} the floors are SPACING values keyed to the
+#' engine's own \code{minSep} (1 raw unit = 120 px, kinship2's own uniform
+#' \code{alignped4} floor) -- individual-individual \code{minSep},
+#' individual-union \code{minSep / 2}, union-union \code{minSep / 4} --
+#' not the render-layer symbol-tangent clearances the design originally
+#' repurposed: under those, the objective compressed 684 of the real
+#' 375-fixture's 705 adjacent pairs to exactly the floor (symbols
+#' touching, labels overlapping). \strong{Decision 4 (objective):} spousal
+#' pull + child centering (the two terms of kinship2's \code{alignped4}
+#' method) plus two terms
+#' kinship2 has no analogue for -- union centering (targets census Finding
+#' #1) and duplicate proximity (targets class (d)) -- plus one
+#' anti-degeneracy row breaking translation invariance, matching kinship2's
+#' own fix. A unit's non-anchor party is drawn at its actually-rendered
+#' node, real or duplicate, by the rule \code{.addRectilinearWaypoints()}'s
+#' D2 block takes from \code{\link{.nonAnchorNodeResolver}};
+#' \code{.solveJointQP()} applies the same rule in its own code since the
+#' clean-room rewrite (\code{.matingTerms()}).
+#'
+#' An orphan mating unit (\code{matingUnits$anchor} is \code{NA} -- issue
+#' #154, both sire and dam dangling) still gets a QP variable and adjacency
+#' constraints like every other node, but no spousal-pull/child-centering/
+#' union-centering term applies to it (no real anchor/non-anchor pair
+#' exists) -- an edge case kinship2 sidesteps via its own \code{fixParents()}
+#' pre-processing, which this project has no equivalent for (Impact
+#' Analysis, plan doc).
+#'
+#' @param provisionalPos data frame (\code{id}, \code{x}, \code{gen}) --
+#'   \code{.positionMatingUnitForest()}'s own unmodified output for this
+#'   component, supplying both the row/order-fixing input and this
+#'   function's full node population (Decision 2).
+#' @param matingUnits the \code{matingUnits} data frame from
+#'   \code{\link{.buildMatingUnitForest}} (\code{id}, \code{sire},
+#'   \code{dam}, \code{anchor}, \code{nonAnchor}, \code{gen}).
+#' @param duplicates the \code{duplicates} data frame from
+#'   \code{\link{.buildMatingUnitForest}} (\code{id}, \code{realId},
+#'   \code{matingUnitId}).
+#' @param childEdges the \code{childEdges} data frame from
+#'   \code{\link{.buildMatingUnitForest}} (\code{from}, \code{to}).
+#' @param minSep the engine's own minimum same-row spacing in raw units
+#'   (default \code{1}, \code{.positionMatingUnitForest()}'s Tier-1
+#'   spacing); the three adjacent-pair floors are derived from it (S675
+#'   amendment to Decision 3, above).
+#' @param wSpouse spousal-pull weight (default \code{2}, kinship2's
+#'   default).
+#' @param alignChild child-centering weight exponent (default \code{1.5},
+#'   kinship2's own default; a unit with \code{k} real children weights its
+#'   own child-centering rows by \code{k^-alignChild}).
+#' @param wUnion union-centering weight (default \code{2}, the same order
+#'   as the spousal term it structurally mirrors) -- a NEW term, no
+#'   kinship2 analogue.
+#' @param wDup duplicate-proximity weight (default \code{1}, a lower-
+#'   priority nice-to-have) -- a NEW term, no kinship2 analogue. Applies
+#'   to polygamy (B1) duplicates ONLY: a spouse (B2) duplicate
+#'   contributes no term-4 row at any weight (S683, the owner-ratified
+#'   amendment to the S675 no-weight-tuning mandate -- see the term-4
+#'   policy comment in the body).
+#' @return A data frame (\code{id}, \code{x}, \code{gen}) with exactly the
+#'   same \code{id} set as \code{provisionalPos} (Decision 2) -- \code{gen}
+#'   unchanged from \code{provisionalPos} (Decision 5), \code{x} the QP's
+#'   own solution.
+#' @noRd
+## The nodes' final horizontal positions: a data frame of id, x and gen in
+## the row order of provisionalPos, from one quadratic program (SPEC.md).
+.solveJointQP <- function(provisionalPos, matingUnits, duplicates,
+                          childEdges, wSpouse = 2.0, alignChild = 1.5,
+                          wUnion = 2.0, wDup = 1.0, minSep = 1.0) {
+  id <- provisionalPos$id
+  x <- provisionalPos$x
+  gen <- provisionalPos$gen
+  n <- length(id)
+  isUnion <- id %in% matingUnits$id
+  cons <- .separationConstraints(id, x, gen, isUnion, minSep)
+  pmat <- .penaltyMatrix(id, matingUnits, duplicates, childEdges,
+                         .referenceNode(id, x, gen), wSpouse, alignChild,
+                         wUnion, wDup)
+  # nolint next: object_usage_linter. Supplied in helpers/penaltyCrossprod.R.
+  dmat <- .penaltyCrossprod(pmat)
+  diag(dmat) <- diag(dmat) + 1e-8
+  low <- pmin(cons$left, cons$right)
+  high <- pmax(cons$left, cons$right)
+  leftFirst <- cons$left < cons$right
+  aind <- matrix(c(rep(2L, nrow(cons)), low, high), nrow = 3L, byrow = TRUE)
+  amat <- matrix(c(ifelse(leftFirst, -1.0, 1.0), ifelse(leftFirst, 1.0, -1.0)),
+                 nrow = 2L, byrow = TRUE)
+  fit <- quadprog::solve.QP.compact(Dmat = dmat, dvec = numeric(n),
+                                    Amat = amat, Aind = aind,
+                                    bvec = cons$gap, meq = 0L)
+  data.frame(id = id, x = fit$solution, gen = gen)
+}
+
+#' Combine the mating-unit forest into visNetwork-ready diagram data
+#'
+#' Builds a kinship2-style pedigree layout in which each mating (a sire and
+#' dam pair) is drawn as a union node between the parents and their
+#' offspring. Returns the same \code{list(nodes, edges)} shape that
+#' \code{\link{makePedigreeDiagramData}} returns, plus a lookup table that
+#' maps each duplicate node id to the real individual it stands for.
+#' \code{\link{makePedigreeDiagramData}} itself is unaffected; this is a
+#' separate function.
+#'
+#' Mating-unit nodes render as a small, unlabeled dot with an
+#' offspring-count tooltip, visually distinct from the 5 sex-coded shapes.
+#' An individual who has to appear more than once in the layout gets
+#' duplicate nodes. A duplicate node keeps the real individual's own
+#' shape, label and tooltip content (plus a cue that it is a duplicate), so
+#' it reads as that individual, and is connected to it by a dashed edge.
+#'
+#' In the default \code{"rectilinear"} edge style, mate-line and
+#' sibship-bar edges are routed through invisible waypoint nodes so they
+#' render as strict right angles, as kinship2 draws them. In the
+#' \code{"direct"} edge style, edges are straight segments from each parent
+#' to the mating unit and from the mating unit to each child.
+#'
+#' A simple two-real-parent mating unit (each parent has exactly one
+#' mate and both have unambiguous \code{"M"}/\code{"F"} sex codes) is
+#' drawn with the male parent to the left of the female parent. The final
+#' horizontal positions come from a joint quadratic program that preserves
+#' each row's provisional left-to-right order, so this rule carries into
+#' the rendered layout. It cannot be turned off.
+#'
+#' @param ped data frame with \code{id}, \code{sire}, \code{dam},
+#'   \code{sex}, and \code{gen} columns, same contract as
+#'   \code{\link{makePedigreeDiagramData}}. An optional \code{status}
+#'   column marks deceased animals: see the \code{deceased} column of the
+#'   returned \code{nodes}. Every column whose name starts
+#'   \code{affected} is an affected condition, in the order the data
+#'   frame holds them, the first four drawn (see \code{conditions} in the
+#'   return value). A lone one fills the symbol; two or more split it
+#'   into sections. (\code{\link{makePedigreeDiagramData}} reads the
+#'   column \code{affected} alone.)
+#' @param edgeStyle one of \code{"rectilinear"} (default), which routes
+#'   mate-line and sibship-bar edges through invisible waypoint nodes so
+#'   they render as a strict right angle, kinship2-style, or
+#'   \code{"direct"}, which draws a straight edge from each parent to
+#'   their mating unit and from each mating unit to each child.
+#' @param twinRelations optional data.frame with columns \code{id1},
+#'   \code{id2}, \code{code} (see \code{\link{checkTwinRelations}}). Not
+#'   validated here; validate with \code{\link{checkTwinRelations}} first.
+#'   \code{NULL} (default) adds no connector edges. A connector always
+#'   targets the two individuals' real node ids and always renders as a
+#'   direct edge regardless of \code{edgeStyle}.
+#' @param kinshipMatrix optional precomputed kinship matrix (a base
+#'   \code{matrix} or a \code{Matrix}) with row AND column names set to
+#'   individual ids. When supplied, it replaces this function's internal
+#'   \code{\link{kinship}()} call as the sole source of the
+#'   consanguineous-mating-unit flags (\code{kinshipMatrix[sire, dam] > 0}):
+#'   \code{twinRelations} then drives twin connector edges only, so a
+#'   caller wanting twin-corrected consanguinity must bake it into the
+#'   matrix (e.g. \code{kinship(..., twinRelations = ...)}). A sire/dam id
+#'   absent from the matrix's dimnames leaves that unit at the safe
+#'   \code{FALSE} default, exactly as a dangling parent does on the default
+#'   path. \code{NULL} (default) computes
+#'   \code{kinship(ped$id, ped$sire, ped$dam, ped$gen,
+#'   twinRelations = twinRelations)}.
+#' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
+#'   \code{title}, \code{size}, \code{color.background},
+#'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
+#'   an animal whose \code{status} reads \code{DECEASED}, and for each of its
+#'   repeat-appearance nodes, \code{FALSE} for every other node and for all of
+#'   them when \code{ped} has no \code{status} column), \code{x},
+#'   \code{y}; \code{color.border} is added under
+#'   \code{edgeStyle = "rectilinear"}; \code{affectedSections} is added
+#'   when there are two or more conditions: a character string with one
+#'   character per condition, \code{"1"} where the animal is affected
+#'   and \code{"0"} where it is unaffected or unknown, the same for a
+#'   repeat-appearance node as for its animal, \code{""} for a node that
+#'   is not an animal, never \code{NA}; with two or more conditions the
+#'   animals' \code{color.background} is white, the sections carrying the
+#'   color), \code{edges} (\code{from},
+#'   \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
+#'   \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
+#'   and \code{width} columns are always present once any mating unit
+#'   exists: a consanguineous mating unit's (\code{kinship(sire, dam) > 0})
+#'   2 spouse-to-union edges get \code{"#D55E00"}/\code{4}, an Okabe-Ito
+#'   colorblind-safe vermillion in kinship2's doubled/thickened mate-line
+#'   convention, and every other edge gets \code{NA}; \code{label} is added
+#'   when \code{twinRelations} is supplied), and \code{duplicateToReal} (a
+#'   named character vector, duplicate node id -> real individual id).
+#'   Under \code{edgeStyle = "rectilinear"}, an already-set edge
+#'   \code{color} (e.g. the twin connector's or the consanguinity
+#'   marker's) is preserved when the edge is kept as-is; a marked mate edge
+#'   that gets replaced by a right-angle projection currently falls back to
+#'   the generic routing color and width. Also \code{isolatedIds}, a
+#'   character vector of ids suppressed from \code{nodes}/\code{edges}
+#'   because they have no known parent, are never a parent, and are not
+#'   connected by \code{twinRelations}; it is \code{character(0)} when
+#'   nothing was suppressed. When every individual in \code{ped} is
+#'   isolated, \code{nodes}/\code{edges} are both 0-row and
+#'   \code{duplicateToReal} is empty. Also \code{conditions}, a data
+#'   frame with one row per drawn condition (\code{column}, \code{label}
+#'   such as \dQuote{Affected} or \dQuote{Affected (diabetes)}, and its
+#'   \code{color}), 0-row when \code{ped} has no such column, and
+#'   \code{conditionsNotDrawn}, the names of any such columns past the
+#'   fourth.
+#'
+#' @examples
+#' ## Seven animals: C and D are full siblings, and so are F and G, D's
+#' ## offspring
+#' ped <- data.frame(
+#'   id = c("A", "B", "C", "D", "E", "F", "G"),
+#'   sire = c(NA, NA, "A", "A", NA, "D", "D"),
+#'   dam = c(NA, NA, "B", "B", NA, "E", "E"),
+#'   sex = c("M", "F", "F", "M", "F", "M", "F"),
+#'   stringsAsFactors = FALSE
+#' )
+#' ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+#' layout <- makePedigreeMatingLayout(ped)
+#'
+#' @export
+makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
+                                                          "direct"),
+                                      twinRelations = NULL,
+                                      kinshipMatrix = NULL) {
+  if (!is.data.frame(ped)) {
+    stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
+  }
+  required <- c("id", "sire", "dam", "sex", "gen")
+  missingCols <- setdiff(required, names(ped))
+  if (length(missingCols) > 0L) {
+    stop("makePedigreeMatingLayout() requires 'ped' to have columns: ",
+         toString(required), ". Missing: ", toString(missingCols))
+  }
+  edgeStyle <- match.arg(edgeStyle)
+  if (!is.null(kinshipMatrix) &&
+        (!(is.matrix(kinshipMatrix) || inherits(kinshipMatrix, "Matrix")) ||
+           is.null(rownames(kinshipMatrix)) ||
+           is.null(colnames(kinshipMatrix)))) {
+    stop("makePedigreeMatingLayout() requires 'kinshipMatrix' to be a ",
+         "matrix (or Matrix) with row and column names set to individual ",
+         "ids, or NULL.")
+  }
+
+  # S1029: every column whose name starts "affected" is a condition (owner
+  # ruling), in file order, the first four drawn (kinship2's own limit).
+  conditionCols <- .conditionColumns(ped)
+  drawnCols <- utils::head(conditionCols, length(.conditionColors))
+  conditionsNotDrawn <- setdiff(conditionCols, drawnCols)
+  conditions <- data.frame(
+    column = drawnCols, label = .conditionLabels(drawnCols),
+    color = .conditionColors[seq_along(drawnCols)],
+    stringsAsFactors = FALSE
+  )
+  sectioned <- length(drawnCols) >= 2L
+
+  # A fully-isolated individual (no known parent, never a parent, not
+  # twinRelations-connected) is suppressed from the diagram, matching
+  # kinship2's own align.pedigree() convention -- the P5-suppression plan,
+  # entangled with issue #164, RATIFIED S643 (Dragon 1-3, docs/planning/
+  # pedigree-diagram-isolated-individual-suppression-plan.md). Pre-
+  # filtering 'ped' here (Dragon 2) means .buildMatingUnitForest() and
+  # .positionMatingUnitForest(), and every downstream table, never see an
+  # isolated row at all -- no separate exclusion needed later.
+  isolatedIds <- .findIsolatedIds(ped, twinRelations)
+  ped <- ped[!ped$id %in% isolatedIds, , drop = FALSE]
+
+  if (length(isolatedIds) > 0L) {
+    message(sprintf(
+      paste0("makePedigreeMatingLayout(): %d individual(s) with no ",
+             "recorded parents, mates, or offspring suppressed from the ",
+             "pedigree diagram: %s"),
+      length(isolatedIds), toString(isolatedIds)
+    ))
+  }
+
+  # Dragon 3 (RATIFIED S643 as 3B): when suppression would empty the
+  # diagram entirely -- issue #164's own crash condition, every individual
+  # isolated -- return a fully-typed empty result instead of crashing.
+  # Necessary, not merely defensive: .positionMatingUnitForest() itself
+  # errors on a 0-row 'ped' (empirically confirmed S644,
+  # .buildForestChildrenOf() requires a non-empty 'rootIds'), so letting a
+  # 0-row 'ped' flow through the normal pipeline is not an option.
+  if (nrow(ped) == 0L) {
+    emptyNodes <- data.frame(id = character(), label = character(),
+                              shape = character(), title = character(),
+                              size = numeric(), stringsAsFactors = FALSE)
+    emptyNodes$color.background <- character()
+    emptyNodes$deceased <- logical()
+    emptyNodes$x <- numeric()
+    emptyNodes$y <- numeric()
+    if (sectioned) emptyNodes$affectedSections <- character()
+    emptyEdges <- data.frame(from = character(), to = character(),
+                              dashes = logical(), smooth.enabled = logical(),
+                              smooth.type = character(),
+                              smooth.roundness = numeric(),
+                              color = character(), width = numeric(),
+                              stringsAsFactors = FALSE)
+    return(list(nodes = emptyNodes, edges = emptyEdges,
+                duplicateToReal = stats::setNames(character(), character()),
+                isolatedIds = isolatedIds, conditions = conditions,
+                conditionsNotDrawn = conditionsNotDrawn))
+  }
+
+  forest <- .buildMatingUnitForest(ped)
+  pos <- .positionMatingUnitForest(ped, forest)
+  matingUnits <- forest$matingUnits
+  duplicates <- forest$duplicates
+  childEdges <- forest$childEdges
+  unitIds <- matingUnits$id
+  dupIds <- duplicates$id
+  realIds <- as.character(ped$id)
+
+  # S549 kinship2-supplement audit, Finding #2 (BACKLOG.md Housekeeping,
+  # fixed S555): flag each mating unit whose sire/dam pair is
+  # consanguineous (kinship(sire, dam) > 0), so the 2 mate-line edges get
+  # a distinct color/width below -- kinship2's own doubled/thickened
+  # mate-line convention. Computed from the SAME sire/dam/gen columns this
+  # function already requires (a structural fact of the pedigree, unlike
+  # the optional name/twinRelations sidecars above) -- not gated behind a
+  # UI toggle, matching kinship2's own unconditional convention.
+  # twinRelations is threaded into this internal kinship() call too (the
+  # function's own already-validated parameter, used elsewhere here only
+  # for the twin CONNECTOR edges): a caller-supplied twinRelations id not
+  # present in 'ped' is already a documented "not validated here" caller
+  # error per this parameter's own contract (identical to the connector-
+  # edge usage above), and R/modPedigree.R's own twinRelationsData()
+  # guarantees validity against this exact 'ped' before either use.
+  # A sire/dam with no own row in 'ped' (dangling -- e.g. a focal-animal-
+  # trimmed view, D2's own founder-fallback precedent above) can never be
+  # deemed consanguineous with their mate: kinship() has no matrix entry
+  # for an id outside 'ped$id', so the match() guard below leaves it at
+  # the safe FALSE default rather than erroring.
+  # Prep D-1 (S744): a caller-supplied kinshipMatrix bypasses the internal
+  # kinship() call entirely -- the injected matrix is the sole
+  # consanguinity source (see @param kinshipMatrix). The match() guard
+  # below covers both paths unchanged.
+  matingUnits$consanguineous <- rep(FALSE, nrow(matingUnits))
+  if (nrow(matingUnits) > 0L) {
+    kmat <- if (is.null(kinshipMatrix)) {
+      kinship(ped$id, ped$sire, ped$dam, ped$gen,
+              twinRelations = twinRelations)
+    } else {
+      kinshipMatrix
+    }
+    sireIdx <- match(matingUnits$sire, rownames(kmat))
+    damIdx <- match(matingUnits$dam, colnames(kmat))
+    known <- !is.na(sireIdx) & !is.na(damIdx)
+    matingUnits$consanguineous[known] <-
+      kmat[cbind(sireIdx[known], damIdx[known])] > 0L
+  }
+
+  ## Empirically chosen this session via a chromote render of the real
+  ## GA204Z/8LKBV9 loop fixture and a wide fan-out fixture -- matches
+  ## vis.js's own hierarchical-layout defaults (nodeSpacing ~100,
+  ## levelSeparation 150) closely enough to render legibly.
+  xScale <- 120L
+  yScale <- 150L
+
+  shapeMap <- c(F = "dot", M = "square", H = "star", U = "triangle")
+  sexLabelMap <- c(F = "Female", M = "Male", H = "Hermaphrodite",
+                    U = "Unknown")
+  sexOf <- stats::setNames(as.character(ped$sex), realIds)
+  sireOf <- stats::setNames(as.character(ped$sire), realIds)
+  damOf <- stats::setNames(as.character(ped$dam), realIds)
+  genOf <- stats::setNames(ped$gen, realIds)
+
+  # Issue #133 (D1-D8), independent implementation of the same optional
+  # affected contract makePedigreeDiagramData() gets -- this function, not
+  # that one, is what the live Diagram tab actually renders
+  # (R/modPedigree.R). Coerce defensively via as.logical() (see that
+  # function's own comment for why).
+  # S1029: each drawn condition column, read as logical by real id. A lone
+  # condition fills the symbol pink as `affected` always has; two or more
+  # are painted in sections by R/modPedigree.R, so the fill stays white.
+  conditionOf <- lapply(drawnCols, function(column) {
+    stats::setNames(as.logical(ped[[column]]), realIds)
+  })
+  # Track 1 (docs/planning/pedigree-diagram-kinship2-fidelity-remediation-
+  # plan.md, found S569): an absent affected column no longer means
+  # `.affectedColorForVec()` goes uncalled -- affectedOf is an all-NA named
+  # vector instead of NULL so .affectedColor() below still returns an
+  # explicit white fill for every real/duplicate node.
+  affectedOf <- if (length(drawnCols) == 1L) {
+    conditionOf[[1L]]
+  } else {
+    stats::setNames(rep(NA, length(realIds)), realIds)
+  }
+  .affectedColorForVec <- function(ids) {
+    .affectedColor(affectedOf[ids])
+  }
+
+  # S1028 deceased marker: an animal is deceased when its status reads
+  # DECEASED, and only then (the exit date cannot say: it is filled for a
+  # shipment too). No status column, or a blank status, marks nobody.
+  statusOf <- if ("status" %in% names(ped)) {
+    as.character(ped$status)
+  } else {
+    rep(NA_character_, length(realIds))
+  }
+  deceasedOf <- stats::setNames(!is.na(statusOf) & statusOf == "DECEASED",
+                                realIds)
+
+  # Issue #136 (D1-D5, D7, D10), independent implementation of the same
+  # optional name contract makePedigreeDiagramData() gets. Applied to BOTH
+  # real individuals and their duplicate-occurrence nodes (looked up by
+  # the DUPLICATE's own real individual id, D7 label parity) -- a
+  # duplicate must read as its real individual, name included, exactly
+  # like it already does for id alone (:906's pre-existing precedent).
+  hasName <- "name" %in% names(ped)
+  nameOf <- if (hasName) {
+    stats::setNames(as.character(ped$name), realIds)
+  } else {
+    NULL
+  }
+  .nameLabelForVec <- function(ids) {
+    .nameLabel(ids, nameOf[ids])
+  }
+
+  .shapeForVec <- function(sexCodes) {
+    shapes <- unname(shapeMap[as.character(sexCodes)])
+    shapes[is.na(shapes)] <- "diamond"
+    shapes
+  }
+  .titleForIds <- function(ids) {
+    sexLabel <- unname(sexLabelMap[sexOf[ids]])
+    # nolint start: nonportable_path_linter.
+    sexLabel[is.na(sexLabel)] <- "Other / Unrecorded"
+    # nolint end
+    sireLabel <- ifelse(is.na(sireOf[ids]), "Unknown", .escapeHtml(sireOf[ids]))
+    damLabel <- ifelse(is.na(damOf[ids]), "Unknown", .escapeHtml(damOf[ids]))
+    title <- sprintf(
+      paste0("<b>ID:</b> %s<br><b>Sex:</b> %s<br><b>Generation:</b> %s",
+             "<br><b>Sire:</b> %s<br><b>Dam:</b> %s"),
+      .escapeHtml(ids), sexLabel, genOf[ids], sireLabel, damLabel
+    )
+    for (i in seq_along(drawnCols)) {
+      title <- paste0(title,
+                       sprintf("<br><b>%s:</b> %s",
+                               .escapeHtml(conditions$label[[i]]),
+                               .affectedLabel(conditionOf[[i]][ids])))
+    }
+    if (hasName) {
+      title <- paste0(title, .nameTooltipLine(nameOf[ids]))
+    }
+    title
+  }
+
+  realNodes <- data.frame(
+    id = realIds,
+    label = if (hasName) .nameLabelForVec(realIds) else realIds,
+    shape = .shapeForVec(sexOf[realIds]),
+    title = .titleForIds(realIds),
+    size = 25L, stringsAsFactors = FALSE
+  )
+  # Track 1: unconditional now -- .affectedColorForVec() already returns an
+  # explicit white fill for every id when affectedOf is all-NA (no affected
+  # column at all).
+  realNodes$color.background <- .affectedColorForVec(realIds)
+  realNodes$deceased <- unname(deceasedOf[realIds])
+
+  dupNodes <- if (nrow(duplicates) > 0L) {
+    df <- data.frame(
+      id = dupIds,
+      label = if (hasName) {
+        .nameLabelForVec(duplicates$realId)
+      } else {
+        duplicates$realId
+      },
+      shape = .shapeForVec(sexOf[duplicates$realId]),
+      title = paste0(.titleForIds(duplicates$realId),
+                      "<br><i>(duplicate occurrence)</i>"),
+      size = 25L, stringsAsFactors = FALSE
+    )
+    df$color.background <- .affectedColorForVec(duplicates$realId)
+    df$deceased <- unname(deceasedOf[duplicates$realId])
+    df
+  } else {
+    df <- data.frame(id = character(), label = character(),
+                      shape = character(), title = character(),
+                      size = numeric(), stringsAsFactors = FALSE)
+    df$color.background <- character()
+    df$deceased <- logical()
+    df
+  }
+
+  unitNodes <- if (nrow(matingUnits) > 0L) {
+    offspringCount <- vapply(
+      unitIds, function(u) sum(childEdges$from == u), integer(1L)
+    )
+    df <- data.frame(
+      id = unitIds, label = "", shape = "dot",
+      title = sprintf("%d offspring", offspringCount), size = 6L,
+      stringsAsFactors = FALSE
+    )
+    # A mating union is not an individual -- it never gets affected-status
+    # coloring (D4); stays NA unconditionally, whether or not affected
+    # exists at all (Track 1, owner decision S570 -- mating-unit dots are
+    # visually distinct from real/duplicate nodes on purpose). The column
+    # must still exist here for rbind() to align with realNodes/dupNodes.
+    df$color.background <- NA_character_
+    df$deceased <- FALSE
+    df
+  } else {
+    df <- data.frame(id = character(), label = character(),
+                      shape = character(), title = character(),
+                      size = numeric(), stringsAsFactors = FALSE)
+    df$color.background <- character()
+    df$deceased <- logical()
+    df
+  }
+
+  nodes <- rbind(realNodes, dupNodes, unitNodes)
+  posMatch <- match(nodes$id, pos$id)
+  nodes$x <- pos$x[posMatch] * xScale
+  nodes$y <- pos$gen[posMatch] * yScale
+
+  ## D6 direct-edge mate lines (owner-directed, S461; issue #142 tracks a
+  ## fuller rectilinear waypoint style as a deferred, additive follow-up):
+  ## a solid edge from each parent to their mating unit's node, using the
+  ## non-anchor parent's DUPLICATE id when one was placed at this unit (the
+  ## node actually positioned there) -- plus Slice 1's own child edges, and
+  ## a dashed connector from each duplicate to its real individual.
+  mateEdges <- if (nrow(matingUnits) > 0L) {
+    ## Vectorized lookup: find, for each unit's non-anchor parent, the
+    ## duplicate node placed at THIS unit, if any -- falling back to the
+    ## plain real id otherwise. No key separator is needed (unlike
+    ## .buildMatingUnitForest()'s own pairKey, which joins two ARBITRARY
+    ## real ids): matingUnitId always matches the reserved "__union_<n>"
+    ## pattern, which no real id may start with, so a plain concatenation
+    ## cannot collide across two different (realId, matingUnitId) pairs.
+    dupKey <- paste0(duplicates$realId, duplicates$matingUnitId)
+    nonAnchorKey <- paste0(matingUnits$nonAnchor, unitIds)
+    dupIdx <- match(nonAnchorKey, dupKey)
+    nonAnchorNodeIds <- ifelse(is.na(dupIdx), matingUnits$nonAnchor,
+                                duplicates$id[dupIdx])
+    ## S549 Finding #2 (fixed S555): the 2 mate-line edges of a
+    ## consanguineous unit get a distinct color/width (kinship2's own
+    ## doubled/thickened mate-line convention) -- Okabe-Ito colorblind-safe
+    ## vermillion, unused elsewhere in this file (#009E73 is the twin
+    ## connector, #CC79A7 is affected, #2B7CE9 is the rectilinear waypoint
+    ## edge). rep(matingUnits$consanguineous, 2L) matches this data frame's
+    ## own row order: anchor edges (unit order) then non-anchor edges (same
+    ## unit order).
+    isConsang <- rep(matingUnits$consanguineous, 2L)
+    data.frame(
+      from = c(matingUnits$anchor, nonAnchorNodeIds),
+      to = rep(unitIds, 2L),
+      dashes = FALSE,
+      color = ifelse(isConsang, "#D55E00", NA_character_),
+      width = ifelse(isConsang, 4L, NA_real_),
+      smooth.enabled = NA, smooth.type = NA_character_,
+      smooth.roundness = NA_real_,
+      stringsAsFactors = FALSE
+    )
+  } else {
+    data.frame(from = character(), to = character(), dashes = logical(),
+               color = character(), width = numeric(),
+               smooth.enabled = logical(), smooth.type = character(),
+               smooth.roundness = numeric(), stringsAsFactors = FALSE)
+  }
+
+  ## Duplicate-node connectors render as a curved arc, not a straight line,
+  ## matching the kinship2/reference-pedigree convention (found S468, fixed
+  ## S469) -- a per-edge vis.js `smooth` override (verified against the
+  ## bundled vis-network.min.js source to genuinely take precedence over
+  ## the widget-level `visEdges(smooth = FALSE)` in R/modPedigree.R).
+  ## Every other edge leaves these columns NA, inheriting that global
+  ## smooth = FALSE default.
+  ##
+  ## from/to are x-ordered (ascending), not always dupId->realId (found
+  ## S575 owner review: the arc bowed the wrong way relative to kinship2's
+  ## own convention; root-caused/fixed S577). kinship2's arcconnect() (nested
+  ## in plot.pedigree) always sorts its pair by x first ('tx <- sort(tx)')
+  ## before drawing, so its arc always bows toward ancestors regardless of
+  ## which occurrence is the duplicate. vis-network's curvedCW bow direction
+  ## (Edge._getViaCoordinates in the bundled vis-network.min.js) depends on
+  ## which endpoint is `from`, so the old always-from=dup convention bowed
+  ## the wrong way whenever the duplicate happened to land to the right of
+  ## its real self -- measured S577 on the real bundled fixture: 33 of 52
+  ## same-row connectors. x-ordering the pair here (mirroring kinship2's own
+  ## sort) reproduces the position-independent bow direction exactly.
+  dupEdges <- if (nrow(duplicates) > 0L) {
+    dupX <- nodes$x[match(dupIds, nodes$id)]
+    realX <- nodes$x[match(duplicates$realId, nodes$id)]
+    dupIsLeft <- dupX <= realX
+    data.frame(from = ifelse(dupIsLeft, dupIds, duplicates$realId),
+               to = ifelse(dupIsLeft, duplicates$realId, dupIds),
+               dashes = TRUE,
+               color = NA_character_, width = NA_real_,
+               smooth.enabled = TRUE, smooth.type = "curvedCW",
+               smooth.roundness = 0.2, stringsAsFactors = FALSE)
+  } else {
+    data.frame(from = character(), to = character(), dashes = logical(),
+               color = character(), width = numeric(),
+               smooth.enabled = logical(), smooth.type = character(),
+               smooth.roundness = numeric(), stringsAsFactors = FALSE)
+  }
+
+  # Defense-in-depth (Dragon 2): the pre-filter above makes a 0-row
+  # childEdges unreachable for an all-isolated 'ped' (intercepted by the
+  # early return above instead), but this guard -- mirroring the
+  # mateEdges/dupEdges 0-row branches a few lines above/below -- protects
+  # any other future path into a 0-row childEdges (issue #164's own root
+  # cause: data.frame() cannot recycle scalar columns down to 0 rows).
+  childEdgesOut <- if (nrow(childEdges) > 0L) {
+    data.frame(childEdges, dashes = FALSE,
+               smooth.enabled = NA, smooth.type = NA_character_,
+               smooth.roundness = NA_real_,
+               stringsAsFactors = FALSE)
+  } else {
+    data.frame(from = character(), to = character(), dashes = logical(),
+               smooth.enabled = logical(), smooth.type = character(),
+               smooth.roundness = numeric(), stringsAsFactors = FALSE)
+  }
+
+  # S549 Finding #2 (fixed S555): color/width now ALWAYS exist on every
+  # edge type once any mating unit exists (see mateEdges above) --
+  # consanguinity is a structural fact of sire/dam (required columns),
+  # unlike name/twinRelations, which are genuinely optional sidecars.
+  # childEdgesOut/dupEdges never carry their own marker, so they get NA
+  # placeholders, matching the union-node color.background precedent
+  # (issue #133) of keeping columns aligned for rbind() even when a row's
+  # own value is always NA.
+  childEdgesOut$color <- rep(NA_character_, nrow(childEdgesOut))
+  childEdgesOut$width <- rep(NA_real_, nrow(childEdgesOut))
+  dupEdges$color <- rep(NA_character_, nrow(dupEdges))
+  dupEdges$width <- rep(NA_real_, nrow(dupEdges))
+
+  # Issue #137 (D1, D6, D7, D9): twinRelations is an OPTIONAL sidecar
+  # data.frame -- absent (NULL, default) => zero change to edges below
+  # (backward-compat contract, same as #133/#136's own optional-column
+  # precedents). A connector's from/to are twinRelations$id1/id2 literally
+  # (D7) -- both already-real individual ids, needing no duplicate-node
+  # lookup (see .buildTwinConnectorEdges()'s own roxygen for why).
+  hasTwinRelations <- !is.null(twinRelations)
+  if (hasTwinRelations) {
+    childEdgesOut$label <- rep(NA_character_, nrow(childEdgesOut))
+    mateEdges$label <- rep(NA_character_, nrow(mateEdges))
+    dupEdges$label <- rep(NA_character_, nrow(dupEdges))
+    twinEdges <- .buildTwinConnectorEdges(twinRelations)
+    twinEdges$width <- rep(NA_real_, nrow(twinEdges))
+    twinEdges$smooth.enabled <- rep(NA, nrow(twinEdges))
+    twinEdges$smooth.type <- rep(NA_character_, nrow(twinEdges))
+    twinEdges$smooth.roundness <- rep(NA_real_, nrow(twinEdges))
+    edges <- rbind(childEdgesOut, mateEdges, dupEdges, twinEdges)
+  } else {
+    edges <- rbind(childEdgesOut, mateEdges, dupEdges)
+  }
+
+  duplicateToReal <- stats::setNames(duplicates$realId, duplicates$id)
+
+  if (edgeStyle == "rectilinear") {
+    waypoints <- .addRectilinearWaypoints(nodes, edges, forest, pos)
+    ## Track 2 (issue #160 comment 1, docs/planning/pedigree-diagram-same-
+    ## row-collision-avoidance-plan.md sec2.2): general same-row detect-
+    ## and-jog framework, wired here (not only at the Shiny layer) so
+    ## every caller of this documented, exported function benefits
+    ## identically. Never moves an existing node -- only adds waypoints/
+    ## reroutes edges (checked explicitly by this function's own tests).
+    resolved <- .resolveEdgeNodeCollisions(waypoints$nodes, waypoints$edges)
+    nodes <- resolved$nodes
+    edges <- resolved$edges
+    if (nrow(resolved$residuals) > 0L) {
+      warning(sprintf(
+        paste0("makePedigreeMatingLayout(): %d same-row edge-node ",
+               "collision(s) could not be fully resolved (residual after ",
+               "the repair-pass cap, or a curved connector whose arc no ",
+               "roundness step fully clears) -- rendered output may still ",
+               "show a straight or curved edge passing near an unrelated ",
+               "node."),
+        nrow(resolved$residuals)
+      ), call. = FALSE)
+    }
+  }
+
+  if (sectioned) {
+    nodes$affectedSections <- .affectedSectionsOf(
+      nodes$id, conditionOf, realIds, dupIds, duplicates$realId
+    )
+  }
+
+  list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,
+       isolatedIds = isolatedIds, conditions = conditions,
+       conditionsNotDrawn = conditionsNotDrawn)
+}
+
+#' Insert rectilinear mate-line/sibship-bar waypoint nodes and edges
+#' (Pedigree Diagram Option 2, issue #142)
+#'
+#' Internal helper for the fuller kinship2-style rectilinear mate-line/
+#' sibship-bar edge routing
+#' (\code{docs/planning/pedigree-diagram-rectilinear-waypoint-design-plan.md}
+#' D1/D2/D5). A pure post-processing step: consumes the already-final
+#' node/edge tables \code{\link{makePedigreeMatingLayout}} assembles (direct
+#' style) plus \code{\link{.buildMatingUnitForest}}'s structural output and
+#' \code{\link{.positionMatingUnitForest}}'s coordinates, and returns a new
+#' node/edge pair with invisible waypoint nodes inserted so every mate-line
+#' and sibship-bar edge routes as a strict right angle instead of a direct
+#' diagonal/straight segment. No change to \code{.buildMatingUnitForest()}
+#' or \code{.positionMatingUnitForest()}.
+#' \code{\link{makePedigreeMatingLayout}} calls this function, then
+#' \code{.resolveEdgeNodeCollisions()}, when \code{edgeStyle} is
+#' \code{"rectilinear"} (its default since S574); \code{"direct"} skips it.
+#'
+#' A node with vis.js's own \code{hidden = TRUE} option suppresses every
+#' edge connected to it, regardless of the edge's own \code{hidden} setting
+#' (confirmed live this session against the actual bundled vis.js source --
+#' see the design doc's Session 465 implementation addendum). Waypoint
+#' nodes are therefore made invisible via \code{size = 0} plus fully
+#' transparent \code{color.background}/\code{color.border}, not
+#' \code{hidden = TRUE}. vis.js edges also default to inheriting their
+#' color from their own \code{from} node's border color -- every new
+#' waypoint-touching edge is given an explicit \code{color} so it does not
+#' silently inherit a transparent waypoint's own color.
+#'
+#' D1 (sibship-bar): for every distinct \code{childEdges$from} value
+#' (a mating-unit id, or a single real parent id under D5), adds one
+#' invisible "drop" node (at that parent/unit's own x, on the children's
+#' shared row) and one invisible "bar-point" node per child (at that
+#' child's own x, same row), then connects the sorted-by-x chain of
+#' drop/bar-point nodes plus each bar-point down to its child -- replacing
+#' the direct parent/unit -> child edge(s).
+#'
+#' D2 (mate-line dogleg): for each mating unit, checks the anchor side and
+#' the resolved non-anchor side (the non-anchor's duplicate node at this
+#' unit, if one exists, per the existing \code{mateEdges} resolution --
+#' never assumes the anchor is the on-row side) independently; a side
+#' already at the unit's own gen keeps its existing direct edge; a side at
+#' a different gen gets a new invisible projection node (at that side's own
+#' x, on the unit's row) and two edges (side -> projection, projection ->
+#' unit) replacing the single direct edge.
+#'
+#' @param nodes the \code{nodes} data frame from
+#'   \code{\link{makePedigreeMatingLayout}} (direct style).
+#' @param edges the \code{edges} data frame from
+#'   \code{\link{makePedigreeMatingLayout}} (direct style).
+#' @param forest the list returned by \code{\link{.buildMatingUnitForest}}
+#'   for this same pedigree.
+#' @param pos the data frame returned by
+#'   \code{\link{.positionMatingUnitForest}} for this same pedigree.
+#' @return A list with \code{nodes} and \code{edges}, in the same shape as
+#'   \code{\link{makePedigreeMatingLayout}}'s own return value, plus
+#'   \code{color.background}/\code{color.border} columns on \code{nodes}
+#'   and a \code{color} column on \code{edges}. An existing edge's own
+#'   \code{color} (e.g. issue #137's twin connector) is preserved, not
+#'   reset -- only added fresh, as \code{NA}, when absent (D10, found
+#'   never wired at S494, fixed S506).
+#' @noRd
+.addRectilinearWaypoints <- function(nodes, edges, forest, pos) {
+  if (!is.data.frame(nodes)) {
+    stop(".addRectilinearWaypoints() requires 'nodes' to be a data frame.")
+  }
+  if (!is.data.frame(edges)) {
+    stop(".addRectilinearWaypoints() requires 'edges' to be a data frame.")
+  }
+  if (!is.data.frame(pos)) {
+    stop(".addRectilinearWaypoints() requires 'pos' to be a data frame.")
+  }
+  requiredForest <- c("matingUnits", "duplicates", "childEdges")
+  missingForest <- setdiff(requiredForest, names(forest))
+  if (length(missingForest) > 0L) {
+    stop(".addRectilinearWaypoints() requires 'forest' to have components: ",
+         toString(requiredForest), ". Missing: ", toString(missingForest))
+  }
+
+  matingUnits <- forest$matingUnits
+  duplicates <- forest$duplicates
+  childEdges <- forest$childEdges
+
+  edgeColor <- "#2B7CE9"
+  xOf <- stats::setNames(nodes$x, nodes$id)
+  yOf <- stats::setNames(nodes$y, nodes$id)
+  genOf <- stats::setNames(pos$gen, pos$id)
+
+  newNodeList <- list()
+  newEdgeList <- list()
+  dropChildEdge <- rep(FALSE, nrow(edges))
+
+  ## D1: sibship-bar waypoint chain (generalizes to D5 groups, §2.1).
+  ## Track 1 (issue #160, found S591, plan docs/planning/pedigree-diagram-
+  ## same-row-collision-avoidance-plan.md section 2.1, fixed S593): the bar/
+  ## drop row used to be stamped at y = childY -- the exact same row every
+  ## real/duplicate/union node at that generation also occupies, which is
+  ## the direct mechanical cause of issue #160's 2 reported collisions
+  ## (a same-generation union, or an unrelated node, landing on the bar).
+  ## sibshipBarFraction gives the bar a genuine intermediate row instead: a
+  ## fixed, non-zero, non-one fraction of the way from the parent/union row
+  ## to the child row. Every real/duplicate/union node's y is an exact
+  ## integer multiple of yScale by construction (:1303), so this row can
+  ## never coincide with one -- an unconditional geometric guarantee, not a
+  ## heuristic; no detection logic needed.
+  sibshipBarFraction <- 0.4
+  for (fromId in unique(childEdges$from)) {
+    kids <- childEdges$to[childEdges$from == fromId]
+    childY <- unname(yOf[[kids[1L]]])
+    parentY <- unname(yOf[[fromId]])
+    barY <- if (is.na(childY) || is.na(parentY)) {
+      childY
+    } else {
+      childY - (childY - parentY) * sibshipBarFraction
+    }
+    dropId <- sprintf("__drop_%s", fromId)
+    barIds <- sprintf("__bar_%s", kids)
+
+    barPointIds <- c(dropId, barIds)
+    barPointX <- c(unname(xOf[[fromId]]), unname(xOf[kids]))
+    newNodeList[[length(newNodeList) + 1L]] <- data.frame(
+      id = barPointIds, x = barPointX, y = barY, stringsAsFactors = FALSE
+    )
+
+    vertEdges <- data.frame(from = c(fromId, barIds), to = c(dropId, kids),
+                             stringsAsFactors = FALSE)
+    ord <- order(barPointX)
+    orderedIds <- barPointIds[ord]
+    chainEdges <- if (length(orderedIds) > 1L) {
+      data.frame(from = orderedIds[-length(orderedIds)],
+                 to = orderedIds[-1L], stringsAsFactors = FALSE)
+    } else {
+      data.frame(from = character(), to = character(),
+                 stringsAsFactors = FALSE)
+    }
+    newEdgeList[[length(newEdgeList) + 1L]] <- rbind(vertEdges, chainEdges)
+
+    dropChildEdge <- dropChildEdge |
+      (edges$from == fromId & edges$to %in% kids)
+  }
+
+  ## D2: mate-line dogleg for parents at a different gen than their unit.
+  ## sideGen() looks up a side's gen defensively rather than via bare
+  ## genOf[[id]] -- a dangling, free-pass (non-duplicated) parent has no
+  ## row in 'pos' at all, by .positionMatingUnitForest()'s own contract,
+  ## so it has no entry in genOf either (issue #154). NA_real_ signals
+  ## "no rendered node for this side" to the loop below, which then skips
+  ## the dogleg for it (nothing to project).
+  sideGen <- function(id) {
+    if (id %in% names(genOf)) unname(genOf[[id]]) else NA_real_
+  }
+  dropMateEdge <- rep(FALSE, nrow(edges))
+  ## Track C (kinship2 supplement plan §5 / S549 Finding #2's deferred
+  ## follow-up, fixed S563): a marked mate edge's color/width, keyed by the
+  ## projId of the dogleg replacing it -- applied as a post-hoc override
+  ## below, after 'ne's blanket fallback assignment, since newEdgeList also
+  ## holds the D1 sibship-bar/chain edges (no color/width columns of their
+  ## own) and do.call(rbind, newEdgeList) requires matching columns across
+  ## every entry.
+  projColor <- character()
+  projWidth <- numeric()
+  if (nrow(matingUnits) > 0L) {
+    ## Migration Path Phase 1 (QP joint-solver plan, Decision 4): the
+    ## dupKey/dupIdx/Nnode lookup this block used to inline is
+    ## .nonAnchorNodeResolver()'s (.solveJointQP() applies the same rule in
+    ## its own code since the clean-room rewrite) -- no behavior change,
+    ## same dupKey-computed-once-outside-the-loop shape as before.
+    resolveNnode <- .nonAnchorNodeResolver(duplicates)
+    for (i in seq_len(nrow(matingUnits))) {
+      U <- matingUnits$id[i]
+      A <- matingUnits$anchor[i]
+      ## Orphan unit (issue #154 -- both parents dangling, anchor = NA):
+      ## no real anchor/non-anchor side exists to dogleg at all.
+      if (is.na(A)) next
+      Nreal <- matingUnits$nonAnchor[i]
+      Nnode <- resolveNnode(Nreal, U)
+      Ugen <- matingUnits$gen[i]
+
+      sides <- list(list(nodeId = A, gen = sideGen(A)),
+                    list(nodeId = Nnode, gen = sideGen(Nnode)))
+      for (side in sides) {
+        if (is.na(side$gen)) next
+        if (identical(side$gen, Ugen)) next
+        projId <- sprintf("__proj_%s_%s", side$nodeId, U)
+        newNodeList[[length(newNodeList) + 1L]] <- data.frame(
+          id = projId, x = unname(xOf[[side$nodeId]]), y = unname(yOf[[U]]),
+          stringsAsFactors = FALSE
+        )
+        newEdgeList[[length(newEdgeList) + 1L]] <- data.frame(
+          from = c(side$nodeId, projId), to = c(projId, U),
+          stringsAsFactors = FALSE
+        )
+        ## Mirrors the KEPT-edges color-preservation precedent (issue #137
+        ## D10, :1534-1554 below): look up the original mate edge's own
+        ## color/width before it gets dropped, so a consanguineous unit's
+        ## marker survives onto its 2 dogleg replacement edges instead of
+        ## always falling to the generic waypoint-edge fallback. Falls
+        ## through to that same fallback (no entry recorded) when the
+        ## original edge had no marker (an ordinary, non-consanguineous
+        ## mating) -- selective, not a blanket style change.
+        origIdx <- which(edges$from == side$nodeId & edges$to == U)
+        if (length(origIdx) > 0L && "color" %in% names(edges) &&
+              !is.na(edges$color[[origIdx[[1L]]]])) {
+          projColor[[projId]] <- edges$color[[origIdx[[1L]]]]
+          projWidth[[projId]] <- if ("width" %in% names(edges)) {
+            edges$width[[origIdx[[1L]]]]
+          } else {
+            NA_real_
+          }
+        }
+        dropMateEdge <- dropMateEdge |
+          (edges$from == side$nodeId & edges$to == U)
+      }
+    }
+  }
+
+  keptEdges <- edges[!(dropChildEdge | dropMateEdge), , drop = FALSE]
+  ## Issue #137 (D10, found never wired at S494, fixed S506): preserve a
+  ## color already set on the incoming edges (e.g. the twin-connector's own
+  ## #009E73) instead of blanket-resetting every kept edge to NA -- only add
+  ## the column fresh when it doesn't already exist, mirroring the
+  ## color.background/color.border node-preservation precedent (issue #133)
+  ## a few lines below.
+  if (!"color" %in% names(keptEdges)) {
+    keptEdges$color <- rep(NA_character_, nrow(keptEdges))
+  }
+  ## S549 Finding #2 (fixed S555): same preserve-if-present guard for
+  ## width (the consanguinity marker's own thickness, unconditional in
+  ## makePedigreeMatingLayout() since S555). A KEPT mate edge (both
+  ## parents already at the unit's own gen, no D2 dogleg) keeps its width
+  ## unchanged, same as color. A marked mate edge that DOES get D2-dogged
+  ## currently falls back to the generic width below (edgeStyle =
+  ## "rectilinear" propagation onto dogleg replacement edges is a
+  ## deferred follow-up, BACKLOG.md Housekeeping -- narrowed to direct
+  ## style only this session, owner-directed).
+  if (!"width" %in% names(keptEdges)) {
+    keptEdges$width <- rep(NA_real_, nrow(keptEdges))
+  }
+
+  ## New waypoint edges never carry the duplicate-node-connector arc (found
+  ## S468, fixed S469) -- these NA placeholders keep column alignment with
+  ## `keptEdges` (which passed the direct-style `edges`' smooth.* columns
+  ## through unchanged) so the rbind() below does not fail with "undefined
+  ## columns selected". Issue #137 (D9): `label` is stamped unconditionally
+  ## here too, for the same reason -- when twinRelations is present upstream,
+  ## `edges`/`keptEdges` gain a `label` column (the twin connector's own),
+  ## and `newEdges[, names(keptEdges)]` below would otherwise fail the same
+  ## "undefined columns selected" way the moment any waypoint node exists.
+  ## Harmless when twinRelations is absent: `names(keptEdges)` then has no
+  ## `label` to select, so this extra column is simply never picked up.
+  ## `width` (S549 Finding #2, fixed S555) is stamped NA here for the same
+  ## reason -- a new waypoint edge never inherits a marked mate edge's own
+  ## width (see the guard above and its own comment).
+  newEdges <- if (length(newEdgeList) > 0L) {
+    ne <- do.call(rbind, newEdgeList)
+    ne$dashes <- rep(FALSE, nrow(ne))
+    ne$color <- rep(edgeColor, nrow(ne))
+    ne$width <- rep(NA_real_, nrow(ne))
+    ne$smooth.enabled <- NA
+    ne$smooth.type <- NA_character_
+    ne$smooth.roundness <- NA_real_
+    ne$label <- NA_character_
+    ## Track C (kinship2 supplement plan §5, fixed S563): override the
+    ## generic fallback just stamped above for the 2 edges of each marked
+    ## dogleg (recorded by projId in the D2 loop) -- every other new edge
+    ## (D1 sibship-bar/chain edges, unmarked doglegs) is untouched.
+    if (length(projColor) > 0L) {
+      hit <- match(ne$to, names(projColor))
+      hit[is.na(hit)] <- match(ne$from[is.na(hit)], names(projColor))
+      marked <- !is.na(hit)
+      ne$color[marked] <- unname(projColor[hit[marked]])
+      ne$width[marked] <- unname(projWidth[hit[marked]])
+    }
+    ne
+  } else {
+    data.frame(from = character(), to = character(), dashes = logical(),
+               color = character(), width = numeric(),
+               smooth.enabled = logical(),
+               smooth.type = character(), smooth.roundness = numeric(),
+               label = character(), stringsAsFactors = FALSE)
+  }
+  finalEdges <- rbind(keptEdges, newEdges[, names(keptEdges)])
+
+  keptNodes <- nodes
+  # nolint start: commented_code_linter.
+  # Issue #133: preserve a color.background/color.border already set on the
+  # incoming nodes (e.g. Slice 1's own affected-status coloring) instead of
+  # blanket-resetting every node to NA -- only add the column fresh when it
+  # doesn't already exist, matching this function's pre-#133 behavior
+  # exactly for every caller that doesn't pass pre-colored nodes.
+  # nolint end
+  if (!"color.background" %in% names(keptNodes)) {
+    keptNodes$color.background <- rep(NA_character_, nrow(keptNodes))
+  }
+  if (!"color.border" %in% names(keptNodes)) {
+    keptNodes$color.border <- rep(NA_character_, nrow(keptNodes))
+  }
+
+  newNodes <- if (length(newNodeList) > 0L) {
+    nn <- do.call(rbind, newNodeList)
+    nn$label <- rep("", nrow(nn))
+    nn$shape <- rep("dot", nrow(nn))
+    nn$title <- rep(NA_character_, nrow(nn))
+    nn$size <- rep(0L, nrow(nn))
+    nn$color.background <- rep("rgba(0,0,0,0)", nrow(nn))
+    nn$color.border <- rep("rgba(0,0,0,0)", nrow(nn))
+    nn$deceased <- rep(FALSE, nrow(nn))
+    nn
+  } else {
+    data.frame(id = character(), x = numeric(), y = numeric(),
+               label = character(), shape = character(),
+               title = character(), size = integer(),
+               color.background = character(), color.border = character(),
+               deceased = logical(), stringsAsFactors = FALSE)
+  }
+  finalNodes <- rbind(keptNodes, newNodes[, names(keptNodes)])
+
+  list(nodes = finalNodes, edges = finalEdges)
+}
+
+#' The exact via (Bezier control) point vis-network computes for a
+#' \code{smooth.type = "curvedCW"} edge
+#'
+#' Verbatim transcription of the bundled \code{vis-network.min.js}
+#' \code{_getViaCoordinates()} \code{curvedCW} branch (canvas
+#' coordinates, y down), verified against the LIVE widget's own
+#' \code{edgeType.getViaNode()} to 1.1e-13 px over all 173 curved edges
+#' of the duplicate-bearing fixtures (S714 arc census,
+#' \code{docs/audits/PEDIGREE_DRAWING_CURVED_ARC_CENSUS_2026-09-18.md}).
+#' The painted ink is a single \code{quadraticCurveTo(via, to)} along
+#' this control point (\code{_bezierCurve()}, same bundle).
+#'
+#' @param x1,y1 the edge's from-node centre.
+#' @param x2,y2 the edge's to-node centre.
+#' @param roundness the edge's \code{smooth.roundness}.
+#' @return \code{c(x = , y = )} -- the quadratic Bezier control point.
+#' @noRd
+.curvedCwVia <- function(x1, y1, x2, y2, roundness) {
+  dx <- x2 - x1
+  dy <- y1 - y2
+  len <- sqrt(dx * dx + dy * dy)
+  fac <- 0.5 * roundness + 0.5
+  g <- (atan2(dy, dx) + fac * pi) %% (2L * pi)
+  c(x = x1 + fac * len * sin(g), y = y1 + fac * len * cos(g))
+}
+
+#' Points along the quadratic Bezier (p0, v, p1) at parameter values t
+#' @param t numeric vector of curve parameters in \[0, 1\].
+#' @param p0,v,p1 length-2 numerics: endpoints and control point.
+#' @return a length(t) x 2 matrix of (x, y) curve points.
+#' @noRd
+.bezierPointAt <- function(t, p0, v, p1) {
+  cbind(
+    (1L - t)^2L %o% p0[1L] + (2L * t * (1L - t)) %o% v[1L] +
+      t^2L %o% p1[1L],
+    (1L - t)^2L %o% p0[2L] + (2L * t * (1L - t)) %o% v[2L] +
+      t^2L %o% p1[2L]
+  )
+}
+
+#' Exact minimum distance from a point to the quadratic Bezier (p0, v, p1)
+#'
+#' Stationary points of the squared distance are the real roots of a
+#' cubic; those in (0, 1) plus both endpoints are evaluated -- exact, not
+#' sampled (the census's own \code{c-arc-inside} method, S714).
+#'
+#' @param cx,cy the query point (a disc centre).
+#' @param p0,v,p1 length-2 numerics: endpoints and control point.
+#' @return the minimum Euclidean distance.
+#' @noRd
+.bezierMinDistTo <- function(cx, cy, p0, v, p1) {
+  a <- v - p0
+  b <- p1 - 2L * v + p0
+  d <- p0 - c(cx, cy)
+  co <- c(sum(d * a), sum(d * b) + 2L * sum(a * a), 3L * sum(a * b),
+          sum(b * b))
+  ts <- c(0L, 1L)
+  if (abs(co[[4L]]) > 0L || abs(co[[3L]]) > 0L || abs(co[[2L]]) > 0L) {
+    r <- polyroot(co)
+    re <- Re(r)[abs(Im(r)) < 1e-7]
+    ts <- c(ts, re[re > 0L & re < 1L])
+  }
+  pts <- .bezierPointAt(ts, p0, v, p1)
+  min(sqrt((pts[, 1L] - cx)^2L + (pts[, 2L] - cy)^2L))
+}
+
+#' Count TRUE arc-disc hits for one curved connector at a given roundness
+#'
+#' A hit is a candidate disc the painted arc passes \emph{strictly
+#' inside} (min distance < radius - 1e-9) -- the S714 census's
+#' \code{c-arc-inside} convention. \code{cand} must already be
+#' exclusion-filtered (visible nodes only, minus the edge's endpoints
+#' and their graph-adjacent nodes). A conservative sampled prefilter
+#' keeps the exact cubic solve to near-boundary candidates: with 64
+#' curve samples, any curve point lies within
+#' \code{max(|v - p0|, |p1 - v|) / 63} of its nearest sample (curve
+#' speed \code{|B'(t)| <= 2 max(|v - p0|, |p1 - v|)}, half a parameter
+#' step to the nearest sample), so a candidate whose sampled min
+#' distance exceeds its radius by that margin is provably clear, and a
+#' sampled point already strictly inside is a proven hit -- the exact
+#' solve runs only in the remaining ambiguous band, changing no count.
+#'
+#' @param p0,p1 length-2 numerics: the connector's node centres.
+#' @param roundness the \code{smooth.roundness} to score.
+#' @param cand data frame with \code{x}, \code{y}, \code{size} for each
+#'   candidate obstacle disc.
+#' @return integer hit count.
+#' @noRd
+.arcDiscHitCount <- function(p0, p1, roundness, cand) {
+  if (nrow(cand) == 0L) {
+    return(0L)
+  }
+  v <- .curvedCwVia(p0[[1L]], p0[[2L]], p1[[1L]], p1[[2L]], roundness)
+  samp <- .bezierPointAt(seq(0L, 1L, length.out = 64L), p0, v, p1)
+  rmax <- max(cand$size)
+  keep <- cand$x >= min(samp[, 1L]) - rmax &
+    cand$x <= max(samp[, 1L]) + rmax &
+    cand$y >= min(samp[, 2L]) - rmax &
+    cand$y <= max(samp[, 2L]) + rmax
+  cand <- cand[keep, , drop = FALSE]
+  if (nrow(cand) == 0L) {
+    return(0L)
+  }
+  dxm <- outer(cand$x, samp[, 1L], "-")
+  dym <- outer(cand$y, samp[, 2L], "-")
+  sampMin <- sqrt(do.call(pmin, as.data.frame(dxm * dxm + dym * dym)))
+  margin <- max(sqrt(sum((v - p0)^2L)), sqrt(sum((p1 - v)^2L))) / 63L
+  hits <- 0L
+  for (k in seq_len(nrow(cand))) {
+    if (sampMin[[k]] - margin >= cand$size[[k]]) {
+      next  ## provably clear without the cubic
+    }
+    if (sampMin[[k]] < cand$size[[k]] - 1e-9) {
+      hits <- hits + 1L  ## a sampled curve point is already inside
+      next
+    }
+    dd <- .bezierMinDistTo(cand$x[[k]], cand$y[[k]], p0, v, p1)
+    if (dd < cand$size[[k]] - 1e-9) {
+      hits <- hits + 1L
+    }
+  }
+  hits
+}
+
+#' Detect and repair same-row straight-edge/unrelated-node collisions
+#' (Pedigree Diagram, Track 2, issue #160 comment 1)
+#'
+#' Internal helper for the general same-row collision-avoidance framework
+#' (\code{docs/planning/pedigree-diagram-same-row-collision-avoidance-
+#' plan.md} sec2.2). Consumes the already-final \code{nodes}/\code{edges}
+#' tables \code{\link{makePedigreeMatingLayout}} assembles after
+#' \code{\link{.addRectilinearWaypoints}} runs (rectilinear style), and
+#' returns a repaired \code{nodes}/\code{edges} pair plus a \code{residuals}
+#' data frame disclosing anything that could not be fully, provably
+#' resolved -- never silently dropped.
+#'
+#' A straight (non-curved) same-row edge -- \code{y[from] == y[to]}, and
+#' \code{smooth.enabled} not \code{TRUE} -- collides with any OTHER node
+#' at that same row whose \code{x} falls in the edge's open interval
+#' \code{(min(x1, x2), max(x1, x2))} (strict interior containment, per the
+#' plan's own load-bearing precedent that a distance threshold does not
+#' discriminate real collisions from harmless near-misses,
+#' \code{test_positionMatingUnitForest.R:150-217}). Excluded from
+#' "colliding": the edge's own 2 endpoints, and any node directly
+#' graph-adjacent (via any existing edge, either direction) to either
+#' endpoint -- a structural member of the same union/sibship the span
+#' belongs to (so a bar never flags its own child, and a union never
+#' flags its own other parent). This graph-adjacency rule needs no
+#' \code{forest} parameter: every structural relationship this function
+#' must not flag is already encoded directly in \code{edges} (e.g. a D1
+#' bar-point's own vertical edge to its child; a union's own 2 direct
+#' mate edges to its parents).
+#'
+#' Repair is a strictly rectilinear 2-waypoint "step": the flagged edge
+#' \code{u -> v} (row \code{y0}) is replaced by \code{u -> J1 -> J2 -> v},
+#' with \code{J1}/\code{J2} at \code{(x[u], y0 + jogY)}/\code{(x[v],
+#' y0 + jogY)} -- a short vertical step, a horizontal run at the offset
+#' row (clearing every obstacle in the original span in a single step,
+#' not one jog per obstacle), then back down. \code{jogY} is derived
+#' from the local row geometry, never a hardcoded \code{yScale}, so the
+#' repair stays correct if \code{xScale}/\code{yScale} are ever retuned:
+#' a fraction of the jogged row's own nearest row gap, floored above the
+#' row's own largest disc radius (\code{nodes$size}) and capped -- as a
+#' whole per-row level ladder, compressed uniformly on overflow -- above
+#' the nearest disc row below, so a corridor clears the \emph{discs} it
+#' detours around, not merely their centre line (census Finding #3,
+#' S685). When a flagged edge's endpoint is an \emph{invisible} point
+#' (size 0/NA) whose only surviving edge is a single vertical descent to
+#' a node below -- a sibship bar point whose bar-level ink is entirely
+#' rerouted -- the corridor rejoins that descent's target directly and
+#' the redundant riser + descent are dropped, instead of climbing back
+#' up to ink that no longer connects to anything (the "ascender stub"
+#' ending mid-air at bar level, found at S679's owner visual gate, fixed
+#' S696). The bypassed point stays in the returned \code{nodes},
+#' unreferenced and unmoved. A visible endpoint is never bypassed, and
+#' kid-adjacent replacement segments always run waypoint -> kid so
+#' structural consumers can keep reading edge direction as
+#' parent-side/child-side attachment. New waypoint
+#' ids use the \code{__jog_} prefix (joining the existing reserved-prefix
+#' set documented at \code{vignettes/a2interactive.Rmd:500}). Detection
+#' and repair repeat for up to 3 passes (the new offset row can, rarely,
+#' collide with something else); anything still colliding after the cap
+#' is left unrepaired and recorded in \code{residuals} with
+#' \code{kind == "straight-residual"} -- never dropped, never an infinite
+#' loop, matching Track 6 sec8's "general crowding is accepted as
+#' partial, not absolute" posture.
+#'
+#' The curved duplicate-connector arc (\code{smooth.enabled == TRUE}) is
+#' never rerouted through rectilinear waypoints -- that would destroy its
+#' already-shipped, separately-tuned arc styling (S577/S468/S469).
+#' Instead it gets \emph{arc-verified roundness selection} (S715,
+#' replacing the earlier blind +0.3 \code{smooth.roundness} bump that the
+#' S714 arc census measured as 100\% false-positive-triggered AND
+#' net-negative, \code{docs/audits/PEDIGREE_DRAWING_CURVED_ARC_CENSUS_
+#' 2026-09-18.md}): each curved connector's \emph{painted} arc -- the
+#' quadratic Bezier vis-network actually draws, via
+#' \code{\link{.curvedCwVia}}, the S714-verified transcription of the
+#' bundled renderer -- is scored for TRUE hits (passing strictly inside
+#' the disc of a visible node that is neither an endpoint nor
+#' graph-adjacent to one, any row, exact cubic-solve min distance). A
+#' connector with no true hit at its base roundness is left untouched
+#' (the kinship2-convention 0.2 look, S577). A truly colliding connector
+#' tries the roundness ladder \code{seq(0.05, 0.60, by = 0.05)} and keeps
+#' the step with the fewest true hits (tie -> closest to its base
+#' roundness, tie -> smaller); only a connector no step fully clears is
+#' recorded in \code{residuals} with \code{kind == "curved-heuristic"} --
+#' the residual set is now exactly the arcs with a proven remaining
+#' collision, not a chord guess.
+#'
+#' \strong{Never moves an existing node:} every pre-existing node's own
+#' \code{x}/\code{y} is byte-identical before/after -- only new waypoint
+#' nodes are added and edges rerouted (checked explicitly by this
+#' function's own tests, \code{test_resolveEdgeNodeCollisions.R}).
+#'
+#' @param nodes the \code{nodes} data frame (after
+#'   \code{\link{.addRectilinearWaypoints}}, rectilinear style).
+#' @param edges the \code{edges} data frame (after
+#'   \code{\link{.addRectilinearWaypoints}}, rectilinear style).
+#' @return A list with \code{nodes}, \code{edges} (same shape as the
+#'   inputs, with any new \code{__jog_} waypoints/edges added), and
+#'   \code{residuals} -- a data frame (\code{from}, \code{to}, \code{kind})
+#'   disclosing every collision this function could not fully, provably
+#'   resolve.
+#' @noRd
+.resolveEdgeNodeCollisions <- function(nodes, edges) {
+  if (!is.data.frame(nodes)) {
+    stop(".resolveEdgeNodeCollisions() requires 'nodes' to be a data frame.")
+  }
+  if (!is.data.frame(edges)) {
+    stop(".resolveEdgeNodeCollisions() requires 'edges' to be a data frame.")
+  }
+
+  maxPasses <- 3L
+  jogFraction <- 0.15
+  roundnessLadder <- seq(0.05, 0.60, by = 0.05)
+  waypointColor <- "#2B7CE9"
+
+  .adjacency <- function(edges) {
+    adj <- new.env(parent = emptyenv())
+    addAdj <- function(a, b) {
+      cur <- adj[[a]]
+      adj[[a]] <- if (is.null(cur)) b else c(cur, b)
+    }
+    if (nrow(edges) > 0L) {
+      for (i in seq_len(nrow(edges))) {
+        addAdj(edges$from[[i]], edges$to[[i]])
+        addAdj(edges$to[[i]], edges$from[[i]])
+      }
+    }
+    adj
+  }
+
+  ## Detects every STRAIGHT (non-curved) same-row edge with >=1 true
+  ## (non-structural) obstacle in its interior span. Returns the row
+  ## indices of the colliding edges (one entry per edge, regardless of
+  ## how many obstacles it has -- one jog clears an edge's whole span).
+  .detectStraight <- function(nodes, edges) {
+    if (nrow(edges) == 0L) {
+      return(integer(0L))
+    }
+    ## Named LISTS, not named atomic vectors: `[[` on a named atomic
+    ## vector THROWS "subscript out of bounds" for a name with no match,
+    ## whereas `[[` on a list returns NULL -- the semantics the
+    ## is.null(yf)/is.null(yt) guard below actually needs. An edge whose
+    ## 'from'/'to' references a node id genuinely absent from 'nodes' (the
+    ## real ancestors+descendants focal-trim union in modPedigree.R's
+    ## pedigreeData() reactive can produce exactly this) must be treated
+    ## as "row unknown, skip" rather than crash (found live, S630).
+    xOf <- as.list(stats::setNames(nodes$x, nodes$id))
+    yOf <- as.list(stats::setNames(nodes$y, nodes$id))
+    adj <- .adjacency(edges)
+    byRow <- split(nodes$id, nodes$y)
+    hitRows <- integer(0L)
+    hasSmooth <- "smooth.enabled" %in% names(edges)
+    for (i in seq_len(nrow(edges))) {
+      f <- edges$from[[i]]
+      t <- edges$to[[i]]
+      yf <- yOf[[f]]
+      yt <- yOf[[t]]
+      if (is.null(yf) || is.null(yt) || is.na(yf) || is.na(yt) ||
+            !isTRUE(yf == yt)) {
+        next
+      }
+      se <- if (hasSmooth) edges$smooth.enabled[[i]] else NA
+      if (!is.na(se) && isTRUE(se)) {
+        next  ## curved connector -- its own branch below
+      }
+      xf <- xOf[[f]]
+      xt <- xOf[[t]]
+      lo <- min(xf, xt)
+      hi <- max(xf, xt)
+      candidates <- setdiff(byRow[[as.character(yf)]], c(f, t))
+      if (length(candidates) == 0L) {
+        next
+      }
+      cx <- xOf[candidates]
+      inside <- candidates[cx > lo & cx < hi]
+      if (length(inside) == 0L) {
+        next
+      }
+      structMembers <- union(adj[[f]], adj[[t]])
+      trueObstacles <- setdiff(inside, structMembers)
+      if (length(trueObstacles) > 0L) {
+        hitRows <- c(hitRows, i)
+      }
+    }
+    hitRows
+  }
+
+  .matchColumns <- function(added, template) {
+    for (col in setdiff(names(template), names(added))) {
+      added[[col]] <- if (is.character(template[[col]])) {
+        NA_character_
+      } else if (is.logical(template[[col]])) {
+        FALSE
+      } else {
+        NA_real_
+      }
+    }
+    added[, names(template), drop = FALSE]
+  }
+
+  residualList <- list()
+  jogCounter <- 0L
+  pass <- 0L
+  repeat {
+    pass <- pass + 1L
+    hitRows <- .detectStraight(nodes, edges)
+    if (length(hitRows) == 0L || pass > maxPasses) {
+      break
+    }
+    ## Named LISTS, matching .detectStraight() above (S630 rationale;
+    ## applied to this pass S682): `[[` on a named atomic vector throws
+    ## "subscript out of bounds" for an unmatched or NA name instead of
+    ## returning NULL. hitRows' endpoints are pre-verified resolvable by
+    ## .detectStraight(), so this site is guard-class parity/defence in
+    ## depth -- unlike the curved pass below, which crashed live (S681).
+    xOf <- as.list(stats::setNames(nodes$x, nodes$id))
+    yOf <- as.list(stats::setNames(nodes$y, nodes$id))
+    distinctYs <- sort(unique(nodes$y))
+
+    ## jogUnit is computed PER ROW (this edge's own y0's nearest distinct
+    ## neighbor row), never a single global minimum across the whole
+    ## diagram -- found empirically this session (S595) via a rendered
+    ## visual check: on a large, densely-waypointed real pedigree, SOME
+    ## unrelated pair of rows elsewhere can be extremely close together
+    ## (e.g. 2 stacked jog levels from an earlier pass), and a GLOBAL
+    ## minimum gap squeezes every OTHER row's own jog down to that same
+    ## tiny, visually-imperceptible offset even where ample local
+    ## clearance exists. A local per-row gap keeps each jog's own offset
+    ## proportional to the space actually available around it.
+    .localGap <- function(y0) {
+      others <- distinctYs[distinctYs != y0]
+      if (length(others) == 0L) {
+        return(1L)
+      }
+      min(abs(others - y0))
+    }
+    hitY0s <- unique(vapply(hitRows, function(i) yOf[[edges$from[[i]]]],
+                             numeric(1L)))
+
+    ## Interval-schedule same-row colliding edges onto distinct offset
+    ## LEVELS (greedy graph coloring by x-span overlap), rather than
+    ## jogging every edge at a given row to the identical offset --
+    ## found empirically this session (S595) on the real 375-individual
+    ## fixture: a single shared jogY offset for every edge at one row
+    ## created 132 NEW jog-vs-jog collisions among the repair waypoints
+    ## themselves (150 -> 184 residual edges), the opposite of a repair.
+    ## Two edges whose x-spans do not overlap can safely share a level;
+    ## two that DO overlap get pushed to different levels (1*jogUnit,
+    ## 2*jogUnit, ...). Scoped per row (distinct y0 groups never need to
+    ## coordinate levels with each other).
+    hitInfo <- lapply(hitRows, function(i) {
+      f <- edges$from[[i]]
+      t <- edges$to[[i]]
+      list(i = i, y0 = yOf[[f]], lo = min(xOf[[f]], xOf[[t]]),
+           hi = max(xOf[[f]], xOf[[t]]))
+    })
+    levelOf <- stats::setNames(integer(length(hitRows)),
+                                 as.character(hitRows))
+    byY0 <- split(hitInfo, vapply(hitInfo, function(h) h$y0, numeric(1L)))
+    for (grp in byY0) {
+      grp <- grp[order(vapply(grp, function(h) h$lo, numeric(1L)))]
+      levelEnds <- numeric(0L)  # levelEnds[k] = current max 'hi' at level k
+      for (h in grp) {
+        free <- which(levelEnds <= h$lo)
+        lvl <- if (length(free) > 0L) free[[1L]] else length(levelEnds) + 1L
+        levelEnds[[lvl]] <- h$hi
+        levelOf[[as.character(h$i)]] <- lvl
+      }
+    }
+
+    ## Per-row offset UNIT, disc-aware (census Finding #3, fixed S685):
+    ## the fraction-of-localGap unit alone ignored disc geometry in BOTH
+    ## directions, measured live on the real 375-individual fixture --
+    ## (a) a symbol-row corridor at 9/18 px sat inside its own row's
+    ## 25-px discs (the repair satisfied its centre-line predicate but
+    ## not the symbol), and (b) a bar-row ladder's level-4 corridor at
+    ## 36 px descended to 24 px from the child row's discs 60 px below.
+    ## So the unit gets a FLOOR -- the jogged row's own max disc radius
+    ## (nodes$size: individuals 25, union dots 6, waypoints 0) + 1 -- and
+    ## the row's whole level ladder gets a CAP: it must stay above the
+    ## nearest disc row below (that row's top edge - 1), compressed
+    ## uniformly on overflow so levels stay DISTINCT (the S595
+    ## level-separation property; a shared offset row is what created
+    ## 132 new jog-vs-jog collisions before levels existed). The floor
+    ## wins over compression in the (geometrically unreachable today)
+    ## case where a band cannot fit the ladder at all. A blanket
+    ## fraction raise instead of this band was measured and rejected:
+    ## it drove census c2 29 -> 161 + 16 new c2-vertical, because every
+    ## bar-row corridor at level >= 2 then entered the child row's
+    ## discs. Needs the per-row MAX level, so it is computed after the
+    ## level assignment above.
+    sizeVec <- if ("size" %in% names(nodes)) {
+      as.numeric(nodes$size)
+    } else {
+      rep(0.0, nrow(nodes))
+    }
+    sizeVec[is.na(sizeVec)] <- 0.0
+    rowMaxR <- vapply(split(sizeVec, nodes$y), max, numeric(1L))
+    rowYs <- as.numeric(names(rowMaxR))
+    maxLevelAt <- vapply(byY0, function(grp) {
+      max(vapply(grp, function(h) levelOf[[as.character(h$i)]],
+                 integer(1L)))
+    }, integer(1L))
+    jogUnitOf <- stats::setNames(vapply(hitY0s, function(y0) {
+      key <- as.character(y0)
+      ownR <- rowMaxR[[key]]
+      unit <- max(jogFraction * .localGap(y0), ownR + 1.0)
+      below <- rowYs > y0 & rowMaxR > 0.0
+      bandHi <- if (any(below)) {
+        min(rowYs[below] - rowMaxR[below]) - y0 - 1.0
+      } else {
+        Inf
+      }
+      lvl <- maxLevelAt[[key]]
+      if (is.finite(bandHi) && lvl * unit > bandHi) {
+        unit <- max(bandHi / lvl, ownR + 1.0)
+      }
+      unit
+    }, numeric(1L)), as.character(hitY0s))
+
+    newNodeRows <- list()
+    newEdgeRows <- list()
+    dropRows <- rep(FALSE, nrow(edges))
+    ## Ascender-stub direct rejoin (S679's owner visual-gate finding,
+    ## fixed S696): when a rerouted edge's endpoint is an INVISIBLE
+    ## point (size 0/NA) whose only surviving edge is a single
+    ## strict-vertical DOWNWARD edge to a non-jog node (a sibship bar
+    ## point whose bar-level ink is entirely rerouted, left holding
+    ## only its kid's descent), climbing back up to it draws dead ink:
+    ## the riser and the descent top are collinear duplicates spanning
+    ## [barY, corridorY], ending mid-air at the bar row (84 such stubs
+    ## measured on the real 375-individual fixture, crop-verified).
+    ## The corridor instead rejoins the kid directly and the endpoint's
+    ## descent joins the drop set; the endpoint itself is left in
+    ## place, unreferenced -- never moved, so the Track 2 invariant is
+    ## untouched. A VISIBLE endpoint is never bypassed (its disc is the
+    ## connection target), an endpoint with surviving bar-level or
+    ## upward ink is never bypassed (its riser tops out on continuous
+    ## ink -- a __drop_'s union descent, a bar's surviving chain
+    ## segment), and decisions are made ONCE per endpoint against the
+    ## pass's surviving graph so two corridors sharing an endpoint
+    ## agree. All rows rerouted this pass are marked up front for the
+    ## same reason.
+    for (i in hitRows) {
+      dropRows[[i]] <- TRUE
+    }
+    sizeOf <- if ("size" %in% names(nodes)) {
+      as.list(stats::setNames(as.numeric(nodes$size), nodes$id))
+    } else {
+      list()
+    }
+    surviving <- edges[!dropRows, , drop = FALSE]
+    endpointIds <- unique(c(edges$from[hitRows], edges$to[hitRows]))
+    bypassOf <- vapply(endpointIds, function(e) {
+      sz <- sizeOf[[e]]
+      invisible0 <- is.null(sz) || is.na(sz) || sz == 0.0
+      if (startsWith(e, "__jog_") || !invisible0) {
+        return(NA_character_)
+      }
+      idx <- which(surviving$from == e | surviving$to == e)
+      if (length(idx) != 1L) {
+        return(NA_character_)
+      }
+      k <- if (surviving$from[[idx]] == e) {
+        surviving$to[[idx]]
+      } else {
+        surviving$from[[idx]]
+      }
+      xk <- xOf[[k]]
+      yk <- yOf[[k]]
+      if (!startsWith(k, "__jog_") && !is.null(xk) && !is.null(yk) &&
+            isTRUE(xk == xOf[[e]]) && isTRUE(yk > yOf[[e]])) {
+        k
+      } else {
+        NA_character_
+      }
+    }, character(1L))
+    for (i in hitRows) {
+      f <- edges$from[[i]]
+      t <- edges$to[[i]]
+      y0 <- yOf[[f]]
+      xf <- xOf[[f]]
+      xt <- xOf[[t]]
+      jogY <- levelOf[[as.character(i)]] * jogUnitOf[[as.character(y0)]]
+      jogCounter <- jogCounter + 1L
+      j1 <- sprintf("__jog_%d_a", jogCounter)
+      j2 <- sprintf("__jog_%d_b", jogCounter)
+      ## Styled invisible up front (shape/size/color.background/
+      ## color.border), matching .addRectilinearWaypoints()'s own D1/D2
+      ## waypoint nodes (__drop_/__bar_/__proj_, :1966-1973) exactly --
+      ## BACKLOG.md Housekeeping, found S648 (2026-08-28). Without this,
+      ## .matchColumns() below backfills these columns with NA and vis.js
+      ## falls back to its own default (a filled, full-size circle)
+      ## instead of nothing.
+      newNodeRows[[length(newNodeRows) + 1L]] <- data.frame(
+        id = c(j1, j2), x = c(xf, xt), y = c(y0 + jogY, y0 + jogY),
+        label = c("", ""), shape = c("dot", "dot"),
+        title = c(NA_character_, NA_character_), size = c(0L, 0L),
+        color.background = c("rgba(0,0,0,0)", "rgba(0,0,0,0)"),
+        color.border = c("rgba(0,0,0,0)", "rgba(0,0,0,0)"),
+        stringsAsFactors = FALSE
+      )
+      ## Preserve every other column from the ORIGINAL edge (color,
+      ## width, label, dashes, smooth.*) onto all 3 replacement segments
+      ## -- matching the established D2-dogleg color/width-preservation
+      ## precedent (Track C, S563) and D10's own "preserve, never
+      ## blanket-reset" rule (found this session: an earlier version of
+      ## this function blanket-reset color to the generic waypoint
+      ## color, silently destroying a twin-connector's or a
+      ## consanguinity marker's own identity color --
+      ## test_makePedigreeMatingLayout.R's own twin-connector suite
+      ## caught it). Only an ORDINARY edge (no color of its own) gets
+      ## the generic waypoint color, since a transparent waypoint node's
+      ## own border would otherwise let the edge inherit an invisible
+      ## color (S465's own Pre-RED finding).
+      origRow <- edges[i, , drop = FALSE]
+      segRows <- origRow[rep(1L, 3L), , drop = FALSE]
+      ## Segment DIRECTION is load-bearing for structural consumers (a
+      ## terminal -> waypoint edge reads as a parent-side attachment,
+      ## waypoint -> terminal as a child-side one -- the D1 convention
+      ## test_comparePedigreeStructure.R's D-2 walker relies on), so a
+      ## bypassed side's kid-adjacent segment always runs
+      ## waypoint -> kid. With only the FROM side bypassed the corridor
+      ## is emitted in reversed orientation (t -> J2 -> J1 -> kid) so
+      ## every jog node keeps exactly 1 in + 1 out where possible; with
+      ## BOTH sides bypassed that is unattainable and the emission is
+      ## (J1 -> kidF, J1 -> J2, J2 -> kidT).
+      kf <- bypassOf[[f]]
+      kt <- bypassOf[[t]]
+      if (!is.na(kf)) {
+        dropRows <- dropRows |
+          ((edges$from == f & edges$to == kf) |
+             (edges$from == kf & edges$to == f))
+      }
+      if (!is.na(kt)) {
+        dropRows <- dropRows |
+          ((edges$from == t & edges$to == kt) |
+             (edges$from == kt & edges$to == t))
+      }
+      if (is.na(kf) && is.na(kt)) {
+        segRows$from <- c(f, j1, j2)
+        segRows$to <- c(j1, j2, t)
+      } else if (is.na(kf)) {
+        segRows$from <- c(f, j1, j2)
+        segRows$to <- c(j1, j2, kt)
+      } else if (is.na(kt)) {
+        segRows$from <- c(t, j2, j1)
+        segRows$to <- c(j2, j1, kf)
+      } else {
+        segRows$from <- c(j1, j1, j2)
+        segRows$to <- c(kf, j2, kt)
+      }
+      if ("color" %in% names(segRows) && is.na(origRow$color[[1L]])) {
+        segRows$color <- waypointColor
+      }
+      newEdgeRows[[length(newEdgeRows) + 1L]] <- segRows
+    }
+
+    addedNodes <- .matchColumns(do.call(rbind, newNodeRows), nodes)
+    nodes <- rbind(nodes, addedNodes)
+
+    addedEdges <- do.call(rbind, newEdgeRows)
+    edges <- rbind(edges[!dropRows, , drop = FALSE], addedEdges)
+  }
+  if (length(hitRows) > 0L) {
+    for (i in hitRows) {
+      residualList[[length(residualList) + 1L]] <- data.frame(
+        from = edges$from[[i]], to = edges$to[[i]],
+        kind = "straight-residual", stringsAsFactors = FALSE
+      )
+    }
+  }
+
+  ## Curved duplicate-connector branch: arc-verified roundness selection
+  ## (S715, replacing the blind same-row-chord +0.3 bump the S714 arc
+  ## census measured as 100% false-positive-triggered and net-negative).
+  if (nrow(edges) > 0L && "smooth.enabled" %in% names(edges)) {
+    ## Named LISTS, matching .detectStraight() (S630 rationale; applied
+    ## to this pass S682): the is.null() guards below need list `[[`
+    ## NULL semantics. With the atomic vectors used here until S682, a
+    ## curved edge whose endpoint is NA or absent from 'nodes' threw
+    ## "subscript out of bounds" before the guard could fire -- found
+    ## live S681 (a dupEdges row minted from = NA/to = NA for a dangling
+    ## parent's duplicate, crashing the Diagram tab's default
+    ## Rectilinear style on the app's own strict-lineal twin trim).
+    xOf <- as.list(stats::setNames(nodes$x, nodes$id))
+    yOf <- as.list(stats::setNames(nodes$y, nodes$id))
+    adj <- .adjacency(edges)
+    isCurved <- !is.na(edges$smooth.enabled) & edges$smooth.enabled
+    curvedIdx <- which(isCurved)
+    if (length(curvedIdx) > 0L) {
+      sizeNum <- if ("size" %in% names(nodes)) {
+        as.numeric(nodes$size)
+      } else {
+        rep(0.0, nrow(nodes))
+      }
+      sizeNum[is.na(sizeNum)] <- 0.0
+      vis <- data.frame(id = nodes$id, x = nodes$x, y = nodes$y,
+                        size = sizeNum,
+                        stringsAsFactors = FALSE)[sizeNum > 0.0, ,
+                                                  drop = FALSE]
+      for (i in curvedIdx) {
+        f <- edges$from[[i]]
+        t <- edges$to[[i]]
+        xf <- xOf[[f]]
+        yf <- yOf[[f]]
+        xt <- xOf[[t]]
+        yt <- yOf[[t]]
+        if (is.null(xf) || is.null(xt) || is.na(xf) || is.na(xt) ||
+              is.na(yf) || is.na(yt)) {
+          next
+        }
+        p0 <- c(xf, yf)
+        p1 <- c(xt, yt)
+        cand <- vis[!vis$id %in% c(f, t, adj[[f]], adj[[t]]),
+                    c("x", "y", "size"), drop = FALSE]
+        base <- edges$smooth.roundness[[i]]
+        baseHits <- .arcDiscHitCount(p0, p1, base, cand)
+        if (baseHits == 0L) {
+          next  ## the base arc provably clears everything -- untouched
+        }
+        ## Preference-ordered ladder walk: fewest TRUE hits wins; ties
+        ## go to the step closest to the base roundness (the
+        ## kinship2-convention look, S577), then to the smaller step.
+        ## Walking in that preference order means the first strict
+        ## improvement encountered is the preferred one, and the first
+        ## fully-clearing step can stop the walk early.
+        pref <- roundnessLadder[order(abs(roundnessLadder - base),
+                                      roundnessLadder)]
+        bestR <- base
+        bestHits <- baseHits
+        for (r in pref) {
+          h <- .arcDiscHitCount(p0, p1, r, cand)
+          if (h < bestHits) {
+            bestHits <- h
+            bestR <- r
+          }
+          if (bestHits == 0L) {
+            break
+          }
+        }
+        edges$smooth.roundness[[i]] <- bestR
+        if (bestHits > 0L) {
+          residualList[[length(residualList) + 1L]] <- data.frame(
+            from = f, to = t, kind = "curved-heuristic",
+            stringsAsFactors = FALSE
+          )
+        }
+      }
+    }
+  }
+
+  residuals <- if (length(residualList) > 0L) {
+    do.call(rbind, residualList)
+  } else {
+    data.frame(from = character(), to = character(), kind = character(),
+               stringsAsFactors = FALSE)
+  }
+
+  list(nodes = nodes, edges = edges, residuals = residuals)
+}
