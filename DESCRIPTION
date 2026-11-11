@@ -18,7 +18,9 @@ Imports:
     data.table,
     Matrix,
     methods,
-    stats
+    quadprog,
+    stats,
+    utils
 Suggests:
     kinship2,
     mockery,
