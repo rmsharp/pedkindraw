@@ -4,29 +4,30 @@
 > `docs/planning/standalone-pedigree-package-plan.md` at nprcgenekeepr commit `3d262d628`,
 > by step H1 of `docs/planning/planning-handover-plan.md`.
 > From here on this copy is the live one: pedkindraw's sessions follow it and update it, and nprcgenekeepr's
-> copy is frozen. The status block below is still the one written at the freeze, from nprcgenekeepr's side
-> ("This copy is not updated here again" means nprcgenekeepr's copy); step H2 of the hand-over plan rewrites
-> it here.
+> copy is frozen. Step H2 of the hand-over plan (pedkindraw S6) brought it up to date: the status block, §1.3,
+> §2 (R16-R23), Phases 5-10 and §5.
 > **Paths in this file name nprcgenekeepr's files** (`R/`, `tests/`, `BACKLOG.md`, `methodology/`,
 > `tools/pedigreeComparison/` and so on), except these five, copied into pedkindraw at the same paths:
 > `docs/planning/standalone-pedigree-package-plan.md`, `docs/planning/pedkindraw-api-contract.md`,
 > `docs/research/pedigree-package-comparison-2026-11.md`,
 > `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` and
-> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`.
-> A line number cited in one of these five is its line in nprcgenekeepr; in pedkindraw's copy, every line below
-> the title sits lower by the length of that copy's note (this one adds 16 lines, counting the blank line above).
+> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`. Text added in pedkindraw (H2 on) says whose
+> file a path names: "pedkindraw's", "nprcgenekeepr's" or `nprcgenekeepr:<path>`.
+> A line number cited in one of these five is its line in nprcgenekeepr. In this copy the lines down to the status
+> block sit lower by this note (17 lines, counting the blank line above); below it, H2's edits moved them
+> further, so find a cited line by its words.
 
 **Date:** 2026-11-02 · **Session:** S1121 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 §Planning Sessions; `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`). No package code was written or
-changed. **Status:** plan approved in scope by Mark's rulings below; Phase 1 DONE (S1122-S1123,
+changed. **Status:** plan approved in scope by Mark's rulings below. In nprcgenekeepr: Phase 1 DONE (S1122-S1123,
 `docs/research/pedigree-package-comparison-2026-11.md`); Phase 2 DONE (S1124-S1125, the same doc's sections 8-10);
 Phase 3 DONE (S1126, the same doc's section 11: R7 ruled); Phase 4 DONE (S1128: `docs/planning/pedkindraw-api-contract.md`,
-rulings R10-R13, repository `rmsharp/pedkindraw`); License line ruled S1149 (R14: MIT, as nprcgenekeepr); Phase 5
-(skeleton) DONE in the clone at `/Users/rmsharp/Development/pedkindraw` (R15, S1150; pedkindraw S1-S2); Phase 6a DONE
-(pedkindraw S3: 10 of Phase 6's functions; Mark split Phase 6 there). **Frozen 2026-11-11:** from here on this plan is
-carried in pedkindraw's repository (Mark's direction, pedkindraw S3-S4), whose sessions follow it and change it where
-needed in their own copy (`docs/planning/` there; the move is that repository's `docs/planning/planning-handover-plan.md`).
-This copy is not updated here again. nprcgenekeepr's one standing duty is section 5's last line.
+rulings R10-R13, repository `rmsharp/pedkindraw`); the clean-room rewrite C2 relies on finished (S1140); License line
+ruled S1149 (R14: MIT, as nprcgenekeepr). In pedkindraw's repository: Phase 5 DONE (pedkindraw S1-S2, R15); Phase 6a
+DONE (pedkindraw S3: 10 of Phase 6's 21 functions, R19); the plan moved here (pedkindraw S4-S6, R23: steps H0-H2 of
+pedkindraw's `docs/planning/planning-handover-plan.md`). **Next:** Phase 6b, the other 11 functions (one session).
+This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
+5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
 
 ---
@@ -61,7 +62,9 @@ Since then:
 
 - **Methodology boundary.** Sessions that work in the new repository write that repository's
   `SESSION_NOTES.md`, `HANDOFFS.md`, `CHANGELOG.md` (`SESSION_RUNNER.md` §Phase 0, session-notes boundary).
-  Phases 1-4 run here; Phases 5 onward run in the new repository.
+  Phases 1-4 ran in nprcgenekeepr (S1121-S1128); Phases 5 onward run in the new repository, pedkindraw's, which
+  carries this plan from 2026-11-11 (R23): its sessions keep this plan and pedkindraw's `methodology/ROADMAP.md` and
+  `methodology/BACKLOG.md` up to date.
 - **Strict TDD** (`CLAUDE.md`) carries into the new repository's `CLAUDE.md`.
 - **Blast radius:** at most 5 files per commit (`SAFEGUARDS.md`). Copy phases move dozens of files, so
   each is a series of checkpoint commits, never one large commit.
@@ -102,10 +105,20 @@ Since then:
 | C2 | R11's rewrite is done once, in nprcgenekeepr, by the clean-room process of `docs/planning/cleanroom-rewrite-plan.md`; pedkindraw copies the results like any other nprcgenekeepr code: Phase 7 after that plan's Phase 8, Phase 8 after its Phases 5 and 14, Phase 10 after its Phase 11 (its section 4.8) | S1130 | Mark |
 | R14 | License: **MIT**, as nprcgenekeepr: `License: MIT + file LICENSE`, the `LICENSE` file naming R. Mark Sharp as copyright holder. Basis: all of pedkindraw's code is copied from nprcgenekeepr (C2), whose S1140 sweep found no file matching kinship2, kinship or Therneau's 2003 code, so R11's condition (the rewrite exists) is met. Consequence: Phase 12 writes `familyCheck()` and `ibdMatrix()` from kinship2's documentation, never its source (as R11 says). The `YEAR` line was not asked (nprcgenekeepr's reads 2017-2026). Picked over GPL (>= 2) and over holding for an outside check; Claude's recommendation | S1149 | Mark |
 | R15 | Phase 5 runs in a local clone, `/Users/rmsharp/Development/pedkindraw` (Claude cloned the empty repository S1150), as **two sessions** Mark starts there: 5a the methodology files and `CLAUDE.md`, then 5b the R skeleton, test-first. 5b may **push once** to `rmsharp/pedkindraw` after a clean local `R CMD check --as-cran`, then reads the GitHub checks. Reason for the split: Claude Code reads `CLAUDE.md` only when a session starts (methodology `BOOTSTRAP.md`, First Session Checklist) | S1150 | Mark |
+| R16 | Until pedkindraw is on CRAN, `R CMD check --as-cran` may give one NOTE, from "checking CRAN incoming feasibility", when its only content is the Maintainer line and "New submission"; any other NOTE fails (pedkindraw `CLAUDE.md`, Build / Test / Verify). Source: pedkindraw `methodology/CHANGELOG.md`, the S2 DONE entry | pedkindraw S2 | Mark |
+| R17 | `LICENSE`'s `YEAR` line reads 2017-2026, as nprcgenekeepr's; Mark is the only person in `Authors@R` (others join with their code). Answers the two questions R14 and Phase 5 left open. Source: as R16 | pedkindraw S2 | Mark |
+| R18 | The fix to the context-budget tool's paths waits for a session of its own (pedkindraw's `methodology/.context-budget.json` names `SESSION_NOTES.md` at the root, where pedkindraw keeps it in `methodology/`, so its `methodology/context_budget.py --status` reports it "file does not exist"); it is an item in pedkindraw's `methodology/BACKLOG.md`. Source: as R16 | pedkindraw S2 | Mark |
+| R19 | Phase 6 is split into two sessions: **6a**, the 10 relationship functions (DONE pedkindraw S3), and **6b**, the 11 that repair and trim pedigrees (Phase 6's rows below list both). Source: pedkindraw `methodology/CHANGELOG.md`, the S3 DONE entry | pedkindraw S3 | Mark |
+| R20 | `toCharacter()` is not copied: R13 leaves it out with the readers, the only functions that reach it. Settles the conflict between R13 and the Phase 6 row, which listed it. Source: as R19 | pedkindraw S3 | Mark |
+| R21 | The sample pedigrees the copied tests use are saved test fixtures (pedkindraw's `tools/makeTestFixtures.R` writes them to its `tests/testthat/fixtures/`; so far `lacy1989Ped`, `smallPed`), not package datasets; help-page examples type in their own small pedigree. Source: as R19 | pedkindraw S3 | Mark |
+| R22 | Where a copied test calls `stringi`, it uses base R instead, with identical values (checked when copied), so pedkindraw does not need `stringi`; the test file's header names the change. Source: as R19 (which records the change), and pedkindraw S3's notes as committed at pedkindraw `82337ff` (`methodology/SESSION_NOTES.md`, "Mark's picks"), which record it as Mark's | pedkindraw S3 | Mark |
+| R23 | This plan's home is pedkindraw's repository from 2026-11-11: its sessions follow it and update it there, and nprcgenekeepr's copies are frozen at its `3d262d628`. Five documents are copied (this plan, the contract and the three studies in `docs/research/`); open work goes in pedkindraw's `methodology/BACKLOG.md`, not GitHub issues. The move: pedkindraw's `docs/planning/planning-handover-plan.md`. Source: pedkindraw `methodology/CHANGELOG.md`, the S3 hand-off entry (Mark's direction, his words) and the S4 DONE entry | pedkindraw S3-S4 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
 Settled by C2 (S1130): the layout solver's terms 1-2 and the mate-pair step are rewritten too (that plan's batches D and A).
+Session numbers: "pedkindraw S2" and the like are sessions in pedkindraw's repository (pedkindraw's
+`methodology/HANDOFFS.md`); a bare S number is an nprcgenekeepr session.
 
 ---
 
@@ -309,7 +322,7 @@ empty. The license is open (R11).
 ### Phase 5 -- Skeleton (new repository; two sessions there, R15)
 
 **License line:** ruled S1149 (R14): `License: MIT + file LICENSE`, `LICENSE` naming R. Mark Sharp as copyright holder
-(the `YEAR` line was not asked; nprcgenekeepr's reads 2017-2026).
+(the `YEAR` line: 2017-2026, R17).
 Bootstrap the methodology from the methodology repository; `CLAUDE.md` carrying this project's strict TDD
 contract and Build/Test/Verify table; `DESCRIPTION`, `LICENSE`, `NAMESPACE`; `testthat` 3rd edition; `renv`
 on a dated repository (this project's `CLAUDE.md` S1111 ruling); `lintr` settings copied; GitHub Actions
@@ -320,8 +333,13 @@ on a dated repository (this project's `CLAUDE.md` S1111 ruling); `lintr` setting
 /Users/rmsharp/Development/pedkindraw --layout new` (S1150's dry run: 31 files, all under `methodology/`), committed
 as one commit; then `CLAUDE.md` from `methodology/CLAUDE_TEMPLATE.md` plus the contract and table above; commit, stop.
 **5b**, a new session: the R skeleton test-first, one push, the GitHub checks. Mark decides `LICENSE`'s `YEAR` line
-and the `Authors@R` list (neither asked yet). The clone's branch is `master`, git's default (no commits yet).
+and the `Authors@R` list (R17). The clone's branch is `master`, git's default (no commits yet).
 **Session boundary:** two sessions (R15).
+**Done (pedkindraw S1-S2):** 5a in S1 (the methodology synced, 31 files under `methodology/`; `CLAUDE.md` with this
+plan's strict TDD contract word for word). 5b in S2: `DESCRIPTION` 0.0.1, `LICENSE` (R17), `NAMESPACE` by roxygen2,
+`.lintr` with nprcgenekeepr's linters, renv on Posit's 2026-10-31 snapshot, the R-CMD-check workflow (five jobs on
+Linux, macOS and Windows); pushed once, CI run `42930770118` 5/5 `Status: OK`. The DONE line's "0 notes" became R16
+(one allowed NOTE until CRAN).
 
 ### Phases 6-10 -- Copy slices (new repository; one slice per session)
 
@@ -331,15 +349,32 @@ nprcgenekeepr commit it came from. Fixtures built with non-copied functions (§3
 1-3 calls each) are replaced by saved fixture files. **DONE for each slice:** the copied tests pass with the same pinned values,
 and the slice's functions give identical results to nprcgenekeepr at the source commit on the Phase 1
 pedigrees (`identical()` for data frames, max absolute difference 0 for kinship), checked by a script;
-`R CMD check --as-cran` 0/0/0; CI green.
+`R CMD check --as-cran` 0 errors, 0 warnings, no NOTE but R16's; CI green.
 
 | Phase | Slice | Files (from §3.2) | Outside packages |
 |---|---|---|---|
-| 6 | Pedigree basics: generations, family ids, parents/offspring/founders, walking, trimming, parent repair | `findGeneration`, `findPedigreeNumber`, `getParents`, `getOffspring`, `getFounders`, `isFounder`, `hasBothParents`, `walkPedigree`, `trimPedigree`, `getProbandPedigree`, `getDescendantPedigree`, `removeUnknownAnimals`, `removeUninformativeFounders`, `addParents`, `correctParentSex`, `addBackSecondParents`, `getIdsWithOneParent`, `addIdRecords`, `isAddedRecord`, `rbindFill`, `isEmpty`, `toCharacter` | data.table (keep or replace: decide at Phase 4) |
-| 7 | Kinship and twins (estimate: 2 sessions) | copy `checkTwinRelations.R`; **write** `kinship()` and its MZ grouping from the published methods (R11, contract section 3); no readers (R13) | Matrix |
-| 8 | Layout engine (estimate: 2 sessions, engine then collisions/waypoints tests) | `makePedigreeDiagramData.R`, `positionTreeApportion.R`, `orderRootSubtrees.R`, `penaltyCrossprod.R`, `affectedConditions.R`, `deceasedSlash.R`, `comparePedigreeStructure.R`; tests from §3.3 and the rhesus fixtures | quadprog, Matrix; kinship2 in Suggests for the fidelity tests |
+| 6a | Pedigree basics, first half (R19; DONE pedkindraw S3): generations, family ids, parents/offspring/founders, walking | `findGeneration`, `findPedigreeNumber`, `getParents`, `getOffspring`, `getFounders`, `isFounder`, `getProbandPedigree`, `getDescendantPedigree`; internal `isEmpty`, `walkPedigree` | -- |
+| 6b | Pedigree basics, second half (R19): trimming, parent repair | `hasBothParents`, `trimPedigree`, `removeUnknownAnimals`, `removeUninformativeFounders`, `addParents`, `correctParentSex`, `addBackSecondParents`, `getIdsWithOneParent`; internal `addIdRecords` (exported in nprcgenekeepr; contract section 4.1), `isAddedRecord`, `rbindFill`. `toCharacter` is not copied (R20) | data.table, kept (contract section 5); only `addIdRecords()` uses it |
+| 7 | Kinship and twins | copy `checkTwinRelations.R` and nprcgenekeepr's clean-room `R/kinship.R` and `R/mzTwinGroups.R` (C2); no readers (R13) | Matrix |
+| 8 | Layout engine (estimate: 2 sessions, engine then collisions/waypoints tests) | `makePedigreeDiagramData.R`, `positionTreeApportion.R`, `orderRootSubtrees.R`, `penaltyCrossprod.R`, `affectedConditions.R`, `deceasedSlash.R`, `comparePedigreeStructure.R`, with the clean-room `.solveJointQP()` and mate-pair step in them (C2); tests from §3.3 and the rhesus fixtures | quadprog, Matrix; kinship2 in Suggests for the fidelity tests |
 | 9 | Renderer | `drawPedigreeDiagram.R` and its drawing script; `test_drawPedigreeDiagram.R`, the live-render helper | visNetwork; chromote in Suggests |
-| 10 | Shrink | **write** `shrinkPedigree()` and its helpers from the published method (R11) | -- |
+| 10 | Shrink | copy nprcgenekeepr's clean-room `R/shrinkPedigree.R` and its helpers (C2) | -- |
+
+**Done 6a (pedkindraw S3):** the 10 functions, their 9 test files (48 tests) and `helper-walkPedigree.R` copied from
+nprcgenekeepr `baef1e12c`, code unchanged, help text rewritten (R21: examples type their own pedigree); fixtures
+`lacy1989Ped` and `smallPed` (R21); `stringi` calls in the tests replaced (R22). Checks: pedkindraw's
+`tools/compareResultsWithNprcgenekeepr.R`, 120 of 120 results `identical()` on 12 Phase 1 pedigrees; its
+`tools/compareWithNprcgenekeepr.R` (the drift check, §5), 0 differences and its `DIVERGENCE.md` with no rows;
+`R CMD check --as-cran` 0 errors, 0 warnings, R16's NOTE; CI run `42960032938` 5/5 `Status: OK`. None of 6a's or 6b's
+functions uses `stats` or `utils` (pedkindraw S2-S3), so neither is imported yet.
+
+**C2 in Phases 7, 8 and 10** (`nprcgenekeepr:docs/planning/cleanroom-rewrite-plan.md` §4.8): each copies the
+clean-room code like any other nprcgenekeepr code. The waits §4.8 set (Phase 7 on that plan's Phase 8, Phase 8 on its
+Phases 5 and 14, Phase 10 on its Phase 11) are over: that plan finished S1140. R11's "write ... from the published
+methods" is met by these copies and no longer applies to these three phases (it still governs Phase 12). The
+rewritten functions differ from nprcgenekeepr 3.0.0's, and the copies carry the differences: `kinship()`'s parent
+arguments are `fatherId` and `motherId` (that plan's C13, were `father.id` and `mother.id`), and it stops with a plain
+message on malformed input (C11); `shrinkPedigree()` does too (C15) and breaks ties by byte order (C16).
 
 **Surface:** this Mac and the new repository's CI. Browser tests run where Chrome is present and skip
 elsewhere (this project's S1117 pattern); say so in each slice's handoff.
@@ -375,7 +410,8 @@ Only on Mark's decision (R8). Its own plan; the scoping doc §7 steps 3-4 are th
 From Phase 6 on, a change to a copied function in either repository is either made in the other repository
 too (in a session of its own there) or recorded as a row in the new repository's `DIVERGENCE.md` (function,
 both commits, why). The new repository carries `tools/compareWithNprcgenekeepr.R`, which lists every copied
-function whose body differs from the installed nprcgenekeepr's; every difference it lists must have a row.
+function whose arguments or code differ from nprcgenekeepr's, read from the local clone with git (nprcgenekeepr is
+installed nowhere there); every difference it lists must have a row.
 In nprcgenekeepr, a fix to a copied function that is not yet mirrored gets a `BACKLOG.md` line naming it.
 
 ---
