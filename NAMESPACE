@@ -2,6 +2,7 @@
 
 export(addBackSecondParents)
 export(addParents)
+export(checkTwinRelations)
 export(correctParentSex)
 export(findGeneration)
 export(findPedigreeNumber)
