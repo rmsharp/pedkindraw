@@ -19,6 +19,8 @@
 # Developer scripts: test fixtures, drift and fidelity checks.
 ^tools$
 ^DIVERGENCE\.md$
+# Plans and studies, copied from nprcgenekeepr or written here.
+^docs$
 # Build and check output, and testthat debris from interactive runs.
 ^pedkindraw_.*\.tar\.gz$
 ^pedkindraw\.Rcheck$
