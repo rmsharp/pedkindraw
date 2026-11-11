@@ -8,16 +8,18 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 7: copy kinship and twins** (READY, Effort M) -- plan Phase 7 (the row "Kinship and twins"): copy
-      `R/checkTwinRelations.R` and nprcgenekeepr's clean-room `R/kinship.R` and `R/mzTwinGroups.R` (C2; `kinship()`'s
-      parent arguments are `fatherId` and `motherId`, C13), `Imports: Matrix`. Measured in S7 at nprcgenekeepr
-      `baef1e12c` (the three files are unchanged to `3d262d628`): `kinship()` calls `mzTwinGroups()` and reads two
-      constants, `sexCodes` (copied in 6b, R25) and `mzTwinIdsAbsentMessage` (in `R/mzTwinGroups.R`); 8 test files
-      there match `test_kinship*.R` and not all of them test `kinship()`, plus `test_checkTwinRelations.R`. Run the
-      Learning 9 survey (`CLAUDE.md`) and count the tests before the pre-RED picker.
+- [ ] **Phase 8: copy the layout engine** (READY, Effort L: the plan estimates 2 sessions) -- plan Phase 8 (the row
+      "Layout engine"): `makePedigreeDiagramData.R` (3,110 lines at nprcgenekeepr `baef1e12c`; it also holds
+      `makePedigreeMatingLayout()` at its line 1642 and the clean-room `.solveJointQP()` at 1504),
+      `positionTreeApportion.R` (437), `orderRootSubtrees.R` (213), `penaltyCrossprod.R` (128),
+      `affectedConditions.R` (201), `deceasedSlash.R` (91), `comparePedigreeStructure.R` (374); `Imports: quadprog`
+      (Matrix is in since Phase 7). Measured S8: all seven unchanged from `baef1e12c` to nprcgenekeepr `1ed1402e9`.
+      First a picker on how to split the two sessions (as R19 split Phase 6), then the Learning 9 survey (also grep
+      `::` calls: codetools does not list them) and the test count, before the pre-RED picker. Uses `kinship()`
+      (`makePedigreeMatingLayout(kinshipMatrix = )`) and `sexCodes` (R25).
 
-- [ ] **Phases 8-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: the copy
-      slices for the layout engine, the renderer and shrink (8-10, nprcgenekeepr's clean-room code under C2), then
+- [ ] **Phases 9-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: the copy
+      slices for the renderer and shrink (9-10; 10 is nprcgenekeepr's clean-room code under C2), then
       new work (11-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE
       criteria: the plan's section 4; summary: `methodology/ROADMAP.md`. Each phase gets its own item here when it
       is next.
@@ -49,8 +51,10 @@ issues).*
       compares only functions assigned at the top level, so `R/sexCodes.R` (a named character vector, R25) is
       copied but unwatched: it reports "21 copied functions in 21 files" with 22 copied files (S7). The results
       tool still refuses a clone whose `R/sexCodes.R` changed, and its `sexCodes` case compares the value, but only
-      at the copy's commit. Phase 7 adds a second constant (`mzTwinIdsAbsentMessage`). Fix: compare every top-level
-      assignment, not only functions, or list the constants by name.
+      at the copy's commit. S8: Phase 7 added a second, `mzTwinIdsAbsentMessage` (in `R/mzTwinGroups.R`, beside a
+      function), and the drift tool now reports "24 copied functions in 24 files" with 25 copied files; the results
+      tool's `mzTwinIdsAbsentMessage` case compares its value. Fix: compare every top-level assignment, not only
+      functions, or list the constants by name.
 
 - [ ] **Point the context-budget tool at `methodology/`** (READY, Effort S) -- R18: a session of its own.
       `methodology/.context-budget.json` names `SESSION_NOTES.md` at the root, but this repository keeps it in
@@ -63,13 +67,21 @@ issues).*
       (from 2026-10-19). `.github/workflows/R-CMD-check.yaml:39` (`actions/checkout@v4`) and `:30-32` (the three
       `ubuntu-latest` jobs). S7: the move has happened (the runners are Ubuntu 26.04, "resolute"), and in run
       `43052891573` attempt 1 all three Ubuntu jobs failed installing R, unable to resolve Ubuntu's package servers
-      for an hour; re-running them passed (attempt 2). Watch whether it recurs before pinning a runner image.
+      for an hour; re-running them passed (attempt 2). Watch whether it recurs before pinning a runner image. S8: run
+      `43106941979` passed on all five jobs at the first attempt, Ubuntu 26.04 included (the same two notices).
 
 - [ ] **Report a vacuous test to nprcgenekeepr** (READY, Effort S) -- the first expectation of
       `test_findPedigreeNumber.R` checks the ids containing "1", and the Lacy pedigree's ids are letters, so it
       checks nothing (0 ids match; found S3, rechecked S6). pedkindraw copied the file unchanged
       (`tests/testthat/test_findPedigreeNumber.R:26`). For an nprcgenekeepr session: a fix there is then mirrored
       here or recorded in `DIVERGENCE.md` (plan section 5).
+
+- [ ] **Tell nprcgenekeepr's edition-3 conversion about the copies' changes** (READY, Effort S) -- plan R29:
+      nprcgenekeepr will move its tests to testthat edition 3 (its `DESCRIPTION` names none today). Its
+      `tests/testthat/test_kinshipHasBothParentsHelp.R:159-162` will then leak a warning, as pedkindraw's copy did:
+      `hasBothParents()` warns twice for 3 IDs and one `expect_warning()` catches one. pedkindraw's copy expects both
+      with two `expect_warning()` calls (`tests/testthat/test_kinshipHasBothParentsHelp.R`, the last test); the
+      conversion can use the same lines so the copies match again. For an nprcgenekeepr session, like the item above.
 
 ## Later
 

@@ -26,7 +26,8 @@ rulings R10-R13, repository `rmsharp/pedkindraw`); the clean-room rewrite C2 rel
 ruled S1149 (R14: MIT, as nprcgenekeepr). In pedkindraw's repository: Phase 5 DONE (pedkindraw S1-S2, R15); Phase 6a
 DONE (pedkindraw S3: 10 of Phase 6's 21 functions, R19); the plan moved here (pedkindraw S4-S6, R23: steps H0-H2 of
 pedkindraw's `docs/planning/planning-handover-plan.md`); Phase 6b DONE (pedkindraw S7: the other 11 and the constant
-`sexCodes`, R24-R25). **Next:** Phase 7, kinship and twins (one session).
+`sexCodes`, R24-R25); Phase 7 DONE (pedkindraw S8: `kinship()`, `checkTwinRelations()` and `mzTwinGroups()`,
+R26-R29). **Next:** Phase 8, the layout engine (estimate: 2 sessions).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -116,6 +117,10 @@ Since then:
 | R23 | This plan's home is pedkindraw's repository from 2026-11-11: its sessions follow it and update it there, and nprcgenekeepr's copies are frozen at its `3d262d628`. Five documents are copied (this plan, the contract and the three studies in `docs/research/`); open work goes in pedkindraw's `methodology/BACKLOG.md`, not GitHub issues. The move: pedkindraw's `docs/planning/planning-handover-plan.md`. Source: pedkindraw `methodology/CHANGELOG.md`, the S3 hand-off entry (Mark's direction, his words) and the S4 DONE entry | pedkindraw S3-S4 | Mark |
 | R24 | The 10 tests in Phase 6b's test files that test nprcgenekeepr's studbook checks (`qcStudbook()`, `runQcStudbook()`, `convertDate()`, `removeDuplicates()`), which pedkindraw does not copy, are left out; each test file's header names the blocks left out and why. Source: pedkindraw `methodology/CHANGELOG.md`, the S7 DONE entry (Mark's pre-RED pick, "Leave out, list") | pedkindraw S7 | Mark |
 | R25 | `sexCodes`, nprcgenekeepr's internal constant of the four sex letters (`R/sexCodes.R`), is copied in Phase 6b, which the 6b row did not list: `addParents()` and `correctParentSex()` read it (so do Phase 7's `kinship()` and Phase 8's `makePedigreeDiagramData.R`). Of `tests/testthat/test_sexCodes.R` only the test of the four values is copied; its four tests that scan `R/` for bare sex letters are left out (their allowlist names nprcgenekeepr files). Source: as R24 (Mark's pre-RED pick, "File + its value test") | pedkindraw S7 | Mark |
+| R26 | Phase 7 copies 34 of the 102 tests in its 9 nprcgenekeepr test files: all of `test_checkTwinRelations.R` (10) and `test_kinship.R` (18), 5 of `test_kinshipHasBothParentsHelp.R` (3 X-chromosome kinship tests, 2 `hasBothParents()` tests, which make nprcgenekeepr's `pedOne` a fixture, R21) and the C11 test of `test_kinshipMemoryEquivalence.R` (with `outcome()` from its `helper-perfCampaign.R`). Left out, each file's header naming them: the 52 tests of five files that test only nprcgenekeepr functions (`test_kinshipForAnimals.R`, `test_kinshipForConsumers.R`, `test_kinshipMatricesToKValues.R`, `test_kinshipMatrixToKValues.R`, `test_kinshipOverrideDocs.R`), 5 help-wording tests, 3 that compare with nprcgenekeepr's saved `cleanroom/` data, and 8 of nprcgenekeepr-only functions. Source: pedkindraw `methodology/CHANGELOG.md`, the S8 DONE entry (Mark's pre-RED pick, "34 behavior tests") | pedkindraw S8 | Mark |
+| R27 | Matrix is declared by `Imports: Matrix` and one roxygen line in `R/kinship.R`, `@importClassesFrom Matrix ddiMatrix dgCMatrix`. `kinship()` reaches Matrix only through `asNamespace("Matrix")`, which `R CMD check` does not count as a use (`tools:::.check_packages_used`), so the Imports line alone gives the NOTE "Namespace in Imports field not imported from" (nprcgenekeepr escapes it only through another file's `Matrix::colMeans`). Consequence: Matrix loads with pedkindraw. Phase 7 also imports `methods` and `stats`, their first uses. Source: as R26 (Mark's pre-RED pick, "Import the 2 classes") | pedkindraw S8 | Mark |
+| R28 | `kinship2` and `withr` enter Suggests in Phase 7, for tests only: `kinship2` for the test that compares `kinship()`'s X-chromosome result with `kinship2::kinship()` (it skips without kinship2; the contract already listed it), `withr` for the C11 test's `with_seed()`. Source: as R26 (Mark's pre-RED pick, "Add kinship2 and withr", given after he asked why kinship2) | pedkindraw S8 | Mark |
+| R29 | pedkindraw stays on testthat edition 3, and nprcgenekeepr will move to edition 3 too (Mark's words, S8: "consider using version 3 of testthat with the understanding that nprcgenekeepr is going to convert to use of v. 3 as well"). nprcgenekeepr's tests run on edition 2 today (its `DESCRIPTION` names no edition), so a copied test can behave differently here; such a test is changed the edition-3 way and the change named in its header. The first (S8): `hasBothParents()` warns twice for 3 IDs, and edition 3's `expect_warning()` catches one, so two `expect_warning()` calls expect both. Source: as R26 (Mark's RED pick, "Expect both warnings") | pedkindraw S8 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -358,7 +363,7 @@ pedigrees (`identical()` for data frames, max absolute difference 0 for kinship)
 |---|---|---|---|
 | 6a | Pedigree basics, first half (R19; DONE pedkindraw S3): generations, family ids, parents/offspring/founders, walking | `findGeneration`, `findPedigreeNumber`, `getParents`, `getOffspring`, `getFounders`, `isFounder`, `getProbandPedigree`, `getDescendantPedigree`; internal `isEmpty`, `walkPedigree` | -- |
 | 6b | Pedigree basics, second half (R19; DONE pedkindraw S7): trimming, parent repair | `hasBothParents`, `trimPedigree`, `removeUnknownAnimals`, `removeUninformativeFounders`, `addParents`, `correctParentSex`, `addBackSecondParents`, `getIdsWithOneParent`; internal `addIdRecords` (exported in nprcgenekeepr; contract section 4.1), `isAddedRecord`, `rbindFill`, and the constant `sexCodes` (R25). `toCharacter` is not copied (R20) | data.table, kept (contract section 5); only `addIdRecords()` uses it |
-| 7 | Kinship and twins | copy `checkTwinRelations.R` and nprcgenekeepr's clean-room `R/kinship.R` and `R/mzTwinGroups.R` (C2); no readers (R13) | Matrix |
+| 7 | Kinship and twins (DONE pedkindraw S8) | copy `checkTwinRelations.R` and nprcgenekeepr's clean-room `R/kinship.R` and `R/mzTwinGroups.R` (C2; with the constant `mzTwinIdsAbsentMessage`); no readers (R13) | Matrix (R27); also `methods`, `stats`; Suggests `kinship2`, `withr` (R28) |
 | 8 | Layout engine (estimate: 2 sessions, engine then collisions/waypoints tests) | `makePedigreeDiagramData.R`, `positionTreeApportion.R`, `orderRootSubtrees.R`, `penaltyCrossprod.R`, `affectedConditions.R`, `deceasedSlash.R`, `comparePedigreeStructure.R`, with the clean-room `.solveJointQP()` and mate-pair step in them (C2); tests from §3.3 and the rhesus fixtures | quadprog, Matrix; kinship2 in Suggests for the fidelity tests |
 | 9 | Renderer | `drawPedigreeDiagram.R` and its drawing script; `test_drawPedigreeDiagram.R`, the live-render helper | visNetwork; chromote in Suggests |
 | 10 | Shrink | copy nprcgenekeepr's clean-room `R/shrinkPedigree.R` and its helpers (C2) | -- |
@@ -380,6 +385,17 @@ the branches they do not); the drift check, 21 copied functions the same and `DI
 does not compare constants: pedkindraw's `methodology/BACKLOG.md`); `R CMD check --as-cran` 0 errors, 0 warnings,
 R16's NOTE; tests PASS 347; CI run `43052891573` 5/5 `Status: OK` (attempt 2: in attempt 1 the three Ubuntu jobs
 could not reach Ubuntu's package servers while installing R, before any check ran).
+
+**Done 7 (pedkindraw S8):** `kinship()` and `checkTwinRelations()` (exported) and `mzTwinGroups()` with the constant
+`mzTwinIdsAbsentMessage` (internal) copied from nprcgenekeepr `baef1e12c`, code unchanged, help text rewritten (R21);
+one roxygen line added, `@importClassesFrom Matrix ddiMatrix dgCMatrix` (R27). 34 tests in 4 files (R26), one of them
+changed for testthat edition 3 (R29); fixture `pedOne`; `Imports: Matrix, methods, stats`, `Suggests: kinship2, withr`
+(R28). Checks: the results tool, 360 of 360 results `identical()` on the 12 Phase 1 pedigrees (30 cases; kinship on the
+whole pedigree up to 2,000 animals, else on 100 spread animals and their ancestors; made-up twins, founders-only and
+one-parent variants reach the branches the pedigrees do not), 132 kinship matrices with largest absolute difference 0;
+the drift check, 24 copied functions the same, `DIVERGENCE.md` still without rows; `R CMD check --as-cran` 0 errors,
+0 warnings, R16's NOTE; tests PASS 446, WARN 0 (new gate `test-suite-warnings-zero`); CI run `43106941979` 5/5
+`Status: OK`, first attempt.
 
 **C2 in Phases 7, 8 and 10** (`nprcgenekeepr:docs/planning/cleanroom-rewrite-plan.md` §4.8): each copies the
 clean-room code like any other nprcgenekeepr code. The waits §4.8 set (Phase 7 on that plan's Phase 8, Phase 8 on its

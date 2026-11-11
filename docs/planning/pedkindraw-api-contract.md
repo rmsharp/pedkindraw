@@ -203,16 +203,19 @@ Layout hints (R3) are Phase 15, whose design session comes first. Nothing else f
 | Component | Depends on | Depended on by | Note |
 |---|---|---|---|
 | Pedigree basics (Phase 6) | `data.table` (only `addIdRecords()`, Phase 6b) | everything | `data.table` adds 1 package; kept so the copied functions return what nprcgenekeepr's do (a later replacement is a recorded divergence) |
-| Kinship and twins (Phase 7) | `Matrix` | layout, `findUnrelated()` | |
+| Kinship and twins (Phase 7) | `Matrix`, `methods` (`kinship()`), `stats` (`checkTwinRelations()`) | layout, `findUnrelated()` | Matrix declared by `importClassesFrom(Matrix, ddiMatrix, dgCMatrix)` as well (plan R27, pedkindraw S8) |
 | Layout engine (Phase 8) | `quadprog`, `Matrix` | renderer | |
 | Renderer (Phase 9) | `visNetwork` | users | `chromote` in Suggests for browser tests |
 | Converters (Phase 14) | kinship2, Pedixplorer (Suggests) | users | |
 
 **Imports:** `data.table`, `Matrix`, `quadprog`, `visNetwork`, `stats`, `utils`: 32 packages to install, measured
 this session. Each is added by the phase that first needs it; `stats` and `utils` only once a copied function uses
-them, and none of Phase 6's does (pedkindraw S2-S3; an unused import is a check NOTE). **Suggests:** kinship2 (also
-the fidelity tests), Pedixplorer, `testthat`, `mockery` (the copied tests' stand-ins, Phase 6), `chromote`, and what
-the vignettes need (Phase 16). No circular dependencies: each phase's slice uses only earlier slices.
+them, and none of Phase 6's does (pedkindraw S2-S3; an unused import is a check NOTE). Phase 7 (pedkindraw S8) added
+`Matrix`, `stats` (`checkTwinRelations()` calls `stats::setNames()`) and `methods`, which this list did not name
+(`kinship()` calls `methods::new()`; base R, nothing to install). **Suggests:** kinship2 (also the fidelity tests;
+arrived in Phase 7, plan R28), Pedixplorer, `testthat`, `mockery` (the copied tests' stand-ins, Phase 6), `withr`
+(the copied C11 test's `with_seed()`, Phase 7, R28), `chromote`, and what the vignettes need (Phase 16). No circular
+dependencies: each phase's slice uses only earlier slices.
 
 ---
 

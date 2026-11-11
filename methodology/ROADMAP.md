@@ -17,8 +17,8 @@ section 10).
 |---|---|---|
 | 6a | 10 relationship functions: generations, family ids, parents, offspring, founders, walking | DONE (pedkindraw S3) |
 | 6b | 11 functions that repair and trim pedigrees, and the constant `sexCodes` (R25) | DONE (pedkindraw S7) |
-| 7 | kinship and twins: `kinship()`, `checkTwinRelations()` (nprcgenekeepr's clean-room code, C2) | next |
-| 8 | layout engine: `makePedigreeMatingLayout()`, `makePedigreeDiagramData()` (estimate: 2 sessions) | planned |
+| 7 | kinship and twins: `kinship()`, `checkTwinRelations()` (nprcgenekeepr's clean-room code, C2) | DONE (pedkindraw S8) |
+| 8 | layout engine: `makePedigreeMatingLayout()`, `makePedigreeDiagramData()` (estimate: 2 sessions) | next |
 | 9 | renderer: `drawPedigreeDiagram()`, a `visNetwork` widget | planned |
 | 10 | shrink: `shrinkPedigree()` (clean-room code, C2) | planned |
 
@@ -42,6 +42,11 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Kinship and twins (Phase 7), 2 exports:** `kinship()` (autosomal or X-chromosome kinship, dense or a `Matrix`
+  sparse matrix, identical twins declared in a `twinRelations` table made identical) and `checkTwinRelations()`
+  (validates that table by kinship2's rules); internal `mzTwinGroups()` and the constant `mzTwinIdsAbsentMessage`.
+  nprcgenekeepr's clean-room code (C2) copied from `baef1e12c`; results identical to it. Imports `Matrix` (R27),
+  `methods`, `stats`.
 - **Pedigree repair and trimming (Phase 6b), 8 exports:** `trimPedigree()`, `removeUninformativeFounders()`,
   `addBackSecondParents()`, `getIdsWithOneParent()`, `hasBothParents()`, `addParents()`, `correctParentSex()`,
   `removeUnknownAnimals()`; internal `addIdRecords()` (exported in nprcgenekeepr; contract section 4.1),
@@ -57,9 +62,10 @@ session each unless marked. They follow the copy slices.
   (plan section 5; `DIVERGENCE.md` records allowed differences, none yet), and
   `tools/compareResultsWithNprcgenekeepr.R`, which compares every copied function's results on the Phase 1 pedigrees.
 - **Test fixtures:** `tools/makeTestFixtures.R` saves nprcgenekeepr's sample pedigrees into
-  `tests/testthat/fixtures/` (`lacy1989Ped`, `smallPed`; `pedSix`, `qcPed` from Phase 6b) instead of shipping them
-  as datasets (R21).
-- **Quality gates** (`methodology/.quality-gates.json`): `renv-lock-no-latest-repository`, `lint-package-zero`.
+  `tests/testthat/fixtures/` (`lacy1989Ped`, `smallPed`; `pedSix`, `qcPed` from Phase 6b; `pedOne` from Phase 7)
+  instead of shipping them as datasets (R21).
+- **Quality gates** (`methodology/.quality-gates.json`): `renv-lock-no-latest-repository`, `lint-package-zero`,
+  `test-suite-warnings-zero` (S8).
 
 ## Completed Milestones
 
@@ -70,6 +76,10 @@ session each unless marked. They follow the copy slices.
   process that pedkindraw copies (C2, finished S1140), and Mark ruled the license MIT (S1149, R14).
 - **Phase 5, the skeleton (pedkindraw S1-S2, 2026-11-10).** The methodology and `CLAUDE.md`, then the empty package
   built test-first: 0 errors, 0 warnings and the one allowed NOTE (R16); first push, CI green on five jobs.
+- **Phase 7 (pedkindraw S8, 2026-11-11).** Kinship and twins copied test-first from nprcgenekeepr's clean-room code
+  (Mark's picks R26-R29: 34 tests, Matrix's two classes imported, kinship2 and withr for tests, testthat edition 3
+  kept), results identical to nprcgenekeepr's (360 of 360; 132 kinship matrices, largest difference 0); CI green on
+  five jobs.
 - **Phase 6b (pedkindraw S7, 2026-11-11).** The 11 functions that repair and trim pedigrees and the constant
   `sexCodes` copied test-first (Mark's picks R24-R25), results identical to nprcgenekeepr's (264 of 264); CI green on
   five jobs. Plan Phase 6 is complete.
