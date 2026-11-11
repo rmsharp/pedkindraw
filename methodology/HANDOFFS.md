@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S7
+date: 2026-11-11
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 6b, copy the 11 functions that repair and trim pedigrees (tests first), IN PROGRESS
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK, 6b), docs/planning/standalone-pedigree-package-plan.md:357 (6b row)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S6
 date: 2026-11-11
 status: complete

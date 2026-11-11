@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] S7 claim (in progress): plan Phase 6b, copy the 11 functions that repair and trim pedigrees, tests first. Mark picked "Start Phase 6b" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `6501ef7` is HEAD; S6's receipt complete, its gate citation matches the results file).
+
 ### 2026-11-11 · [ad hoc] S6 DONE: plan step H2, the copied plan and contract brought up to date, the roadmap filled and the backlog opened
 - **Change:** the plan (`docs/planning/standalone-pedigree-package-plan.md`): status block, §1.3, rulings R16-R23 (Mark's S2-S4 picks, each with session and source; Mark confirmed all eight by picker), Phase 5 and 6a Done records, Phase 6 split into 6a/6b rows, C2 written into Phases 7, 8 and 10, §5's drift tool. The contract: §5, §9 rows 5/7/8/10, §10 item 2 closed by C2, and `kinship()`'s `fatherId`/`motherId` (C13) with the clean-room differences. `methodology/ROADMAP.md` filled; `methodology/BACKLOG.md` created (10 items); the pre-repository pointer entry below. Close-out: the hand-over plan marks H2 DONE (the move is complete); `CLAUDE.md` Learning 8 (re-check a carried fact in its primary source). Not pushed.
 - **Commit/PR:** `ccd6e6c` (claim), `abb8548`, `86b4126`, `96f9e4b`, `9dc150f` (close-out 1), close-out 2

@@ -10,7 +10,8 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 6b, the second half of the pedigree-basics copy slice: the 11 functions that repair and trim pedigrees
-**Status:** READY. The planning move is complete (S4-S6): H2 DONE in S6, so the plan and contract here are current
+**Status:** IN PROGRESS (S7, claimed 2026-11-11 09:26 CST; Mark's orient pick "Start Phase 6b"). The planning move
+is complete (S4-S6): H2 DONE in S6, so the plan and contract here are current
 (`abb8548`, `86b4126`), with Mark's S2-S4 picks as rulings R16-R23, and open work is in `methodology/BACKLOG.md`
 (`96f9e4b`). Phase 6a DONE in S3 (10 relationship functions; CI run `42960032938` 5/5 `Status: OK`, PASS 122 each).
 **Plan:** `docs/planning/standalone-pedigree-package-plan.md`, "Phases 6-10 -- Copy slices" (`:344`; the 6b row
@@ -111,6 +112,12 @@ The user rates every session's handoff. Your handoff will be scored on:
 *Session history accumulates below this line. Newest session at the top.*
 *S1-S5's entries were removed in S3-S6 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
+
+### What Session 7 Did
+**Deliverable:** plan Phase 6b: copy the 11 functions that repair and trim pedigrees, tests first (IN PROGRESS)
+**Started:** 2026-11-11 09:26 CST · **Model:** Claude Opus 5.5
+**Status:** Session claimed. Work beginning. Mark's orient pick (picker): "Start Phase 6b".
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
 
 ### Session 5 Handoff Evaluation (by Session 6)
 **Score: 9/10.**
