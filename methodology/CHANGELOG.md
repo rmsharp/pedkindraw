@@ -15,6 +15,12 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] S6 DONE: plan step H2, the copied plan and contract brought up to date, the roadmap filled and the backlog opened
+- **Change:** the plan (`docs/planning/standalone-pedigree-package-plan.md`): status block, §1.3, rulings R16-R23 (Mark's S2-S4 picks, each with session and source; Mark confirmed all eight by picker), Phase 5 and 6a Done records, Phase 6 split into 6a/6b rows, C2 written into Phases 7, 8 and 10, §5's drift tool. The contract: §5, §9 rows 5/7/8/10, §10 item 2 closed by C2, and `kinship()`'s `fatherId`/`motherId` (C13) with the clean-room differences. `methodology/ROADMAP.md` filled; `methodology/BACKLOG.md` created (10 items); the pre-repository pointer entry below. Close-out: the hand-over plan marks H2 DONE (the move is complete); `CLAUDE.md` Learning 8 (re-check a carried fact in its primary source). Not pushed.
+- **Commit/PR:** `ccd6e6c` (claim), `abb8548`, `86b4126`, `96f9e4b`, `9dc150f` (close-out 1), close-out 2
+- **Session:** S6 · **Verified:** `docs/research` unchanged since H1; `R CMD check --as-cran` 1 NOTE, the allowed one; tests PASS 122; tarball 0 `docs/` entries; `quality_ratchet: 2/2 pass`; dashboard runs.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-11 · [ad hoc] Backfilled (pointer): pedkindraw's history before this repository existed, in nprcgenekeepr S667-S1150
 - **Change:** none here; a pointer. The work that led to pedkindraw ran in nprcgenekeepr's sessions: S667 (the split scoping study), S741 (the kinship2 gap analysis), S742 (Mark's rulings R1-R3: the package will be built), S1117 (Mark lifted the delay), S1121 (the plan), S1122-S1125 (the comparison, plan Phases 1-2), S1126 (input style, R7), S1128 (the contract, name and repository, R10-R13, plan Phase 4), S1129 (nprcgenekeepr's license scoping), S1130 (the clean-room plan and C2), S1140 (the clean-room rewrite finished), S1149 (pedkindraw's license, R14), S1150 (R15; the empty repository cloned). Their records: nprcgenekeepr's `methodology/CHANGELOG.md` and `methodology/HANDOFFS.md`, and its `methodology/archive/` for S667-S742. The plan's status block and section 2 summarize them.
 - **Commit/PR:** nprcgenekeepr's commits; none here

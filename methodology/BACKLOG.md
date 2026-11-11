@@ -38,8 +38,9 @@ issues).*
       repository (outward-facing, Mark's call), or leave it.
 
 - [ ] **Whether pedkindraw copies nprcgenekeepr's colony overview** (DECISION NEEDED -- later, Effort L, a guess) --
-      nprcgenekeepr is building a colony overview (its issue #138; `nprcgenekeepr:docs/planning/colony-overview-design.md`,
-      ruling D8: "Whether pedkindraw copies it later is Mark's call"; scoping
+      nprcgenekeepr is building a colony overview (its issue #138;
+      `nprcgenekeepr:docs/planning/colony-overview-design.md`, ruling D8: "Whether pedkindraw copies it later is
+      Mark's call"; scoping
       `nprcgenekeepr:docs/planning/colony-overview-scoping.md:117-118`). Not in the plan or the contract; it would
       need a ruling and a plan change first.
 

@@ -196,18 +196,25 @@ manifest existed are not re-judged.
 ```handoff
 session: S6
 date: 2026-11-11
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: step H2 of docs/planning/planning-handover-plan.md (bring the copied plan and contract up to date; fill methodology/ROADMAP.md; create methodology/BACKLOG.md; pointer entry in methodology/CHANGELOG.md), IN PROGRESS
-what_was_done: pending
-next_steps: pending
-key_files: docs/planning/planning-handover-plan.md:212 (H2 steps and DONE)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: step H2 of the hand-over plan is DONE, so the planning move is complete (S4-S6): the plan and contract here are current, with Mark's S2-S4 picks as rulings R16-R23, methodology/ROADMAP.md filled and open work in methodology/BACKLOG.md; next is Phase 6b, the 11 functions that repair and trim pedigrees
+what_was_done: claim ccd6e6c; abb8548 the plan (status block; section 1.3; R16-R23, each with session and source, confirmed by Mark's picker "Add all eight"; Phase 5 and 6a Done records; Phase 6 rows 6a/6b; C2 written into Phases 7, 8 and 10; section 5's drift tool reads the clone; provenance note 17 lines); 86b4126 the contract (section 5 imports and mockery; section 9 rows 5, 7, 8, 10; section 10 item 2 closed by C2; beyond H2's list, C13's fatherId/motherId in sections 4 and 4.2 and the clean-room differences C11/C15/C16, one line in section 3); 96f9e4b ROADMAP.md filled, BACKLOG.md created (9 items), the pre-repository pointer entry; 9dc150f hand-over plan H2 DONE, CLAUDE.md Learning 8, a backlog item for the dashboard; close-out 2 notes, receipt, ledger. Nothing pushed
+next_steps: Phase 6b (methodology/SESSION_NOTES.md ACTIVE TASK; plan :357 the 6b row, :344 the slice DONE line; contract :132 addIdRecords not exported): copy at nprcgenekeepr baef1e12c (S6 checked none of 6b's files changed up to 3d262d628); pre-RED picker on the 10 nprcgenekeepr-only tests; fixtures pedOne, pedSix, qcPed; 8 test files RED; 11 R files GREEN with Imports data.table (rebuild = TRUE, snapshot(dev = TRUE), gate); add the 11 to runCases(); DONE as 6a, push once, read CI; close-out updates the plan, ROADMAP.md and BACKLOG.md
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK, 6b), docs/planning/standalone-pedigree-package-plan.md:344 (copy slices), docs/planning/standalone-pedigree-package-plan.md:357 (6b row), docs/planning/standalone-pedigree-package-plan.md:108 (R16-R23), docs/planning/pedkindraw-api-contract.md:132 (addIdRecords), docs/planning/pedkindraw-api-contract.md:201 (section 5), methodology/BACKLOG.md:11 (6b item), methodology/ROADMAP.md:16 (slice table), tools/compareResultsWithNprcgenekeepr.R:44 (cases), tests/testthat/helper-fixtures.R:5 (fixtures), CLAUDE.md:162 (Learning 8)
+gotchas: 17 commits unpushed (6b's push carries them; nprcgenekeepr 3d262d628 unpushed, Mark's); the dashboard shows Backlog ✗ because the synced tool looks only at the root and docs/, not methodology/ (backlog item, Mark's call); ledger counts can be loose (S3's "10 test files" was 9 and a helper; Learning 8); renv cache trap for data.table (Learning 3); lint needs the package loaded (Learning 4); paths in the copied plan and contract are nprcgenekeepr's unless the text says pedkindraw's; zsh aborts on an unmatched glob and reads a leading = as a command path
+runtime_smoke: n/a, documents only (no R, test or tool file changed; drift and results tools not rerun); R CMD check --as-cran Status 1 NOTE, the allowed one (Maintainer, New submission); tests FAIL 0 WARN 0 SKIP 0 PASS 122; tarball 0 docs/ or methodology/ entries; docs/research unchanged since H1; dashboard runs, 82/100; quality_ratchet: 2/2 pass · 0 fail · 0 unmeasured · results 28dd5b310acd · manifest 114e971f4452
+changelog_ref: CHANGELOG.md "2026-11-11 · [ad hoc] S6 DONE: plan step H2, the copied plan and contract brought up to date, the roadmap filled and the backlog opened"
+commit: 9dc150f
 ```
+Session 6, Claude Opus 5.5, single tier. Predecessor S5 scored 9: every H2 edit site cited with line and words, all
+right at S6's start, and the warning that the status-block rewrite falsifies the note; it named the ledger and
+receipts as sources where R22's attribution is only in S3's committed notes, and (carried from S4's plan) missed C13
+and S1127. Self-score 8: + exact-anchor edits, every DONE criterion shown, two pickers first try, four carried facts
+re-checked (Learning 8); − three slips caught before commit (note-length formula, R18's wording, bare paths against
+the note's rule) and one 123-column backlog line committed, then rewrapped; contract edits beyond H2's list (named
+in the commit).
 
 ```handoff
 session: S5
