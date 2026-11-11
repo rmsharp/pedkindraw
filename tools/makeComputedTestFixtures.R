@@ -19,8 +19,10 @@
 ## - trackBShrunk.rds: shrinkPedigree() on the 16-animal "Track B" pedigree
 ##   that test_solveJointQP.R, test_orderRootSubtrees.R and
 ##   test_positionMatingUnitForest.R shrink (Phase 8; shrinkPedigree() is
-##   copied in Phase 10). A list: args, the arguments those tests pass, and
-##   value, the result's ped.
+##   copied in Phase 10). The first two pass it with its gen column, the third
+##   without, so the file holds both calls: a list of two (withGen,
+##   withoutGen), each a list of args, the arguments, and value, the result's
+##   ped.
 
 ## The fixtures: run inside the child process, where nprcgenekeepr is
 ## loaded and `src` is the unpacked commit. Its functions are called through
@@ -52,6 +54,7 @@ buildFixtures <- function(src) {
              "F", "M", "F", "M", "M"),
     stringsAsFactors = FALSE
   )
+  pedBNoGen <- pedB
   pedB$gen <- ns$findGeneration(pedB$id, pedB$sire, pedB$dam)
   genotypedB <- c(P1 = TRUE, P2 = TRUE, P3 = FALSE, P4 = FALSE, P5 = TRUE,
     P6 = TRUE, C1 = TRUE, C2 = FALSE, C3 = TRUE, C4 = TRUE, C4a = TRUE,
@@ -59,13 +62,15 @@ buildFixtures <- function(src) {
   affectedB <- c(P1 = NA, P2 = NA, P3 = NA, P4 = NA, P5 = NA, P6 = NA,
     C1 = FALSE, C2 = NA, C3 = TRUE, C4 = TRUE, C4a = TRUE, G3 = NA,
     M1 = TRUE, L1 = NA, L2 = FALSE, L3 = TRUE)[pedB$id]
-  args <- list(ped = pedB, genotyped = genotypedB, affected = affectedB,
-               maxBits = 1L)
-  trackBShrunk <- list(
-    args = args,
-    value = ns$shrinkPedigree(pedB, genotypedB, affected = affectedB,
-                              maxBits = 1L)$ped
-  )
+  shrunk <- function(ped) {
+    list(
+      args = list(ped = ped, genotyped = genotypedB, affected = affectedB,
+                  maxBits = 1L),
+      value = ns$shrinkPedigree(ped, genotypedB, affected = affectedB,
+                                maxBits = 1L)$ped
+    )
+  }
+  trackBShrunk <- list(withGen = shrunk(pedB), withoutGen = shrunk(pedBNoGen))
   list(qcdRhesusPed = qcdRhesusPed, trackBShrunk = trackBShrunk)
 }
 
