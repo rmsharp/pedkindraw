@@ -1,7 +1,7 @@
 # Divergence from nprcgenekeepr
 
 pedkindraw's copied functions start as copies of nprcgenekeepr's (plan Phases 6-10). Under the drift rule
-(nprcgenekeepr `docs/planning/standalone-pedigree-package-plan.md` section 5), a change to a copied function in
+(`docs/planning/standalone-pedigree-package-plan.md` section 5), a change to a copied function in
 either repository is made in the other too, in a session of its own there, or recorded here as a row: the function,
 both commits, and why.
 

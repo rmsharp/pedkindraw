@@ -1,4 +1,4 @@
-## Drift check (nprcgenekeepr's standalone-pedigree-package-plan.md section 5,
+## Drift check (docs/planning/standalone-pedigree-package-plan.md section 5,
 ## the drift rule): lists every function copied from nprcgenekeepr whose
 ## arguments or code differ from nprcgenekeepr's, and fails when a difference
 ## has no row in DIVERGENCE.md.

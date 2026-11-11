@@ -1,7 +1,7 @@
-## Fidelity check for the copy slices (nprcgenekeepr's
-## standalone-pedigree-package-plan.md, Phases 6-10 DONE): runs each copied
-## function in pedkindraw and in nprcgenekeepr on the Phase 1 pedigrees and
-## requires identical() results, warnings included.
+## Fidelity check for the copy slices
+## (docs/planning/standalone-pedigree-package-plan.md, Phases 6-10 DONE):
+## runs each copied function in pedkindraw and in nprcgenekeepr on the
+## Phase 1 pedigrees and requires identical() results, warnings included.
 ##
 ## Usage, from the pedkindraw root:
 ##   Rscript tools/compareResultsWithNprcgenekeepr.R [nprcgenekeepr clone]

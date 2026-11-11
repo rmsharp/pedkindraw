@@ -18,9 +18,11 @@ Read and follow `methodology/SESSION_RUNNER.md` step by step. It is your operati
 <!-- budget:protected -->
 This is the **pedkindraw** project, an R package. In Mark's words (S742): "A standalone near-equivalent of kinship2 carrying nprcgenekeepr's enhanced features -- particularly the pedigree drawing, annotation ability, and interactivity; nprcgenekeepr may eventually consume it, but that is NOT the primary goal." It is a sibling product first (ruling R1). Its code starts as a **copy** of nprcgenekeepr's (R8), and nprcgenekeepr is not changed by this work. The primary deliverable is the package on CRAN (plan Phase 17): interactive `visNetwork` pedigree drawings, kinship, pedigree trimming and shrinking, a short pedigree checker and unrelated-set finder, and converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects.
 
-**Governing documents** (they live in nprcgenekeepr, not here):
-- Plan: `/Users/rmsharp/Development/nprcgenekeepr/docs/planning/standalone-pedigree-package-plan.md` — section 2 rulings (R1-R15, C2), section 4 phases (5-17, each with its DONE criteria), section 5 drift rule.
-- API contract: `/Users/rmsharp/Development/nprcgenekeepr/docs/planning/pedkindraw-api-contract.md` — every export with its arguments, return, errors and phase.
+**Governing documents** (in this repository since S5, copied from nprcgenekeepr at its commit `3d262d628`; these copies are the live ones, nprcgenekeepr's are frozen):
+- Plan: `docs/planning/standalone-pedigree-package-plan.md` — section 2 rulings (R1-R15, C2), section 4 phases (5-17, each with its DONE criteria), section 5 drift rule.
+- API contract: `docs/planning/pedkindraw-api-contract.md` — every export with its arguments, return, errors and phase.
+- Evidence they cite: `docs/research/` (the package comparison, the kinship2 gap analysis, the split scoping study), dated records, not edited.
+- Paths inside these five documents name nprcgenekeepr's files, except the five themselves (each file's provenance note, under its title). The move: `docs/planning/planning-handover-plan.md`.
 
 Repository: https://github.com/rmsharp/pedkindraw (public). License: MIT, `LICENSE` naming R. Mark Sharp (R14).
 <!-- /budget:protected -->
@@ -133,7 +135,7 @@ The build-equivalent for this R package (`methodology/SAFEGUARDS.md` "Verify the
 
 ### Plan constraints every session carries
 
-- **nprcgenekeepr is not changed** by this work (R8, plan section 1.3). Sessions here write this repository's `methodology/SESSION_NOTES.md`, `methodology/HANDOFFS.md` and `methodology/CHANGELOG.md`; the plan's status line and its `BACKLOG.md` item in nprcgenekeepr are updated by sessions there.
+- **nprcgenekeepr is not changed** by this work (R8, plan section 1.3). Sessions here write this repository's `methodology/SESSION_NOTES.md`, `methodology/HANDOFFS.md` and `methodology/CHANGELOG.md`; they also update the plan's status block, `methodology/ROADMAP.md` and `methodology/BACKLOG.md` (created in H2) at close-out, and record a new ruling in the plan's section 2 in the session that makes it (`docs/planning/planning-handover-plan.md` section 5). nprcgenekeepr's copies of the plan and contract are frozen at its `3d262d628`; its one duty left is the drift watch in its `BACKLOG.md` (plan section 5, last line).
 - **Copied code (Phases 6-10):** each slice copies its tests first (RED: they fail because the functions are missing), then the code (GREEN). Each copied file's header names its nprcgenekeepr source path and the nprcgenekeepr commit it came from.
 - **Drift rule (plan section 5), from Phase 6 on:** a change to a copied function in either repository is made in the other too (in a session of its own there) or recorded as a row in `DIVERGENCE.md` (function, both commits, why). `tools/compareWithNprcgenekeepr.R` lists every copied function whose arguments or code differ from nprcgenekeepr's, read from the local clone with git (nprcgenekeepr is installed nowhere here); every difference it lists must have a row.
 
