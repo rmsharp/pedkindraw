@@ -196,18 +196,24 @@ manifest existed are not re-judged.
 ```handoff
 session: S7
 date: 2026-11-11
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 6b, copy the 11 functions that repair and trim pedigrees (tests first), IN PROGRESS
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK, 6b), docs/planning/standalone-pedigree-package-plan.md:357 (6b row)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 8
+active_task: plan Phase 6b is DONE, so plan Phase 6 is complete (6a S3, 6b S7); next is Phase 7, kinship and twins (kinship(), checkTwinRelations(), mzTwinGroups()), READY
+what_was_done: claim 38cf048; RED 52c6eb6 fixtures pedSix and qcPed, 0d675f1 and 4ac1889 nine test files copied from nprcgenekeepr baef1e12c (47 tests: the 10 qcStudbook/runQcStudbook/convertDate/removeDuplicates tests left out and listed, R24; sexCodes's value test only, R25); GREEN 5fedd14 Imports data.table, e312c29 59e9778 5cc50f0 f0b4a66 a9257b1 the 11 functions and the constant sexCodes (code unchanged, help text rewritten, addIdRecords not exported), d8ef65e runCases() 22 cases; REFACTOR c71b74a getProbandPedigree inherits ped from trimPedigree again; pushed once (29 commits, to c71b74a), CI run 43052891573 5/5 Status OK on attempt 2 (attempt 1 Ubuntu DNS while installing R; failed jobs re-run); close-out 3da6981 plan (status, R24-R25, 6b row, Done 6b), ROADMAP.md, BACKLOG.md, CLAUDE.md Learning 9; close-out 2 these notes, this receipt, the ledger (not pushed). Mark's picks: Start Phase 6b, Leave out and list, File plus its value test, three TDD gates
+next_steps: Phase 7 (methodology/SESSION_NOTES.md ACTIVE TASK; plan :361 the row, :384 C2; contract :140 kinship(), :127 checkTwinRelations()): Learning 9 survey of R/kinship.R, R/mzTwinGroups.R, R/checkTwinRelations.R at baef1e12c (S7 found kinship() reads sexCodes and mzTwinIdsAbsentMessage); count which of the 8 test_kinship*.R files test only Phase 6-7 functions; pre-RED picker; RED, GREEN with the imports settled (methods; Matrix reached only via asNamespace), runCases() cases incl. the constant; DONE as 6b, push once, read CI; close-out updates plan, ROADMAP.md, BACKLOG.md
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK, Phase 7), docs/planning/standalone-pedigree-package-plan.md:361 (Phase 7 row), docs/planning/standalone-pedigree-package-plan.md:374 (Done 6b), docs/planning/standalone-pedigree-package-plan.md:117 (R24-R25), docs/planning/pedkindraw-api-contract.md:140 (kinship), docs/planning/pedkindraw-api-contract.md:206 (section 5 Phase 7), tools/compareResultsWithNprcgenekeepr.R:57 (cases), tools/compareWithNprcgenekeepr.R:46 (functions only), methodology/BACKLOG.md:11 (Phase 7 item), CLAUDE.md:163 (Learning 9)
+gotchas: kinship() calls methods:: and reaches Matrix only by asNamespace("Matrix"), so Imports: Matrix alone will likely draw the NOTE "Namespace in Imports field not imported from" (a prediction; R16 allows no such NOTE); the drift tool does not compare constants (BACKLOG :48), so mzTwinIdsAbsentMessage needs a runCases() case; the Phase 1 pedigrees reach few repair branches, so check each new case reaches its branch; CI Ubuntu 26.04 runners failed DNS on attempt 1 in S7 and passed on re-run; zsh aborts on an unmatched glob (hit again in S7) and reads a leading = as a command path; lint needs the package loaded; renv installs with the dated repository and rebuild = TRUE; 2 close-out commits unpushed
+runtime_smoke: tests 99 FAIL 0 WARN 0 SKIP 0 PASS 347; lint 0; roxygen leaves NAMESPACE and man/ unchanged; R CMD check --as-cran Status 1 NOTE, the allowed one (Maintainer, New submission), examples OK and each new example prints what its comment says; results tool 264 of 264 identical, exit 0; drift tool 21 same, exit 0; coverage 99.05%; CI run 43052891573 5/5 Status OK, PASS 347 each; quality_ratchet: 2/2 pass · 0 fail · 0 unmeasured · results 28dd5b310acd · manifest 114e971f4452
+changelog_ref: CHANGELOG.md "2026-11-11 · [ad hoc] S7 DONE: plan Phase 6b, the 11 functions that repair and trim pedigrees and the constant sexCodes copied test-first"
+commit: 3da6981
 ```
+Session 7, Claude Opus 5.5, single tier. Predecessor S6 scored 8: every cited line right and the 10 tests' exact
+ranges, which made the picker and the copy script direct; it carried S3's function-only survey (no `sexCodes`) and
+named `pedOne` as a fixture the tests do not use. Self-score 8: + the plan's gap and the handoff's error found from the
+source before RED and put to Mark plainly, every edit asserted by text, three near-empty fidelity cases caught by
+reading the results, the CI failure diagnosed as the runner's without touching code; − the zsh empty-glob trap
+(flagged) still cost a check run, "31 commits" said before counting (29), one throwaway script failed on an escape.
 
 ```handoff
 session: S6

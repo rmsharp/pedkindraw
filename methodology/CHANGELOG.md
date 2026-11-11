@@ -15,6 +15,18 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-11 · [ad hoc] S7 push: `master` to GitHub once at `c71b74a` (29 commits, S3's close-out through S7's REFACTOR), CI green on five jobs after re-running the three Ubuntu jobs
+- **Change:** `git push origin master` (`b332309..c71b74a`); CI run `43052891573` attempt 1 failed on all three Ubuntu jobs while installing R (the Ubuntu 26.04 runners could not resolve Ubuntu's package servers; no check ran), macOS and Windows `Status: OK`; `gh run rerun 43052891573 --failed`, attempt 2: 5/5 `Status: OK`, `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 347 ]` each.
+- **Commit/PR:** none (push and CI re-run); the close-out commits after it are not pushed
+- **Session:** S7 · **Verified:** `gh run view 43052891573` conclusion success, attempt 2; each job's `Status: OK` line read from its log.
+- **Model:** Claude Opus 5.5
+
+### 2026-11-11 · [ad hoc] S7 DONE: plan Phase 6b, the 11 functions that repair and trim pedigrees and the constant sexCodes copied test-first
+- **Change:** from nprcgenekeepr `baef1e12c`, code unchanged: `addParents`, `correctParentSex`, `removeUnknownAnimals`, `hasBothParents`, `getIdsWithOneParent`, `addBackSecondParents`, `removeUninformativeFounders`, `trimPedigree` (exported), `addIdRecords` (not exported, contract section 4.1), `isAddedRecord`, `rbindFill` and the constant `sexCodes` (internal), with help text rewritten (R21); 9 test files, 47 tests; fixtures `pedSix`, `qcPed`; `Imports: data.table`; the results tool's `runCases()` gets the 12 (22 cases, with made-up variants that reach the branches the Phase 1 pedigrees do not). Mark's picks recorded as rulings: R24 (the 10 tests of nprcgenekeepr-only functions left out and listed), R25 (`sexCodes` copied with its value test only). REFACTOR: `R/getProbandPedigree.R` inherits `ped` from `trimPedigree()` again (help page byte-identical). Close-out: the plan (status block, R24-R25, 6b row, Done 6b), `methodology/ROADMAP.md`, `methodology/BACKLOG.md` (6b removed; Phase 7 next; the drift tool misses constants), `CLAUDE.md` Learning 9 (list what copied code reads, not only what it calls).
+- **Commit/PR:** `38cf048` (claim), RED `52c6eb6`, `0d675f1`, `4ac1889`, GREEN `5fedd14`, `e312c29`, `59e9778`, `5cc50f0`, `f0b4a66`, `a9257b1`, `d8ef65e`, REFACTOR `c71b74a`, close-out `3da6981`, close-out 2
+- **Session:** S7 · **Verified:** tests PASS 347 (99 tests); lint 0; roxygen unchanged; `R CMD check --as-cran` 1 NOTE, the allowed one; results tool 264 of 264 `identical()`; drift tool 21 same; coverage 99.05%; CI run `43052891573` 5/5 `Status: OK`; `quality_ratchet: 2/2 pass`.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-11 · [ad hoc] S7 claim (in progress): plan Phase 6b, copy the 11 functions that repair and trim pedigrees, tests first. Mark picked "Start Phase 6b" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `6501ef7` is HEAD; S6's receipt complete, its gate citation matches the results file).
 
 ### 2026-11-11 · [ad hoc] S6 DONE: plan step H2, the copied plan and contract brought up to date, the roadmap filled and the backlog opened
