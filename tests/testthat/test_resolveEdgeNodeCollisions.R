@@ -1,0 +1,1407 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## Copied from nprcgenekeepr tests/testthat/test_resolveEdgeNodeCollisions.R at
+## nprcgenekeepr commit baef1e12c. Changes: each read of a rhesus file through
+## system.file(..., package = "nprcgenekeepr") reads test_path("fixtures", ...)
+## instead (7; the source's lines 449-450, 557-558, 639-640, 815-816, 883-885,
+## 1102-1103, 1393-1394). qcdRhesusPed() reads a saved file
+## (helper-qcdRhesusPed.R). The comments below name nprcgenekeepr's documents,
+## sessions and files.
+
+## Tests for .resolveEdgeNodeCollisions() -- Pedigree Diagram same-row
+## collision-avoidance, Track 2 (issue #160 comment 1's broadened finding;
+## docs/planning/pedigree-diagram-same-row-collision-avoidance-plan.md
+## section 2.2/section 6 Session B). A pure post-processing step, called
+## from makePedigreeMatingLayout() immediately after .addRectilinearWaypoints()
+## (edgeStyle == "rectilinear" only): detects any straight (non-curved)
+## same-row edge whose x-span strictly contains an unrelated node, and
+## repairs it with a small rectilinear "step" detour -- never moving any
+## pre-existing node. The curved duplicate-connector arc gets its own,
+## separate branch (arc-verified roundness selection since S715; a blind
+## smooth.roundness bump before that), since it cannot be rerouted through
+## rectilinear waypoints without destroying its already-shipped arc styling
+## (S577/S468/S469).
+##
+## PRE-RED empirical findings (this session, verified live against current
+## HEAD via pkgload::load_all(), not assumed):
+##
+## 1. D2's dogleg leg is STRUCTURALLY UNREACHABLE via the real pipeline
+##    (re-derived and re-verified S698, 2026-09-17: 0 __proj_ nodes among
+##    the real 375-individual fixture's 1,456 rectilinear nodes, live).
+##    The reachability history matters because this claim went stale once
+##    already: as originally written (Track 2, 2026-08-15) it rested on
+##    Track 4's matingUnits$gen == genOf[[anchor]] invariant plus issue
+##    #143's non-anchor on-row override; the Walker/BJL cutover era then
+##    made the dogleg reachable again (the S668 census measured 56 __proj_
+##    nodes on the real fixture), and Decision 2 spouse duplication (S678,
+##    provisional-order design Phase 1) finally made it structurally dead
+##    by a different mechanism: every unit's resolved mate node (B1
+##    derived point or __dup_) carries the unit's own gen, so the D2
+##    projection can never fire -- 0 on every fixture, pinned as an
+##    absence expectation in test_comparePedigreeStructure.R (:687), and
+##    general, not fixture-specific (the sibling node-count test in
+##    test_addRectilinearWaypoints.R carries the same 0 in its S678
+##    CHANGED note). The "D2-dogleg-leg collision" fixture below is
+##    therefore a hand-built, synthetic (nodes, edges) pair exercising
+##    the general detector defensively -- matching the plan's own
+##    "synthetic fixtures" wording -- not a real-pedigree reproduction.
+## 2. The GitHub issue #160 comment-1 P1/P2/X/A/Y/W/C1/GC/C2 fixture,
+##    reproduced live: neither the D1 bar chain nor any KEPT straight mate
+##    edge actually collides in this specific small fixture (every
+##    coordinate that looks like a collision turns out to be a node
+##    directly graph-adjacent to one of the edge's own endpoints -- e.g.
+##    Y is one of __union_4's own 2 parents, correctly excluded as a
+##    structural member). The ONE real collision in this fixture is the
+##    CURVED duplicate connector (__dup_Y_1 -> Y, smooth.enabled = TRUE)
+##    passing through W -- exactly comment 1's own described defect,
+##    handled by the separate disclosed-heuristic branch, not the
+##    rectilinear jog.
+## 3. A much larger, previously-undocumented finding on the real
+##    375-individual bundled fixture: 150 of 725 straight same-row edges
+##    (20.7%) already collide with >=1 unrelated node -- 3,081 total
+##    edge-obstacle pairs -- overwhelmingly (139/150) ordinary KEPT mate
+##    edges (parent -> union), not D1 bars (5) or D2 (0 -- see finding 1).
+##    Root cause: a founder's mating union can land far from the founder
+##    (Track 6's child-centered finalUnitX), and on a wide multi-founder
+##    colony pedigree (173 gen-0 founders here), that mate edge's straight
+##    line sweeps across every founder positioned in between (max span
+##    ~10,748 units, up to 89 obstacles on one edge). Owner-directed
+##    (AskUserQuestion, this session): fold this into Track 2 unchanged --
+##    the approved bounded-pass/residual-disclosure design already handles
+##    it gracefully, since ONE jog clears an edge's ENTIRE span in a
+##    single step (a parallel offset row), not one obstacle at a time.
+##    Disclosed with real measured counts at close-out, not silently
+##    absorbed into "the fix works" framing.
+
+## ---- test helpers (not exported, local to this file) --------------------
+
+## Independent collision detector (deliberately NOT sharing code with the
+## production .resolveEdgeNodeCollisions()'s own internals) -- so this test
+## file verifies actual geometry, not "the test calls the same logic and
+## agrees with itself." Same predicate as the plan's own section 2.2:
+## strict interior containment on a straight (non-curved) same-row edge,
+## excluding the edge's own 2 endpoints and any node directly graph-adjacent
+## (any edge, either direction) to either endpoint.
+.findEdgeNodeCollisions <- function(nodes, edges) {
+  xOf <- stats::setNames(nodes$x, nodes$id)
+  yOf <- stats::setNames(nodes$y, nodes$id)
+  adj <- new.env(parent = emptyenv())
+  addAdj <- function(a, b) {
+    cur <- adj[[a]]
+    adj[[a]] <- if (is.null(cur)) b else c(cur, b)
+  }
+  for (i in seq_len(nrow(edges))) {
+    addAdj(edges$from[i], edges$to[i])
+    addAdj(edges$to[i], edges$from[i])
+  }
+  byRow <- split(nodes$id, nodes$y)
+  hits <- list()
+  for (i in seq_len(nrow(edges))) {
+    f <- edges$from[i]; t <- edges$to[i]
+    yf <- yOf[[f]]; yt <- yOf[[t]]
+    if (is.null(yf) || is.null(yt) || is.na(yf) || is.na(yt) || yf != yt) next
+    se <- if ("smooth.enabled" %in% names(edges)) edges$smooth.enabled[i] else NA
+    if (!is.na(se) && isTRUE(se)) next  # curved connector, own branch
+    xf <- xOf[[f]]; xt <- xOf[[t]]
+    lo <- min(xf, xt); hi <- max(xf, xt)
+    candidates <- setdiff(byRow[[as.character(yf)]], c(f, t))
+    if (length(candidates) == 0L) next
+    cx <- xOf[candidates]
+    inside <- candidates[cx > lo & cx < hi]
+    if (length(inside) == 0L) next
+    structMembers <- union(adj[[f]], adj[[t]])
+    trueObstacles <- setdiff(inside, structMembers)
+    if (length(trueObstacles) > 0L) {
+      hits[[length(hits) + 1L]] <- data.frame(
+        from = f, to = t, y = yf,
+        obstacle = trueObstacles, stringsAsFactors = FALSE
+      )
+    }
+  }
+  if (length(hits) == 0L) {
+    return(data.frame(from = character(), to = character(), y = numeric(),
+                       obstacle = character(), stringsAsFactors = FALSE))
+  }
+  do.call(rbind, hits)
+}
+
+.expectNoEdgeNodeCollision <- function(nodes, edges) {
+  collisions <- .findEdgeNodeCollisions(nodes, edges)
+  testthat::expect_equal(nrow(collisions), 0L,
+                          info = paste0("unexpected same-row collisions:\n",
+                                        paste(utils::capture.output(print(collisions)),
+                                              collapse = "\n")))
+}
+
+## ---- input validation -----------------------------------------------
+
+test_that(".resolveEdgeNodeCollisions rejects non-data-frame 'nodes'/'edges'", {
+  validNodes <- data.frame(id = "A", x = 0, y = 0, stringsAsFactors = FALSE)
+  validEdges <- data.frame(from = character(), to = character(),
+                            stringsAsFactors = FALSE)
+  expect_error(.resolveEdgeNodeCollisions(list(a = 1), validEdges),
+               "data frame")
+  expect_error(.resolveEdgeNodeCollisions(validNodes, list(a = 1)),
+               "data frame")
+})
+
+## ---- no collisions: pass-through, zero new nodes/edges -------------------
+
+test_that(".resolveEdgeNodeCollisions leaves a collision-free nodes/edges
+           pair unchanged", {
+  nodes <- data.frame(id = c("A", "B", "C"), x = c(0, 100, 200),
+                       y = c(0, 0, 150), stringsAsFactors = FALSE)
+  edges <- data.frame(from = "A", to = "B", dashes = FALSE,
+                       color = "#2B7CE9", width = NA_real_,
+                       smooth.enabled = NA, smooth.type = NA_character_,
+                       smooth.roundness = NA_real_, stringsAsFactors = FALSE)
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+  expect_identical(result$nodes, nodes)
+  expect_identical(result$edges, edges)
+  expect_equal(nrow(result$residuals), 0L)
+})
+
+## ---- synthetic D2-dogleg-leg-shaped collision (hand-built; see PRE-RED
+## finding 1 above -- currently unreachable via the real pipeline under
+## Track 4/#143's shipped invariants, so this exercises the general
+## detector defensively, matching the plan's own "synthetic fixtures"
+## framing) --------------------------------------------------------------
+
+test_that(".resolveEdgeNodeCollisions detects and repairs a D2-dogleg-
+           leg-shaped collision (projection node -> mating-unit node,
+           an unrelated node strictly between them), without moving any
+           pre-existing node", {
+  nodes <- data.frame(
+    id = c("S", "__proj_S_U1", "U1", "Obstacle"),
+    x  = c(0,   0,             200,  100),
+    y  = c(100, 0,             0,    0),
+    stringsAsFactors = FALSE
+  )
+  edges <- data.frame(
+    from = c("S",           "__proj_S_U1"),
+    to   = c("__proj_S_U1", "U1"),
+    dashes = FALSE, color = "#2B7CE9", width = NA_real_,
+    smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  .expectNoEdgeNodeCollision(result$nodes, result$edges)
+  expect_equal(nrow(result$residuals), 0L)
+
+  ## Every pre-existing node's x/y is byte-identical -- Track 2 never
+  ## moves an existing node, only adds new waypoints/reroutes edges.
+  preExisting <- c("S", "__proj_S_U1", "U1", "Obstacle")
+  before <- nodes[match(preExisting, nodes$id), c("x", "y")]
+  after <- result$nodes[match(preExisting, result$nodes$id), c("x", "y")]
+  expect_identical(before, after)
+
+  ## New waypoint nodes were added (the __jog_ prefix), and the original
+  ## colliding edge was replaced.
+  newIds <- setdiff(result$nodes$id, nodes$id)
+  expect_true(length(newIds) > 0L)
+  expect_true(all(grepl("^__jog_", newIds)))
+  expect_false(any(result$edges$from == "__proj_S_U1" &
+                      result$edges$to == "U1"))
+})
+
+## ---- synthetic kept-mate-edge-shaped collision, TWO obstacles on ONE
+## edge (hand-built; verifies a single jog clears the edge's entire span,
+## not one obstacle at a time -- load-bearing for the real 375-fixture's
+## own wide-span mate edges, PRE-RED finding 3 above, some with up to 89
+## simultaneous obstacles) -------------------------------------------------
+
+test_that(".resolveEdgeNodeCollisions repairs a kept-mate-edge-shaped
+           collision with TWO unrelated obstacles using a single jog (one
+           new waypoint pair), not one jog per obstacle", {
+  nodes <- data.frame(
+    id = c("Anchor", "Union", "Obstacle1", "Obstacle2"),
+    x  = c(0,        300,     100,         200),
+    y  = c(0,        0,       0,           0),
+    stringsAsFactors = FALSE
+  )
+  edges <- data.frame(
+    from = "Anchor", to = "Union", dashes = FALSE, color = "#2B7CE9",
+    width = NA_real_, smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  .expectNoEdgeNodeCollision(result$nodes, result$edges)
+  expect_equal(nrow(result$residuals), 0L)
+
+  before <- nodes[, c("id", "x", "y")]
+  after <- result$nodes[match(nodes$id, result$nodes$id), c("id", "x", "y")]
+  expect_identical(before, after)
+
+  newIds <- setdiff(result$nodes$id, nodes$id)
+  expect_equal(length(newIds), 2L)  # one jog (2 waypoints), not 2 (per-obstacle)
+  expect_true(all(grepl("^__jog_", newIds)))
+
+  ## The new waypoint row sits strictly off row y=0 (both obstacles' own
+  ## row), at a small offset -- never a hardcoded yScale.
+  jogRows <- result$nodes[result$nodes$id %in% newIds, ]
+  expect_true(all(jogRows$y != 0))
+  expect_true(all(abs(jogRows$y) < 150))  # a *small* fraction of one gen gap
+})
+
+## ---- new __jog_ waypoint nodes get the same invisible styling as the D1/
+## D2 waypoint nodes .addRectilinearWaypoints() itself creates (found live
+## S648, 2026-08-28 -- BACKLOG.md Housekeeping) ----------------------------
+##
+## .addRectilinearWaypoints()'s own D1 (__drop_/__bar_) and D2 (__proj_)
+## waypoint nodes are explicitly styled invisible (shape = "dot", size = 0,
+## color.background/color.border = fully transparent -- see :1966-1973).
+## The __jog_ waypoint nodes THIS function adds only set id/x/y (:2239-
+## 2242) and rely on .matchColumns() to backfill every other column with
+## NA -- which leaves shape/size/color.background/color.border NA, and
+## vis.js falls back to its OWN default (a filled, full-size circle)
+## rather than nothing. Visually confirmed on the already-committed
+## trackB-nprc-shrunk.png: __jog_2_a lands 13.5 raw-scaled units below P1,
+## close enough to visually fuse with P1's own square.
+
+test_that(".resolveEdgeNodeCollisions styles new __jog_ waypoint nodes
+           invisible, matching .addRectilinearWaypoints()'s own D1/D2
+           waypoint convention exactly (shape = 'dot', size = 0, fully
+           transparent color.background/color.border)", {
+  nodes <- data.frame(
+    id = c("Anchor", "Union", "Obstacle1", "Obstacle2"),
+    x  = c(0,        300,     100,         200),
+    y  = c(0,        0,       0,           0),
+    label = "", shape = "square", title = NA_character_, size = 25L,
+    color.background = "#97C2FC", color.border = "#2B7CE9",
+    stringsAsFactors = FALSE
+  )
+  edges <- data.frame(
+    from = "Anchor", to = "Union", dashes = FALSE, color = "#2B7CE9",
+    width = NA_real_, smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  jogRows <- result$nodes[grepl("^__jog_", result$nodes$id), ]
+  expect_true(nrow(jogRows) > 0L)
+  expect_true(all(jogRows$shape == "dot"))
+  expect_true(all(jogRows$size == 0L))
+  expect_true(all(jogRows$color.background == "rgba(0,0,0,0)"))
+  expect_true(all(jogRows$color.border == "rgba(0,0,0,0)"))
+})
+
+## ---- a genuine structural member is never flagged as an obstacle -------
+## (the exact bug design review found in the "Row Ledger" candidate,
+## section 4 of the plan -- a same-row edge must not flag a node directly
+## adjacent to either of its own endpoints).
+
+test_that(".resolveEdgeNodeCollisions does not flag a node that is
+           directly graph-adjacent to one of the colliding edge's own
+           endpoints (a structural member, not a foreign obstacle)", {
+  nodes <- data.frame(
+    id = c("Anchor", "Union", "OtherParent"),
+    x  = c(0,        200,     100),
+    y  = c(0,        0,       0),
+    stringsAsFactors = FALSE
+  )
+  ## OtherParent is graph-adjacent to Union via her OWN mate edge -- she
+  ## structurally belongs to this exact union, not a foreign intruder.
+  edges <- data.frame(
+    from = c("Anchor",      "OtherParent"),
+    to   = c("Union",       "Union"),
+    dashes = FALSE, color = "#2B7CE9", width = NA_real_,
+    smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+  ## No repair needed -- OtherParent is excluded, so Anchor -> Union is
+  ## not treated as colliding.
+  expect_identical(result$nodes, nodes)
+  expect_identical(result$edges, edges)
+  expect_equal(nrow(result$residuals), 0L)
+})
+
+## ---- curved duplicate connector: arc-verified roundness selection -----
+## History: GitHub issue #160 comment 1's original reproduction exactly
+## isolated the curved-connector-behind-W collision under the OLD
+## algorithm; the Walker/BJL cutover (Phase 3) found that small synthetic
+## fixture inert under the new engine's coordinates and rewrote this test
+## against the real 375-individual bundled fixture (47 -> 59 -> 58 -> 56
+## chord-heuristic residuals across S678/S679/S690, each re-measured
+## live).
+## CHANGED S715 (rewritten): the S714 arc census
+## (docs/audits/PEDIGREE_DRAWING_CURVED_ARC_CENSUS_2026-09-18.md) proved
+## the same-row chord predicate this branch used was 100% false positives
+## (0 of 1,667 flagged pairs truly hit -- the arc bows over its same-row
+## chord obstacles) while BLIND to every true hit (587 arc-inside-symbol
+## events on 117 arcs, mostly cross-row connectors it never examined), and
+## the blind +0.3 roundness bump was net-negative (21 arcs hit at 0.2 but
+## 24 at the shipped 0.5). The branch now scores TRUE arc-disc hits with
+## the census's own exact predicate (quadratic-Bezier via + cubic-solve
+## min distance, ported as internal helpers) and picks, per truly
+## colliding connector, the roundness-ladder step (0.05-0.60 by 0.05)
+## with the fewest true hits (tie -> closest to the kinship2-convention
+## base 0.2, tie -> smaller); "curved-heuristic" residuals now disclose
+## exactly the arcs no ladder step fully clears.
+
+## Local census-replica arc geometry (verbatim from
+## data-raw/pedigreeDrawingErrorCensus.R, the S714-verified transcription
+## of the bundled vis-network.min.js -- max |via(model) - via(live)| =
+## 1.1e-13 px over all 173 curved edges). Deliberately NOT sharing code
+## with the production internals, matching .findEdgeNodeCollisions()
+## above: the test verifies actual geometry, not "the same logic agrees
+## with itself."
+.censusCurvedVia <- function(x1, y1, x2, y2, roundness) {
+  dx <- x2 - x1
+  dy <- y1 - y2
+  len <- sqrt(dx * dx + dy * dy)
+  fac <- 0.5 * roundness + 0.5
+  g <- (atan2(dy, dx) + fac * pi) %% (2L * pi)
+  c(x = x1 + fac * len * sin(g), y = y1 + fac * len * cos(g))
+}
+.censusBezierPointAt <- function(t, p0, v, p1) {
+  cbind(
+    (1L - t)^2L %o% p0[1L] + (2L * t * (1L - t)) %o% v[1L] +
+      t^2L %o% p1[1L],
+    (1L - t)^2L %o% p0[2L] + (2L * t * (1L - t)) %o% v[2L] +
+      t^2L %o% p1[2L]
+  )
+}
+.censusBezierMinDist <- function(cx, cy, p0, v, p1) {
+  a <- v - p0
+  b <- p1 - 2L * v + p0
+  d <- p0 - c(cx, cy)
+  co <- c(sum(d * a), sum(d * b) + 2L * sum(a * a), 3L * sum(a * b),
+          sum(b * b))
+  ts <- c(0L, 1L)
+  if (abs(co[[4L]]) > 0L || abs(co[[3L]]) > 0L || abs(co[[2L]]) > 0L) {
+    r <- polyroot(co)
+    re <- Re(r)[abs(Im(r)) < 1e-7]
+    ts <- c(ts, re[re > 0L & re < 1L])
+  }
+  pts <- .censusBezierPointAt(ts, p0, v, p1)
+  min(sqrt((pts[, 1L] - cx)^2L + (pts[, 2L] - cy)^2L))
+}
+## True arc-disc hit count for edge row i at a given roundness: visible
+## nodes (size > 0) that are neither an endpoint nor graph-adjacent to
+## one, whose disc the modelled painted arc passes strictly inside --
+## the census's own c-arc-inside convention.
+.arcTrueHitCount <- function(nodes, edges, i, roundness) {
+  xOf <- as.list(stats::setNames(nodes$x, nodes$id))
+  yOf <- as.list(stats::setNames(nodes$y, nodes$id))
+  vis <- nodes[!is.na(nodes$size) & nodes$size > 0L, , drop = FALSE]
+  adjPairs <- split(c(edges$to, edges$from), c(edges$from, edges$to))
+  f <- edges$from[[i]]
+  t <- edges$to[[i]]
+  p0 <- c(xOf[[f]], yOf[[f]])
+  p1 <- c(xOf[[t]], yOf[[t]])
+  v <- .censusCurvedVia(p0[1L], p0[2L], p1[1L], p1[2L], roundness)
+  rmax <- max(vis$size)
+  samp <- .censusBezierPointAt(seq(0L, 1L, length.out = 64L), p0, v, p1)
+  cand <- vis[vis$x >= min(samp[, 1L]) - rmax &
+                vis$x <= max(samp[, 1L]) + rmax &
+                vis$y >= min(samp[, 2L]) - rmax &
+                vis$y <= max(samp[, 2L]) + rmax, , drop = FALSE]
+  cand <- cand[!cand$id %in% c(f, t, adjPairs[[f]], adjPairs[[t]]), ,
+               drop = FALSE]
+  if (nrow(cand) == 0L) {
+    return(0L)
+  }
+  dd <- vapply(seq_len(nrow(cand)), function(k) {
+    .censusBezierMinDist(cand$x[[k]], cand$y[[k]], p0, v, p1)
+  }, numeric(1L))
+  sum(dd < cand$size - 1e-9)
+}
+
+test_that(".curvedCwVia reproduces the verified vis-network curvedCW via
+           formula", {
+  ## Hand-derived from the S714-verified transcription, not from the
+  ## implementation: for a horizontal x-ordered pair (0,0) -> (100,0),
+  ## fac = 0.5 * r + 0.5, g = fac * pi, via = fac * 100 * (sin g, cos g).
+  ## r = 0.2: fac 0.6, via = (57.06339098, -18.54101966) -- the arc bows
+  ## UP (canvas y is down). r = 0.5: fac 0.75, via = (53.03300859,
+  ## -53.03300859).
+  v02 <- .curvedCwVia(0, 0, 100, 0, 0.2)
+  expect_equal(unname(v02[1L]), 57.06339098, tolerance = 1e-8)
+  expect_equal(unname(v02[2L]), -18.54101966, tolerance = 1e-8)
+  v05 <- .curvedCwVia(0, 0, 100, 0, 0.5)
+  expect_equal(unname(v05[1L]), 53.03300859, tolerance = 1e-8)
+  expect_equal(unname(v05[2L]), -53.03300859, tolerance = 1e-8)
+  ## Transcription equality against the census replica on a
+  ## non-horizontal pair (cross-row duplicate connectors are the census's
+  ## main true-hit population).
+  expect_equal(.curvedCwVia(10, 200, -50, 80, 0.2),
+               .censusCurvedVia(10, 200, -50, 80, 0.2),
+               tolerance = 1e-12)
+})
+
+test_that(".bezierMinDistTo computes exact point-to-quadratic distances", {
+  p0 <- c(0, 0)
+  v <- c(50, -50)
+  p1 <- c(100, 0)
+  ## The curve is x(t) = 100 t, y(t) = -100 t (1 - t); apex (50, -25).
+  ## Distance from the chord midpoint (50, 0): 25 exactly (stationary
+  ## point at t = 0.5). From the apex itself: 0. From (-30, 40): the
+  ## nearest curve point is the endpoint (0, 0), distance 50.
+  expect_equal(.bezierMinDistTo(50, 0, p0, v, p1), 25, tolerance = 1e-9)
+  expect_equal(.bezierMinDistTo(50, -25, p0, v, p1), 0, tolerance = 1e-9)
+  expect_equal(.bezierMinDistTo(-30, 40, p0, v, p1), 50, tolerance = 1e-9)
+  ## Agreement with the census replica at an asymmetric probe point.
+  expect_equal(.bezierMinDistTo(72, -11, p0, v, p1),
+               .censusBezierMinDist(72, -11, p0, v, p1),
+               tolerance = 1e-12)
+})
+
+test_that(".resolveEdgeNodeCollisions selects arc-verified roundness for
+           curved duplicate connectors on the real 375-individual bundled
+           fixture", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  pos <- .positionMatingUnitForest(ped, forest)
+  direct <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  waypoints <- .addRectilinearWaypoints(direct$nodes, direct$edges, forest,
+                                          pos)
+
+  curved <- waypoints$edges[!is.na(waypoints$edges$smooth.enabled) &
+                                waypoints$edges$smooth.enabled == TRUE, ]
+  ## CHANGED S678 from 102L -- Decision 2 spouse duplication: one curved
+  ## connector per duplicate, 102 -> 170 (test_buildMatingUnitForest.R's
+  ## own updated figure).
+  expect_equal(nrow(curved), 170L)
+  expect_true(all(curved$smooth.roundness == 0.2))
+
+  result <- .resolveEdgeNodeCollisions(waypoints$nodes, waypoints$edges)
+
+  fixedCurved <- result$edges[!is.na(result$edges$smooth.enabled) &
+                                  result$edges$smooth.enabled == TRUE, ]
+  ## CHANGED S678 from 102L -- same cause as the curved count above.
+  expect_equal(nrow(fixedCurved), 170L)
+
+  ## True hits per curved edge, measured with the census-replica exact
+  ## predicate at the shipped (final) roundness and at the base 0.2.
+  finalHits <- vapply(seq_len(nrow(fixedCurved)), function(k) {
+    i <- which(result$edges$from == fixedCurved$from[[k]] &
+                 result$edges$to == fixedCurved$to[[k]])[[1L]]
+    .arcTrueHitCount(result$nodes, result$edges, i,
+                     result$edges$smooth.roundness[[i]])
+  }, integer(1L))
+  baseHits <- vapply(seq_len(nrow(fixedCurved)), function(k) {
+    i <- which(result$edges$from == fixedCurved$from[[k]] &
+                 result$edges$to == fixedCurved$to[[k]])[[1L]]
+    .arcTrueHitCount(result$nodes, result$edges, i, 0.2)
+  }, integer(1L))
+
+  ## Never-worse: no connector's TRUE hit count may exceed its base-0.2
+  ## count -- the property the retired blind +0.3 bump measurably
+  ## violated (S714 census Finding 3: 21 arcs hit at 0.2, 24 at 0.5).
+  expect_true(all(finalHits <= baseHits))
+
+  ## A chord-heuristic false positive keeps the kinship2-convention base
+  ## roundness: __dup_1X40V5_1 -> 1X40V5 (the S690 pin) has ZERO true
+  ## arc hits at 0.2 (its same-row chord obstacle sits under the arc's
+  ## bow), so the new mechanism must leave it untouched.
+  one <- fixedCurved[fixedCurved$from == "__dup_1X40V5_1" &
+                        fixedCurved$to == "1X40V5", ]
+  expect_equal(nrow(one), 1L)
+  expect_equal(one$smooth.roundness, 0.2)
+
+  ## A truly colliding, ladder-clearable connector is cleared:
+  ## __dup_0L5AWR_1 -> 0L5AWR has 6 true hits at 0.2 (S715 probe,
+  ## re-derived here via the replica predicate) and 0 at roundness 0.5 --
+  ## the ladder's fewest-hits pick. Re-measured live, never hand-derived.
+  two <- fixedCurved[fixedCurved$from == "__dup_0L5AWR_1" &
+                        fixedCurved$to == "0L5AWR", ]
+  expect_equal(nrow(two), 1L)
+  expect_equal(two$smooth.roundness, 0.5)
+  twoIdx <- which(fixedCurved$from == "__dup_0L5AWR_1" &
+                    fixedCurved$to == "0L5AWR")
+  expect_equal(finalHits[[twoIdx]], 0L)
+  expect_equal(baseHits[[twoIdx]], 6L)
+
+  ## Residual correspondence: "curved-heuristic" residuals disclose
+  ## exactly the connectors with >= 1 TRUE arc hit at their final
+  ## roundness -- no false positives (the old chord set was 100% false),
+  ## no silent misses.
+  curvedResiduals <- result$residuals[result$residuals$kind ==
+                                          "curved-heuristic", ]
+  resPairs <- paste(curvedResiduals$from, curvedResiduals$to)
+  hitPairs <- paste(fixedCurved$from, fixedCurved$to)[finalHits > 0L]
+  expect_setequal(resPairs, hitPairs)
+  ## CHANGED S715 from 56L -- arc-verified selection replaces the chord
+  ## heuristic: 114 of 170 connectors truly collide at base 0.2, the
+  ## ladder fully clears 42, leaving 72 disclosed residuals (events
+  ## 587 -> 149 on the S715 probe; the census re-run at close-out is the
+  ## standing record). Re-measured live, never hand-derived.
+  expect_equal(nrow(curvedResiduals), 72L)
+  ## Issue #160: the same-row repair leaves no uncorrected straight edge on this
+  ## fixture, only the curved connectors disclosed above.
+  expect_equal(sum(result$residuals$kind == "straight-residual"), 0L)
+
+  ## Every pre-existing node's x/y is byte-identical.
+  before <- waypoints$nodes[, c("id", "x", "y")]
+  after <- result$nodes[match(waypoints$nodes$id, result$nodes$id),
+                          c("id", "x", "y")]
+  expect_identical(before, after)
+})
+
+## ---- full pipeline wiring: makePedigreeMatingLayout() calls
+## .resolveEdgeNodeCollisions() automatically under edgeStyle =
+## "rectilinear" -----------------------------------------------------------
+## Deliberately NOT the comment-1 P1/P2/X/A/Y/W fixture -- PRE-RED finding
+## 2 confirmed that small fixture has ZERO straight-edge collisions (its
+## one real collision is the curved connector, checked separately above),
+## so a wiring test built on it would pass even with .resolveEdgeNode
+## Collisions() entirely unimplemented -- not a real RED test. The real
+## 375-individual bundled fixture genuinely collides (150 edges, PRE-RED
+## finding 3), so checking for __jog_ waypoints in the FULL
+## makePedigreeMatingLayout() pipeline's own output is a real, currently-
+## failing assertion.
+
+test_that("makePedigreeMatingLayout() wires .resolveEdgeNodeCollisions()
+           into its rectilinear edgeStyle branch", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  layout <- withCallingHandlers(
+    makePedigreeMatingLayout(ped, edgeStyle = "rectilinear"),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_true(any(grepl("^__jog_", layout$nodes$id)))
+})
+
+## ---- real 375-individual bundled fixture: large-scale regression check -
+## PRE-RED finding 3 above: 150 of 725 straight same-row edges (20.7%)
+## collide pre-fix, 3,081 total edge-obstacle pairs, overwhelmingly (139/
+## 150) ordinary kept mate edges spanning a wide multi-founder gen-0 row.
+## Owner-directed (AskUserQuestion, this session): fold into Track 2
+## unchanged, disclose the real counts, don't silently claim "zero
+## collisions" if a genuine residual remains after the pass cap -- exact
+## post-fix residual count filled in once GREEN is implemented and
+## measured empirically (same discipline as Track 1's own disclosed 42 ->
+## 9 bar-vs-bar residual count).
+##
+## Walker/BJL cutover (Phase 3, this session): Track 3's parent-span
+## clamp -- the mechanism the prior (105/1,431) baseline was measured
+## against -- is removed entirely. Re-measured by actually running the
+## new engine, never hand-derived: 105 -> 76 colliding edges, 1,431 ->
+## 1,715 obstacle-pairs (fewer distinct edges affected, but each with more
+## obstacles under the new engine's own coordinate distribution). The
+## resolve pass itself still fully clears every collision on this
+## fixture (0 residual, confirmed below).
+##
+## Track 7 Phase 1 CHANGE (docs/planning/pedigree-diagram-track7-mate-
+## spacing-plan.md, S647): 76 -> 104 colliding edges, 1,715 -> 1,748
+## obstacle-pairs -- widening/recentering 34 qualifying mating units moved
+## some mate-line/child edges into paths that now pass near a node they
+## didn't before. Re-confirmed directly (not assumed) that the resolve
+## pass still fully clears every one of these straight-edge collisions to
+## 0 residual -- it just needs more __jog_ waypoints to do so (154 -> 210,
+## test_makePedigreeMatingLayout.R). The separate curved-duplicate-
+## connector heuristic residual (47, unrelated to mating-unit x/y)
+## already existed and is unaffected.
+##
+## Track 7 Phase 2 CHANGE (plan §12, ratified S648, implemented S649):
+## 109 -> 107 colliding edges, 1,762 -> 1,764 obstacle-pairs -- a SMALL
+## NET REDUCTION, not a growth (unlike Phase 1's own effect above). The
+## union-side proximity push (§12.2) does move some unions, but a
+## GREEN-phase correction (excluding a union's own anchor/non-anchor
+## from the push's own occupied-set -- plan §12.11) keeps it more
+## conservative than an unscoped push would be. Re-confirmed directly
+## that the resolve pass still fully clears every one of these to 0
+## residual -- it needs 4 FEWER __jog_ waypoints to do so (220 -> 216,
+## test_makePedigreeMatingLayout.R).
+##
+## Track 7 Phase 3 CHANGE (docs/planning/pedigree-diagram-track7-phase3-
+## child-centering-plan.md, S652 -- issue #166, scoped revert): 107 -> 95
+## colliding edges, 1,764 -> 1,759 obstacle-pairs -- deleting the
+## anchor/mate-midpoint recenter moves 34 qualifying unions' x back
+## toward their own children, closer to the pre-Track-7 baseline. The
+## resolve pass still fully clears every one of these to 0 residual --
+## it needs 24 FEWER __jog_ waypoints to do so (216 -> 192,
+## test_makePedigreeMatingLayout.R). Re-measured by actually running the
+## reverted engine, never hand-derived.
+##
+## Track 7 Phase 4 CHANGE (docs/planning/pedigree-diagram-track7-phase4-
+## union-duplicate-proximity-plan.md §5.3): 95 -> 98 colliding edges,
+## 1,759 -> 1,762 obstacle-pairs -- the new duplicate-side push moves 3
+## duplicates, each introducing one new same-row obstacle edge. The
+## resolve pass still fully clears every one of these to 0 residual --
+## it needs 6 MORE __jog_ waypoints to do so (192 -> 198,
+## test_makePedigreeMatingLayout.R). Re-measured by actually running the
+## fixed engine, never hand-derived.
+
+test_that(".resolveEdgeNodeCollisions dramatically reduces the real
+           375-individual bundled fixture's same-row collision count (100
+           colliding edges / 1,766 obstacle-pairs pre-fix, after the
+           duplicate-vs-unrelated-individual proximity fix), and any
+           residual is disclosed via the residuals data frame, never
+           silently dropped", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  pos <- .positionMatingUnitForest(ped, forest)
+  direct <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
+  waypoints <- .addRectilinearWaypoints(direct$nodes, direct$edges, forest,
+                                          pos)
+
+  baseline <- .findEdgeNodeCollisions(waypoints$nodes, waypoints$edges)
+  baselineEdges <- unique(baseline[, c("from", "to")])
+  ## CHANGED again from 76L/1715L (pre-Track-7) then 104L/1748L (Track 7
+  ## Phase 1's uncapped push) then 109L/1762L (Phase 1's capped-search
+  ## refinement) then 107L/1764L (Phase 2's own union-side push, S649)
+  ## then 95L/1759L (issue #166's scoped revert, S652) then 98L/1762L
+  ## (Track 7 Phase 4's duplicate-side push) then 100L/1766L (the
+  ## duplicate-vs-unrelated-individual proximity fix, docs/planning/
+  ## pedigree-diagram-duplicate-individual-proximity-plan.md, design
+  ## ratified S658, Option B, implementation S660, moves 2 more duplicates
+  ## [TTE0Z7/__dup_MY1AEU_2, M0YNUR/__dup_L31S6S_5], introducing 2 new
+  ## same-row obstacle edges) -- NOW 95L/1761L after the B1-individual-
+  ## vs-unrelated-individual proximity fix (docs/planning/pedigree-
+  ## diagram-b1-individual-proximity-plan.md, design ratified S661,
+  ## implementation S662): this fix REMOVES same-row obstacle edges rather
+  ## than adding them (an unconfirmed-but-plausible ripple the design
+  ## doc's own §6 flagged, matching the same shape of change the
+  ## duplicate-side design's own Impact Analysis found for this exact
+  ## file) -- 5 fewer colliding edges (100 -> 95).
+  ## CHANGED AGAIN to 93L/1758L -- S666's conditional-shift rule
+  ## (mating-union true-midpoint placement, docs/planning/pedigree-
+  ## diagram-parent-symmetric-placement-plan.md) repositions the real
+  ## fixture's qualifying unions/parents, removing 2 more colliding edges
+  ## (95 -> 93, 1761 -> 1758 obstacle-pairs). Re-measured by actually
+  ## running the fixed engine, never hand-derived.
+  ## CHANGED AGAIN to 88L/1751L -- S667's disconnected-component
+  ## separation (docs/planning/pedigree-diagram-disconnected-component-
+  ## separation-plan.md "REVISED DESIGN"): the real fixture's 5 unrelated
+  ## families are laid out as separate blocks, so the 4 small families no
+  ## longer interleave with each other -- 5 fewer colliding edges
+  ## (93 -> 88, 1758 -> 1751 obstacle-pairs), the same 5 jog repairs
+  ## test_makePedigreeMatingLayout.R no longer needs. Re-measured by
+  ## actually running the fixed engine, never hand-derived.
+  ## CHANGED AGAIN to 266L/2549L -- Migration Path Phase 3 (S675, QP
+  ## joint-solver with the owner-ratified kinship2-parity floors,
+  ## docs/planning/pedigree-diagram-joint-qp-solver-plan.md Decision 3 as
+  ## amended): the QP centres every union between its parents (Decision 4
+  ## term 3) instead of on its children's mean, and honours Phase A's
+  ## provisional row order (Decision 1), so mate lines and drop segments
+  ## now span unrelated same-row nodes ~3x as often (88 -> 266 colliding
+  ## edges, 1751 -> 2549 obstacle-pairs). Every one is still resolved by
+  ## this unchanged repair pass (0 same-row residual after repair, census
+  ## class (c1); the 47 curved-connector heuristic residuals are unchanged).
+  ## Re-measured by actually running the amended engine, never hand-derived.
+  ## CHANGED AGAIN to 183L/530L -- Decision 2 spouse duplication (S678,
+  ## provisional-order design Phase 1): every B2-shaped non-anchor now
+  ## renders through a mate-adjacent same-row __dup_ node, so the long
+  ## off-row mate lines that spanned unrelated nodes disappear (266 -> 183
+  ## colliding edges, 2549 -> 530 obstacle-pairs -- most of the S675
+  ## growth undone). Still resolved to 0 same-row residual by this
+  ## unchanged repair pass. Re-measured live.
+  ## CHANGED AGAIN to 165L/495L -- Decision 1 order-consistent seeding
+  ## (S679, provisional-order design Phase 2): locally-contiguous
+  ## anchor--dot--mate ranks shorten the remaining same-row mate lines
+  ## (183 -> 165 colliding edges, 530 -> 495 obstacle-pairs; census
+  ## c1Pre 24 -> 10 edges). Still resolved to 0 same-row residual by
+  ## this unchanged repair pass. Re-measured live.
+  ## CHANGED AGAIN to 95L/192L -- S683 spouse-duplicate term-4 skip
+  ## (owner-ratified amendment to the S675 no-weight-tuning mandate; the
+  ## wDup-on-spouse-duplicates BACKLOG item): marry-in triples no longer
+  ## dragged toward the mate's distant real occurrence, so the long
+  ## same-row mate lines and drop segments the drag created disappear
+  ## (165 -> 95 colliding edges, 495 -> 192 obstacle-pairs). Still
+  ## resolved to 0 same-row residual by this unchanged repair pass.
+  ## Re-measured live.
+  ## CHANGED AGAIN to 93L/205L -- S690 root-subtree ordering pass wired
+  ## in (docs/planning/pedigree-diagram-root-subtree-ordering-plan.md,
+  ## Phase 2: .orderRootSubtrees() reorders each component's rootIds
+  ## before .buildForestChildrenOf()): related founder subtrees sit
+  ## adjacent, clearing 2 colliding edges (95 -> 93, matching the
+  ## census's own jogs 95 -> 93) while the denser packing raises the
+  ## obstacle-PAIR count on the edges that remain (192 -> 205 -- an
+  ## edge-vs-node pair count, not an edge count; order-sensitive,
+  ## disclosed). Still resolved to 0 same-row residual by this
+  ## unchanged repair pass. Re-measured live, never hand-derived.
+  ## CHANGED S859 to 95 edges / 207 pairs -- male-left for duplicate-node
+  ## mates (same 2 extra jog repairs as the census's 186 -> 190 jog nodes).
+  expect_equal(nrow(baselineEdges), 95L)
+  expect_equal(nrow(baseline), 207L)
+
+  result <- .resolveEdgeNodeCollisions(waypoints$nodes, waypoints$edges)
+  afterFix <- .findEdgeNodeCollisions(result$nodes, result$edges)
+
+  ## A dramatic reduction, not a guarantee of zero -- Track 6 section 8's
+  ## own "general crowding is accepted as partial, not absolute" posture.
+  expect_true(nrow(afterFix) < nrow(baseline))
+
+  ## Every genuinely remaining collision is disclosed in the residuals
+  ## data frame -- never silently dropped.
+  if (nrow(afterFix) > 0L) {
+    expect_true(nrow(result$residuals) > 0L)
+  }
+
+  ## No pre-existing (non-__jog_) node's x/y changed.
+  preExistingIds <- waypoints$nodes$id
+  before <- waypoints$nodes[, c("id", "x", "y")]
+  after <- result$nodes[match(preExistingIds, result$nodes$id),
+                          c("id", "x", "y")]
+  expect_identical(before, after)
+
+  ## Every real __jog_ waypoint node on this fixture is styled invisible,
+  ## matching .addRectilinearWaypoints()'s own D1/D2 waypoint convention
+  ## (BACKLOG.md Housekeeping, found S648) -- confirmed end to end, not
+  ## just on the hand-built fixture above.
+  jogRows <- result$nodes[grepl("^__jog_", result$nodes$id), ]
+  expect_true(nrow(jogRows) > 0L)
+  expect_true(all(jogRows$shape == "dot"))
+  expect_true(all(jogRows$size == 0L))
+  expect_true(all(jogRows$color.background == "rgba(0,0,0,0)"))
+  expect_true(all(jogRows$color.border == "rgba(0,0,0,0)"))
+})
+
+## ---- dangling edge-node reference: found live, S630 --------------------
+##
+## Found while verifying the pedigree-diagram.qmd article's screenshots
+## against the current app (BACKLOG.md's own flagged-but-unverified
+## staleness item): the real Shiny app crashed with "Error: subscript out
+## of bounds" rendering the Diagram tab's DEFAULT edge style (Rectilinear)
+## on a realistic focal-animal-trim workflow. Root-caused via a live
+## shinytest2::AppDriver run with full server-log capture to
+## .detectStraight() (a closure inside .resolveEdgeNodeCollisions()):
+##
+##   yOf <- stats::setNames(nodes$y, nodes$id)   # a named ATOMIC vector
+##   ...
+##   yf <- yOf[[f]]
+##   if (is.null(yf) || ...) next                # assumes LIST `[[` semantics
+##
+## `[[` on a named atomic vector THROWS "subscript out of bounds" for an
+## unmatched name -- it does not return NULL the way `[[` on a list would.
+## So whenever an edge's 'from'/'to' references a node id genuinely absent
+## from 'nodes' (which the real ancestors+descendants focal-trim union in
+## modPedigree.R's pedigreeData() reactive can produce), the intended
+## "skip this edge, its row is unknown" guard never fires -- the lookup
+## errors first. No existing test in this file constructs a dangling
+## edge-node reference (every hand-built and real-fixture case above
+## always has every edge's endpoints present in 'nodes'), so this shipped
+## uncaught since .detectStraight()'s introduction (commit c7bdbe4b,
+## issue #160 Track 2).
+
+test_that(".resolveEdgeNodeCollisions does not error when an edge
+           references a node id absent from 'nodes' -- treats the edge as
+           having no determinable row instead of crashing", {
+  nodes <- data.frame(id = c("A", "B"), x = c(0, 100), y = c(0, 0),
+                       stringsAsFactors = FALSE)
+  ## "GHOST" is not in nodes$id -- the exact shape that crashed live.
+  edges <- data.frame(
+    from = c("A", "GHOST"), to = c("B", "A"),
+    dashes = FALSE, color = "#2B7CE9", width = NA_real_,
+    smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+  expect_identical(result$nodes, nodes)
+  expect_equal(nrow(result$edges), 2L)
+})
+
+test_that("makePedigreeMatingLayout() does not error on the real
+           375-individual bundled fixture trimmed to a small focal-
+           animal's ancestors+descendants subset, under
+           edgeStyle = 'rectilinear' (found live, S630: this exact
+           shape -- modPedigree.R:588's own reactive path, focal IDs
+           8LKBV9/FJIB3R/GA204Z -- crashed the Shiny app's Diagram tab
+           under its own default edge style; confirmed via a live
+           shinytest2::AppDriver run with full server-log capture,
+           reproduced here with no Shiny/E2E harness needed)", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  ## The exact ancestors-union-descendants subset modPedigree.R's
+  ## pedigreeData() reactive produces for focal IDs
+  ## 8LKBV9/FJIB3R/GA204Z (trimPedigree() + getDescendantPedigree(),
+  ## unioned) -- hardcoded so this test needs no Shiny/E2E harness.
+  focalTrimIds <- c("5A6DFT", "8DKELJ", "G8EBU9", "8LKBV9", "9VGCCV",
+                     "FJIB3R", "GA204Z", "JE4WD7", "5LG839", "7WQYLL",
+                     "PHCADH", "J85R4L", "P9RX04", "SBKELE", "K9X9T3",
+                     "T8EB3B", "ZPVN1V", "4A4EC5", "K93DCQ", "LDTVKR",
+                     "N0DGS1")
+  trimmed <- ped[ped$id %in% focalTrimIds, ]
+  expect_equal(nrow(trimmed), 21L)
+
+  result <- makePedigreeMatingLayout(trimmed, edgeStyle = "rectilinear")
+  expect_true(is.data.frame(result$nodes))
+  expect_true(is.data.frame(result$edges))
+})
+
+## ---- S682: the S630 guard-class at the 2 sibling passes ----------------
+##
+## S630 fixed the atomic-vector `[[` crash ONLY in .detectStraight(); the
+## straight-repair pass and the curved duplicate-connector pass kept named
+## ATOMIC xOf/yOf vectors, so their own is.null() guards can never fire --
+## `[[` on a named atomic vector THROWS "subscript out of bounds" for an
+## unmatched (or NA_character_) name instead of returning NULL the way
+## `[[` on a list would. Found live S681 (BACKLOG.md Up Next, fixed this
+## session): the app's own strict-lineal focal trim of the twin fixture
+## handed the curved pass a duplicate connector minted with
+## from = NA/to = NA (a dangling polygamous parent's __dup_ whose realId
+## never renders -- see the forest-policy tests in
+## test_buildMatingUnitForest.R), reaching yOf[[NA]] and crashing the
+## Diagram tab under its DEFAULT edge style.
+
+test_that(".resolveEdgeNodeCollisions does not error when a CURVED
+           (smooth.enabled) edge references a node id absent from
+           'nodes', or carries NA endpoints -- the curved pass must skip
+           such an edge exactly as .detectStraight() (S630) does", {
+  nodes <- data.frame(id = c("A", "B", "M"), x = c(0, 100, 50),
+                       y = c(0, 0, 0), stringsAsFactors = FALSE)
+  curved <- function(from, to) data.frame(
+    from = from, to = to, dashes = TRUE, color = NA_character_,
+    width = NA_real_, smooth.enabled = TRUE, smooth.type = "curvedCW",
+    smooth.roundness = 0.2, stringsAsFactors = FALSE)
+  resGhost <- expect_error(
+    .resolveEdgeNodeCollisions(nodes, curved("GHOST", "A")), NA)
+  expect_equal(nrow(resGhost$edges), 1L)
+  resNA <- expect_error(
+    .resolveEdgeNodeCollisions(nodes,
+                                curved(NA_character_, NA_character_)), NA)
+  expect_equal(nrow(resNA$edges), 1L)
+})
+
+test_that("makePedigreeMatingLayout() does not error on the twin fixture
+           trimmed to the 6 declared twins' ancestors+descendants subset
+           under edgeStyle = 'rectilinear' (found live, S681: the app's
+           own qcStudbook/setPopulation/trim pipeline narrowed to the 6
+           declared twins -- vignettes/articles/pedigree-diagram-
+           screenshots.R's exact twin step -- crashed the Diagram tab's
+           DEFAULT edge style with 'subscript out of bounds'; the id
+           subset is hardcoded so this test needs no Shiny/E2E harness,
+           matching the S630 focal-trim precedent above; the trimmed-
+           pedigree shape was this suite's measured blind spot -- the
+           untrimmed fixture does NOT crash, since every parent has an
+           own row there)", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped_twins.csv"),
+    stringsAsFactors = FALSE
+  )
+  trimIds <- c(
+    "0BNY0G", "28XSME", "2DA5K8", "2EHR2W", "306H5X",
+    "36W7XS", "4CHDK1", "5A6DFT", "677E7M", "6WG3MZ",
+    "6XYG9B", "7U5NJD", "8GSXTQ", "8LWCAD", "97Y192",
+    "9RHBJ9", "BD7MNF", "BRI2MW", "BT0V1U", "BYWXJB",
+    "C2YD43", "C3IFT0", "C6E1D9", "D0Z114", "D8FYZV",
+    "DA82MT", "DGLT2F", "DKDP5B", "DPUHBA", "E06FRB",
+    "E2D59U", "E80KU8", "GBANSD", "GZFGFQ", "H16EC4",
+    "H6GMER", "HCY8QM", "HH66K6", "HJ555Y", "HV7LZ3",
+    "I67LRJ", "IX0KKP", "J1SX9Q", "K93DCQ", "KNIBZ7",
+    "KUENM8", "LDTVKR", "LT00CV", "MAW987", "MQ0ZWN",
+    "P844CW", "PQX22G", "QWUKUY", "SLN0TF", "TFSCLL",
+    "TTE0Z7", "TXIF7D", "UCXEK5", "UZCIN5", "WDBGPF",
+    "WUPTU8", "XH80WV", "XL7AVE", "XW778S"
+  )
+  trimmed <- ped[ped$id %in% trimIds, ]
+  expect_equal(nrow(trimmed), 64L)
+  ## LUPGF8 is the dangling polygamous parent: sire at 2 units, no own
+  ## row in the subset -- the exact crash shape.
+  expect_false("LUPGF8" %in% trimmed$id)
+  expect_equal(sum(trimmed$sire == "LUPGF8", na.rm = TRUE), 2L)
+
+  ## suppressWarnings: this dense trim legitimately discloses a few
+  ## unresolved-collision residuals -- not this test's subject.
+  result <- expect_error(
+    suppressWarnings(
+      makePedigreeMatingLayout(trimmed, edgeStyle = "rectilinear")
+    ),
+    NA
+  )
+  expect_true(is.data.frame(result$nodes))
+  expect_true(is.data.frame(result$edges))
+  ## The dangling parent renders NOTHING: no phantom duplicate marker
+  ## (forest policy, S682) and no NA-endpoint connector edge.
+  expect_false(any(grepl("^__dup_LUPGF8", result$nodes$id)))
+  expect_false(any(is.na(result$edges$from) | is.na(result$edges$to)))
+})
+
+## ---- S685: census Finding #3 -- the jog offset must respect disc
+## geometry (PEDIGREE_DRAWING_ERROR_CENSUS_2026-09-02.md Finding #3;
+## BACKLOG.md "the jog offset must be raised above the 25-px symbol
+## radius") ----------------------------------------------------------------
+##
+## PRE-RED empirical findings (S685, measured live via the census harness
+## and a temp option-gated spike, never assumed):
+##
+## 1. All 95 jog corridors on the census fixtures live on the Real 375
+##    fixture (every other fixture: 0 jogs). TWO failure geometries were
+##    measured, not the one the census doc's own recommendation names:
+##    (a) 9 corridors jog off SYMBOL rows at 9/18 px -- inside their own
+##    row's 25-px discs (offset too SMALL); (b) 3 corridors jog off BAR
+##    rows at level 4 (36 px) -- descended to 24 px from the child row's
+##    symbol centres 60 px below (offset too LARGE). Together: the 29
+##    committed c2-horizontal-offset-row census rows.
+## 2. The census doc's literal parameter-level recommendation (raise
+##    jogFraction so level 1 exceeds the radius; 0.45 measured) makes c2
+##    WORSE, 29 -> 161 + 16 new c2-vertical: every bar-row corridor at
+##    level >= 2 descends into the child row's disc band. Rejected on
+##    measurement.
+## 3. The owner-ratified fix (band candidate): per-row disc-aware offset
+##    unit -- floor above the jogged row's own max disc radius (from
+##    nodes$size: individuals 25, union dots 6, waypoints 0), capped so
+##    the row's whole level ladder stays above the nearest disc row
+##    below (uniform compression on overflow, preserving level
+##    distinctness -- the S595 anti-collision property). Measured: c2
+##    29 -> 0, every other census class byte-identical, 0 of 2,343
+##    existing test blocks move, all 5 Diagram-tab screenshot layouts
+##    digest-identical (the only screenshot fixture with jogs -- the
+##    twins trim -- has 8 jog waypoints, all on <= 3-level bar rows,
+##    which the fix deliberately leaves untouched).
+
+## Shared segment-vs-disc checker for the S685 blocks: for every __jog_
+## corridor (the horizontal j_a -> j_b run), count disc nodes (size > 0)
+## whose disc the corridor passes through -- the census c2 predicate
+## (nearest point on the segment closer to the disc centre than its
+## radius), written independently of the production code.
+.jogDiscViolations <- function(nodes) {
+  jogIds <- grep("^__jog_\\d+_a$", nodes$id, value = TRUE)
+  discs <- nodes[!is.na(nodes$size) & nodes$size > 0, , drop = FALSE]
+  violations <- 0L
+  for (ja in jogIds) {
+    jb <- sub("_a$", "_b", ja)
+    ax <- nodes$x[nodes$id == ja]
+    bx <- nodes$x[nodes$id == jb]
+    jy <- nodes$y[nodes$id == ja]
+    lo <- min(ax, bx)
+    hi <- max(ax, bx)
+    for (d in seq_len(nrow(discs))) {
+      cx <- discs$x[d]
+      dx <- if (cx < lo) lo - cx else if (cx > hi) cx - hi else 0
+      dy <- discs$y[d] - jy
+      if (sqrt(dx^2 + dy^2) < discs$size[d]) {
+        violations <- violations + 1L
+      }
+    }
+  }
+  violations
+}
+
+test_that(".resolveEdgeNodeCollisions jogs a symbol-row edge clear of the
+           row's own discs, not merely off its centre line (census
+           Finding #3 geometry (a))", {
+  ## Symbol-row shape: a mate-edge-like span over a size-25 obstacle,
+  ## with a second row 60 px away reproducing the real fixture's
+  ## bar-to-symbol localGap (at HEAD: jogY = 0.15 * 60 = 9, inside the
+  ## obstacle's 25-px disc).
+  nodes <- data.frame(
+    id   = c("Anchor", "Union", "Obstacle", "FarWaypoint"),
+    x    = c(0,        300,     150,        0),
+    y    = c(0,        0,       0,          60),
+    size = c(25,       6,       25,         0),
+    stringsAsFactors = FALSE
+  )
+  edges <- data.frame(
+    from = "Anchor", to = "Union", dashes = FALSE, color = "#2B7CE9",
+    width = NA_real_, smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  newIds <- setdiff(result$nodes$id, nodes$id)
+  expect_true(all(grepl("^__jog_", newIds)))
+  jogRows <- result$nodes[result$nodes$id %in% newIds, ]
+  expect_true(nrow(jogRows) > 0L)
+
+  ## The corridor must clear the 25-px disc it was jogged around: its
+  ## vertical offset from the jogged row must exceed the row's own max
+  ## disc radius. (At HEAD: |9| <= 25 -- the repair satisfies its own
+  ## centre-line predicate but not the symbol, Finding #3's exact words.)
+  expect_true(all(abs(jogRows$y) > 25))
+  expect_identical(.jogDiscViolations(result$nodes), 0L)
+
+  ## Never moves an existing node (Track 2 invariant, unchanged).
+  before <- nodes[, c("id", "x", "y")]
+  after <- result$nodes[match(nodes$id, result$nodes$id), c("id", "x", "y")]
+  expect_identical(before, after)
+})
+
+test_that(".resolveEdgeNodeCollisions keeps a bar-row level ladder above
+           the child row's discs when the ladder would otherwise descend
+           into them (census Finding #3 geometry (b))", {
+  ## Bar-row shape: a radius-0 waypoint row with FOUR mutually-overlapping
+  ## colliding edges (greedy interval colouring -> levels 1..4) and a
+  ## size-25 child row 60 px below -- the real fixture's exact bar-row
+  ## geometry. At HEAD the level-4 corridor lands at 9 * 4 = 36, i.e.
+  ## 24 px from the child centres: inside their discs.
+  nodes <- data.frame(
+    id   = c("A1", "B1", "A2", "B2", "A3", "B3", "A4", "B4",
+             "O",  "Child1", "Child2"),
+    x    = c(0, 400, 50, 350, 100, 300, 150, 250,
+             200, 120, 280),
+    y    = c(0, 0, 0, 0, 0, 0, 0, 0,
+             0, 60, 60),
+    size = c(0, 0, 0, 0, 0, 0, 0, 0,
+             0, 25, 25),
+    stringsAsFactors = FALSE
+  )
+  edges <- data.frame(
+    from = c("A1", "A2", "A3", "A4"),
+    to   = c("B1", "B2", "B3", "B4"),
+    dashes = FALSE, color = "#2B7CE9", width = NA_real_,
+    smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  jogRows <- result$nodes[grepl("^__jog_", result$nodes$id), ]
+  ## 4 corridors (8 waypoints), on 4 DISTINCT offset rows -- the S595
+  ## level-separation property must survive any offset change.
+  expect_equal(nrow(jogRows), 8L)
+  expect_equal(length(unique(jogRows$y)), 4L)
+  expect_true(all(jogRows$y != 0))
+
+  ## No corridor may enter the child row's disc band: every corridor's
+  ## distance to the child row (y = 60) must exceed the 25-px radius.
+  ## (At HEAD: the level-4 corridor at 36 is 24 px from the children.)
+  expect_true(all(60 - jogRows$y > 25))
+  expect_identical(.jogDiscViolations(result$nodes), 0L)
+})
+
+test_that(".resolveEdgeNodeCollisions leaves a <= 3-level bar-row ladder
+           at its established 9/18 px offsets (no cosmetic churn for the
+           corridors Finding #3 does not implicate)", {
+  ## Boundary guard, PASSES at HEAD by design (disclosed): two
+  ## overlapping edges on a radius-0 row with the same 60-px child-row
+  ## band -- the shape of 74 of the real fixture's 95 corridors (levels
+  ## <= 3 on bar rows, no disc contact either direction). The fix must
+  ## not move these: 0.15 * 60 * {1, 2} = {9, 18}, exactly as at HEAD.
+  nodes <- data.frame(
+    id   = c("A1", "B1", "A2", "B2", "O", "Child1"),
+    x    = c(0, 400, 50, 350, 200, 120),
+    y    = c(0, 0, 0, 0, 0, 60),
+    size = c(0, 0, 0, 0, 0, 25),
+    stringsAsFactors = FALSE
+  )
+  edges <- data.frame(
+    from = c("A1", "A2"),
+    to   = c("B1", "B2"),
+    dashes = FALSE, color = "#2B7CE9", width = NA_real_,
+    smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  jogRows <- result$nodes[grepl("^__jog_", result$nodes$id), ]
+  expect_equal(nrow(jogRows), 4L)
+  expect_setequal(unique(jogRows$y), c(9, 18))
+})
+
+test_that("no jog corridor on the real 375-individual fixture's
+           rectilinear layout passes through any disc -- the census c2
+           acceptance metric as a standing suite invariant (Finding #3's
+           own recommendation)", {
+  ped <- utils::read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  layout <- suppressWarnings(suppressMessages(
+    makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")))
+
+  ## The fixture must still be exercising the repair at scale, or this
+  ## guard is vacuous (Learning 737: probe that the subject moves at all).
+  expect_true(sum(grepl("^__jog_\\d+_a$", layout$nodes$id)) > 50L)
+
+  ## At HEAD: 38 corridor-disc violations -- the committed census CSV's
+  ## 29 c2-horizontal-offset-row pairs (10 own-row at 9/18 px, 19
+  ## child-row at 24 px) PLUS 9 own-endpoint attachment cases this
+  ## checker deliberately also counts (a 9/18-px corridor sits inside
+  ## its own anchor's disc too; the census's pair exclusion skips
+  ## those). Both classes clear once the offset exceeds the disc
+  ## radius. The repair must clear the DISC, not just the centre line.
+  expect_identical(.jogDiscViolations(layout$nodes), 0L)
+})
+
+## ---- S696: ascender-stub cosmetic -- a corridor rejoining an invisible
+## bar point whose bar-level ink is entirely rerouted leaves the kid's
+## descent top ending in mid-air (BACKLOG.md "Ascender-stub cosmetic on
+## jog-repair corridors", found S679, owner visual gate; approach
+## "direct rejoin" ratified S696 via AskUserQuestion) --------------------
+##
+## PRE-RED empirical findings (S696, measured live via a temporary
+## direct-edit spike against HEAD, reverted before RED -- never assumed):
+##
+## 1. On the real 375-individual fixture, 84 corridors rejoin at a
+##    __bar_<kid> point with NO remaining bar-level edge and NO edge
+##    above: the riser [barY, corY] and the descent top [barY, corY] are
+##    collinear duplicates, so the drawn ink climbs 9-27 px above the
+##    corridor and ends mid-air at the bar row (crop-verified at
+##    __bar_J33BE0). A __drop_ rejoin never dangles -- the union descent
+##    continues upward from bar level (crop-verified), so the elbow is
+##    continuous.
+## 2. S679's other named candidate ("suppress the riser when the bar has
+##    zero width") is refuted by measurement: a zero-width bar has an
+##    empty interior span (lo == hi), so .detectStraight() can never flag
+##    it -- all 84 stubs sit on nonzero-width bars.
+## 3. The ratified fix (direct rejoin): when a rerouted edge's endpoint
+##    is INVISIBLE (size 0/NA) and its only surviving edge is a single
+##    strict-vertical DOWNWARD edge to a non-jog node (its kid), the
+##    corridor connects to the kid directly; the redundant riser and
+##    descent are dropped and the bar point is left in place,
+##    unreferenced (never moved -- the Track 2 invariant is untouched).
+##    Spike-measured: stubs 84 -> 0; nodes 1,456 unchanged with zero
+##    coordinate movement; edges 1,569 -> 1,485 (-84, one per stub);
+##    census findings CSV byte-identical to the S690 HEAD-engine
+##    baseline (all six classes); the S685 disc-offset pins above pass
+##    unchanged (their endpoints are degree-0 after the drop, which the
+##    bypass condition deliberately excludes).
+## 4. Segment DIRECTION is load-bearing for the D-2 invariance walker
+##    (test_comparePedigreeStructure.R): a terminal -> waypoint edge
+##    reads as a parent-side attachment, so every kid-adjacent segment
+##    must run waypoint -> kid. With only the FROM side bypassed the
+##    corridor is emitted in reversed orientation (t -> j2, j2 -> j1,
+##    j1 -> kid) so every jog node keeps exactly 1 in + 1 out where
+##    possible; with BOTH sides bypassed the emission is (j1 -> kidF,
+##    j1 -> j2, j2 -> kidT).
+
+## Test-local checker for the standing invariant: a dangling ascender
+## stub is a non-jog INVISIBLE node with at least one corridor
+## attachment, no surviving same-row (bar-level) non-jog edge, and no
+## surviving non-jog edge above it -- written independently of the
+## production code (the S696 probe's own predicate).
+.danglingAscenderStubs <- function(nodes, edges) {
+  yOf <- as.list(stats::setNames(nodes$y, nodes$id))
+  sizeVec <- if ("size" %in% names(nodes)) as.numeric(nodes$size) else
+    rep(0.0, nrow(nodes))
+  sizeVec[is.na(sizeVec)] <- 0.0
+  invisibleIds <- nodes$id[sizeVec == 0 & !grepl("^__jog_", nodes$id)]
+  stubs <- 0L
+  for (p in invisibleIds) {
+    idx <- which(edges$from == p | edges$to == p)
+    if (length(idx) == 0L) next
+    others <- ifelse(edges$from[idx] == p, edges$to[idx], edges$from[idx])
+    jogs <- sum(grepl("^__jog_", others))
+    if (jogs == 0L) next
+    nonJog <- others[!grepl("^__jog_", others)]
+    py <- yOf[[p]]
+    oy <- unlist(lapply(nonJog, function(o) yOf[[o]]))
+    horiz <- sum(!is.na(oy) & oy == py)
+    up <- sum(!is.na(oy) & oy < py)
+    if (horiz == 0L && up == 0L) stubs <- stubs + 1L
+  }
+  stubs
+}
+
+.s696Edges <- function(from, to) {
+  data.frame(
+    from = from, to = to, dashes = FALSE, color = "#2B7CE9",
+    width = NA_real_, smooth.enabled = NA, smooth.type = NA_character_,
+    smooth.roundness = NA_real_, stringsAsFactors = FALSE
+  )
+}
+
+.s696HasEdge <- function(edges, f, t) {
+  any(edges$from == f & edges$to == t)
+}
+
+test_that(".resolveEdgeNodeCollisions rejoins a corridor directly at the
+           kid when the invisible bar point's bar-level ink is entirely
+           rerouted (ascender-stub fix, TO side)", {
+  ## Single-kid offset-union D1 shape: the union sits 200 px left of its
+  ## only child, so the chain edge Drop -> Bar has nonzero width; an
+  ## unrelated waypoint sits inside the span. Rows 0/90/150 reproduce
+  ## the real fixture's bar-row geometry (localGap 60 -> jogY 9,
+  ## corridor at y = 99).
+  nodes <- data.frame(
+    id   = c("Union", "Drop", "Bar", "Kid", "Obst"),
+    x    = c(0,       0,      200,   200,   100),
+    y    = c(0,       90,     90,    150,   90),
+    size = c(6,       0,      0,     25,    0),
+    stringsAsFactors = FALSE
+  )
+  edges <- .s696Edges(
+    from = c("Union", "Drop", "Bar"),
+    to   = c("Drop",  "Bar",  "Kid")
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  jogRows <- result$nodes[grepl("^__jog_", result$nodes$id), ]
+  expect_equal(nrow(jogRows), 2L)
+  expect_true(all(jogRows$y == 99))
+
+  ## The Drop side keeps its riser (its one surviving edge goes UP to
+  ## the union, so the elbow is continuous ink -- never bypassed); the
+  ## Bar side is bypassed: the corridor connects straight to Kid.
+  e <- result$edges
+  expect_true(.s696HasEdge(e, "Drop", "__jog_1_a"))
+  expect_true(.s696HasEdge(e, "__jog_1_a", "__jog_1_b"))
+  expect_true(.s696HasEdge(e, "__jog_1_b", "Kid"))
+  expect_false(.s696HasEdge(e, "Bar", "Kid"))
+  expect_false(any(e$from == "Bar" | e$to == "Bar"))
+
+  ## The bar point is left in place, unreferenced -- never moved,
+  ## never removed (Track 2 invariant unchanged).
+  before <- nodes[, c("id", "x", "y")]
+  after <- result$nodes[match(nodes$id, result$nodes$id), c("id", "x", "y")]
+  expect_identical(before, after)
+  expect_identical(nrow(result$residuals), 0L)
+})
+
+test_that(".resolveEdgeNodeCollisions emits the corridor in reversed
+           orientation when only the FROM side is bypassed, keeping
+           every kid-adjacent segment waypoint -> kid (ascender-stub
+           fix, FROM side)", {
+  ## Mirror image of the block above: the bar point is the chain edge's
+  ## FROM endpoint (left of the drop), so the bypass lands on the f
+  ## side. The kid-adjacent segment must still run waypoint -> kid --
+  ## the D-2 walker reads terminal -> waypoint as a PARENT-side
+  ## attachment, so a Kid -> jog segment would misclassify the kid as
+  ## a parent (PRE-RED finding 4).
+  nodes <- data.frame(
+    id   = c("Union", "Drop", "Bar", "Kid", "Obst"),
+    x    = c(200,     200,    0,     0,     100),
+    y    = c(0,       90,     90,    150,   90),
+    size = c(6,       0,      0,     25,    0),
+    stringsAsFactors = FALSE
+  )
+  edges <- .s696Edges(
+    from = c("Union", "Bar", "Bar"),
+    to   = c("Drop",  "Drop", "Kid")
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  jogRows <- result$nodes[grepl("^__jog_", result$nodes$id), ]
+  expect_equal(nrow(jogRows), 2L)
+  expect_true(all(jogRows$y == 99))
+
+  e <- result$edges
+  expect_true(.s696HasEdge(e, "Drop", "__jog_1_b"))
+  expect_true(.s696HasEdge(e, "__jog_1_b", "__jog_1_a"))
+  expect_true(.s696HasEdge(e, "__jog_1_a", "Kid"))
+  expect_false(any(e$from == "Kid"))
+  expect_false(any(e$from == "Bar" | e$to == "Bar"))
+
+  before <- nodes[, c("id", "x", "y")]
+  after <- result$nodes[match(nodes$id, result$nodes$id), c("id", "x", "y")]
+  expect_identical(before, after)
+})
+
+test_that(".resolveEdgeNodeCollisions bypasses both endpoints of one
+           corridor independently, dropping a shared endpoint's descent
+           exactly once (ascender-stub fix, BOTH sides)", {
+  ## One family whose union sits right of both kids: chain BarA -> BarB
+  ## -> Drop with an unrelated obstacle inside EACH chain segment, so
+  ## both segments jog at the same level (spans touch at x = 150) and
+  ## BarA and BarB both lose all bar-level ink. Emission (PRE-RED
+  ## finding 4): both-bypassed corridor 1 is (j1 -> KidA, j1 -> j2,
+  ## j2 -> KidB); f-only-bypassed corridor 2 is reversed
+  ## (Drop -> j2, j2 -> j1, j1 -> KidB).
+  nodes <- data.frame(
+    id   = c("Union", "Drop", "BarA", "KidA", "BarB", "KidB",
+             "Obst1", "Obst2"),
+    x    = c(300,     300,    0,      0,      150,    150,
+             75,      225),
+    y    = c(0,       90,     90,     150,    90,     150,
+             90,      90),
+    size = c(6,       0,      0,      25,     0,      25,
+             0,       0),
+    stringsAsFactors = FALSE
+  )
+  edges <- .s696Edges(
+    from = c("Union", "BarA", "BarB", "BarA", "BarB"),
+    to   = c("Drop",  "BarB", "Drop", "KidA", "KidB")
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  jogRows <- result$nodes[grepl("^__jog_", result$nodes$id), ]
+  expect_equal(nrow(jogRows), 4L)
+  expect_true(all(jogRows$y == 99))
+
+  e <- result$edges
+  ## Corridor 1 (BarA -> BarB, both bypassed):
+  expect_true(.s696HasEdge(e, "__jog_1_a", "KidA"))
+  expect_true(.s696HasEdge(e, "__jog_1_a", "__jog_1_b"))
+  expect_true(.s696HasEdge(e, "__jog_1_b", "KidB"))
+  ## Corridor 2 (BarB -> Drop, FROM side bypassed, reversed):
+  expect_true(.s696HasEdge(e, "Drop", "__jog_2_b"))
+  expect_true(.s696HasEdge(e, "__jog_2_b", "__jog_2_a"))
+  expect_true(.s696HasEdge(e, "__jog_2_a", "KidB"))
+  ## Both bar points fully unreferenced; each descent dropped once.
+  expect_false(any(e$from %in% c("BarA", "BarB") |
+                     e$to %in% c("BarA", "BarB")))
+  expect_false(any(e$from %in% c("KidA", "KidB")))
+
+  before <- nodes[, c("id", "x", "y")]
+  after <- result$nodes[match(nodes$id, result$nodes$id), c("id", "x", "y")]
+  expect_identical(before, after)
+})
+
+test_that(".resolveEdgeNodeCollisions keeps the riser when the bar point
+           retains other bar-level ink (boundary guard -- PASSES at HEAD
+           by design, disclosed)", {
+  ## BarA keeps its clean chain segment to BarB, so its descent top
+  ## connects to surviving bar ink at bar level -- no mid-air ending,
+  ## no bypass. The riser and the descent must both survive.
+  nodes <- data.frame(
+    id   = c("Union", "Drop", "BarA", "KidA", "BarB", "KidB", "Obst"),
+    x    = c(0,       0,      200,    200,    300,    300,    100),
+    y    = c(0,       90,     90,     150,    90,     150,    90),
+    size = c(6,       0,      0,      25,     0,      25,     0),
+    stringsAsFactors = FALSE
+  )
+  edges <- .s696Edges(
+    from = c("Union", "Drop", "BarA", "BarA", "BarB"),
+    to   = c("Drop",  "BarA", "BarB", "KidA", "KidB")
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  e <- result$edges
+  expect_true(.s696HasEdge(e, "__jog_1_b", "BarA"))
+  expect_true(.s696HasEdge(e, "BarA", "KidA"))
+  expect_false(.s696HasEdge(e, "__jog_1_b", "KidA"))
+  expect_true(.s696HasEdge(e, "BarA", "BarB"))
+})
+
+test_that(".resolveEdgeNodeCollisions never bypasses a VISIBLE endpoint,
+           even when it has exactly one surviving downward vertical
+           (boundary guard -- PASSES at HEAD by design, disclosed)", {
+  ## A real individual's disc IS the connection target: rerouting the
+  ## corridor past it to whatever hangs below would detach the drawn
+  ## line from the symbol. Size 25 must veto the bypass even though
+  ## the degree/direction conditions match.
+  nodes <- data.frame(
+    id   = c("RealP", "UnionU", "Obst", "Below"),
+    x    = c(0,       300,      150,    0),
+    y    = c(0,       0,        0,      150),
+    size = c(25,      6,        25,     0),
+    stringsAsFactors = FALSE
+  )
+  edges <- .s696Edges(
+    from = c("RealP", "RealP"),
+    to   = c("UnionU", "Below")
+  )
+  result <- .resolveEdgeNodeCollisions(nodes, edges)
+
+  e <- result$edges
+  expect_true(.s696HasEdge(e, "RealP", "__jog_1_a"))
+  expect_true(.s696HasEdge(e, "RealP", "Below"))
+  expect_false(.s696HasEdge(e, "__jog_1_a", "Below"))
+})
+
+test_that("no dangling ascender stub survives on the real 375-individual
+           fixture's rectilinear layout -- the S696 stub predicate as a
+           standing suite invariant", {
+  ped <- utils::read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  layout <- suppressWarnings(suppressMessages(
+    makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")))
+
+  ## The fixture must still be exercising the repair at scale, or this
+  ## guard is vacuous (Learning 737: probe that the subject moves at all).
+  expect_true(sum(grepl("^__jog_\\d+_a$", layout$nodes$id)) > 50L)
+
+  ## At HEAD: 84 -- every one an invisible __bar_<kid> point whose
+  ## bar-level ink was fully rerouted below while its kid descent still
+  ## anchors at bar level (PRE-RED finding 1).
+  expect_identical(.danglingAscenderStubs(layout$nodes, layout$edges), 0L)
+})
