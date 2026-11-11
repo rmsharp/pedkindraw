@@ -16,6 +16,8 @@
 ^CLAUDE.*\.md$
 ^scratchpad$
 ^\.quality-gates-results\.json$
+# Developer scripts: test fixtures, drift and fidelity checks.
+^tools$
 # Build and check output, and testthat debris from interactive runs.
 ^pedkindraw_.*\.tar\.gz$
 ^pedkindraw\.Rcheck$
