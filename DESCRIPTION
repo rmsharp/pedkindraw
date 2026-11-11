@@ -15,7 +15,10 @@ BugReports: https://github.com/rmsharp/pedkindraw/issues
 Depends:
     R (>= 4.1.0)
 Imports:
-    data.table
+    data.table,
+    Matrix,
+    methods,
+    stats
 Suggests:
     kinship2,
     mockery,
