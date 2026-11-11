@@ -232,6 +232,21 @@ runCases <- function(ns, dataDir) {
           )
         )
       },
+      kinshipOneParent = function() {
+        ## The pedigrees hold almost no animal with one known parent (smallPed
+        ## one, sire known), so a variant of kin reaches kinship()'s branches
+        ## for a missing sire and a missing dam: every third dam unknown, and
+        ## every third sire from the second animal on.
+        sire <- kin$sire
+        dam <- kin$dam
+        dam[seq(1L, nrow(kin), by = 3L)] <- NA
+        sire[seq(2L, nrow(kin), by = 3L)] <- NA
+        gen <- fn("findGeneration")(kin$id, sire, dam)
+        list(
+          fn("kinship")(kin$id, sire, dam, gen),
+          fn("kinship")(kin$id, sire, dam, gen, chrtype = "x", sex = kin$sex)
+        )
+      },
       kinshipTwins = function() {
         list(
           kinOf(twinRelations = twins),
