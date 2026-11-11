@@ -2,10 +2,9 @@
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/getProbandPedigree.R at nprcgenekeepr commit
 ## baef1e12c. Changes: help text only; the function's code is unchanged. The
-## 'ped' argument's description is written out (trimPedigree()'s words)
-## instead of inherited from trimPedigree(), which pedkindraw does not have
-## yet, and the example types its own pedigree instead of using
-## nprcgenekeepr's datasets and getPotentialSires().
+## example types its own pedigree instead of using nprcgenekeepr's datasets
+## and getPotentialSires(). (From S3 to S7 the 'ped' argument's description
+## was written out here, until trimPedigree() was copied in Phase 6b.)
 
 #' Reduce a pedigree to probands and their ancestors
 #'
@@ -18,9 +17,7 @@
 #'
 #' @param probands a character vector with the list of animals whose ancestors
 #' should be included in the final pedigree.
-#' @param ped datatable that is the \code{Pedigree}. It contains pedigree
-#' information. The fields \code{id}, \code{sire} and \code{dam} are
-#' required.
+#' @inheritParams trimPedigree
 #' @return A reduced pedigree.
 #'
 #' @export
