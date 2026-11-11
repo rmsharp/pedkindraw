@@ -1,5 +1,21 @@
 # Plan: a kinship2-like standalone pedigree package built from nprcgenekeepr's code
 
+> **Copied into pedkindraw (pedkindraw S5, 2026-11-11).** Copied unchanged from nprcgenekeepr's
+> `docs/planning/standalone-pedigree-package-plan.md` at nprcgenekeepr commit `3d262d628`,
+> by step H1 of `docs/planning/planning-handover-plan.md`.
+> From here on this copy is the live one: pedkindraw's sessions follow it and update it, and nprcgenekeepr's
+> copy is frozen. The status block below is still the one written at the freeze, from nprcgenekeepr's side
+> ("This copy is not updated here again" means nprcgenekeepr's copy); step H2 of the hand-over plan rewrites
+> it here.
+> **Paths in this file name nprcgenekeepr's files** (`R/`, `tests/`, `BACKLOG.md`, `methodology/`,
+> `tools/pedigreeComparison/` and so on), except these five, copied into pedkindraw at the same paths:
+> `docs/planning/standalone-pedigree-package-plan.md`, `docs/planning/pedkindraw-api-contract.md`,
+> `docs/research/pedigree-package-comparison-2026-11.md`,
+> `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` and
+> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`.
+> A line number cited in one of these five is its line in nprcgenekeepr; in pedkindraw's copy, every line below
+> the title sits lower by the length of that copy's note (this one adds 16 lines, counting the blank line above).
+
 **Date:** 2026-11-02 · **Session:** S1121 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 §Planning Sessions; `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`). No package code was written or
 changed. **Status:** plan approved in scope by Mark's rulings below; Phase 1 DONE (S1122-S1123,

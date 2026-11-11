@@ -1,5 +1,18 @@
 # Pedigree package comparison (2026-11): Part A, computation; Part B, drawing
 
+> **Copied into pedkindraw (pedkindraw S5, 2026-11-11).** Copied unchanged from nprcgenekeepr's
+> `docs/research/pedigree-package-comparison-2026-11.md` at nprcgenekeepr commit `3d262d628`,
+> by step H1 of `docs/planning/planning-handover-plan.md`.
+> It is a dated record: it is not edited, in pedkindraw or in nprcgenekeepr.
+> **Paths in this file name nprcgenekeepr's files** (`R/`, `tests/`, `BACKLOG.md`, `methodology/`,
+> `tools/pedigreeComparison/` and so on), except these five, copied into pedkindraw at the same paths:
+> `docs/planning/standalone-pedigree-package-plan.md`, `docs/planning/pedkindraw-api-contract.md`,
+> `docs/research/pedigree-package-comparison-2026-11.md`,
+> `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` and
+> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`.
+> A line number cited in one of these five is its line in nprcgenekeepr; in pedkindraw's copy, every line below
+> the title sits lower by the length of that copy's note (this one adds 13 lines, counting the blank line above).
+
 **Date:** 2026-11-02 to 2026-11-03 · **Sessions:** S1122 (sections 1-6), S1123 (section 7, findings 11-17), S1124
 (section 8, findings 18-24), S1125 (sections 9-10, findings 25-29), S1126 (section 11, findings 30-35) · **Plan:**
 `docs/planning/standalone-pedigree-package-plan.md`, Phases 1-3 (rulings R4-R7).

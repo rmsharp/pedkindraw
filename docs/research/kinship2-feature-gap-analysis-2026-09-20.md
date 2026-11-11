@@ -1,5 +1,18 @@
 # kinship2 Feature-Gap Analysis — nprcgenekeepr Coverage of kinship2's Exported Surface
 
+> **Copied into pedkindraw (pedkindraw S5, 2026-11-11).** Copied unchanged from nprcgenekeepr's
+> `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` at nprcgenekeepr commit `3d262d628`,
+> by step H1 of `docs/planning/planning-handover-plan.md`.
+> It is a dated record: it is not edited, in pedkindraw or in nprcgenekeepr.
+> **Paths in this file name nprcgenekeepr's files** (`R/`, `tests/`, `BACKLOG.md`, `methodology/`,
+> `tools/pedigreeComparison/` and so on), except these five, copied into pedkindraw at the same paths:
+> `docs/planning/standalone-pedigree-package-plan.md`, `docs/planning/pedkindraw-api-contract.md`,
+> `docs/research/pedigree-package-comparison-2026-11.md`,
+> `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` and
+> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`.
+> A line number cited in one of these five is its line in nprcgenekeepr; in pedkindraw's copy, every line below
+> the title sits lower by the length of that copy's note (this one adds 13 lines, counting the blank line above).
+
 > **Status as of 2026-10-02 (S870):** Issues #131-#137 and #143-#145 named here are closed, and the BACKLOG standalone-package item's prep steps D-1, D-2 and D-3 are done (S744-S746), so "queued" or "remain" wording below is out of date. The `file:line` cites (`R/`, `BACKLOG.md`, `NEWS.Rmd`) are as of 2026-09-20 and mostly land elsewhere now; find the function by name instead. The body below is the dated record as written; it was not edited.
 
 **Date:** 2026-09-20 · **Session:** S741 · **Type:** capability-gap analysis (step 1 of the

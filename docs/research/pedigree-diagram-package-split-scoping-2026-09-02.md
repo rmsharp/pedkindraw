@@ -1,5 +1,18 @@
 # Scoping: factoring the pedigree-diagram layout code into a separate R package
 
+> **Copied into pedkindraw (pedkindraw S5, 2026-11-11).** Copied unchanged from nprcgenekeepr's
+> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md` at nprcgenekeepr commit `3d262d628`,
+> by step H1 of `docs/planning/planning-handover-plan.md`.
+> It is a dated record: it is not edited, in pedkindraw or in nprcgenekeepr.
+> **Paths in this file name nprcgenekeepr's files** (`R/`, `tests/`, `BACKLOG.md`, `methodology/`,
+> `tools/pedigreeComparison/` and so on), except these five, copied into pedkindraw at the same paths:
+> `docs/planning/standalone-pedigree-package-plan.md`, `docs/planning/pedkindraw-api-contract.md`,
+> `docs/research/pedigree-package-comparison-2026-11.md`,
+> `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` and
+> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`.
+> A line number cited in one of these five is its line in nprcgenekeepr; in pedkindraw's copy, every line below
+> the title sits lower by the length of that copy's note (this one adds 13 lines, counting the blank line above).
+
 > **Status as of 2026-10-02 (S870):** The "STANDING TOP PRIORITY (S643)" described here was retired by the owner's sign-off on 2026-09-17 (S699), so revisit condition 1 is met in its first half. Prep steps D-1, D-2 and D-3 (Option D) are DONE (S744-S746). The live revisit conditions are in the BACKLOG standalone-package item (disposition S738 and S742). The body below is the dated record as written; it was not edited.
 
 **Date:** 2026-09-02 (Session 667)

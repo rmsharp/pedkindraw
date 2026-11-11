@@ -1,5 +1,19 @@
 # pedkindraw: API contract (standalone pedigree package, plan Phase 4)
 
+> **Copied into pedkindraw (pedkindraw S5, 2026-11-11).** Copied unchanged from nprcgenekeepr's
+> `docs/planning/pedkindraw-api-contract.md` at nprcgenekeepr commit `3d262d628`,
+> by step H1 of `docs/planning/planning-handover-plan.md`.
+> From here on this copy is the live one: pedkindraw's sessions update it (step H2 of the hand-over plan first),
+> and nprcgenekeepr's copy is frozen.
+> **Paths in this file name nprcgenekeepr's files** (`R/`, `tests/`, `BACKLOG.md`, `methodology/`,
+> `tools/pedigreeComparison/` and so on), except these five, copied into pedkindraw at the same paths:
+> `docs/planning/standalone-pedigree-package-plan.md`, `docs/planning/pedkindraw-api-contract.md`,
+> `docs/research/pedigree-package-comparison-2026-11.md`,
+> `docs/research/kinship2-feature-gap-analysis-2026-09-20.md` and
+> `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md`.
+> A line number cited in one of these five is its line in nprcgenekeepr; in pedkindraw's copy, every line below
+> the title sits lower by the length of that copy's note (this one adds 14 lines, counting the blank line above).
+
 **Date:** 2026-11-03 · **Session:** S1128 · **Type:** design session
 (`methodology/workstreams/ARCHITECTURE_WORKSTREAM.md` §Interface Catalog). No package code was written or changed.
 **Plan:** `docs/planning/standalone-pedigree-package-plan.md` (rulings R1-R9; this session adds R10-R13).
