@@ -41,6 +41,19 @@ runCases <- function(ns, dataDir) {
     ped <- utils::read.csv(file, colClasses = "character", na.strings = "")
     some <- spread(ped$id, 25L)
     few <- spread(ped$id, 5L)
+    ## Phase 6b: a made-up status, "added" for every animal without a sire.
+    status <- ifelse(is.na(ped$sire), "added", "original")
+    ## Phase 6b: the probands' pedigree, before and after removing the
+    ## uninformative founders, for addBackSecondParents().
+    trimmed <- function() fn("getProbandPedigree")(few, ped)
+    ## Phase 6b: the Phase 1 pedigrees list a record for every parent, have no
+    ## female sire or male dam, and (but one) no animal with one known parent,
+    ## so these made-up variants reach the branches the pedigrees do not:
+    ## founders' records dropped, M and F swapped, every third dam unknown.
+    noFounders <- ped[!is.na(ped$sire) | !is.na(ped$dam), ]
+    swapped <- ifelse(ped$sex == "M", "F", ifelse(ped$sex == "F", "M", ped$sex))
+    oneParent <- ped
+    oneParent$dam[seq(1L, nrow(ped), by = 3L)] <- NA
     cases <- list(
       findGeneration = function() {
         fn("findGeneration")(ped$id, ped$sire, ped$dam)
@@ -61,6 +74,65 @@ runCases <- function(ns, dataDir) {
       },
       isEmpty = function() {
         lapply(list(ped$sire, ped$id, character(0L), NA), fn("isEmpty"))
+      },
+      ## Phase 6b (pedkindraw S7).
+      sexCodes = function() fn("sexCodes"),
+      isAddedRecord = function() {
+        list(fn("isAddedRecord")(status), fn("isAddedRecord")(NULL, nrow(ped)))
+      },
+      rbindFill = function() {
+        fn("rbindFill")(ped, ped[seq_len(min(3L, nrow(ped))), c("id", "sex")])
+      },
+      addParents = function() {
+        list(fn("addParents")(ped), fn("addParents")(noFounders))
+      },
+      correctParentSex = function() {
+        lapply(list(ped$sex, swapped), function(sex) {
+          list(
+            fn("correctParentSex")(ped$id, ped$sire, ped$dam, sex, status,
+              reportErrors = TRUE
+            ),
+            ## Stops when an id is both a sire and a dam: compare the message.
+            tryCatch(
+              fn("correctParentSex")(ped$id, ped$sire, ped$dam, sex, status),
+              error = conditionMessage
+            )
+          )
+        })
+      },
+      removeUnknownAnimals = function() {
+        list(
+          fn("removeUnknownAnimals")(ped),
+          fn("removeUnknownAnimals")(cbind(ped, recordStatus = status))
+        )
+      },
+      hasBothParents = function() lapply(few, fn("hasBothParents"), ped = ped),
+      getIdsWithOneParent = function() {
+        list(
+          fn("getIdsWithOneParent")(ped), fn("getIdsWithOneParent")(oneParent)
+        )
+      },
+      addIdRecords = function() {
+        fn("addIdRecords")(few, ped, ped[!ped$id %in% few, ])
+      },
+      removeUninformativeFounders = function() {
+        fn("removeUninformativeFounders")(ped)
+      },
+      addBackSecondParents = function() {
+        fn("addBackSecondParents")(
+          fn("removeUninformativeFounders")(trimmed()), trimmed()
+        )
+      },
+      trimPedigree = function() {
+        ## removeUninformative and addBackParents: all four combinations.
+        flags <- list(
+          c(FALSE, FALSE), c(TRUE, FALSE), c(FALSE, TRUE), c(TRUE, TRUE)
+        )
+        lapply(flags, function(f) {
+          fn("trimPedigree")(few, ped,
+            removeUninformative = f[[1L]], addBackParents = f[[2L]]
+          )
+        })
       }
     )
     for (name in names(cases)) {
