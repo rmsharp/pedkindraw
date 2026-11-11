@@ -1,0 +1,24 @@
+Package: pedkindraw
+Type: Package
+Title: Interactive Pedigree Drawings and Kinship
+Version: 0.0.1
+Authors@R:
+    person("R. Mark", "Sharp", email = "rmsharp@me.com",
+    role = c("aut", "cre", "cph"),
+    comment = c(ORCID = "0000-0002-6170-6942"))
+Description: Draws pedigrees as interactive 'visNetwork' graphs that can be
+    annotated, and computes kinship coefficients. It also trims and shrinks
+    pedigrees, checks pedigree records, finds sets of unrelated individuals,
+    and converts 'kinship2' 'pedigree' and 'Pedixplorer' 'Pedigree' objects.
+URL: https://github.com/rmsharp/pedkindraw
+BugReports: https://github.com/rmsharp/pedkindraw/issues
+Depends:
+    R (>= 4.1.0)
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Language: en-US
+Encoding: UTF-8
+License: MIT + file LICENSE
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.1
