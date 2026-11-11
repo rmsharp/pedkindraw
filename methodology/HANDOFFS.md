@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S3
+date: 2026-11-10
+status: pending
+active_task: Phase 6, the first copy slice: pedigree basics (nprcgenekeepr plan Phase 6), scope by Mark's pre-RED picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S2
 date: 2026-11-10
 status: complete

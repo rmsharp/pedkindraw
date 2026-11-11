@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-10 · [ad hoc] S3 claim (in progress): Phase 6 of nprcgenekeepr's `docs/planning/standalone-pedigree-package-plan.md`, the first copy slice (pedigree basics), test-first; scope by Mark's pre-RED picker. Mark picked "Start Phase 6" at the orient picker. Phase 0 reconcile: nothing to backfill.
+
 ### 2026-11-10 · [ad hoc] S2 push: `master` to GitHub once at `32d525c` (R15), CI green on five jobs
 - **Change:** the first push to the empty `rmsharp/pedkindraw`, which made `master` its default branch. R-CMD-check run `42930770118`: macOS release, Windows release, Linux devel, release and oldrel-1 all `Status: OK` (0/0/0; r-lib's action turns off the CRAN incoming check). `618b8a6` and the close-out commit are not pushed; Phase 6's push carries them.
 - **Commit/PR:** push of `774c3c4`..`32d525c`

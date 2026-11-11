@@ -73,6 +73,12 @@ The user rates every session's handoff. Your handoff will be scored on:
 *Session history accumulates below this line. Newest session at the top.*
 *S1's entry was removed in S2 (FM #28): its durable record is the S1 receipt in `HANDOFFS.md` and the S1 entries in `CHANGELOG.md`.*
 
+### What Session 3 Did
+**Deliverable:** Phase 6, the first copy slice: pedigree basics (nprcgenekeepr plan Phase 6), scope by Mark's pre-RED picker (IN PROGRESS)
+**Started:** 2026-11-10 19:15 CST · **Model:** Claude Opus 5.5
+**Status:** Session claimed. Work beginning. Mark picked "Start Phase 6" at the orient picker.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 1 Handoff Evaluation (by Session 2)
 **Score: 9/10.**
 - **What helped:** every nprcgenekeepr pointer was exact (`DESCRIPTION:83,87`, `.Rbuildignore:1-2,40,47,77,168`,
