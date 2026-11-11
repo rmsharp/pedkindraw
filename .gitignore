@@ -1,0 +1,20 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+pedkindraw_*.tar.gz
+pedkindraw.Rcheck/
+
+# Run-time output of the methodology tools.
+methodology/dashboard.html
+methodology/dashboard_history.jsonl
+methodology/.context-budget-history.jsonl
+methodology/.quality-gates-results.json
+__pycache__/
+
+# testthat debris from interactive runs.
+tests/testthat/_problems/
+tests/testthat/testthat-problems.rds
+
+scratchpad/

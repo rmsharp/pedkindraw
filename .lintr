@@ -1,0 +1,18 @@
+encoding: "UTF-8"
+linters: linters_with_tags(
+    tags = c("style", "best_practices", "package_development", "readability"),
+    coalesce_linter = NULL,
+    condition_call_linter = NULL,
+    cyclocomp_linter = NULL,
+    indentation_linter = NULL,
+    line_length_linter(80),
+    object_length_linter = NULL,
+    object_name_linter(styles = c("snake_case", "CamelCase", "camelCase")),
+    object_overwrite_linter = NULL,
+    todo_comment_linter = NULL,
+    undesirable_operator_linter = NULL)
+exclusions: list(
+    "inst/extdata",
+    "tests",
+    "vignettes"
+  )

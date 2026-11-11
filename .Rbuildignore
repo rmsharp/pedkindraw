@@ -1,0 +1,23 @@
+# Every line here is a perl regex: an unbalanced paren, even in a comment,
+# makes R CMD build abort. Keep lines paren-free.
+^renv$
+^renv\.lock$
+^\.Rprofile$
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.github$
+^\.lintr$
+^\.gitignore$
+^\.gitattributes$
+^\.claude$
+^LICENSE\.md$
+# Methodology notes and tooling, not package content.
+^methodology$
+^CLAUDE.*\.md$
+^scratchpad$
+# Build and check output, and testthat debris from interactive runs.
+^pedkindraw_.*\.tar\.gz$
+^pedkindraw\.Rcheck$
+^tests/testthat/_problems$
+^tests/testthat/testthat-problems\.rds$
+\.DS_Store$
