@@ -98,6 +98,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S9's entries were removed in S3-S10 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 11 Did
+**Deliverable:** plan Phase 9, the renderer: `drawPedigreeDiagram()`, `R/deceasedSlash.R` and `R/affectedConditions.R`'s
+lines 77-201 copied test-first from nprcgenekeepr, fidelity cases, push, CI, Phase 9 DONE (IN PROGRESS)
+**Started:** 2026-11-12 · **Model:** Claude Opus 5.5 · Mark picked "Start Phase 9" at the orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 9 Handoff Evaluation (by Session 10)
 **Score: 9/10.**
 - **What helped:** every line number it cited was right (the 15 calls and 2 reads at `baef1e12c`, the tool's `:26`,
