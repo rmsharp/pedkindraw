@@ -98,6 +98,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S8's entries were removed in S3-S9 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 10 Did
+**Deliverable:** plan Phase 8, second of its two sessions (R30): `R/comparePedigreeStructure.R` test-first, the
+layout's fidelity cases, push, CI, Phase 8 DONE (IN PROGRESS)
+**Started:** 2026-11-11 23:05 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Finish Phase 8 (Recommended)"
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 8 Handoff Evaluation (by Session 9)
 **Score: 8/10.**
 - **What helped:** the measured Phase 8 set (seven files, sizes, `makePedigreeDiagramData()` `:38`, `.solveJointQP()`

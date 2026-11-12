@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S10
+date: 2026-11-11
+status: pending
+active_task: plan Phase 8, second of two sessions (R30): R/comparePedigreeStructure.R copied test-first from nprcgenekeepr baef1e12c, the layout's cases in the fidelity tool, push, CI, Phase 8 DONE; IN PROGRESS
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S9
 date: 2026-11-11
 status: complete
