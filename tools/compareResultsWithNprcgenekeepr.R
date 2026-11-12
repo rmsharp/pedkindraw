@@ -16,7 +16,7 @@
 ## tools/pedigreeComparison/data/*.csv, read with every column as character
 ## and an empty field as NA. A twins table (<pedigree>_twinRelations.csv, so
 ## far rhesus375's) is not a pedigree: it is skipped as one, and read with its
-## pedigree for the Phase 7 cases.
+## pedigree for the Phase 7 and 8 cases.
 ##
 ## Exit status 0 when every result is identical and the kinship matrices'
 ## largest absolute difference is 0 (the plan's DONE line), 1 otherwise.
