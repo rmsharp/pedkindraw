@@ -1,7 +1,8 @@
 ## Fidelity check for the copy slices
 ## (docs/planning/standalone-pedigree-package-plan.md, Phases 6-10 DONE):
 ## runs each copied function in pedkindraw and in nprcgenekeepr on the
-## Phase 1 pedigrees and requires identical() results, warnings included.
+## Phase 1 pedigrees and requires identical() results, warnings and messages
+## included.
 ##
 ## Usage, from the pedkindraw root:
 ##   Rscript tools/compareResultsWithNprcgenekeepr.R [nprcgenekeepr clone]
@@ -21,16 +22,21 @@
 ## largest absolute difference is 0 (the plan's DONE line), 1 otherwise.
 
 ## The cases: one result per pedigree and function, each a list of the value
-## and any warning messages. Runs inside a child process; `ns` is the loaded
-## package's namespace.
+## and the texts of any warnings and messages (Phase 8: the layout's message
+## naming the animals it leaves out). Runs inside a child process; `ns` is
+## the loaded package's namespace.
 runCases <- function(ns, dataDir) {
   capture <- function(expr) {
     warnings <- character(0L)
+    messages <- character(0L)
     value <- withCallingHandlers(expr, warning = function(w) {
       warnings <<- c(warnings, conditionMessage(w))
       invokeRestart("muffleWarning")
+    }, message = function(m) {
+      messages <<- c(messages, conditionMessage(m))
+      invokeRestart("muffleMessage")
     })
-    list(value = value, warnings = warnings)
+    list(value = value, warnings = warnings, messages = messages)
   }
   ## Evenly spread ids: at most `n`, in pedigree order.
   spread <- function(ids, n) {
@@ -125,6 +131,52 @@ runCases <- function(ns, dataDir) {
       fn("kinship")(kin$id, kin$sire, kin$dam, kin$gen, ...)
     }
     stopsWith <- function(f) tryCatch(f(), error = conditionMessage)
+    ## Phase 8 (pedkindraw S10): the layout on the whole pedigree up to 400
+    ## animals (nprcgenekeepr's app draws rectilinear lines up to 400), else
+    ## on 20 spread animals and their ancestors (74 to 268 animals), so the
+    ## layout cases take seconds, not the 180 s of 3,694 animals.
+    lay <- if (nrow(ped) <= 400L) {
+      ped
+    } else {
+      fn("getProbandPedigree")(spread(ped$id, 20L), ped)
+    }
+    lay$gen <- fn("findGeneration")(lay$id, lay$sire, lay$dam)
+    layTwins <- if (file.exists(twinsFile)) twins else madeUpTwins(lay)
+    layKinship <- fn("kinship")(lay$id, lay$sire, lay$dam, lay$gen)
+    ## Columns no Phase 1 pedigree has (samplePed's affected holds 0 and 1,
+    ## which as.logical() reads as NA), so the cases reach the layout's code
+    ## for them: every fifth animal DECEASED; names with HTML's special
+    ## characters, some longer than a label's 15 characters, every fourth
+    ## missing; one condition column (layOne), then five (layColumns), one
+    ## more than the layout draws.
+    row <- seq_len(nrow(lay))
+    cycle <- function(offset) c("TRUE", "FALSE", NA)[(row + offset) %% 3L + 1L]
+    layOne <- lay
+    layOne$status <- ifelse(row %% 5L == 0L, "DECEASED", "ALIVE")
+    layOne$name <- ifelse(row %% 4L == 0L, NA_character_,
+      paste0("<b>", lay$id, "</b> & ", strrep("x", row %% 20L))
+    )
+    layOne$affected <- cycle(0L)
+    layColumns <- layOne
+    layColumns[["affected2"]] <- cycle(1L)
+    layColumns[["affected_diabetes"]] <- cycle(2L)
+    layColumns[["affected.eyes"]] <- rev(cycle(0L))
+    layColumns[["affectedLast"]] <- cycle(1L)
+    ## Founders only: no animal has a parent, mate or offspring, so the
+    ## layout leaves every one out and returns its empty result.
+    layFounders <- is.na(lay$sire) & is.na(lay$dam)
+    ## Every dam unknown: no mating at all, only lines from one parent (the
+    ## layout's and the comparison's branches for a pedigree without matings,
+    ## which only the tests' own small pedigrees reached).
+    layNoDams <- lay
+    layNoDams$dam <- NA_character_
+    layNoDams$gen <- fn("findGeneration")(lay$id, lay$sire, layNoDams$dam)
+    layout <- function(...) fn("makePedigreeMatingLayout")(...)
+    bothStyles <- function(p, ...) {
+      lapply(c("direct", "rectilinear"), function(style) {
+        layout(p, edgeStyle = style, ...)
+      })
+    }
     cases <- list(
       findGeneration = function() {
         fn("findGeneration")(ped$id, ped$sire, ped$dam)
@@ -275,6 +327,79 @@ runCases <- function(ns, dataDir) {
           },
           function() kinOf(sparse = NA)
         ), stopsWith)
+      },
+      ## Phase 8 (pedkindraw S10).
+      makePedigreeDiagramData = function() {
+        list(
+          fn("makePedigreeDiagramData")(lay),
+          fn("makePedigreeDiagramData")(lay, twinRelations = layTwins),
+          fn("makePedigreeDiagramData")(layOne)
+        )
+      },
+      makePedigreeMatingLayout = function() bothStyles(lay),
+      layoutTwins = function() bothStyles(lay, twinRelations = layTwins),
+      layoutKinshipMatrix = function() {
+        list(
+          layout(lay, edgeStyle = "direct", kinshipMatrix = layKinship),
+          layout(lay, edgeStyle = "direct", kinshipMatrix = fn("kinship")(
+            lay$id, lay$sire, lay$dam, lay$gen, sparse = TRUE
+          ))
+        )
+      },
+      layoutColumns = function() {
+        list(layout(layOne, edgeStyle = "direct"), bothStyles(layColumns))
+      },
+      layoutAllLeftOut = function() {
+        list(layout(layOne[layFounders, ]), layout(layColumns[layFounders, ]))
+      },
+      layoutNoMatings = function() {
+        direct <- layout(layNoDams, edgeStyle = "direct")
+        list(
+          direct, layout(layNoDams, edgeStyle = "rectilinear"),
+          fn(".extractNprcStructure")(direct)
+        )
+      },
+      comparePedigreeStructure = function() {
+        ## The kinship2 side reads a plain list shaped like kinship2's
+        ## pedigree object, so kinship2 is not needed.
+        pedLike <- list(
+          id = lay$id, findex = match(lay$sire, lay$id, nomatch = 0L),
+          mindex = match(lay$dam, lay$id, nomatch = 0L)
+        )
+        a <- fn(".extractKinship2Structure")(pedLike)
+        b <- fn(".extractNprcStructure")(layout(lay, edgeStyle = "direct"))
+        ## A made-up difference: b less its first parent-child edge and
+        ## first mate pair, with an animal neither side has.
+        changed <- b
+        changed$parentChildEdges <- b$parentChildEdges[-1L, ]
+        changed$matePairs <- b$matePairs[-1L, ]
+        changed$individuals <- c(b$individuals, "no such animal")
+        compare <- fn(".comparePedigreeStructures")
+        comparisons <- list(
+          compare(a, b), compare(b, b), compare(a, changed), compare(changed, a)
+        )
+        list(
+          a, fn(".extractKinship2Structure")(pedLike, spread(lay$id, 5L)), b,
+          comparisons, lapply(comparisons, function(x) {
+            fn(".formatStructuralDiscrepancy")("made-up", x)
+          })
+        )
+      },
+      layoutErrors = function() {
+        noRowNames <- layKinship
+        rownames(noRowNames) <- NULL
+        noColNames <- layKinship
+        colnames(noColNames) <- NULL
+        lapply(list(
+          function() fn("makePedigreeDiagramData")(as.list(lay)),
+          function() fn("makePedigreeDiagramData")(lay[, c("id", "sire")]),
+          function() layout(as.list(lay)),
+          function() layout(lay[, c("id", "sire", "dam", "sex")]),
+          function() layout(lay, kinshipMatrix = as.data.frame(layKinship)),
+          function() layout(lay, kinshipMatrix = noRowNames),
+          function() layout(lay, kinshipMatrix = noColNames),
+          function() layout(lay, edgeStyle = "curved")
+        ), stopsWith)
       }
     )
     for (name in names(cases)) {
@@ -373,10 +498,11 @@ if (!identical(names(ours), names(theirs))) {
 }
 same <- unlist(Map(identical, ours, theirs))
 withWarnings <- lengths(lapply(ours, `[[`, "warnings")) > 0L
-cat(sprintf(
-  "%d results (%d with warnings, compared too); %d identical; %d differ\n",
-  length(same), sum(withWarnings), sum(same), sum(!same)
-))
+withMessages <- lengths(lapply(ours, `[[`, "messages")) > 0L
+cat(sprintf(paste(
+  "%d results (%d with warnings, %d with messages, both compared too);",
+  "%d identical; %d differ\n"
+), length(same), sum(withWarnings), sum(withMessages), sum(same), sum(!same)))
 if (!all(same)) {
   cat("Differ:\n", paste0("  ", names(same)[!same], "\n"), sep = "")
 }
