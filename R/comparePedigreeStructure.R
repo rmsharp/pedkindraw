@@ -1,0 +1,378 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## Copied from nprcgenekeepr R/comparePedigreeStructure.R at nprcgenekeepr
+## commit baef1e12c (the structural comparison with kinship2; plan Phase 8).
+## Changes: none below this header. Its comments name nprcgenekeepr's
+## documents and sessions.
+
+#' Extract kinship2's parent-child and mate-pair structure
+#'
+#' Re-derives the parent-child edge set and mate-pair list a kinship2
+#' \code{pedigree} object implies, from its plain \code{id}/\code{findex}/
+#' \code{mindex} vectors alone (\code{findex}/\code{mindex} are 1-based
+#' positions into \code{id}, or \code{0} for an unknown parent). This is
+#' Track A of a programmatic structural/topological comparison against
+#' \code{\link{makePedigreeMatingLayout}}'s own output (Track B); see
+#' \code{docs/planning/pedigree-diagram-kinship2-structural-comparison-plan.md}
+#' sections 3.1/4.1.
+#'
+#' Deliberately typed to this minimal plain-list shape rather than the
+#' \code{kinship2::pedigree} S3 class -- dispatching on that class would pull
+#' a \code{kinship2} dependency into package code for no benefit, since only
+#' these fields are ever read. A real \code{kinship2::pedigree()} object
+#' satisfies this contract structurally, with no special-casing.
+#'
+#' Also carries \code{individuals} -- the id set actually being compared,
+#' not just who is related to whom. This exists because a fully isolated
+#' individual (no parents, never anyone's mate or parent) contributes zero
+#' rows to \code{parentChildEdges}/\code{matePairs} on EITHER side, so it
+#' was invisible to \code{\link{.comparePedigreeStructures}} before this
+#' field existed -- found live 2026-08-26: kinship2's own
+#' \code{align.pedigree()} silently drops such an individual from the
+#' rendered plot grid even though it is one of the \code{pedigree()}
+#' object's own declared \code{id} entries, while
+#' \code{\link{makePedigreeMatingLayout}} renders it. \code{displayedIds}
+#' lets a caller with kinship2 available (e.g.
+#' \code{compareAgainstKinship2()} in
+#' \code{tests/testthat/helper-comparePedigreeStructure.R}, via
+#' \code{align.pedigree()}) supply the actually-placed subset; it defaults
+#' to every declared id for callers (including this function's own existing
+#' unit tests) that never computed a placement subset.
+#'
+#' @param pedLike a plain list with \code{id} (vector, any type coercible to
+#'   character), \code{findex} (integer vector, same length as \code{id}),
+#'   and \code{mindex} (integer vector, same length as \code{id}).
+#' @param displayedIds character vector of ids to report as
+#'   \code{individuals} -- defaults to every id in \code{pedLike$id}.
+#' @return A list with two data frames and one character vector:
+#'   \code{parentChildEdges} (\code{child}, \code{parent}, \code{role} --
+#'   \code{role} is \code{"father"} or \code{"mother"}); \code{matePairs}
+#'   (\code{parent1}, \code{parent2}, \code{nChildren} -- one row per
+#'   distinct \code{(findex, mindex)} pair with at least one child,
+#'   deduplicated so multiple shared children never inflate the row count);
+#'   \code{individuals} (\code{displayedIds}, coerced to character).
+#' @noRd
+.extractKinship2Structure <- function(pedLike, displayedIds = pedLike$id) {
+  id <- pedLike$id
+  findex <- pedLike$findex
+  mindex <- pedLike$mindex
+  withFather <- which(findex > 0L)
+  withMother <- which(mindex > 0L)
+  parentChildEdges <- data.frame(
+    child = id[c(withFather, withMother)],
+    parent = id[c(findex[withFather], mindex[withMother])],
+    role = rep(c("father", "mother"),
+               c(length(withFather), length(withMother))),
+    stringsAsFactors = FALSE
+  )
+  withBoth <- which(findex > 0L & mindex > 0L)
+  pairKey <- paste(findex[withBoth], mindex[withBoth])
+  distinctKeys <- unique(pairKey)
+  firstChild <- withBoth[match(distinctKeys, pairKey)]
+  matePairs <- data.frame(
+    parent1 = id[findex[firstChild]],
+    parent2 = id[mindex[firstChild]],
+    nChildren = tabulate(match(pairKey, distinctKeys), length(distinctKeys)),
+    stringsAsFactors = FALSE
+  )
+  list(
+    parentChildEdges = parentChildEdges,
+    matePairs = matePairs,
+    individuals = as.character(displayedIds)
+  )
+}
+
+#' Extract nprcgenekeepr's parent-child and mate-pair structure
+#'
+#' Re-derives the same real-individual-level relationship set
+#' \code{\link{.extractKinship2Structure}} (Track A) reads from a kinship2
+#' \code{pedigree} object, this time from
+#' \code{\link{makePedigreeMatingLayout}}'s own \code{"direct"}-style
+#' \code{nodes}/\code{edges}/\code{duplicateToReal} return value. This is
+#' Track B of a programmatic structural/topological comparison against
+#' kinship2; see
+#' \code{docs/planning/pedigree-diagram-kinship2-structural-comparison-plan.md}
+#' sections 3.2/4.2.
+#'
+#' Callers \strong{must} pass the return value of
+#' \code{makePedigreeMatingLayout(ped, edgeStyle = "direct", twinRelations =
+#' NULL)} -- this function does not walk \code{"rectilinear"}-style
+#' waypoint chains (\code{__drop_}/\code{__bar_}/\code{__proj_}/\code{__jog_}
+#' ids); that is the D-2 edgeStyle-invariance property test's own job
+#' (\code{tests/testthat/test_comparePedigreeStructure.R}), not this
+#' function's runtime responsibility (plan section 3.2).
+#'
+#' Edge classification mirrors \code{makePedigreeMatingLayout()}'s own
+#' construction exactly (re-verified directly against
+#' \code{R/makePedigreeDiagramData.R} this session, not assumed from the
+#' plan's own illustrative pseudocode): \code{mateEdges$to} is always a
+#' \code{__union_} id; a duplicate-node connector is uniquely marked by
+#' \code{dashes == TRUE & smooth.type == "curvedCW"}; every other edge is a
+#' child edge, whose \code{from} is either a \code{__union_} id (both
+#' parents known -- the common case, expanded to 2 rows via the matching
+#' mate pair) or a real/duplicate parent id directly (the D5
+#' single-known-parent fallback, passed through as one row). Every
+#' \code{__dup_} id is resolved to its real individual via
+#' \code{duplicateToReal} before being returned.
+#'
+#' @param layout the return value of \code{makePedigreeMatingLayout(ped,
+#'   edgeStyle = "direct", twinRelations = NULL)} -- a list with
+#'   \code{nodes}, \code{edges} (\code{from}, \code{to}, \code{dashes},
+#'   \code{smooth.type} at minimum), and \code{duplicateToReal}.
+#' @return A list, in the SAME shape as
+#'   \code{\link{.extractKinship2Structure}}'s own return value --
+#'   deliberately, so \code{.comparePedigreeStructures()} (Track C) is
+#'   agnostic to which side is which: \code{parentChildEdges} (\code{child},
+#'   \code{parent}, both real individual ids); \code{matePairs}
+#'   (\code{parent1}, \code{parent2}, \code{nChildren} -- one row per
+#'   distinct real-individual mate pair with at least one child, counted
+#'   from the assembled \code{parentChildEdges}, never left \code{NA});
+#'   \code{individuals} (character vector, every REAL individual id
+#'   \code{layout$nodes} renders -- synthetic \code{__union_}/\code{__drop_}/
+#'   \code{__bar_}/\code{__proj_}/\code{__jog_} ids excluded, a duplicated
+#'   individual's \code{__dup_} node excluded so it is never double-counted;
+#'   the layout always carries exactly one bare-id node per real individual,
+#'   found live 2026-08-26 alongside \code{displayedIds} above).
+#' @noRd
+.extractNprcStructure <- function(layout) {
+  edges <- layout$edges
+  duplicateToReal <- layout$duplicateToReal
+  resolveId <- function(id) {
+    hit <- match(id, names(duplicateToReal))
+    ifelse(is.na(hit), id, unname(duplicateToReal[hit]))
+  }
+
+  isMateEdge <- startsWith(edges$to, "__union_")
+  isDupEdge <- !isMateEdge & edges$dashes &
+    !is.na(edges$smooth.type) & edges$smooth.type == "curvedCW"
+  isChildEdge <- !isMateEdge & !isDupEdge
+
+  mateEdges <- edges[isMateEdge, c("from", "to")]
+  childEdges <- edges[isChildEdge, c("from", "to")]
+
+  # matePairs: group mate edges by the union id they share (`to`) --
+  # exactly 2 per union in this codebase (anchor + non-anchor), but
+  # length < 2L is skipped defensively rather than assumed impossible.
+  mateEdges$parent <- resolveId(mateEdges$from)
+  bySplit <- split(mateEdges$parent, mateEdges$to)
+  matePairs <- do.call(rbind, lapply(names(bySplit), function(unionId) {
+    parents <- bySplit[[unionId]]
+    if (length(parents) < 2L) return(NULL)
+    data.frame(parent1 = parents[[1L]], parent2 = parents[[2L]],
+               unionId = unionId, stringsAsFactors = FALSE)
+  }))
+  if (is.null(matePairs)) {
+    matePairs <- data.frame(parent1 = character(), parent2 = character(),
+                             unionId = character(), stringsAsFactors = FALSE)
+  }
+
+  # parentChildEdges: a union-sourced child edge expands to 2 rows (one per
+  # resolved mate, looked up by unionId); a D5 real/dup-sourced edge passes
+  # through as a single row.
+  isUnionSourced <- startsWith(childEdges$from, "__union_")
+  unionChild <- childEdges[isUnionSourced, ]
+  directChild <- childEdges[!isUnionSourced, ]
+
+  pcFromUnion <- if (nrow(unionChild) > 0L) {
+    matchIdx <- match(unionChild$from, matePairs$unionId)
+    data.frame(child = rep(resolveId(unionChild$to), 2L),
+               parent = c(matePairs$parent1[matchIdx],
+                          matePairs$parent2[matchIdx]),
+               stringsAsFactors = FALSE)
+  } else {
+    data.frame(child = character(), parent = character(),
+               stringsAsFactors = FALSE)
+  }
+  pcFromDirect <- if (nrow(directChild) > 0L) {
+    data.frame(child = resolveId(directChild$to),
+               parent = resolveId(directChild$from),
+               stringsAsFactors = FALSE)
+  } else {
+    data.frame(child = character(), parent = character(),
+               stringsAsFactors = FALSE)
+  }
+  parentChildEdges <- rbind(pcFromUnion, pcFromDirect)
+
+  # nChildren counted from the assembled child edges (plan section 4.2's
+  # own hardening note: "should be counted from parentChildEdges after
+  # assembly, not left NA") -- one union-sourced child edge per child, so
+  # table() on unionChild$from gives exactly nChildren per union.
+  nChildrenByUnion <- table(unionChild$from)
+  matePairs$nChildren <- as.integer(nChildrenByUnion[matePairs$unionId])
+  matePairs$unionId <- NULL
+
+  # individuals: every real (non-synthetic) node id. A duplicated
+  # individual's __dup_ copy is excluded by the same startsWith("__", ...)
+  # test as everything else -- the layout always keeps exactly one bare-id
+  # node per real individual (the anchor instance), so no resolveId() call
+  # is needed here to avoid double-counting.
+  individuals <- as.character(layout$nodes$id[!startsWith(
+    as.character(layout$nodes$id), "__")])
+
+  list(parentChildEdges = parentChildEdges, matePairs = matePairs,
+       individuals = individuals)
+}
+
+#' Diff two pedigree structural extractions
+#'
+#' Compares two \code{list(parentChildEdges, matePairs)} structures in the
+#' shared output shape of \code{\link{.extractKinship2Structure}} (Track A)
+#' and \code{\link{.extractNprcStructure}} (Track B) -- deliberately agnostic
+#' to which side is kinship2 vs. nprcgenekeepr (either argument order gives
+#' the same \code{identical} verdict, with A/B swapped in the "only in"
+#' fields). This is Track C of a programmatic structural/topological
+#' comparison against kinship2; see
+#' \code{docs/planning/pedigree-diagram-kinship2-structural-comparison-plan.md}
+#' sections 3.3/4.3.
+#'
+#' Canonicalizes each side before comparing (plan section 1.3's fifth fact:
+#' neither package treats sire/dam left-right order as meaningful, so a
+#' comparator must never assert positional/x-order equivalence) -- for
+#' \code{matePairs}, \code{parent1}/\code{parent2} are sorted alphabetically
+#' per row so \code{(A, B)} and \code{(B, A)} compare equal; rows in both
+#' tables are then compared as unordered sets (a row present in A but not B,
+#' or vice versa), never via positional \code{identical()}.
+#'
+#' Also diffs \code{individuals} (found live 2026-08-26): an isolated
+#' individual with zero parent-child edges and zero mate pairs on EITHER
+#' side is invisible to the edge/mate-pair diff alone, so a missing or
+#' extra isolated individual (e.g. kinship2's own \code{align.pedigree()}
+#' silently dropping one from the plot grid while
+#' \code{\link{makePedigreeMatingLayout}} renders it) must be checked
+#' separately. \code{a$individuals}/\code{b$individuals} is optional --
+#' absent on either side is treated as an empty set (backward compatible
+#' with hand-built \code{a}/\code{b} structures that predate this field;
+#' contributes no discrepancy either way).
+#'
+#' @param a,b each a list with \code{parentChildEdges} (\code{child},
+#'   \code{parent}), \code{matePairs} (\code{parent1}, \code{parent2},
+#'   \code{nChildren}) data frames, and an optional \code{individuals}
+#'   character vector, in \code{\link{.extractKinship2Structure}}/
+#'   \code{\link{.extractNprcStructure}}'s shared output shape.
+#' @return A list: \code{parentChildOnlyInA}, \code{parentChildOnlyInB},
+#'   \code{matePairsOnlyInA}, \code{matePairsOnlyInB} (each a data frame, in
+#'   the same shape as the corresponding input table, of rows found on only
+#'   one side); \code{individualsOnlyInA}, \code{individualsOnlyInB} (each a
+#'   character vector of ids found on only one side); \code{identical}
+#'   (\code{TRUE} iff all 6 of the above are empty).
+#' @noRd
+.comparePedigreeStructures <- function(a, b) {
+  canonicalizeParentChild <- function(pc) {
+    pc <- pc[order(pc$child, pc$parent), c("child", "parent")]
+    rownames(pc) <- NULL
+    pc
+  }
+  canonicalizeMatePairs <- function(mp) {
+    lo <- pmin(mp$parent1, mp$parent2)
+    hi <- pmax(mp$parent1, mp$parent2)
+    out <- data.frame(parent1 = lo, parent2 = hi, nChildren = mp$nChildren,
+                       stringsAsFactors = FALSE)
+    out <- out[order(out$parent1, out$parent2), ]
+    rownames(out) <- NULL
+    out
+  }
+  pcKey <- function(pc) paste(pc$child, pc$parent, sep = "|")
+  mateKey <- function(mp) {
+    paste(mp$parent1, mp$parent2, mp$nChildren, sep = "|")
+  }
+
+  pcA <- canonicalizeParentChild(a$parentChildEdges)
+  pcB <- canonicalizeParentChild(b$parentChildEdges)
+  mpA <- canonicalizeMatePairs(a$matePairs)
+  mpB <- canonicalizeMatePairs(b$matePairs)
+
+  pcOnlyA <- pcA[!pcKey(pcA) %in% pcKey(pcB), , drop = FALSE]
+  pcOnlyB <- pcB[!pcKey(pcB) %in% pcKey(pcA), , drop = FALSE]
+  mpOnlyA <- mpA[!mateKey(mpA) %in% mateKey(mpB), , drop = FALSE]
+  mpOnlyB <- mpB[!mateKey(mpB) %in% mateKey(mpA), , drop = FALSE]
+
+  indA <- unique(as.character(a$individuals))
+  indB <- unique(as.character(b$individuals))
+  indOnlyA <- setdiff(indA, indB)
+  indOnlyB <- setdiff(indB, indA)
+
+  list(
+    parentChildOnlyInA = pcOnlyA,
+    parentChildOnlyInB = pcOnlyB,
+    matePairsOnlyInA = mpOnlyA,
+    matePairsOnlyInB = mpOnlyB,
+    individualsOnlyInA = indOnlyA,
+    individualsOnlyInB = indOnlyB,
+    identical = nrow(pcOnlyA) == 0L && nrow(pcOnlyB) == 0L &&
+      nrow(mpOnlyA) == 0L && nrow(mpOnlyB) == 0L &&
+      length(indOnlyA) == 0L && length(indOnlyB) == 0L
+  )
+}
+
+#' Format a structural-discrepancy report
+#'
+#' Formats \code{\link{.comparePedigreeStructures}}'s own return value into a
+#' human-readable discrepancy report, or \code{NULL} (invisibly) when
+#' \code{cmp$identical} is \code{TRUE}. Extracted from
+#' \code{data-raw/kinship2FidelityValidation.R}'s own local
+#' \code{reportDiscrepancy()} (found live 2026-08-26: that copy was never
+#' updated when \code{\link{.comparePedigreeStructures}} gained
+#' \code{individualsOnlyInA}/\code{individualsOnlyInB}, so re-running the
+#' script on the article's own Track B full fixture printed
+#' "!! DISCREPANCY -- Track B full !!" with nothing underneath, silently
+#' omitting the one detail -- \code{individualsOnlyInB: "P5"} -- the
+#' \code{identical = FALSE} verdict is actually based on).
+#'
+#' Unlike \code{\link{.extractKinship2Structure}}/
+#' \code{\link{.extractNprcStructure}}/\code{\link{.comparePedigreeStructures}}
+#' (this file's other 3 functions), this one has no \code{kinship2} dependency
+#' at all -- it only formats \code{cmp}, a plain list of data frames/vectors --
+#' so it lives in \code{R/}, not \code{tests/testthat/}, per the same D-6
+#' criterion (\code{docs/planning/pedigree-diagram-kinship2-structural-
+#' comparison-plan.md}) that already routed its 3 siblings here: no kinship2
+#' dependency, needs real regression coverage. It originally lived in
+#' \code{tests/testthat/helper-comparePedigreeStructure.R} instead (a
+#' misplacement relative to D-6, not a deliberate exception) -- moved here
+#' S653 after that misplacement caused \code{lint.yaml} to go red on CI:
+#' \code{lintr::lint_package()}'s helper-less CI invocation could not see a
+#' function defined only in a testthat helper, while every local repro looked
+#' clean because \code{pkgload::load_all()}'s own default \code{helpers =
+#' TRUE} silently auto-sources testthat helpers, masking the gap.
+#'
+#' Returns a character string, not a \code{cat()} side effect, specifically so
+#' its CONTENT is assertable -- the original's \code{cat()}-only form could
+#' not be tested at all, which is how the individuals-diff omission went
+#' unnoticed in the first place.
+#'
+#' @param label a short string identifying which comparison this is (e.g.
+#'   "Track B full"), included verbatim in the report.
+#' @param cmp \code{\link{.comparePedigreeStructures}}'s own return value.
+#' @return a single character string describing every populated diff field,
+#'   or \code{NULL} (invisibly) when \code{cmp$identical} is \code{TRUE}.
+#' @noRd
+.formatStructuralDiscrepancy <- function(label, cmp) {
+  if (isTRUE(cmp$identical)) {
+    return(invisible(NULL))
+  }
+  lines <- sprintf("!! DISCREPANCY -- %s !!", label)
+  if (nrow(cmp$parentChildOnlyInA) > 0L) {
+    lines <- c(lines, "parent-child edges only in kinship2:",
+      utils::capture.output(print(cmp$parentChildOnlyInA)))
+  }
+  if (nrow(cmp$parentChildOnlyInB) > 0L) {
+    lines <- c(lines, "parent-child edges only in nprcgenekeepr:",
+      utils::capture.output(print(cmp$parentChildOnlyInB)))
+  }
+  if (nrow(cmp$matePairsOnlyInA) > 0L) {
+    lines <- c(lines, "mate pairs only in kinship2:",
+      utils::capture.output(print(cmp$matePairsOnlyInA)))
+  }
+  if (nrow(cmp$matePairsOnlyInB) > 0L) {
+    lines <- c(lines, "mate pairs only in nprcgenekeepr:",
+      utils::capture.output(print(cmp$matePairsOnlyInB)))
+  }
+  if (length(cmp$individualsOnlyInA) > 0L) {
+    lines <- c(lines, "individuals only in kinship2:",
+      toString(cmp$individualsOnlyInA))
+  }
+  if (length(cmp$individualsOnlyInB) > 0L) {
+    lines <- c(lines, "individuals only in nprcgenekeepr:",
+      toString(cmp$individualsOnlyInB))
+  }
+  paste(lines, collapse = "\n")
+}
