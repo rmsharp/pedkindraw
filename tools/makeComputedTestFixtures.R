@@ -109,32 +109,11 @@ if (!identical(status, 0L)) {
   stop("git archive could not unpack ", commit, call. = FALSE)
 }
 
-## As in tools/compareResultsWithNprcgenekeepr.R: this process's renv sets
-## RENV_PROJECT and the library variables, and a child would inherit them
-## and load this project's library. Put back the values renv saved as
-## RENV_DEFAULT_* (the text "<NA>" where the variable was unset), so the
-## child's .Rprofile activates the clone's own renv.
-renvFreeEnv <- function() {
-  if (!nzchar(Sys.getenv("RENV_PROJECT"))) {
-    return(character(0L))
-  }
-  vars <- c(
-    "R_LIBS", "R_LIBS_USER", "R_LIBS_SITE", "R_PROFILE", "R_PROFILE_USER",
-    "R_ENVIRON", "R_ENVIRON_USER"
-  )
-  unsets <- c("-u", "RENV_PROJECT")
-  sets <- character(0L)
-  for (v in vars) {
-    default <- Sys.getenv(paste0("RENV_DEFAULT_", v), unset = NA)
-    if (is.na(default) || identical(default, "<NA>")) {
-      unsets <- c(unsets, "-u", v)
-    } else {
-      sets <- c(sets, paste0(v, "=", shQuote(default)))
-    }
-  }
-  ## env reads its options only before the first NAME=value.
-  c(unsets, sets)
-}
+## renvFreeEnv(): the arguments for env that undo this process's renv
+## settings, so the child starts in the clone's own renv
+## (tools/renvFreeEnv.R).
+helperFile <- file.path("tools", "renvFreeEnv.R")
+source(helperFile) # nolint: undesirable_function_linter.
 
 ## One change of folder for one child process; withr is only a test
 ## dependency (Suggests).
