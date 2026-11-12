@@ -19,8 +19,8 @@ section 10).
 | 6b | 11 functions that repair and trim pedigrees, and the constant `sexCodes` (R25) | DONE (pedkindraw S7) |
 | 7 | kinship and twins: `kinship()`, `checkTwinRelations()` (nprcgenekeepr's clean-room code, C2) | DONE (pedkindraw S8) |
 | 8 | layout engine: `makePedigreeMatingLayout()`, `makePedigreeDiagramData()` (2 sessions, R30) | DONE (pedkindraw S9-S10) |
-| 9 | renderer: `drawPedigreeDiagram()`, a `visNetwork` widget | next |
-| 10 | shrink: `shrinkPedigree()` (clean-room code, C2) | planned |
+| 9 | renderer: `drawPedigreeDiagram()`, a `visNetwork` widget | DONE (pedkindraw S11) |
+| 10 | shrink: `shrinkPedigree()` (clean-room code, C2) | next (Mark picks it or the R37 port first) |
 
 ## Planned
 
@@ -42,6 +42,13 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Renderer (Phase 9), 1 export:** `drawPedigreeDiagram()` turns a layout into an interactive `visNetwork` widget:
+  the symbols at the layout's positions, the legend, each deceased animal's slash and each multi-condition symbol's
+  coloured sections (painted by a drawing script inside the widget), Export Diagram (PNG), Select by id and the hover
+  highlight; 6 internal functions and 2 constants (`deceasedSlash.R`, `affectedConditions.R`'s drawing half). Copied
+  from nprcgenekeepr `471589138` (R34) and `baef1e12c`, code unchanged, help rewritten (R36); its 12 tests and the
+  3 Chrome tests pass as there, and its widgets are identical to nprcgenekeepr's. Imports `visNetwork`; CI sets up
+  Chrome. nprcgenekeepr changed the legend's fill since (S1159, `a85311021`): to be ported (R37, `DIVERGENCE.md`).
 - **Layout engine (Phase 8), 2 exports:** `makePedigreeMatingLayout()` (each animal's position, symbol and hover
   text, union nodes for matings, lines routed `"rectilinear"` or `"direct"`, twins, consanguineous matings marked from
   `kinship()`, up to four affected conditions) and `makePedigreeDiagramData()` (plain nodes and edges for visNetwork);
@@ -66,9 +73,10 @@ session each unless marked. They follow the copy slices.
   `.lintr` with nprcgenekeepr's linters, renv on a dated Posit snapshot, GitHub Actions R-CMD-check on Linux (devel,
   release, oldrel-1), macOS and Windows.
 - **Checks against nprcgenekeepr** (read from its local clone): `tools/compareWithNprcgenekeepr.R`, the drift check
-  (plan section 5; `DIVERGENCE.md` records allowed differences: 3 rows, the drawing functions R32 defers to Phase 9), and
+  (plan section 5; `DIVERGENCE.md` records allowed differences: 1 row, R37's), and
   `tools/compareResultsWithNprcgenekeepr.R`, which compares every copied function's results, warnings and messages
-  on the Phase 1 pedigrees (the layout on at most 400 animals of each, S10).
+  on the Phase 1 pedigrees (the layout on at most 400 animals of each, S10), against the clone's working tree or, with
+  a commit, its package at that commit read with `git archive` (S11, R37).
 - **Test fixtures:** `tools/makeTestFixtures.R` saves nprcgenekeepr's sample pedigrees into
   `tests/testthat/fixtures/` (`lacy1989Ped`, `smallPed`; `pedSix`, `qcPed` from Phase 6b; `pedOne` from Phase 7;
   `examplePedigree`, `pedWithGenotype`, `rhesusPedigree` and three rhesus `.csv` files from Phase 8) instead of
@@ -80,6 +88,10 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 9, the renderer (pedkindraw S11, 2026-11-12).** `drawPedigreeDiagram()` and its drawing helpers copied
+  test-first (Mark's picks R34-R37: the newer source commit, nprcgenekeepr's app and docs tests left out, the help
+  rewritten, and nprcgenekeepr's mid-session legend change ported later); 540 of 540 results identical, whole
+  widgets included; CI green on five jobs at the first attempt, the Chrome tests running on all five.
 - **Comparison and design, in nprcgenekeepr (S1121-S1130, 2026-11-02 to 11-04).** The plan; a comparison with
   kinship2, Pedixplorer and ggpedigree of what each computes and draws, and how fast, in how much memory, for how many
   animals (Phases 1-2); data frames plus converters as the input style (Phase 3, R7); the API contract, the name and

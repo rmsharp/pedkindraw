@@ -8,30 +8,31 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 9: the renderer, `drawPedigreeDiagram()`** (READY -- two picks for Mark at its pre-RED picker, Effort
-      M-L) -- plan row 9 (R31, R32). At nprcgenekeepr `baef1e12c` (measured S10): `R/drawPedigreeDiagram.R` (278
-      lines, 8 `visNetwork::` calls), `R/deceasedSlash.R` (91; 1 `utils::`), `R/affectedConditions.R` lines 77-201
-      (its 3 functions in `DIVERGENCE.md`; delete the 3 rows), `tests/testthat/test_drawPedigreeDiagram.R` (349
-      lines, 16 tests; `skip_if_not_installed("visNetwork")` guards; 2 `shiny::` calls), `helper-live-render-positions.R`
-      (187; `chromote::`, `htmlwidgets::`, `withr::`; it skips without Chrome) and the 3 Chrome tests of
-      `test_positionMatingUnitForest.R` (source lines 1996-2018, 2562-2601, 2603-2642; each `skip_on_cran()`). The picks: (a)
-      `R/drawPedigreeDiagram.R` changed after `baef1e12c`: nprcgenekeepr `471589138` (its S1153) moved the `onClick`
-      check into a new `.checkOnClick()`, shared with its `drawColonyOverview()` (23 lines added, 5 removed); copy
-      the file at `baef1e12c` and record the change in `DIVERGENCE.md`, or copy it at a later commit (each copied
-      file's header names its own commit, and both tools check each file against it). (b)
-      `tests/testthat/test_drawPedigreeDiagramDocs.R` (110 lines), which the plan's row does not name, checks
-      nprcgenekeepr's own vignette and article text (`vignettes/a2interactive.Rmd`,
-      `vignettes/articles/pedigree-diagram.qmd`), which pedkindraw does not have: likely left in nprcgenekeepr, as
-      R31 left its other nprcgenekeepr-only tests. `Imports: visNetwork` (install it from the dated repository with
-      `rebuild = TRUE`, its dependencies by name, Learning 3); Suggests `chromote`, `htmlwidgets`, `shiny` (the tests
-      call them with `::`).
+- [ ] **Phase 10: shrink, `shrinkPedigree()`** (READY, Effort M) -- plan row 10 (C2, with C15-C16: it stops with a
+      plain message on malformed input and breaks ties by byte order). At nprcgenekeepr `baef1e12c` (measured S11;
+      both files unchanged to `fa71ab65d`): `R/shrinkPedigree.R` (303 lines; `shrinkPedigree()` exported, and
+      `.checkShrinkInput()`, `.removalPass()`, `.isParent()`, `.bitSize()`; no `::` call in its code: its help names
+      `kinship2::pedigree.shrink()` (`:121`) and its example loads `nprcgenekeepr::examplePedigree` (`:210`), so the
+      example types its own pedigree, R21) and `tests/testthat/test_shrinkPedigree.R` (455 lines, 24 tests).
+      GREEN deletes `tests/testthat/helper-shrinkPedigreeStandIn.R`, so the three Track B tests call the real
+      function. Three more nprcgenekeepr test files name it and read its own records or tutorial
+      (`test_cleanroomProvenance.R:30-33`, `test_inventoryTutorialSections.R:108`,
+      `test_snapshotTutorialSection.R:11`): likely left out, as R35 left out its app and docs tests (a pre-RED
+      pick). Survey first (Learning 9), and re-check nprcgenekeepr at each phase gate (Learning 15).
 
-- [ ] **Phases 10-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: the last
-      copy slice, shrink (10, nprcgenekeepr's clean-room code under C2), then new work (11-15), documentation (16)
-      and the CRAN submission (17, its own plan first). Scope and DONE criteria: the plan's section 4; summary:
-      `methodology/ROADMAP.md`. Each phase gets its own item here when it is next. Phase 10
-      deletes `tests/testthat/helper-shrinkPedigreeStandIn.R`, so the three Track B tests call the real
-      `shrinkPedigree()`.
+- [ ] **Port nprcgenekeepr S1159's legend fill into `drawPedigreeDiagram()`** (READY, Effort S) -- plan R37;
+      `DIVERGENCE.md`'s one row. nprcgenekeepr `392dd347e` changed the three legend-colour checks of
+      `test_drawPedigreeDiagram.R` (pedkindraw's copy `tests/testthat/test_drawPedigreeDiagram.R:89`, `:118`, `:127`;
+      a new helper `.legendFill()`), and `a85311021` changed the code: the legend's `color` column became
+      `color.background`, the five sex rows `.affectedColor(FALSE)` (pedkindraw has it,
+      `R/makePedigreeDiagramData.R:199`). A session of its own (the drift rule): copy the test change (RED: those
+      tests fail), then the code (GREEN), update both files' headers to the new commits, delete the row; the results
+      tool then runs against nprcgenekeepr's HEAD. Its `test-e2e-pedigree-module.R` browser check is its app's (R35).
+      Can come before or after Phase 10 (Mark's pick).
+
+- [ ] **Phases 11-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: new work
+      (11-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE criteria: the
+      plan's section 4; summary: `methodology/ROADMAP.md`. Each phase gets its own item here when it is next.
 
 ## Waiting on Mark
 
@@ -78,7 +79,10 @@ issues).*
       `43052891573` attempt 1 all three Ubuntu jobs failed installing R, unable to resolve Ubuntu's package servers
       for an hour; re-running them passed (attempt 2). Watch whether it recurs before pinning a runner image. S8: run
       `43106941979` passed on all five jobs at the first attempt, Ubuntu 26.04 included (the same two notices). S10:
-      run `43260600901` likewise (the same two, and a third: macOS arm64 queues may be longer).
+      run `43260600901` likewise (the same two, and a third: macOS arm64 queues may be longer). S11: run
+      `43278560876` likewise, plus a warning from the Chrome step S11 copied: `browser-actions/setup-chrome`'s
+      `install-dependencies` is for Linux only, so the Windows job notes it (`.github/workflows/R-CMD-check.yaml:78`;
+      nprcgenekeepr's workflow has the same line). Harmless; an `if:` per runner would silence it.
 
 - [ ] **Report a vacuous test to nprcgenekeepr** (READY, Effort S) -- the first expectation of
       `test_findPedigreeNumber.R` checks the ids containing "1", and the Lacy pedigree's ids are letters, so it

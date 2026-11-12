@@ -27,8 +27,10 @@ ruled S1149 (R14: MIT, as nprcgenekeepr). In pedkindraw's repository: Phase 5 DO
 DONE (pedkindraw S3: 10 of Phase 6's 21 functions, R19); the plan moved here (pedkindraw S4-S6, R23: steps H0-H2 of
 pedkindraw's `docs/planning/planning-handover-plan.md`); Phase 6b DONE (pedkindraw S7: the other 11 and the constant
 `sexCodes`, R24-R25); Phase 7 DONE (pedkindraw S8: `kinship()`, `checkTwinRelations()` and `mzTwinGroups()`,
-R26-R29); Phase 8 DONE (pedkindraw S9-S10: the layout code, the kinship2 comparison and 333 tests, R30-R33).
-**Next:** Phase 9, the renderer (`drawPedigreeDiagram()`).
+R26-R29); Phase 8 DONE (pedkindraw S9-S10: the layout code, the kinship2 comparison and 333 tests, R30-R33); Phase 9
+DONE (pedkindraw S11: `drawPedigreeDiagram()` and its helpers, 15 tests, R34-R37).
+**Next:** Phase 10, shrink (`shrinkPedigree()`), and, in a session of its own, porting nprcgenekeepr S1159's
+legend change to `drawPedigreeDiagram()` (R37); Mark picks the order.
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -374,7 +376,7 @@ pedigrees (`identical()` for data frames, max absolute difference 0 for kinship)
 | 6b | Pedigree basics, second half (R19; DONE pedkindraw S7): trimming, parent repair | `hasBothParents`, `trimPedigree`, `removeUnknownAnimals`, `removeUninformativeFounders`, `addParents`, `correctParentSex`, `addBackSecondParents`, `getIdsWithOneParent`; internal `addIdRecords` (exported in nprcgenekeepr; contract section 4.1), `isAddedRecord`, `rbindFill`, and the constant `sexCodes` (R25). `toCharacter` is not copied (R20) | data.table, kept (contract section 5); only `addIdRecords()` uses it |
 | 7 | Kinship and twins (DONE pedkindraw S8) | copy `checkTwinRelations.R` and nprcgenekeepr's clean-room `R/kinship.R` and `R/mzTwinGroups.R` (C2; with the constant `mzTwinIdsAbsentMessage`); no readers (R13) | Matrix (R27); also `methods`, `stats`; Suggests `kinship2`, `withr` (R28) |
 | 8 | Layout engine (2 sessions, R30: all the layout code and its tests, then the kinship2 comparison, fidelity cases and CI; DONE pedkindraw S9-S10) | `makePedigreeDiagramData.R`, `positionTreeApportion.R`, `orderRootSubtrees.R`, `penaltyCrossprod.R`, `affectedConditions.R` (lines 1-75, R32), `comparePedigreeStructure.R`, with the clean-room `.solveJointQP()` and mate-pair step in them (C2); tests from §3.3 (less R31's) and the rhesus fixtures | quadprog, Matrix, utils; kinship2 in Suggests for the fidelity tests |
-| 9 | Renderer | `drawPedigreeDiagram.R` and its drawing script, `deceasedSlash.R` and the rest of `affectedConditions.R` (R32); `test_drawPedigreeDiagram.R`, the live-render helper and the 3 Chrome tests of `test_positionMatingUnitForest.R` (R31) | visNetwork; chromote in Suggests |
+| 9 | Renderer (DONE pedkindraw S11; R34-R37) | `drawPedigreeDiagram.R` and its drawing script, `deceasedSlash.R` and the rest of `affectedConditions.R` (R32); `test_drawPedigreeDiagram.R`, the live-render helper and the 3 Chrome tests of `test_positionMatingUnitForest.R` (R31) | visNetwork; chromote in Suggests |
 | 10 | Shrink | copy nprcgenekeepr's clean-room `R/shrinkPedigree.R` and its helpers (C2) | -- |
 
 **Done 6a (pedkindraw S3):** the 10 functions, their 9 test files (48 tests) and `helper-walkPedigree.R` copied from
@@ -430,6 +432,23 @@ the 3 deferred by R32 recorded; `R CMD check --as-cran` 0 errors, 0 warnings, R1
 96.84%, `comparePedigreeStructure.R` 99.30% (its one missed line a defensive return); CI run `43260600901` 5/5
 `Status: OK`, first attempt, `FAIL 0 | WARN 0` on each (Ubuntu skips 2 and Windows 1 of `test_diagramSolverEquivalence.R`'s
 tests, by their own guards for a math library other than R's).
+
+**Done 9 (pedkindraw S11; R34-R37):** `drawPedigreeDiagram()` (exported) copied from nprcgenekeepr `471589138` with
+its `.checkOnClick()` (R34), its help text describing the function alone and its example typing its own pedigree
+(R36); `deceasedSlash.R` whole and `affectedConditions.R`'s lines 76-201 from `baef1e12c` (R32), code unchanged.
+12 of `test_drawPedigreeDiagram.R`'s 16 tests (R35: its 4 Shiny-module tests and `test_drawPedigreeDiagramDocs.R` stay
+in nprcgenekeepr), the live-render helper and the 3 Chrome tests R31 deferred; `Imports: visNetwork`, `Suggests:
+chromote, htmlwidgets`, with 22 dependencies locked from the dated repository; the CI workflow gets nprcgenekeepr's
+Chrome set-up steps. Checks: tests 481, 0 failed, WARN 0, the 12 checking nprcgenekeepr's 65 expectations test for
+test and the forest file its 221; the results tool, 540 of 540 results `identical()` on the 12 Phase 1 pedigrees (6
+drawing cases; whole widgets compare equal because both renv libraries link one cache entry of visNetwork), against
+nprcgenekeepr `392dd347e` read with `git archive` (R37: its working copy was being edited); 132 kinship matrices,
+largest absolute difference 0; the cases and the tests each reach all 38 statements of the three files; the drift
+check, 85 copied functions, 1 recorded (S1159's legend change, `a85311021`, committed during the session, R37); `R CMD
+check --as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 2075, SKIP 3: the Chrome tests skip on CRAN); coverage
+97.10%; the help example drawn in headless Chrome (slash, sections, legend); CI run `43278560876` 5/5 `Status: OK`,
+first attempt, `FAIL 0 | WARN 0` on each, the 3 Chrome tests run on all five (macOS PASS 2082; Windows 2081, SKIP 1;
+Ubuntu 2071, SKIP 2: the math-library guards above).
 
 **C2 in Phases 7, 8 and 10** (`nprcgenekeepr:docs/planning/cleanroom-rewrite-plan.md` §4.8): each copies the
 clean-room code like any other nprcgenekeepr code. The waits §4.8 set (Phase 7 on that plan's Phase 8, Phase 8 on its
