@@ -1,9 +1,8 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr tests/testthat/test_solveJointQP.R at nprcgenekeepr
-## commit baef1e12c. Changes: shrinkPedigree() is
-## helper-shrinkPedigreeStandIn.R's stand-in until Phase 10. The comments below
-## name nprcgenekeepr's documents, sessions and files.
+## commit baef1e12c. Changes: this header only. The comments below name
+## nprcgenekeepr's documents, sessions and files.
 
 ## Tests for .solveJointQP() -- Pedigree Diagram Joint QP Solver (Option C),
 ## Migration Path Phase 1 (docs/planning/pedigree-diagram-joint-qp-solver-plan.md

@@ -9,9 +9,8 @@
 ## tests that draw the layout in Chrome with helper-live-render-positions.R
 ## (the source's lines 1996-2018, 2562-2601 and 2603-2642, with the note
 ## above the last two, 2536-2560) came in Phase 9 with the drawing code's
-## packages (plan R31). shrinkPedigree() is helper-shrinkPedigreeStandIn.R's
-## stand-in until Phase 10. The comments below name nprcgenekeepr's
-## documents, sessions and files.
+## packages (plan R31). The comments below name nprcgenekeepr's documents,
+## sessions and files.
 
 ## Tests for .positionMatingUnitForest() -- Pedigree Diagram Option 2, Slice 2
 ## (docs/planning/pedigree-diagram-option2-layout-design-plan.md D3/D4/D5).

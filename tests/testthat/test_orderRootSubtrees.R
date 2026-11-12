@@ -3,9 +3,8 @@
 ## Copied from nprcgenekeepr tests/testthat/test_orderRootSubtrees.R at
 ## nprcgenekeepr commit baef1e12c. Changes: each read of a rhesus file through
 ## system.file(..., package = "nprcgenekeepr") reads test_path("fixtures", ...)
-## instead (1; the source's lines 97-98). shrinkPedigree() is
-## helper-shrinkPedigreeStandIn.R's stand-in until Phase 10. The comments below
-## name nprcgenekeepr's documents, sessions and files.
+## instead (1; the source's lines 97-98). The comments below name
+## nprcgenekeepr's documents, sessions and files.
 
 ## Tests for .orderRootSubtrees() -- the root-subtree ordering pass (Shape A),
 ## Migration Path Phase 1: standalone, NOT yet wired into
