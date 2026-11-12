@@ -3,14 +3,15 @@
 ## Copied from nprcgenekeepr tests/testthat/test_positionMatingUnitForest.R at
 ## nprcgenekeepr commit baef1e12c. Changes: each read of a rhesus file through
 ## system.file(..., package = "nprcgenekeepr") reads test_path("fixtures", ...)
-## instead (15; the source's lines 532-533, 634-635, 703-704, 947-948,
-## 1130-1131, 1235-1236, 2049-2050, 2115-2116, 2460-2461, 2772-2773, 2813-2814,
-## 2866-2867, 2904-2905, 2971-2972, 3038-3039). The 3 tests that draw the layout
-## in Chrome with helper-live-render-positions.R (the source's lines 1996-2018,
-## 2562-2601 and 2603-2642, with the note above the last two, 2536-2560) are
-## copied with the drawing code in Phase 9 (plan R31). shrinkPedigree() is
-## helper-shrinkPedigreeStandIn.R's stand-in until Phase 10. The comments below
-## name nprcgenekeepr's documents, sessions and files.
+## instead (16; the source's lines 532-533, 634-635, 703-704, 947-948,
+## 1130-1131, 1235-1236, 2049-2050, 2115-2116, 2460-2461, 2617-2618,
+## 2772-2773, 2813-2814, 2866-2867, 2904-2905, 2971-2972, 3038-3039). The 3
+## tests that draw the layout in Chrome with helper-live-render-positions.R
+## (the source's lines 1996-2018, 2562-2601 and 2603-2642, with the note
+## above the last two, 2536-2560) came in Phase 9 with the drawing code's
+## packages (plan R31). shrinkPedigree() is helper-shrinkPedigreeStandIn.R's
+## stand-in until Phase 10. The comments below name nprcgenekeepr's
+## documents, sessions and files.
 
 ## Tests for .positionMatingUnitForest() -- Pedigree Diagram Option 2, Slice 2
 ## (docs/planning/pedigree-diagram-option2-layout-design-plan.md D3/D4/D5).
@@ -1998,6 +1999,30 @@ test_that(".positionMatingUnitForest produces exactly nrow(ped) +
 ## measure both trigger shapes' real-fixture frequency together."
 ## ==========================================================================
 
+test_that("getLiveRenderedPositions() (helper-live-render-positions.R)
+           returns the EXACT fixed x/y of a tiny 3-node fixture, ground-
+           truth-verified via a real chromote render (not a prediction) --
+           confirms the helper mirrors the app's own
+           visNetwork()/visPhysics(FALSE) call (R/modPedigree.R:611-614)
+           and correctly locates the vis.js Network instance via
+           document.getElementById('graph'+widgetDivId).chart.getPositions()", {
+  skip_if_not_installed("chromote")
+  skip_if_not_installed("htmlwidgets")
+  skip_on_cran()
+
+  nodes <- data.frame(id = c("A", "B", "C"), x = c(0, 120, 60),
+                       y = c(0, 0, 150), stringsAsFactors = FALSE)
+  edges <- data.frame(from = c("A", "C"), to = c("B", "A"),
+                       stringsAsFactors = FALSE)
+
+  rendered <- getLiveRenderedPositions(nodes, edges)
+
+  expect_setequal(rendered$id, nodes$id)
+  ord <- match(nodes$id, rendered$id)
+  expect_equal(rendered$x[ord], nodes$x, tolerance = 1e-6)
+  expect_equal(rendered$y[ord], nodes$y, tolerance = 1e-6)
+})
+
 ## (The zero-exact-coincidence gate on this real fixture -- "the single
 ## most important test in the whole migration" per the parent plan's own
 ## Phase 2 spec -- is already covered by the pre-existing test earlier in
@@ -2509,6 +2534,113 @@ test_that(".positionMatingUnitForest's conditional-shift rule holds for
           "formula target (disclosed, bounded, not a correctness defect)."),
     length(qualifyingUnits), sum(abs(diffs) <= 1e-6),
     sprintf("%.4f", min(abs(diffs))), sprintf("%.4f", max(abs(diffs)))))
+})
+
+## NOTE on the 2 tests below: running them live during Phase 2b found a HARD
+## zero rendered-pixel-coincidence gate is unachievable by EITHER algorithm,
+## for a reason with nothing to do with this migration's own correctness:
+## vis.js's own getPositions() rounds reported coordinates to the nearest
+## whole pixel (confirmed directly: 3 nodes fed x = 150/150.12/150.5 all
+## read back as x = 150), so the shared, pre-existing "cosmetic" 1e-3-raw-
+## unit exact-tie nudge used throughout .positionMatingUnitForest() -- xScale
+## =120, so 1e-3 * 120 = 0.12px -- is BELOW that rounding granularity and
+## renders pixel-identical to whatever it was nudged away from, despite
+## being genuinely float-distinct internally (the already-passing internal
+## zero-coincidence test above catches THAT, correctly; it was never
+## evidence of zero RENDERED overlap). Measured during Phase 2b on the real
+## 375-individual fixture, side by side, same script, same helper: OLD
+## algorithm 368/714 nodes pixel-coincident (182 groups), NEW (this
+## engine) 380/714 (190 groups) -- comparable, not a Phase 2b regression
+## (owner-directed decision at the time, via AskUserQuestion: report as a
+## diagnostic measurement, not a hard gate). Both tests below therefore
+## assert only what the adapter-parity charter actually requires (no id
+## silently collapses in vis.js's own DataSet -- confirmed clean, a
+## genuine, useful ground-truth check no internal-only test could perform)
+## and report the measured pixel-coincidence rate via message() for the
+## record. The OLD-vs-NEW side-by-side comparison itself is no longer
+## possible post-cutover (the OLD algorithm no longer exists as a separate
+## callable function) -- these tests now measure the production engine
+## alone.
+
+test_that(".positionMatingUnitForest's positions render with no id
+           silently collapsing in vis.js's own DataSet on the F1/'Track C'
+           9-subject fixture (P1/P2/X/A/Y/W/C1/GC/C2, consanguineous A x Y)
+           -- live chromote ground truth, not internal x/gen math alone
+           (this project's own memory note: code-level correctness is not
+           evidence of a correct rendered image); reports the measured
+           rendered-pixel-coincidence rate (see the NOTE above -- not a
+           hard gate, a pre-existing characteristic)", {
+  skip_if_not_installed("chromote")
+  skip_if_not_installed("htmlwidgets")
+  skip_on_cran()
+
+  f1 <- data.frame(
+    id   = c("P1", "P2", "X", "A", "Y", "W", "C1", "GC", "C2"),
+    sire = c(NA, NA, NA, "P1", "P1", NA, "A", "A", "W"),
+    dam  = c(NA, NA, NA, "P2", "P2", NA, "X", "Y", "Y"),
+    sex  = c("M", "F", "F", "M", "F", "M", "F", "M", "M"),
+    stringsAsFactors = FALSE
+  )
+  f1$gen <- findGeneration(f1$id, f1$sire, f1$dam)
+  forest <- .buildMatingUnitForest(f1)
+  pos <- .positionMatingUnitForest(f1, forest)
+
+  nodes <- data.frame(id = pos$id, x = pos$x * 120, y = pos$gen * 150,
+                       stringsAsFactors = FALSE)
+  edges <- .buildMinimalEdges(forest, nodes$id)
+
+  rendered <- getLiveRenderedPositions(nodes, edges)
+
+  expect_equal(nrow(rendered), nrow(nodes),
+               info = "vis.js DataSet must not silently collapse any id")
+  expect_setequal(rendered$id, nodes$id)
+
+  key <- paste(rendered$x, rendered$y)
+  nCoincident <- sum(duplicated(key) | duplicated(key, fromLast = TRUE))
+  message(sprintf(
+    "F1/Track-C live-render measurement: %d/%d nodes rendered
+     pixel-coincident (see the NOTE above these 2 tests).",
+    nCoincident, nrow(nodes)))
+})
+
+test_that(".positionMatingUnitForest's positions render with no id
+           silently collapsing in vis.js's own DataSet, among all 714
+           real/duplicate/union nodes, on the real 375-individual bundled
+           fixture -- live chromote ground truth on production scale,
+           completing the parent plan's own required live-render deliverable
+           for Phase 2 ('to verify the BJL adapter's real-fixture behavior
+           against ground truth, not just internal x/gen values'); reports
+           the measured rendered-pixel-coincidence rate (see the NOTE
+           above)", {
+  skip_if_not_installed("chromote")
+  skip_if_not_installed("htmlwidgets")
+  skip_on_cran()
+
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  forest <- .buildMatingUnitForest(ped)
+  pos <- .positionMatingUnitForest(ped, forest)
+
+  nodes <- data.frame(id = pos$id, x = pos$x * 120, y = pos$gen * 150,
+                       stringsAsFactors = FALSE)
+  edges <- .buildMinimalEdges(forest, nodes$id)
+  rendered <- getLiveRenderedPositions(nodes, edges, width = 3000L,
+                                        height = 3000L, waitSeconds = 3,
+                                        loadTimeout = 60)
+
+  expect_equal(nrow(rendered), nrow(nodes),
+               info = "vis.js DataSet must not silently collapse any id")
+  expect_setequal(rendered$id, nodes$id)
+
+  key <- paste(rendered$x, rendered$y)
+  nCoincident <- sum(duplicated(key) | duplicated(key, fromLast = TRUE))
+  message(sprintf(
+    "Real-375 live-render measurement: %d/%d nodes rendered
+     pixel-coincident (see the NOTE above these 2 tests; historical OLD-
+     algorithm baseline measured during Phase 2b: 368/714).",
+    nCoincident, nrow(nodes)))
 })
 
 ## ---- S667 RED: disconnected-component separation ------------------------
