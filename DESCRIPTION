@@ -20,8 +20,11 @@ Imports:
     methods,
     quadprog,
     stats,
-    utils
+    utils,
+    visNetwork
 Suggests:
+    chromote,
+    htmlwidgets,
     kinship2,
     mockery,
     testthat (>= 3.0.0),
