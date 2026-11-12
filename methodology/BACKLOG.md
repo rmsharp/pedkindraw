@@ -8,21 +8,30 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 8: copy the layout engine** (READY, Effort L: the plan estimates 2 sessions) -- plan Phase 8 (the row
-      "Layout engine"): `makePedigreeDiagramData.R` (3,110 lines at nprcgenekeepr `baef1e12c`; it also holds
-      `makePedigreeMatingLayout()` at its line 1642 and the clean-room `.solveJointQP()` at 1504),
-      `positionTreeApportion.R` (437), `orderRootSubtrees.R` (213), `penaltyCrossprod.R` (128),
-      `affectedConditions.R` (201), `deceasedSlash.R` (91), `comparePedigreeStructure.R` (374); `Imports: quadprog`
-      (Matrix is in since Phase 7). Measured S8: all seven unchanged from `baef1e12c` to nprcgenekeepr `1ed1402e9`.
-      First a picker on how to split the two sessions (as R19 split Phase 6), then the Learning 9 survey (also grep
-      `::` calls: codetools does not list them) and the test count, before the pre-RED picker. Uses `kinship()`
-      (`makePedigreeMatingLayout(kinshipMatrix = )`) and `sexCodes` (R25).
+- [ ] **Phase 8, second session: the kinship2 comparison, fidelity cases, push and CI** (READY, Effort M-L) -- plan
+      R30. The first session (S9) copied all the layout code and its 295 tests. Left: (1) RED/GREEN for
+      `R/comparePedigreeStructure.R` (374 lines at nprcgenekeepr `baef1e12c`, 4 internal functions, reached by no
+      export; calls `utils::capture.output()`, imported since S9) with `test_comparePedigreeStructure.R` (38 tests, 1,240
+      lines; 9 `skip_if_not_installed("kinship2")`) and `helper-comparePedigreeStructure.R` (131): their 16
+      `nprcgenekeepr:::` calls (helper `:113-118`, test `:505-1020`) become plain calls, and 2 `system.file()` rhesus
+      reads (test `:662`, `:1036`) become `test_path("fixtures", ...)`; S9's survey found nothing else they need
+      from nprcgenekeepr. (2) The layout's cases in `tools/compareResultsWithNprcgenekeepr.R`'s `runCases()` (both
+      exports, both edge styles, twins, a `kinshipMatrix`, the error stops), sized far below kinship's 2,000 (measured
+      S9: 1.0 s direct and 1.9 s rectilinear on the 375-animal rhesus pedigree, 180 s direct on the 3,694-animal
+      `examplePedigree`; nprcgenekeepr's app draws rectilinear only up to 400 animals), each checked to reach its branch (Learning 11): 65 lines of the
+      new code no copied test reaches (`R/makePedigreeDiagramData.R` 570, 757, 980, 1275, 1321, 2247-2449 in parts,
+      2546, 2714, 3043-3047; `R/orderRootSubtrees.R` 118, 131; `R/positionTreeApportion.R` 388-435 in parts).
+      (3) Push once (S8's 2 close-out commits and all of S9's), read each CI job's `Status:` line; then Phase 8's
+      DONE close-out (plan status block and row 8, `methodology/ROADMAP.md`).
 
 - [ ] **Phases 9-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: the copy
       slices for the renderer and shrink (9-10; 10 is nprcgenekeepr's clean-room code under C2), then
       new work (11-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE
       criteria: the plan's section 4; summary: `methodology/ROADMAP.md`. Each phase gets its own item here when it
-      is next.
+      is next. Phase 9 also takes `deceasedSlash.R`, `affectedConditions.R`'s lines 77-201 (then deletes
+      `DIVERGENCE.md`'s three rows) and the 3 Chrome tests of `test_positionMatingUnitForest.R` (R31, R32); Phase 10
+      deletes `tests/testthat/helper-shrinkPedigreeStandIn.R`, so the three Track B tests call the real
+      `shrinkPedigree()`.
 
 ## Waiting on Mark
 
@@ -81,7 +90,11 @@ issues).*
       `tests/testthat/test_kinshipHasBothParentsHelp.R:159-162` will then leak a warning, as pedkindraw's copy did:
       `hasBothParents()` warns twice for 3 IDs and one `expect_warning()` catches one. pedkindraw's copy expects both
       with two `expect_warning()` calls (`tests/testthat/test_kinshipHasBothParentsHelp.R`, the last test); the
-      conversion can use the same lines so the copies match again. For an nprcgenekeepr session, like the item above.
+      conversion can use the same lines so the copies match again. S9: five more, the only lines in nprcgenekeepr's
+      tests that save `expect_message()`'s value (`tests/testthat/test_makePedigreeMatingLayout.R:1622`, `:1644`,
+      `:1662`, `:1678`, `:1950` at `baef1e12c`; edition 3 returns the message); pedkindraw's copy assigns inside
+      (gate `tests-no-saved-expect-condition`). And R33: that file's tests at `:2074` and `:2365` let a collision
+      warning through, which pedkindraw's copy handles. For an nprcgenekeepr session, like the item above.
 
 ## Later
 
