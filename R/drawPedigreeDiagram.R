@@ -1,8 +1,8 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/drawPedigreeDiagram.R at nprcgenekeepr commit
-## 471589138 (plan R34: later than the other copies' baef1e12c, for its
-## .checkOnClick(); unchanged in nprcgenekeepr's commits to 392dd347e).
+## a85311021 (S11 copied it at 471589138 for its .checkOnClick(), plan R34;
+## S12 ported S1159's legend fill, plan R37).
 ## Changes: help text only; the code is unchanged. The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
@@ -151,15 +151,20 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
                   rep("hexagon", nrow(legendConditions)), "image"),
         # Issue #133 Slice 2 (D6): the "Affected" row shares this SAME
         # addNodes data frame -- a second visLegend() call would
-        # overwrite, not stack (confirmed S485). The 5 sex-shape rows
-        # get NA here, preserving their existing unset-color rendering;
-        # only the new row carries a color, reusing Slice 1's D8 swatch.
-        # "hexagon" (not "box") -- confirmed hands-on this session that
-        # vis.js sizes "box" to its label text (renders as a filled
-        # pill/badge), breaking the fixed-size-icon-plus-separate-label
-        # style all 5 existing rows share; "hexagon" is a fixed-size icon
-        # like the other 5, none of which claim it.
-        color = c(NA, NA, NA, NA, NA, legendConditions$color, NA),
+        # overwrite, not stack (confirmed S485). "hexagon" (not "box") --
+        # confirmed hands-on this session that vis.js sizes "box" to its
+        # label text (renders as a filled pill/badge), breaking the
+        # fixed-size-icon-plus-separate-label style all 5 existing rows
+        # share; "hexagon" is a fixed-size icon like the other 5, none of
+        # which claim it.
+        # S1159: the fill alone, as the diagram's animals get it. The 5
+        # sex rows are open (white) like an unaffected animal; left unset
+        # they took vis.js's default light-blue fill. A single color
+        # string would also give an outline 20% darker (vis.js's
+        # parseColor), so the outline stays vis.js's default blue, the
+        # diagram's own.
+        color.background = c(rep(.affectedColor(FALSE), 5L),
+                             legendConditions$color, NA),
         # S1028: the "Deceased" row is a picture (a circle with the
         # slash), after "Affected" and before the edge rows, so the last
         # legend row stays the short "?" one (S921). Measured in the real
