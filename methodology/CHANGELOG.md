@@ -15,6 +15,11 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-12 · [ad hoc] S13, after its close-out: a backlog item, tests for full coverage (Mark's request)
+- **Change:** `methodology/BACKLOG.md`: a READY item to add tests until the suite reaches every statement in `R/`, measured from S13's `covr::package_coverage(type = "tests")` run on `82f2ef3`'s code: 97.16%, 45 of 1,811 statements missed in 7 copied files, listed by file and line (the results tool's cases reach 4 of them); the new tests to go in pedkindraw's own test files, since the copied files stay as copied. The Phase 11 item rewrapped (one line ran past the margin). `SESSION_NOTES.md`: the next orient picker offers it beside Phase 11.
+- **Commit/PR:** this entry's commit · **Session:** S13 · **Verified:** the line list read from the saved coverage object; `R/` unchanged since `82f2ef3` (`git log -1 -- R/`); `comparePedigreeStructure.R:160` is the defensive `return(NULL)` the plan's "Done 8" names.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-12 · [ad hoc] S13 push: `master` to GitHub once at `d437228` (8 commits, S12's two close-out commits through S13's GREEN 2), CI green on five jobs at the first attempt
 - **Change:** `git push origin master` (`11b62cd..d437228`); CI run `43326408939`: 5/5 `Status: OK`, attempt 1; `FAIL 0 | WARN 0` on each: macOS PASS 2165 SKIP 0, Windows PASS 2164 SKIP 1, Ubuntu devel, release and oldrel-1 PASS 2154 SKIP 2 (each 79 more than S12's run: the 24 shrink tests).
 - **Commit/PR:** none (push); S13's two close-out commits after it are not pushed

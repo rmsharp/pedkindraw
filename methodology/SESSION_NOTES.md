@@ -11,8 +11,9 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ## ACTIVE TASK
 **Task:** **Plan Phase 11, the shrink helpers and `bitSize()` as exports** (`methodology/BACKLOG.md:11`; plan row
 `docs/planning/standalone-pedigree-package-plan.md:488`; contract section 4.3,
-`docs/planning/pedkindraw-api-contract.md:150-163`). The first new-code phase (11-15): nothing to copy. It is the
-only READY item; the orient picker still asks Mark (go / hold).
+`docs/planning/pedkindraw-api-contract.md:150-163`). The first new-code phase (11-15): nothing to copy. The orient
+picker asks Mark: Phase 11, or the other READY item, **tests for full coverage** (`methodology/BACKLOG.md:24`, added
+at Mark's request after S13's close-out: 45 of 1,811 statements the tests miss, by file and line), or hold.
 **Status:** READY. Phase 10 DONE (S13) and with it the copy slices, Phases 6-10: suite 505 tests, 0 failed, WARN 0;
 `R CMD check --as-cran` R16's NOTE only; results tool 600 of 600 identical against nprcgenekeepr `ec56cb02e`; drift
 tool 90 functions, 0 differ; **pushed through `d437228`** (CI run `43326408939` 5/5 `Status: OK`); S13's two
@@ -123,3 +124,5 @@ expectations; lint 0; roxygen idempotent; drift 90 functions, 0 differ; results 
   `:160-162`, really `:161-163` (fixed in close-out 2); a summary script printed a dead "stopped early" line
   (disclosed, not reported).
 **Ledger:** `CHANGELOG.md` S13 entries (the session and the push).
+**After close-out:** Mark asked for a backlog item to add tests for full coverage; added (`methodology/BACKLOG.md:24`),
+measured from S13's coverage run, with its own ledger entry.

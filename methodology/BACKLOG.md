@@ -14,11 +14,27 @@ issues).*
       `findAvailAffected(ped, genotyped, affected, affstatus)`, ids in a data frame, return shapes and errors settled
       in RED (contract `:161-163`). New code, not a copy: nprcgenekeepr's clean-room rewrite (its S1139, `e2bba9fb2`)
       dropped the old seven helpers (`.bitSizeOf()` to `.findAvailAffected()`, ports of the kinship2 functions these
-      exports are named after; contract `:70`), and the copy (S13) holds only `.bitSize(sireIdx, damIdx, present)`, `.isParent()`, `.removalPass()` and
-      `.checkShrinkInput()`, which take row positions, not ids. `R/shrinkPedigree.R` is copied code: changing it makes
-      a drift row (plan section 5), so the exports go in a file of their own. A pre-RED picker first: whether they
-      call the copied internals or are written apart (R11 governs anything written from kinship2's behaviour), and
-      whether each must give `shrinkPedigree()`'s answer for its tier on the Phase 1 pedigrees.
+      exports are named after; contract `:70`), and the copy (S13) holds only `.bitSize(sireIdx, damIdx, present)`,
+      `.isParent()`, `.removalPass()` and `.checkShrinkInput()`, which take row positions, not ids.
+      `R/shrinkPedigree.R` is copied code: changing it makes a drift row (plan section 5), so the exports go in a
+      file of their own. A pre-RED picker first: whether they call the copied internals or are written apart (R11
+      governs anything written from kinship2's behaviour), and whether each must give `shrinkPedigree()`'s answer
+      for its tier on the Phase 1 pedigrees.
+
+- [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
+      the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
+      the code of `82f2ef3` (`R/` unchanged since): 97.16%, 45 of 1,811 statements missed, in 7 files (covr's first
+      line of each statement): `R/makePedigreeDiagramData.R` 31 (570, 757, 980, 1275, 1321, 2247, 2268, 2309, 2319,
+      2320, 2324, 2336, 2337, 2339, 2340, 2341, 2346, 2360, 2372, 2403, 2404, 2405, 2406, 2407, 2411, 2428, 2445,
+      2546, 2714, 3043, 3044); `R/positionTreeApportion.R` 6 (388, 392, 395, 427, 431, 434);
+      `R/orderRootSubtrees.R` 2 (118, 131); `R/rbindFill.R` 2 (30, 35); `R/shrinkPedigree.R` 2 (97, 278);
+      `R/comparePedigreeStructure.R` 1 (160); `R/kinship.R` 1 (135). The results tool's cases reach 4 of them
+      (`kinship.R:135`, `rbindFill.R:35`, `shrinkPedigree.R:97` and `:278`), but cases are not tests. All 7 files are
+      copied from nprcgenekeepr and stay as copied (drift rule, plan section 5), so the new tests go in pedkindraw's
+      own test files, not into the copied ones, whose headers list every change (or as a pre-RED picker rules).
+      Before calling a line unreachable, work out what input reaches it (Learning 11; S10 called
+      `comparePedigreeStructure.R:160` "a defensive return"). Re-measure first; split by file if one session cannot
+      take all 45.
 
 - [ ] **Phases 12-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: new work
       (12-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE criteria: the
