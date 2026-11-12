@@ -196,18 +196,19 @@ manifest existed are not re-judged.
 ```handoff
 session: S12
 date: 2026-11-12
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: port nprcgenekeepr S1159's legend fill into drawPedigreeDiagram() (plan R37): RED 392dd347e, GREEN a85311021, REFACTOR 4283e3502 copied test-first; DIVERGENCE.md's row deleted; push, CI (IN PROGRESS)
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:23 (the port item), DIVERGENCE.md:14 (the R37 row)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 8
+active_task: the R37 port is DONE (S12): drawPedigreeDiagram() matches nprcgenekeepr 4283e3502 (S1159's legend fill: the five sex symbols open, as the diagram draws an unaffected animal), DIVERGENCE.md has no row; next is plan Phase 10, shrink, the last copy slice
+what_was_done: claim c93a465; RED 81faeb6 (392dd347e's test change by patch -F0: .legendFill() and three legend-colour checks; 2 tests fail with 6 expectations, as nprcgenekeepr's RED); GREEN fa06297 (a85311021's code change: color.background, the sex rows .affectedColor(FALSE); 12 tests with nprcgenekeepr's 69 expectations); REFACTOR 11b62cd (4283e3502's three legend tables, widgets 16 of 16 identical to GREEN's; the DIVERGENCE.md row deleted); push d97ccfa..11b62cd, CI run 43306885895 5/5 Status OK; close-out 94afb07 (plan status and R37, ROADMAP, CLAUDE.md Learnings 15-16) and close-out 2. Mark kept the README in Phase 16 (asked mid-session); BACKLOG.md is methodology/BACKLOG.md since S6
+next_steps: Orient; check nprcgenekeepr since 45e0d8bfe (log and status, each gate: Learning 15); survey R/shrinkPedigree.R's 5 functions (Learning 9); pre-RED picker: the 3 nprcgenekeepr-only test files (likely out, as R35) and when the stand-in goes (methodology/BACKLOG.md:11); RED copies test_shrinkPedigree.R (24 tests); GREEN copies R/shrinkPedigree.R (example types its own pedigree, R21) and deletes the stand-in; runCases() shrink cases; push; CI; "Done 10" (plan :436 is the model)
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Phase 10), docs/planning/standalone-pedigree-package-plan.md:380 (row 10), tests/testthat/helper-shrinkPedigreeStandIn.R:13 (the stand-in), tests/testthat/test_solveJointQP.R:65, test_orderRootSubtrees.R:182, test_positionMatingUnitForest.R:2394 (its callers), tools/makeComputedTestFixtures.R:73 (its fixture), tools/compareResultsWithNprcgenekeepr.R:201 (cases), CLAUDE.md:171 (Learning 16)
+gotchas: the stand-in stop()s on any call but the two saved Track B ones, so a RED that keeps it fails on its error, not a missing function (a pre-RED pick); its fixture trackBShrunk.rds loses its reader when it goes; R CMD check outside the project folder needs R_LIBS and R_LIBS_USER set to the renv library; zsh stops an && chain on an unmatched glob; name a commit to the results tool while nprcgenekeepr's session is editing; test_comparePedigreeStructure.R:759 only mentions shrinkPedigree() in a comment
+runtime_smoke: tests 481 FAIL 0 WARN 0 SKIP 0; lint 0; roxygen idempotent; drift tool exit 0, 85 functions, 0 differ; results tool against nprcgenekeepr 45e0d8bfe 540 of 540 identical, kinship largest difference 0; R CMD check --as-cran Status 1 NOTE, the allowed one, PASS 2079 SKIP 3; coverage 97.11%, R/drawPedigreeDiagram.R 91 of 91 lines; headless Chrome: legend sex rows #97C2FC before, #FFFFFF / #2B7CE9 after (as the unaffected animals), Affected #CC79A7 / #2B7CE9; CI run 43306885895 5/5; quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-12 · [ad hoc] S12: nprcgenekeepr S1159's legend fill ported into `drawPedigreeDiagram()` (plan R37); `DIVERGENCE.md` has no row"
+commit: 94afb07
 ```
+The port took one short session as estimated, in nprcgenekeepr's own three steps (its REFACTOR, made after S11's handoff, found at Orient). Mark's two mid-session questions (the README, BACKLOG.md) were answered by a picker and a plain answer, with no change of scope. Model: Claude Opus 5.5, one tier.
 
 ```handoff
 session: S11

@@ -10,25 +10,16 @@ issues).*
 
 - [ ] **Phase 10: shrink, `shrinkPedigree()`** (READY, Effort M) -- plan row 10 (C2, with C15-C16: it stops with a
       plain message on malformed input and breaks ties by byte order). At nprcgenekeepr `baef1e12c` (measured S11;
-      both files unchanged to `fa71ab65d`): `R/shrinkPedigree.R` (303 lines; `shrinkPedigree()` exported, and
+      both files unchanged to `45e0d8bfe`, S12): `R/shrinkPedigree.R` (303 lines; `shrinkPedigree()` exported, and
       `.checkShrinkInput()`, `.removalPass()`, `.isParent()`, `.bitSize()`; no `::` call in its code: its help names
       `kinship2::pedigree.shrink()` (`:121`) and its example loads `nprcgenekeepr::examplePedigree` (`:210`), so the
       example types its own pedigree, R21) and `tests/testthat/test_shrinkPedigree.R` (455 lines, 24 tests).
       GREEN deletes `tests/testthat/helper-shrinkPedigreeStandIn.R`, so the three Track B tests call the real
-      function. Three more nprcgenekeepr test files name it and read its own records or tutorial
-      (`test_cleanroomProvenance.R:30-33`, `test_inventoryTutorialSections.R:108`,
+      function (whether RED or GREEN deletes it is a pre-RED pick: kept, it makes the copied tests fail on its own
+      `stop()`; its fixture `trackBShrunk.rds` then has no reader, S12). Three more nprcgenekeepr test files name it
+      and read its own records or tutorial (`test_cleanroomProvenance.R:30-33`, `test_inventoryTutorialSections.R:108`,
       `test_snapshotTutorialSection.R:11`): likely left out, as R35 left out its app and docs tests (a pre-RED
       pick). Survey first (Learning 9), and re-check nprcgenekeepr at each phase gate (Learning 15).
-
-- [ ] **Port nprcgenekeepr S1159's legend fill into `drawPedigreeDiagram()`** (READY, Effort S) -- plan R37;
-      `DIVERGENCE.md`'s one row. nprcgenekeepr `392dd347e` changed the three legend-colour checks of
-      `test_drawPedigreeDiagram.R` (pedkindraw's copy `tests/testthat/test_drawPedigreeDiagram.R:89`, `:118`, `:127`;
-      a new helper `.legendFill()`), and `a85311021` changed the code: the legend's `color` column became
-      `color.background`, the five sex rows `.affectedColor(FALSE)` (pedkindraw has it,
-      `R/makePedigreeDiagramData.R:199`). A session of its own (the drift rule): copy the test change (RED: those
-      tests fail), then the code (GREEN), update both files' headers to the new commits, delete the row; the results
-      tool then runs against nprcgenekeepr's HEAD. Its `test-e2e-pedigree-module.R` browser check is its app's (R35).
-      Can come before or after Phase 10 (Mark's pick).
 
 - [ ] **Phases 11-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: new work
       (11-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE criteria: the
