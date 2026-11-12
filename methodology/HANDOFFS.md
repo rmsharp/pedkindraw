@@ -196,18 +196,19 @@ manifest existed are not re-judged.
 ```handoff
 session: S11
 date: 2026-11-12
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 9, the renderer: drawPedigreeDiagram(), R/deceasedSlash.R and R/affectedConditions.R lines 77-201 copied test-first from nprcgenekeepr, fidelity cases, push, CI, Phase 9 DONE (IN PROGRESS)
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 9 item)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 8
+active_task: plan Phase 9 is DONE (S11, R34-R37): drawPedigreeDiagram() and its drawing helpers copied test-first from nprcgenekeepr (471589138 and baef1e12c), 12 tests and the 3 Chrome tests, the fidelity tool's drawing cases, CI green with Chrome on all five jobs; next is Mark's pick between porting nprcgenekeepr S1159's legend fill (R37, recommended first) and Phase 10, shrink
+what_was_done: claim 93c929d; rulings R34-R36 2c156c4 (copy drawPedigreeDiagram.R at 471589138; leave nprcgenekeepr's 4 Shiny-module tests and its docs test out; rewrite the help's app sentences); RED 246d287 visNetwork, chromote, htmlwidgets and 22 dependencies locked from the dated repository (the tests skip without visNetwork); RED fd7aec3 test_drawPedigreeDiagram.R's 12 tests, the live-render helper, the 3 Chrome tests put back, CI's Chrome steps, all by asserting script, 12 errors on the missing function; GREEN cfd7d0e deceasedSlash.R and affectedConditions.R's lines 76-201, DIVERGENCE.md's 3 rows deleted; GREEN 8f02d44 drawPedigreeDiagram() with .checkOnClick(), code identical, help per R36, 65 expectations as nprcgenekeepr's; GREEN 8d2230a the results tool's 6 drawing cases and a commit argument (git archive), 540 of 540 identical; d97ccfa R37 and the DIVERGENCE.md row for S1159's a85311021, committed mid-session; REFACTOR none (Mark's pick); pushed once 6db58ca..d97ccfa, CI run 43278560876 5/5 Status OK first attempt; close-out dc436b6 (plan Done 9, ROADMAP, BACKLOG, Learnings 14-15) and close-out 2 (notes, receipt, ledger)
+next_steps: Orient; check nprcgenekeepr since 025b9a1fc (log and status, at every gate: Learning 15); picker (A) port S1159 (BACKLOG :23): RED copies 392dd347e's three legend-colour checks (tests/testthat/test_drawPedigreeDiagram.R:89, :118, :127, helper .legendFill()), GREEN a85311021's hunk at R/drawPedigreeDiagram.R:154-162, headers to the new commits, delete DIVERGENCE.md:14, results tool against HEAD, push, CI; or (B) Phase 10 (BACKLOG :11): survey R/shrinkPedigree.R (303 lines, 5 functions), pre-RED picker on the three nprcgenekeepr-only test files, RED test_shrinkPedigree.R (24 tests), GREEN the file and delete helper-shrinkPedigreeStandIn.R, fidelity cases, push, CI, DONE
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Phase 10), :23 (the S1159 port), DIVERGENCE.md:14, R/drawPedigreeDiagram.R:162 (the legend colour line), :306 (.checkOnClick), R/makePedigreeDiagramData.R:199 (.affectedColor), tests/testthat/test_drawPedigreeDiagram.R:89, tools/compareResultsWithNprcgenekeepr.R:41 (runCases), :425-481 (Phase 9 cases), :505-525 (commit argument), docs/planning/standalone-pedigree-package-plan.md:131-134 (R34-R37), :380 (row 10), :436 (Done 9), CLAUDE.md:169-170 (Learnings 14-15)
+gotchas: nprcgenekeepr's sessions run beside ours and changed drawPedigreeDiagram() mid-copy (S1159): re-check it at each gate; the results tool refuses an edited working copy unless given a commit, and then reads the pedigrees from the clone's folder (7 synthetic ones are git-ignored); whole widgets compare equal only while both renv libraries link one visNetwork cache entry; a skip_if_not_installed() guard makes RED vacuous until the package is installed (Learning 14); R CMD check skips the 3 Chrome tests (skip_on_cran), the suite and CI run them; setup-chrome warns on Windows (harmless); the Rscript -e backslash trap; $TMPDIR is not the scratchpad
+runtime_smoke: tests 481 FAIL 0 WARN 0 SKIP 0 (12 drawing tests with nprcgenekeepr's 65 expectations test for test; the forest file's 221); lint 0; roxygen idempotent; R CMD check --as-cran Status 1 NOTE, the allowed one, tests PASS 2075 SKIP 3 (Chrome tests on CRAN); coverage 97.10%, the 3 new files 100% by tests and by cases; drift tool exit 0 (85 copied functions, 1 recorded, R37); results tool exit 0 against nprcgenekeepr 392dd347e, 540 of 540 identical, kinship 132 matrices largest difference 0; the help example drawn in headless Chrome (slash, sections, legend); CI run 43278560876 5/5 Status OK, FAIL 0 WARN 0 on each (macOS PASS 2082, Windows 2081 SKIP 1, Ubuntu 2071 SKIP 2: the math-library guards), the Chrome tests on all five; quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-12 · [ad hoc] S11: plan Phase 9, the renderer, copied test-first; Phase 9 DONE"
+commit: dc436b6
 ```
+Phase 9 finished in one session as planned; every picker was answered at once, including one no plan foresaw (nprcgenekeepr's S1159 changing the function mid-copy, R37). Self 8: the survey found five things the handoff lacked and turned each into a ruling or gate option before code; every copy proven by machine; counts matched nprcgenekeepr's own runs; minus slips caught before commit (a file in $TMPDIR, an off-by-one assertion, the backslash trap, a 5-pedigree archive run, a wrong commit count in a picker, a miscount in the ROADMAP). S10's handoff scored 8: right where measured; it missed the Shiny-module tests, the RED skip guard and the CI Chrome steps.
 
 ```handoff
 session: S10
