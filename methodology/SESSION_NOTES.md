@@ -93,6 +93,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S10's entries were removed in S3-S11 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 12 Did
+**Deliverable:** port nprcgenekeepr S1159's legend fill into `drawPedigreeDiagram()` (plan R37): its RED `392dd347e`,
+GREEN `a85311021` and REFACTOR `4283e3502` copied test-first; `DIVERGENCE.md`'s row deleted; push, CI (IN PROGRESS)
+**Started:** 2026-11-12 · **Model:** Claude Opus 5.5 · Mark picked "Port the legend fix" at the orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 10 Handoff Evaluation (by Session 11)
 **Score: 8/10.**
 - **What helped:** the nprcgenekeepr diff command (it found `drawPedigreeDiagram.R` changed, as said); the `::` counts

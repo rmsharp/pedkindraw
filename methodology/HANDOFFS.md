@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S12
+date: 2026-11-12
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: port nprcgenekeepr S1159's legend fill into drawPedigreeDiagram() (plan R37): RED 392dd347e, GREEN a85311021, REFACTOR 4283e3502 copied test-first; DIVERGENCE.md's row deleted; push, CI (IN PROGRESS)
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:23 (the port item), DIVERGENCE.md:14 (the R37 row)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S11
 date: 2026-11-12
 status: complete
