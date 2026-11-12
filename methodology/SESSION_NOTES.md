@@ -9,68 +9,65 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** **Plan Phase 10, shrink**: `shrinkPedigree()`, the last copy slice (`methodology/BACKLOG.md:11`; plan row
-`docs/planning/standalone-pedigree-package-plan.md:380`). It is the only READY item; the orient picker still asks
-Mark (go / hold).
-**Status:** READY. The R37 port is DONE (S12): `drawPedigreeDiagram()` matches nprcgenekeepr `4283e3502`,
-`DIVERGENCE.md` has no row; suite 481 tests, 0 failed, WARN 0; `R CMD check --as-cran` R16's NOTE only; results tool
-540 of 540 identical against nprcgenekeepr `45e0d8bfe`; drift tool exit 0, 85 functions, 0 differ; **pushed through
-`11b62cd`** (CI run `43306885895` 5/5 `Status: OK`); S12's two close-out commits are not pushed.
-**Plan:** `docs/planning/standalone-pedigree-package-plan.md:33` (Next), `:380` (row 10), `:436` ("Done 9", the model
-for "Done 10").
-**Session boundary:** one session (an estimate: 303 source lines and 24 tests, against Phase 9's ~1,100 lines).
+**Task:** **Plan Phase 11, the shrink helpers and `bitSize()` as exports** (`methodology/BACKLOG.md:11`; plan row
+`docs/planning/standalone-pedigree-package-plan.md:488`; contract section 4.3,
+`docs/planning/pedkindraw-api-contract.md:150-163`). The first new-code phase (11-15): nothing to copy. It is the
+only READY item; the orient picker still asks Mark (go / hold).
+**Status:** READY. Phase 10 DONE (S13) and with it the copy slices, Phases 6-10: suite 505 tests, 0 failed, WARN 0;
+`R CMD check --as-cran` R16's NOTE only; results tool 600 of 600 identical against nprcgenekeepr `ec56cb02e`; drift
+tool 90 functions, 0 differ; **pushed through `d437228`** (CI run `43326408939` 5/5 `Status: OK`); S13's two
+close-out commits are not pushed.
+**Plan:** `docs/planning/standalone-pedigree-package-plan.md:34` (Next), `:484-488` (Phases 11-15, row 11), `:101`
+(R3), `:109` (R11); contract `:154-157` (the four interfaces), `:161-163` (ids in a data frame; shapes and errors
+settled in RED), section 3 from `:58` (what R11's rewrite means).
+**Session boundary:** one session (the plan's "one session each", `:484`).
 **Priority:** HIGH.
 
 ### What You Must Do
-1. Orient, then check nprcgenekeepr (Learning 15): `git -C ../nprcgenekeepr log --oneline 45e0d8bfe..HEAD --
-   R/shrinkPedigree.R tests/testthat/test_shrinkPedigree.R R/drawPedigreeDiagram.R` and
-   `git -C ../nprcgenekeepr status --short`. At `45e0d8bfe` both shrink files are unchanged since `baef1e12c`
-   (measured S12). Repeat both at every phase gate.
-2. Survey (Learning 9): `codetools::findGlobals()` on each of the file's 5 functions (`shrinkPedigree()` exported;
-   `.checkShrinkInput()`, `.removalPass()`, `.isParent()`, `.bitSize()`), and grep for `::` (S11: none in the code;
-   the help names `kinship2::pedigree.shrink()` at `:121`, the example loads `nprcgenekeepr::examplePedigree` at
-   `:210`, so the example types its own pedigree, R21).
-3. The pre-RED picker, plain words (Learnings 1-2), two questions: (a) which of the 3 nprcgenekeepr-only test files
-   that name `shrinkPedigree()` to leave out (`test_cleanroomProvenance.R:30-33`, `test_inventoryTutorialSections.R:108`,
-   `test_snapshotTutorialSection.R:11`; each reads nprcgenekeepr's own records or tutorial, so likely out, as R35);
-   (b) when the stand-in goes (gotcha below).
-4. RED copies `test_shrinkPedigree.R` (455 lines, 24 tests); GREEN copies `R/shrinkPedigree.R` (its example typing its
-   own pedigree) and deletes `tests/testthat/helper-shrinkPedigreeStandIn.R`; fidelity cases in `runCases()`
-   (Learning 11: read covr's uncovered lines over the cases and over the tests); push; CI; "Done 10" in the plan.
+1. Orient, and run the drift tool (`Rscript tools/compareWithNprcgenekeepr.R ../nprcgenekeepr`): nprcgenekeepr's
+   sessions keep running (its S1161 was active through S13), and a change there to a copied file needs a port or a
+   `DIVERGENCE.md` row.
+2. Read the contract's 4.3 rows and section 3, and kinship2's own help for the four (`?kinship2::bitSize`,
+   `findUnavailable`, `findAvailNonInform`, `findAvailAffected`; kinship2 1.9.6.2 is installed here, Suggests, and
+   exports all four, measured S13). R11: write from the published method, not kinship2's source.
+3. A pre-RED picker, plain words and measured first (Learnings 1, 2, 17), on: (a) whether the four call the copied
+   internals (`R/shrinkPedigree.R:16` `.bitSize()`, `:22` `.isParent()`, `:33` `.removalPass()`, `:79`
+   `.checkShrinkInput()`, all on row positions; `shrinkPedigree()` makes the positions at `:240-241`) or are written
+   apart; (b) their return shapes and errors; (c) **Phase 11's DONE criteria**, which the plan does not state
+   (gotcha); (d) what checks them: each against `shrinkPedigree()`'s own tier (for example `findUnavailable()`
+   against `$idList$unavail`), and/or against kinship2's function, skipped without kinship2 (R7). Record the picks as
+   rulings R40 on (plan section 2), in their own commit before RED.
+4. RED: the new tests. GREEN: a new file (not `R/shrinkPedigree.R`), roxygen exports. Checks: suite WARN 0, lint,
+   roxygen, drift 0 differ, `R CMD check --as-cran`, coverage of the new file; push; CI; "Done 11" in the plan.
 
 ### Gotchas
-- **The stand-in shapes RED.** `tests/testthat/helper-shrinkPedigreeStandIn.R` defines `shrinkPedigree()` for every
-  test file: it returns nprcgenekeepr's saved result for the two Track B calls and `stop()`s on anything else. So if
-  RED keeps it, the 24 copied tests fail on the stand-in's error, not on a missing function. Deleting it in RED
-  instead makes the 3 Track B call sites fail too (`test_orderRootSubtrees.R:182`, `test_solveJointQP.R:65`,
-  `test_positionMatingUnitForest.R:2394`), for the right reason. Mark's pick. Once the stand-in goes, `tests/testthat/fixtures/trackBShrunk.rds` and `tools/makeComputedTestFixtures.R:19`,
-  `:73-74` have no reader: delete them or keep them as a check, also a pick.
-- **`patch -p1 -F0`** applies a nprcgenekeepr diff exactly (Learning 16). Phase 10 is a fresh copy, not a port, so
-  Learning 13's copy-script recipe applies: assert each replaced line, `diff source copy` lists only the planned
-  hunks, `identical(parse(a, keep.source = FALSE), parse(b, keep.source = FALSE))`.
-- **R CMD check outside the project folder** (the scratchpad, to keep the tree clean while another tool runs) finds no
-  renv library and fails "Package required but not available: 'quadprog'". Set both `R_LIBS` and `R_LIBS_USER` to
-  the library `Rscript -e 'cat(.libPaths()[1])'` prints from the project root.
-- **zsh:** `rm -rf pedkindraw_*` with nothing to match stops an `&&` chain ("no matches found"); `tail -N` on a suite
-  run can cut its summary line (S12 re-ran one); use script files for `Rscript` code with backslashes.
-- **The results tool**: name a commit (`Rscript tools/compareResultsWithNprcgenekeepr.R ../nprcgenekeepr <commit>`)
-  when nprcgenekeepr's session may be editing; about 100 s per package. Whole widgets compare equal only while both
-  renv libraries link one cache entry of visNetwork 2.1.4.
-- **Learning 12's baseline run** worked first time in S12: `git archive <commit> DESCRIPTION NAMESPACE R data inst
-  tests` into the scratchpad, then `cd ../nprcgenekeepr && env -u RENV_PROJECT -u R_LIBS_USER Rscript <script>` with
-  `pkgload::load_all(<archive>)` and `test_file(..., package = "nprcgenekeepr", load_package = "none")`; compare `nb`
-  per test by name.
+- **The contract's four exports do not exist yet.** Plan row 11 says "Export the rewrite's shrink helpers", but
+  nprcgenekeepr's clean-room rewrite (its S1139, `e2bba9fb2`) dropped the seven old helpers (`.bitSizeOf()` to
+  `.findAvailAffected()`); the copy holds only the four internals above, on row positions, not ids.
+- **`R/shrinkPedigree.R` is copied code.** Any edit to it shows in the drift tool and needs a `DIVERGENCE.md` row
+  (plan section 5); put the exports in a file of their own.
+- **No DONE criteria for Phases 11-15** in the plan (`:484-492`: the table and "strict TDD, one session each"). There is
+  no nprcgenekeepr counterpart to compare results with, so the copy slices' DONE line does not carry over.
+- **kinship2 forbids one known parent** ("Subjects must have both a father and mother, or have neither";
+  `tests/testthat/test_shrinkPedigree.R:269`); pedkindraw allows it. A test against kinship2 needs pedigrees with
+  both parents or neither.
+- **zsh:** `echo ======` fails ("= not found": a word starting with `=` is a command-path lookup), stopping the
+  chain; print a separator with `echo '-----'`. S12's: an empty glob stops an `&&` chain; `tail` can cut a summary
+  line; `$?` after a pipe is the last stage's status (S13 re-ran the drift tool to read its own).
+- **R CMD check outside the project folder** needs `R_LIBS` and `R_LIBS_USER` set to the renv library
+  (`Rscript -e 'cat(.libPaths()[1])'` from the root); it worked first time in S13, in the background.
+- **Coverage by the cases** (Learning 11): S13's script ran `covr::package_coverage()` with `type = "tests"` (113 s) and
+  `type = "none"` with `code =` running `runCases()`, then merged per statement on filename, lines and bytes.
 
 ### Key files
-- `tests/testthat/helper-shrinkPedigreeStandIn.R:13-23` (the stand-in); `tests/testthat/fixtures/trackBShrunk.rds`;
-  `tools/makeComputedTestFixtures.R:19`, `:73-74`.
-- The stand-in's callers: `tests/testthat/test_orderRootSubtrees.R:6` (header), `:182`; `test_solveJointQP.R:4`
-  (header), `:65`, `:145`; `test_positionMatingUnitForest.R:1333`, `:2394`. (`test_comparePedigreeStructure.R:759`
-  only names it in a comment.)
-- `tools/compareResultsWithNprcgenekeepr.R:41` (`runCases()`), `:201` (the `cases` list), `:302`
-  (`kinshipFounders`, a made-up variant, the model for shrink cases).
-- `methodology/BACKLOG.md:11` (the Phase 10 item); `CLAUDE.md:169-171` (Learnings 14-16).
-- `R/drawPedigreeDiagram.R:3-5` (header: copied at `4283e3502`); `DIVERGENCE.md:12-19` (empty table).
+- `methodology/BACKLOG.md:11` (the Phase 11 item); `docs/planning/pedkindraw-api-contract.md:70` (the old helpers'
+  provenance row), `:154-157`, `:161-163`.
+- `R/shrinkPedigree.R:16`, `:22`, `:33`, `:79` (the internals), `:230` (`shrinkPedigree()`), `:240-241` (ids to row
+  positions).
+- `tests/testthat/test_shrinkPedigree.R` (24 tests, copied; S13).
+- `tools/compareResultsWithNprcgenekeepr.R:205` (the shrink cases' set-up), `:497` (`shrinkPedigree`), `:533`
+  (`shrinkLoop`), `:544` (`shrinkErrors`).
+- `CLAUDE.md:166` (Learning 11, with S13), `:172` (Learning 17).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -84,52 +81,45 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S11's entries were removed in S3-S12 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S12's entries were removed in S3-S13 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 13 Did
-**Deliverable:** plan Phase 10, shrink: copy nprcgenekeepr's `shrinkPedigree()` and `test_shrinkPedigree.R`
-test-first (survey, pre-RED picker, RED, GREEN, fidelity cases, push, CI, "Done 10") (IN PROGRESS)
-**Started:** 2026-11-12 15:23 CST · **Model:** Claude Opus 5.5 · Mark picked "Phase 10: copy shrinkPedigree()" at the
-orient picker.
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
-
-### Session 11 Handoff Evaluation (by Session 12)
-**Score: 8/10.**
-- **What helped:** the nprcgenekeepr check command, which found the commit the handoff could not know; the port's
-  three test lines (`:89`, `:118`, `:127`) and the code lines (`:154-162`), both right; `.affectedColor()` at
-  `R/makePedigreeDiagramData.R:199`; the results tool's commit argument (used); whole-widget identity (it held); the
-  baseline-run recipe (worked first time); the copy proofs (parse identical, planned hunks only).
-- **What was missing:** that the stand-in for `shrinkPedigree()` shapes Phase 10's RED (found in S12's close-out, now
-  a gotcha).
-- **What was wrong:** "3 tests should fail": 2 tests fail, with 6 expectations (the three checks sit in two tests).
-  "One code hunk" was true when written; nprcgenekeepr's REFACTOR `4283e3502` came after. Its key files list
-  `test_comparePedigreeStructure.R:759` among "the calls it stands in for": that line is a comment.
+### Session 12 Handoff Evaluation (by Session 13)
+**Score: 9/10.**
+- **What helped:** the stand-in gotcha, which shaped RED and two of the three picker questions; the nprcgenekeepr check
+  commands (both shrink files unchanged, read in seconds); the stand-in's callers at `:182`, `:65`, `:2394`, all right;
+  the survey steps and the `::` lines (`:121`, `:210`); the copy proofs (diff hunks, parse identical); the baseline-run
+  recipe and the out-of-folder `R CMD check` (both worked first time); the results tool's commit argument (needed:
+  nprcgenekeepr's S1161 was active); `runCases()` at `:41`, the cases at `:201`, `kinshipFounders` at `:302`.
+- **What was missing:** that `shrinkPedigree()` takes 130 s on examplePedigree, so the cases cannot run on the whole
+  pedigrees (found by timing); that the three Track B files' headers name the stand-in (found by grep).
+- **What was wrong:** `test_inventoryTutorialSections.R:108`: the file names `shrinkPedigree()` at `:10` and `:137`, at
+  `45e0d8bfe` and at HEAD.
 - **ROI:** high.
 
-### What Session 12 Did
-**Deliverable:** port nprcgenekeepr S1159's legend fill into `drawPedigreeDiagram()` (plan R37), test-first in its
-three steps; `DIVERGENCE.md`'s row deleted; push, CI (DONE)
-**Started:** 2026-11-12 · **Model:** Claude Opus 5.5 · **Mark's picks:** "Port the legend fix" (orient); the README
-stays "At Phase 16 as planned" (asked mid-session; nothing changed); the PRE-RED, RED and GREEN gates "Yes".
-Mark also asked when `BACKLOG.md` would be added: it is at `methodology/BACKLOG.md` since S6 (`96f9e4b`), on GitHub.
-**Commits:** claim `c93a465`; RED `81faeb6`; GREEN `fa06297`; REFACTOR `11b62cd` (with the row's deletion); pushed
-once (6 commits, `d97ccfa..11b62cd`); close-out `94afb07` and close-out 2 (these notes, the receipt, the ledger, the
-backlog). Close-out commits not pushed.
-**Verified:** each phase applied with `patch -F0` and proven (parsed code identical to nprcgenekeepr's at the commit;
-diffs of header and help hunks only); RED 2 tests, 6 expectations, as nprcgenekeepr's own RED; GREEN 12 tests with
-nprcgenekeepr's 69 expectations test for test; REFACTOR 16 of 16 widgets identical to GREEN's; suite 481 tests,
-0 failed, WARN 0, SKIP 0; lint 0; roxygen idempotent; drift tool exit 0, 0 differ; results tool 540 of 540 identical
-against `45e0d8bfe`; `R CMD check --as-cran` 1 NOTE (the allowed one), PASS 2079 SKIP 3; coverage 97.11%, the file
-91 of 91 lines; headless Chrome read the drawn colours (before: sex rows `#97C2FC`, Affected outline `#a3507e`;
-after: sex rows `#FFFFFF` / `#2B7CE9` as the unaffected animals, Affected `#CC79A7` / `#2B7CE9` as the affected one);
-CI run `43306885895` 5/5 `Status: OK`, first attempt; `quality_ratchet` 4/4.
-**Self-assessment: 8/10.**
-+ Orient found the commit the handoff could not know, before any planning; every phase was nprcgenekeepr's own
-  commit, applied exactly and proven by machine; the drawn colours read before and after, not assumed; Mark's two
-  mid-session questions answered with a picker and a plain answer, no scope change.
-- Slips, each caught: a diff check compared misaligned lines (said so, re-proven); `R CMD check` first ran without the
-  renv library; a zsh glob stopped a chain; a `tail` cut the suite's summary (re-ran 83 s). The legend sits about
-  30 px further left in the second screenshot than the first; the widget data are identical, and I did not find why.
-**Ledger:** `CHANGELOG.md` S12 entries (the session and the push).
+### What Session 13 Did
+**Deliverable:** plan Phase 10, shrink: nprcgenekeepr's `shrinkPedigree()` and its 24 tests copied test-first;
+fidelity cases; push, CI; "Done 10" (DONE). The copy slices, Phases 6-10, are complete.
+**Started:** 2026-11-12 15:23 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Phase 10: copy shrinkPedigree()"
+(orient); "Leave them out", "With the copied tests", "Delete both" (pre-RED, rulings R38-R39); the PRE-RED, RED and
+GREEN gates "Yes"; REFACTOR "change nothing".
+**Commits:** claim `da62dba`; rulings `c5197a3`; RED `82bc045`, `0653133`; GREEN `82f2ef3`, `d437228`; REFACTOR none;
+pushed once (8 commits, `11b62cd..d437228`); close-out `f0ae6ed` and close-out 2 (these notes, the receipt, the
+ledger, a backlog line number). Close-out commits not pushed.
+**Verified:** the pre-RED picker's consequence measured in a scratch copy (3 Track B tests fail without the stand-in);
+RED 505 tests, 27 failed, each first on the missing function (27 of 27), WARN 0; the fixture script rerun writes a
+byte-identical `qcdRhesusPed.rds`; GREEN's code parses identical to nprcgenekeepr's, the diff header and example only;
+the 24 tests with nprcgenekeepr's 79 expectations test for test; suite 505, 0 failed, WARN 0, SKIP 0, 2165
+expectations; lint 0; roxygen idempotent; drift 90 functions, 0 differ; results tool 600 of 600 identical against
+`ec56cb02e`; covr: the cases reach 127 of 127 statements of `R/shrinkPedigree.R`, the tests 125; package coverage
+97.16%; `R CMD check --as-cran` 1 NOTE (the allowed one), PASS 2158 SKIP 3, the example printing 7 then 0; CI run
+`43326408939` 5/5 `Status: OK`, first attempt; `quality_ratchet` 4/4.
+**Self-assessment: 9/10.**
++ Every picker option stated a measured result (Learning 17); every phase proven by machine; Learning 11 pushed to
+  127 of 127 by working out the input that reaches the "defensive" `break`, not by calling it unreachable; the Phase 11
+  trap (the contract's four exports do not exist, no DONE criteria) found and written down for the next session.
+- Slips, each caught: `echo ======` stopped two early commands (zsh); a drift-tool exit read through a pipe (re-ran);
+  the REFACTOR picker said "7 commits" (6 in the session, 8 pushed; said so); close-out 1 cited the contract's note at
+  `:160-162`, really `:161-163` (fixed in close-out 2); a summary script printed a dead "stopped early" line
+  (disclosed, not reported).
+**Ledger:** `CHANGELOG.md` S13 entries (the session and the push).

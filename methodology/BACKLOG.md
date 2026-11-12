@@ -12,7 +12,7 @@ issues).*
       contract section 4.3 (`docs/planning/pedkindraw-api-contract.md:154-157`): `bitSize(ped)`,
       `findUnavailable(ped, genotyped)`, `findAvailNonInform(ped, genotyped, affected = NULL)` and
       `findAvailAffected(ped, genotyped, affected, affstatus)`, ids in a data frame, return shapes and errors settled
-      in RED (contract `:160-162`). New code, not a copy: nprcgenekeepr's clean-room rewrite (its S1139, `e2bba9fb2`)
+      in RED (contract `:161-163`). New code, not a copy: nprcgenekeepr's clean-room rewrite (its S1139, `e2bba9fb2`)
       dropped the old seven helpers (`.bitSizeOf()` to `.findAvailAffected()`, ports of the kinship2 functions these
       exports are named after; contract `:70`), and the copy (S13) holds only `.bitSize(sireIdx, damIdx, present)`, `.isParent()`, `.removalPass()` and
       `.checkShrinkInput()`, which take row positions, not ids. `R/shrinkPedigree.R` is copied code: changing it makes

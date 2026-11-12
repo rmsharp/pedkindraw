@@ -196,18 +196,19 @@ manifest existed are not re-judged.
 ```handoff
 session: S13
 date: 2026-11-12
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 10, shrink: copy nprcgenekeepr's shrinkPedigree() and test_shrinkPedigree.R test-first; fidelity cases; push, CI; Done 10 (IN PROGRESS)
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 10 item), tests/testthat/helper-shrinkPedigreeStandIn.R:13 (the stand-in)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 9
+predecessor_score: 9
+active_task: plan Phase 10 is DONE (S13, R38-R39): shrinkPedigree() and its 4 helpers copied test-first from nprcgenekeepr's clean-room R/shrinkPedigree.R at baef1e12c, the 24 tests, 5 fidelity cases per pedigree, CI green; the copy slices, Phases 6-10, are complete; next is plan Phase 11, the shrink helpers and bitSize() as exports, new code (methodology/BACKLOG.md:11)
+what_was_done: claim da62dba; rulings R38-R39 c5197a3 (the 3 nprcgenekeepr-only test files left out; the stand-in, its fixture and writer deleted in RED); RED 82bc045 test_shrinkPedigree.R copied (diff: header only), helper-shrinkPedigreeStandIn.R deleted, 3 headers fixed; 27 tests fail, each first on the missing function; RED 0653133 trackBShrunk.rds and its writer deleted, the script still writes a byte-identical qcdRhesusPed.rds; GREEN 82f2ef3 R/shrinkPedigree.R (code parses identical, the example types lacy1989Ped), export and Rd, 24 tests with nprcgenekeepr's 79 expectations; GREEN d437228 the results tool's 5 shrink cases (shrinkLoop reaches the one statement nothing else did), 600 of 600 identical; REFACTOR none (Mark's pick); pushed once 11b62cd..d437228, CI run 43326408939 5/5 Status OK first attempt; close-out f0ae6ed (plan Done 10, ROADMAP, BACKLOG Phase 11, CLAUDE.md Learnings 11 and 17) and close-out 2 (notes, receipt, ledger, a backlog line number)
+next_steps: Orient and run the drift tool; read contract 4.3 (docs/planning/pedkindraw-api-contract.md:154-157, :161-163) and section 3, and kinship2 1.9.6.2's help for bitSize, findUnavailable, findAvailNonInform, findAvailAffected (all exported, installed, Suggests); pre-RED picker (measured first, Learning 17): call the copied internals (R/shrinkPedigree.R:16, :22, :33, :79, row positions; ids to positions at :240-241) or write apart; return shapes and errors; Phase 11's DONE criteria (the plan has none for 11-15); checks against shrinkPedigree()'s tiers and/or kinship2; rulings R40 on before RED; RED tests, GREEN a new file (not R/shrinkPedigree.R); checks; push; CI; Done 11
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Phase 11), docs/planning/standalone-pedigree-package-plan.md:34 (Next), :488 (row 11), :101 (R3), :109 (R11), docs/planning/pedkindraw-api-contract.md:154-157, :161-163, R/shrinkPedigree.R:16, :33, :230, :240, tools/compareResultsWithNprcgenekeepr.R:205 (shrink set-up), :533 (shrinkLoop), CLAUDE.md:166 (Learning 11), :172 (Learning 17)
+gotchas: the contract's four exports do not exist: nprcgenekeepr's rewrite (S1139, e2bba9fb2) dropped the old helpers, and the copy's internals take row positions, not ids; R/shrinkPedigree.R is copied, so editing it makes a DIVERGENCE.md row; the plan states no DONE criteria for Phases 11-15; kinship2 forbids one known parent, pedkindraw allows it (test_shrinkPedigree.R:269); zsh echo ====== fails (= expansion); a pipe's $? is its last stage's; R CMD check outside the project needs R_LIBS and R_LIBS_USER set to the renv library
+runtime_smoke: tests 505 FAIL 0 WARN 0 SKIP 0, 2165 expectations (the 24 with nprcgenekeepr's 79, test for test); lint 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; results tool against nprcgenekeepr ec56cb02e 600 of 600 identical, kinship largest difference 0; covr R/shrinkPedigree.R 127 of 127 statements by the cases, 125 by the tests; coverage 97.16%; R CMD check --as-cran Status 1 NOTE, the allowed one, PASS 2158 SKIP 3, the example prints 7 then 0; CI run 43326408939 5/5 (macOS PASS 2165, Windows 2164 SKIP 1, Ubuntu 2154 SKIP 2); quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-12 · [ad hoc] S13: plan Phase 10, `shrinkPedigree()`, copied test-first; Phase 10 DONE, the copy slices complete"
+commit: f0ae6ed
 ```
+Phase 10 took one session as estimated. Each of Mark's choices was put to him with its effect measured first (a scratch copy without the stand-in: 3 tests fail), and the one statement no test or case reached was reached by working out its input (an animal its own ancestor). Model: Claude Opus 5.5, one tier.
 
 ```handoff
 session: S12
