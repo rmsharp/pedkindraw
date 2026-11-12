@@ -1,8 +1,8 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/drawPedigreeDiagram.R at nprcgenekeepr commit
-## a85311021 (S11 copied it at 471589138 for its .checkOnClick(), plan R34;
-## S12 ported S1159's legend fill, plan R37).
+## 4283e3502 (S11 copied it at 471589138 for its .checkOnClick(), plan R34;
+## S12 ported S1159's legend fill and its tidy-up, plan R37).
 ## Changes: help text only; the code is unchanged. The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
@@ -111,6 +111,46 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
                dashes = I(list(TRUE)), stringsAsFactors = FALSE),
     twinLegendEdges
   )
+  # The legend's symbol rows, as three tables so each row's label, shape,
+  # fill and picture sit together (S1159). The fill alone, as the diagram's
+  # animals get it: the 5 sex rows are open (white) like an unaffected
+  # animal; left unset they took vis.js's default light-blue fill. A single
+  # color string would also give an outline 20% darker (vis.js's
+  # parseColor), so the outline stays vis.js's default blue, the diagram's
+  # own.
+  sexRows <- data.frame(
+    label = c("Female", "Male", "Hermaphrodite", "Unknown",
+              "Other / Unrecorded"), # nolint: nonportable_path_linter
+    shape = c("dot", "square", "star", "triangle", "diamond"),
+    color.background = .affectedColor(FALSE),
+    image = NA_character_,
+    stringsAsFactors = FALSE
+  )
+  # Issue #133 Slice 2 (D6), S1029: one row per condition drawn.
+  # "hexagon" (not "box") -- confirmed hands-on that vis.js sizes "box" to
+  # its label text (renders as a filled pill/badge), breaking the
+  # fixed-size-icon-plus-separate-label style the sex rows share;
+  # "hexagon" is a fixed-size icon none of them claim.
+  conditionRows <- data.frame(
+    label = legendConditions$label,
+    shape = "hexagon",
+    color.background = legendConditions$color,
+    image = NA_character_,
+    stringsAsFactors = FALSE
+  )
+  # S1028: the "Deceased" row is a picture (a circle with the slash), after
+  # the condition rows and before the edge rows, so the last legend row
+  # stays the short "?" one (S921). Measured in the real app: a label
+  # starts 11 world units under its symbol and is 14 tall, so a row takes
+  # its symbol (2 * size) plus 25 of the row spacing (stepY). At the old
+  # size 20 and stepY 54 every label overran the next symbol by 11; size 14
+  # and stepY 60 leave 7 clear.
+  deceasedRow <- data.frame(
+    label = "Deceased", shape = "image", color.background = NA_character_,
+    image = .deceasedLegendImage(), stringsAsFactors = FALSE
+  )
+  legendNodes <- rbind(sexRows, conditionRows, deceasedRow)
+  legendNodes$size <- 14L
   # Option 2 Slice 3: fixed x/y coordinates (S457's proven Case C2
   # geometry) replace visHierarchicalLayout() entirely -- confirmed
   # hands-on (Learning 446) that manual coordinates and hierarchical
@@ -143,41 +183,10 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
     # Pre-RED) -- its clicks do not reach the click-to-navigate handler
     # bound above via visEvents().
     visNetwork::visLegend(
-      addNodes = data.frame(
-        label = c("Female", "Male", "Hermaphrodite", "Unknown",
-                  "Other / Unrecorded", # nolint: nonportable_path_linter
-                  legendConditions$label, "Deceased"),
-        shape = c("dot", "square", "star", "triangle", "diamond",
-                  rep("hexagon", nrow(legendConditions)), "image"),
-        # Issue #133 Slice 2 (D6): the "Affected" row shares this SAME
-        # addNodes data frame -- a second visLegend() call would
-        # overwrite, not stack (confirmed S485). "hexagon" (not "box") --
-        # confirmed hands-on this session that vis.js sizes "box" to its
-        # label text (renders as a filled pill/badge), breaking the
-        # fixed-size-icon-plus-separate-label style all 5 existing rows
-        # share; "hexagon" is a fixed-size icon like the other 5, none of
-        # which claim it.
-        # S1159: the fill alone, as the diagram's animals get it. The 5
-        # sex rows are open (white) like an unaffected animal; left unset
-        # they took vis.js's default light-blue fill. A single color
-        # string would also give an outline 20% darker (vis.js's
-        # parseColor), so the outline stays vis.js's default blue, the
-        # diagram's own.
-        color.background = c(rep(.affectedColor(FALSE), 5L),
-                             legendConditions$color, NA),
-        # S1028: the "Deceased" row is a picture (a circle with the
-        # slash), after "Affected" and before the edge rows, so the last
-        # legend row stays the short "?" one (S921). Measured in the real
-        # app: a label starts 11 world units under its symbol and is 14
-        # tall, so a row takes its symbol (2 * size) plus 25 of the row
-        # spacing (stepY). At the old size 20 and stepY 54 every label
-        # overran the next symbol by 11; size 14 and stepY 60 leave 7
-        # clear.
-        image = c(rep(NA_character_, 5L + nrow(legendConditions)),
-                  .deceasedLegendImage()),
-        size = 14L,
-        stringsAsFactors = FALSE
-      ),
+      # Issue #133 Slice 2 (D6): the condition rows share this SAME
+      # addNodes data frame as the sex rows -- a second visLegend() call
+      # would overwrite, not stack (confirmed S485).
+      addNodes = legendNodes,
       # nolint start: commented_code_linter.
       # Issue #137 Slice 3 (D6/§2.8 trap #10): the twin-connector
       # legend rows, added via THIS SAME visLegend() call's addEdges
