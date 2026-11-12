@@ -14,7 +14,7 @@ issues).*
       (its 3 functions in `DIVERGENCE.md`; delete the 3 rows), `tests/testthat/test_drawPedigreeDiagram.R` (349
       lines, 16 tests; `skip_if_not_installed("visNetwork")` guards; 2 `shiny::` calls), `helper-live-render-positions.R`
       (187; `chromote::`, `htmlwidgets::`, `withr::`; it skips without Chrome) and the 3 Chrome tests of
-      `test_positionMatingUnitForest.R` (source lines 1996, 2572, 2614; each `skip_on_cran()`). The picks: (a)
+      `test_positionMatingUnitForest.R` (source lines 1996-2018, 2562-2601, 2603-2642; each `skip_on_cran()`). The picks: (a)
       `R/drawPedigreeDiagram.R` changed after `baef1e12c`: nprcgenekeepr `471589138` (its S1153) moved the `onClick`
       check into a new `.checkOnClick()`, shared with its `drawColonyOverview()` (23 lines added, 5 removed); copy
       the file at `baef1e12c` and record the change in `DIVERGENCE.md`, or copy it at a later commit (each copied

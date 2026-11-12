@@ -195,12 +195,21 @@ manifest existed are not re-judged.
 
 ```handoff
 session: S10
-date: 2026-11-11
-status: pending
-active_task: plan Phase 8, second of two sessions (R30): R/comparePedigreeStructure.R copied test-first from nprcgenekeepr baef1e12c, the layout's cases in the fidelity tool, push, CI, Phase 8 DONE; IN PROGRESS
-what_was_done: pending
-commit: pending
+date: 2026-11-12
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 8 is DONE (S9-S10, R30): the kinship2 comparison's 4 functions and 38 tests copied test-first from nprcgenekeepr baef1e12c, the results tool's 9 layout cases, CI green; next is Phase 9, the renderer (drawPedigreeDiagram()), READY with two picks for Mark at its pre-RED picker
+what_was_done: claim a0b9eff; RED fd101dc test_comparePedigreeStructure.R (38 tests) and its helper copied by an asserting script (15 nprcgenekeepr::: calls plain, 2 rhesus reads from the fixtures), 35 error on the 4 missing functions, 3 pass (they test the helper and kinship2); GREEN a7a7ffb R/comparePedigreeStructure.R copied whole, code unchanged, 38 pass with nprcgenekeepr's 132 expectations test for test; GREEN 7428d12 the results tool records and compares messages and gains 9 layout cases (whole pedigree to 400 animals, else 20 spread animals and their ancestors; made-up status, name and condition columns, founders only, every dam unknown, the 4 comparison functions, 8 error stops), 468 of 468 identical; REFACTOR 6db58ca the tool's header; pushed once 16a8799..6db58ca (23 commits), CI run 43260600901 5/5 Status OK first attempt; close-out f39372d (plan Done 8, ROADMAP, BACKLOG Phase 9 item, Learning 11) and close-out 2 (notes, receipt, ledger)
+next_steps: Phase 9 (methodology/SESSION_NOTES.md ACTIVE TASK; methodology/BACKLOG.md:11; plan :373 row 9, :126-127 R31-R32): check what changed in nprcgenekeepr since baef1e12c (S10: only R/drawPedigreeDiagram.R, 471589138's .checkOnClick()); survey (Learning 9, findGlobals and grep ::); pre-RED picker for (a) which commit to copy drawPedigreeDiagram.R from, (b) leaving test_drawPedigreeDiagramDocs.R in nprcgenekeepr, (c) what the survey finds; RED with Suggests chromote, htmlwidgets, shiny and the test file, helper and 3 Chrome tests; GREEN with Imports visNetwork (dated repository, rebuild = TRUE, Learning 3), the R files and DIVERGENCE.md's 3 rows deleted; fidelity cases; push, CI, Phase 9 DONE
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 9 item), docs/planning/standalone-pedigree-package-plan.md:373 (row 9), :126-127 (R31, R32), :416 (Done 8), docs/planning/pedkindraw-api-contract.md:130, tools/compareResultsWithNprcgenekeepr.R:28 (runCases), :134-179 (Phase 8 inputs), :331-403 (Phase 8 cases), tests/testthat/test_positionMatingUnitForest.R:3-13 (what R31 left out), DIVERGENCE.md:14-16, renv.lock:7 (the dated repository), CLAUDE.md:89 (phase gates), :158 (Learning 3), :164-168 (Learnings 9-13)
+gotchas: R/drawPedigreeDiagram.R changed after baef1e12c (nprcgenekeepr 471589138), so its source commit is Mark's pick; visNetwork, chromote, htmlwidgets and shiny are not in pedkindraw's library (install from the 2026-10-31 repository with rebuild = TRUE, dependencies by name, snapshot dev = TRUE, then the renv gate); whether two runs give identical() widgets is not measured (a guess: compare $x if not); Chrome is installed here, on CI not measured; CI skips 1-2 math-library tests by their own guards; zsh traps: quote ===, no backslash regex in Rscript -e, ${C}:tests not $C:tests, and cmd | tail hides cmd's exit status
+runtime_smoke: tests 466 FAIL 0 WARN 0 SKIP 0 (38 new, each as many expectations as nprcgenekeepr's own run); lint 0 (package and 5 tools); roxygen unchanged; R CMD check --as-cran Status 1 NOTE, the allowed one, tests PASS 2010; coverage 96.84%, R/comparePedigreeStructure.R 99.30%; drift tool exit 0 (81 copied functions, 3 recorded); results tool exit 0, 468 of 468 identical (27 with warnings, 60 with messages), kinship 132 matrices largest difference 0; CI run 43260600901 5/5 Status OK, FAIL 0 WARN 0 on each (macOS PASS 2010, Windows 2009 SKIP 1, Ubuntu 1999 SKIP 2: test_diagramSolverEquivalence.R's math-library guards); quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-12 · [ad hoc] S10: plan Phase 8's second session, the kinship2 comparison and the layout's fidelity cases; Phase 8 DONE"
+commit: f39372d
 ```
+Phase 8 finished in one session as planned, with every picker answered at once (sizes, messages, the extra cases, three gates, REFACTOR). Self 8: measured before each choice, proved the copy and the cases' reach by machine, read CI to the skip reasons, and measured Phase 9 for the next session; minus careless slips caught in a minute each (a scratch file written outside the project, a log in /tmp, tail's exit status, three zsh traps, two of them named in the handoff). S9's handoff scored 9: every line number right; one miscount (16 calls for 15 and a comment).
+
 
 ```handoff
 session: S9

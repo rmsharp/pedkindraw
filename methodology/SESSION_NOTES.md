@@ -9,79 +9,79 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** plan Phase 8's second session (R30): copy `R/comparePedigreeStructure.R` (the kinship2 comparison) test-first,
-add the layout's cases to the fidelity tool, push once, read CI, and close Phase 8 as DONE.
-**Status:** READY. S9 copied all the layout code (`makePedigreeMatingLayout()`, `makePedigreeDiagramData()`, 48
-internal functions, 4 constants) and 295 tests; suite 428 tests, 0 failed, WARN 0; `R CMD check --as-cran` R16's NOTE
-only. **Nothing is pushed since `16a8799`** (S8's 2 close-out commits and all of S9's): CI has never run the layout.
-**Plan:** `docs/planning/standalone-pedigree-package-plan.md` `:125-128` (R30-R33, Mark's S9 picks), `:372` (row 8),
-`:394` ("Done 7", the model for "Done 8"), `:405` (S9's record of the first session). Contract:
-`docs/planning/pedkindraw-api-contract.md:128-129` (the two exports), `:201` (§5). Backlog: `methodology/BACKLOG.md:11`
-(the item, with S9's measurements).
-**Session boundary:** this one session finishes Phase 8; Phase 9 (the renderer) is a session of its own after it.
+**Task:** plan Phase 9, the renderer: copy `drawPedigreeDiagram()` (exported, a `visNetwork` widget),
+`R/deceasedSlash.R` and `R/affectedConditions.R`'s lines 77-201 test-first from nprcgenekeepr, with
+`test_drawPedigreeDiagram.R`, `helper-live-render-positions.R` and the 3 Chrome tests R31 deferred; fidelity cases,
+push, CI, Phase 9 DONE.
+**Status:** READY, with two picks for Mark first (below). Phase 8 is DONE (S9-S10): suite 466 tests, 0 failed, WARN
+0; `R CMD check --as-cran` R16's NOTE only; results tool 468 of 468 identical; **everything is pushed** (`6db58ca`;
+CI run `43260600901` 5/5 `Status: OK`); S10's two close-out commits are not.
+**Plan:** `docs/planning/standalone-pedigree-package-plan.md:373` (row 9), `:126-127` (R31, R32), `:416` ("Done 8",
+the model for "Done 9"), `:30-31` (status block). Contract: `docs/planning/pedkindraw-api-contract.md:130`
+(`drawPedigreeDiagram(layout, edgeStyle, onClick)`). Backlog: `methodology/BACKLOG.md:11` (the item, with S10's
+measurements).
+**Session boundary:** one session (an estimate: about 1,100 source and test lines, against the 1,745 S10 copied).
 **Priority:** HIGH.
 
 ### What You Must Do
-1. Orient. nprcgenekeepr is busy (its S1155 committed three times during S9: `d5b884750`, `e9970707d`, `0f925b725`,
-   with uncommitted edits coming and going). Check the copied files are still unchanged:
-   `git -C ../nprcgenekeepr diff --stat baef1e12c HEAD -- R/makePedigreeDiagramData.R R/positionTreeApportion.R
-   R/orderRootSubtrees.R R/penaltyCrossprod.R R/affectedConditions.R R/comparePedigreeStructure.R
-   tests/testthat/test_comparePedigreeStructure.R tests/testthat/helper-comparePedigreeStructure.R` (empty in S9).
-2. Pre-RED picker for what is open: the fidelity cases' sizes (below) and anything the survey finds; then the
-   `TDD: PRE-RED→RED` gate (`CLAUDE.md:89`).
-3. RED: copy `test_comparePedigreeStructure.R` (38 tests) and `helper-comparePedigreeStructure.R` from `baef1e12c` with
-   asserted edits (see "Copy script" below): its 16 `nprcgenekeepr:::` calls (helper `:113-118`; test `:505`, `:525`,
-   `:536`, `:571`, `:584`, `:602`, `:636-638`, `:666-669`, `:1020`) become plain calls, its 2 rhesus reads (`:662`,
-   `:1036`) `test_path("fixtures", ...)`. They fail because the 4 functions are missing. Read WARN and run
-   `python3 methodology/quality_ratchet.py --run` on the copies (gate `tests-no-saved-expect-condition` checks RED's
-   blind spot). Also run nprcgenekeepr's own file (Learning 12; script below) for its counts.
-4. GREEN: `R/comparePedigreeStructure.R` whole (uses `utils::capture.output()`; `utils` is imported since S9).
-5. Fidelity cases in `tools/compareResultsWithNprcgenekeepr.R` (`runCases()` `:26`, the `cases` list `:128`, S8's
-   kinship sizing `:94-103`): both exports, both edge styles, twins (`:40` makes them), a `kinshipMatrix`, the stops.
-   Bound the sizes hard (measured S9: 1.0 s direct / 1.9 s rectilinear on 375 animals; **180 s** direct on
-   `examplePedigree`'s 3,694). Check each case reaches its branch (Learning 11): the 65 lines no copied test reaches
-   are listed in `methodology/BACKLOG.md:11`.
-6. REFACTOR gate, then push once and read each CI job's `Status:` line. Then Phase 8's DONE close-out: plan status
-   block (`:30-31`), row 8, a "Done 8" paragraph beside S9's (`:405`); `methodology/ROADMAP.md` (row 8 DONE, Completed
-   Milestones); remove the `BACKLOG.md:11` item.
+1. Orient. nprcgenekeepr is busy (HEAD moved `e7e3350ca` -> `50506369e` -> `4375e2715` during S10). Check what
+   changed since `baef1e12c`: `git -C ../nprcgenekeepr diff --stat baef1e12c HEAD -- R/drawPedigreeDiagram.R
+   R/deceasedSlash.R R/affectedConditions.R tests/testthat/test_drawPedigreeDiagram.R
+   tests/testthat/helper-live-render-positions.R tests/testthat/test_positionMatingUnitForest.R
+   tests/testthat/test_drawPedigreeDiagramDocs.R`. In S10 only `R/drawPedigreeDiagram.R` had changed (+23/-5,
+   nprcgenekeepr `471589138`, its S1153: the `onClick` check moved into a new `.checkOnClick()` it shares with its
+   `drawColonyOverview()`). Also confirm Phase 8's copied files are still unchanged (the results tool refuses
+   otherwise).
+2. Survey (Learning 9): `codetools::findGlobals()` on each function to copy, both `$functions` and `$variables`, and
+   grep each file for `::` (S10's grep: `drawPedigreeDiagram.R` 8 `visNetwork::`; `deceasedSlash.R` 1 `utils::`;
+   `affectedConditions.R` 1 `stats::`; the test file 2 `shiny::` and 2 `visNetwork::`; the helper `chromote::`,
+   `htmlwidgets::`, `withr::`, `visNetwork::`).
+3. Pre-RED picker (Learnings 1-2, plain words): (a) copy `R/drawPedigreeDiagram.R` at `baef1e12c` and record
+   `.checkOnClick()` in `DIVERGENCE.md`, or copy it at a later commit; (b) `test_drawPedigreeDiagramDocs.R` (110 lines)
+   checks nprcgenekeepr's own vignette text, so leave it in nprcgenekeepr (as R31 did) or not; (c) whatever the survey
+   finds. Record the picks as plan rulings (R34 on). Then the `TDD: PRE-RED→RED` gate (`CLAUDE.md:89`).
+4. RED: Suggests `chromote`, `htmlwidgets`, `shiny` (S8 added Suggests in RED); copy the test file, the helper, and
+   the 3 Chrome tests back into `tests/testthat/test_positionMatingUnitForest.R` (its header `:8-11` names their
+   source lines 1996-2018, 2562-2601 and 2603-2642; update the header). Run nprcgenekeepr's own files first (Learning 12).
+5. GREEN: `Imports: visNetwork`; the R files; delete `DIVERGENCE.md`'s 3 rows (`:14-16`); help text rewritten (R21,
+   the example types its own pedigree); then the fidelity cases.
+6. REFACTOR gate, push once, read each CI job's `Status:` line and skip reasons; Phase 9's DONE close-out.
 
 ### Gotchas
-- **First CI run of the layout.** Some copied tests depend on the math library: `test_diagramSolverEquivalence.R`'s
-  block product is "exact" only with R's own BLAS (`.blockProductIsExact()`; one test skips unless `Rblas`), and
-  CI's Ubuntu uses OpenBLAS (the source's comments, its S1073). They passed on this Mac; read the Ubuntu jobs closely.
-- **Test time:** the suite takes about 70 s here (the layout files 13-16 s each); `R CMD check`'s tests 66 s.
-  Copied tests print diagnostic lines ("Real-fixture re-measurement ...", "Obligation 2 measurement ..."): nprcgenekeepr's
-  own output, not failures.
-- **Edition 3 (R29) has two traps now:** an `expect_warning()` that catches one of two warnings (S8), and a saved
-  `expect_message()`/`expect_warning()` value (S9; the copy is the condition, not the result). The second hides in
-  RED behind the missing-function error; the gate finds it.
-- **R33:** a copied test that warns in nprcgenekeepr too handles the warning the way its own file does. Run
-  nprcgenekeepr's file first to know which warnings are its own.
-- **Stand-ins and deferrals:** `tests/testthat/helper-shrinkPedigreeStandIn.R` answers only the two saved Track B
-  calls (Phase 10 deletes it); `DIVERGENCE.md` has 3 rows for the drawing functions R32 deferred (Phase 9 deletes
-  them). The drift tool counts those 3 among its "77 copied functions".
-- **Copy script** (S9's lived in the scratchpad, gone now): read the source at the commit with `git show`, replace
-  lines 1-2 (copyright, "part of nprcgenekeepr") by pedkindraw's header, and for each edit assert the source line's
-  full text before replacing it; then `diff` source and copy and expect only the planned hunks (Learning 13: S9's
-  first version also dropped the source's own doubled blank lines).
-- **nprcgenekeepr's own run** (Learning 12), from the pedkindraw root with S as the scratchpad:
-  `git -C ../nprcgenekeepr archive baef1e12c DESCRIPTION NAMESPACE R data inst tests | tar -x -C $S/npr`, then from
-  `../nprcgenekeepr` (its renv) an Rscript that does `Sys.setenv(NOT_CRAN = "true")`,
-  `pkgload::load_all(src, export_all = TRUE)` and, per file, `as.data.frame(testthat::test_file(path, reporter =
-  "silent", package = "nprcgenekeepr", load_package = "none"))`. 76 s for S9's 13 files.
-- **zsh and Rscript** (hit again in S9): `echo ===` is a command lookup (quote it); `Rscript -e` with a backslash in
-  a regex fails ("'\s' is an unrecognized escape"): use a script file.
-- **R CMD check output** goes to `pedkindraw.Rcheck/` and `pedkindraw_0.0.1.tar.gz` in the root (both ignored).
+- **Installing packages:** none of `visNetwork`, `chromote`, `htmlwidgets` or `shiny` is in pedkindraw's library
+  (checked S10). renv's dated repository is `https://packagemanager.posit.co/cran/2026-10-31` (`renv.lock:7`); set it
+  before `renv::install()`, install with `rebuild = TRUE` and their dependencies by name, snapshot with
+  `renv::snapshot(dev = TRUE)` (`renv/settings.json`: `snapshot.type` explicit), then run the gate `renv-lock-no-latest-repository`
+  (Learning 3; S8 locked 5 dependencies "latest" by forgetting the names).
+- **Chrome:** Google Chrome is installed on this Mac (`/Applications/Google Chrome.app`), so the 3 Chrome tests and
+  the live-render helper can run here. Whether CI's runners have Chrome for chromote is not measured.
+- **Fidelity cases for a widget:** `drawPedigreeDiagram()` returns an htmlwidget. Whether two runs give `identical()`
+  widgets (an element id or dependency paths could differ between the two library folders) is not measured: a guess.
+  If they differ, compare the widget's data (`$x`) and say so in the tool.
+- **The layout's message:** `makePedigreeMatingLayout()` prints a message naming the animals it leaves out (10 of the
+  12 Phase 1 pedigrees). The results tool now records and compares messages (S10), so a case that calls the layout
+  needs nothing extra.
+- **CI skips by design:** `test_diagramSolverEquivalence.R:318` skips without R's own BLAS (Ubuntu, Windows) and
+  `:221` where the math library sums in another order (Ubuntu). macOS runs both. These are the copied tests' guards,
+  not failures (S10's run: Ubuntu PASS 1999 SKIP 2, Windows 2009 SKIP 1, macOS 2010).
+- **Test time:** the suite took 110 s in S10 with nprcgenekeepr's session running beside it (66 s in RED); `R CMD
+  check`'s tests 74 s here and 120-150 s on CI.
+- **zsh traps** (S10 hit all of them, though the handoff named the first two): `echo ===` is a command lookup (quote
+  it); `Rscript -e` with a backslash in a regex fails (use a script file); `$C:tests/...` applies zsh's `:t` modifier
+  to `$C` (write `${C}:tests/...`); `cmd | tail; echo $?` gives tail's status, not cmd's (redirect instead).
+- **Scratch scripts:** S10's first RED run saved a file three folders up through a relative path; keep every output
+  path in the scratchpad, written out in full.
 
 ### Key files
-- `R/makePedigreeDiagramData.R:58` (`makePedigreeDiagramData()`), `:1353` (`.separationOrder()`, the clean-room
-  solver's start), `:1524` (`.solveJointQP()`), `:1670` (`makePedigreeMatingLayout()`); `R/affectedConditions.R:3-9`
-  (header: lines 1-75 only, R32).
-- `tests/testthat/test_makePedigreeMatingLayout.R:3-14` (the header listing S9's seven test changes);
-  `helper-qcdRhesusPed.R`, `helper-shrinkPedigreeStandIn.R`, `helper-diagramSolver.R`, `helper-reorderedSolveQP.R`.
-- `tools/makeComputedTestFixtures.R` (fixtures nprcgenekeepr's code builds), `tools/renvFreeEnv.R` (shared by it and
-  the results tool), `tools/makeTestFixtures.R` (datasets).
-- `methodology/.quality-gates.json` (4 gates); `CLAUDE.md:89` (phase gates), `:165-168` (Learnings 10-13).
+- `tools/compareResultsWithNprcgenekeepr.R:28` (`runCases()`), `:134-179` (Phase 8's inputs: `lay`, the made-up
+  columns, `bothStyles()`), `:331-403` (Phase 8's 9 cases), `:180` (the `cases` list).
+- `tests/testthat/test_positionMatingUnitForest.R:3-13` (its header: what R31 left out);
+  `tests/testthat/test_comparePedigreeStructure.R:3-10` and `helper-comparePedigreeStructure.R:3-9` (S10's headers,
+  the model for Phase 9's).
+- `makePedigreeMatingLayout()` is at `R/makePedigreeDiagramData.R:1670`; `R/affectedConditions.R:3-9` (header:
+  lines 1-75 only, R32); `DIVERGENCE.md:14-16`.
+- `methodology/.quality-gates.json` (4 gates); `CLAUDE.md:89` (phase gates), `:158` (Learning 3), `:164-168`
+  (Learnings 9-13).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -95,51 +95,43 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S8's entries were removed in S3-S9 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S9's entries were removed in S3-S10 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
+
+### Session 9 Handoff Evaluation (by Session 10)
+**Score: 9/10.**
+- **What helped:** every line number it cited was right (the 15 calls and 2 reads at `baef1e12c`, the tool's `:26`,
+  `:128`, `:94-103`); the nprcgenekeepr diff command (empty, as said); the copy-script recipe (assert each line, then
+  diff), used as written; nprcgenekeepr's own-run recipe, which worked first time (38 tests, 132 expectations); the
+  measured layout times, which sized the cases; the warning to read the Ubuntu jobs closely (the math-library skips
+  were there).
+- **What was missing:** that the layout prints a message the results tool did not record (found by timing it); that 3
+  of the 38 copied tests pass in RED (they test the helper and kinship2, not package code).
+- **What was wrong:** "16 `nprcgenekeepr:::` calls": 15 calls and one comment (`helper-comparePedigreeStructure.R:23`).
+  Harmless: the copy script asserted each line.
+- **ROI:** high.
 
 ### What Session 10 Did
 **Deliverable:** plan Phase 8, second of its two sessions (R30): `R/comparePedigreeStructure.R` test-first, the
-layout's fidelity cases, push, CI, Phase 8 DONE (IN PROGRESS)
-**Started:** 2026-11-11 23:05 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Finish Phase 8 (Recommended)"
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
-
-### Session 8 Handoff Evaluation (by Session 9)
-**Score: 8/10.**
-- **What helped:** the measured Phase 8 set (seven files, sizes, `makePedigreeDiagramData()` `:38`, `.solveJointQP()`
-  `:1504`, `makePedigreeMatingLayout()` `:1642` at the source, all right); the order of work (survey, then split
-  picker, then pre-RED picker), which S9 followed; the nprcgenekeepr diff command, which showed the seven files
-  unchanged; the edition-2/3 warning, which led straight to the baseline run when five tests failed in GREEN; every
-  cited line in the plan and contract was right at S9's start (`:352`, `:367`, `:389`; contract `:128-129`).
-- **What was missing:** nothing it claimed to have measured; it said plainly that the tests, fixtures and Chrome needs
-  were not measured. Measuring them showed what no document said: 8 of the 65 objects are drawing-only (R32), and two
-  fixtures come from nprcgenekeepr functions (`runQcStudbook()`, `shrinkPedigree()`).
-- **What was wrong:** nothing found wrong.
-- **ROI:** high.
-
-### What Session 9 Did
-**Deliverable:** plan Phase 8, first of its two sessions (R30): all the layout code and its tests, copied test-first
-from nprcgenekeepr `baef1e12c` (DONE; Phase 8 itself finishes in S10)
-**Started:** 2026-11-11 16:07 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Start Phase 8"; the split "All
-layout now" (R30); "Chrome 3 to Phase 9" (R31); "Move them to Phase 9" (R32); the gates "Yes" three times; the seven
-tests "Edition fix + file's pattern" (R29, R33); REFACTOR "Yes, share the function". No picker needed clarifying.
-**Commits:** claim `85a6264`; RED `d0a41ab` (datasets), `1403f85` (rhesus files), `0ddff68` (computed fixtures, tool,
-helpers), `8b38610`, `8268e06`, `327270e`, `7b35b82` (13 test files); GREEN `ad6dc98` (Imports, three files), `d120883`
-(the exports), `1f356cd` (fixture fix: two Track B calls), `ae4bd90` (`test_makePedigreeMatingLayout.R`'s seven
-tests, R29/R33), `1e91c1a` (`DIVERGENCE.md`'s three rows); REFACTOR `162dcc3`; close-out `6e02298` and
-close-out 2 (these notes, the receipt, the ledger, the new gate). Not pushed.
-**Verified:** suite 428 tests, 0 failed, WARN 0, 0 skipped; the 295 copied tests check as many expectations each as
-nprcgenekeepr's own run of its 13 files at `baef1e12c`; lint 0 (package and 5 tools); roxygen leaves `NAMESPACE` and
-`man/` unchanged, and the two `.Rd` files equal nprcgenekeepr's but for the examples; `R CMD check --as-cran` Status 1
-NOTE (Maintainer, New submission); coverage 96.67% (new code 96.12%); drift tool exit 0 (77, 3 recorded); results
-tool 360 of 360, kinship 0 (no layout cases yet); `quality_ratchet` 4/4.
-**Self-assessment: 7/10.**
-+ Measured before every picker (the 53-of-65 reach that decided the split; the 8 drawing-only objects); all six
-  pickers answered at once; nprcgenekeepr's own run of the 13 files turned 7 failing or warning tests into facts
-  (edition, or its own warnings) before any test was changed; every copied line asserted; a gate for the edition trap.
-- Claimed the three Track B sites were "the same pedigree" from the data-frame text alone; the stand-in caught it in
-  GREEN, costing a fixture-fix commit. The first copy script dropped two blank lines (caught by the diff before
-  commit). Two commit messages miscounted and were amended before pushing; one backlog draft guessed a timing (then
-  measured: 180 s, not 13). Hit the `===` and `Rscript -e` traps the handoff named.
-**Ledger:** `CHANGELOG.md` S9 entry.
+layout's fidelity cases, push, CI, Phase 8 DONE (DONE)
+**Started:** 2026-11-11 23:05 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Finish Phase 8"; case size "Whole
+to 400, else 20"; "Compare messages too"; extra cases: made-up columns, comparison functions, error stops; the three
+gates "Yes"; REFACTOR "Yes, fix the comment". No picker needed clarifying.
+**Commits:** claim `a0b9eff`; RED `fd101dc`; GREEN `a7a7ffb` (the code), `7428d12` (the tool's 9 cases); REFACTOR
+`6db58ca`; pushed once (23 commits, `16a8799..6db58ca`); close-out `f39372d` and close-out 2 (these notes, the
+receipt, the ledger). Close-out commits not pushed.
+**Verified:** suite 466 tests, 0 failed, WARN 0; the 38 new tests check as many expectations each as nprcgenekeepr's
+own run (132); lint 0 (package and 5 tools); roxygen leaves `NAMESPACE` and `man/` unchanged; `R CMD check
+--as-cran` Status 1 NOTE (Maintainer, New submission), tests PASS 2010; coverage 96.84%, the new file 99.30%; drift
+tool exit 0 (81 copied functions, 3 recorded); results tool exit 0, 468 of 468 identical (27 with warnings, 60 with
+messages), kinship 132 matrices, largest difference 0; CI run `43260600901` 5/5 `Status: OK`, first attempt;
+`quality_ratchet` 4/4.
+**Self-assessment: 8/10.**
++ Measured before each picker (subset sizes and layout times at 20 and 40 animals, the message no record caught);
+  all four pickers answered at once; the copy proven by machine (asserted lines, diff of only the planned hunks);
+  covr run over the tests and over the cases, and a variant added for the gap it showed; CI read per job down to the
+  skip reasons; Phase 9 measured for the next session, which found the changed source file and the docs test.
+- Careless slips, each caught within a minute: a scratch script wrote a results file outside the project (deleted),
+  a build log went to `/tmp` (deleted), `tail`'s exit status read as the drift tool's (re-run), and the `===`,
+  `Rscript -e` and `$C:t` zsh traps, the first two of which the handoff had named.
+**Ledger:** `CHANGELOG.md` S10 entries (the session and the push).
