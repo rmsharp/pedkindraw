@@ -1,13 +1,14 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr tests/testthat/test_drawPedigreeDiagram.R at
-## nprcgenekeepr commit baef1e12c (unchanged to 4375e2715), its lines 1-267:
-## 12 of its 16 tests, unchanged. Left out (plan R35): its lines 269-349,
-## the 4 tests of nprcgenekeepr's Shiny module, which pedkindraw does not
-## have (three compare modPedigreeServer's Diagram widget with
-## drawPedigreeDiagram()'s, one reads R/modPedigree.R). The comments below
-## name nprcgenekeepr's app, documents and sessions; the "parity blocks"
-## their last paragraph names are the tests left out.
+## nprcgenekeepr commit 392dd347e (unchanged to 45e0d8bfe), its lines 1-283:
+## 12 of its 16 tests, unchanged. S11 copied them at baef1e12c; S12 ported
+## 392dd347e's legend-colour checks and .legendFill() (plan R37). Left out
+## (plan R35): its lines 285-365, the 4 tests of nprcgenekeepr's Shiny
+## module, which pedkindraw does not have (three compare modPedigreeServer's
+## Diagram widget with drawPedigreeDiagram()'s, one reads R/modPedigree.R).
+## The comments below name nprcgenekeepr's app, documents and sessions; the
+## "parity blocks" their last paragraph names are the tests left out.
 ##
 ## The S1029 BACKLOG item "Scripted Diagram rendering lacks the deceased slash
 ## and the condition sections" (owner ruling S1030, "One function draws it
@@ -29,6 +30,18 @@
 ##
 ## Like the module tests, the parity blocks compare the serialized widget text
 ## and do not parse it with jsonlite (not a dependency of this package).
+##
+## S1159 (BACKLOG item found S1158 by Mark): the legend drew the five sex
+## symbols filled light blue, vis.js's default, while the diagram draws an
+## unaffected animal open (white); and it drew each condition row with a
+## darker outline of its own color, while the diagram's affected animals keep
+## the blue outline. vis.js turns a single color into a fill plus an outline
+## 20% darker, so the legend sets only the fill (`color.background`) and leaves
+## the outline at vis.js's default, as the diagram's animals do. The colors
+## vis.js draws are read in the browser by test-e2e-pedigree-module.R.
+.legendFill <- function(conditionColors) {
+  c(rep(.affectedColor(FALSE), 5L), conditionColors, NA_character_)
+}
 
 ## Four animals: A (a male) and B (a female) are the parents of C (a female)
 ## and D (a male). A is DECEASED, B and C are ALIVE, D is SHIPPED.
@@ -86,9 +99,13 @@ test_that(
   legend <- drawPedigreeDiagram(.drawLayout())$x$legend
   expect_identical(legend$nodes$label, c(.sexLabels, "Affected", "Deceased"))
   expect_identical(legend$nodes$shape, c(.sexShapes, "hexagon", "image"))
-  expect_identical(legend$nodes$color,
-                   c(rep(NA_character_, 5L), .conditionColors[[1L]],
-                     NA_character_))
+  ## The fill alone (S1159): the sex rows open (white) like an unaffected
+  ## animal, the condition row in its color, no single color and no outline.
+  ## [[ ]], not $: `$color` would partially match `color.background`.
+  expect_identical(legend$nodes[["color.background"]],
+                   .legendFill(.conditionColors[[1L]]))
+  expect_null(legend$nodes[["color"]])
+  expect_null(legend$nodes[["color.border"]])
   expect_identical(legend$nodes$image,
                    c(rep(NA_character_, 6L), .deceasedLegendImage()))
   expect_true(all(legend$nodes$size == 14L))
@@ -115,18 +132,18 @@ test_that(
                    c(.sexLabels, "Affected", "Affected 2", "Deceased"))
   expect_identical(legend$nodes$shape,
                    c(.sexShapes, "hexagon", "hexagon", "image"))
-  expect_identical(legend$nodes$color,
-                   c(rep(NA_character_, 5L), .conditionColors[1:2],
-                     NA_character_))
+  expect_identical(legend$nodes[["color.background"]],
+                   .legendFill(.conditionColors[1:2]))
+  expect_null(legend$nodes[["color"]])
 
   ## Five condition columns: the first four are drawn, so four rows.
   legend <- drawPedigreeDiagram(.drawLayout(5L))$x$legend
   expect_identical(legend$nodes$label,
                    c(.sexLabels, "Affected", "Affected 2", "Affected 3",
                      "Affected 4", "Deceased"))
-  expect_identical(legend$nodes$color,
-                   c(rep(NA_character_, 5L), .conditionColors,
-                     NA_character_))
+  expect_identical(legend$nodes[["color.background"]],
+                   .legendFill(.conditionColors))
+  expect_null(legend$nodes[["color"]])
 })
 
 test_that(
