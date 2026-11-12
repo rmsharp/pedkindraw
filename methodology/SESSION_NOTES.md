@@ -87,6 +87,14 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S11's entries were removed in S3-S12 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 13 Did
+**Deliverable:** plan Phase 10, shrink: copy nprcgenekeepr's `shrinkPedigree()` and `test_shrinkPedigree.R`
+test-first (survey, pre-RED picker, RED, GREEN, fidelity cases, push, CI, "Done 10") (IN PROGRESS)
+**Started:** 2026-11-12 15:23 CST · **Model:** Claude Opus 5.5 · Mark picked "Phase 10: copy shrinkPedigree()" at the
+orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 11 Handoff Evaluation (by Session 12)
 **Score: 8/10.**
 - **What helped:** the nprcgenekeepr check command, which found the commit the handoff could not know; the port's

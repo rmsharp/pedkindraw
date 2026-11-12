@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-12 · [ad hoc] S13 claim (in progress): plan Phase 10, shrink: copy nprcgenekeepr's `shrinkPedigree()` (`R/shrinkPedigree.R`) and its 24 tests (`test_shrinkPedigree.R`) test-first; fidelity cases; push, CI; "Done 10". Mark picked "Phase 10: copy shrinkPedigree()" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `5a539b5` is HEAD, no merges; S12's receipt complete, its gate citation matches the last run, 4/4, results `08889eff3b69`). nprcgenekeepr at `3ff2aac77` (3 S1160 documentation commits since `45e0d8bfe`); the shrink files unchanged since `baef1e12c`
+
 ### 2026-11-12 · [ad hoc] S12 push: `master` to GitHub once at `11b62cd` (6 commits, S11's two close-out commits through S12's REFACTOR), CI green on five jobs at the first attempt
 - **Change:** `git push origin master` (`d97ccfa..11b62cd`); CI run `43306885895`: 5/5 `Status: OK`, attempt 1; `FAIL 0 | WARN 0` on each: macOS PASS 2086 SKIP 0, Windows PASS 2085 SKIP 1, Ubuntu devel, release and oldrel-1 PASS 2075 SKIP 2 (each 4 more than S11's run: the new legend checks).
 - **Commit/PR:** none (push); S12's two close-out commits after it are not pushed

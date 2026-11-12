@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S13
+date: 2026-11-12
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 10, shrink: copy nprcgenekeepr's shrinkPedigree() and test_shrinkPedigree.R test-first; fidelity cases; push, CI; Done 10 (IN PROGRESS)
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 10 item), tests/testthat/helper-shrinkPedigreeStandIn.R:13 (the stand-in)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S12
 date: 2026-11-12
 status: complete
