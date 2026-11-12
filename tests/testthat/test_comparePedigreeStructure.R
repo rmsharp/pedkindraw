@@ -1,0 +1,1246 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## Copied from nprcgenekeepr tests/testthat/test_comparePedigreeStructure.R
+## at nprcgenekeepr commit baef1e12c. Changes: the 11 calls to
+## nprcgenekeepr:::makePedigreeMatingLayout() are plain calls (the source's
+## lines 505, 525, 536, 571, 584, 602, 636, 638, 666, 669 and 1020), and the
+## two reads of the rhesus file through system.file(..., package =
+## "nprcgenekeepr") read test_path("fixtures", ...) instead (the source's
+## lines 662-663 and 1036-1037). The comments below name nprcgenekeepr's
+## documents, sessions and files.
+
+## Tests for .extractKinship2Structure() -- Track A of the kinship2
+## structural/topological comparison design (docs/planning/
+## pedigree-diagram-kinship2-structural-comparison-plan.md sections 3.1/4.1).
+## A pure, internal function with ZERO kinship2 dependency: it reads only
+## plain id/findex/mindex vectors, so any list shaped like a kinship2
+## `pedigree` object (or a hand-built stand-in) works without kinship2
+## installed. Re-implements kinship2's own align.pedigree() spouselist
+## derivation verbatim (plan section 1.1) -- not invented logic.
+##
+## Track A: .extractKinship2Structure() -- see above.
+##
+## Track B (this section): .extractNprcStructure() -- the nprcgenekeepr-side
+## counterpart, plan sections 3.2/4.2. Input is makePedigreeMatingLayout()'s
+## own direct-style return value (list(nodes, edges, duplicateToReal));
+## output is the SAME shape as Track A's (list(parentChildEdges, matePairs)),
+## deliberately -- .comparePedigreeStructures() (Track C) is agnostic to
+## which side is kinship2 vs. nprcgenekeepr. Also includes the D-2
+## edgeStyle-invariance property test: a second, test-file-only extraction
+## from "rectilinear"-style output (walking __drop_/__bar_/__proj_/__jog_
+## waypoint chains) must recover the identical relationship set as
+## .extractNprcStructure() does from "direct"-style output on the same
+## fixture -- proving D-2's foundational claim, not merely assuming it.
+##
+## Track C (below): .comparePedigreeStructures() -- the diff itself, plan
+## sections 3.3/4.3. Pure, zero-kinship2 unit tests use hand-built
+## list(parentChildEdges, matePairs) structures directly. The live-kinship2
+## end-to-end tests use toKinship2Pedigree()/compareAgainstKinship2(),
+## defined in tests/testthat/helper-comparePedigreeStructure.R (kinship2 is
+## a genuine dependency there, requireNamespace()-guarded, plan D-5) --
+## these are skip_if_not_installed("kinship2")-guarded and include a new D-7
+## fixture (plan section 2.6) exercising kinship2's own crossing-driven
+## duplication of a single-mate individual (dragon 1, section 1.3).
+
+## ---- test helpers (not exported, local to this file) -------------------
+
+## Combine parentChildEdges rows into one comparable key per row, so
+## assertions don't depend on row order (the algorithm builds father rows
+## then mother rows; a future refactor is free to change that order).
+.pcKeys <- function(pc) paste(pc$child, pc$parent, pc$role, sep = "|")
+
+## Named vector of nChildren by unordered parent pair, for order-independent
+## matePairs assertions.
+.mateNChildren <- function(mp) {
+  key <- paste(pmin(mp$parent1, mp$parent2), pmax(mp$parent1, mp$parent2),
+               sep = "|")
+  stats::setNames(mp$nChildren, key)
+}
+
+## ---- input contract / return shape --------------------------------------
+
+test_that(
+  ".extractKinship2Structure returns a list with parentChildEdges/matePairs/
+   individuals",
+  {
+  ped <- list(id = c("F1", "M1", "C1"), findex = c(0L, 0L, 1L),
+              mindex = c(0L, 0L, 2L))
+  result <- .extractKinship2Structure(ped)
+  expect_true(is.list(result))
+  expect_setequal(names(result), c("parentChildEdges", "matePairs",
+                                    "individuals"))
+  expect_true(is.data.frame(result$parentChildEdges))
+  expect_true(is.data.frame(result$matePairs))
+  expect_setequal(names(result$parentChildEdges), c("child", "parent",
+                                                      "role"))
+  expect_setequal(names(result$matePairs), c("parent1", "parent2",
+                                              "nChildren"))
+  expect_true(is.character(result$individuals))
+})
+
+## ---- individuals: the full declared-vs-actually-displayed id set --------
+##
+## Found live 2026-08-26 (owner-directed correction after being shown the
+## Track B full-fixture images side by side): kinship2's own
+## align.pedigree() silently drops a fully-isolated individual (no parents,
+## never anyone's mate or parent) from the rendered plot grid, even though
+## it is one of the pedigree() object's own declared `id` entries. The prior
+## Track A/B/C design (parentChildEdges + matePairs only) is structurally
+## blind to this -- an isolated individual contributes zero rows to either
+## table on EITHER side, so its presence/absence was invisible to
+## .comparePedigreeStructures(), which reported identical = TRUE on a pair
+## of images that visibly differ (16 rendered nodes vs. 15). `individuals`
+## closes that gap: the caller supplies which ids are ACTUALLY DISPLAYED
+## (defaulting to all declared ids, so existing hand-built-fixture callers
+## that never computed a placement subset are unaffected).
+
+test_that(
+  ".extractKinship2Structure defaults individuals to every declared id when
+   displayedIds is not supplied", {
+  ped <- list(id = c("F1", "M1", "C1"), findex = c(0L, 0L, 1L),
+              mindex = c(0L, 0L, 2L))
+  result <- .extractKinship2Structure(ped)
+  expect_setequal(result$individuals, c("F1", "M1", "C1"))
+})
+
+test_that(
+  ".extractKinship2Structure uses an explicit displayedIds argument instead
+   of the full declared id set, when supplied", {
+  ped <- list(id = c("F1", "M1", "C1"), findex = c(0L, 0L, 1L),
+              mindex = c(0L, 0L, 2L))
+  ## F1 declared but never placed on the plot grid (mirrors kinship2 dropping
+  ## a disconnected singleton) -- the caller (compareAgainstKinship2()) is
+  ## responsible for computing this via align.pedigree(), not this function.
+  result <- .extractKinship2Structure(ped, displayedIds = c("M1", "C1"))
+  expect_setequal(result$individuals, c("M1", "C1"))
+  expect_false("F1" %in% result$individuals)
+})
+
+## ---- founder-only: no known parents at all ------------------------------
+
+test_that(
+  ".extractKinship2Structure gives a lone founder zero edges and zero
+   mate pairs", {
+  ped <- list(id = "F1", findex = 0L, mindex = 0L)
+  result <- .extractKinship2Structure(ped)
+  expect_equal(nrow(result$parentChildEdges), 0L)
+  expect_equal(nrow(result$matePairs), 0L)
+})
+
+## ---- single-known-parent: father-only and mother-only, never both -------
+
+test_that(
+  ".extractKinship2Structure gives a single-known-parent child exactly
+   one edge, and contributes no mate pair", {
+  ## C1's father (F1) is known, mother is not; C2's mother (M1) is known,
+  ## father is not -- neither child has "both" parents known.
+  ped <- list(id = c("F1", "M1", "C1", "C2"),
+              findex = c(0L, 0L, 1L, 0L),
+              mindex = c(0L, 0L, 0L, 2L))
+  result <- .extractKinship2Structure(ped)
+  expect_setequal(.pcKeys(result$parentChildEdges),
+                   c("C1|F1|father", "C2|M1|mother"))
+  expect_equal(nrow(result$parentChildEdges), 2L)
+  expect_equal(nrow(result$matePairs), 0L)
+})
+
+## ---- multi-mate individual + shared-parent nChildren dedup --------------
+
+test_that(
+  ".extractKinship2Structure counts nChildren once per distinct mate pair,
+   not once per child", {
+  ## P1 has two distinct mates: P2 (3 shared children) and P3 (1 child).
+  ped <- list(
+    id = c("P1", "P2", "P3", "C1", "C2", "C3", "C4"),
+    findex = c(0L, 0L, 0L, 1L, 1L, 1L, 1L),
+    mindex = c(0L, 0L, 0L, 2L, 2L, 2L, 3L)
+  )
+  result <- .extractKinship2Structure(ped)
+  expect_equal(nrow(result$matePairs), 2L)
+  expect_equal(.mateNChildren(result$matePairs),
+               c("P1|P2" = 3L, "P1|P3" = 1L))
+  expect_equal(nrow(result$parentChildEdges), 8L)  # 4 father + 4 mother rows
+})
+
+## ---- combined 7-subject/2-mating fixture --------------------------------
+
+test_that(
+  ".extractKinship2Structure handles a combined multi-mating fixture
+   (7 subjects, 2 real mate pairs, differing nChildren)", {
+  ## Founders A, B, C, D. A x B -> X (1 child). C x D -> Y, Z (2 children).
+  ped <- list(
+    id = c("A", "B", "C", "D", "X", "Y", "Z"),
+    findex = c(0L, 0L, 0L, 0L, 1L, 3L, 3L),
+    mindex = c(0L, 0L, 0L, 0L, 2L, 4L, 4L)
+  )
+  result <- .extractKinship2Structure(ped)
+
+  ## Founders never appear as a child.
+  expect_false(any(c("A", "B", "C", "D") %in% result$parentChildEdges$child))
+
+  expect_setequal(.pcKeys(result$parentChildEdges), c(
+    "X|A|father", "X|B|mother",
+    "Y|C|father", "Y|D|mother",
+    "Z|C|father", "Z|D|mother"
+  ))
+  expect_equal(nrow(result$parentChildEdges), 6L)
+
+  expect_equal(nrow(result$matePairs), 2L)
+  expect_equal(.mateNChildren(result$matePairs),
+               c("A|B" = 1L, "C|D" = 2L))
+})
+
+## ===========================================================================
+## Track B: .extractNprcStructure() (plan sections 3.2/4.2)
+## ===========================================================================
+##
+## Input is makePedigreeMatingLayout(ped, edgeStyle = "direct",
+## twinRelations = NULL)'s own return value. Output shape is IDENTICAL to
+## Track A's -- list(parentChildEdges = data.frame(child, parent),
+## matePairs = data.frame(parent1, parent2, nChildren)) -- deliberately, so
+## Track C's comparator is agnostic to which side is which.
+
+## ---- test helpers (not exported, local to this file) --------------------
+
+## Same canonicalization idea as .pcKeys()/.mateNChildren() above, adapted to
+## Track B's own (child, parent) / (parent1, parent2, nChildren) shape (no
+## `role` column here -- father/mother is not part of this output contract).
+.pcKeysB <- function(pc) paste(pc$child, pc$parent, sep = "|")
+.mateKeysB <- function(mp) {
+  paste(pmin(mp$parent1, mp$parent2), pmax(mp$parent1, mp$parent2),
+        mp$nChildren, sep = "|")
+}
+
+## Founders A, B, C, D. A x B -> X (1 child). C x D -> Y, Z (2 children).
+## The SAME relationships as Track A's own combined 7-subject fixture
+## (above) -- reused deliberately for cross-track consistency, this time as
+## a ped data.frame (id/sire/dam/sex/gen) so it can be run through the real
+## makePedigreeMatingLayout().
+.ped7Fixture <- function() {
+  data.frame(
+    id   = c("A", "B", "C", "D", "X", "Y", "Z"),
+    sire = c(NA, NA, NA, NA, "A", "C", "C"),
+    dam  = c(NA, NA, NA, NA, "B", "D", "D"),
+    sex  = c("M", "F", "M", "F", "F", "F", "M"),
+    gen  = c(0L, 0L, 0L, 0L, 1L, 1L, 1L),
+    stringsAsFactors = FALSE
+  )
+}
+
+## The plan's own §1.4 "Track C" dogleg fixture (9 subjects), reused
+## verbatim from test_makePedigreeMatingLayout.R:1276-1283 /
+## data-raw/kinship2FidelityValidation.R:234-241 (as `pedC`). A x X -> C1
+## duplicates A (A's OTHER mate is Y); A x Y -> GC is a real consanguineous
+## union (A and Y are half-siblings via P1/P2) -- the richest small fixture
+## available: exercises duplicateToReal resolution AND a multi-mate
+## individual in one shot.
+.pedTrackCFixture <- function() {
+  data.frame(
+    id   = c("P1", "P2", "A", "Y", "X", "W", "C1", "C2", "GC"),
+    sire = c(NA, NA, "P1", "P1", NA, NA, "A", "Y", "A"),
+    dam  = c(NA, NA, "P2", "P2", NA, NA, "X", "W", "Y"),
+    sex  = c("M", "F", "M", "F", "F", "M", "F", "M", "M"),
+    gen  = c(0L, 0L, 1L, 1L, 3L, 1L, 4L, 2L, 2L),
+    stringsAsFactors = FALSE
+  )
+}
+
+## A single founder, no mates, no children -- makePedigreeMatingLayout()
+## itself cannot build this layout (a currently-existing, pre-existing bug,
+## unrelated to this plan: it crashes on ANY pedigree with zero total
+## parent-child edges, "arguments imply differing number of rows: 0, 1",
+## found incidentally this session -- reported, not fixed here). Hand-built
+## directly in .extractNprcStructure()'s own input-contract shape instead,
+## matching Track A's own founder-only fixture precedent (a hand-built
+## plain list, never routed through kinship2::pedigree()).
+.emptyLayoutFixture <- function() {
+  list(
+    nodes = data.frame(id = "F1", stringsAsFactors = FALSE),
+    edges = data.frame(from = character(), to = character(),
+                        dashes = logical(), smooth.type = character(),
+                        stringsAsFactors = FALSE),
+    duplicateToReal = stats::setNames(character(0), character(0))
+  )
+}
+
+## ---- the D-2 property test's own second implementation -------------------
+##
+## Walks makePedigreeMatingLayout(ped, edgeStyle = "rectilinear")'s waypoint
+## edges to recover the SAME real-individual-level relationship set
+## .extractNprcStructure() reads directly off "direct"-style output. Exists
+## ONLY to cross-check D-2's invariance claim (plan section 2, D-2's
+## "Required verification, not an assumption" note) -- deliberately
+## test-file-local, not production code, and not vectorized/hardened to
+## production standard (plan section 4.2: "it need not be
+## production-quality or reused anywhere else").
+##
+## The three waypoint families route differently, but all reduce to one
+## shape once collapsed:
+##   - __jog_<n>_a/__jog_<n>_b (.resolveEdgeNodeCollisions()): a simple
+##     pass-through splice, u -> j1 -> j2 -> v replacing a single logical
+##     edge u -> v. Always exactly 1 incoming + 1 outgoing edge per jog
+##     node (verified directly against the real 375-individual fixture's
+##     154 jog waypoints this session) -- collapsed first, unconditionally,
+##     before anything else runs.
+##     CHANGED S696 (ascender-stub direct rejoin): a corridor whose BOTH
+##     endpoints are bypassed straight to their kids is emitted as
+##     (j1 -> kidF, j1 -> j2, j2 -> kidT), so j1 there has 2 outgoing +
+##     0 incoming edges. The collapse below now splices only 1-in/1-out
+##     jog nodes; any other jog node joins the waypoint-component walk
+##     (isWaypoint includes __jog_), where its waypoint -> kid edges
+##     read as ordinary child-side attachments. A component left with
+##     child-side attachments but NO parent side (that both-bypassed
+##     corridor's shape -- its ends touch only kids) is bridged into the
+##     component sharing one of its kid terminals (a kid has exactly one
+##     union family, so the bridge is family-internal by construction),
+##     and each component's child list is de-duplicated (one bar point
+##     bypassed by two corridors reaches its kid twice).
+##   - __proj_<side>_<unit> (.addRectilinearWaypoints() D2, mate-line
+##     dogleg): always a standalone 2-edge unit (side -> proj -> union),
+##     never chained to another __drop_/__bar_/__proj_ node directly.
+##   - __drop_<fromId> / __bar_<kid> (.addRectilinearWaypoints() D1,
+##     sibship bar): a connected chain per sibling group, attached to
+##     fromId via the drop node and to each kid via its own bar node.
+## After jog-collapse, both families reduce to "one real/union parent-side
+## terminal in, one-or-more real/union child-side terminals out" per
+## connected component of waypoint nodes -- discovered by edge DIRECTION
+## (a terminal -> waypoint edge is the parent-side attachment; a
+## waypoint -> terminal edge is a child-side attachment), not by parsing
+## node-id substrings (dropId/barId ids embed fromId/kid, but a general
+## graph-based recovery needs no such assumption and stays correct if the
+## naming ever changes).
+.extractNprcStructureFromWaypoints <- function(layout) {
+  e <- layout$edges[, c("from", "to", "dashes", "smooth.type")]
+  e$from <- as.character(e$from)
+  e$to <- as.character(e$to)
+  duplicateToReal <- layout$duplicateToReal
+  resolveId <- function(id) {
+    hit <- match(id, names(duplicateToReal))
+    ifelse(is.na(hit), id, unname(duplicateToReal[hit]))
+  }
+
+  isJog <- function(x) grepl("^__jog_", x)
+  ## CHANGED S696: __jog_ joins the waypoint families, so a jog node the
+  ## collapse below cannot splice (a both-bypassed corridor's corner)
+  ## participates in the component walk instead of being lost.
+  isWaypoint <- function(x) grepl("^__drop_|^__bar_|^__proj_|^__jog_", x)
+
+  ## Step 1: collapse __jog_ pass-through pairs (exactly 1 incoming +
+  ## 1 outgoing edge, by .resolveEdgeNodeCollisions()'s own construction
+  ## -- CHANGED S696: no longer ALWAYS true; see the header note. A jog
+  ## node with any other degree is skipped here, and degrees never
+  ## change under a neighbour's splice, so the skip set is stable).
+  skip <- character(0L)
+  repeat {
+    jogIds <- setdiff(unique(c(e$from[isJog(e$from)], e$to[isJog(e$to)])),
+                       skip)
+    if (length(jogIds) == 0L) break
+    j <- jogIds[[1L]]
+    inRow <- which(e$to == j)
+    outRow <- which(e$from == j)
+    if (length(inRow) != 1L || length(outRow) != 1L) {
+      skip <- c(skip, j)
+      next
+    }
+    newRow <- e[inRow, , drop = FALSE]
+    newRow$to <- e$to[outRow]
+    e <- rbind(e[-c(inRow, outRow), , drop = FALSE], newRow)
+  }
+
+  ## Dup connectors (dashed real<->duplicate arcs) are never routed through
+  ## any waypoint family in either edgeStyle -- excluded here exactly as in
+  ## .extractNprcStructure()'s own isDupEdge marker.
+  isDupEdge <- e$dashes & !is.na(e$smooth.type) & e$smooth.type == "curvedCW"
+  e <- e[!isDupEdge, , drop = FALSE]
+
+  ## Step 2: connected components over waypoint<->waypoint edges only (the
+  ## D1 horizontal chain; a D2 __proj_ node has none, so it is always its
+  ## own singleton component).
+  wpNodes <- unique(c(e$from[isWaypoint(e$from)], e$to[isWaypoint(e$to)]))
+  parent <- stats::setNames(wpNodes, wpNodes)
+  find <- function(x) {
+    while (!identical(parent[[x]], x)) x <- parent[[x]]
+    x
+  }
+  wpwp <- e[isWaypoint(e$from) & isWaypoint(e$to), , drop = FALSE]
+  if (nrow(wpwp) > 0L) {
+    for (i in seq_len(nrow(wpwp))) {
+      ra <- find(wpwp$from[[i]])
+      rb <- find(wpwp$to[[i]])
+      if (!identical(ra, rb)) parent[[ra]] <- rb
+    }
+  }
+  compOf <- stats::setNames(vapply(wpNodes, find, character(1L)), wpNodes)
+
+  ## Step 3: external attachments -- one endpoint a waypoint node, the
+  ## other a terminal (real/dup/union id). Edge direction discriminates
+  ## parent-side (terminal -> waypoint) from child-side (waypoint ->
+  ## terminal), matching childEdges'/mateEdges' own "from" = source
+  ## convention in makePedigreeDiagramData.R.
+  ext <- e[xor(isWaypoint(e$from), isWaypoint(e$to)), , drop = FALSE]
+  parentSide <- list()
+  childSide <- list()
+  if (nrow(ext) > 0L) {
+    for (i in seq_len(nrow(ext))) {
+      f <- ext$from[[i]]
+      t <- ext$to[[i]]
+      if (isWaypoint(f)) {
+        comp <- compOf[[f]]
+        childSide[[comp]] <- c(childSide[[comp]], t)
+      } else {
+        comp <- compOf[[t]]
+        parentSide[[comp]] <- c(parentSide[[comp]], f)
+      }
+    }
+  }
+
+  ## Step 3.5 (CHANGED S696): bridge a parentless component into the
+  ## component sharing one of its kid terminals. A both-bypassed
+  ## corridor's ends touch only kids, so its component has child-side
+  ## attachments and no parent side; the family's union reaches those
+  ## kids through a sibling component instead. A kid belongs to exactly
+  ## one union family, so the merge is family-internal by construction.
+  repeat {
+    parentless <- setdiff(names(childSide), names(parentSide))
+    merged <- FALSE
+    for (comp in parentless) {
+      kids <- childSide[[comp]][!grepl("^__union_", childSide[[comp]])]
+      host <- NULL
+      for (other in setdiff(names(childSide), comp)) {
+        if (any(kids %in% childSide[[other]])) {
+          host <- other
+          break
+        }
+      }
+      if (!is.null(host)) {
+        childSide[[host]] <- c(childSide[[host]], childSide[[comp]])
+        childSide[[comp]] <- NULL
+        merged <- TRUE
+        break
+      }
+    }
+    if (!merged) break
+  }
+
+  ## Step 4: classify each component -- a single child-side terminal that
+  ## is itself a union id is a recovered (dogleg'd) mate edge; anything
+  ## else is a recovered (D1) sibling group's child edges. (CHANGED
+  ## S696: the child list is de-duplicated -- a bar point bypassed by
+  ## two corridors reaches its kid once per corridor, and a Step 3.5
+  ## merge re-adds the shared kid.)
+  recoveredMate <- list()
+  recoveredChild <- list()
+  for (comp in names(childSide)) {
+    p <- parentSide[[comp]]
+    ch <- unique(childSide[[comp]])
+    if (length(ch) == 1L && grepl("^__union_", ch)) {
+      recoveredMate[[length(recoveredMate) + 1L]] <-
+        data.frame(from = p, to = ch, stringsAsFactors = FALSE)
+    } else {
+      recoveredChild[[length(recoveredChild) + 1L]] <- data.frame(
+        from = rep(p, length(ch)), to = ch, stringsAsFactors = FALSE)
+    }
+  }
+
+  ## Step 5: pool with any edges that stayed direct (a same-gen mate edge
+  ## never gets a D2 dogleg at all).
+  keptMate <- e[!isWaypoint(e$from) & grepl("^__union_", e$to),
+                c("from", "to")]
+  keptChild <- e[!isWaypoint(e$from) & !isWaypoint(e$to) &
+                   !grepl("^__union_", e$to), c("from", "to")]
+  mateEdges <- rbind(keptMate, do.call(rbind, recoveredMate))
+  childEdges <- rbind(keptChild, do.call(rbind, recoveredChild))
+  if (is.null(mateEdges)) {
+    mateEdges <- data.frame(from = character(), to = character(),
+                             stringsAsFactors = FALSE)
+  }
+  if (is.null(childEdges)) {
+    childEdges <- data.frame(from = character(), to = character(),
+                              stringsAsFactors = FALSE)
+  }
+
+  ## Step 6: from here on, identical to .extractNprcStructure()'s own
+  ## downstream assembly (matePairs grouping, parentChildEdges expansion) --
+  ## see that function for the production version of this logic.
+  mateEdges$parent <- resolveId(mateEdges$from)
+  bySplit <- split(mateEdges$parent, mateEdges$to)
+  matePairs <- do.call(rbind, lapply(names(bySplit), function(u) {
+    parents <- bySplit[[u]]
+    if (length(parents) < 2L) return(NULL)
+    data.frame(parent1 = parents[[1L]], parent2 = parents[[2L]],
+               unionId = u, stringsAsFactors = FALSE)
+  }))
+  if (is.null(matePairs)) {
+    matePairs <- data.frame(parent1 = character(), parent2 = character(),
+                             unionId = character(), stringsAsFactors = FALSE)
+  }
+
+  isUnionSourced <- grepl("^__union_", childEdges$from)
+  unionChild <- childEdges[isUnionSourced, ]
+  directChild <- childEdges[!isUnionSourced, ]
+  pcFromUnion <- if (nrow(unionChild) > 0L) {
+    matchIdx <- match(unionChild$from, matePairs$unionId)
+    data.frame(child = rep(resolveId(unionChild$to), 2L),
+               parent = c(matePairs$parent1[matchIdx],
+                          matePairs$parent2[matchIdx]),
+               stringsAsFactors = FALSE)
+  } else {
+    data.frame(child = character(), parent = character(),
+               stringsAsFactors = FALSE)
+  }
+  pcFromDirect <- if (nrow(directChild) > 0L) {
+    data.frame(child = resolveId(directChild$to),
+               parent = resolveId(directChild$from),
+               stringsAsFactors = FALSE)
+  } else {
+    data.frame(child = character(), parent = character(),
+               stringsAsFactors = FALSE)
+  }
+  parentChildEdges <- rbind(pcFromUnion, pcFromDirect)
+
+  nChildrenByUnion <- table(unionChild$from)
+  matePairs$nChildren <- as.integer(nChildrenByUnion[matePairs$unionId])
+  matePairs$unionId <- NULL
+
+  list(parentChildEdges = parentChildEdges, matePairs = matePairs)
+}
+
+## ---- input contract / return shape --------------------------------------
+
+test_that(
+  ".extractNprcStructure returns a list with parentChildEdges/matePairs/
+   individuals", {
+  layout <- makePedigreeMatingLayout(.ped7Fixture(),
+                                                       edgeStyle = "direct")
+  result <- .extractNprcStructure(layout)
+  expect_true(is.list(result))
+  expect_setequal(names(result), c("parentChildEdges", "matePairs",
+                                    "individuals"))
+  expect_true(is.data.frame(result$parentChildEdges))
+  expect_true(is.data.frame(result$matePairs))
+  expect_setequal(names(result$parentChildEdges), c("child", "parent"))
+  expect_setequal(names(result$matePairs),
+                   c("parent1", "parent2", "nChildren"))
+  expect_true(is.character(result$individuals))
+})
+
+## ---- individuals: every REAL individual rendered, no synthetic ids,
+## no duplicate-node double-counting -----------------------------------
+
+test_that(
+  ".extractNprcStructure's individuals is the full real-individual node set,
+   excluding synthetic __union_/__drop_/etc ids", {
+  layout <- makePedigreeMatingLayout(.ped7Fixture(),
+                                                       edgeStyle = "direct")
+  result <- .extractNprcStructure(layout)
+  expect_setequal(result$individuals, c("A", "B", "C", "D", "X", "Y", "Z"))
+  expect_false(any(grepl("^__", result$individuals)))
+})
+
+test_that(
+  ".extractNprcStructure's individuals lists a multi-mate duplicated
+   individual (A, on the Track C dogleg fixture) exactly ONCE -- a
+   __dup_A_... node must resolve to A, never inflate the count", {
+  layout <- makePedigreeMatingLayout(.pedTrackCFixture(),
+                                                       edgeStyle = "direct")
+  expect_true(any(grepl("^__dup_A_", names(layout$duplicateToReal))))
+  result <- .extractNprcStructure(layout)
+  expect_setequal(result$individuals,
+                   c("P1", "P2", "A", "Y", "X", "W", "C1", "C2", "GC"))
+  expect_equal(sum(result$individuals == "A"), 1L)
+})
+
+test_that(
+  ".extractNprcStructure's individuals is just the lone id for a founder-only
+   layout", {
+  result <- .extractNprcStructure(.emptyLayoutFixture())
+  expect_setequal(result$individuals, "F1")
+})
+
+## ---- founder-only: no known parents at all ------------------------------
+
+test_that(
+  ".extractNprcStructure gives a lone founder zero edges and zero mate
+   pairs", {
+  result <- .extractNprcStructure(.emptyLayoutFixture())
+  expect_equal(nrow(result$parentChildEdges), 0L)
+  expect_equal(nrow(result$matePairs), 0L)
+})
+
+## ---- D5 single-known-parent fallback -------------------------------------
+
+test_that(
+  ".extractNprcStructure gives a single-known-parent child exactly one
+   direct (non-union-sourced) edge, and contributes no mate pair", {
+  ped <- data.frame(
+    id = c("F1", "M1", "C1"), sire = c(NA, NA, "F1"), dam = c(NA, NA, NA),
+    sex = c("M", "F", "F"), gen = c(0L, 0L, 1L), stringsAsFactors = FALSE
+  )
+  layout <- makePedigreeMatingLayout(ped,
+                                                       edgeStyle = "direct")
+  result <- .extractNprcStructure(layout)
+  expect_equal(.pcKeysB(result$parentChildEdges), "C1|F1")
+  expect_equal(nrow(result$matePairs), 0L)
+})
+
+## ---- 7-subject fixture: same relationships as Track A's own -------------
+
+test_that(
+  ".extractNprcStructure handles the 7-subject/2-mating fixture (no
+   duplicates, no consanguinity) -- same relationships as Track A's own
+   combined fixture", {
+  layout <- makePedigreeMatingLayout(.ped7Fixture(),
+                                                       edgeStyle = "direct")
+  result <- .extractNprcStructure(layout)
+
+  expect_setequal(.pcKeysB(result$parentChildEdges), c(
+    "X|A", "X|B", "Y|C", "Y|D", "Z|C", "Z|D"
+  ))
+  expect_equal(nrow(result$parentChildEdges), 6L)
+
+  expect_setequal(.mateKeysB(result$matePairs), c("A|B|1", "C|D|2"))
+  expect_equal(nrow(result$matePairs), 2L)
+})
+
+## ---- 9-subject Track C fixture: duplicates + consanguinity --------------
+
+test_that(
+  ".extractNprcStructure resolves duplicateToReal correctly and reports a
+   real consanguineous union on the Track C dogleg fixture", {
+  layout <- makePedigreeMatingLayout(.pedTrackCFixture(),
+                                                       edgeStyle = "direct")
+  ## The layout genuinely duplicates A (multi-mate: X and Y) -- confirms
+  ## the fixture itself still exercises duplicateToReal before trusting
+  ## the extraction result below.
+  expect_true(any(grepl("^__dup_A_", names(layout$duplicateToReal))))
+
+  result <- .extractNprcStructure(layout)
+  ## Every parentChildEdges/matePairs id is a REAL individual id -- never
+  ## a __dup_/__union_ synthetic id (duplicateToReal resolution applied).
+  reserved <- "^__dup_|^__union_"
+  expect_false(any(grepl(reserved, result$parentChildEdges$child)))
+  expect_false(any(grepl(reserved, result$parentChildEdges$parent)))
+  expect_false(any(grepl(reserved, result$matePairs$parent1)))
+  expect_false(any(grepl(reserved, result$matePairs$parent2)))
+
+  expect_setequal(.pcKeysB(result$parentChildEdges), c(
+    "A|P1", "Y|P1", "A|P2", "Y|P2",
+    "C1|X", "C1|A", "C2|W", "C2|Y", "GC|A", "GC|Y"
+  ))
+  expect_equal(nrow(result$parentChildEdges), 10L)
+
+  expect_setequal(.mateKeysB(result$matePairs),
+                   c("P1|P2|2", "A|X|1", "W|Y|1", "A|Y|1"))
+  expect_equal(nrow(result$matePairs), 4L)
+})
+
+## ---- D-2 edgeStyle-invariance property test ------------------------------
+
+test_that(
+  ".extractNprcStructure(direct-style) matches the rectilinear-side
+   extraction on the Track C dogleg fixture -- proves D-2's invariance
+   claim on a small, hand-verifiable case", {
+  ped <- .pedTrackCFixture()
+  direct <- makePedigreeMatingLayout(ped,
+                                                       edgeStyle = "direct")
+  rectilinear <- makePedigreeMatingLayout(
+    ped, edgeStyle = "rectilinear")
+
+  fromDirect <- .extractNprcStructure(direct)
+  fromRectilinear <- .extractNprcStructureFromWaypoints(rectilinear)
+
+  expect_setequal(.pcKeysB(fromDirect$parentChildEdges),
+                   .pcKeysB(fromRectilinear$parentChildEdges))
+  expect_equal(nrow(fromDirect$parentChildEdges),
+               nrow(fromRectilinear$parentChildEdges))
+  expect_setequal(.mateKeysB(fromDirect$matePairs),
+                   .mateKeysB(fromRectilinear$matePairs))
+  expect_equal(nrow(fromDirect$matePairs), nrow(fromRectilinear$matePairs))
+})
+
+test_that(
+  ".extractNprcStructure(direct-style) matches the rectilinear-side
+   extraction on the real 375-individual bundled fixture -- the D-8
+   toy-AND-real-scale validation discipline (PROJECT_LEARNINGS.md Learning
+   596) applied to D-2's own invariance claim, confirmed exercising real
+   __jog_ collision waypoints (not just the D1 sibship chains the small
+   fixtures above cover; __proj_ doglegs are extinct under Decision 2 --
+   see the CHANGED S678 note below)", {
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  direct <- makePedigreeMatingLayout(ped,
+                                                       edgeStyle = "direct")
+  rectilinear <- withCallingHandlers(
+    makePedigreeMatingLayout(ped, edgeStyle = "rectilinear"),
+    warning = function(w) {
+      expect_match(conditionMessage(w), "same-row edge-node collision")
+      invokeRestart("muffleWarning")
+    }
+  )
+  ## Confirm this run actually exercised the jog waypoint family the small
+  ## fixtures above cannot reach -- an empty/mocked/skipped run would pass
+  ## the equality checks below vacuously.
+  ## CHANGED S678: the __proj_ exercised-guard is inverted -- Decision 2
+  ## (spouse duplication, provisional-order design Phase 1) makes the D2
+  ## dogleg structurally dead: every unit's resolved mate node (B1 derived
+  ## point or __dup_) now carries the unit's own gen, so no projection
+  ## waypoint can be produced any more (56 -> 0 on this fixture, 0 on
+  ## every fixture). The test-side walker above keeps its generic __proj_
+  ## handling (a singleton pass-through, id-name-agnostic) in case a
+  ## dogleg ever reappears; here the absence IS the expectation, pinned so
+  ## a reappearing dogleg (a Decision 2 regression) is caught.
+  expect_false(any(grepl("^__proj_", rectilinear$nodes$id)))
+  expect_true(any(grepl("^__jog_", rectilinear$nodes$id)))
+
+  fromDirect <- .extractNprcStructure(direct)
+  fromRectilinear <- .extractNprcStructureFromWaypoints(rectilinear)
+
+  expect_setequal(.pcKeysB(fromDirect$parentChildEdges),
+                   .pcKeysB(fromRectilinear$parentChildEdges))
+  expect_equal(nrow(fromDirect$parentChildEdges),
+               nrow(fromRectilinear$parentChildEdges))
+  expect_setequal(.mateKeysB(fromDirect$matePairs),
+                   .mateKeysB(fromRectilinear$matePairs))
+  expect_equal(nrow(fromDirect$matePairs), nrow(fromRectilinear$matePairs))
+})
+
+## ===========================================================================
+## Track C: .comparePedigreeStructures() (plan sections 3.3/4.3)
+## ===========================================================================
+##
+## .comparePedigreeStructures(a, b) diffs two list(parentChildEdges,
+## matePairs) structures in Track A/B's own shared output shape (
+## deliberately agnostic to which side is which -- plan section 3.3).
+## Canonicalizes each side before comparing (plan section 1.3's fifth fact:
+## order never matters) and reports, in both directions, any
+## parentChildEdges/matePairs row present on only one side.
+##
+## The live-kinship2 end-to-end tests below use
+## toKinship2Pedigree()/compareAgainstKinship2(), defined in
+## tests/testthat/helper-comparePedigreeStructure.R (auto-loaded by
+## test_dir()/test_local()/devtools::test(); NOT by test_file() -- source on
+## demand, matching helper-fgSEValidation.R's own established pattern,
+## test_fgSEValidation.R:26-28).
+
+if (!exists("toKinship2Pedigree")) {
+  source(testthat::test_path("helper-comparePedigreeStructure.R"))
+}
+
+## ---- test helpers (not exported, local to this file) --------------------
+
+## The new D-7 fixture (plan sections 2.6/4.3): a double cross-marriage
+## between two founder sibships (Family A: FA1xFA2 -> A1,A2; Family B:
+## FB1xFB2 -> B1,B2; A1xB2 -> X; A2xB1 -> Y). Empirically confirmed
+## (scratchpad/explore_d7_v2.R Candidate 5, this session) to trigger
+## kinship2's own crossing-driven duplication of A1 -- a SINGLE-mate
+## individual (A1's only mate is B2) -- at plot time: align.pedigree()'s own
+## $nid matrix places A1's row index (5) at 2 different columns of the same
+## generation row ([5,6,7,5,8], for ids in id order
+## FA1,FA2,FB1,FB2,A1,A2,B1,B2,X,Y). This proves plan dragon 1 (section 1.3)
+## and D-1's "resolved by construction" claim on a real, verified case --
+## not merely reasoned about (PROJECT_LEARNINGS.md Learning 596's
+## "render/test the claim, don't just reason about it" rule).
+.pedCrossMarriageFixture <- function() {
+  ped <- data.frame(
+    id   = c("FA1", "FA2", "FB1", "FB2", "A1", "A2", "B1", "B2", "X", "Y"),
+    sire = c(NA, NA, NA, NA, "FA1", "FA1", "FB1", "FB1", "A1", "B1"),
+    dam  = c(NA, NA, NA, NA, "FA2", "FA2", "FB2", "FB2", "B2", "A2"),
+    sex  = c("M", "F", "M", "F", "M", "F", "M", "F", "F", "M"),
+    stringsAsFactors = FALSE
+  )
+  ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+  ped
+}
+
+## Track B's own "full" fixture, verbatim from
+## data-raw/kinship2FidelityValidation.R's `pedB` (id/sire/dam/sex columns
+## only -- genotyped/affected are that script's own shrinkPedigree()
+## concern, irrelevant here). Reused here, not just referenced, because this
+## is the EXACT fixture the kinship2-fidelity-validation.qmd article
+## publishes as "structurally identical to kinship2" -- and the exact one
+## found live 2026-08-26 (owner-directed) to contain a fully isolated
+## individual (P5: no parents, never anyone's sire/dam) that kinship2's own
+## align.pedigree() drops from the plot grid. As of Phase 1 of the
+## P5-suppression plan (S644, 2026-08-27, closing issue #164),
+## makePedigreeMatingLayout() now drops it too -- see the Block A/B tests
+## below, which assert the now-matching behavior.
+.pedTrackBFixture <- function() {
+  ped <- data.frame(
+    id   = c("P1", "P2", "P3", "P4", "P5", "P6",
+             "C1", "C2", "C3", "C4", "C4a",
+             "G3", "M1", "L1", "L2", "L3"),
+    sire = c(NA, NA, NA, NA, NA, NA,
+             "P1", "P1", "P1", "P3", "C4",
+             NA, "P1", "M1", "M1", "M1"),
+    dam  = c(NA, NA, NA, NA, NA, NA,
+             "P2", "P2", "P2", "P4", "P6",
+             NA, "P2", "G3", "G3", "G3"),
+    sex  = c("M", "F", "M", "F", "F", "F",
+             "F", "M", "F", "M", "F",
+             "F", "M", "F", "M", "M"),
+    stringsAsFactors = FALSE
+  )
+  ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+  ped
+}
+
+## ---- .comparePedigreeStructures() pure unit tests (zero kinship2) --------
+
+test_that(
+  ".comparePedigreeStructures returns a list with the 7 documented fields", {
+  a <- list(
+    parentChildEdges = data.frame(child = "C1", parent = "F1",
+                                    stringsAsFactors = FALSE),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer())
+  )
+  b <- a
+  result <- .comparePedigreeStructures(a, b)
+  expect_true(is.list(result))
+  expect_setequal(names(result), c("parentChildOnlyInA", "parentChildOnlyInB",
+                                     "matePairsOnlyInA", "matePairsOnlyInB",
+                                     "individualsOnlyInA", "individualsOnlyInB",
+                                     "identical"))
+  expect_true(is.logical(result$identical))
+})
+
+## ---- individuals diff: the isolated-individual blind spot itself --------
+##
+## Reproduces the exact defect found live 2026-08-26: an individual with
+## zero parent-child edges and zero mate pairs on EITHER side (e.g. a fully
+## isolated founder one package renders and the other silently drops) must
+## now surface as a real discrepancy, not pass silently as identical = TRUE.
+
+test_that(
+  ".comparePedigreeStructures reports identical = FALSE when one side's
+   individuals set has an id the other lacks, with NO edges/matePairs
+   difference at all (the isolated-individual case)", {
+  a <- list(
+    parentChildEdges = data.frame(child = "C1", parent = "F1",
+                                    stringsAsFactors = FALSE),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer()),
+    individuals = c("F1", "C1")
+  )
+  b <- list(
+    parentChildEdges = data.frame(child = "C1", parent = "F1",
+                                    stringsAsFactors = FALSE),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer()),
+    ## b has an extra isolated individual ("ISO") with no edges anywhere --
+    ## exactly what P5 is on the real Track B fixture.
+    individuals = c("F1", "C1", "ISO")
+  )
+  result <- .comparePedigreeStructures(a, b)
+  expect_false(result$identical)
+  expect_equal(nrow(result$parentChildOnlyInA), 0L)
+  expect_equal(nrow(result$parentChildOnlyInB), 0L)
+  expect_equal(nrow(result$matePairsOnlyInA), 0L)
+  expect_equal(nrow(result$matePairsOnlyInB), 0L)
+  expect_equal(result$individualsOnlyInA, character(0))
+  expect_equal(result$individualsOnlyInB, "ISO")
+})
+
+test_that(
+  ".comparePedigreeStructures reports identical = TRUE when both sides'
+   individuals sets match, even in different order", {
+  a <- list(
+    parentChildEdges = data.frame(child = character(), parent = character()),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer()),
+    individuals = c("F1", "C1")
+  )
+  b <- list(
+    parentChildEdges = data.frame(child = character(), parent = character()),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer()),
+    individuals = c("C1", "F1")
+  )
+  result <- .comparePedigreeStructures(a, b)
+  expect_true(result$identical)
+  expect_equal(result$individualsOnlyInA, character(0))
+  expect_equal(result$individualsOnlyInB, character(0))
+})
+
+test_that(
+  ".comparePedigreeStructures treats a missing individuals field on both
+   sides as always-matching (backward compatible with hand-built a/b
+   structures that predate this field)", {
+  a <- list(
+    parentChildEdges = data.frame(child = "C1", parent = "F1",
+                                    stringsAsFactors = FALSE),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer())
+  )
+  b <- a
+  result <- .comparePedigreeStructures(a, b)
+  expect_true(result$identical)
+  expect_equal(result$individualsOnlyInA, character(0))
+  expect_equal(result$individualsOnlyInB, character(0))
+})
+
+test_that(
+  ".comparePedigreeStructures reports identical = TRUE for equal structures,
+   even when matePairs lists parent1/parent2 in opposite order (order never
+   matters, plan section 1.3's fifth fact)", {
+  a <- list(
+    parentChildEdges = data.frame(child = c("X", "X"), parent = c("A", "B"),
+                                    stringsAsFactors = FALSE),
+    matePairs = data.frame(parent1 = "A", parent2 = "B", nChildren = 1L,
+                             stringsAsFactors = FALSE)
+  )
+  b <- list(
+    parentChildEdges = data.frame(child = c("X", "X"), parent = c("B", "A"),
+                                    stringsAsFactors = FALSE),
+    matePairs = data.frame(parent1 = "B", parent2 = "A", nChildren = 1L,
+                             stringsAsFactors = FALSE)
+  )
+  result <- .comparePedigreeStructures(a, b)
+  expect_true(result$identical)
+  expect_equal(nrow(result$parentChildOnlyInA), 0L)
+  expect_equal(nrow(result$parentChildOnlyInB), 0L)
+  expect_equal(nrow(result$matePairsOnlyInA), 0L)
+  expect_equal(nrow(result$matePairsOnlyInB), 0L)
+})
+
+test_that(
+  ".comparePedigreeStructures reports a parentChildEdges row present only in
+   A, and only in B, in the correct respective slot", {
+  a <- list(
+    parentChildEdges = data.frame(child = c("X", "Y"), parent = c("A", "A"),
+                                    stringsAsFactors = FALSE),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer())
+  )
+  b <- list(
+    parentChildEdges = data.frame(child = "X", parent = "A",
+                                    stringsAsFactors = FALSE),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer())
+  )
+  result <- .comparePedigreeStructures(a, b)
+  expect_false(result$identical)
+  expect_equal(nrow(result$parentChildOnlyInA), 1L)
+  expect_equal(result$parentChildOnlyInA$child, "Y")
+  expect_equal(nrow(result$parentChildOnlyInB), 0L)
+})
+
+test_that(
+  ".comparePedigreeStructures reports a matePairs row present only in A, and
+   only in B -- including when nChildren differs for an otherwise-matching
+   pair (a real structural discrepancy, not silently ignored)", {
+  a <- list(
+    parentChildEdges = data.frame(child = character(), parent = character()),
+    matePairs = data.frame(parent1 = "A", parent2 = "B", nChildren = 2L,
+                             stringsAsFactors = FALSE)
+  )
+  b <- list(
+    parentChildEdges = data.frame(child = character(), parent = character()),
+    matePairs = data.frame(parent1 = "A", parent2 = "B", nChildren = 1L,
+                             stringsAsFactors = FALSE)
+  )
+  result <- .comparePedigreeStructures(a, b)
+  expect_false(result$identical)
+  expect_equal(nrow(result$matePairsOnlyInA), 1L)
+  expect_equal(result$matePairsOnlyInA$nChildren, 2L)
+  expect_equal(nrow(result$matePairsOnlyInB), 1L)
+  expect_equal(result$matePairsOnlyInB$nChildren, 1L)
+})
+
+test_that(
+  ".comparePedigreeStructures handles zero-row inputs on both sides
+   (founder-only pedigree) as identical = TRUE", {
+  empty <- list(
+    parentChildEdges = data.frame(child = character(), parent = character()),
+    matePairs = data.frame(parent1 = character(), parent2 = character(),
+                             nChildren = integer())
+  )
+  result <- .comparePedigreeStructures(empty, empty)
+  expect_true(result$identical)
+})
+
+## ---- toKinship2Pedigree() unit tests --------------------------------------
+
+test_that(
+  "toKinship2Pedigree auto-swaps a reversed sire/dam row (D-5) -- the
+   existing Track C fixture's own C2 row (sire='Y', but Y's sex is female)",
+  {
+  skip_if_not_installed("kinship2")
+  ped <- .pedTrackCFixture()
+  pedK2 <- toKinship2Pedigree(ped)
+  ## after the swap, C2's dadid must be male and momid female (kinship2's
+  ## own pedigree() would otherwise refuse to construct the object at all)
+  c2 <- which(pedK2$id == "C2")
+  expect_equal(pedK2$id[pedK2$findex[c2]], "W")
+  expect_equal(pedK2$id[pedK2$mindex[c2]], "Y")
+})
+
+test_that(
+  "toKinship2Pedigree leaves an already-correctly-sexed row unchanged", {
+  skip_if_not_installed("kinship2")
+  ped <- .ped7Fixture()
+  pedK2 <- toKinship2Pedigree(ped)
+  xIdx <- which(pedK2$id == "X")
+  expect_equal(pedK2$id[pedK2$findex[xIdx]], "A")
+  expect_equal(pedK2$id[pedK2$mindex[xIdx]], "B")
+})
+
+## ---- live-kinship2 end-to-end tests (D-8: toy AND real scale) ------------
+
+test_that(
+  "compareAgainstKinship2 reports identical = TRUE on the existing 9-subject
+   Track C dogleg fixture", {
+  skip_if_not_installed("kinship2")
+  result <- compareAgainstKinship2(.pedTrackCFixture())
+  expect_true(result$identical)
+})
+
+test_that(
+  "kinship2 itself genuinely duplicates the D-7 fixture's single-mate
+   individual A1 at plot time -- confirms the fixture actually exercises
+   dragon 1 (plan section 1.3), not merely assumed", {
+  skip_if_not_installed("kinship2")
+  ped <- .pedCrossMarriageFixture()
+  pedK2 <- toKinship2Pedigree(ped)
+  al <- kinship2:::align.pedigree(pedK2)
+  a1Idx <- which(pedK2$id == "A1")
+  placements <- sum(floor(al$nid) == a1Idx)
+  expect_equal(placements, 2L)
+  ## A1 truly has exactly 1 mate -- this is the "single-mate" dragon, not
+  ## the already-handled multi-mate case (dragon 3).
+  mates <- unique(c(ped$dam[ped$sire == "A1" & !is.na(ped$sire)],
+                     ped$sire[ped$dam == "A1" & !is.na(ped$dam)]))
+  expect_equal(length(mates), 1L)
+})
+
+test_that(
+  "compareAgainstKinship2 reports identical = TRUE on the new D-7
+   crossing-duplication fixture -- proves D-1's 'resolved by construction'
+   claim, not merely assumed (D-7, plan section 2.6)", {
+  skip_if_not_installed("kinship2")
+  ped <- .pedCrossMarriageFixture()
+  ## nprcgenekeepr itself must never duplicate the single-mate A1 (only a
+  ## real multi-mate anchor gets duplicated) -- confirmed before trusting
+  ## the comparison result below.
+  layout <- makePedigreeMatingLayout(ped,
+                                                       edgeStyle = "direct")
+  expect_false(any(grepl("^__dup_A1_", names(layout$duplicateToReal))))
+
+  result <- compareAgainstKinship2(ped)
+  expect_true(result$identical)
+})
+
+test_that(
+  "compareAgainstKinship2 reports identical = TRUE on the real
+   375-individual bundled fixture -- the D-8 toy-AND-real-scale validation
+   discipline (PROJECT_LEARNINGS.md Learning 596) applied to Track C's own
+   comparator. A non-empty diff here would be a genuine finding to report,
+   not silently reconciled (plan section 4.3's own 'done looks like')", {
+  skip_if_not_installed("kinship2")
+  ped <- read.csv(
+    test_path("fixtures", "obfuscated_rhesus_mhc_ped.csv"),
+    stringsAsFactors = FALSE
+  )
+  result <- compareAgainstKinship2(ped)
+  expect_true(result$identical)
+})
+
+## ---- the isolated-individual blind spot, live against real kinship2 -----
+##
+## Reproduces, end to end through the actual public compareAgainstKinship2()
+## orchestration function (not a hand-built a/b pair), the exact defect
+## found live 2026-08-26: kinship2's own align.pedigree() drops a fully
+## isolated individual from the plot grid. Before S641's fix, BOTH tests
+## below reported identical = TRUE (a false negative) because
+## .comparePedigreeStructures() never looked at which individuals exist,
+## only at edges. Between S641 and Phase 1 of the P5-suppression plan (S644,
+## 2026-08-27), nprcgenekeepr still rendered the isolated individual while
+## kinship2 did not, so both tests below asserted identical = FALSE with the
+## isolated id in individualsOnlyInB. As of Phase 1,
+## makePedigreeMatingLayout() suppresses it too (closing issue #164) --
+## found this session (not predicted by the P5-suppression plan's own §2.4
+## inventory, which named only the 2 Track B fixture blocks below this
+## section): the synthetic ISO fixture test immediately below exercises the
+## identical isolation predicate as Track B's P5 and needed the same update.
+
+test_that(
+  "compareAgainstKinship2 reports identical = TRUE on a minimal synthetic
+   fixture with one fully isolated individual -- kinship2 drops it from the
+   plot grid, and as of Phase 1 of the P5-suppression plan (S644,
+   2026-08-27, closing issue #164) nprcgenekeepr's makePedigreeMatingLayout()
+   now drops it too, matching kinship2's own convention. Before Phase 1,
+   this test asserted identical = FALSE / individualsOnlyInB = 'ISO' -- that
+   discrepancy is now resolved.", {
+  skip_if_not_installed("kinship2")
+  ped <- data.frame(
+    id = c("F1", "M1", "C1", "ISO"),
+    sire = c(NA, NA, "F1", NA),
+    dam  = c(NA, NA, "M1", NA),
+    sex  = c("M", "F", "F", "F"),
+    stringsAsFactors = FALSE
+  )
+  ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+  result <- compareAgainstKinship2(ped)
+  expect_true(result$identical)
+  expect_equal(nrow(result$parentChildOnlyInA), 0L)
+  expect_equal(nrow(result$parentChildOnlyInB), 0L)
+  expect_equal(nrow(result$matePairsOnlyInA), 0L)
+  expect_equal(nrow(result$matePairsOnlyInB), 0L)
+  expect_equal(result$individualsOnlyInA, character(0))
+  expect_equal(result$individualsOnlyInB, character(0))
+})
+
+test_that(
+  "compareAgainstKinship2 reports identical = TRUE on the article's own
+   published Track B full (16-subject) fixture -- P5 is a fully isolated
+   founder that kinship2's own plot silently omits (confirmed via
+   align.pedigree() directly: P5's index is never placed on the grid), and
+   as of Phase 1 of the P5-suppression plan (S644, 2026-08-27, closing issue
+   #164) makePedigreeMatingLayout() now omits it too, matching kinship2's
+   own convention. This is the exact fixture and image pair published in
+   vignettes/articles/kinship2-fidelity-validation.qmd; before Phase 1, this
+   test asserted identical = FALSE / individualsOnlyInB = 'P5' -- that
+   discrepancy is now resolved, and this test is what catches a regression
+   going forward.", {
+  skip_if_not_installed("kinship2")
+  ped <- .pedTrackBFixture()
+  pedK2 <- toKinship2Pedigree(ped)
+  al <- kinship2:::align.pedigree(pedK2)
+  placedIdx <- sort(unique(floor(as.vector(al$nid[al$nid > 0]))))
+  expect_false("P5" %in% pedK2$id[placedIdx])
+
+  result <- compareAgainstKinship2(ped)
+  expect_true(result$identical)
+  expect_equal(nrow(result$parentChildOnlyInA), 0L)
+  expect_equal(nrow(result$parentChildOnlyInB), 0L)
+  expect_equal(nrow(result$matePairsOnlyInA), 0L)
+  expect_equal(nrow(result$matePairsOnlyInB), 0L)
+  expect_equal(result$individualsOnlyInA, character(0))
+  expect_equal(result$individualsOnlyInB, character(0))
+})
+
+## ---- .formatStructuralDiscrepancy() reporting-helper tests ---------------
+##
+## Found live 2026-08-26: data-raw/kinship2FidelityValidation.R's own local
+## reportDiscrepancy() function was never updated when S641 added
+## individualsOnlyInA/individualsOnlyInB to .comparePedigreeStructures()'s
+## return shape -- at the time, re-running the script on the article's own
+## Track B full fixture printed "!! DISCREPANCY -- Track B full !!" with
+## NOTHING underneath, silently omitting the one detail (individualsOnlyInB:
+## "P5") that identical = FALSE verdict was actually based on. That
+## reporting logic lived only in a data-raw/ script explicitly excluded from
+## R CMD check ("not part of R CMD check" per its own header) -- so no test
+## ever exercised it, and it silently went stale. .formatStructuralDiscrepancy()
+## is the same reporting logic, extracted so it has real test coverage going
+## forward; data-raw/kinship2FidelityValidation.R now calls this instead of a
+## local copy. Defined in R/comparePedigreeStructure.R (moved there S653 from
+## a testthat helper -- that misplacement is what caused lint.yaml to go red
+## on CI in the first place: a function defined only in a testthat helper is
+## invisible to lintr::lint_package()'s helper-less CI invocation, even
+## though every local repro looked clean because pkgload::load_all()'s own
+## default helpers = TRUE silently auto-sources testthat helpers). (As of
+## Phase 1 of the P5-suppression plan, S644 2026-08-27, Track B full no
+## longer triggers identical = FALSE at all -- see the populated-field tests
+## below, which exercise the same reporting logic via hand-built cmp
+## structures instead.)
+##
+## Returns a single formatted character string describing every populated
+## diff field, or NULL (invisibly) when cmp$identical is TRUE -- a return
+## value, not a cat() side effect, specifically so its CONTENT is
+## assertable (reportDiscrepancy()'s own cat()-only original could not be
+## tested at all, which is how the individuals-diff omission went
+## unnoticed).
+
+test_that(
+  ".formatStructuralDiscrepancy returns NULL (invisibly) when identical", {
+  cmp <- list(
+    parentChildOnlyInA = data.frame(child = character(), parent = character()),
+    parentChildOnlyInB = data.frame(child = character(), parent = character()),
+    matePairsOnlyInA = data.frame(parent1 = character(), parent2 = character()),
+    matePairsOnlyInB = data.frame(parent1 = character(), parent2 = character()),
+    individualsOnlyInA = character(0),
+    individualsOnlyInB = character(0),
+    identical = TRUE
+  )
+  expect_null(.formatStructuralDiscrepancy("Some label", cmp))
+})
+
+test_that(
+  ".formatStructuralDiscrepancy reports individualsOnlyInB when populated --
+   the exact field data-raw/kinship2FidelityValidation.R's own
+   reportDiscrepancy() silently dropped", {
+  cmp <- list(
+    parentChildOnlyInA = data.frame(child = character(), parent = character()),
+    parentChildOnlyInB = data.frame(child = character(), parent = character()),
+    matePairsOnlyInA = data.frame(parent1 = character(), parent2 = character()),
+    matePairsOnlyInB = data.frame(parent1 = character(), parent2 = character()),
+    individualsOnlyInA = character(0),
+    individualsOnlyInB = "P5",
+    identical = FALSE
+  )
+  report <- .formatStructuralDiscrepancy("Track B full", cmp)
+  expect_true(is.character(report))
+  expect_match(report, "Track B full", fixed = TRUE)
+  expect_match(report, "P5", fixed = TRUE)
+  expect_match(report, "individuals only in nprcgenekeepr", fixed = TRUE)
+})
+
+test_that(
+  ".formatStructuralDiscrepancy reports individualsOnlyInA when populated", {
+  cmp <- list(
+    parentChildOnlyInA = data.frame(child = character(), parent = character()),
+    parentChildOnlyInB = data.frame(child = character(), parent = character()),
+    matePairsOnlyInA = data.frame(parent1 = character(), parent2 = character()),
+    matePairsOnlyInB = data.frame(parent1 = character(), parent2 = character()),
+    individualsOnlyInA = "GHOST",
+    individualsOnlyInB = character(0),
+    identical = FALSE
+  )
+  report <- .formatStructuralDiscrepancy("Some label", cmp)
+  expect_match(report, "GHOST", fixed = TRUE)
+  expect_match(report, "individuals only in kinship2", fixed = TRUE)
+})
+
+test_that(
+  ".formatStructuralDiscrepancy still reports parentChildOnlyInA/B and
+   matePairsOnlyInA/B -- preserving reportDiscrepancy()'s own pre-existing
+   behavior, not just adding the individuals fields", {
+  cmp <- list(
+    parentChildOnlyInA = data.frame(child = "C9", parent = "F9",
+                                     stringsAsFactors = FALSE),
+    parentChildOnlyInB = data.frame(child = "C8", parent = "F8",
+                                     stringsAsFactors = FALSE),
+    matePairsOnlyInA = data.frame(parent1 = "X1", parent2 = "X2",
+                                   stringsAsFactors = FALSE),
+    matePairsOnlyInB = data.frame(parent1 = "Y1", parent2 = "Y2",
+                                   stringsAsFactors = FALSE),
+    individualsOnlyInA = character(0),
+    individualsOnlyInB = character(0),
+    identical = FALSE
+  )
+  report <- .formatStructuralDiscrepancy("Edges label", cmp)
+  expect_match(report, "C9", fixed = TRUE)
+  expect_match(report, "C8", fixed = TRUE)
+  expect_match(report, "X1", fixed = TRUE)
+  expect_match(report, "Y1", fixed = TRUE)
+})
+
+test_that(
+  ".formatStructuralDiscrepancy returns NULL (invisibly) on the article's
+   own published Track B full (16-subject) fixture -- as of Phase 1 of the
+   P5-suppression plan (S644, 2026-08-27, closing issue #164),
+   makePedigreeMatingLayout() now suppresses P5 to match kinship2's own
+   convention, so compareAgainstKinship2() reports identical = TRUE and
+   there is nothing to report. Live-kinship2 integration-level regression
+   guard: before Phase 1, this exact fixture was the live-kinship2 case for
+   the individuals-diff-reporting bug found 2026-08-26 (re-running
+   data-raw/kinship2FidelityValidation.R printed an empty discrepancy block
+   for it); it now instead guards that the discrepancy itself stays
+   resolved.", {
+  skip_if_not_installed("kinship2")
+  result <- compareAgainstKinship2(.pedTrackBFixture())
+  report <- .formatStructuralDiscrepancy("Track B full", result)
+  expect_null(report)
+})
