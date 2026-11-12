@@ -198,6 +198,18 @@ runCases <- function(ns, dataDir) {
         draw(layout(p, edgeStyle = style, ...), edgeStyle = style)
       })
     }
+    ## Phase 10 (pedkindraw S13): shrinkPedigree() on the layout's pedigree,
+    ## as the layout cases are (on examplePedigree's 3,694 animals one call
+    ## took 130 s, measured S13). Genotyped: every other animal, every animal
+    ## but each third, all and none.
+    shrink <- function(...) fn("shrinkPedigree")(...)
+    everyOther <- row %% 2L == 1L
+    notThird <- row %% 3L != 0L
+    allTyped <- rep(TRUE, nrow(lay))
+    ## Animals with one known parent, which the Phase 1 pedigrees almost lack:
+    ## every third dam unknown.
+    layOneParent <- lay
+    layOneParent$dam[seq(1L, nrow(lay), by = 3L)] <- NA
     cases <- list(
       findGeneration = function() {
         fn("findGeneration")(ped$id, ped$sire, ped$dam)
@@ -478,6 +490,83 @@ runCases <- function(ns, dataDir) {
             list(conditionMessage(e), deparse(conditionCall(e)))
           })
         })
+      },
+      ## Phase 10 (pedkindraw S13). With the pedigree's own columns: samplePed's
+      ## affected column (0 and 1) is the default affected status, and in the
+      ## others every animal counts as unaffected.
+      shrinkPedigree = function() {
+        list(
+          shrink(lay, everyOther), shrink(lay, notThird, maxBits = 50L),
+          shrink(lay, allTyped), shrink(lay, !allTyped)
+        )
+      },
+      ## Made-up affected status (layOne's TRUE, FALSE and NA): as the column,
+      ## as an argument, as 0 and 1, and with budgets of 0, 2.5 and one too
+      ## large to need the third trim.
+      shrinkAffected = function() {
+        list(
+          shrink(layOne, everyOther),
+          shrink(lay, everyOther, affected = as.logical(layOne$affected)),
+          shrink(lay, notThird, affected = row %% 2L),
+          lapply(c(0.0, 2.5, 1.0e6), function(budget) {
+            shrink(layOne, notThird, maxBits = budget)
+          })
+        )
+      },
+      ## One known parent: every third dam unknown, then every dam (no
+      ## couple at all); and the ids, sires and dams as factors.
+      shrinkOneParent = function() {
+        factors <- lay
+        for (column in c("id", "sire", "dam")) {
+          factors[[column]] <- factor(lay[[column]])
+        }
+        list(
+          shrink(layOneParent, everyOther, affected = layOne$affected),
+          shrink(layNoDams, notThird),
+          shrink(factors, everyOther)
+        )
+      },
+      ## Two made-up animals each the other's sire, which the checks allow:
+      ## neither is ever a leaf, so the third trim runs out of animals to try
+      ## while the bit size is above the budget (the one statement that
+      ## neither the tests nor the other cases reach, measured S13).
+      shrinkLoop = function() {
+        loop <- lay[c(1L, 1L), ]
+        loop$id <- c("loop A", "loop B")
+        loop$sire <- c("loop B", "loop A")
+        loop$dam <- NA_character_
+        list(
+          shrink(loop, c(TRUE, TRUE), maxBits = 0L),
+          shrink(rbind(lay, loop), c(everyOther, TRUE, TRUE), maxBits = 0L)
+        )
+      },
+      ## Each stop's message, in the order the checks run.
+      shrinkErrors = function() {
+        changed <- function(column, i, value) {
+          p <- lay
+          p[[column]][[i]] <- value
+          p
+        }
+        sired <- which(!is.na(lay$sire))[[1L]]
+        lapply(list(
+          function() shrink(lay[, c("id", "sire")], everyOther),
+          function() shrink(as.list(lay), everyOther),
+          function() shrink(lay, everyOther[-1L]),
+          function() shrink(lay, replace(everyOther, 2L, NA)),
+          function() shrink(lay, everyOther, affected = TRUE),
+          function() shrink(lay, everyOther, maxBits = "16"),
+          function() shrink(lay, everyOther, maxBits = c(1L, 2L)),
+          function() shrink(lay, everyOther, maxBits = NA_real_),
+          function() shrink(changed("id", 1L, NA), everyOther),
+          function() shrink(changed("id", 1L, ""), everyOther),
+          function() shrink(changed("id", 2L, lay$id[[1L]]), everyOther),
+          function() {
+            shrink(changed("sire", sired, "no such animal"), everyOther)
+          },
+          function() {
+            shrink(changed("dam", sired, lay$sire[[sired]]), everyOther)
+          }
+        ), stopsWith)
       }
     )
     for (name in names(cases)) {
