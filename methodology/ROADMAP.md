@@ -11,7 +11,7 @@ nprcgenekeepr is not changed). Each slice copies one group of functions, tests f
 identical to nprcgenekeepr's on the Phase 1 pedigrees. Why: when the five slices are done, pedkindraw computes
 kinship, trims and shrinks pedigrees and draws them interactively, and the drawing is what the comparison found is
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
-section 10).
+section 10). All five are done (S13); next is the new work of Phases 11-15, starting with Phase 11 (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -20,14 +20,15 @@ section 10).
 | 7 | kinship and twins: `kinship()`, `checkTwinRelations()` (nprcgenekeepr's clean-room code, C2) | DONE (pedkindraw S8) |
 | 8 | layout engine: `makePedigreeMatingLayout()`, `makePedigreeDiagramData()` (2 sessions, R30) | DONE (pedkindraw S9-S10) |
 | 9 | renderer: `drawPedigreeDiagram()`, a `visNetwork` widget | DONE (pedkindraw S11) |
-| 10 | shrink: `shrinkPedigree()` (clean-room code, C2) | next |
+| 10 | shrink: `shrinkPedigree()` (clean-room code, C2) | DONE (pedkindraw S13) |
 
 ## Planned
 
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 11:** export the shrink helpers and `bitSize()` (R3; contract section 4.3).
+- **Phase 11:** export the shrink helpers and `bitSize()` (R3; contract section 4.3). New code: the clean-room
+  `shrinkPedigree()` has no such helpers, only internal ones on row positions (S13; `methodology/BACKLOG.md`). Next.
 - **Phase 12:** `familyCheck()` and `ibdMatrix()`, written from kinship2's documented behaviour, never its source
   (R3, R14; estimate: 2 sessions).
 - **Phase 13:** `checkPedigree()`, a short pedigree checker that reports and never repairs, and `findUnrelated()`
@@ -42,6 +43,11 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Shrink (Phase 10), 1 export:** `shrinkPedigree()` trims a pedigree to the animals that keep it informative within
+  a genotyping budget (`maxBits`), in kinship2's three tiers (unavailable, non-informative, affected-priority); it
+  stops with a plain message on malformed input (C15) and breaks ties by byte order, the same on every computer
+  (C16); 4 internal helpers. nprcgenekeepr's clean-room code (C2) copied from `baef1e12c`, code unchanged; its 24
+  tests pass as there, and its results are identical to nprcgenekeepr's.
 - **Renderer (Phase 9), 1 export:** `drawPedigreeDiagram()` turns a layout into an interactive `visNetwork` widget:
   the symbols at the layout's positions, the legend, each deceased animal's slash and each multi-condition symbol's
   coloured sections (painted by a drawing script inside the widget), Export Diagram (PNG), Select by id and the hover
@@ -76,19 +82,23 @@ session each unless marked. They follow the copy slices.
 - **Checks against nprcgenekeepr** (read from its local clone): `tools/compareWithNprcgenekeepr.R`, the drift check
   (plan section 5; `DIVERGENCE.md` records allowed differences: none since S12), and
   `tools/compareResultsWithNprcgenekeepr.R`, which compares every copied function's results, warnings and messages
-  on the Phase 1 pedigrees (the layout on at most 400 animals of each, S10), against the clone's working tree or, with
+  on the Phase 1 pedigrees (the layout and shrink on at most 400 animals of each, S10, S13), against the clone's working tree or, with
   a commit, its package at that commit read with `git archive` (S11, R37).
 - **Test fixtures:** `tools/makeTestFixtures.R` saves nprcgenekeepr's sample pedigrees into
   `tests/testthat/fixtures/` (`lacy1989Ped`, `smallPed`; `pedSix`, `qcPed` from Phase 6b; `pedOne` from Phase 7;
   `examplePedigree`, `pedWithGenotype`, `rhesusPedigree` and three rhesus `.csv` files from Phase 8) instead of
   shipping them as datasets (R21). `tools/makeComputedTestFixtures.R` (S9) saves what nprcgenekeepr's own code builds
-  for a copied test: the QC'd rhesus pedigree, and `shrinkPedigree()`'s Track B results for a stand-in until Phase
-  10. Both it and the results tool start R in nprcgenekeepr's folder with `tools/renvFreeEnv.R`.
+  for a copied test: the QC'd rhesus pedigree (until Phase 10 also `shrinkPedigree()`'s Track B results, for a
+  stand-in deleted in S13, R39). Both it and the results tool start R in nprcgenekeepr's folder with `tools/renvFreeEnv.R`.
 - **Quality gates** (`methodology/.quality-gates.json`): `renv-lock-no-latest-repository`, `lint-package-zero`,
   `test-suite-warnings-zero` (S8), `tests-no-saved-expect-condition` (S9).
 
 ## Completed Milestones
 
+- **Phase 10, shrink, and with it the copy slices (pedkindraw S13, 2026-11-12).** `shrinkPedigree()` copied test-first
+  from nprcgenekeepr's clean-room code (Mark's picks R38-R39: its 3 nprcgenekeepr-only test files left out, the
+  Phase 8 stand-in deleted in RED); 600 of 600 results identical, the cases reaching every statement of the file;
+  CI green on five jobs at the first attempt. Phases 6-10 are complete.
 - **nprcgenekeepr S1159's legend fill, ported (pedkindraw S12, 2026-11-12; R37).** The legend draws its five sex
   symbols open, as the diagram draws an unaffected animal, copied test-first in nprcgenekeepr's own three steps;
   `DIVERGENCE.md` has no row; 540 of 540 results identical against nprcgenekeepr `45e0d8bfe`; CI green on five jobs

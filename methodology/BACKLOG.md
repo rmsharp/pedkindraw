@@ -8,21 +8,20 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 10: shrink, `shrinkPedigree()`** (READY, Effort M) -- plan row 10 (C2, with C15-C16: it stops with a
-      plain message on malformed input and breaks ties by byte order). At nprcgenekeepr `baef1e12c` (measured S11;
-      both files unchanged to `45e0d8bfe`, S12): `R/shrinkPedigree.R` (303 lines; `shrinkPedigree()` exported, and
-      `.checkShrinkInput()`, `.removalPass()`, `.isParent()`, `.bitSize()`; no `::` call in its code: its help names
-      `kinship2::pedigree.shrink()` (`:121`) and its example loads `nprcgenekeepr::examplePedigree` (`:210`), so the
-      example types its own pedigree, R21) and `tests/testthat/test_shrinkPedigree.R` (455 lines, 24 tests).
-      GREEN deletes `tests/testthat/helper-shrinkPedigreeStandIn.R`, so the three Track B tests call the real
-      function (whether RED or GREEN deletes it is a pre-RED pick: kept, it makes the copied tests fail on its own
-      `stop()`; its fixture `trackBShrunk.rds` then has no reader, S12). Three more nprcgenekeepr test files name it
-      and read its own records or tutorial (`test_cleanroomProvenance.R:30-33`, `test_inventoryTutorialSections.R:108`,
-      `test_snapshotTutorialSection.R:11`): likely left out, as R35 left out its app and docs tests (a pre-RED
-      pick). Survey first (Learning 9), and re-check nprcgenekeepr at each phase gate (Learning 15).
+- [ ] **Phase 11: the shrink helpers and `bitSize()` as exports** (READY, Effort M) -- plan row 11 (R3, R11);
+      contract section 4.3 (`docs/planning/pedkindraw-api-contract.md:154-157`): `bitSize(ped)`,
+      `findUnavailable(ped, genotyped)`, `findAvailNonInform(ped, genotyped, affected = NULL)` and
+      `findAvailAffected(ped, genotyped, affected, affstatus)`, ids in a data frame, return shapes and errors settled
+      in RED (contract `:160-162`). New code, not a copy: nprcgenekeepr's clean-room rewrite (its S1139, `e2bba9fb2`)
+      dropped the old seven helpers (`.bitSizeOf()` to `.findAvailAffected()`, ports of the kinship2 functions these
+      exports are named after; contract `:70`), and the copy (S13) holds only `.bitSize(sireIdx, damIdx, present)`, `.isParent()`, `.removalPass()` and
+      `.checkShrinkInput()`, which take row positions, not ids. `R/shrinkPedigree.R` is copied code: changing it makes
+      a drift row (plan section 5), so the exports go in a file of their own. A pre-RED picker first: whether they
+      call the copied internals or are written apart (R11 governs anything written from kinship2's behaviour), and
+      whether each must give `shrinkPedigree()`'s answer for its tier on the Phase 1 pedigrees.
 
-- [ ] **Phases 11-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: new work
-      (11-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE criteria: the
+- [ ] **Phases 12-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: new work
+      (12-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE criteria: the
       plan's section 4; summary: `methodology/ROADMAP.md`. Each phase gets its own item here when it is next.
 
 ## Waiting on Mark
