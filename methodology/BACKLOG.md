@@ -8,28 +8,28 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 8, second session: the kinship2 comparison, fidelity cases, push and CI** (READY, Effort M-L) -- plan
-      R30. The first session (S9) copied all the layout code and its 295 tests. Left: (1) RED/GREEN for
-      `R/comparePedigreeStructure.R` (374 lines at nprcgenekeepr `baef1e12c`, 4 internal functions, reached by no
-      export; calls `utils::capture.output()`, imported since S9) with `test_comparePedigreeStructure.R` (38 tests, 1,240
-      lines; 9 `skip_if_not_installed("kinship2")`) and `helper-comparePedigreeStructure.R` (131): their 16
-      `nprcgenekeepr:::` calls (helper `:113-118`, test `:505-1020`) become plain calls, and 2 `system.file()` rhesus
-      reads (test `:662`, `:1036`) become `test_path("fixtures", ...)`; S9's survey found nothing else they need
-      from nprcgenekeepr. (2) The layout's cases in `tools/compareResultsWithNprcgenekeepr.R`'s `runCases()` (both
-      exports, both edge styles, twins, a `kinshipMatrix`, the error stops), sized far below kinship's 2,000 (measured
-      S9: 1.0 s direct and 1.9 s rectilinear on the 375-animal rhesus pedigree, 180 s direct on the 3,694-animal
-      `examplePedigree`; nprcgenekeepr's app draws rectilinear only up to 400 animals), each checked to reach its branch (Learning 11): 65 lines of the
-      new code no copied test reaches (`R/makePedigreeDiagramData.R` 570, 757, 980, 1275, 1321, 2247-2449 in parts,
-      2546, 2714, 3043-3047; `R/orderRootSubtrees.R` 118, 131; `R/positionTreeApportion.R` 388-435 in parts).
-      (3) Push once (S8's 2 close-out commits and all of S9's), read each CI job's `Status:` line; then Phase 8's
-      DONE close-out (plan status block and row 8, `methodology/ROADMAP.md`).
+- [ ] **Phase 9: the renderer, `drawPedigreeDiagram()`** (READY -- two picks for Mark at its pre-RED picker, Effort
+      M-L) -- plan row 9 (R31, R32). At nprcgenekeepr `baef1e12c` (measured S10): `R/drawPedigreeDiagram.R` (278
+      lines, 8 `visNetwork::` calls), `R/deceasedSlash.R` (91; 1 `utils::`), `R/affectedConditions.R` lines 77-201
+      (its 3 functions in `DIVERGENCE.md`; delete the 3 rows), `tests/testthat/test_drawPedigreeDiagram.R` (349
+      lines, 16 tests; `skip_if_not_installed("visNetwork")` guards; 2 `shiny::` calls), `helper-live-render-positions.R`
+      (187; `chromote::`, `htmlwidgets::`, `withr::`; it skips without Chrome) and the 3 Chrome tests of
+      `test_positionMatingUnitForest.R` (source lines 1996, 2572, 2614; each `skip_on_cran()`). The picks: (a)
+      `R/drawPedigreeDiagram.R` changed after `baef1e12c`: nprcgenekeepr `471589138` (its S1153) moved the `onClick`
+      check into a new `.checkOnClick()`, shared with its `drawColonyOverview()` (23 lines added, 5 removed); copy
+      the file at `baef1e12c` and record the change in `DIVERGENCE.md`, or copy it at a later commit (each copied
+      file's header names its own commit, and both tools check each file against it). (b)
+      `tests/testthat/test_drawPedigreeDiagramDocs.R` (110 lines), which the plan's row does not name, checks
+      nprcgenekeepr's own vignette and article text (`vignettes/a2interactive.Rmd`,
+      `vignettes/articles/pedigree-diagram.qmd`), which pedkindraw does not have: likely left in nprcgenekeepr, as
+      R31 left its other nprcgenekeepr-only tests. `Imports: visNetwork` (install it from the dated repository with
+      `rebuild = TRUE`, its dependencies by name, Learning 3); Suggests `chromote`, `htmlwidgets`, `shiny` (the tests
+      call them with `::`).
 
-- [ ] **Phases 9-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: the copy
-      slices for the renderer and shrink (9-10; 10 is nprcgenekeepr's clean-room code under C2), then
-      new work (11-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE
-      criteria: the plan's section 4; summary: `methodology/ROADMAP.md`. Each phase gets its own item here when it
-      is next. Phase 9 also takes `deceasedSlash.R`, `affectedConditions.R`'s lines 77-201 (then deletes
-      `DIVERGENCE.md`'s three rows) and the 3 Chrome tests of `test_positionMatingUnitForest.R` (R31, R32); Phase 10
+- [ ] **Phases 10-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: the last
+      copy slice, shrink (10, nprcgenekeepr's clean-room code under C2), then new work (11-15), documentation (16)
+      and the CRAN submission (17, its own plan first). Scope and DONE criteria: the plan's section 4; summary:
+      `methodology/ROADMAP.md`. Each phase gets its own item here when it is next. Phase 10
       deletes `tests/testthat/helper-shrinkPedigreeStandIn.R`, so the three Track B tests call the real
       `shrinkPedigree()`.
 
@@ -77,7 +77,8 @@ issues).*
       `ubuntu-latest` jobs). S7: the move has happened (the runners are Ubuntu 26.04, "resolute"), and in run
       `43052891573` attempt 1 all three Ubuntu jobs failed installing R, unable to resolve Ubuntu's package servers
       for an hour; re-running them passed (attempt 2). Watch whether it recurs before pinning a runner image. S8: run
-      `43106941979` passed on all five jobs at the first attempt, Ubuntu 26.04 included (the same two notices).
+      `43106941979` passed on all five jobs at the first attempt, Ubuntu 26.04 included (the same two notices). S10:
+      run `43260600901` likewise (the same two, and a third: macOS arm64 queues may be longer).
 
 - [ ] **Report a vacuous test to nprcgenekeepr** (READY, Effort S) -- the first expectation of
       `test_findPedigreeNumber.R` checks the ids containing "1", and the Lacy pedigree's ids are letters, so it
