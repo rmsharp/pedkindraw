@@ -16,13 +16,9 @@
 ## - qcdRhesusPed.rds: runQcStudbook()'s cleaned pedigree of
 ##   inst/extdata/examples/obfuscated_rhesus_mhc_ped.csv, as nprcgenekeepr's
 ##   tests/testthat/helper-qcdRhesusPed.R makes it (Phase 8).
-## - trackBShrunk.rds: shrinkPedigree() on the 16-animal "Track B" pedigree
-##   that test_solveJointQP.R, test_orderRootSubtrees.R and
-##   test_positionMatingUnitForest.R shrink (Phase 8; shrinkPedigree() is
-##   copied in Phase 10). The first two pass it with its gen column, the third
-##   without, so the file holds both calls: a list of two (withGen,
-##   withoutGen), each a list of args, the arguments, and value, the result's
-##   ped.
+## Until Phase 10 it also wrote trackBShrunk.rds, nprcgenekeepr's
+## shrinkPedigree() result for a stand-in; Phase 10 copied the function and
+## deleted both (plan R39).
 
 ## The fixtures: run inside the child process, where nprcgenekeepr is
 ## loaded and `src` is the unpacked commit. Its functions are called through
@@ -38,40 +34,7 @@ buildFixtures <- function(src) {
     ns$runQcStudbook(raw, minSireAge = NULL, minDamAge = NULL,
                      reportChanges = TRUE)
   ))$cleaned
-
-  pedB <- data.frame(
-    id   = c("P1", "P2", "P3", "P4", "P5", "P6",
-             "C1", "C2", "C3", "C4", "C4a",
-             "G3", "M1", "L1", "L2", "L3"),
-    sire = c(NA, NA, NA, NA, NA, NA,
-             "P1", "P1", "P1", "P3", "C4",
-             NA, "P1", "M1", "M1", "M1"),
-    dam  = c(NA, NA, NA, NA, NA, NA,
-             "P2", "P2", "P2", "P4", "P6",
-             NA, "P2", "G3", "G3", "G3"),
-    sex  = c("M", "F", "M", "F", "F", "F",
-             "F", "M", "F", "M", "F",
-             "F", "M", "F", "M", "M"),
-    stringsAsFactors = FALSE
-  )
-  pedBNoGen <- pedB
-  pedB$gen <- ns$findGeneration(pedB$id, pedB$sire, pedB$dam)
-  genotypedB <- c(P1 = TRUE, P2 = TRUE, P3 = FALSE, P4 = FALSE, P5 = TRUE,
-    P6 = TRUE, C1 = TRUE, C2 = FALSE, C3 = TRUE, C4 = TRUE, C4a = TRUE,
-    G3 = FALSE, M1 = TRUE, L1 = TRUE, L2 = TRUE, L3 = TRUE)[pedB$id]
-  affectedB <- c(P1 = NA, P2 = NA, P3 = NA, P4 = NA, P5 = NA, P6 = NA,
-    C1 = FALSE, C2 = NA, C3 = TRUE, C4 = TRUE, C4a = TRUE, G3 = NA,
-    M1 = TRUE, L1 = NA, L2 = FALSE, L3 = TRUE)[pedB$id]
-  shrunk <- function(ped) {
-    list(
-      args = list(ped = ped, genotyped = genotypedB, affected = affectedB,
-                  maxBits = 1L),
-      value = ns$shrinkPedigree(ped, genotypedB, affected = affectedB,
-                                maxBits = 1L)$ped
-    )
-  }
-  trackBShrunk <- list(withGen = shrunk(pedB), withoutGen = shrunk(pedBNoGen))
-  list(qcdRhesusPed = qcdRhesusPed, trackBShrunk = trackBShrunk)
+  list(qcdRhesusPed = qcdRhesusPed)
 }
 
 args <- commandArgs(trailingOnly = TRUE)
