@@ -6,9 +6,22 @@
 ##
 ## Usage, from the pedkindraw root:
 ##   Rscript tools/compareResultsWithNprcgenekeepr.R [nprcgenekeepr clone]
-## Default clone: ../nprcgenekeepr. Its working tree is what gets loaded, so
-## the script first checks that the clone's file for every copied function is
-## unchanged since the commit the copy names (git diff --quiet).
+##     [commit]
+## Default clone: ../nprcgenekeepr. Without a commit, the clone's working tree
+## is what gets loaded, so the script first checks that the clone's file for
+## every copied function is unchanged since the commit the copy names (git
+## diff --quiet). With a commit (pedkindraw S11, plan R37), the clone's
+## package files at that commit are read with git archive and loaded instead,
+## still in the clone's folder and so in its renv, and each copied file must
+## be unchanged between its copy's commit and that one: a session editing the
+## clone does not stop the check. The pedigrees come from the clone's folder
+## either way.
+##
+## Phase 9's drawings (drawPedigreeDiagram()'s visNetwork widgets) are
+## compared whole. Their dependencies name visNetwork's folder, the same in
+## both runs because both renv libraries link one cache entry of visNetwork
+## 2.1.4 (measured S11); with two different installs those paths would
+## differ, not the drawings.
 ##
 ## Each package runs in its own R process started in its own folder, so each
 ## uses its own renv library (nprcgenekeepr needs its imports, pedkindraw does
@@ -175,6 +188,14 @@ runCases <- function(ns, dataDir) {
     bothStyles <- function(p, ...) {
       lapply(c("direct", "rectilinear"), function(style) {
         layout(p, edgeStyle = style, ...)
+      })
+    }
+    ## Phase 9 (pedkindraw S11): each layout drawn with the edge style it was
+    ## made with.
+    draw <- function(...) fn("drawPedigreeDiagram")(...)
+    drawBoth <- function(p, ...) {
+      lapply(c("direct", "rectilinear"), function(style) {
+        draw(layout(p, edgeStyle = style, ...), edgeStyle = style)
       })
     }
     cases <- list(
@@ -400,6 +421,63 @@ runCases <- function(ns, dataDir) {
           function() layout(lay, kinshipMatrix = noColNames),
           function() layout(lay, edgeStyle = "curved")
         ), stopsWith)
+      },
+      ## Phase 9 (pedkindraw S11).
+      drawPedigreeDiagram = function() {
+        direct <- layout(lay, edgeStyle = "direct")
+        list(
+          draw(direct, edgeStyle = "direct"),
+          draw(layout(lay, edgeStyle = "rectilinear")),
+          draw(direct, edgeStyle = "direct",
+               onClick = "function(nodes) { console.log(nodes.nodes); }")
+        )
+      },
+      drawTwins = function() drawBoth(lay, twinRelations = layTwins),
+      ## DECEASED animals (the slash), names, one condition, then five (four
+      ## drawn: the sections and a taller canvas).
+      drawColumns = function() {
+        list(
+          draw(layout(layOne, edgeStyle = "direct"), edgeStyle = "direct"),
+          drawBoth(layColumns)
+        )
+      },
+      ## The empty layout of founders only, and a layout without its
+      ## conditions element, drawn as one with no condition column.
+      drawEmpty = function() {
+        noConditions <- layout(layColumns, edgeStyle = "direct")
+        noConditions$conditions <- NULL
+        list(
+          draw(layout(layColumns[layFounders, ])),
+          draw(noConditions, edgeStyle = "direct")
+        )
+      },
+      ## The internal pieces, with arguments the export never passes.
+      drawHelpers = function() {
+        list(
+          lapply(0L:6L, fn(".diagramHeight")),
+          fn(".diagramAfterDrawing")(TRUE),
+          fn(".conditionSectionsHandler")(c("#000000", "#FFFFFF")),
+          fn(".deceasedSlashHandler")(reach = 0.5, outline = c(dot = 2.0)),
+          fn(".deceasedLegendImage")(reach = 0.5)
+        )
+      },
+      ## Each stop's message and call (.checkOnClick() gives its caller's).
+      drawErrors = function() {
+        empty <- layout(layColumns[layFounders, ])
+        lapply(list(
+          function() draw("layout"),
+          function() draw(lay),
+          function() draw(list(nodes = empty$nodes)),
+          function() draw(empty, edgeStyle = "curved"),
+          function() draw(empty, onClick = c("a", "b")),
+          function() draw(empty, onClick = 1.0),
+          function() draw(empty, onClick = NA_character_),
+          function() draw(empty, onClick = TRUE)
+        ), function(f) {
+          tryCatch(f(), error = function(e) {
+            list(conditionMessage(e), deparse(conditionCall(e)))
+          })
+        })
       }
     )
     for (name in names(cases)) {
@@ -424,16 +502,42 @@ if (length(args) >= 1L && identical(args[[1L]], "--child")) {
 clone <- normalizePath(
   if (length(args) >= 1L) args[[1L]] else file.path("..", "nprcgenekeepr")
 )
+ref <- if (length(args) >= 2L) args[[2L]] else NULL
 here <- normalizePath(".")
 script <- normalizePath(file.path("tools", "compareResultsWithNprcgenekeepr.R"))
+## The nprcgenekeepr package the cases load: the clone's working tree, or its
+## files at `ref` (plan R37). The pedigrees are read from the clone's folder
+## either way: its seven synthetic ones are generated files git ignores.
+theirPackage <- clone
+if (!is.null(ref)) {
+  theirPackage <- tempfile("nprcgenekeepr-")
+  dir.create(theirPackage)
+  tarFile <- tempfile(fileext = ".tar")
+  status <- system2("git", c(
+    "-C", shQuote(clone), "archive", "--format=tar", "-o", shQuote(tarFile),
+    shQuote(ref), "DESCRIPTION", "NAMESPACE", "R", "data", "inst"
+  ))
+  if (!identical(status, 0L)) {
+    stop("git archive of ", ref, " failed", call. = FALSE)
+  }
+  utils::untar(tarFile, exdir = theirPackage)
+}
 dataDir <- file.path(clone, "tools", "pedigreeComparison", "data")
 
 ## The clone must hold, for every copied file, the code the copy was taken
-## from: no commit since, and no uncommitted change.
+## from: no commit since, and no uncommitted change (or, with `ref`, no
+## change between the copy's commit and `ref`).
 cat("nprcgenekeepr clone:", clone, "at", system2(
   "git", c("-C", shQuote(clone), "rev-parse", "--short=9", "HEAD"),
   stdout = TRUE
-), "\n")
+), if (is.null(ref)) {
+  "(its working tree)"
+} else {
+  paste("(read at", system2(
+    "git", c("-C", shQuote(clone), "rev-parse", "--short=9", shQuote(ref)),
+    stdout = TRUE
+  ), "with git archive)")
+}, "\n")
 ## The nprcgenekeepr path and commit a file's header names, or NULL (as in
 ## tools/compareWithNprcgenekeepr.R).
 copiedFrom <- function(path) {
@@ -457,15 +561,18 @@ for (path in list.files("R", pattern = "\\.R$", full.names = TRUE)) {
     next
   }
   status <- system2("git", c(
-    "-C", shQuote(clone), "diff", "--quiet", origin$commit, "--", origin$path
+    "-C", shQuote(clone), "diff", "--quiet", origin$commit, shQuote(ref),
+    "--", origin$path
   ))
   if (!identical(status, 0L)) {
-    cat("  the clone's", origin$path, "differs from", origin$commit, "\n")
+    cat("  the clone's", origin$path, if (is.null(ref)) "" else c("at", ref),
+        "differs from", origin$commit, "\n")
     unchanged <- FALSE
   }
 }
 if (!unchanged) {
-  stop("check out the source commit in the clone first", call. = FALSE)
+  stop("check out the source commit in the clone, or name a commit at ",
+       "which every copied file is unchanged", call. = FALSE)
 }
 
 ## The arguments for env that undo this process's renv settings, so each
@@ -474,13 +581,15 @@ helperFile <- file.path("tools", "renvFreeEnv.R")
 source(helperFile) # nolint: undesirable_function_linter.
 childEnv <- renvFreeEnv()
 
-runChild <- function(folder, outFile) {
+## The child runs in `folder` (and so in its renv) and loads the package in
+## `package`.
+runChild <- function(folder, outFile, package = folder) {
   ## One change of folder for one child process; withr is only a test
   ## dependency (Suggests).
   old <- setwd(folder) # nolint: undesirable_function_linter.
   on.exit(setwd(old)) # nolint: undesirable_function_linter.
   status <- system2("env", c(
-    childEnv, "Rscript", shQuote(script), "--child", shQuote(folder),
+    childEnv, "Rscript", shQuote(script), "--child", shQuote(package),
     shQuote(dataDir), shQuote(outFile)
   ))
   if (!identical(status, 0L)) {
@@ -490,7 +599,7 @@ runChild <- function(folder, outFile) {
 }
 cat("Running the cases (", length(list.files(dataDir, "\\.csv$")) - 1L,
   " pedigrees) in each package:\n", sep = "")
-theirs <- runChild(clone, tempfile(fileext = ".rds"))
+theirs <- runChild(clone, tempfile(fileext = ".rds"), theirPackage)
 ours <- runChild(here, tempfile(fileext = ".rds"))
 
 if (!identical(names(ours), names(theirs))) {
