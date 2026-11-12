@@ -42,6 +42,15 @@
       "extract": "test warnings: (\\d+)",
       "timeout_seconds": 300,
       "why": "S8 (2026-11-11): nprcgenekeepr's tests run on testthat edition 2 and pedkindraw's on edition 3 (plan R29, Learning 10), so a copied test can pass yet leak a warning (S8: hasBothParents() warns twice, edition 3's expect_warning() catches one). Measured 0 after expecting both."
+    },
+    {
+      "name": "tests-no-saved-expect-condition",
+      "direction": "max",
+      "threshold": 0,
+      "unit": "lines",
+      "command": "grep -rEc '<- *expect_(message|warning)\\(' tests/testthat | awk -F: '{s += $2} END {print s + 0}'",
+      "extract": "^(\\d+)",
+      "why": "S9 (2026-11-11): under testthat edition 2 (nprcgenekeepr) expect_message() and expect_warning() return the expression's value, under edition 3 (pedkindraw, plan R29) the condition, so a copied `result <- expect_message(f())` leaves result holding the message (Learning 10). RED cannot show it, because the missing function errors first: S9 met 5 such tests only in GREEN. Assign inside instead: expect_message(result <- f()). Measured 5 on nprcgenekeepr's test_makePedigreeMatingLayout.R at baef1e12c (the only 5 in its tests), 0 as committed."
     }
   ]
 }
