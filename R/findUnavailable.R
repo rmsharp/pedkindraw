@@ -59,9 +59,8 @@
 #' findUnavailable(ped, genotyped)
 findUnavailable <- function(ped, genotyped) {
   read <- .checkShrinkInput(ped, genotyped, NULL, 16L)
-  id <- as.character(ped$id)
-  pass <- .removalPass(match(as.character(ped$sire), id),
-                       match(as.character(ped$dam), id),
-                       rep(TRUE, length(id)), read$genotyped)
-  id[pass$removed]
+  pos <- .parentPositions(ped)
+  pass <- .removalPass(pos$sireIdx, pos$damIdx, rep(TRUE, length(pos$id)),
+                       read$genotyped)
+  pos$id[pass$removed]
 }

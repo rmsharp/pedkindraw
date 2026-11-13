@@ -66,10 +66,9 @@ findAvailNonInform <- function(ped, genotyped, affected = NULL) {
   read <- .checkShrinkInput(ped, genotyped, affected, 16L)
   genotyped <- read$genotyped
   affected <- read$affected
-  id <- as.character(ped$id)
-  state <- .removalPass(match(as.character(ped$sire), id),
-                        match(as.character(ped$dam), id),
-                        rep(TRUE, length(id)), genotyped)
+  pos <- .parentPositions(ped)
+  state <- .removalPass(pos$sireIdx, pos$damIdx, rep(TRUE, length(pos$id)),
+                        genotyped)
   noninform <- integer(0L)
   while (any(state$present)) {
     leaf <- state$present &
@@ -83,5 +82,5 @@ findAvailNonInform <- function(ped, genotyped, affected = NULL) {
     if (length(state$removed) == 0L) break
     noninform <- c(noninform, state$removed)
   }
-  id[noninform]
+  pos$id[noninform]
 }

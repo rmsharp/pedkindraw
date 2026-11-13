@@ -84,13 +84,14 @@ findAvailAffected <- function(ped, genotyped, affected, affstatus) {
   }
   genotyped <- read$genotyped
   affected <- read$affected
+  pos <- .parentPositions(ped)
+  id <- pos$id
+  sireIdx <- pos$sireIdx
+  damIdx <- pos$damIdx
   p <- ped
-  p$id <- as.character(p$id)
+  p$id <- id
   p$sire <- as.character(p$sire)
   p$dam <- as.character(p$dam)
-  id <- p$id
-  sireIdx <- match(p$sire, id)
-  damIdx <- match(p$dam, id)
   present <- rep(TRUE, length(id))
   status <- if (is.na(affstatus)) {
     is.na(affected)

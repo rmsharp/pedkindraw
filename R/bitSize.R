@@ -46,11 +46,20 @@
 #' bitSize(ped)
 bitSize <- function(ped) {
   .checkShrinkInput(ped, logical(NROW(ped)), NULL, 16L)
-  id <- as.character(ped$id)
-  sireIdx <- match(as.character(ped$sire), id)
-  damIdx <- match(as.character(ped$dam), id)
-  nFounder <- sum(is.na(sireIdx) & is.na(damIdx))
-  list(bitSize = .bitSize(sireIdx, damIdx, rep(TRUE, length(id))),
+  pos <- .parentPositions(ped)
+  nFounder <- sum(is.na(pos$sireIdx) & is.na(pos$damIdx))
+  list(bitSize = .bitSize(pos$sireIdx, pos$damIdx,
+                          rep(TRUE, length(pos$id))),
        nFounder = nFounder,
-       nNonFounder = length(id) - nFounder)
+       nNonFounder = length(pos$id) - nFounder)
+}
+
+## The ids of ped as text and each row's parents' row positions (NA when a
+## parent is unknown): the form the internals of R/shrinkPedigree.R take.
+## Used by bitSize(), findUnavailable(), findAvailNonInform() and
+## findAvailAffected().
+.parentPositions <- function(ped) {
+  id <- as.character(ped$id)
+  list(id = id, sireIdx = match(as.character(ped$sire), id),
+       damIdx = match(as.character(ped$dam), id))
 }
