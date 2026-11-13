@@ -90,12 +90,11 @@ checkPedigree <- function(ped) {
   dam <- as.character(ped[["dam"]])
   missingId <- is.na(id) | !nzchar(trimws(id))
   ids <- unique(id[!missingId])
-  isCode <- !is.na(c(sire, dam)) & !(c(sire, dam) %in% ids) &
-    (c(sire, dam) %in% c("0", "NA") | !nzchar(trimws(c(sire, dam))))
-  codes <- unique(c(sire, dam)[isCode])
-  parents <- unique(c(sire, dam)[!is.na(c(sire, dam)) & !isCode])
-  sires <- unique(sire[sire %in% ids])
-  dams <- unique(dam[dam %in% ids])
+  parentValues <- c(sire, dam)
+  isCode <- !is.na(parentValues) & !(parentValues %in% ids) &
+    (parentValues %in% c("0", "NA") | !nzchar(trimws(parentValues)))
+  codes <- .checkSorted(parentValues[isCode])
+  parents <- unique(parentValues[!is.na(parentValues) & !isCode])
   offspring <- function(x) .checkOffspring(x, id, sire, dam)
 
   ownSire <- !missingId & !is.na(sire) & sire == id
@@ -106,63 +105,72 @@ checkPedigree <- function(ped) {
   cycles <- .checkCycles(c(id[linked(sire)], id[linked(dam)]),
                          c(sire[linked(sire)], dam[linked(dam)]))
   rowless <- .checkSorted(parents[!(parents %in% ids)])
-  codes <- .checkSorted(codes)
   sireAndDam <- .checkSorted(intersect(sire[sire %in% parents],
                                        dam[dam %in% parents]))
 
   rows <- list(
-    .checkRows("missingIds", id[missingId],
-               paste("row", which(missingId))),
-    .checkRows("duplicateIds", duplicates, vapply(duplicates, function(x) {
+    missingIds = .checkRows(id[missingId], paste("row", which(missingId))),
+    duplicateIds = .checkRows(duplicates, vapply(duplicates, function(x) {
       paste("rows", toString(which(id == x)))
     }, character(1L), USE.NAMES = FALSE)),
-    .checkRows("ownParent", own, vapply(own, function(x) {
+    ownParent = .checkRows(own, vapply(own, function(x) {
       role <- any(ownSire[id %in% x]) + 2L * any(ownDam[id %in% x])
       paste("its own", c("sire", "dam", "sire and dam")[role])
     }, character(1L), USE.NAMES = FALSE)),
-    .checkRows("cycle", names(cycles), unname(cycles)),
-    .checkRows("rowlessParents", rowless, offspring(rowless)),
-    .checkRows("missingParentCodes", codes, offspring(codes))
+    cycle = .checkRows(names(cycles), unname(cycles)),
+    rowlessParents = .checkRows(rowless, offspring(rowless)),
+    missingParentCodes = .checkRows(codes, offspring(codes)),
+    sireAndDam = .checkRows(sireAndDam, offspring(sireAndDam))
   )
   if ("sex" %in% names(ped)) {
-    sex <- as.character(ped[["sex"]])
-    firstSex <- function(x) sex[match(x, id)]
-    maleDams <- .checkSorted(dams[firstSex(dams) %in% sexCodes[["male"]]])
-    femaleSires <- .checkSorted(
-      sires[firstSex(sires) %in% sexCodes[["female"]]]
-    )
-    rowParents <- unique(c(sires, dams))
-    unknown <- .checkSorted(rowParents[is.na(firstSex(rowParents)) |
-      firstSex(rowParents) %in% sexCodes[["unknown"]]])
-    rows <- c(rows, list(
-      .checkRows("maleDams", maleDams, offspring(maleDams)),
-      .checkRows("femaleSires", femaleSires, offspring(femaleSires)),
-      .checkRows("unknownSexParents", unknown, offspring(unknown))
-    ))
+    rows <- c(rows, .checkSexRows(as.character(ped[["sex"]]), id,
+                                  unique(sire[sire %in% ids]),
+                                  unique(dam[dam %in% ids]), offspring))
   }
-  rows <- c(rows, list(
-    .checkRows("sireAndDam", sireAndDam, offspring(sireAndDam))
-  ))
-  if ("sex" %in% names(ped)) {
-    odd <- !is.na(sex) & !(sex %in% sexCodes)
-    rows <- c(rows, list(.checkRows(
-      "sexCodes", id[odd], sprintf("sex \"%s\" in row %d", sex[odd],
-                                   which(odd))
-    )))
-  }
-  result <- do.call(rbind, rows)
+  rows <- rows[intersect(.checkNames, names(rows))]
+  result <- data.frame(check = rep(names(rows), vapply(rows, nrow, 1L)),
+                       do.call(rbind, unname(rows)),
+                       stringsAsFactors = FALSE)
   rownames(result) <- NULL
   result
 }
 
-## The rows of one check: a data frame of check, id and detail, with zero rows
-## when no id is given.
-.checkRows <- function(check, ids, detail) {
+## The checks, in the order their rows come (plan R50).
+.checkNames <- c(
+  "missingIds", "duplicateIds", "ownParent", "cycle", "rowlessParents",
+  "missingParentCodes", "maleDams", "femaleSires", "unknownSexParents",
+  "sireAndDam", "sexCodes"
+)
+
+## The rows of the four sex checks, named by check: sires and dams are the
+## parents that have a row, and a parent's sex is the sex on its first row.
+.checkSexRows <- function(sex, id, sires, dams, offspring) {
+  firstSex <- function(x) sex[match(x, id)]
+  parents <- unique(c(sires, dams))
+  maleDams <- .checkSorted(dams[firstSex(dams) %in% sexCodes[["male"]]])
+  femaleSires <- .checkSorted(
+    sires[firstSex(sires) %in% sexCodes[["female"]]]
+  )
+  unknown <- .checkSorted(parents[is.na(firstSex(parents)) |
+    firstSex(parents) %in% sexCodes[["unknown"]]])
+  odd <- !is.na(sex) & !(sex %in% sexCodes)
+  list(
+    maleDams = .checkRows(maleDams, offspring(maleDams)),
+    femaleSires = .checkRows(femaleSires, offspring(femaleSires)),
+    unknownSexParents = .checkRows(unknown, offspring(unknown)),
+    sexCodes = .checkRows(id[odd], sprintf("sex \"%s\" in row %d", sex[odd],
+                                           which(odd)))
+  )
+}
+
+## The rows of one check: a data frame of id and detail, with zero rows when
+## no id is given.
+.checkRows <- function(ids, detail) {
   if (length(ids) == 0L) {
     detail <- character(0L)
   }
-  data.frame(check = rep(check, length(ids)), id = as.character(ids),
-             detail = detail, stringsAsFactors = FALSE)
+  data.frame(id = as.character(ids), detail = detail,
+             stringsAsFactors = FALSE)
 }
 
 ## The values once each, in byte order (capitals before lower case).
