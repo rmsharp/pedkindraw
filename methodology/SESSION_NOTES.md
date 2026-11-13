@@ -90,6 +90,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S15's entries were removed in S3-S16 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 17 Did
+**Deliverable:** plan Phase 13: `checkPedigree()` and `findUnrelated()`, new code test-first (R9); contract 4.4 and
+the comparison read, kinship2's `pedigree.unrelated` help read (R14) and run on many cases under a time limit
+(Learning 19), then a scope picker (one function or both) and a measured pre-RED picker, rulings R49 on, RED, GREEN,
+REFACTOR, checks, push, CI (IN PROGRESS)
+**Started:** 2026-11-13 13:23 CST · **Model:** Claude Opus 5.5 · Mark picked "Phase 13" at the orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 15 Handoff Evaluation (by Session 16)
 **Score: 8/10.**
 - **What helped:** the gotcha list of kinship2's `ibdMatrix()` behaviours, almost all of which I reproduced

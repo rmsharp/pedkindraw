@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-13 · [ad hoc] S17 claim (in progress): plan Phase 13: `checkPedigree()` and `findUnrelated()`, new code test-first (R9); contract 4.4 and the comparison read, kinship2's `pedigree.unrelated` help read (R14) and run on many cases under a time limit (Learning 19), a scope picker and a measured pre-RED picker, rulings R49 on, RED, GREEN, REFACTOR, checks, push, CI. Mark picked "Phase 13" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `ad148ee` is HEAD, no merges; S16's receipt complete, its ratchet results `08889eff3b69` match the results file); drift tool 90 functions, 0 differ; nprcgenekeepr at `0566ed39c` (S1164 mid-session, one uncommitted test file not copied here).
+
 ### 2026-11-13 · [BL-Phase 12] S16 push: `master` to GitHub at `b8ade6e` (8 commits, S15's two close-out commits through S16's REFACTOR), CI green on five jobs at the first attempt
 - **Change:** `git push origin master` (`b314273..b8ade6e`); CI run `43480861654`: 5/5 `Status: OK`, attempt 1; `FAIL 0 | WARN 0` on each: macOS PASS 3120 SKIP 0, Windows PASS 3119 SKIP 1, Ubuntu devel, release and oldrel-1 PASS 3109 SKIP 2 (each 373 more than S15's runs: the 19 new tests, kinship2 comparisons included).
 - **Commit/PR:** none (push); S16's close-out commits after it are not pushed · **Session:** S16 · **Verified:** `gh run watch --exit-status` 0; each job's conclusion with `gh run view --json`; each `Status:` and test summary line read from `gh run view --log`.
