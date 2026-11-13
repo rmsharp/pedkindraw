@@ -163,14 +163,15 @@ return shapes, and the errors of every new function in sections 4.3-4.5, are Cla
 phase's RED tests. Phase 11's were ruled before its RED (plan R40-R42, pedkindraw S14): the four give
 `shrinkPedigree()`'s answer for their step, calling its copied internals. `familyCheck()`'s were ruled before its
 RED (plan R43-R45, pedkindraw S15), and `ibdMatrix()`'s before its RED (plan R46-R48, pedkindraw S16).
-`checkPedigree()`'s were ruled before its RED (plan R49-R51, pedkindraw S17; section 4.4).
+`checkPedigree()`'s were ruled before its RED (plan R49-R51, pedkindraw S17; section 4.4), and `findUnrelated()`'s
+before its RED (plan R52-R54, pedkindraw S18; section 4.4).
 
 ### 4.4 New exports, short checker and unrelated-set finder (R9)
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
 | `checkPedigree(ped)` | pedigree | data frame `check`, `id`, `detail` (character), one row per problem id, zero rows when clean; never repairs (R50) | stops only when `ped` is not a data frame or lacks `id`, `sire`, `dam`, naming the missing columns | 13 |
-| `findUnrelated(ped, genotyped)` | pedigree, logical per row | character ids: genotyped, kinship 0 between every two, and no genotyped animal can be added; the same answer every time | stops on wrong lengths or NA in `genotyped` | 13 |
+| `findUnrelated(ped, genotyped)` | pedigree, logical per row | character ids in byte order (C16): genotyped, kinship 0 between every two, no genotyped animal can be added, and no chosen animal can be traded for two; the same answer every time, whatever the row order; `character(0)` when none is genotyped (R53) | stops when `genotyped` is not logical, not one per row or has an `NA`; when `ped` is not a data frame or lacks `id`, `sire`, `dam`; and, naming the animals, when `checkPedigree()` reports `missingIds`, `duplicateIds`, `ownParent`, `cycle`, `rowlessParents` or `missingParentCodes` (R53) | 13 |
 
 `checkPedigree()`'s checks come from the comparison's measured case list (doc section 4): `duplicateIds`,
 `ownParent`, `cycle`, `rowlessParents` (a parent id with no row), `missingParentCodes` (`"0"`, `""` or similar
@@ -185,7 +186,12 @@ stays the user's step with `addParents()` and `correctParentSex()`. The copied c
 call it (their raw errors on a bad pedigree stay as copied, finding 9); calling it from them is later new work.
 
 `findUnrelated()` must give sets as large as kinship2's and Pedixplorer's on the doc's three pedigrees (section
-5.4: 4, 2 and 44), and finish 10,000 animals, where kinship2 took 6.5 s (section 7).
+5.4: 4, 2 and 44), and finish 10,000 animals, where kinship2 took 6.5 s (section 7). Ruled before RED (plan
+R52-R54, pedkindraw S18): two animals are related when they share an ancestor or one descends from the other,
+found through their founder ancestors (equal to `kinship()` above 0 in every pair measured), not from a kinship
+matrix; the pick takes the animal related to the fewest still in play, ties in byte order, then a swap pass trades
+one chosen animal for two where it can (R53); sex is not read. Measured on a prototype: 4, 2 and 44, the largest
+possible, and 0.7 s at 10,000 animals with 30% genotyped.
 
 ### 4.5 New exports, converters (R7)
 
