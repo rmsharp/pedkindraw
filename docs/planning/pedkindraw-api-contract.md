@@ -163,18 +163,23 @@ return shapes, and the errors of every new function in sections 4.3-4.5, are Cla
 phase's RED tests. Phase 11's were ruled before its RED (plan R40-R42, pedkindraw S14): the four give
 `shrinkPedigree()`'s answer for their step, calling its copied internals. `familyCheck()`'s were ruled before its
 RED (plan R43-R45, pedkindraw S15), and `ibdMatrix()`'s before its RED (plan R46-R48, pedkindraw S16).
+`checkPedigree()`'s were ruled before its RED (plan R49-R51, pedkindraw S17; section 4.4).
 
 ### 4.4 New exports, short checker and unrelated-set finder (R9)
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
-| `checkPedigree(ped)` | pedigree | data frame `check`, `id`, `detail`, one row per problem, zero rows when clean; never repairs | stops only when `ped` is not a data frame or lacks `id`, `sire`, `dam` | 13 |
+| `checkPedigree(ped)` | pedigree | data frame `check`, `id`, `detail` (character), one row per problem id, zero rows when clean; never repairs (R50) | stops only when `ped` is not a data frame or lacks `id`, `sire`, `dam`, naming the missing columns | 13 |
 | `findUnrelated(ped, genotyped)` | pedigree, logical per row | character ids: genotyped, kinship 0 between every two, and no genotyped animal can be added; the same answer every time | stops on wrong lengths or NA in `genotyped` | 13 |
 
 `checkPedigree()`'s checks come from the comparison's measured case list (doc section 4): `duplicateIds`,
 `ownParent`, `cycle`, `rowlessParents` (a parent id with no row), `missingParentCodes` (`"0"`, `""` or similar
 used for an unknown parent), `maleDams`, `femaleSires`, `unknownSexParents`, `sireAndDam` (one id used as both).
-Legal here and not reported: one known parent, unknown sex of a non-parent, `H`, numeric ids. It reports and
+Ruled before RED (plan R49-R51, pedkindraw S17): two checks were added, `missingIds` (an id `NA`, empty or spaces
+only) first and `sexCodes` (a sex not `NA`, `M`, `F`, `H` or `U`) last, making eleven in that order; the codes are
+`"0"`, `"NA"` and empty or spaces-only values with no row of their own; each check's exact rule, the row order (byte
+order within a check, C16) and `detail` are R50's; without a `sex` column the four sex checks give no rows.
+Legal here and not reported: one known parent, unknown sex of a non-parent, `H` (as a parent too), numeric ids. It reports and
 stops there: kinship2 refuses, Pedixplorer silently changes a parent's sex, BGmisc offers repair; repair here
 stays the user's step with `addParents()` and `correctParentSex()`. The copied computation functions do **not**
 call it (their raw errors on a bad pedigree stay as copied, finding 9); calling it from them is later new work.
