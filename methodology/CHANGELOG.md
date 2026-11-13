@@ -15,6 +15,27 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-12 · [ad hoc] S14 decision: `pedkindraw.Rproj` stays untracked (Mark's orient pick, "Leave it untracked")
+- **Change:** the DECISION NEEDED item "`pedkindraw.Rproj`: commit it or ignore it" removed from `methodology/BACKLOG.md`; the file is neither committed nor git-ignored (`.Rbuildignore` already keeps it out of the built package).
+- **Commit/PR:** the S14 close-out commit · **Session:** S14 · **Verified:** `git status --short` lists it untracked; R CMD check's NOTE is only R16's.
+- **Model:** Claude Opus 5.5
+
+### 2026-11-12 · [BL-Phase 11] S14 push 2: `master` to GitHub at `dff6509` (the REFACTOR), CI green on five jobs at the first attempt
+- **Change:** `git push origin master` (`9b6eed1..dff6509`); CI run `43352801040`: 5/5 `Status: OK`, attempt 1; `FAIL 0 | WARN 0` on each, the same counts as push 1 (macOS PASS 2453, Windows 2452 SKIP 1, Ubuntu 2442 SKIP 2).
+- **Commit/PR:** none (push); S14's close-out commit after it is not pushed · **Session:** S14 · **Verified:** `gh run watch --exit-status` 0; each job's `Status:` and test summary line read from `gh run view --log`.
+- **Model:** Claude Opus 5.5
+
+### 2026-11-12 · [BL-Phase 11] S14 push 1: `master` to GitHub at `9b6eed1` (10 commits, S13's three close-out commits through S14's GREEN 2), CI green on five jobs at the first attempt
+- **Change:** `git push origin master` (`d437228..9b6eed1`); CI run `43350752421`: 5/5 `Status: OK`, attempt 1; `FAIL 0 | WARN 0` on each: macOS PASS 2453 SKIP 0, Windows PASS 2452 SKIP 1, Ubuntu devel, release and oldrel-1 PASS 2442 SKIP 2 (each 288 more than S13's run: the 32 new tests, kinship2 comparisons included).
+- **Commit/PR:** none (push) · **Session:** S14 · **Verified:** `gh run watch --exit-status` 0; each job's conclusion with `gh run view --json`; each `Status:` and test summary line read from `gh run view --log`.
+- **Model:** Claude Opus 5.5
+
+### 2026-11-12 · [BL-Phase 11] S14: plan Phase 11, the shrink steps as exports; Phase 11 DONE, the first new code
+- **Change:** `bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()` exported (`R/bitSize.R`, `R/findUnavailable.R`, `R/findAvailNonInform.R`, `R/findAvailAffected.R`), pedkindraw's own code calling the copied internals of `R/shrinkPedigree.R` (unchanged) and `.parentPositions()`; 32 tests in 4 new test files and `helper-shrinkSteps.R`. Rulings R40-R42 (Mark's pre-RED picks: each gives `shrinkPedigree()`'s answer for its step; kinship2's return shapes; DONE criteria with kinship2 comparisons); R42's kinship2-difference account corrected before RED; contract 4.3 updated. Plan "Done 11", status block, row 11; `ROADMAP.md`; `BACKLOG.md` (Phase 11 removed as done, Phase 12 item added, coverage item re-measured at 44 of 1,872); `CLAUDE.md` Learning 18.
+- **Commit/PR:** `a49f91d` (claim), `f14fde6` (R40-R42), `702d3b5` (R42 corrected), RED `e854169`, GREEN `0bc4b7e`, `3ef609d` (help), `9b6eed1`, REFACTOR `dff6509`, close-out (this entry's commit). Pushed through `dff6509` (the entries above).
+- **Session:** S14 · **Verified:** RED 537 tests, 32 errors, each first on the missing function, WARN 0; suite 537, 0 failed, WARN 0, SKIP 0, 2453 expectations; lint 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; `R CMD check --as-cran` Status 1 NOTE (R16's), PASS 2446 SKIP 3, on GREEN and on REFACTOR; coverage 97.32%, new files 61 of 61; `quality_ratchet` 4/4.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-12 · [ad hoc] S14 claim (in progress): plan Phase 11, the shrink helpers and `bitSize()` as exports: `bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()`, new code test-first; pre-RED picker, rulings, RED, GREEN, checks, push, CI, "Done 11". Mark picked "Phase 11: four new functions" at the orient picker, and "Leave it untracked" for `pedkindraw.Rproj`. Phase 0 reconcile: nothing to backfill (frontier `8471dcb` is HEAD, no merges; S13's receipt complete, its gate citation matches the last run, 4/4, results `08889eff3b69`). Drift tool exit 0, 90 functions, 0 differ; nprcgenekeepr at `39cc26e35` (3 S1161 commits since `ec56cb02e`, no copied file changed)
 
 ### 2026-11-12 · [ad hoc] S13, after its close-out: a backlog item, tests for full coverage (Mark's request)

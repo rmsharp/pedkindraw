@@ -196,18 +196,19 @@ manifest existed are not re-judged.
 ```handoff
 session: S14
 date: 2026-11-12
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 11, the shrink helpers and bitSize() as exports: bitSize(), findUnavailable(), findAvailNonInform(), findAvailAffected(), new code test-first; pre-RED picker, rulings, RED, GREEN, checks, push, CI, Done 11 (IN PROGRESS)
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 11 item), docs/planning/pedkindraw-api-contract.md:154 (the four interfaces)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 11 is DONE (S14, R40-R42): bitSize(), findUnavailable(), findAvailNonInform() and findAvailAffected() exported, the first new code, each giving shrinkPedigree()'s answer for its step, 32 tests, CI green; next is plan Phase 12, familyCheck() and ibdMatrix() from kinship2's documentation (methodology/BACKLOG.md:11), or the coverage item (:25)
+what_was_done: claim a49f91d; rulings R40-R42 f14fde6 (contract 4.3 updated), R42's kinship2-difference account corrected 702d3b5 (a 7-animal reproduction); RED e854169 (helper-shrinkSteps.R and 4 test files, 32 tests, each failing first on the missing function); GREEN 0bc4b7e (bitSize, findUnavailable), 3ef609d (help fix), 9b6eed1 (findAvailNonInform, findAvailAffected); REFACTOR dff6509 (.parentPositions()); pushed d437228..9b6eed1 and ..dff6509; close-out (plan Done 11, ROADMAP, BACKLOG, CLAUDE.md Learning 18, ledger)
+next_steps: Orient and run the drift tool; read ?kinship2::familycheck and ?kinship2::ibdMatrix (help only, R14) and the gap analysis rows 7 and 12 (docs/research/kinship2-feature-gap-analysis-2026-09-20.md:94, :99); a measured pre-RED picker on which function this session (the plan estimates 2), shapes and errors (contract docs/planning/pedkindraw-api-contract.md:158-159 are proposals), DONE criteria and checks (kinship2 results in tests that skip without it, as R42); rulings R43 on before RED; compute every RED value first (Learning 18)
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Phase 12), :25 (coverage), docs/planning/pedkindraw-api-contract.md:158-159, R/bitSize.R:61 (.parentPositions), R/findAvailNonInform.R:73 (second-trim loop), R/findAvailAffected.R:109 (third-trim round), tests/testthat/helper-shrinkSteps.R:45 (walkThirdTrim), :75 (asKinship2Pedigree), CLAUDE.md:173 (Learning 18)
+gotchas: nothing to copy or call for Phase 12 (gap analysis: ABSENT); Phase 11's loops re-express shrinkPedigree()'s (R/shrinkPedigree.R:251, :282), so a port of a change there must change them too (the tests catch what the fixtures reach); shrinkPedigree()'s couple step depends on row order (test_findUnavailable.R:99); kinship2's pedigree.shrink() joins idList ids into one string, its findUnavailable() stops when nothing is genotyped, its pedigree() refuses one known parent; an Rscript -e one-liner with a regex escape failed in a zsh loop, use a script file
+runtime_smoke: the four help examples run under R CMD check --as-cran (Status 1 NOTE, R16's; PASS 2446 SKIP 3; GREEN and REFACTOR); tests 537 FAIL 0 WARN 0 SKIP 0, 2453 expectations; lint 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; coverage 97.32%, the new files 61 of 61; CI 43350752421 5/5 (macOS PASS 2453, Windows 2452 SKIP 1, Ubuntu 2442 SKIP 2) and 43352801040 the same, each 5/5 Status OK at the first attempt; quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-12 · [BL-Phase 11] S14: plan Phase 11, the shrink steps as exports; Phase 11 DONE, the first new code"
 commit: pending
 ```
+Phase 11 took one session as planned. Each of Mark's choices came with its effect measured first: kinship2 against shrinkPedigree()'s steps, and a scratch prototype of the third-trim walk. The costs were two over-confident statements, R42's kinship2 difference and GREEN 1's help text, each corrected in a commit of its own before anything shipped wrong (Learning 18). Model: Claude Opus 5.5, one tier.
 
 ```handoff
 session: S13
