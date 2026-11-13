@@ -35,9 +35,10 @@ and when removing an ungenotyped founder couple makes its ungenotyped
 child a founder, this function, like \code{shrinkPedigree()}, removes in
 the same trim the couple that child forms with another ungenotyped
 founder, if that couple's child comes later in \code{ped}, where kinship2
-leaves that couple for its next step. This function and
-\code{\link{findAvailNonInform}} together remove the same animals as
-kinship2's first two steps. An animal may have one known parent.
+leaves that couple for its next step. On every pedigree its tests
+compare, this function and \code{\link{findAvailNonInform}} together
+remove the same animals as \code{kinship2::pedigree.shrink()}'s first two
+steps. An animal may have one known parent.
 
 It stops with \code{shrinkPedigree()}'s message for a bad pedigree or a
 \code{genotyped} vector of the wrong length or with an \code{NA}.
