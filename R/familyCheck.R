@@ -112,17 +112,23 @@ familyCheck <- function(famid, id, sire, dam, newfam) {
     stringsAsFactors = FALSE
   )
   if (any(joinCount > 0L)) {
-    joined <- which(joinCount > 0L)
-    inJoined <- linked & family %in% joined
-    trees <- sort(unique(newfam[inJoined]))
-    counts <- table(factor(family[inJoined], levels = joined),
-                    factor(newfam[inJoined], levels = trees))
-    attr(result, "join") <- matrix(
-      as.integer(counts), nrow = length(joined),
-      dimnames = list(as.character(families[joined]), as.character(trees))
-    )
+    attr(result, "join") <- .familyJoinTable(families, family, newfam,
+                                             which(joinCount > 0L))
   }
   result
+}
+
+## familyCheck()'s join table: a row per joined family (joined holds their
+## positions in families), a column per family tree their linked animals are
+## in, named by tree number, each entry the number of that family's animals
+## in that tree.
+.familyJoinTable <- function(families, family, newfam, joined) {
+  inJoined <- newfam != 0L & family %in% joined
+  trees <- sort(unique(newfam[inJoined]))
+  counts <- table(factor(family[inJoined], levels = joined),
+                  factor(newfam[inJoined], levels = trees))
+  matrix(as.integer(counts), nrow = length(joined),
+         dimnames = list(as.character(families[joined]), as.character(trees)))
 }
 
 ## The family-tree number of each animal: animals joined by a chain of
