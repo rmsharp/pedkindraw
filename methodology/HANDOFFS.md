@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S14
+date: 2026-11-12
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 11, the shrink helpers and bitSize() as exports: bitSize(), findUnavailable(), findAvailNonInform(), findAvailAffected(), new code test-first; pre-RED picker, rulings, RED, GREEN, checks, push, CI, Done 11 (IN PROGRESS)
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 11 item), docs/planning/pedkindraw-api-contract.md:154 (the four interfaces)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S13
 date: 2026-11-12
 status: complete

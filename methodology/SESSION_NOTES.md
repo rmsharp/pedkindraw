@@ -85,6 +85,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S12's entries were removed in S3-S13 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 14 Did
+**Deliverable:** plan Phase 11, the shrink helpers and `bitSize()` as exports: `bitSize()`, `findUnavailable()`,
+`findAvailNonInform()`, `findAvailAffected()`, new code test-first (pre-RED picker, rulings, RED, GREEN, checks, push,
+CI, "Done 11") (IN PROGRESS)
+**Started:** 2026-11-12 18:11 CST · **Model:** Claude Opus 5.5 · Mark picked "Phase 11: four new functions" at the
+orient picker, and "Leave it untracked" for `pedkindraw.Rproj`.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 12 Handoff Evaluation (by Session 13)
 **Score: 9/10.**
 - **What helped:** the stand-in gotcha, which shaped RED and two of the three picker questions; the nprcgenekeepr check
