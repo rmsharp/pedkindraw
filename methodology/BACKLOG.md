@@ -8,44 +8,37 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 11: the shrink helpers and `bitSize()` as exports** (READY, Effort M) -- plan row 11 (R3, R11);
-      contract section 4.3 (`docs/planning/pedkindraw-api-contract.md:154-157`): `bitSize(ped)`,
-      `findUnavailable(ped, genotyped)`, `findAvailNonInform(ped, genotyped, affected = NULL)` and
-      `findAvailAffected(ped, genotyped, affected, affstatus)`, ids in a data frame, return shapes and errors settled
-      in RED (contract `:161-163`). New code, not a copy: nprcgenekeepr's clean-room rewrite (its S1139, `e2bba9fb2`)
-      dropped the old seven helpers (`.bitSizeOf()` to `.findAvailAffected()`, ports of the kinship2 functions these
-      exports are named after; contract `:70`), and the copy (S13) holds only `.bitSize(sireIdx, damIdx, present)`,
-      `.isParent()`, `.removalPass()` and `.checkShrinkInput()`, which take row positions, not ids.
-      `R/shrinkPedigree.R` is copied code: changing it makes a drift row (plan section 5), so the exports go in a
-      file of their own. A pre-RED picker first: whether they call the copied internals or are written apart (R11
-      governs anything written from kinship2's behaviour), and whether each must give `shrinkPedigree()`'s answer
-      for its tier on the Phase 1 pedigrees.
+- [ ] **Phase 12: `familyCheck()` and `ibdMatrix()`** (READY, Effort L, the plan's estimate: 2 sessions) -- plan
+      row 12 (`docs/planning/standalone-pedigree-package-plan.md:494`; R3, R11, R14: written from kinship2's
+      documentation, never its source); contract section 4.3 (`docs/planning/pedkindraw-api-contract.md:158-159`):
+      `familyCheck(famid, id, sire, dam, newfam)` (a data frame per family: `famid`, `n`, `unrelated`, `split`,
+      `join`) and `ibdMatrix(id1, id2, x, idmap, diagonal)` (a symmetric sparse `Matrix` named by id); their shapes
+      and errors are proposals, settled before RED (contract `:161-164`). Neither exists in pedkindraw or
+      nprcgenekeepr (the gap analysis, `docs/research/kinship2-feature-gap-analysis-2026-09-20.md:94`, `:99`, rows
+      7 and 12: ABSENT), so there is nothing to call or copy. kinship2 1.9.6.2 (Suggests, installed) has help pages
+      for both (`?kinship2::familycheck`, `?kinship2::ibdMatrix`). The plan states no DONE criteria for it: a
+      pre-RED picker first, measured (Learnings 17, 18): the split into 2 sessions, the shapes and errors, and what
+      checks them (S14's pattern: kinship2's results, run but not read, in tests skipped without it, R42). Plan
+      Phases 13-17 follow, each waiting for the one before (scope: the plan's section 4; summary:
+      `methodology/ROADMAP.md`); each gets its own item here when it is next.
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
-      the code of `82f2ef3` (`R/` unchanged since): 97.16%, 45 of 1,811 statements missed, in 7 files (covr's first
-      line of each statement): `R/makePedigreeDiagramData.R` 31 (570, 757, 980, 1275, 1321, 2247, 2268, 2309, 2319,
-      2320, 2324, 2336, 2337, 2339, 2340, 2341, 2346, 2360, 2372, 2403, 2404, 2405, 2406, 2407, 2411, 2428, 2445,
-      2546, 2714, 3043, 3044); `R/positionTreeApportion.R` 6 (388, 392, 395, 427, 431, 434);
-      `R/orderRootSubtrees.R` 2 (118, 131); `R/rbindFill.R` 2 (30, 35); `R/shrinkPedigree.R` 2 (97, 278);
-      `R/comparePedigreeStructure.R` 1 (160); `R/kinship.R` 1 (135). The results tool's cases reach 4 of them
-      (`kinship.R:135`, `rbindFill.R:35`, `shrinkPedigree.R:97` and `:278`), but cases are not tests. All 7 files are
+      the code of `82f2ef3`: 97.16%, 45 of 1,811 statements missed, in 7 files (covr's first line of each
+      statement). Re-measured S14 on `dff6509`: 97.32%, 44 of 1,872 (Phase 11's 61 statements all reached, and its
+      tests reach `R/shrinkPedigree.R:97`, the `affected` length error): `R/makePedigreeDiagramData.R` 31 (570, 757,
+      980, 1275, 1321, 2247, 2268, 2309, 2319, 2320, 2324, 2336, 2337, 2339, 2340, 2341, 2346, 2360, 2372, 2403,
+      2404, 2405, 2406, 2407, 2411, 2428, 2445, 2546, 2714, 3043, 3044); `R/positionTreeApportion.R` 6 (388, 392,
+      395, 427, 431, 434); `R/orderRootSubtrees.R` 2 (118, 131); `R/rbindFill.R` 2 (30, 35); `R/shrinkPedigree.R` 1
+      (278); `R/comparePedigreeStructure.R` 1 (160); `R/kinship.R` 1 (135). The results tool's cases reach 3 of
+      them (`kinship.R:135`, `rbindFill.R:35`, `shrinkPedigree.R:278`), but cases are not tests. All 7 files are
       copied from nprcgenekeepr and stay as copied (drift rule, plan section 5), so the new tests go in pedkindraw's
       own test files, not into the copied ones, whose headers list every change (or as a pre-RED picker rules).
       Before calling a line unreachable, work out what input reaches it (Learning 11; S10 called
       `comparePedigreeStructure.R:160` "a defensive return"). Re-measure first; split by file if one session cannot
-      take all 45.
-
-- [ ] **Phases 12-17** (BLOCKED -- each waits for the one before, Effort L) -- the rest of the plan: new work
-      (12-15), documentation (16) and the CRAN submission (17, its own plan first). Scope and DONE criteria: the
-      plan's section 4; summary: `methodology/ROADMAP.md`. Each phase gets its own item here when it is next.
+      take all 44.
 
 ## Waiting on Mark
-
-- [ ] **`pedkindraw.Rproj`: commit it or ignore it** (DECISION NEEDED, Effort S) -- an RStudio project file,
-      untracked since pedkindraw S2 and made by no session. `.Rbuildignore` already keeps `*.Rproj` out of the built
-      package and `.gitignore` ignores only `.Rproj.user`, so either choice is one small commit: `git add` it, or add
-      `pedkindraw.Rproj` to `.gitignore`.
 
 - [ ] **The dashboard does not see `methodology/BACKLOG.md`** (DECISION NEEDED, Effort S) -- the synced
       `methodology/methodology_dashboard.py` (v2.23.0) looks for `BACKLOG.md` only at the root, `docs/` and

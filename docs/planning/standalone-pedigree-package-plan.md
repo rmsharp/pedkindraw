@@ -30,9 +30,11 @@ pedkindraw's `docs/planning/planning-handover-plan.md`); Phase 6b DONE (pedkindr
 R26-R29); Phase 8 DONE (pedkindraw S9-S10: the layout code, the kinship2 comparison and 333 tests, R30-R33); Phase 9
 DONE (pedkindraw S11: `drawPedigreeDiagram()` and its helpers, 15 tests, R34-R37); nprcgenekeepr S1159's legend
 change ported (pedkindraw S12, R37; `DIVERGENCE.md` has no row); Phase 10 DONE (pedkindraw S13: `shrinkPedigree()`
-and its helpers, 24 tests, R38-R39), so the copy slices, Phases 6-10, are complete.
-**Next:** Phase 11, the shrink helpers and `bitSize()` as exports (contract section 4.3): new code, since the
-clean-room `R/shrinkPedigree.R` has no such helpers (pedkindraw `methodology/BACKLOG.md`).
+and its helpers, 24 tests, R38-R39), so the copy slices, Phases 6-10, are complete; Phase 11 DONE (pedkindraw S14:
+`bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()`, the first new code, 32 tests,
+R40-R42).
+**Next:** Phase 12, `familyCheck()` and `ibdMatrix()` (contract section 4.3), written from kinship2's documentation,
+never its source (R14; estimate: 2 sessions; pedkindraw `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -488,11 +490,25 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 
 | Phase | Work | Source |
 |---|---|---|
-| 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3) | R3, R11 |
+| 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3). DONE (pedkindraw S14) | R3, R11, R40-R42 |
 | 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions) | R3, R11; gap analysis rows 7, 12 |
 | 13 | Short pedigree checker and short unrelated-set finder | R9; sized at Phase 1, specified at Phase 4 |
 | 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2) | R7 |
 | 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build | R3 |
+
+**Done 11 (pedkindraw S14; R40-R42):** `bitSize()`, `findUnavailable()`, `findAvailNonInform()` and
+`findAvailAffected()` exported, pedkindraw's own code in a file each, calling the copied internals of
+`R/shrinkPedigree.R` (unchanged; drift check 90 functions, 0 differ) and one internal helper, `.parentPositions()`
+(REFACTOR). Written from kinship2's help pages, its source not read (R11). Measured before the picker: kinship2's
+bit sizes equal on all 6 fixture pedigrees it accepts; its `pedigree.shrink()`'s first two steps remove the same ids
+in 24 of 24 cases; a scratch prototype of the third-trim walk identical in 24 of 24. 32 tests in 4 new files and a
+helper (`helper-shrinkSteps.R`), every expected value computed before RED; RED 32 errors, each first on the missing
+function. Checks: tests 537, 0 failed, WARN 0, SKIP 0, 2453 expectations; each step `identical()` to
+`shrinkPedigree()`'s on 7 fixtures under 5 genotyped patterns, the third trim walked on 4 pedigrees, 3 patterns, 2
+budgets; kinship2's `bitSize()` and first two steps equal where installed; lint 0; roxygen idempotent; `R CMD check
+--as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 2446, SKIP 3); coverage 97.32%, the 4 new files 61 of 61
+statements; CI runs `43350752421` (GREEN) and `43352801040` (REFACTOR) 5/5 `Status: OK`, each at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 2453; Windows 2452, SKIP 1; Ubuntu 2442, SKIP 2). R42's account of the one-trim
+difference from kinship2 was corrected before RED (`702d3b5`).
 
 ### Phase 16 -- Documentation (new repository)
 

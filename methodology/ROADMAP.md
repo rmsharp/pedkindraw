@@ -11,7 +11,8 @@ nprcgenekeepr is not changed). Each slice copies one group of functions, tests f
 identical to nprcgenekeepr's on the Phase 1 pedigrees. Why: when the five slices are done, pedkindraw computes
 kinship, trims and shrinks pedigrees and draws them interactively, and the drawing is what the comparison found is
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
-section 10). All five are done (S13); next is the new work of Phases 11-15, starting with Phase 11 (Planned, below).
+section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phase 11 is done (S14, What's Built,
+below); next is Phase 12 (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -27,10 +28,8 @@ section 10). All five are done (S13); next is the new work of Phases 11-15, star
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 11:** export the shrink helpers and `bitSize()` (R3; contract section 4.3). New code: the clean-room
-  `shrinkPedigree()` has no such helpers, only internal ones on row positions (S13; `methodology/BACKLOG.md`). Next.
 - **Phase 12:** `familyCheck()` and `ibdMatrix()`, written from kinship2's documented behaviour, never its source
-  (R3, R14; estimate: 2 sessions).
+  (R3, R14; estimate: 2 sessions; `methodology/BACKLOG.md`). Next.
 - **Phase 13:** `checkPedigree()`, a short pedigree checker that reports and never repairs, and `findUnrelated()`
   (R9; contract section 4.4).
 - **Phase 14:** `asPedFrame()`, converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects; both packages
@@ -43,6 +42,13 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Shrink steps (Phase 11), 4 exports:** `bitSize()` (kinship2's list: `bitSize`, `nFounder`, `nNonFounder`),
+  `findUnavailable()`, `findAvailNonInform()` and `findAvailAffected()`, each giving `shrinkPedigree()`'s answer for
+  its step (R40-R42): the first trim's ids, the second trim's ids (the first run inside), and one third-trim removal
+  returned with kinship2's `ped`, `idTrimmed`, `isTrimmed`, `bitSize`, so repeated calls walk the third trim.
+  pedkindraw's own code, calling the copied internals of `R/shrinkPedigree.R` (unchanged) and one internal helper,
+  `.parentPositions()`; written from kinship2's help pages, not its source (R11). 32 tests; checked against
+  `kinship2::bitSize()` and the first two steps of `kinship2::pedigree.shrink()` where kinship2 is installed.
 - **Shrink (Phase 10), 1 export:** `shrinkPedigree()` trims a pedigree to the animals that keep it informative within
   a genotyping budget (`maxBits`), in kinship2's three tiers (unavailable, non-informative, affected-priority); it
   stops with a plain message on malformed input (C15) and breaks ties by byte order, the same on every computer
@@ -95,6 +101,11 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 11, the shrink steps, the first new code (pedkindraw S14, 2026-11-12).** `bitSize()`, `findUnavailable()`,
+  `findAvailNonInform()` and `findAvailAffected()` written test-first (Mark's picks R40-R42: each gives
+  `shrinkPedigree()`'s answer for its step, kinship2's return shapes, tests against `shrinkPedigree()` and kinship2);
+  every expected value computed before RED, and one described kinship2 difference corrected by reproducing it; the
+  new files fully covered; CI green on five jobs at the first attempt, twice.
 - **Phase 10, shrink, and with it the copy slices (pedkindraw S13, 2026-11-12).** `shrinkPedigree()` copied test-first
   from nprcgenekeepr's clean-room code (Mark's picks R38-R39: its 3 nprcgenekeepr-only test files left out, the
   Phase 8 stand-in deleted in RED); 600 of 600 results identical, the cases reaching every statement of the file;
