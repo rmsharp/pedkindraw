@@ -11,8 +11,9 @@ nprcgenekeepr is not changed). Each slice copies one group of functions, tests f
 identical to nprcgenekeepr's on the Phase 1 pedigrees. Why: when the five slices are done, pedkindraw computes
 kinship, trims and shrinks pedigrees and draws them interactively, and the drawing is what the comparison found is
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
-section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phase 11 is done (S14) and Phase 12
-(S15-S16; What's Built, below); next is Phase 13, `checkPedigree()` and `findUnrelated()` (Planned, below).
+section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phase 11 is done (S14), Phase 12
+(S15-S16) and Phase 13's first half, `checkPedigree()` (S17; What's Built, below); next is its second half,
+`findUnrelated()` (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -28,8 +29,9 @@ section 10). All five are done (S13). The new work of Phases 11-15 has begun: Ph
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 13:** `checkPedigree()`, a short pedigree checker that reports and never repairs, and `findUnrelated()`
-  (R9; contract section 4.4). Next (`methodology/BACKLOG.md`).
+- **Phase 13, second session:** `findUnrelated()`, a short unrelated-set finder that gives the same answer every
+  time (R9, R49; contract section 4.4). Next (`methodology/BACKLOG.md`). Its first session, `checkPedigree()`, is
+  done (S17).
 - **Phase 14:** `asPedFrame()`, converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects; both packages
   stay optional (R7; contract section 4.5).
 - **Phase 15:** layout hints a user can supply: a design session first, then the build (R3).
@@ -40,6 +42,13 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Pedigree checker (Phase 13, first session), 1 export:** `checkPedigree()` lists a pedigree's problems, one row
+  per problem id (`check`, `id`, `detail`), and repairs nothing: ids missing or duplicated, an animal its own
+  parent or its own ancestor, parents with no row, `"0"` or blank for an unknown parent, male dams, female sires,
+  parents of unknown sex, one id used as sire and dam, and sex codes other than M, F, H, U (R49-R51). pedkindraw's
+  own new code with internal helpers `.checkRows()`, `.checkSorted()`, `.checkListed()`, `.checkOffspring()`,
+  `.checkCycles()` and `.checkSexRows()`. 23 tests; checked against a slow checker on 300 random pedigrees and,
+  where installed, against what kinship2's `pedigree()` refuses and accepts. 0.14 s on 100,000 animals.
 - **IBD matrix (Phase 12, second session), 1 export:** `ibdMatrix()` turns pairs of ids and their IBD values, as
   programs such as SOLAR write them, into kinship2's class, a symmetric sparse `dsCMatrix` with a row and a column
   per id, sorted (numbers by value, character ids in byte order), named from `idmap` when given (R46-R48).
@@ -114,6 +123,11 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 13's first session, `checkPedigree()` (pedkindraw S17, 2026-11-13).** New code written test-first
+  (Mark's picks R49-R51: `findUnrelated()` next session; one row per problem id; two checks added to the contract's
+  nine; `"0"`, `"NA"` and blank as unknown-parent codes; tests against a slow checker and kinship2's `pedigree()`);
+  a prototype measured on 300 random pedigrees before the pickers, the apparent misses traced to injections that
+  changed nothing; the new file fully covered; CI green on five jobs at the first attempt.
 - **Phase 12's second session, `ibdMatrix()`, and with it Phase 12 (pedkindraw S16, 2026-11-13).** Written
   test-first from kinship2's help page and measured results (Mark's picks R46-R48: kinship2's class with the ids
   given, sorted; a stop naming ids that lack a diagonal value; plain stops where kinship2 is silent or wrong; tests

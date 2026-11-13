@@ -8,20 +8,28 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 13: `checkPedigree()` and `findUnrelated()`** (READY, Effort L, a guess; Phase 12 DONE S15-S16,
-      R43-R48) -- plan row 13 (`docs/planning/standalone-pedigree-package-plan.md:502`; R9: a short pedigree checker
-      and a short unrelated-set finder, sized by the comparison; the plan gives no session count, and Phase 12's two
-      functions took two sessions); contract section 4.4 (`docs/planning/pedkindraw-api-contract.md:171`):
-      `checkPedigree(ped)`, a data frame `check`, `id`, `detail` with one row per problem that never repairs, its
-      nine checks from the comparison's case list (`docs/research/pedigree-package-comparison-2026-11.md:297`,
-      section 4); `findUnrelated(ped, genotyped)`, sets as large as kinship2's and Pedixplorer's on the comparison's
-      three pedigrees (4, 2 and 44; section 5.4, `:392`) and 10,000 animals finished (kinship2 6.5 s; `:105`,
-      section 7 `:424`). New code, so every expected value is computed before RED (Learning 18); anything from
-      kinship2 is from its help pages and measured results, never its source (R14); run kinship2 and Pedixplorer
-      on many cases under a time limit before the picker (Learning 19). A pre-RED picker first: which function
-      first or both, return shapes and errors (contract 4.4's are proposals), and the checks. Plan Phases 14-17
-      follow, each waiting for the one before (scope: the plan's section 4; summary: `methodology/ROADMAP.md`); each
-      gets its own item here when it is next.
+- [ ] **Phase 13's second session: `findUnrelated()`** (READY, Effort M, a guess; `checkPedigree()` DONE S17,
+      R49-R51) -- plan row 13 (`docs/planning/standalone-pedigree-package-plan.md:505`; R9; R49: Phase 13 takes two
+      sessions, this is the second); contract section 4.4 (`docs/planning/pedkindraw-api-contract.md:173`, `:187`):
+      `findUnrelated(ped, genotyped)`, character ids that are genotyped, with kinship 0 between every two, to which
+      no genotyped animal can be added, the same answer every time; it stops on a `genotyped` of the wrong length
+      or with an `NA`. kinship2's `pedigree.unrelated()` is a random greedy method (its help page: the row of the
+      kinship matrix with the most zeros first, ties at random), so the same answer every time needs a tie rule
+      (byte order, C16, as R44 and R46). It must give sets as large as kinship2's and Pedixplorer's on the
+      comparison's three pedigrees: 4 and 2 on `sample.ped`'s families 1 and 2 with their own `avail`, 44 on
+      `rhesus375` with 30% available drawn after `set.seed(42L)` (section 5.4,
+      `docs/research/pedigree-package-comparison-2026-11.md:392`; the runs: nprcgenekeepr
+      `tools/pedigreeComparison/runAgreement.R:316` `compareUnrelated()`, whose "maximal" test is the definition,
+      and `:468`), and finish 10,000 animals (kinship2 6.5 s, section 7, `:424`). Open for the pre-RED picker: what
+      it does with a pedigree `checkPedigree()` faults (a cycle, an own parent or a duplicate id leaves kinship
+      undefined); whether relatedness comes from the copied `kinship()` (dense, 8 n^2 bytes) or from shared
+      ancestors (a prediction, not measured: kinship above 0 exactly when two animals share an ancestor or one
+      descends from the other; compare it with `kinship()` on every fixture pedigree before a picker states it); the
+      tie rule. Every expected value computed before RED (Learning 18); kinship2 from its help page and measured
+      results only (R14), each case under a time limit (Learning 19). Pedixplorer is not installed: installing it
+      (Bioconductor) is a renv change under Learning 3, so a picker choice. Plan Phases 14-17 follow, each waiting
+      for the one before (scope: the plan's section 4; summary: `methodology/ROADMAP.md`); each gets its own item
+      here when it is next.
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -39,7 +47,8 @@ issues).*
       `comparePedigreeStructure.R:160` "a defensive return"). Re-measure first; split by file if one session cannot
       take all 44. S15 on `b314273`: 97.38%, 44 of 1,929, the same 44 (since `dff6509` only new files changed;
       `R/familyCheck.R` 57 of 57). S16 on `b8ade6e`: 97.46%, 44 of 2,006, the same 44 (since `b314273` only
-      `R/ibdMatrix.R` changed in `R/`, 77 of 77).
+      `R/ibdMatrix.R` changed in `R/`, 77 of 77). S17 on `60a87a7`: 97.57%, 44 of 2,089, the same 44 (since `b8ade6e` only
+      `R/checkPedigree.R` was added in `R/`, 83 of 83).
 
 ## Waiting on Mark
 

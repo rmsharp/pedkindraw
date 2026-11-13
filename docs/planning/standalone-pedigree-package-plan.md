@@ -33,8 +33,8 @@ change ported (pedkindraw S12, R37; `DIVERGENCE.md` has no row); Phase 10 DONE (
 and its helpers, 24 tests, R38-R39), so the copy slices, Phases 6-10, are complete; Phase 11 DONE (pedkindraw S14:
 `bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()`, the first new code, 32 tests,
 R40-R42); Phase 12 DONE (pedkindraw S15: `familyCheck()`, 16 tests, R43-R45; pedkindraw S16: `ibdMatrix()`, 19
-tests, R46-R48).
-**Next:** Phase 13, `checkPedigree()` and `findUnrelated()` (R9; contract section 4.4; pedkindraw
+tests, R46-R48); Phase 13's first session done (pedkindraw S17: `checkPedigree()`, 23 tests, R49-R51).
+**Next:** Phase 13's second session, `findUnrelated()` (R9, R49; contract section 4.4; pedkindraw
 `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
@@ -502,7 +502,7 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 |---|---|---|
 | 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3). DONE (pedkindraw S14) | R3, R11, R40-R42 |
 | 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). DONE: `familyCheck()` (pedkindraw S15), `ibdMatrix()` (pedkindraw S16) | R3, R11, R43-R48; gap analysis rows 7, 12 |
-| 13 | Short pedigree checker and short unrelated-set finder | R9; sized at Phase 1, specified at Phase 4 |
+| 13 | Short pedigree checker and short unrelated-set finder (2 sessions, R49). Done: `checkPedigree()` (pedkindraw S17); next `findUnrelated()` | R9, R49-R51; sized at Phase 1, specified at Phase 4 |
 | 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2) | R7 |
 | 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build | R3 |
 
@@ -547,6 +547,20 @@ least 77 and 76 of 80 random cases each; lint 0; roxygen idempotent; drift tool 
 --as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 3113, SKIP 3); coverage 97.46%, `R/ibdMatrix.R` 77 of 77
 statements; CI run `43480861654` 5/5 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 3120;
 Windows 3119, SKIP 1; Ubuntu 3109, SKIP 2). Phase 12 is DONE.
+
+**Done 13 (`checkPedigree()`; pedkindraw S17; R49-R51):** `checkPedigree()` exported, pedkindraw's own new code in
+`R/checkPedigree.R` with internal helpers `.checkRows()`, `.checkSorted()`, `.checkListed()`, `.checkOffspring()`,
+`.checkCycles()` and `.checkSexRows()` and the names vector `.checkNames` (REFACTOR). Eleven checks (R50: the
+contract's nine and `missingIds`, `sexCodes`). Measured before the pickers on a scratch prototype: equal to a slow
+checker on 300 of 300 seeded random pedigrees; in agreement with kinship2 1.9.6.2's `pedigree()` on 224 of 224
+cases compared (154 refusals, 70 acceptances); 0.17 s on 100,000 animals. 23 tests in a new file and a helper
+(`helper-checkPedigree.R`, with the slow checker `checkPedigreeSlow()`), the draft run against the prototype before
+RED (one hand-derived value corrected first); RED 23 errors, each first on the missing function. Checks: tests 595,
+0 failed, WARN 0, SKIP 0, 3682 expectations; lint 0; roxygen idempotent; drift tool 90 functions, 0 differ; `R CMD
+check --as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 3675, SKIP 3); coverage 97.57%, `R/checkPedigree.R`
+83 of 83 statements; 0.14 s on 100,000 animals, 0.22 s with 5 cycles put in; CI run `43507284539` 5/5 `Status: OK`
+at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 3682; Windows 3681, SKIP 1; Ubuntu 3671, SKIP 2).
+Phase 13's second session, `findUnrelated()`, is next.
 
 ### Phase 16 -- Documentation (new repository)
 
