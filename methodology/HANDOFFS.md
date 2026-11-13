@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S18
+date: 2026-11-13
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 13's second session, findUnrelated(), new code test-first (R9); the comparison's three cases reproduced with kinship2 under a time limit, a scratch prototype, a measured pre-RED picker, rulings R52 on, RED, GREEN, REFACTOR, checks, push, CI
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the findUnrelated() item), docs/planning/pedkindraw-api-contract.md:173 (its interface)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S17
 date: 2026-11-13
 status: complete

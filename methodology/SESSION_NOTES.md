@@ -99,6 +99,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S16's entries were removed in S3-S17 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 18 Did
+**Deliverable:** plan Phase 13's second session, `findUnrelated()`, new code test-first (R9): the comparison's three
+cases reproduced with kinship2 under a time limit (Learning 19), its `pedigree.unrelated` help read (R14), a scratch
+prototype, a measured pre-RED picker, rulings R52 on, RED, GREEN, REFACTOR, checks, push, CI; Phase 13 DONE (IN PROGRESS)
+**Started:** 2026-11-13 17:03 CST · **Model:** Claude Opus 5.5 · Mark picked "findUnrelated() (Recommended)" at the
+orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 16 Handoff Evaluation (by Session 17)
 **Score: 9/10.**
 - **What helped:** the ordered steps (drift tool; contract 4.4 and the comparison's sections 4, 5.4 and 7; kinship2's
