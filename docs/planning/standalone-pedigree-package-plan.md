@@ -32,9 +32,10 @@ DONE (pedkindraw S11: `drawPedigreeDiagram()` and its helpers, 15 tests, R34-R37
 change ported (pedkindraw S12, R37; `DIVERGENCE.md` has no row); Phase 10 DONE (pedkindraw S13: `shrinkPedigree()`
 and its helpers, 24 tests, R38-R39), so the copy slices, Phases 6-10, are complete; Phase 11 DONE (pedkindraw S14:
 `bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()`, the first new code, 32 tests,
-R40-R42); Phase 12's first session DONE (pedkindraw S15: `familyCheck()`, 16 tests, R43-R45).
-**Next:** Phase 12's second session, `ibdMatrix()` (contract section 4.3), written from kinship2's documentation,
-never its source (R14; pedkindraw `methodology/BACKLOG.md`).
+R40-R42); Phase 12 DONE (pedkindraw S15: `familyCheck()`, 16 tests, R43-R45; pedkindraw S16: `ibdMatrix()`, 19
+tests, R46-R48).
+**Next:** Phase 13, `checkPedigree()` and `findUnrelated()` (R9; contract section 4.4; pedkindraw
+`methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -497,7 +498,7 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 | Phase | Work | Source |
 |---|---|---|
 | 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3). DONE (pedkindraw S14) | R3, R11, R40-R42 |
-| 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). `familyCheck()` DONE (pedkindraw S15); `ibdMatrix()` next | R3, R11, R43-R45; gap analysis rows 7, 12 |
+| 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). DONE: `familyCheck()` (pedkindraw S15), `ibdMatrix()` (pedkindraw S16) | R3, R11, R43-R48; gap analysis rows 7, 12 |
 | 13 | Short pedigree checker and short unrelated-set finder | R9; sized at Phase 1, specified at Phase 4 |
 | 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2) | R7 |
 | 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build | R3 |
@@ -528,7 +529,21 @@ fixture cases and 97 of 200 random ones, and `makefamid()`'s numbers as `newfam`
 0; roxygen idempotent; drift tool 90 functions, 0 differ; `R CMD check --as-cran` 0 errors, 0 warnings, R16's NOTE
 (tests PASS 2740, SKIP 3); coverage 97.38%, `R/familyCheck.R` 57 of 57 statements; CI run `43461775633` 5/5
 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 2747; Windows 2746, SKIP 1; Ubuntu 2736,
-SKIP 2). `ibdMatrix()` is Phase 12's second session.
+SKIP 2). `ibdMatrix()` followed in S16 (below).
+
+**Done 12 (`ibdMatrix()`; pedkindraw S16; R46-R48):** `ibdMatrix()` exported, pedkindraw's own code in
+`R/ibdMatrix.R` with internal helpers `.ibdNames()`, `.ibdEntries()` and `.ibdSparse()` (REFACTOR) and
+`.ibdListed()`. Written from kinship2's help page and measured results, its source not read (R14). Measured before
+the picker, one process per case under `timeout 15`: kinship2 returned in 153 of 160 random cases with every
+diagonal value or `diagonal` given (7 stops of its own, all with numeric ids), and without `diagonal` returned a 0
+diagonal in 33 of 40 and never returned in 7; a scratch prototype equal to kinship2 at every id in 186 of 186 cases
+where it returns. R46's account of kinship2's row order was corrected before GREEN (`ebab5b9`). 19 tests in a new
+file and a helper (`helper-ibdMatrix.R`), the draft run against the prototype before RED; RED 19 errors, each first
+on the missing function. Checks: tests 572, 0 failed, WARN 0, SKIP 0, 3120 expectations; equal to kinship2 on at
+least 77 and 76 of 80 random cases each; lint 0; roxygen idempotent; drift tool 90 functions, 0 differ; `R CMD check
+--as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 3113, SKIP 3); coverage 97.46%, `R/ibdMatrix.R` 77 of 77
+statements; CI run `43480861654` 5/5 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 3120;
+Windows 3119, SKIP 1; Ubuntu 3109, SKIP 2). Phase 12 is DONE.
 
 ### Phase 16 -- Documentation (new repository)
 

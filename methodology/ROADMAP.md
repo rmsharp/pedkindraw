@@ -11,8 +11,8 @@ nprcgenekeepr is not changed). Each slice copies one group of functions, tests f
 identical to nprcgenekeepr's on the Phase 1 pedigrees. Why: when the five slices are done, pedkindraw computes
 kinship, trims and shrinks pedigrees and draws them interactively, and the drawing is what the comparison found is
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
-section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phase 11 is done (S14) and Phase 12's
-`familyCheck()` (S15; What's Built, below); next is Phase 12's `ibdMatrix()` (Planned, below).
+section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phase 11 is done (S14) and Phase 12
+(S15-S16; What's Built, below); next is Phase 13, `checkPedigree()` and `findUnrelated()` (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -28,10 +28,8 @@ section 10). All five are done (S13). The new work of Phases 11-15 has begun: Ph
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 12:** `ibdMatrix()`, written from kinship2's documented behaviour, never its source (R3, R14;
-  `methodology/BACKLOG.md`). Next; its first session wrote `familyCheck()` (S15, What's Built).
 - **Phase 13:** `checkPedigree()`, a short pedigree checker that reports and never repairs, and `findUnrelated()`
-  (R9; contract section 4.4).
+  (R9; contract section 4.4). Next (`methodology/BACKLOG.md`).
 - **Phase 14:** `asPedFrame()`, converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects; both packages
   stay optional (R7; contract section 4.5).
 - **Phase 15:** layout hints a user can supply: a design session first, then the build (R3).
@@ -42,6 +40,14 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **IBD matrix (Phase 12, second session), 1 export:** `ibdMatrix()` turns pairs of ids and their IBD values, as
+  programs such as SOLAR write them, into kinship2's class, a symmetric sparse `dsCMatrix` with a row and a column
+  per id, sorted (numbers by value, character ids in byte order), named from `idmap` when given (R46-R48).
+  pedkindraw's own code with internal helpers `.ibdNames()`, `.ibdEntries()`, `.ibdSparse()` and `.ibdListed()`;
+  written from kinship2's help page and measured results, not its source (R14). It gives kinship2's value for every
+  pair wherever kinship2 returns, and stops with a plain message where kinship2 is silent, wrong or never returns
+  (a missing diagonal value, unequal lengths, one pair given two values). 19 tests; checked against
+  `kinship2::ibdMatrix()` where installed.
 - **Family check (Phase 12, first session), 1 export:** `familyCheck()` compares the family ids animals are given
   with the family trees their parent links form: per family id, its animals, those related to no one, the trees it
   spans (`split`) and the other family ids sharing them (`join`), and a table of the joined ids by tree (R43-R45).
@@ -108,6 +114,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 12's second session, `ibdMatrix()`, and with it Phase 12 (pedkindraw S16, 2026-11-13).** Written
+  test-first from kinship2's help page and measured results (Mark's picks R46-R48: kinship2's class with the ids
+  given, sorted; a stop naming ids that lack a diagonal value; plain stops where kinship2 is silent or wrong; tests
+  against kinship2); kinship2 measured before the picker, one case per process under a time limit, which showed it
+  hangs on some inputs and not others; a ruling's description corrected before GREEN; the new file fully covered;
+  CI green on five jobs at the first attempt.
 - **Phase 12's first session, `familyCheck()` (pedkindraw S15, 2026-11-13).** Written test-first from kinship2's help
   pages and measured results (Mark's picks R43-R45: `ibdMatrix()` next session, kinship2's `join` numbers, plain
   stops and answers where kinship2 fails, `newfam` kept, tests against kinship2); kinship2 measured before each

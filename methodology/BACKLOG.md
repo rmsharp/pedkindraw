@@ -8,21 +8,20 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 12, second session: `ibdMatrix()`** (READY, Effort M; `familyCheck()` DONE S15, R43-R45) -- plan
-      row 12 (`docs/planning/standalone-pedigree-package-plan.md:497`; R3, R11, R14: written from kinship2's
-      documentation, never its source); contract section 4.3 (`docs/planning/pedkindraw-api-contract.md:159`):
-      `ibdMatrix(id1, id2, x, idmap, diagonal)` (a symmetric sparse `Matrix` named by id), its shape and errors
-      proposals settled before RED. Nothing to copy or call (the gap analysis,
-      `docs/research/kinship2-feature-gap-analysis-2026-09-20.md:99`, row 12: ABSENT); `Matrix` is already imported
-      (R27). S15 ran kinship2 1.9.6.2's `ibdMatrix()` (its help read, not its source): a `dsCMatrix`, upper triangle,
-      zero values dropped, ids sorted (numbers by value, character by the locale); a 3-column table as `id1` works;
-      `idmap` refused in every form tried; it never returns when an id's diagonal entry is missing and `diagonal`
-      is not given; unequal lengths recycled with only warnings; two values for one pair accepted silently, one
-      kept; a gap in numeric ids (1, 3) adds an empty row. The full list is in `methodology/SESSION_NOTES.md`
-      (Gotchas). A pre-RED picker first, measured (Learnings 17-19): the shape, the errors, what pedkindraw does
-      where kinship2 fails, and the checks (R45's pattern: kinship2's answers where it returns, in tests skipped
-      without it, with a floor on the cases compared). Plan Phases 13-17 follow, each waiting for the one before
-      (scope: the plan's section 4; summary: `methodology/ROADMAP.md`); each gets its own item here when it is next.
+- [ ] **Phase 13: `checkPedigree()` and `findUnrelated()`** (READY, Effort L, a guess; Phase 12 DONE S15-S16,
+      R43-R48) -- plan row 13 (`docs/planning/standalone-pedigree-package-plan.md:502`; R9: a short pedigree checker
+      and a short unrelated-set finder, sized by the comparison; the plan gives no session count, and Phase 12's two
+      functions took two sessions); contract section 4.4 (`docs/planning/pedkindraw-api-contract.md:171`):
+      `checkPedigree(ped)`, a data frame `check`, `id`, `detail` with one row per problem that never repairs, its
+      nine checks from the comparison's case list (`docs/research/pedigree-package-comparison-2026-11.md:297`,
+      section 4); `findUnrelated(ped, genotyped)`, sets as large as kinship2's and Pedixplorer's on the comparison's
+      three pedigrees (4, 2 and 44; section 5.4, `:392`) and 10,000 animals finished (kinship2 6.5 s; `:105`,
+      section 7 `:424`). New code, so every expected value is computed before RED (Learning 18); anything from
+      kinship2 is from its help pages and measured results, never its source (R14); run kinship2 and Pedixplorer
+      on many cases under a time limit before the picker (Learning 19). A pre-RED picker first: which function
+      first or both, return shapes and errors (contract 4.4's are proposals), and the checks. Plan Phases 14-17
+      follow, each waiting for the one before (scope: the plan's section 4; summary: `methodology/ROADMAP.md`); each
+      gets its own item here when it is next.
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -39,7 +38,8 @@ issues).*
       Before calling a line unreachable, work out what input reaches it (Learning 11; S10 called
       `comparePedigreeStructure.R:160` "a defensive return"). Re-measure first; split by file if one session cannot
       take all 44. S15 on `b314273`: 97.38%, 44 of 1,929, the same 44 (since `dff6509` only new files changed;
-      `R/familyCheck.R` 57 of 57).
+      `R/familyCheck.R` 57 of 57). S16 on `b8ade6e`: 97.46%, 44 of 2,006, the same 44 (since `b314273` only
+      `R/ibdMatrix.R` changed in `R/`, 77 of 77).
 
 ## Waiting on Mark
 
