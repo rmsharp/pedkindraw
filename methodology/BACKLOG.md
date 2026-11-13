@@ -8,19 +8,21 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 12: `familyCheck()` and `ibdMatrix()`** (READY, Effort L, the plan's estimate: 2 sessions) -- plan
-      row 12 (`docs/planning/standalone-pedigree-package-plan.md:494`; R3, R11, R14: written from kinship2's
-      documentation, never its source); contract section 4.3 (`docs/planning/pedkindraw-api-contract.md:158-159`):
-      `familyCheck(famid, id, sire, dam, newfam)` (a data frame per family: `famid`, `n`, `unrelated`, `split`,
-      `join`) and `ibdMatrix(id1, id2, x, idmap, diagonal)` (a symmetric sparse `Matrix` named by id); their shapes
-      and errors are proposals, settled before RED (contract `:161-164`). Neither exists in pedkindraw or
-      nprcgenekeepr (the gap analysis, `docs/research/kinship2-feature-gap-analysis-2026-09-20.md:94`, `:99`, rows
-      7 and 12: ABSENT), so there is nothing to call or copy. kinship2 1.9.6.2 (Suggests, installed) has help pages
-      for both (`?kinship2::familycheck`, `?kinship2::ibdMatrix`). The plan states no DONE criteria for it: a
-      pre-RED picker first, measured (Learnings 17, 18): the split into 2 sessions, the shapes and errors, and what
-      checks them (S14's pattern: kinship2's results, run but not read, in tests skipped without it, R42). Plan
-      Phases 13-17 follow, each waiting for the one before (scope: the plan's section 4; summary:
-      `methodology/ROADMAP.md`); each gets its own item here when it is next.
+- [ ] **Phase 12, second session: `ibdMatrix()`** (READY, Effort M; `familyCheck()` DONE S15, R43-R45) -- plan
+      row 12 (`docs/planning/standalone-pedigree-package-plan.md:497`; R3, R11, R14: written from kinship2's
+      documentation, never its source); contract section 4.3 (`docs/planning/pedkindraw-api-contract.md:159`):
+      `ibdMatrix(id1, id2, x, idmap, diagonal)` (a symmetric sparse `Matrix` named by id), its shape and errors
+      proposals settled before RED. Nothing to copy or call (the gap analysis,
+      `docs/research/kinship2-feature-gap-analysis-2026-09-20.md:99`, row 12: ABSENT); `Matrix` is already imported
+      (R27). S15 ran kinship2 1.9.6.2's `ibdMatrix()` (its help read, not its source): a `dsCMatrix`, upper triangle,
+      zero values dropped, ids sorted (numbers by value, character by the locale); a 3-column table as `id1` works;
+      `idmap` refused in every form tried; it never returns when an id's diagonal entry is missing and `diagonal`
+      is not given; unequal lengths recycled with only warnings; two values for one pair accepted silently, one
+      kept; a gap in numeric ids (1, 3) adds an empty row. The full list is in `methodology/SESSION_NOTES.md`
+      (Gotchas). A pre-RED picker first, measured (Learnings 17-19): the shape, the errors, what pedkindraw does
+      where kinship2 fails, and the checks (R45's pattern: kinship2's answers where it returns, in tests skipped
+      without it, with a floor on the cases compared). Plan Phases 13-17 follow, each waiting for the one before
+      (scope: the plan's section 4; summary: `methodology/ROADMAP.md`); each gets its own item here when it is next.
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -36,7 +38,8 @@ issues).*
       own test files, not into the copied ones, whose headers list every change (or as a pre-RED picker rules).
       Before calling a line unreachable, work out what input reaches it (Learning 11; S10 called
       `comparePedigreeStructure.R:160` "a defensive return"). Re-measure first; split by file if one session cannot
-      take all 44.
+      take all 44. S15 on `b314273`: 97.38%, 44 of 1,929, the same 44 (since `dff6509` only new files changed;
+      `R/familyCheck.R` 57 of 57).
 
 ## Waiting on Mark
 

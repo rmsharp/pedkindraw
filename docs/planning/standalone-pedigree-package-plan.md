@@ -32,9 +32,9 @@ DONE (pedkindraw S11: `drawPedigreeDiagram()` and its helpers, 15 tests, R34-R37
 change ported (pedkindraw S12, R37; `DIVERGENCE.md` has no row); Phase 10 DONE (pedkindraw S13: `shrinkPedigree()`
 and its helpers, 24 tests, R38-R39), so the copy slices, Phases 6-10, are complete; Phase 11 DONE (pedkindraw S14:
 `bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()`, the first new code, 32 tests,
-R40-R42).
-**Next:** Phase 12, `familyCheck()` and `ibdMatrix()` (contract section 4.3), written from kinship2's documentation,
-never its source (R14; estimate: 2 sessions; pedkindraw `methodology/BACKLOG.md`).
+R40-R42); Phase 12's first session DONE (pedkindraw S15: `familyCheck()`, 16 tests, R43-R45).
+**Next:** Phase 12's second session, `ibdMatrix()` (contract section 4.3), written from kinship2's documentation,
+never its source (R14; pedkindraw `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -494,7 +494,7 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 | Phase | Work | Source |
 |---|---|---|
 | 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3). DONE (pedkindraw S14) | R3, R11, R40-R42 |
-| 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions) | R3, R11; gap analysis rows 7, 12 |
+| 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). `familyCheck()` DONE (pedkindraw S15); `ibdMatrix()` next | R3, R11, R43-R45; gap analysis rows 7, 12 |
 | 13 | Short pedigree checker and short unrelated-set finder | R9; sized at Phase 1, specified at Phase 4 |
 | 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2) | R7 |
 | 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build | R3 |
@@ -512,6 +512,20 @@ budgets; kinship2's `bitSize()` and first two steps equal where installed; lint 
 --as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 2446, SKIP 3); coverage 97.32%, the 4 new files 61 of 61
 statements; CI runs `43350752421` (GREEN) and `43352801040` (REFACTOR) 5/5 `Status: OK`, each at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 2453; Windows 2452, SKIP 1; Ubuntu 2442, SKIP 2). R42's account of the one-trim
 difference from kinship2 was corrected before RED (`702d3b5`).
+
+**Done 12 (`familyCheck()`; pedkindraw S15; R43-R45):** `familyCheck()` exported, pedkindraw's own code in
+`R/familyCheck.R` with two internal helpers, `.familyTrees()` (kinship2's `makefamid()` numbering) and
+`.familyJoinTable()` (REFACTOR). Written from kinship2's help pages and measured results, its source not read
+(R14). Measured before the picker: a scratch prototype equal to `kinship2::familycheck()` in 86 of 86 fixture and
+188 of 188 random cases where kinship2 returns, with `join` counted per shared tree (counted once per family, 90
+differ); kinship2 stops in all 227 of 463 cases whose joins lie in one tree. 16 tests in a new file and a helper
+(`helper-familyCheck.R`), every expected value computed before RED; RED 16 errors, each first on the missing
+function. Checks: tests 553, 0 failed, WARN 0, SKIP 0, 2747 expectations; equal to kinship2 on at least 68 of 99
+fixture cases and 97 of 200 random ones, and `makefamid()`'s numbers as `newfam` changing nothing (99 cases); lint
+0; roxygen idempotent; drift tool 90 functions, 0 differ; `R CMD check --as-cran` 0 errors, 0 warnings, R16's NOTE
+(tests PASS 2740, SKIP 3); coverage 97.38%, `R/familyCheck.R` 57 of 57 statements; CI run `43461775633` 5/5
+`Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 2747; Windows 2746, SKIP 1; Ubuntu 2736,
+SKIP 2). `ibdMatrix()` is Phase 12's second session.
 
 ### Phase 16 -- Documentation (new repository)
 

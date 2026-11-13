@@ -11,8 +11,8 @@ nprcgenekeepr is not changed). Each slice copies one group of functions, tests f
 identical to nprcgenekeepr's on the Phase 1 pedigrees. Why: when the five slices are done, pedkindraw computes
 kinship, trims and shrinks pedigrees and draws them interactively, and the drawing is what the comparison found is
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
-section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phase 11 is done (S14, What's Built,
-below); next is Phase 12 (Planned, below).
+section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phase 11 is done (S14) and Phase 12's
+`familyCheck()` (S15; What's Built, below); next is Phase 12's `ibdMatrix()` (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -28,8 +28,8 @@ below); next is Phase 12 (Planned, below).
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 12:** `familyCheck()` and `ibdMatrix()`, written from kinship2's documented behaviour, never its source
-  (R3, R14; estimate: 2 sessions; `methodology/BACKLOG.md`). Next.
+- **Phase 12:** `ibdMatrix()`, written from kinship2's documented behaviour, never its source (R3, R14;
+  `methodology/BACKLOG.md`). Next; its first session wrote `familyCheck()` (S15, What's Built).
 - **Phase 13:** `checkPedigree()`, a short pedigree checker that reports and never repairs, and `findUnrelated()`
   (R9; contract section 4.4).
 - **Phase 14:** `asPedFrame()`, converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects; both packages
@@ -42,6 +42,13 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Family check (Phase 12, first session), 1 export:** `familyCheck()` compares the family ids animals are given
+  with the family trees their parent links form: per family id, its animals, those related to no one, the trees it
+  spans (`split`) and the other family ids sharing them (`join`), and a table of the joined ids by tree (R43-R45).
+  pedkindraw's own code with two internal helpers, `.familyTrees()` (numbered as kinship2's `makefamid()`) and
+  `.familyJoinTable()`; written from kinship2's help pages and measured results, not its source (R14). It gives
+  kinship2's `familycheck()` answer wherever kinship2 returns, and answers where kinship2 stops (every join inside
+  one tree, empty input). 16 tests; checked against `kinship2::familycheck()` and `makefamid()` where installed.
 - **Shrink steps (Phase 11), 4 exports:** `bitSize()` (kinship2's list: `bitSize`, `nFounder`, `nNonFounder`),
   `findUnavailable()`, `findAvailNonInform()` and `findAvailAffected()`, each giving `shrinkPedigree()`'s answer for
   its step (R40-R42): the first trim's ids, the second trim's ids (the first run inside), and one third-trim removal
@@ -101,6 +108,11 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 12's first session, `familyCheck()` (pedkindraw S15, 2026-11-13).** Written test-first from kinship2's help
+  pages and measured results (Mark's picks R43-R45: `ibdMatrix()` next session, kinship2's `join` numbers, plain
+  stops and answers where kinship2 fails, `newfam` kept, tests against kinship2); kinship2 measured before each
+  picker, its `join` found to disagree with its own help page; the new file fully covered; CI green on five jobs at
+  the first attempt.
 - **Phase 11, the shrink steps, the first new code (pedkindraw S14, 2026-11-12).** `bitSize()`, `findUnavailable()`,
   `findAvailNonInform()` and `findAvailAffected()` written test-first (Mark's picks R40-R42: each gives
   `shrinkPedigree()`'s answer for its step, kinship2's return shapes, tests against `shrinkPedigree()` and kinship2);
