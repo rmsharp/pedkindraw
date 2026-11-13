@@ -97,51 +97,13 @@ ibdMatrix <- function(id1, id2, x, idmap, diagonal) {
   } else {
     sort(as.character(ids), method = "radix")
   }
-  names <- as.character(ids)
-  if (!missing(idmap)) {
-    if (!(is.data.frame(idmap) || is.matrix(idmap)) || ncol(idmap) != 2L) {
-      stop("idmap must be a matrix or data frame with 2 columns",
-           call. = FALSE)
-    }
-    map <- as.data.frame(idmap, stringsAsFactors = FALSE)
-    from <- map[[1L]]
-    to <- as.character(map[[2L]])
-    if (anyNA(from) || anyNA(to)) {
-      stop("No idmap entry may be missing", call. = FALSE)
-    }
-    if (anyDuplicated(from) > 0L) {
-      stop("No id may appear twice in idmap's first column", call. = FALSE)
-    }
-    if (anyDuplicated(to) > 0L) {
-      stop("No name may appear twice in idmap's second column",
-           call. = FALSE)
-    }
-    at <- match(ids, from)
-    if (anyNA(at)) {
-      stop("Ids not in idmap: ", .ibdListed(ids[is.na(at)]), ".",
-           call. = FALSE)
-    }
-    names <- to[at]
-  }
+  names <- if (missing(idmap)) as.character(ids) else .ibdNames(ids, idmap)
 
-  n <- length(ids)
-  i <- match(id1, ids)
-  j <- match(id2, ids)
-  lo <- pmin(i, j)
-  hi <- pmax(i, j)
-  cell <- (as.double(hi) - 1.0) * n + lo
-  conflict <- unique(cell[x != x[match(cell, cell)]])
-  if (length(conflict) > 0L) {
-    k <- match(conflict, cell)
-    stop("Pairs given two different values: ",
-         .ibdListed(sprintf("(%s, %s)", ids[lo[k]], ids[hi[k]])), ".",
-         call. = FALSE)
-  }
-  first <- !duplicated(cell)
-  lo <- lo[first]
-  hi <- hi[first]
-  x <- as.double(x[first])
-  noDiagonal <- setdiff(seq_len(n), lo[lo == hi])
+  entries <- .ibdEntries(id1, id2, x, ids)
+  lo <- entries$lo
+  hi <- entries$hi
+  x <- entries$x
+  noDiagonal <- setdiff(seq_along(ids), lo[lo == hi])
   if (length(noDiagonal) > 0L) {
     if (missing(diagonal)) {
       stop("Ids with no diagonal value: ", .ibdListed(ids[noDiagonal]),
@@ -151,7 +113,61 @@ ibdMatrix <- function(id1, id2, x, idmap, diagonal) {
     hi <- c(hi, noDiagonal)
     x <- c(x, rep(as.double(diagonal), length(noDiagonal)))
   }
+  .ibdSparse(lo, hi, x, names)
+}
 
+## The names idmap gives the sorted ids, after checking idmap: 2 columns, no
+## NA, no id or name twice, and every id in its first column.
+.ibdNames <- function(ids, idmap) {
+  if (!(is.data.frame(idmap) || is.matrix(idmap)) || ncol(idmap) != 2L) {
+    stop("idmap must be a matrix or data frame with 2 columns",
+         call. = FALSE)
+  }
+  map <- as.data.frame(idmap, stringsAsFactors = FALSE)
+  from <- map[[1L]]
+  to <- as.character(map[[2L]])
+  if (anyNA(from) || anyNA(to)) {
+    stop("No idmap entry may be missing", call. = FALSE)
+  }
+  if (anyDuplicated(from) > 0L) {
+    stop("No id may appear twice in idmap's first column", call. = FALSE)
+  }
+  if (anyDuplicated(to) > 0L) {
+    stop("No name may appear twice in idmap's second column",
+         call. = FALSE)
+  }
+  at <- match(ids, from)
+  if (anyNA(at)) {
+    stop("Ids not in idmap: ", .ibdListed(ids[is.na(at)]), ".",
+         call. = FALSE)
+  }
+  to[at]
+}
+
+## The pairs as entries of the upper triangle: lo and hi, the positions of
+## each pair's ids in ids (lo <= hi), and x, its value, once per pair. Stops
+## when a pair is given two different values.
+.ibdEntries <- function(id1, id2, x, ids) {
+  i <- match(id1, ids)
+  j <- match(id2, ids)
+  lo <- pmin(i, j)
+  hi <- pmax(i, j)
+  cell <- (as.double(hi) - 1.0) * length(ids) + lo
+  conflict <- unique(cell[x != x[match(cell, cell)]])
+  if (length(conflict) > 0L) {
+    k <- match(conflict, cell)
+    stop("Pairs given two different values: ",
+         .ibdListed(sprintf("(%s, %s)", ids[lo[k]], ids[hi[k]])), ".",
+         call. = FALSE)
+  }
+  first <- !duplicated(cell)
+  list(lo = lo[first], hi = hi[first], x = as.double(x[first]))
+}
+
+## The dsCMatrix holding the entries (positions lo <= hi, values x) in its
+## upper triangle, its rows and columns named names; a 0 is not stored.
+.ibdSparse <- function(lo, hi, x, names) {
+  n <- length(names)
   stored <- x != 0.0
   lo <- lo[stored]
   hi <- hi[stored]
