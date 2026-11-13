@@ -3,6 +3,7 @@
 export(addBackSecondParents)
 export(addParents)
 export(bitSize)
+export(checkPedigree)
 export(checkTwinRelations)
 export(correctParentSex)
 export(drawPedigreeDiagram)
