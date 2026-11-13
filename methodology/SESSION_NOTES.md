@@ -9,71 +9,80 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** **Plan Phase 13: `checkPedigree()` and `findUnrelated()`** (`methodology/BACKLOG.md:11`; plan row
-`docs/planning/standalone-pedigree-package-plan.md:502`; contract `docs/planning/pedkindraw-api-contract.md:171-172`).
-New code (R9: a short pedigree checker and a short unrelated-set finder). The orient picker asks Mark: Phase 13, or
-the other READY item, **tests for full coverage** (`methodology/BACKLOG.md:26`: 44 of 2,006 statements the tests
-miss, the same 44 since S14), or hold.
-**Status:** READY. Phase 12 DONE (S15 `familyCheck()`, R43-R45; S16 `ibdMatrix()`, R46-R48, 19 tests); suite 572
-tests, 0 failed, WARN 0, SKIP 0, 3120 expectations; `R CMD check --as-cran` R16's NOTE only; drift tool 90
-functions, 0 differ; pushed through `b8ade6e` (CI run `43480861654`: 5/5 `Status: OK` at the first attempt); S16's close-out commits are not
-pushed.
-**Plan:** `docs/planning/standalone-pedigree-package-plan.md:37` (Next), `:502` (row 13), `:110` (R9), `:116`
-(R14), `:148-150` (R46-R48, the latest rulings' pattern); contract `:167-183` (section 4.4: both rows, the nine
-checks, the size and time targets; its shapes and errors are proposals settled before RED); the comparison
-`docs/research/pedigree-package-comparison-2026-11.md:297` (section 4, what each package accepts and refuses),
-`:392` (5.4, unrelated sets), `:424` (7, timing).
-**Session boundary:** one session. Phase 13 has two functions; the plan gives no session count. A scope picker
-decides one or both this session (Phase 12's two took two sessions).
+**Task:** **Plan Phase 13's second session: `findUnrelated()`** (`methodology/BACKLOG.md:11`; plan row
+`docs/planning/standalone-pedigree-package-plan.md:505`, R49: Phase 13 takes two sessions; contract
+`docs/planning/pedkindraw-api-contract.md:173`, `:187`). New code (R9): the genotyped animals with kinship 0
+between every two, to which no genotyped animal can be added, the same answer every time. The orient picker asks
+Mark: this, or the other READY item, **tests for full coverage** (`methodology/BACKLOG.md:34`: 44 of 2,089
+statements missed, the same 44 since S14), or hold.
+**Status:** READY. Phase 13's first session DONE (S17: `checkPedigree()`, R49-R51, 23 tests); suite 595 tests, 0
+failed, WARN 0, SKIP 0, 3682 expectations; `R CMD check --as-cran` R16's NOTE only; drift tool 90 functions, 0
+differ; pushed through `60a87a7` (CI run `43507284539`: 5/5 `Status: OK` at the first attempt); S17's close-out
+commits are not pushed.
+**Plan:** `docs/planning/standalone-pedigree-package-plan.md:37` (Next), `:505` (row 13), `:110` (R9), `:151-153`
+(R49-R51, the latest rulings' pattern); the comparison `docs/research/pedigree-package-comparison-2026-11.md:392`
+(5.4: kinship2's and Pedixplorer's sets 4, 2 and 44, valid on every seed), `:424` (7: kinship2 6.53 s at 10,000,
+Pedixplorer 15.4 s, both out of memory at 30,000).
+**Session boundary:** one session, one function.
 **Priority:** HIGH.
 
 ### What You Must Do
 1. Orient, and run the drift tool (`Rscript tools/compareWithNprcgenekeepr.R ../nprcgenekeepr`).
-2. Read contract section 4.4 in full and the comparison's sections 4, 5.4 and 7 (the checker's nine checks come from
-   section 4's case list; `findUnrelated()` must match kinship2's and Pedixplorer's set sizes 4, 2 and 44 and finish
-   10,000 animals). Read kinship2's help for `pedigree.unrelated` (help only, R14; `tools::Rd2txt(tools::Rd_db(
-   "kinship2")[["pedigree.unrelated.Rd"]])`), then run it on many cases, each under a time limit (Learning 19).
-3. A scope picker (which function this session), then a measured pre-RED picker (shapes, errors, checks; Learnings
-   17-19). Record the picks as rulings R49 on, in their own commit before RED.
-4. Draft the tests in the scratchpad and run them against a scratch prototype in a scratch tree before RED (Gotchas).
-   RED, GREEN, REFACTOR; checks; push; CI; "Done 13" (or the first session's record) in the plan, contract 4.4,
-   ROADMAP, BACKLOG.
+2. Reproduce the comparison's three cases with kinship2 before anything else: `sample.ped`'s families 1 and 2 with
+   their own `avail` (sizes 4 and 2), and `rhesus375` with `avail <- as.integer(stats::runif(nrow(p)) < 0.3)` right
+   after `set.seed(42L)` (size 44). How the comparison built them, and its "maximal" test (no available animal
+   outside the set has kinship 0 with all of it): nprcgenekeepr `tools/pedigreeComparison/runAgreement.R:316`
+   (`compareUnrelated()`) and `:468` (the calls). Its `rhesus375` is
+   `tools/pedigreeComparison/data/rhesus375.csv` in the nprcgenekeepr clone, read with its `readPed()`; check
+   its row order against pedkindraw's fixture (`tests/testthat/fixtures/obfuscated_rhesus_mhc_ped.csv`) before
+   using the seed on the fixture, since the seed picks by row.
+3. Read kinship2's help for `pedigree.unrelated` (S17 read it: a greedy method on the kinship matrix, the row with
+   the most zeros first, ties at random; "running this function multiple times can return different sets"). Run it
+   on many cases, each under a time limit (Learning 19), and record set sizes per seed.
+4. A measured pre-RED picker (Learning 17): what to do with a pedigree `checkPedigree()` faults; how relatedness is
+   computed (the copied `kinship()`, dense, or shared ancestors: check the equivalence on every fixture first,
+   BACKLOG item's note); the tie rule (byte order, C16); the time target. Rulings R52 on, in their own commit.
+5. Draft tests in the scratchpad, run them against a prototype in a scratch tree (Gotchas), RED, GREEN, REFACTOR;
+   checks; push; CI; "Done 13" in the plan (Phase 13 DONE), contract 4.4, ROADMAP, BACKLOG.
 
 ### Gotchas
-- **Pedixplorer is not installed** in pedkindraw's renv (kinship2 1.9.6.2 is). Contract 4.4's sizes 4, 2 and 44 are
-  the comparison's measurements. Installing it (Bioconductor) would be a renv change under Learning 3, so it is a
-  picker choice, not a step.
-- **A measured claim covers only the cases measured** (Learning 19, S16). S15's "kinship2's `ibdMatrix()` never
-  returns without a diagonal" was true of 7 of 40 random inputs only; my own rule for kinship2's row order, read
-  from 3 printed cases, held in 172 of 186 and R46 needed a correcting commit (`ebab5b9`). Check a rule on every
-  saved case before a ruling states it.
-- **`setTimeLimit(elapsed = 10, transient = TRUE)`** stops a kinship2 hang inside R (measured: the `ibdMatrix()`
-  hang stopped at 3 s), so a test calling kinship2 can carry the guard (`tests/testthat/helper-ibdMatrix.R:73`).
-- **Lint on test files measures nothing:** `.lintr` excludes `tests` (Learning 4, S16). Report `lint_package()`.
-- **Run a draft test file against a prototype in a scratch tree, not the scratchpad:** `git archive HEAD | tar -x -C
-  <tree>`, the prototype as a file in `<tree>/R/`, the drafts in `<tree>/tests/testthat/`, then `cd <tree>` and
-  `R_LIBS=<renv lib> R_LIBS_USER=<renv lib> NOT_CRAN=true Rscript --no-init-file -e
-  'pkgload::load_all("."); testthat::test_file(...)'`. The tree's `DESCRIPTION` gives edition 3 (Learning 10), and
-  `--no-init-file` keeps the tree's `.Rprofile` from starting renv there. S16's draft ran 19 tests, 373 expectations,
-  0 failed before RED.
-- **Save test results, do not read them through `tail`:** a suite run takes ~90 s, and one S16 run's summary was cut
-  off. `saveRDS(as.data.frame(testthat::test_local(...)), <file>)`, then read the file.
-- **zsh:** `rm -rf <dir>/*` on an empty folder fails ("no matches found") and stops the `&&` chain. S16 hit it
-  despite the note: use `find <dir> -type f -delete`.
-- **Times on this Mac:** full suite ~90 s; `covr::package_coverage(type = "tests")` ~2 min; `R CMD check --as-cran`
-  ~5 min, its tests 77 s; 200 kinship2 cases, one process each under `timeout 15`, 4 at a time (`xargs -P 4`), ~3
-  min. Run `R CMD check` from a scratch folder with `R_LIBS` and `R_LIBS_USER` set to the renv library
-  (`Rscript -e 'cat(renv::paths$library())'`).
-- **nprcgenekeepr's S1163 was mid-session during S16** (uncommitted edits to 3 of its test files, none copied here);
-  the drift tool reads committed code only.
+- **Check a detector against an independent slow version, not against what a generator meant to inject**
+  (Learning 20, S17): 17 cycle injections did nothing (a leaf has no descendant), and read as misses until a
+  brute-force check agreed 1,200 of 1,200. For `findUnrelated()`, the slow version is the definition itself:
+  every pair in the set has kinship 0, and no genotyped animal outside it has kinship 0 with every member.
+- **Hand-derived expected values were wrong again** (S17: a male dam's detail lists all its offspring). Run the
+  drafts against the prototype before RED (Learning 18); S17's draft run caught it.
+- **kinship2's `pedigree()` refuses** one known parent, a parent with no row, a wrong-sex or unknown-sex parent (an
+  `H` parent included), duplicate or blank ids, and `"0"` codes with character ids (its `missid` is `""`), so
+  `pedigree.unrelated()` needs a pedigree kinship2 accepts; `checkPedigree()` (R50) names each of these. Its sex
+  codes are 1 male, 2 female, 3 unknown.
+- **Pedixplorer is not installed** in pedkindraw's renv (kinship2 1.9.6.2 is). Its 4, 2 and 44 are the comparison's
+  measurements; installing it (Bioconductor) is a renv change under Learning 3, so a picker choice.
+- **`setTimeLimit(elapsed = 10, transient = TRUE)`** guards an in-process kinship2 call
+  (`tests/testthat/helper-checkPedigree.R:214`, `helper-ibdMatrix.R:73`). S17 ran kinship2's `pedigree()` in
+  process under it, not one process per case (it is plain R and returned on every case); `pedigree.unrelated()`
+  computes a kinship matrix, so time it per case before choosing.
+- **The scratch-tree recipe** worked first time: `git archive HEAD | tar -x -C <tree>`, the prototype as
+  `<tree>/R/<name>.R`, the drafts in `<tree>/tests/testthat/`, then `cd <tree>` and `R_LIBS=<lib> R_LIBS_USER=<lib>
+  NOT_CRAN=true Rscript --no-init-file -e 'pkgload::load_all("."); testthat::test_file(...)'`, `<lib>` from
+  `Rscript -e 'cat(renv::paths$library())'` in the project. Clear the tree with `find <tree> -type f -delete`
+  (zsh's empty glob).
+- **Save suite results to an rds** (`saveRDS(as.data.frame(testthat::test_local(...)), <file>)`), then read it.
+- **Lint on test files measures nothing** (`.lintr` excludes `tests`, Learning 4); report `lint_package()`.
+- **Times on this Mac (S17):** suite ~90 s; coverage ~2 min; `R CMD check --as-cran` ~5 min, its tests 83 s, run
+  from a scratch folder with `R_LIBS` and `R_LIBS_USER` set to the renv library; CI ~8 min.
+- **nprcgenekeepr's S1164 was mid-session during S17** (one uncommitted test file, not copied here).
 
 ### Key files
-- `methodology/BACKLOG.md:11` (the Phase 13 item), `:26` (coverage); `docs/planning/pedkindraw-api-contract.md:167-183`.
-- `R/ibdMatrix.R:64` (`ibdMatrix()`), `:121` (`.ibdNames()`), `:150` (`.ibdEntries()`), `:169` (`.ibdSparse()`),
-  `:185` (`.ibdListed()`): S16's pattern for a function with plain stops and internal steps.
-- `tests/testthat/helper-ibdMatrix.R:27` (`ibdRandomCase()`, seeded cases), `:73` (`kinship2IbdOnCase()`, the time
-  limit); `tests/testthat/test_ibdMatrix.R:262`, `:284` (the two kinship2 comparisons, with floors).
-- `CLAUDE.md:159` (Learning 4), `:174` (Learning 19).
+- `methodology/BACKLOG.md:11` (the `findUnrelated()` item), `:34` (coverage).
+- `docs/planning/pedkindraw-api-contract.md:173` (`findUnrelated()`'s row), `:187` (its sizes and time target).
+- `R/checkPedigree.R:79` (`checkPedigree()`), `:139` (`.checkNames`), `:147` (`.checkSexRows()`), `:168`
+  (`.checkRows()`), `:181` (`.checkListed()`), `:191` (`.checkOffspring()`), `:210` (`.checkCycles()`, whose
+  ancestor walk is a pattern for shared-ancestor relatedness).
+- `tests/testthat/helper-checkPedigree.R:121` (`checkPedigreeRandomCase()`, seeded cases with `withr::with_seed()`),
+  `:139` (`checkPedigreeSlow()`), `:214` (`kinship2CheckAnswer()`); `tests/testthat/test_checkPedigree.R:270`,
+  `:279` (the slow-checker and kinship2 comparisons, the second with its floor).
+- `CLAUDE.md:174` (Learning 19), `:175` (Learning 20).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -87,53 +96,49 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S15's entries were removed in S3-S16 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S16's entries were removed in S3-S17 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### Session 16 Handoff Evaluation (by Session 17)
+**Score: 9/10.**
+- **What helped:** the ordered steps (drift tool; contract 4.4 and the comparison's sections 4, 5.4 and 7; kinship2's
+  help only; a scope picker, then a measured pre-RED picker; rulings from R49), which became this session's
+  sequence; the scratch-tree recipe, which ran the drafts first time; saving suite results to an rds; the zsh glob
+  warning (no trap this time); the `setTimeLimit()` guard, reused in `kinship2CheckAnswer()`; times that held
+  (suite ~90 s, `R CMD check` ~5 min); every cited line number right at Orient (BACKLOG `:11`, `:26`; contract
+  `:167`; plan `:37`, `:502`, `:110`, `:116`, `:148-150`; `R/ibdMatrix.R:64`, `:121`, `:150`, `:169`, `:185`;
+  `helper-ibdMatrix.R:27`, `:73`; `CLAUDE.md:159`, `:174`).
+- **What was missing:** that kinship2 has no checker and its `pedigree()` help documents none of its refusals, so
+  the checks had to be measured; where the comparison's three unrelated-set cases come from (`sample.ped`'s two
+  families with their own `avail`, `rhesus375` after `set.seed(42L)`), found in nprcgenekeepr's `runAgreement.R`
+  and now in the BACKLOG item for S18.
+- **What was wrong:** nothing found wrong.
+- **ROI:** high; no rediscovery of any recipe it gave.
+
 ### What Session 17 Did
-**Deliverable:** plan Phase 13: `checkPedigree()` and `findUnrelated()`, new code test-first (R9); contract 4.4 and
-the comparison read, kinship2's `pedigree.unrelated` help read (R14) and run on many cases under a time limit
-(Learning 19), then a scope picker (one function or both) and a measured pre-RED picker, rulings R49 on, RED, GREEN,
-REFACTOR, checks, push, CI (IN PROGRESS)
-**Started:** 2026-11-13 13:23 CST · **Model:** Claude Opus 5.5 · Mark picked "Phase 13" at the orient picker.
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
-
-### Session 15 Handoff Evaluation (by Session 16)
-**Score: 8/10.**
-- **What helped:** the gotcha list of kinship2's `ibdMatrix()` behaviours, almost all of which I reproduced
-  (class, `uplo`, pairs either way round, the 3-column table, `idmap` refused in every form, `diagonal` keeping a
-  given value, recycling, the first of two values kept, ids 1 and 3 giving 3 x 3, the warnings and stops); the
-  instruction to re-run them under `timeout 15`, which is how the wrong one was found; `timeout`'s path; the
-  `helper-familyCheck.R` pattern; the floors with `expect_gte()`; the out-of-folder `R CMD check` recipe and times;
-  every cited line number right (BACKLOG `:11`, `:27`; plan `:497`; contract `:159`; `R/familyCheck.R:72`).
-- **What was missing:** that `.lintr` excludes `tests`, so its own RED claim "lint 0 on both files" measured nothing.
-- **What was wrong:** "it never returns when an id's diagonal entry is missing": on 40 random such inputs it
-  returned a 0 diagonal in 33 and hung in 7 (`ib(1, 2, 0.5)` returns at once). "Character by the locale (`a A b
-  B`)": kinship2's order is not a plain sort; it differs from sorted order in 66 of 186 random cases.
-- **ROI:** high; the re-measuring step it asked for turned its two wrong claims into findings.
-
-### What Session 16 Did
-**Deliverable:** plan Phase 12, second session, `ibdMatrix()`, new code test-first; it completes Phase 12; push, CI
-(DONE).
-**Started:** 2026-11-13 10:47 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "ibdMatrix()" (orient); "Ids given,
-sorted", "Stop, name the ids", "Stop on each", "Tests + kinship2 check" (pre-RED, R46-R48); the PRE-RED, RED, GREEN
-and REFACTOR gates "Yes".
-**Commits:** claim `7c45eb5`; rulings `79f999e`; RED `693ba36`; R46 corrected `ebab5b9`; GREEN `6f00abf`; REFACTOR
-`b8ade6e`; pushed (`b314273..b8ade6e`, 8 commits with S15's two close-out commits); close-out commits not pushed.
-**Verified:** before the picker, kinship2's `ibdMatrix()` on 64 typed and 200 seeded random cases, one process each
-under `timeout 15`: it returned in all 160 cases with every diagonal value or `diagonal` given except 7 internal
-stops (numeric ids), and without `diagonal` returned a 0 diagonal in 33 of 40 and hung in 7; a scratch prototype
-equal to kinship2 at every id in 186 of 186 cases where it returns; 0.11 s on 5,000 ids. The 19-test draft run
-against the prototype in a scratch tree (373 expectations, 0 failed); RED 572 tests, 19 errors, each first on the
-missing function, WARN 0, SKIP 0; GREEN and REFACTOR: suite 572, 0 failed, WARN 0, SKIP 0, 3120 expectations;
-`lint_package()` 0; roxygen idempotent; drift 90, 0 differ; `R CMD check --as-cran` 1 NOTE (R16's), PASS 3113 SKIP
-3, three times; coverage 97.46%, `R/ibdMatrix.R` 77 of 77; `quality_ratchet` 4/4; CI `43480861654` 5/5 `Status: OK`, first attempt (macOS PASS 3120; Windows 3119, SKIP 1; Ubuntu 3109, SKIP 2).
+**Deliverable:** plan Phase 13's first session, `checkPedigree()`, new code test-first; push, CI (DONE).
+**Started:** 2026-11-13 13:23 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Phase 13" (orient);
+"checkPedigree() now" (scope, R49); "One row per problem id", "Add two checks", "\"0\", blank and \"NA\"", "Tests,
+slow version, kinship2" (pre-RED, R50-R51); the PRE-RED, RED, GREEN and REFACTOR gates "Yes".
+**Commits:** claim `ac644bf`; rulings `fc1f244`; RED `5f399d9`; GREEN `300107d`; REFACTOR `60a87a7`; pushed
+(`b8ade6e..60a87a7`, 7 commits with S16's two close-out commits); close-out commits not pushed.
+**Verified:** before the pickers, a scratch prototype on 300 seeded random pedigrees: equal to a slow checker in
+300 of 300 (check, id, order), every check in at least 10 cases; kinship2 1.9.6.2's `pedigree()` in agreement on
+224 of 224 compared (154 refusals, 70 acceptances; 76 set aside: one known parent, an `H` parent or an odd sex
+code); its refusals tabulated on 195 single-problem cases; 0.17 s on 100,000 animals. The 23-test draft run
+against the prototype in a scratch tree (562 expectations, 0 failed after one hand value corrected); RED 595 tests,
+23 errors, each first on the missing function, WARN 0, SKIP 0; GREEN and REFACTOR: suite 595, 0 failed, WARN 0,
+SKIP 0, 3682 expectations; `lint_package()` 0; roxygen idempotent; drift 90, 0 differ; `R CMD check --as-cran` 1
+NOTE (R16's), PASS 3675 SKIP 3, twice; coverage 97.57%, `R/checkPedigree.R` 83 of 83; 0.14 s on 100,000 animals;
+CI `43507284539` 5/5 `Status: OK`, first attempt (macOS PASS 3682; Windows 3681, SKIP 1; Ubuntu 3671, SKIP 2).
 **Self-assessment: 8/10.**
-+ Every picker option stated measured counts; re-measuring the handoff's claims found one wrong (the hang), and
-  checking my own inferred order rule on all 186 cases found it wrong before the help page stated it (R46 corrected
-  in its own commit); every RED value run against a prototype before RED; RED clean; the new file fully covered.
-- Slips: the zsh glob trap the handoff warned of (one wasted run); my case generator first made an empty case,
-  which crashed the comparison; a suite summary cut off by `tail` (a second 86 s run); the order rule went into R46
-  before I had checked it on every case; 4 lints in GREEN's first draft; REFACTOR's estimate +12 lines against +16.
-**Ledger:** `CHANGELOG.md` S16 entries (the session and the push).
++ Every picker stated measured counts (300 cases, 224 kinship2 comparisons, 1,200 brute-force checks); the apparent
+  misses were checked against an independent slow version before being believed, and that version became a test;
+  a wrong hand-derived value caught before RED; RED clean; GREEN's first draft had 2 lints only; the new file fully
+  covered; R50 written from measured behaviour, H and one-parent differences from kinship2 stated as measured.
+- Slips: the first recall tally counted no-op injections as misses (one extra run to disprove); a hand-derived
+  value wrong again (Learning 18); three formatting runs to read kinship2's message table; kinship2 run in process
+  under `setTimeLimit()` rather than one process per case (it returned on every case, but Learning 19 asks for
+  processes); the first `R CMD check` run set `_R_CHECK_FORCE_SUGGESTS_=false` (the rerun without it gave the same
+  result).
+**Ledger:** `CHANGELOG.md` S17 entries (the session and the push).

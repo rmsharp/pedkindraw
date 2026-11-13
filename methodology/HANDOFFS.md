@@ -196,16 +196,16 @@ manifest existed are not re-judged.
 ```handoff
 session: S17
 date: 2026-11-13
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 13: checkPedigree() and findUnrelated(), new code test-first (R9); contract 4.4 and the comparison read, kinship2's pedigree.unrelated help read (R14) and run on many cases under a time limit, a scope picker and a measured pre-RED picker, rulings R49 on, RED, GREEN, REFACTOR, checks, push, CI
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 13 item), docs/planning/pedkindraw-api-contract.md:171 (its interface)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 13's first session is DONE (S17, R49-R51): checkPedigree() exported, pedkindraw's own new code (R9), eleven checks, one row per problem id, never repairs; 23 tests; CI 5/5 green at the first attempt; next is Phase 13's second session, findUnrelated() (the orient picker also offers the coverage item)
+what_was_done: claim ac644bf; rulings R49-R51 fc1f244 (contract 4.4 updated: two checks added, missingIds and sexCodes; codes "0", "NA", blank); RED 5f399d9 (test_checkPedigree.R, 23 tests, and helper-checkPedigree.R with the slow checker; each test failing first on the missing function); GREEN 300107d (R/checkPedigree.R: checkPedigree() and .checkRows(), .checkSorted(), .checkListed(), .checkOffspring(), .checkCycles()); REFACTOR 60a87a7 (.checkNames, .checkSexRows(); behaviour unchanged); pushed b8ade6e..60a87a7, CI 43507284539 5/5; close-out ee5b8b4 (plan Done 13, ROADMAP, BACKLOG, CLAUDE.md Learning 20) and this commit
+next_steps: Orient and run the drift tool; reproduce the comparison's three unrelated-set cases with kinship2 first (sample.ped's families 1 and 2 with their own avail, sizes 4 and 2; rhesus375 with 30% available after set.seed(42L), size 44; nprcgenekeepr tools/pedigreeComparison/runAgreement.R:316 and :468; check rhesus375.csv's row order against pedkindraw's fixture before reusing the seed); read kinship2's pedigree.unrelated help (R14) and run it on many cases under a time limit (Learning 19); a measured pre-RED picker (a faulty pedigree, how relatedness is computed, the tie rule, the time target); rulings R52 on; drafts run against a prototype in a scratch tree; RED, GREEN, REFACTOR; checks; push; CI; Phase 13 DONE
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (findUnrelated() item), :34 (coverage), docs/planning/pedkindraw-api-contract.md:173, :187 (findUnrelated()), docs/planning/standalone-pedigree-package-plan.md:505 (row 13), :151-153 (R49-R51), docs/research/pedigree-package-comparison-2026-11.md:392, :424, R/checkPedigree.R:79 (checkPedigree), :210 (.checkCycles), tests/testthat/helper-checkPedigree.R:121, :139, :214, CLAUDE.md:175 (Learning 20)
+gotchas: measure a checker against an independent slow version, not against what a generator meant to inject (Learning 20: 17 cycle injections changed nothing); hand-derived expected values were wrong again, so run drafts against a prototype before RED; kinship2's pedigree() refuses one known parent, rowless and wrong- or unknown-sex parents (H included), duplicate or blank ids and "0" codes, so pedigree.unrelated() needs input it accepts; Pedixplorer is not installed; setTimeLimit() guards in-process kinship2 calls, but time pedigree.unrelated() per case first; the scratch-tree recipe; save suite results to an rds; lint on tests measures nothing; nprcgenekeepr S1164 mid-session
+runtime_smoke: the checkPedigree() help examples run under R CMD check --as-cran (Status 1 NOTE, R16's; PASS 3675 SKIP 3; GREEN and REFACTOR); tests 595 FAIL 0 WARN 0 SKIP 0, 3682 expectations; lint_package 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; coverage 97.57%, R/checkPedigree.R 83 of 83; 0.14 s on 100,000 animals; CI 43507284539 5/5 Status OK at the first attempt (macOS PASS 3682; Windows 3681 SKIP 1; Ubuntu 3671 SKIP 2); quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-13 · [BL-Phase 13] S17: plan Phase 13's first session, checkPedigree()"
 commit: pending
 ```
 
