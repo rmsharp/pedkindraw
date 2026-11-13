@@ -196,18 +196,19 @@ manifest existed are not re-judged.
 ```handoff
 session: S15
 date: 2026-11-12
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 12, first session: familyCheck() and ibdMatrix() from kinship2's documentation (R14); kinship2's help read and its results measured, a pre-RED picker (which function this session, shapes, errors, checks), rulings, RED, GREEN, REFACTOR, checks, push, CI (IN PROGRESS)
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 12 item), docs/planning/pedkindraw-api-contract.md:158 (the two interfaces)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 12's first session is DONE (S15, R43-R45): familyCheck() exported, pedkindraw's own code written from kinship2's help pages and measured results, 16 tests, CI 5/5 green at the first attempt; next is Phase 12's second session, ibdMatrix(), which finishes Phase 12
+what_was_done: claim c2c3f63; rulings R43-R45 8baf3ae (contract 4.3 updated); RED d3dd469 (test_familyCheck.R, 16 tests, and helper-familyCheck.R; each test failing first on the missing function); GREEN d40fadc (R/familyCheck.R: familyCheck() and .familyTrees()); REFACTOR b314273 (.familyJoinTable()); pushed dff6509..b314273 (7 commits); close-out: plan status, row 12 and Done 12 (familyCheck()), ROADMAP, BACKLOG (the ibdMatrix() item with S15's kinship2 measurements), CLAUDE.md Learning 19
+next_steps: Orient and run the drift tool; read ?kinship2::ibdMatrix (help only, R14); re-run a few of S15's ibdMatrix() measurements (SESSION_NOTES Gotchas), each case under timeout 15 (Learning 19); a measured pre-RED picker on ibdMatrix()'s shape (kinship2 returns a dsCMatrix), idmap (kinship2's is unusable, so its help defines it), id order (C16) and errors, including what replaces kinship2's failures; rulings R46 on in their own commit; RED with every value computed first; GREEN R/ibdMatrix.R; checks, push, CI; Done 12
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (ibdMatrix item), :27 (coverage), docs/planning/pedkindraw-api-contract.md:159 (ibdMatrix row), docs/planning/standalone-pedigree-package-plan.md:144-146 (R43-R45), R/familyCheck.R:72 (familyCheck), :141 (.familyTrees), tests/testthat/helper-familyCheck.R:104 (kinship2FamilyCheck), tests/testthat/test_familyCheck.R:199 (kinship2 comparisons), CLAUDE.md:174 (Learning 19)
+gotchas: kinship2 1.9.6.2's ibdMatrix() refuses every idmap, never returns when an id's diagonal is missing and diagonal is not given (run each case under timeout), recycles unequal lengths with only warnings, keeps one of two conflicting values silently, and adds an empty row for a gap in numeric ids; it returns a dsCMatrix, upper triangle, zeros dropped, ids sorted by value or by the locale; kinship2's numbers can differ from its help's words (familycheck()'s join: once per shared tree); kinship2 comparisons assert a floor on cases compared, not an exact count
+runtime_smoke: the familyCheck() help example runs under R CMD check --as-cran (Status 1 NOTE, R16's; PASS 2740 SKIP 3; GREEN and REFACTOR); tests 553 FAIL 0 WARN 0 SKIP 0, 2747 expectations; lint 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; coverage 97.38%, R/familyCheck.R 57 of 57; CI 43461775633 5/5 Status OK at the first attempt (macOS PASS 2747; Windows 2746 SKIP 1; Ubuntu 2736 SKIP 2); quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-13 · [BL-Phase 12] S15: plan Phase 12's first session, familyCheck(); written from kinship2's documentation and measured results"
 commit: pending
 ```
+Phase 12's first session did what its picker settled: familyCheck() only, ibdMatrix() next. Each of Mark's choices came with its effect measured first, by running kinship2's familycheck() and ibdMatrix() on typed, fixture and random cases and a scratch prototype against them. The measurement found kinship2's join count disagreeing with its own help page; that became a picker question rather than a silent pick. It also found kinship2 stopping in about half the cases, and its ibdMatrix() unusable in several ways, all recorded for the next session. The costs were small and caught before any commit: a scratch run without a time limit stalled, the prototype's first loop was wrong, and one test value and one lint needed fixing. Model: Claude Opus 5.5, one tier.
 
 ```handoff
 session: S14

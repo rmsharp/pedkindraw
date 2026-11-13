@@ -15,6 +15,17 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-13 · [BL-Phase 12] S15 push: `master` to GitHub at `b314273` (7 commits, S14's two close-out commits through S15's REFACTOR), CI green on five jobs at the first attempt
+- **Change:** `git push origin master` (`dff6509..b314273`); CI run `43461775633`: 5/5 `Status: OK`, attempt 1; `FAIL 0 | WARN 0` on each: macOS PASS 2747 SKIP 0, Windows PASS 2746 SKIP 1, Ubuntu devel, release and oldrel-1 PASS 2736 SKIP 2 (each 294 more than S14's runs: the 16 new tests, kinship2 comparisons included).
+- **Commit/PR:** none (push); S15's close-out commit after it is not pushed · **Session:** S15 · **Verified:** `gh run watch --exit-status` 0; each job's conclusion with `gh run view --json`; each `Status:` and test summary line read from `gh run view --log`.
+- **Model:** Claude Opus 5.5
+
+### 2026-11-13 · [BL-Phase 12] S15: plan Phase 12's first session, familyCheck(); written from kinship2's documentation and measured results
+- **Change:** `familyCheck()` exported (`R/familyCheck.R`, with internal `.familyTrees()` and `.familyJoinTable()`), pedkindraw's own code written from kinship2's help pages for `familycheck()` and `makefamid()` and their measured results, not their source (R14); 16 tests in `tests/testthat/test_familyCheck.R` and `helper-familyCheck.R`. Rulings R43-R45 (Mark's picks: "familyCheck() now", "kinship2's numbers", "Plain stops, no kinship2 failures", "Keep it", "Tests + kinship2 check"); contract 4.3's `familyCheck()` row. Close-out: the plan's status block, row 12 and "Done 12 (`familyCheck()`)"; ROADMAP; BACKLOG (the Phase 12 item now `ibdMatrix()` only, with S15's measurements of kinship2's `ibdMatrix()`; the coverage item re-measured); `CLAUDE.md` Learning 19.
+- **Commit/PR:** `c2c3f63` (claim), `8baf3ae` (R43-R45), RED `d3dd469`, GREEN `d40fadc`, REFACTOR `b314273`, close-out `a478c70` and this entry's commit. Pushed through `b314273` (the entry above).
+- **Session:** S15 · **Verified:** before the pickers, a scratch prototype equal to `kinship2::familycheck()` in 86 of 86 fixture and 188 of 188 random cases where kinship2 returns (kinship2 stopped in all 227 of 463 cases whose joins lie in one tree, none of the other 236); RED 553 tests, 16 errors, each first on the missing function, WARN 0, SKIP 0; suite 553, 0 failed, WARN 0, SKIP 0, 2747 expectations; lint 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; `R CMD check --as-cran` Status 1 NOTE (R16's), PASS 2740 SKIP 3, on GREEN and on REFACTOR; coverage 97.38%, `R/familyCheck.R` 57 of 57; `quality_ratchet` 4/4.
+- **Model:** Claude Opus 5.5
+
 ### 2026-11-12 · [ad hoc] S15 claim (in progress): plan Phase 12, first session: `familyCheck()` and `ibdMatrix()` from kinship2's documentation (R14); kinship2's help read and its results measured, a pre-RED picker (which function this session, shapes, errors, checks), rulings, RED, GREEN, REFACTOR, checks, push, CI. Mark picked "Phase 12, first session" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `9b78bae` is HEAD; S14's receipt complete, its ratchet results `08889eff3b69` match the results file); drift tool 90 functions, 0 differ.
 
 ### 2026-11-12 · [ad hoc] S14 decision: `pedkindraw.Rproj` stays untracked (Mark's orient pick, "Leave it untracked")
