@@ -151,16 +151,17 @@ errors listed; `shrinkPedigree()`'s ties go to the first id in byte order, whate
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
-| `bitSize(ped)` | pedigree | `2 * non-founders - founders` | stops naming missing columns | 11 |
-| `findUnavailable(ped, genotyped)` | pedigree, logical per row | ids that are not genotyped and have no genotyped descendant, plus unavailable founder couples and stray marry-ins | as `shrinkPedigree()` | 11 |
-| `findAvailNonInform(ped, genotyped, affected = NULL)` | as above | ids genotyped but uninformative (non-parents, not affected, both parents genotyped), with the cascade | as above | 11 |
-| `findAvailAffected(ped, genotyped, affected, affstatus)` | as above, `affstatus` `NA`, `FALSE` or `TRUE` | list `isTrimmed` and, when `TRUE`, `ped`, `removed`, `bitSize` for the one removal that leaves the smallest bit size | as above | 11 |
+| `bitSize(ped)` | pedigree | list `bitSize` (`2 * non-founders - founders`), `nFounder`, `nNonFounder`, as kinship2's (plan R41) | `shrinkPedigree()`'s pedigree checks, naming missing columns first | 11 |
+| `findUnavailable(ped, genotyped)` | pedigree, logical per row | character ids `shrinkPedigree()`'s first trim removes, in removal order: not genotyped with no genotyped descendant, plus unavailable founder couples and stray marry-ins (plan R40) | as `shrinkPedigree()` | 11 |
+| `findAvailNonInform(ped, genotyped, affected = NULL)` | as above | character ids its second trim removes, the first run inside: genotyped but uninformative (non-parents, not affected, both parents genotyped), with the cascade (plan R40) | as above | 11 |
+| `findAvailAffected(ped, genotyped, affected, affstatus)` | as above, `affstatus` `NA`, `FALSE` or `TRUE` | list `ped`, `idTrimmed`, `isTrimmed`, `bitSize` (kinship2's names, always all four) for the one removal among genotyped non-parents of that status that leaves the smallest bit size, ties to the first id in byte order; `isTrimmed` `FALSE`, `ped` unchanged, when none can go (plan R41) | as above, and an `affstatus` other than `NA`, `FALSE`, `TRUE` | 11 |
 | `familyCheck(famid, id, sire, dam, newfam)` | family ids to check, pedigree vectors, optional recomputed family ids | data frame per family: `famid`, `n`, `unrelated`, `split`, `join` (kinship2's documented columns) | stops on vectors of unequal length | 12 |
 | `ibdMatrix(id1, id2, x, idmap, diagonal)` | pairs and their IBD values from outside software, or one three-column table | symmetric sparse `Matrix` named by id | stops on a malformed table or `idmap`, and on ids not in `idmap` | 12 |
 
 The helpers take ids in a data frame, not kinship2 objects, and are written under R11 (section 3). Their exact
 return shapes, and the errors of every new function in sections 4.3-4.5, are Claude's proposals, settled in each
-phase's RED tests.
+phase's RED tests. Phase 11's were ruled before its RED (plan R40-R42, pedkindraw S14): the four give
+`shrinkPedigree()`'s answer for their step, calling its copied internals.
 
 ### 4.4 New exports, short checker and unrelated-set finder (R9)
 
