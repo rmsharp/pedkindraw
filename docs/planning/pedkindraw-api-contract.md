@@ -155,13 +155,14 @@ errors listed; `shrinkPedigree()`'s ties go to the first id in byte order, whate
 | `findUnavailable(ped, genotyped)` | pedigree, logical per row | character ids `shrinkPedigree()`'s first trim removes, in removal order: not genotyped with no genotyped descendant, plus unavailable founder couples and stray marry-ins (plan R40) | as `shrinkPedigree()` | 11 |
 | `findAvailNonInform(ped, genotyped, affected = NULL)` | as above | character ids its second trim removes, the first run inside: genotyped but uninformative (non-parents, not affected, both parents genotyped), with the cascade (plan R40) | as above | 11 |
 | `findAvailAffected(ped, genotyped, affected, affstatus)` | as above, `affstatus` `NA`, `FALSE` or `TRUE` | list `ped`, `idTrimmed`, `isTrimmed`, `bitSize` (kinship2's names, always all four) for the one removal among genotyped non-parents of that status that leaves the smallest bit size, ties to the first id in byte order; `isTrimmed` `FALSE`, `ped` unchanged, when none can go (plan R41) | as above, and an `affstatus` other than `NA`, `FALSE`, `TRUE` | 11 |
-| `familyCheck(famid, id, sire, dam, newfam)` | family ids to check, pedigree vectors, optional recomputed family ids | data frame per family: `famid`, `n`, `unrelated`, `split`, `join` (kinship2's documented columns) | stops on vectors of unequal length | 12 |
+| `familyCheck(famid, id, sire, dam, newfam)` | family ids to check, pedigree vectors (unknown parents `NA`), optional family-tree numbers (0 for an animal related to no one), as kinship2's `makefamid()` gives | data frame, a row per family id in sorted order (byte order for character, C16): `famid`, `n`, `unrelated`, `split`, `join` (kinship2's columns; `join` counts another family once per family tree the two share, as kinship2 returns); when any `join` is above 0, an attribute `join`: an integer matrix, joined family ids by tree number (plan R43, R44) | stops on vectors of unequal length, an `NA` family id, an `NA` or duplicate id, a `newfam` of the wrong length or with an `NA`; not on an animal that is its own ancestor (plan R44) | 12 |
 | `ibdMatrix(id1, id2, x, idmap, diagonal)` | pairs and their IBD values from outside software, or one three-column table | symmetric sparse `Matrix` named by id | stops on a malformed table or `idmap`, and on ids not in `idmap` | 12 |
 
 The helpers take ids in a data frame, not kinship2 objects, and are written under R11 (section 3). Their exact
 return shapes, and the errors of every new function in sections 4.3-4.5, are Claude's proposals, settled in each
 phase's RED tests. Phase 11's were ruled before its RED (plan R40-R42, pedkindraw S14): the four give
-`shrinkPedigree()`'s answer for their step, calling its copied internals.
+`shrinkPedigree()`'s answer for their step, calling its copied internals. `familyCheck()`'s were ruled before its
+RED (plan R43-R45, pedkindraw S15); `ibdMatrix()`'s are settled in the session that writes it.
 
 ### 4.4 New exports, short checker and unrelated-set finder (R9)
 
