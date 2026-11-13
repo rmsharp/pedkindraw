@@ -196,16 +196,16 @@ manifest existed are not re-judged.
 ```handoff
 session: S16
 date: 2026-11-13
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 12, second session: ibdMatrix() from kinship2's documentation (R14); kinship2's help read and S15's measurements re-run under a time limit, a pre-RED picker (shape, idmap, id order, errors, checks), rulings, RED, GREEN, REFACTOR, checks, push, CI; completes Phase 12 (IN PROGRESS)
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the ibdMatrix() item), docs/planning/pedkindraw-api-contract.md:159 (its interface)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
+status: complete
+self_score: 8
+predecessor_score: 8
+active_task: plan Phase 12 is DONE (S15 familyCheck(), S16 ibdMatrix(), R43-R48): ibdMatrix() exported, pedkindraw's own code written from kinship2's help page and measured results, 19 tests, CI 5/5 green at the first attempt; next is Phase 13, checkPedigree() and findUnrelated() (the orient picker also offers the coverage item)
+what_was_done: claim 7c45eb5; rulings R46-R48 79f999e (contract 4.3 updated); RED 693ba36 (test_ibdMatrix.R, 19 tests, and helper-ibdMatrix.R; each test failing first on the missing function); R46 corrected ebab5b9 (kinship2's row order: a rule read from 3 cases held in 172 of 186); GREEN 6f00abf (R/ibdMatrix.R: ibdMatrix() and .ibdListed()); REFACTOR b8ade6e (.ibdNames(), .ibdEntries(), .ibdSparse()); pushed b314273..b8ade6e (8 commits); close-out 79d6ec6: plan status, row 12 and Done 12 (ibdMatrix()), ROADMAP, BACKLOG (Phase 13 item; coverage re-measured), CLAUDE.md Learnings 4 and 19 extended
+next_steps: Orient and run the drift tool; read contract 4.4 and the comparison's sections 4, 5.4 and 7; read kinship2's pedigree.unrelated help (help only, R14) and run it on many cases under timeout (Learning 19); a scope picker (checkPedigree(), findUnrelated() or both this session), then a measured pre-RED picker on shapes, errors and checks (Pedixplorer is not installed: installing it is a choice); rulings R49 on in their own commit; draft the tests and run them against a scratch prototype in a scratch tree; RED, GREEN, REFACTOR; checks, push, CI; Done 13
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Phase 13 item), :26 (coverage), docs/planning/pedkindraw-api-contract.md:171-172 (Phase 13 rows), docs/planning/standalone-pedigree-package-plan.md:502 (row 13), :148-150 (R46-R48), docs/research/pedigree-package-comparison-2026-11.md:297, :392, :424, R/ibdMatrix.R:64 (ibdMatrix), tests/testthat/helper-ibdMatrix.R:73 (kinship2IbdOnCase, the time limit), CLAUDE.md:159 (Learning 4), :174 (Learning 19)
+gotchas: Pedixplorer is not installed in the renv; a measured claim covers only the cases measured (check a rule on every saved case before a ruling states it); setTimeLimit(elapsed = 10, transient = TRUE) stops a kinship2 hang in-process; .lintr excludes tests, so lint on a test file measures nothing; run test drafts against a prototype in a scratch tree (git archive, Rscript --no-init-file, R_LIBS) to get edition 3; save test results to an rds rather than reading them through tail; zsh's empty-glob rm stops an && chain (use find -delete)
+runtime_smoke: the ibdMatrix() help examples run under R CMD check --as-cran (Status 1 NOTE, R16's; PASS 3113 SKIP 3; GREEN and REFACTOR); tests 572 FAIL 0 WARN 0 SKIP 0, 3120 expectations; lint_package 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; coverage 97.46%, R/ibdMatrix.R 77 of 77; CI 43480861654 5/5 Status OK at the first attempt (macOS PASS 3120; Windows 3119 SKIP 1; Ubuntu 3109 SKIP 2); quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-13 · [BL-Phase 12] S16: plan Phase 12's second session, ibdMatrix(); Phase 12 DONE"
 commit: pending
 ```
 

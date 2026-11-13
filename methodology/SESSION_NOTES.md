@@ -9,75 +9,71 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** **Plan Phase 12, second session: `ibdMatrix()`** (`methodology/BACKLOG.md:11`; plan row
-`docs/planning/standalone-pedigree-package-plan.md:497`; contract `docs/planning/pedkindraw-api-contract.md:159`).
-New code written from kinship2's documentation, never its source (R11, R14). The orient picker asks Mark:
-`ibdMatrix()` (it finishes Phase 12), or the other READY item, **tests for full coverage**
-(`methodology/BACKLOG.md:27`: 44 of 1,929 statements the tests miss, the same 44 S14 listed by file and line), or hold.
-**Status:** READY. Phase 12's first session DONE (S15): `familyCheck()` (R43-R45), 16 tests; suite 553 tests,
-0 failed, WARN 0, SKIP 0; `R CMD check --as-cran` R16's NOTE only; drift tool 90 functions, 0 differ; pushed through
-`b314273` (CI run `43461775633`: 5/5 `Status: OK` at the first attempt); S15's close-out commit is not pushed.
-**Plan:** `docs/planning/standalone-pedigree-package-plan.md:36` (Next), `:497` (row 12), `:115` (R14),
-`:144-146` (R43-R45, `familyCheck()`'s rulings: the pattern for `ibdMatrix()`'s); contract `:159` (its row, a
-proposal), `:161-165` (shapes and errors are settled before RED).
-**Session boundary:** one session, `ibdMatrix()` only; it completes Phase 12 ("Done 12" in the plan).
+**Task:** **Plan Phase 13: `checkPedigree()` and `findUnrelated()`** (`methodology/BACKLOG.md:11`; plan row
+`docs/planning/standalone-pedigree-package-plan.md:502`; contract `docs/planning/pedkindraw-api-contract.md:171-172`).
+New code (R9: a short pedigree checker and a short unrelated-set finder). The orient picker asks Mark: Phase 13, or
+the other READY item, **tests for full coverage** (`methodology/BACKLOG.md:26`: 44 of 2,006 statements the tests
+miss, the same 44 since S14), or hold.
+**Status:** READY. Phase 12 DONE (S15 `familyCheck()`, R43-R45; S16 `ibdMatrix()`, R46-R48, 19 tests); suite 572
+tests, 0 failed, WARN 0, SKIP 0, 3120 expectations; `R CMD check --as-cran` R16's NOTE only; drift tool 90
+functions, 0 differ; pushed through `b8ade6e` (CI run `43480861654`: 5/5 `Status: OK` at the first attempt); S16's close-out commits are not
+pushed.
+**Plan:** `docs/planning/standalone-pedigree-package-plan.md:37` (Next), `:502` (row 13), `:110` (R9), `:116`
+(R14), `:148-150` (R46-R48, the latest rulings' pattern); contract `:167-183` (section 4.4: both rows, the nine
+checks, the size and time targets; its shapes and errors are proposals settled before RED); the comparison
+`docs/research/pedigree-package-comparison-2026-11.md:297` (section 4, what each package accepts and refuses),
+`:392` (5.4, unrelated sets), `:424` (7, timing).
+**Session boundary:** one session. Phase 13 has two functions; the plan gives no session count. A scope picker
+decides one or both this session (Phase 12's two took two sessions).
 **Priority:** HIGH.
 
 ### What You Must Do
-1. Orient, and run the drift tool (`Rscript tools/compareWithNprcgenekeepr.R ../nprcgenekeepr`); nprcgenekeepr's
-   S1162 (vignettes) committed during S15.
-2. Read `?kinship2::ibdMatrix` (help only, R14; print it with `tools::Rd2txt(tools::Rd_db("kinship2")[["ibdMatrix.Rd"]])`),
-   then re-run a few of the measurements under Gotchas to confirm them, each case in its own process under
-   `timeout 15` (Learning 19): one of them never returns.
-3. A pre-RED picker, measured first (Learnings 17-19): the return shape (kinship2 returns a `dsCMatrix`; the
-   contract says "symmetric sparse `Matrix` named by id"); how `idmap` works (kinship2's is unusable, so only its
-   help says what it should do: column 1 the ids in `id1`/`id2`, column 2 the names for the result); the order of the
-   ids (kinship2: numbers by value, character by the locale; C16 says byte order); and the errors, among them what to
-   do where kinship2 fails (a missing diagonal without `diagonal`, unequal lengths, conflicting values for one pair, a
-   gap in numeric ids, empty input, factor ids). Then the checks (R45's pattern). Record the picks as rulings R46 on,
-   in their own commit before RED.
-4. RED: compute every expected value with kinship2 (where it returns) or a scratch run before writing it
-   (Learning 18). GREEN: `R/ibdMatrix.R`. Checks: suite WARN 0, lint, roxygen, drift 0, `R CMD check --as-cran`,
-   coverage of the new file; push; CI; the plan's "Done 12" (row 12 DONE), contract 4.3, ROADMAP, BACKLOG.
+1. Orient, and run the drift tool (`Rscript tools/compareWithNprcgenekeepr.R ../nprcgenekeepr`).
+2. Read contract section 4.4 in full and the comparison's sections 4, 5.4 and 7 (the checker's nine checks come from
+   section 4's case list; `findUnrelated()` must match kinship2's and Pedixplorer's set sizes 4, 2 and 44 and finish
+   10,000 animals). Read kinship2's help for `pedigree.unrelated` (help only, R14; `tools::Rd2txt(tools::Rd_db(
+   "kinship2")[["pedigree.unrelated.Rd"]])`), then run it on many cases, each under a time limit (Learning 19).
+3. A scope picker (which function this session), then a measured pre-RED picker (shapes, errors, checks; Learnings
+   17-19). Record the picks as rulings R49 on, in their own commit before RED.
+4. Draft the tests in the scratchpad and run them against a scratch prototype in a scratch tree before RED (Gotchas).
+   RED, GREEN, REFACTOR; checks; push; CI; "Done 13" (or the first session's record) in the plan, contract 4.4,
+   ROADMAP, BACKLOG.
 
 ### Gotchas
-- **kinship2 1.9.6.2's `ibdMatrix()`, measured S15** (scratch runs; the scripts were in S15's scratchpad, not kept):
-  - It returns a `dsCMatrix`, `uplo` `"U"`, zero values dropped; a pair given either way round gives the same
-    matrix; ids sorted, numbers by value (9, 10), character by the locale (`a A b B`; `"10"` before `"9"`).
-  - A 3-column data frame or matrix as `id1` works; 2 columns stop ("Argument id1 is a matrix or dataframe  but does
-    not have 3 columns"); `id1` alone as a vector stops (`id2` missing).
-  - `idmap` is refused in every form tried: 2-column data frame, 2-column matrix, 1 or 3 columns ("idmap must have
-    2 columns"); a list ("missing value where TRUE/FALSE needed"). Nothing to compare `idmap` against.
-  - An id with no diagonal entry and no `diagonal`: it never returns (killed at 15 s; the first run stalled past
-    120 s). `diagonal = 1` fills only the missing diagonal entries (a given 0.9 is kept).
-  - Unequal lengths are recycled with only warnings, giving wrong values.
-  - The same pair twice with one value is kept once (not summed); (1, 2) = 0.5 and (2, 1) = 0.3 keeps 0.5 silently.
-  - Ids 1 and 3 give a 3 x 3 matrix with an all-zero row and column for 2 (diagonal 0); ids 9 and 10 give 2 x 2.
-  - Character ids that are not numbers warn "NAs introduced by coercion" and still work.
-  - `NA` in `x` stops ("missing value where TRUE/FALSE needed"); an `NA` id stops ("NA/NaN argument"); character
-    `x` stops ("“sTMatrix” is not a defined class"); factor ids in a 3-column table stop (`max()` on a factor);
-    `x = 0` is dropped, `x = 1.5` kept; empty vectors give warnings and a 1 x 1 matrix named `NA`.
-- **`timeout` is MacPorts' GNU one** (`/opt/local/libexec/gnubin/timeout`); exit 124 means it fired.
-- **kinship2's numbers can differ from its help's words** (Learning 19): `familycheck()`'s `join` counts a family
-  once per shared tree (R43). Print the smallest case where a prototype differs before deciding which is right.
-- **The kinship2 comparisons skip without kinship2** and assert a floor on the cases compared (`expect_gte()`,
-  `tests/testthat/test_familyCheck.R:216`, `:235`): kinship2 stops in about half the cases, so an exact count
-  would fail if kinship2 were fixed.
-- **Times on this Mac:** full suite ~95 s; `covr::package_coverage(type = "tests")` ~2 min; `R CMD check --as-cran`
-  ~5 min, its tests 78 s. Run `R CMD check` from a scratch folder with `R_LIBS` and `R_LIBS_USER` set to the renv
-  library (`Rscript -e 'cat(renv::paths$library())'`); worked first time again.
-- **zsh:** a `cd` into an empty folder followed by `rm -rf pedkindraw_*` fails ("no matches found"); quote the glob
-  or use `find`.
+- **Pedixplorer is not installed** in pedkindraw's renv (kinship2 1.9.6.2 is). Contract 4.4's sizes 4, 2 and 44 are
+  the comparison's measurements. Installing it (Bioconductor) would be a renv change under Learning 3, so it is a
+  picker choice, not a step.
+- **A measured claim covers only the cases measured** (Learning 19, S16). S15's "kinship2's `ibdMatrix()` never
+  returns without a diagonal" was true of 7 of 40 random inputs only; my own rule for kinship2's row order, read
+  from 3 printed cases, held in 172 of 186 and R46 needed a correcting commit (`ebab5b9`). Check a rule on every
+  saved case before a ruling states it.
+- **`setTimeLimit(elapsed = 10, transient = TRUE)`** stops a kinship2 hang inside R (measured: the `ibdMatrix()`
+  hang stopped at 3 s), so a test calling kinship2 can carry the guard (`tests/testthat/helper-ibdMatrix.R:73`).
+- **Lint on test files measures nothing:** `.lintr` excludes `tests` (Learning 4, S16). Report `lint_package()`.
+- **Run a draft test file against a prototype in a scratch tree, not the scratchpad:** `git archive HEAD | tar -x -C
+  <tree>`, the prototype as a file in `<tree>/R/`, the drafts in `<tree>/tests/testthat/`, then `cd <tree>` and
+  `R_LIBS=<renv lib> R_LIBS_USER=<renv lib> NOT_CRAN=true Rscript --no-init-file -e
+  'pkgload::load_all("."); testthat::test_file(...)'`. The tree's `DESCRIPTION` gives edition 3 (Learning 10), and
+  `--no-init-file` keeps the tree's `.Rprofile` from starting renv there. S16's draft ran 19 tests, 373 expectations,
+  0 failed before RED.
+- **Save test results, do not read them through `tail`:** a suite run takes ~90 s, and one S16 run's summary was cut
+  off. `saveRDS(as.data.frame(testthat::test_local(...)), <file>)`, then read the file.
+- **zsh:** `rm -rf <dir>/*` on an empty folder fails ("no matches found") and stops the `&&` chain. S16 hit it
+  despite the note: use `find <dir> -type f -delete`.
+- **Times on this Mac:** full suite ~90 s; `covr::package_coverage(type = "tests")` ~2 min; `R CMD check --as-cran`
+  ~5 min, its tests 77 s; 200 kinship2 cases, one process each under `timeout 15`, 4 at a time (`xargs -P 4`), ~3
+  min. Run `R CMD check` from a scratch folder with `R_LIBS` and `R_LIBS_USER` set to the renv library
+  (`Rscript -e 'cat(renv::paths$library())'`).
+- **nprcgenekeepr's S1163 was mid-session during S16** (uncommitted edits to 3 of its test files, none copied here);
+  the drift tool reads committed code only.
 
 ### Key files
-- `methodology/BACKLOG.md:11` (the `ibdMatrix()` item), `:27` (coverage); `docs/planning/pedkindraw-api-contract.md:158-159`.
-- `R/familyCheck.R:72` (`familyCheck()`; `:75-86` its stops, `:93-104` the per-tree join count), `:125`
-  (`.familyJoinTable()`), `:141` (`.familyTrees()`, the `makefamid()` numbering).
-- `tests/testthat/helper-familyCheck.R:11` (`familyCheckPedigrees()`, the 9 fixtures as vectors), `:34`
-  (`familyCheckPatterns()`), `:62` (`familyCheckRandomCase()`), `:89` (`normalizedFamilyCheck()`), `:104`
-  (`kinship2FamilyCheck()`): a pattern for `ibdMatrix()`'s kinship2 comparisons.
-- `tests/testthat/test_familyCheck.R:199`, `:219`, `:238` (the three kinship2 tests).
-- `CLAUDE.md:174` (Learning 19).
+- `methodology/BACKLOG.md:11` (the Phase 13 item), `:26` (coverage); `docs/planning/pedkindraw-api-contract.md:167-183`.
+- `R/ibdMatrix.R:64` (`ibdMatrix()`), `:121` (`.ibdNames()`), `:150` (`.ibdEntries()`), `:169` (`.ibdSparse()`),
+  `:185` (`.ibdListed()`): S16's pattern for a function with plain stops and internal steps.
+- `tests/testthat/helper-ibdMatrix.R:27` (`ibdRandomCase()`, seeded cases), `:73` (`kinship2IbdOnCase()`, the time
+  limit); `tests/testthat/test_ibdMatrix.R:262`, `:284` (the two kinship2 comparisons, with floors).
+- `CLAUDE.md:159` (Learning 4), `:174` (Learning 19).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -91,54 +87,44 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S14's entries were removed in S3-S15 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S15's entries were removed in S3-S16 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### Session 15 Handoff Evaluation (by Session 16)
+**Score: 8/10.**
+- **What helped:** the gotcha list of kinship2's `ibdMatrix()` behaviours, almost all of which I reproduced
+  (class, `uplo`, pairs either way round, the 3-column table, `idmap` refused in every form, `diagonal` keeping a
+  given value, recycling, the first of two values kept, ids 1 and 3 giving 3 x 3, the warnings and stops); the
+  instruction to re-run them under `timeout 15`, which is how the wrong one was found; `timeout`'s path; the
+  `helper-familyCheck.R` pattern; the floors with `expect_gte()`; the out-of-folder `R CMD check` recipe and times;
+  every cited line number right (BACKLOG `:11`, `:27`; plan `:497`; contract `:159`; `R/familyCheck.R:72`).
+- **What was missing:** that `.lintr` excludes `tests`, so its own RED claim "lint 0 on both files" measured nothing.
+- **What was wrong:** "it never returns when an id's diagonal entry is missing": on 40 random such inputs it
+  returned a 0 diagonal in 33 and hung in 7 (`ib(1, 2, 0.5)` returns at once). "Character by the locale (`a A b
+  B`)": kinship2's order is not a plain sort; it differs from sorted order in 66 of 186 random cases.
+- **ROI:** high; the re-measuring step it asked for turned its two wrong claims into findings.
+
 ### What Session 16 Did
-**Deliverable:** plan Phase 12, second session: `ibdMatrix()` from kinship2's documentation (R14); kinship2's help
-read and S15's measurements re-run under a time limit, then a pre-RED picker (shape, `idmap`, id order, errors,
-checks), rulings, RED, GREEN, REFACTOR, checks, push, CI; it completes Phase 12 (IN PROGRESS)
-**Started:** 2026-11-13 10:47 CST · **Model:** Claude Opus 5.5 · Mark picked "ibdMatrix()" at the orient picker.
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
-
-### Session 14 Handoff Evaluation (by Session 15)
-**Score: 9/10.**
-- **What helped:** "help, not source" with R14 cited, and that running kinship2 is allowed (R42), which made the
-  scratch measurements the session's spine; the gap-analysis rows and contract rows, every line number right
-  (`:94`, `:99`, `:115`, `:158-159`); "compute every RED value first" (one test value was then fixed before RED);
-  `helper-shrinkSteps.R` as the pattern for the kinship2 helper; the out-of-folder `R CMD check` recipe and the
-  times, both right; "nothing to copy or call".
-- **What was missing:** that pedkindraw's `findPedigreeNumber()` is not kinship2's `makefamid()` (it gives each
-  singleton its own number and an unreachable id `NA`, where `makefamid()` gives 0); found by reading it. And that
-  kinship2's functions might fail or hang (only measurable; Learning 19 now says so).
-- **What was wrong:** nothing found; every cited line checked.
-- **ROI:** high.
-
-### What Session 15 Did
-**Deliverable:** plan Phase 12's first session, `familyCheck()`, new code test-first; push, CI (DONE).
-**Started:** 2026-11-12 20:47 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Phase 12, first session"
-(orient); "familyCheck() now" (scope); "kinship2's numbers", "Plain stops, no kinship2 failures", "Keep it",
-"Tests + kinship2 check" (pre-RED, R43-R45); the PRE-RED, RED, GREEN and REFACTOR gates "Yes".
-**Commits:** claim `c2c3f63`; rulings `8baf3ae`; RED `d3dd469`; GREEN `d40fadc`; REFACTOR `b314273`; pushed
-(`dff6509..b314273`, 7 commits with S14's two close-out commits); close-out `a478c70` and this commit, not pushed.
-**Verified:** before the pickers, kinship2's `familycheck()` and `ibdMatrix()` run on typed cases (each
-`ibdMatrix()` case under `timeout 15`); a scratch prototype of `familyCheck()` equal to kinship2 in 86 of 86 fixture
-and 188 of 188 random cases where kinship2 returns (join counted per tree; counted once per family it differs in
-90), its tree numbers `identical()` to `makefamid()`'s on 9 fixtures, and kinship2 stopping in all 227 of 463 cases
-whose joins lie in one tree and in none of the other 236; every RED value computed by kinship2 or the prototype
-first; RED 553 tests, 16 errors, each first on the missing function, WARN 0, SKIP 0; GREEN and REFACTOR: suite 553,
-0 failed, WARN 0, SKIP 0, 2747 expectations; lint 0; roxygen idempotent; drift 90, 0 differ; `R CMD check
---as-cran` 1 NOTE (R16's), PASS 2740 SKIP 3, twice; coverage 97.38%, `R/familyCheck.R` 57 of 57 statements;
-`quality_ratchet` 4/4; CI `43461775633` 5/5 `Status: OK`, first attempt (macOS PASS 2747; Windows 2746, SKIP 1; Ubuntu 2736, SKIP 2).
+**Deliverable:** plan Phase 12, second session, `ibdMatrix()`, new code test-first; it completes Phase 12; push, CI
+(DONE).
+**Started:** 2026-11-13 10:47 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "ibdMatrix()" (orient); "Ids given,
+sorted", "Stop, name the ids", "Stop on each", "Tests + kinship2 check" (pre-RED, R46-R48); the PRE-RED, RED, GREEN
+and REFACTOR gates "Yes".
+**Commits:** claim `7c45eb5`; rulings `79f999e`; RED `693ba36`; R46 corrected `ebab5b9`; GREEN `6f00abf`; REFACTOR
+`b8ade6e`; pushed (`b314273..b8ade6e`, 8 commits with S15's two close-out commits); close-out commits not pushed.
+**Verified:** before the picker, kinship2's `ibdMatrix()` on 64 typed and 200 seeded random cases, one process each
+under `timeout 15`: it returned in all 160 cases with every diagonal value or `diagonal` given except 7 internal
+stops (numeric ids), and without `diagonal` returned a 0 diagonal in 33 of 40 and hung in 7; a scratch prototype
+equal to kinship2 at every id in 186 of 186 cases where it returns; 0.11 s on 5,000 ids. The 19-test draft run
+against the prototype in a scratch tree (373 expectations, 0 failed); RED 572 tests, 19 errors, each first on the
+missing function, WARN 0, SKIP 0; GREEN and REFACTOR: suite 572, 0 failed, WARN 0, SKIP 0, 3120 expectations;
+`lint_package()` 0; roxygen idempotent; drift 90, 0 differ; `R CMD check --as-cran` 1 NOTE (R16's), PASS 3113 SKIP
+3, three times; coverage 97.46%, `R/ibdMatrix.R` 77 of 77; `quality_ratchet` 4/4; CI `43480861654` 5/5 `Status: OK`, first attempt (macOS PASS 3120; Windows 3119, SKIP 1; Ubuntu 3109, SKIP 2).
 **Self-assessment: 8/10.**
-+ Every picker option stated measured counts (Learnings 17, 18), including the finding that kinship2's `join`
-  disagrees with its own help page, which became a picker choice instead of a silent pick; every expected value
-  machine-checked before RED; RED clean (16 of 16 on the missing function); the new file fully covered; the
-  REFACTOR gate's line estimate (about 5) close to the result (+6).
-- Slips: a scratch `ibdMatrix()` script with no time limit stalled for two minutes before I killed it and re-ran each
-  case under `timeout`; my first propagation loop in the prototype was wrong and was rewritten before any
-  measurement used it; a `sed` edit to a scratch script made an unnamed list element (fixed by Edit); one RED test
-  value was first typed as a sum (`c(1, 0, 0) + c(1, 0, 0)`) and corrected before the run; one lint
-  (`0` for `0L`) fixed in GREEN.
-**Ledger:** `CHANGELOG.md` S15 entries (the session and the push).
++ Every picker option stated measured counts; re-measuring the handoff's claims found one wrong (the hang), and
+  checking my own inferred order rule on all 186 cases found it wrong before the help page stated it (R46 corrected
+  in its own commit); every RED value run against a prototype before RED; RED clean; the new file fully covered.
+- Slips: the zsh glob trap the handoff warned of (one wasted run); my case generator first made an empty case,
+  which crashed the comparison; a suite summary cut off by `tail` (a second 86 s run); the order rule went into R46
+  before I had checked it on every case; 4 lints in GREEN's first draft; REFACTOR's estimate +12 lines against +16.
+**Ledger:** `CHANGELOG.md` S16 entries (the session and the push).
