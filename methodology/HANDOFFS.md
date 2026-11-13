@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S16
+date: 2026-11-13
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 12, second session: ibdMatrix() from kinship2's documentation (R14); kinship2's help read and S15's measurements re-run under a time limit, a pre-RED picker (shape, idmap, id order, errors, checks), rulings, RED, GREEN, REFACTOR, checks, push, CI; completes Phase 12 (IN PROGRESS)
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the ibdMatrix() item), docs/planning/pedkindraw-api-contract.md:159 (its interface)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S15
 date: 2026-11-12
 status: complete

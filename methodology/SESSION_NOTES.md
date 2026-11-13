@@ -94,6 +94,14 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S14's entries were removed in S3-S15 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 16 Did
+**Deliverable:** plan Phase 12, second session: `ibdMatrix()` from kinship2's documentation (R14); kinship2's help
+read and S15's measurements re-run under a time limit, then a pre-RED picker (shape, `idmap`, id order, errors,
+checks), rulings, RED, GREEN, REFACTOR, checks, push, CI; it completes Phase 12 (IN PROGRESS)
+**Started:** 2026-11-13 10:47 CST · **Model:** Claude Opus 5.5 · Mark picked "ibdMatrix()" at the orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 14 Handoff Evaluation (by Session 15)
 **Score: 9/10.**
 - **What helped:** "help, not source" with R14 cited, and that running kinship2 is allowed (R42), which made the

@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-13 · [ad hoc] S16 claim (in progress): plan Phase 12, second session: `ibdMatrix()` from kinship2's documentation (R14); kinship2's help read and S15's measurements re-run under a time limit, a pre-RED picker (shape, `idmap`, id order, errors, checks), rulings, RED, GREEN, REFACTOR, checks, push, CI; completes Phase 12. Mark picked "ibdMatrix()" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `11f6e0a` is HEAD; S15's receipt complete, its ratchet results `08889eff3b69` match the results file); drift tool 90 functions, 0 differ.
+
 ### 2026-11-13 · [BL-Phase 12] S15 push: `master` to GitHub at `b314273` (7 commits, S14's two close-out commits through S15's REFACTOR), CI green on five jobs at the first attempt
 - **Change:** `git push origin master` (`dff6509..b314273`); CI run `43461775633`: 5/5 `Status: OK`, attempt 1; `FAIL 0 | WARN 0` on each: macOS PASS 2747 SKIP 0, Windows PASS 2746 SKIP 1, Ubuntu devel, release and oldrel-1 PASS 2736 SKIP 2 (each 294 more than S14's runs: the 16 new tests, kinship2 comparisons included).
 - **Commit/PR:** none (push); S15's close-out commit after it is not pushed · **Session:** S15 · **Verified:** `gh run watch --exit-status` 0; each job's conclusion with `gh run view --json`; each `Status:` and test summary line read from `gh run view --log`.
