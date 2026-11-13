@@ -37,7 +37,7 @@
       "_": "Auto-loaded in full by Claude Code. Wrap your project's statement of purpose in <!-- budget:protected --> ... <!-- /budget:protected --> and the tool will refuse to let a later compaction remove it. On the project this came from, 32.5% of this file was an index of past failures and 0.5% was what the software is for."
     },
     {
-      "path": "SESSION_NOTES.md",
+      "path": "methodology/SESSION_NOTES.md",
       "class": "read-mandated",
       "max_lines": 400,
       "max_bytes": 120000,
@@ -62,12 +62,12 @@
 
   "synced": [
     {
-      "path": "SESSION_RUNNER.md",
+      "path": "methodology/SESSION_RUNNER.md",
       "canonical": "../methodology/starter-kit/SESSION_RUNNER.md",
       "_": "Drift-checked, never size-checked — an adopter may not edit this file, so a size finding would be unactionable. Adjust the canonical path to wherever your methodology checkout lives. Zero local edits means `git diff` in your project shows nothing, so drift is otherwise invisible: on the source project both synced files were 13 and 2 commits behind for 48 days without anyone noticing."
     },
     {
-      "path": "SAFEGUARDS.md",
+      "path": "methodology/SAFEGUARDS.md",
       "canonical": "../methodology/starter-kit/SAFEGUARDS.md"
     }
   ]
