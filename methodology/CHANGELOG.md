@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-12 · [ad hoc] S15 claim (in progress): plan Phase 12, first session: `familyCheck()` and `ibdMatrix()` from kinship2's documentation (R14); kinship2's help read and its results measured, a pre-RED picker (which function this session, shapes, errors, checks), rulings, RED, GREEN, REFACTOR, checks, push, CI. Mark picked "Phase 12, first session" at the orient picker. Phase 0 reconcile: nothing to backfill (frontier `9b78bae` is HEAD; S14's receipt complete, its ratchet results `08889eff3b69` match the results file); drift tool 90 functions, 0 differ.
+
 ### 2026-11-12 · [ad hoc] S14 decision: `pedkindraw.Rproj` stays untracked (Mark's orient pick, "Leave it untracked")
 - **Change:** the DECISION NEEDED item "`pedkindraw.Rproj`: commit it or ignore it" removed from `methodology/BACKLOG.md`; the file is neither committed nor git-ignored (`.Rbuildignore` already keeps it out of the built package).
 - **Commit/PR:** the S14 close-out commit · **Session:** S14 · **Verified:** `git status --short` lists it untracked; R CMD check's NOTE is only R16's.

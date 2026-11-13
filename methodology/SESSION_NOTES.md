@@ -81,6 +81,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S13's entries were removed in S3-S14 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 15 Did
+**Deliverable:** plan Phase 12, first session: `familyCheck()` and `ibdMatrix()` from kinship2's documentation (R14);
+kinship2's help read and its results measured, then a pre-RED picker (which function this session, shapes, errors,
+checks), rulings, RED, GREEN, REFACTOR, checks, push, CI (IN PROGRESS)
+**Started:** 2026-11-12 20:47 CST · **Model:** Claude Opus 5.5 · Mark picked "Phase 12, first session" at the orient
+picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 13 Handoff Evaluation (by Session 14)
 **Score: 9/10.**
 - **What helped:** the gotcha that the four exports did not exist and the copy's internals take row positions, which
