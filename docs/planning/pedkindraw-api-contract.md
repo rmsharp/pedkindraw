@@ -164,7 +164,8 @@ phase's RED tests. Phase 11's were ruled before its RED (plan R40-R42, pedkindra
 `shrinkPedigree()`'s answer for their step, calling its copied internals. `familyCheck()`'s were ruled before its
 RED (plan R43-R45, pedkindraw S15), and `ibdMatrix()`'s before its RED (plan R46-R48, pedkindraw S16).
 `checkPedigree()`'s were ruled before its RED (plan R49-R51, pedkindraw S17; section 4.4), and `findUnrelated()`'s
-before its RED (plan R52-R54, pedkindraw S18; section 4.4).
+before its RED (plan R52-R54, pedkindraw S18; section 4.4). `asPedFrame()`'s kinship2 methods were ruled before
+their RED (plan R55-R57, pedkindraw S19; section 4.5).
 
 ### 4.4 New exports, short checker and unrelated-set finder (R9)
 
@@ -197,13 +198,21 @@ possible, and 0.7 s at 10,000 animals with 30% genotyped.
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
-| `asPedFrame(x, ...)`, S3 generic, methods for kinship2's `pedigree` and Pedixplorer's `Pedigree` | an object of either class | list `ped` (data frame in the conventions above) and `twinRelations` (data frame, or `NULL` when the object has none) | stops for any other class, naming it; stops when the object's package is not installed | 14 |
+| `asPedFrame(x, ...)`, S3 generic, methods for kinship2's `pedigree` and `pedigreeList` (pedkindraw S19) and Pedixplorer's `Pedigree` (its own session, R55) | an object of one of those classes | list `ped` (data frame in the conventions above: for kinship2, R56's columns, one row per animal in the object's order) and `twinRelations` (data frame `id1`, `id2`, `code`, or `NULL` when the object has no twin pair) | stops for any other class, naming it; for kinship2, when the object lacks a field it needs, naming the fields, and when a `pedigreeList`'s ids repeat across families, naming them (R56); Pedixplorer's method stops when Pedixplorer is not installed, kinship2's does not need kinship2 (R55) | 14 |
 
 What each method reads is the comparison doc's section 11.2 table; its two test cases are required (an unknown
 parent's index 0 must not shift later parents; Pedixplorer's all-`NA` `affection` column is not a condition).
 kinship2 and Pedixplorer stay in `Suggests` (R7). kinship2's `pedigreeList` (several families) is accepted when no
 id repeats across families and refused otherwise, naming the ids; ids are never renamed silently (Claude's
-proposal).
+proposal). Ruled before RED (plan R55-R57, pedkindraw S19): Phase 14 takes two sessions, kinship2's methods first
+and Pedixplorer's with its install next (R55: 47 more packages in renv, Bioconductor 3.23; without it `R CMD check`
+stops at the dependencies). kinship2's object is a plain list read without kinship2. R56 gives the columns:
+`id`, `sire`, `dam` (each parent by its own index, numbers written in full), `sex` (M, F, U; terminated is U),
+`famid` for a `pedigreeList` (accepted when no id repeats), `affected` or `affected_<column name or number>` (0, 1,
+`NA` as kinship2 holds them), `status` (1 `DECEASED`, 0 `ALIVE`); twins from relation codes 1-3, spouses left out.
+Measured on a prototype: a data frame through `kinship2::pedigree()` and back identical in 372 of 372 cases (9
+fixtures in 8 variants, 300 seeded random pedigrees), all 372 differing with the index-0 defect planted;
+kinship2's `sample.ped` and `minnbreast` (28,081 animals, 0.022 s) converted whole as family lists.
 
 ### 4.6 Not in this contract
 
