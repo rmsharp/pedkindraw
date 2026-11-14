@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S20
 date: 2026-11-14
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 14's second session, asPedFrame() for Pedixplorer Pedigree objects, new code test-first (R9), with Pedixplorer 1.8.0 installed into renv first (R55) and listed in Suggests; a measured pre-RED picker, rulings R58 on, a scratch prototype with a Pedigree() round trip as the slow check, RED, GREEN, REFACTOR, checks, push, CI
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Pedixplorer item), R/asPedFrame.R:82 (the generic), docs/planning/pedkindraw-api-contract.md:201 (its row)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 14 is DONE (S19 kinship2, S20 Pedixplorer): Pedixplorer 1.8.0 (Bioconductor 3.23) installed into renv and Suggests, and asPedFrame.Pedigree() converting Pedixplorer's Pedigree objects by rulings R58-R59; 14 tests; CI 5/5 at the first attempt. Next: plan Phase 15's design session, user-suppliable layout hints (R3), a design document
+what_was_done: claim 00c0cfc; install c43b36a (48 missing packages listed first; 49 binaries in 12 s; the gate read 8 after the first snapshot, from 8 unlocked dependencies installed earlier from "latest", and 0 after reinstalling them by name; the lock 60 -> 117, no existing entry changed; R CMD check with Pedixplorer suggested R16's NOTE only); rulings R58-R59 1b326da (contract 4.5 updated; Mark's picks "Keep fields with data", "'affection' -> 'affected'", "Ids as Pedixplorer holds them", "Unknown stays blank"; measured first: Pedixplorer's help pages and objects, a prototype round trip identical on 108 fixture cases and 300 random pedigrees, the all-NA defect caught in all 136 no-condition cases, a silent column clash, an empty object, 0.005 s for 100,000 animals); RED 3271956 (14 tests in test_asPedFramePedixplorer.R and its helper, the refusal test's message changed; drafts run against the prototype first; 15 failing, each first on the missing method); GREEN 10b9163 (asPedFrame.Pedigree() and its helpers, help page with a Pedixplorer example); REFACTOR ccc12ca (.asPedFrameTwinTable() shared by both packages' twins; +14 -13); pushed 58deb0a..ccc12ca; close-out de51907 and this receipt's commit
+next_steps: Orient and run the drift tool; read methodology/BACKLOG.md:11 whole and what it cites (plan row 15 :517, R3 :106, contract :229, the gap analysis :92 and :146, the comparison :284); read kinship2's align.pedigree() and autohint() help and Pedixplorer's Hints, align(), auto_hint() and best_hint() help (help pages only, R14; both installed); read the copied layout code where siblings and mates are ordered (R/makePedigreeMatingLayout.R, R/makePedigreeDiagramData.R, R/orderRootSubtrees.R); measure what each package's hints do on a small pedigree before the design's pickers (the hint's form, new arguments or a wrapper, the drift rule's row or mirror, whether asPedFrame() hands on hints, the build's DONE criteria); write the design (methodology/workstreams/DESIGN_WORKSTREAM.md), rulings from R60; close out
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Phase 15 item), :29 (coverage), :79 (context budget), docs/planning/standalone-pedigree-package-plan.md:40 (Next), :517 (row 15), :162-163 (R58-R59), docs/planning/pedkindraw-api-contract.md:229, R/asPedFrame.R:164 (asPedFrame.Pedigree()), :282 (.asPedFramePedixplorer()), tests/testthat/test_asPedFramePedixplorer.R:223 and :252 (round trips), CLAUDE.md:118 (the full check's command), :158 (Learning 3)
+gotchas: R CMD check --as-cran from the project root stops at CRAN incoming feasibility (renv's dated repository has no PACKAGES.in): run it from a scratch folder with R_LIBS and R_LIBS_USER set to renv's library and RENV_PROJECT unset; Pedixplorer refuses a twin pair with unknown parents and an animal in two twin sets with different codes, and rel(x) is S4 (rel(x, "code")); an S4 test object whose class names the Pedixplorer package makes R load it; sourcing test helpers outside testthat needs setwd("tests/testthat") and TESTTHAT=true; a predicted size in a picker is a guess unless counted (S20's "about 4 lines saved" was +1); CLAUDE.md 30,795 B, over its 28,000 B budget; tree-86aa6c47 (S19's) still in renv's shared folder for Mark
+runtime_smoke: the asPedFrame() help examples run under R CMD check --as-cran (Status 1 NOTE, R16's; PASS 4984 SKIP 3; GREEN and REFACTOR), the Pedixplorer one printing A-D, C affected, A DECEASED, the DZ pair C, D; tests 643 FAIL 0 WARN 0 SKIP 0, 4991 expectations; lint_package 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; coverage 97.79%, R/asPedFrame.R 106 of 106; 0.005 s for 100,000 animals; CI 43652270264 5/5 Status OK at the first attempt (macOS PASS 4991; Windows 4990 SKIP 1; Ubuntu 4980 SKIP 2); quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-14 · [BL-Phase 14] S20: plan Phase 14's second session, Pedixplorer installed and asPedFrame() for its Pedigree objects"
+commit: de51907 (close-out 1) and this receipt's commit (close-out 2)
 ```
 
 ```handoff
