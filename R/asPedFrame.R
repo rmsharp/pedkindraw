@@ -250,13 +250,18 @@ asPedFrame.Pedigree <- function(x, ...) {
   }
   code <- as.integer(relation[["code"]])
   twin <- code %in% 1L:3L
-  if (!any(twin)) {
+  .asPedFrameTwinTable(id[relation[["indx1"]][twin]],
+                       id[relation[["indx2"]][twin]],
+                       c("MZ twin", "DZ twin", "UZ twin")[code[twin]])
+}
+
+## The twins table of either package's pairs: id1, id2 and code as text, or
+## NULL when there is no pair.
+.asPedFrameTwinTable <- function(id1, id2, code) {
+  if (length(code) == 0L) {
     return(NULL)
   }
-  data.frame(id1 = id[relation[["indx1"]][twin]],
-             id2 = id[relation[["indx2"]][twin]],
-             code = c("MZ twin", "DZ twin", "UZ twin")[code[twin]],
-             stringsAsFactors = FALSE)
+  data.frame(id1 = id1, id2 = id2, code = code, stringsAsFactors = FALSE)
 }
 
 ## TRUE when Pedixplorer can be loaded (a function of its own, so a test can
@@ -356,12 +361,8 @@ asPedFrame.Pedigree <- function(x, ...) {
 ## The MZ, DZ and UZ twin pairs of a Pedixplorer relation table, spouses left
 ## out; NULL when no pair is left (plan R58).
 .asPedFramePxTwins <- function(rel) {
-  twin <- as.character(rel$code) %in% c("MZ twin", "DZ twin", "UZ twin")
-  if (!any(twin)) {
-    return(NULL)
-  }
-  data.frame(id1 = as.character(rel$id1[twin]),
-             id2 = as.character(rel$id2[twin]),
-             code = as.character(rel$code[twin]),
-             stringsAsFactors = FALSE)
+  code <- as.character(rel$code)
+  twin <- code %in% c("MZ twin", "DZ twin", "UZ twin")
+  .asPedFrameTwinTable(as.character(rel$id1[twin]),
+                       as.character(rel$id2[twin]), code[twin])
 }
