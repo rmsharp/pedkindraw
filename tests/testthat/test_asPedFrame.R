@@ -22,7 +22,8 @@ test_that("asPedFrame() refuses any other class, naming it", {
   expect_error(asPedFrame(data.frame(id = "A")),
                paste0("asPedFrame(): cannot convert an object of class ",
                       "\"data.frame\"; it converts kinship2's pedigree and ",
-                      "pedigreeList objects"), fixed = TRUE)
+                      "pedigreeList objects and Pedixplorer's Pedigree ",
+                      "objects"), fixed = TRUE)
   expect_error(asPedFrame(NULL), "class \"NULL\"", fixed = TRUE)
   expect_error(asPedFrame(list(id = "A")), "class \"list\"", fixed = TRUE)
   expect_error(asPedFrame("A"), "class \"character\"", fixed = TRUE)
