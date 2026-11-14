@@ -34,10 +34,10 @@ and its helpers, 24 tests, R38-R39), so the copy slices, Phases 6-10, are comple
 `bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()`, the first new code, 32 tests,
 R40-R42); Phase 12 DONE (pedkindraw S15: `familyCheck()`, 16 tests, R43-R45; pedkindraw S16: `ibdMatrix()`, 19
 tests, R46-R48); Phase 13 DONE (pedkindraw S17: `checkPedigree()`, 23 tests, R49-R51; pedkindraw S18:
-`findUnrelated()`, 19 tests, R52-R54); Phase 14's first session DONE (pedkindraw S19: `asPedFrame()` for kinship2's
-`pedigree` and `pedigreeList` objects, 15 tests, R55-R57).
-**Next:** Phase 14's second session, `asPedFrame()` for Pedixplorer `Pedigree` objects, Pedixplorer installed into
-renv first (R7, R55; contract section 4.5; pedkindraw `methodology/BACKLOG.md`).
+`findUnrelated()`, 19 tests, R52-R54); Phase 14 DONE (pedkindraw S19: `asPedFrame()` for kinship2's `pedigree` and
+`pedigreeList` objects, 15 tests, R55-R57; pedkindraw S20: Pedixplorer installed into renv and `asPedFrame()` for its
+`Pedigree` objects, 14 tests, R58-R59).
+**Next:** Phase 15's design session, user-suppliable layout hints (R3; row 15; pedkindraw `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -513,7 +513,7 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 | 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3). DONE (pedkindraw S14) | R3, R11, R40-R42 |
 | 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). DONE: `familyCheck()` (pedkindraw S15), `ibdMatrix()` (pedkindraw S16) | R3, R11, R43-R48; gap analysis rows 7, 12 |
 | 13 | Short pedigree checker and short unrelated-set finder (2 sessions, R49). DONE: `checkPedigree()` (pedkindraw S17), `findUnrelated()` (pedkindraw S18) | R9, R49-R54; sized at Phase 1, specified at Phase 4 |
-| 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2; 2 sessions, R55). kinship2's half DONE (pedkindraw S19); Pedixplorer's next | R7, R55-R57 |
+| 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2; 2 sessions, R55). DONE (pedkindraw S19-S20) | R7, R55-R59 |
 | 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build | R3 |
 
 **Done 11 (pedkindraw S14; R40-R42):** `bitSize()`, `findUnavailable()`, `findAvailNonInform()` and
@@ -602,6 +602,27 @@ tool 90 functions, 0 differ; `R CMD check --as-cran` 0 errors, 0 warnings, R16's
 coverage 97.74%, `R/asPedFrame.R` 49 of 49 statements; 0.04 s for 100,000 animals; CI run `43626771667` 5/5
 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 4750; Windows 4749, SKIP 1; Ubuntu 4739,
 SKIP 2). Phase 14's second session, Pedixplorer's method, is next.
+
+**Done 14 (Pedixplorer; pedkindraw S20; R58-R59):** Pedixplorer 1.8.0 (Bioconductor 3.23) installed into renv and
+listed in `Suggests` (`c43b36a`: 49 packages as binaries; the lock 60 to 117 entries, no existing entry changed, a
+top-level `"Bioconductor": {"Version": "3.23"}`; 8 dependencies already in renv's library from "latest" reinstalled
+from the dated repository before the gate read 0). `asPedFrame()` gained the method `asPedFrame.Pedigree()`, which
+refuses a non-S4 object as the default method does and stops when Pedixplorer is not installed, with internal
+helpers `.asPedFrameHasPedixplorer()`, `.asPedFramePedixplorer()`, `.asPedFramePxConditions()`,
+`.asPedFramePxStatus()`, `.asPedFramePxKeptFields()` (with `.asPedFramePxFields`) and `.asPedFramePxTwins()`, and
+REFACTOR's `.asPedFrameTwinTable()`, shared with kinship2's twins; the columns, twins and stops of R58; the default
+method's message names Pedixplorer's `Pedigree`. Measured before the pickers: Pedixplorer's help pages and objects;
+a prototype's round trip, a data frame through `Pedixplorer::Pedigree()` and back, identical on 108 fixture cases
+and 300 seeded random pedigrees, and differing in all 136 built without a condition with the comparison's all-`NA`
+defect planted; a column-name clash the prototype let through silently (made a stop); 0.005 s for 100,000 animals.
+14 tests in a new file and a helper (`helper-asPedFramePedixplorer.R`, with the round trip `asPedFramePxTrip()`),
+the drafts run against the prototype before RED (two drafts wrong in the test and corrected; with the defect planted
+6 of 14 fail); RED 15 failing (the 14 and the changed refusal test), each first on the missing method. Checks: tests
+643, 0 failed, WARN 0, SKIP 0, 4991 expectations; lint 0; roxygen idempotent; drift tool 90 functions, 0 differ;
+`R CMD check --as-cran` from a scratch folder 0 errors, 0 warnings, R16's NOTE (tests PASS 4984, SKIP 3); coverage
+97.79%, `R/asPedFrame.R` 106 of 106 statements; CI run `43652270264` 5/5 `Status: OK` at the first attempt, pak
+installing Pedixplorer on all five, `FAIL 0 | WARN 0` on each (macOS PASS 4991; Windows 4990, SKIP 1; Ubuntu 4980,
+SKIP 2). Phase 14 is DONE; Phase 15's design session is next.
 
 ### Phase 16 -- Documentation (new repository)
 

@@ -8,31 +8,23 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 14, second session: `asPedFrame()` for Pedixplorer `Pedigree` objects** (READY, Effort M, a guess;
-      the kinship2 half DONE S19, R55-R57) -- plan row 14 and rulings R55-R57
-      (`docs/planning/standalone-pedigree-package-plan.md:159-161`); contract section 4.5
-      (`docs/planning/pedkindraw-api-contract.md:201`); the comparison's section 11.2 table
-      (`docs/research/pedigree-package-comparison-2026-11.md:844`), whose second required case is Pedixplorer's:
-      an object built with no condition still has an all-`NA` `affection` column, which is not a condition. First
-      the install (R55, a renv change under Learning 3): Pedixplorer 1.8.0 from Bioconductor 3.23 (the release for R
-      4.6, ready-built binaries for this Mac), installed with BiocManager; 47 packages are missing from renv's
-      library (75 now), 34 of them present in R's own library, which renv's sandbox hides; renv then records a
-      top-level `"Bioconductor": {"Version": "3.23"}` and the Bioconductor packages as `Source: Bioconductor` (all
-      measured S19 in a scratch library and a scratch lock file). CRAN packages from the dated repository with
-      `rebuild = TRUE` by name, then the `renv-lock-no-latest-repository` gate; Pedixplorer into `Suggests`; without
-      it installed `R CMD check --as-cran` stops at "checking package dependencies" (measured). Measured S19 on
-      Pedixplorer objects (help pages and results only, R14): `ped(x)` columns `id`, `dadid`, `momid`, `famid`,
-      `sex` (ordered factor male < female < unknown; H becomes unknown), `deceased` (logical) and more slots with
-      defaults (`fertility` "fertile", `evaluated` FALSE, ...); the user's extra columns and Pedixplorer's own
-      (`error`, `avail_mods`, `<condition>_mods`) are both in `mcols(x)`; `fill(x)` lists each condition with its
-      mods (0, 1, `NA`; a number is split at 0.5, "Healthy <= to 0.5"); with no condition, one `fill()` row whose
-      mods, labels and `affected` are `NA`; with families each id and parent id becomes `<famid>_<id>`;
-      `Pedigree()` gives back a data frame with a warning, not an object, for an id containing `_` or one known
-      parent; `rel(x)` has `code` (ordered factor with `Spouse`) and `group`. Open for its pre-RED picker: which of
-      Pedixplorer's own slots become columns (the comparison's table says only the user's extra columns), what
-      `famid` does there, and the default method's message, which today names only kinship2's classes (a test
-      changes). The method stops when Pedixplorer is not installed (R55). Plan Phases 15-17 follow, each waiting
-      for the one before (scope: the plan's section 4; summary: `methodology/ROADMAP.md`).
+- [ ] **Phase 15, design session: user-suppliable layout hints** (READY, Effort M, a guess; a design document, no
+      code) -- plan row 15 (`docs/planning/standalone-pedigree-package-plan.md:517`: "a design session first
+      (engine-surface design), then the build") and ruling R3 (`:106`, Mark S742: "user-suppliable layout hints"
+      IN); contract `docs/planning/pedkindraw-api-contract.md:229` ("Layout hints (R3) are Phase 15, whose design
+      session comes first"). What the hints close: the gap analysis's `autohint` row
+      (`docs/research/kinship2-feature-gap-analysis-2026-09-20.md:92`, and `:146`: the engine orders siblings and
+      spouses itself and accepts no override). What the others take: kinship2's `align.pedigree(..., hints)` and
+      `autohint()`, Pedixplorer's `align(..., hints)`, `auto_hint()`, `best_hint()` and its `Hints` object (`horder`
+      and `spouse`) (`docs/research/pedigree-package-comparison-2026-11.md:284`; Pedixplorer is installed since S20,
+      so its `Hints` help page can be read). The layout code is copied from nprcgenekeepr
+      (`R/makePedigreeMatingLayout.R`, `R/makePedigreeDiagramData.R` and their helpers), so any change to it is a
+      `DIVERGENCE.md` row or a change mirrored there (drift rule, plan section 5): the design should say which, and
+      whether hints enter as a new argument of the exported functions or a wrapper. Open too: whether
+      `asPedFrame()` should hand on the hints a kinship2 or Pedixplorer object holds (it does not now). The plan states
+      no DONE criteria for Phase 15; the design session writes them. Workstream:
+      `methodology/workstreams/DESIGN_WORKSTREAM.md`. Plan Phases 16-17 follow (scope: the plan's section 4;
+      summary: `methodology/ROADMAP.md`).
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -54,7 +46,8 @@ issues).*
       `R/checkPedigree.R` was added in `R/`, 83 of 83). S18 on `4bcfe00`: 97.69%, 43 of 2,178: `R/rbindFill.R:30` (a Date
       column `addParents()` fills) is now reached by `test_findUnrelated.R`'s pedSix test, so `R/rbindFill.R` has 1
       left (35); `R/findUnrelated.R` 88 of 88, `R/checkPedigree.R` 84 of 84. S19 on `58deb0a`: 97.74%, 43 of 2,227,
-      the same 43 (since `4bcfe00` only `R/asPedFrame.R` was added in `R/`, 49 of 49).
+      the same 43 (since `4bcfe00` only `R/asPedFrame.R` was added in `R/`, 49 of 49). S20 on `ccc12ca`: 97.79%, 43 of 2,284, the
+      same 43 (since `58deb0a` only `R/asPedFrame.R` changed in `R/`, 106 of 106).
 
 ## Waiting on Mark
 
