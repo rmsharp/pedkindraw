@@ -12,8 +12,8 @@ identical to nprcgenekeepr's on the Phase 1 pedigrees. Why: when the five slices
 kinship, trims and shrinks pedigrees and draws them interactively, and the drawing is what the comparison found is
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
 section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phases 11 (S14), 12 (S15-S16) and 13
-(S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) are done; next is Phase 14, the converters
-(Planned, below).
+(S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) are done; Phase 14, the converters, has its
+kinship2 half done (S19) and its Pedixplorer half next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -29,8 +29,9 @@ section 10). All five are done (S13). The new work of Phases 11-15 has begun: Ph
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 14:** `asPedFrame()`, converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects; both packages
-  stay optional (R7; contract section 4.5). Next (`methodology/BACKLOG.md`).
+- **Phase 14, second session:** `asPedFrame()`'s method for Pedixplorer `Pedigree` objects, with Pedixplorer
+  installed into renv first (R55: 47 more packages, Bioconductor 3.23); Pedixplorer stays optional (R7; contract
+  section 4.5). Next (`methodology/BACKLOG.md`). The kinship2 half is done (S19, What's Built).
 - **Phase 15:** layout hints a user can supply: a design session first, then the build (R3).
 - **Phase 16:** documentation: README, a getting-started and a drawing vignette, a pkgdown site, NEWS, the Phase 1-2
   timing tables.
@@ -39,6 +40,14 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Converter from kinship2 objects (Phase 14, first session), 1 export:** `asPedFrame()` turns a kinship2
+  `pedigree` or `pedigreeList` object back into the package's pedigree data frame and twins table (R55-R57): each
+  parent read by its own index, ids as text with whole numbers in full, sex M, F or U, conditions as `affected` or
+  `affected_<name>`, status `DECEASED` or `ALIVE`, twins from relation codes 1-3; a family list converted whole when
+  no id repeats, with a `famid` column. It reads the object without kinship2 and refuses any other class. An S3
+  generic with internal helpers `.asPedFrameKinship2()`, `.asPedFrameConditions()`, `.asPedFrameText()` and
+  `.asPedFrameTwins()`. 15 tests; a data frame through `kinship2::pedigree()` and back comes out identical on 9
+  fixtures in 8 variants and 300 random pedigrees. 0.04 s for 100,000 animals.
 - **Unrelated-set finder (Phase 13, second session), 1 export:** `findUnrelated()` chooses genotyped animals of
   which no two share an ancestor (kinship 0), to which none can be added and in which no chosen animal can be
   traded for two, the same set every time (R52-R54): the animal with the fewest relatives first, ties in byte order,
@@ -128,6 +137,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 14's first session, `asPedFrame()` for kinship2 objects (pedkindraw S19, 2026-11-14).** New code written
+  test-first (Mark's picks R55-R57: kinship2 now and Pedixplorer, with its 47-package install, in a session of its
+  own; family lists accepted when no id repeats; status 0 as `ALIVE`; the object read without kinship2; typed cases
+  and a round trip); Pedixplorer's install measured in a scratch library and a scratch lock file before the scope
+  picker; the round trip shown able to fail by planting the comparison's unknown-parent defect (372 of 372 caught);
+  the new file fully covered; CI green on five jobs at the first attempt.
 - **Phase 13's second session, `findUnrelated()`, and with it Phase 13 (pedkindraw S18, 2026-11-13).** New code
   written test-first (Mark's picks R52-R54: relatedness from shared ancestors; the fewest relatives first, then a
   swap pass; a stop naming the animals where relatedness cannot be read; tests against a slow check and kinship2);

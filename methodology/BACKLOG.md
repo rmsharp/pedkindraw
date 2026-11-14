@@ -8,22 +8,31 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 14: `asPedFrame()`, converters from kinship2 and Pedixplorer objects** (READY, Effort M, a guess;
-      Phase 13 DONE S17-S18) -- plan row 14 (`docs/planning/standalone-pedigree-package-plan.md:510`; R7); contract
-      section 4.5 (`docs/planning/pedkindraw-api-contract.md:200`): `asPedFrame(x, ...)`, an S3 generic with methods
-      for kinship2's `pedigree` and Pedixplorer's `Pedigree`, returning a list `ped` (a data frame in the package's
-      conventions) and `twinRelations` (a data frame, or `NULL`); it stops for any other class, naming it, and when
-      the object's package is not installed. What each method reads is the comparison's section 11.2 table
-      (`docs/research/pedigree-package-comparison-2026-11.md:844`), and its two test cases are required: an unknown
-      parent's index 0 must not shift later parents, and Pedixplorer's all-`NA` `affection` column is not a
-      condition. kinship2's `pedigreeList` is accepted when no id repeats across families (Claude's proposal in the
-      contract, open for the pre-RED picker). Open for the pre-RED picker: Pedixplorer (Bioconductor) is not installed
-      in pedkindraw's renv (kinship2 1.9.6.2 is); installing it is a renv change under Learning 3 (the dated
-      repository, `rebuild = TRUE`, the `renv-lock-no-latest-repository` gate after the snapshot), and without it the
-      Pedixplorer method's tests skip (Learning 14: read RED's SKIP count). Both packages stay in Suggests (R7). Every
-      expected value computed before RED (Learning 18); kinship2 and Pedixplorer from their help pages and measured
-      results only (R14). Plan Phases 15-17 follow, each waiting for the one before (scope: the plan's section 4;
-      summary: `methodology/ROADMAP.md`); each gets its own item here when it is next.
+- [ ] **Phase 14, second session: `asPedFrame()` for Pedixplorer `Pedigree` objects** (READY, Effort M, a guess;
+      the kinship2 half DONE S19, R55-R57) -- plan row 14 and rulings R55-R57
+      (`docs/planning/standalone-pedigree-package-plan.md:159-161`); contract section 4.5
+      (`docs/planning/pedkindraw-api-contract.md:201`); the comparison's section 11.2 table
+      (`docs/research/pedigree-package-comparison-2026-11.md:844`), whose second required case is Pedixplorer's:
+      an object built with no condition still has an all-`NA` `affection` column, which is not a condition. First
+      the install (R55, a renv change under Learning 3): Pedixplorer 1.8.0 from Bioconductor 3.23 (the release for R
+      4.6, ready-built binaries for this Mac), installed with BiocManager; 47 packages are missing from renv's
+      library (75 now), 34 of them present in R's own library, which renv's sandbox hides; renv then records a
+      top-level `"Bioconductor": {"Version": "3.23"}` and the Bioconductor packages as `Source: Bioconductor` (all
+      measured S19 in a scratch library and a scratch lock file). CRAN packages from the dated repository with
+      `rebuild = TRUE` by name, then the `renv-lock-no-latest-repository` gate; Pedixplorer into `Suggests`; without
+      it installed `R CMD check --as-cran` stops at "checking package dependencies" (measured). Measured S19 on
+      Pedixplorer objects (help pages and results only, R14): `ped(x)` columns `id`, `dadid`, `momid`, `famid`,
+      `sex` (ordered factor male < female < unknown; H becomes unknown), `deceased` (logical) and more slots with
+      defaults (`fertility` "fertile", `evaluated` FALSE, ...); the user's extra columns and Pedixplorer's own
+      (`error`, `avail_mods`, `<condition>_mods`) are both in `mcols(x)`; `fill(x)` lists each condition with its
+      mods (0, 1, `NA`; a number is split at 0.5, "Healthy <= to 0.5"); with no condition, one `fill()` row whose
+      mods, labels and `affected` are `NA`; with families each id and parent id becomes `<famid>_<id>`;
+      `Pedigree()` gives back a data frame with a warning, not an object, for an id containing `_` or one known
+      parent; `rel(x)` has `code` (ordered factor with `Spouse`) and `group`. Open for its pre-RED picker: which of
+      Pedixplorer's own slots become columns (the comparison's table says only the user's extra columns), what
+      `famid` does there, and the default method's message, which today names only kinship2's classes (a test
+      changes). The method stops when Pedixplorer is not installed (R55). Plan Phases 15-17 follow, each waiting
+      for the one before (scope: the plan's section 4; summary: `methodology/ROADMAP.md`).
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -44,7 +53,8 @@ issues).*
       `R/ibdMatrix.R` changed in `R/`, 77 of 77). S17 on `60a87a7`: 97.57%, 44 of 2,089, the same 44 (since `b8ade6e` only
       `R/checkPedigree.R` was added in `R/`, 83 of 83). S18 on `4bcfe00`: 97.69%, 43 of 2,178: `R/rbindFill.R:30` (a Date
       column `addParents()` fills) is now reached by `test_findUnrelated.R`'s pedSix test, so `R/rbindFill.R` has 1
-      left (35); `R/findUnrelated.R` 88 of 88, `R/checkPedigree.R` 84 of 84.
+      left (35); `R/findUnrelated.R` 88 of 88, `R/checkPedigree.R` 84 of 84. S19 on `58deb0a`: 97.74%, 43 of 2,227,
+      the same 43 (since `4bcfe00` only `R/asPedFrame.R` was added in `R/`, 49 of 49).
 
 ## Waiting on Mark
 

@@ -34,9 +34,10 @@ and its helpers, 24 tests, R38-R39), so the copy slices, Phases 6-10, are comple
 `bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()`, the first new code, 32 tests,
 R40-R42); Phase 12 DONE (pedkindraw S15: `familyCheck()`, 16 tests, R43-R45; pedkindraw S16: `ibdMatrix()`, 19
 tests, R46-R48); Phase 13 DONE (pedkindraw S17: `checkPedigree()`, 23 tests, R49-R51; pedkindraw S18:
-`findUnrelated()`, 19 tests, R52-R54).
-**Next:** Phase 14, `asPedFrame()`, the converters from kinship2 and Pedixplorer objects (R7; contract section 4.5;
-pedkindraw `methodology/BACKLOG.md`).
+`findUnrelated()`, 19 tests, R52-R54); Phase 14's first session DONE (pedkindraw S19: `asPedFrame()` for kinship2's
+`pedigree` and `pedigreeList` objects, 15 tests, R55-R57).
+**Next:** Phase 14's second session, `asPedFrame()` for Pedixplorer `Pedigree` objects, Pedixplorer installed into
+renv first (R7, R55; contract section 4.5; pedkindraw `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -510,7 +511,7 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 | 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3). DONE (pedkindraw S14) | R3, R11, R40-R42 |
 | 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). DONE: `familyCheck()` (pedkindraw S15), `ibdMatrix()` (pedkindraw S16) | R3, R11, R43-R48; gap analysis rows 7, 12 |
 | 13 | Short pedigree checker and short unrelated-set finder (2 sessions, R49). DONE: `checkPedigree()` (pedkindraw S17), `findUnrelated()` (pedkindraw S18) | R9, R49-R54; sized at Phase 1, specified at Phase 4 |
-| 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2) | R7 |
+| 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2; 2 sessions, R55). kinship2's half DONE (pedkindraw S19); Pedixplorer's next | R7, R55-R57 |
 | 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build | R3 |
 
 **Done 11 (pedkindraw S14; R40-R42):** `bitSize()`, `findUnavailable()`, `findAvailNonInform()` and
@@ -583,6 +584,22 @@ functions, 0 differ; `R CMD check --as-cran` 0 errors, 0 warnings, R16's NOTE (t
 97.69%, `R/findUnrelated.R` 88 of 88 statements; on `synthetic_10000` with 30% genotyped, 138 chosen in 0.57 s
 (kinship2 137 in 6.5 s); CI run `43533292116` 5/5 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each
 (macOS PASS 4332; Windows 4331, SKIP 1; Ubuntu 4321, SKIP 2). Phase 13 is DONE; Phase 14, `asPedFrame()`, is next.
+
+**Done 14 (kinship2; pedkindraw S19; R55-R57):** `asPedFrame()` exported, an S3 generic with a default method
+refusing any other class and methods for kinship2's `pedigree` and `pedigreeList`, pedkindraw's own new code in
+`R/asPedFrame.R` with internal helpers `.asPedFrameKinship2()`, `.asPedFrameConditions()` (REFACTOR),
+`.asPedFrameText()` and `.asPedFrameTwins()`; the object read as a plain list, without kinship2 (R55); the columns,
+twins and family-list rule of R56. Measured before the pickers: Pedixplorer's install in a scratch library, a
+scratch lock file and a scratch `R CMD check` (R55); a prototype's round trip, a data frame through
+`kinship2::pedigree()` and back, identical in 372 of 372 cases and differing in all 372 with the index-0 defect
+planted; kinship2's `sample.ped` and `minnbreast` converted whole. 15 tests in a new file and a helper
+(`helper-asPedFrame.R`, with the round trip `asPedFrameTrip()`), the draft run against the prototype before RED (one
+hand-derived value corrected first; with the defect planted 8 of 15 fail); RED 15 of 15 failing, each first on the
+missing function. Checks: tests 629, 0 failed, WARN 0, SKIP 0, 4750 expectations; lint 0; roxygen idempotent; drift
+tool 90 functions, 0 differ; `R CMD check --as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 4743, SKIP 3);
+coverage 97.74%, `R/asPedFrame.R` 49 of 49 statements; 0.04 s for 100,000 animals; CI run `43626771667` 5/5
+`Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 4750; Windows 4749, SKIP 1; Ubuntu 4739,
+SKIP 2). Phase 14's second session, Pedixplorer's method, is next.
 
 ### Phase 16 -- Documentation (new repository)
 
