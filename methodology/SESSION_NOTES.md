@@ -9,78 +9,75 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** **Plan Phase 14: `asPedFrame()`, the converters from kinship2 `pedigree` and Pedixplorer `Pedigree`
-objects** (`methodology/BACKLOG.md:11`; plan row `docs/planning/standalone-pedigree-package-plan.md:510`, R7 at
-`:109`; contract `docs/planning/pedkindraw-api-contract.md:196` (section 4.5), the row at `:200`). New code: an S3
-generic with two methods returning a list `ped` and `twinRelations`; kinship2 and Pedixplorer stay in Suggests (R7).
-The orient picker asks Mark: this, the other READY item, **tests for full coverage** (`methodology/BACKLOG.md:28`,
-43 of 2,178 statements missed), or hold.
-**Status:** READY. Phase 13 DONE (S17 `checkPedigree()`; S18 `findUnrelated()`, R52-R54, 19 tests); suite 614
-tests, 0 failed, WARN 0, SKIP 0, 4332 expectations; `R CMD check --as-cran` R16's NOTE only; drift tool 90 functions,
-0 differ; pushed through `4bcfe00` (CI run `43533292116`: 5/5 `Status: OK` at the first attempt); S18's close-out
-commits are not pushed.
-**Plan:** `docs/planning/standalone-pedigree-package-plan.md:38` (Next), `:510` (row 14), `:109` (R7), `:155-157`
-(R52-R54, the latest rulings' pattern); the comparison `docs/research/pedigree-package-comparison-2026-11.md:797`
-(section 11: the four input-style prototypes, written in a scratchpad and **not kept**), `:844` (11.2: what each
-converter reads, and its two required test cases), `:861` (11.3: R7).
-**Session boundary:** one session, one generic and its two methods (a scope picker may split them, as R49 did).
+**Task:** **Plan Phase 14's second session: `asPedFrame()` for Pedixplorer `Pedigree` objects**, with Pedixplorer
+installed into renv first (`methodology/BACKLOG.md:11`; rulings R55-R57 at
+`docs/planning/standalone-pedigree-package-plan.md:159-161`; contract 4.5 at `docs/planning/pedkindraw-api-contract.md:197`,
+its row `:201`). It completes Phase 14. The orient picker asks Mark: this, **tests for full coverage**
+(`methodology/BACKLOG.md:37`, 43 of 2,227 statements missed), or hold.
+**Status:** READY. Phase 14's kinship2 half DONE (S19: `asPedFrame()` generic, the `pedigree` and `pedigreeList`
+methods, 15 tests, R55-R57); suite 629 tests, 0 failed, WARN 0, SKIP 0, 4750 expectations; `R CMD check --as-cran`
+R16's NOTE only; drift tool 90 functions, 0 differ; pushed through `58deb0a` (CI run `43626771667`: 5/5 `Status: OK`
+at the first attempt); S19's close-out commits are not pushed.
+**Plan:** `docs/planning/standalone-pedigree-package-plan.md:39` (Next), `:514` (row 14), `:159-161` (R55-R57);
+the comparison `docs/research/pedigree-package-comparison-2026-11.md:844` (11.2: what Pedixplorer's method reads,
+and its required case: an all-`NA` `affection` column is not a condition).
+**Session boundary:** one session: the install, then Pedixplorer's method test-first; Phase 14 DONE.
 **Priority:** HIGH.
 
 ### What You Must Do
 1. Orient, and run the drift tool (`Rscript tools/compareWithNprcgenekeepr.R ../nprcgenekeepr`).
-2. Read contract 4.5 and the comparison's section 11.2 whole (Learning 8): the table gives each column's source in
-   each object (kinship2's `findex`/`mindex` with index 0 unknown; `sex` levels; `affected` columns; `status`;
-   `relation` codes 1-3, 4 left out; Pedixplorer's `ped(x)`, `fill(x)`, `rel(x)`), and the two defects the first
-   prototypes had, each a required test case.
-3. Decide Pedixplorer first, in a scope picker with measured facts: it is not installed here (kinship2 1.9.6.2 is);
-   installing it is a renv change under Learning 3 (Bioconductor, not the dated CRAN repository: find how renv
-   records it before the picker, and run the `renv-lock-no-latest-repository` gate after the snapshot). Without it
-   the Pedixplorer method's tests skip (Learning 14: read RED's SKIP count).
-4. Read kinship2's help pages (`pedigree`, `pedigreeList`) and, if installed, Pedixplorer's (`Pedigree`, `ped`,
-   `rel`, `fill`), help and measured results only (R14); build objects from `sample.ped` and the fixtures, print
-   their slots, and measure what each holds before a picker states it (Learnings 17-19).
-5. A measured pre-RED picker (return shape for each column, `pedigreeList`, ids never renamed, errors); rulings R55
-   on, in their own commit; drafts run against a prototype in a scratch tree (Gotchas); RED, GREEN, REFACTOR;
-   checks; push; CI; "Done 14" in the plan, contract 4.5, ROADMAP, BACKLOG.
+2. Read the backlog item whole (`methodology/BACKLOG.md:11`): it holds every fact S19 measured about Pedixplorer
+   1.8.0's objects and its install. Re-measure what a picker will state (Learnings 17-19): S19's scratch scripts are
+   gone with its scratchpad.
+3. The install is a renv change under Learning 3 (now with S19's sentence: count against renv's library alone).
+   Set the dated repository (`https://packagemanager.posit.co/cran/2026-10-31`) before anything; install
+   BiocManager and Pedixplorer (Bioconductor 3.23) with `rebuild = TRUE`; reinstall by name any CRAN dependency renv
+   linked from its cache; `renv::snapshot(dev = TRUE)`; run the gate (`grep -c
+   'packagemanager.posit.co/cran/latest' renv.lock` must print 0). Add Pedixplorer to `Suggests` in the same commit.
+   Measure first whether this needs its own picker (it is ruled, R55: Mark picked it for this session).
+4. A measured pre-RED picker: which of Pedixplorer's own slots become columns (the comparison's table says only the
+   user's extra columns; `mcols(x)` also holds Pedixplorer's `error`, `avail_mods`, `<condition>_mods`); what
+   `famid` does (ids are already `<famid>_<id>`); conditions from `fill(x)` (the all-`NA` case); the default
+   method's message, which names only kinship2's classes (`tests/testthat/test_asPedFrame.R:21` changes); the stop
+   when Pedixplorer is not installed (R55). Rulings R58 on.
+5. Drafts against a prototype in a scratch tree (Gotchas), with a round trip data frame -> `Pedigree()` ->
+   `asPedFrame()` as the slow check, shown able to fail by planting the all-`NA` defect; RED, GREEN, REFACTOR;
+   checks; push; CI (its first install of a Bioconductor package: pak should resolve it, a prediction); "Done 14" in
+   the plan, contract 4.5, ROADMAP, BACKLOG.
 
 ### Gotchas
-- **A heuristic or a converter is judged against an independent answer** (Learnings 20-21): for converters, the
-  round trip data frame -> object -> `asPedFrame()` on every fixture, compared column by column, is the slow
-  check; build it before the picker.
-- **Hand-derived expected values were wrong again** (S18: number ids 10, 2 and 3 tie and "10" wins, since "10"
-  comes before "2" in byte order). Run the drafts against the prototype before RED (Learning 18).
-- **kinship2's `sample.ped`** codes unknown parents as `0` (numbers); `kinship2SampleFamily(f)` in
-  `tests/testthat/helper-findUnrelated.R:68` turns a family into the package's data frame. Its `pedigree()` refuses
-  one known parent (`smallPed` has one), parents with no row, wrong-sex parents and duplicate ids (R49).
-- **The scratch-tree recipe** worked first time again: `git archive HEAD | tar -x -C <tree>`, the prototype as
-  `<tree>/R/<name>.R`, the drafts in `<tree>/tests/testthat/`, then from `<tree>`: `R_LIBS=<lib> R_LIBS_USER=<lib>
-  NOT_CRAN=true Rscript --no-init-file -e 'pkgload::load_all("."); testthat::test_file(...)'`. `<lib>` from
-  `Rscript -e 'cat(renv::paths$library())'` in the project (S18 kept it in a file in the scratchpad). Run a helper
-  that calls `test_path()` from the tree root, not from `tests/testthat`.
-- **Claude Code refuses `rm` on a path built from a shell variable** (its own safety check, not Mark): use a fresh
-  output folder instead of clearing one, and leave deletions to Mark.
-- **`example(f)` finds no help under `pkgload::load_all()`**: run the example's code directly; `R CMD check` runs
-  the examples. **`covr::zero_coverage()` needs `rstudioapi`** (not installed): use `as.data.frame(cv)` and keep
-  the rows with `value == 0`.
-- **`CLAUDE.md` is over its 28,000 B context budget** (30,063 B after S18's Learning 21; `context_budget.py --check`
-  exits 2). Any new Learning grows it; the reduction is the context-budget item's own session
-  (`methodology/BACKLOG.md:76`, R18).
-- **Times on this Mac (S18):** suite ~100 s; coverage ~2.2 min; `R CMD check --as-cran` ~2.2 min, run from a scratch
-  folder with `R_LIBS` and `R_LIBS_USER` set to the renv library; CI ~7 min. One `git push` timed out on the network
-  and the retry went through.
-- **nprcgenekeepr's S1165 was mid-session during S18** (tutorial tests and `vignettes/a2interactive.Rmd`, nothing
-  copied here).
+- **Never start R inside a scratch tree without `--no-init-file`**: its `.Rprofile` turns on renv for that folder
+  and bootstraps a library in renv's shared folder. S19 did it once:
+  `~/Library/Caches/org.R-project.R/R/renv/library/tree-86aa6c47` (renv only, 77 files, harmless, left for Mark to
+  delete).
+- **A prototype's S3 methods need `NAMESPACE` lines in the scratch tree** (`S3method(asPedFrame,pedigree)` and so
+  on): without them `pkgload::load_all()` finds none and every test errors "no applicable method".
+- **Hand-derived values were wrong again** (S19: kinship2 warns about unknown sex only above 25%, and "terminated"
+  is not "unknown"). Run the drafts against the prototype before RED (Learning 18).
+- **kinship2 warns "More than 25% of the gender values are 'unknown'"**; `asPedFrameK2()` in
+  `tests/testthat/helper-asPedFrame.R:17` muffles exactly that warning (WARN 0 gate). Pedixplorer's `Pedigree()`
+  warns when it returns a data frame instead of an object.
+- **The scratch-tree recipe:** `git archive HEAD | tar -x -C <tree>`, the prototype as `<tree>/R/<name>.R`, the
+  drafts in `<tree>/tests/testthat/`; from `<tree>`: `env -u RENV_PROJECT R_LIBS=<lib> R_LIBS_USER=<lib>
+  NOT_CRAN=true Rscript --no-init-file -e 'pkgload::load_all("."); testthat::test_file(...)'`, `<lib>` from
+  `Rscript -e 'cat(renv::paths$library())'` in the project. A scratch library for Pedixplorer goes first on
+  `.libPaths()`, renv's library second; `.Library` is always added after them.
+- **Save a long run's results to a literal path**: S19's RED suite ran twice because `saveRDS()` got an unset
+  variable.
+- **`CLAUDE.md` is over its 28,000 B budget** (30,352 B after S19's sentence in Learning 3); the reduction is the
+  context-budget item's own session (`methodology/BACKLOG.md:86`, R18).
+- **Times on this Mac (S19):** suite ~3 min; coverage ~2.5 min; `R CMD check --as-cran` ~2.5 min from a scratch
+  folder; CI ~8-9 min.
 
 ### Key files
-- `methodology/BACKLOG.md:11` (the Phase 14 item), `:28` (coverage), `:76` (context budget).
-- `docs/planning/pedkindraw-api-contract.md:196` (section 4.5), `:200` (`asPedFrame()`'s row).
-- `R/findUnrelated.R:70` (`findUnrelated()`), `:114` (`.unrelatedStopMessage()`), `:142` (`.founderAncestors()`),
-  `:178` (`.unrelatedPick()`), `:198` (`.unrelatedSwap()`); `R/checkPedigree.R:80` (`.checkPedFrame()`'s call in
-  `checkPedigree()`), `:134` (`.checkPedFrame()`, the shared data-frame check a converter's output could reuse).
-- `tests/testthat/helper-findUnrelated.R:12` (`findUnrelatedRandomCase()`), `:25` (`findUnrelatedSlow()`), `:55`
-  (`kinship2Unrelated()`), `:68` (`kinship2SampleFamily()`); `tests/testthat/test_findUnrelated.R:241` (the kinship2
-  comparison with its floor).
-- `CLAUDE.md:176` (Learning 21).
+- `methodology/BACKLOG.md:11` (the Pedixplorer item), `:37` (coverage), `:86` (context budget).
+- `R/asPedFrame.R:82` (generic), `:88` (default method: its message), `:97`/`:103` (kinship2's methods), `:109`
+  (`.asPedFrameKinship2()`), `:147` (`.asPedFrameConditions()`), `:167` (`.asPedFrameText()`), `:179`
+  (`.asPedFrameTwins()`).
+- `tests/testthat/test_asPedFrame.R:21` (the refusal test), `:33` (hand-built object);
+  `tests/testthat/helper-asPedFrame.R:17` (`asPedFrameK2()`), `:44` (fixtures), `:65` (`asPedFrameForKinship2()`),
+  `:92` (`asPedFrameTrip()`), `:142` (`asPedFrameRandomCase()`).
+- `CLAUDE.md:158` (Learning 3, with S19's sentence).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -94,61 +91,50 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S17's entries were removed in S3-S18 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S18's entries were removed in S3-S19 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 19 Did
-**Deliverable:** plan Phase 14, `asPedFrame()`, new code test-first (R9): an S3 generic with methods for kinship2's
-`pedigree` and Pedixplorer's `Pedigree` (contract 4.5); kinship2's and Pedixplorer's help read and their objects
-measured (R14, Learnings 17-19), Pedixplorer decided in a scope picker, a scratch prototype with the round trip on
-every fixture as the slow check, a measured pre-RED picker, rulings R55 on, RED, GREEN, REFACTOR, checks, push, CI;
-Phase 14 DONE (IN PROGRESS)
-**Started:** 2026-11-14 10:42 CST · **Model:** Claude Opus 5.5 · Mark picked "Phase 14: asPedFrame() (Recommended)"
-at the orient picker.
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
-
-### Session 17 Handoff Evaluation (by Session 18)
+### Session 18 Handoff Evaluation (by Session 19)
 **Score: 9/10.**
-- **What helped:** the ordered steps, which became this session's sequence (drift tool; the three comparison cases
-  reproduced with kinship2 first; `rhesus375`'s row order checked before reusing its seed, and the fixture's rows
-  were identical; kinship2's help read and run under a time limit; a measured pre-RED picker; rulings from R52;
-  drafts against a prototype in a scratch tree); nprcgenekeepr's `runAgreement.R:316` and `:468`, which gave the
-  exact draws; the shared-ancestor equivalence marked as a prediction to check (it held, 0 pairs differing in 350
-  cases); the scratch-tree recipe, the rds results and the `setTimeLimit()` guard, all reused; every one of its 19
-  cited line numbers right at Orient.
-- **What was missing:** that the copied `kinship()` stops on a parent with no row, a cycle or an own parent
-  (`findGeneration()` leaves them without a generation), which shaped the faulty-pedigree picker and had to be
-  measured; that an exact search for the largest set is fast enough on these sizes to judge the rule by.
-- **What was wrong:** nothing found wrong. ("CI ~8 min" was 7 min.)
-- **ROI:** high; no rediscovery of any recipe it gave.
+- **What helped:** the ordered steps, which became this session's sequence: the drift tool; contract 4.5 and the
+  comparison's section 11.2 read whole; Pedixplorer decided first in a scope picker with measured facts; kinship2's
+  help read and its objects measured; a measured pre-RED picker; rulings from R55; drafts against a prototype, with
+  the round trip on every fixture as the slow check. Also the scratch-tree recipe, the `example()` and
+  `zero_coverage()` gotchas, `sample.ped`'s `0` codes (minnbreast has them too), and the warning that hand values
+  go wrong (one did). Every cited line number was right at Orient.
+- **What was missing:** that `R CMD check` stops with an ERROR when a suggested package is not installed, which
+  made installing Pedixplorer a condition of its half rather than an option; that a dependency count must be taken
+  against renv's sandbox (S19's first count, 13, was wrong; 47 is right, and the comparison's 49 included
+  BiocManager and BiocVersion).
+- **What was wrong:** nothing found wrong.
+- **ROI:** high; the steps and recipes saved rediscovery throughout.
 
-### What Session 18 Did
-**Deliverable:** plan Phase 13's second session, `findUnrelated()`, new code test-first; push, CI; Phase 13 DONE.
-**Started:** 2026-11-13 17:03 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "findUnrelated() (Recommended)"
-(orient); "Stop, name the problems", "Shared ancestors", "Fewest relatives, then swaps", "Tests, slow check,
-kinship2" (pre-RED, R52-R54); the PRE-RED, RED and GREEN gates "Yes"; REFACTOR "Yes, both changes".
-**Commits:** claim `b77645c`; rulings `5377808`; RED `d97079e`; GREEN `d860336`; REFACTOR `4bcfe00`; pushed
-(`60a87a7..4bcfe00`, 8 commits with S17's two close-out commits and `5631f2e`); close-out `7af4153` and the next,
-not pushed.
-**Verified:** before the picker: kinship2 1.9.6.2 on the comparison's three cases, seeds 1-100 under a time limit,
-4, 2 and 44 every time, all valid, 18, 6 and 91 different sets; a prototype's related pairs equal to `kinship()`
-above 0 in every pair of 350 cases (one process per case, six at a time) and on `synthetic_1000`/`_10000`; the rule
-against an exact search on 1,292 random pedigrees (2 short with the swap pass, 6 without it, 12 counting once);
-0.5 s at 10,000 animals, 10.7 s at 100,000 (kinship2 6.7-7.0 s at 10,000). The 19-test draft run against the
-prototype (650 expectations, 0 failed); RED 614 tests, 19 failing, each first on the missing function, WARN 0, SKIP
-0; GREEN and REFACTOR: suite 614, 0 failed, WARN 0, SKIP 0, 4332 expectations; `lint_package()` 0; roxygen
-idempotent; drift 90, 0 differ; `R CMD check --as-cran` 1 NOTE (R16's), PASS 4325 SKIP 3, twice; coverage 97.69%,
-`R/findUnrelated.R` 88 of 88, 43 of 2,178 missed in `R/`; 0.57 s on `synthetic_10000`; `quality_ratchet --run` 4/4;
-CI `43533292116` 5/5 `Status: OK`, first attempt (macOS PASS 4332; Windows 4331, SKIP 1; Ubuntu 4321, SKIP 2).
+### What Session 19 Did
+**Deliverable:** plan Phase 14's first session: `asPedFrame()`, the generic and kinship2's `pedigree` and
+`pedigreeList` methods, new code test-first; the Pedixplorer half split off to its own session (R55).
+**Started:** 2026-11-14 10:42 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Phase 14: asPedFrame()
+(Recommended)" (orient); "kinship2 now, Pedixplorer next" (scope, R55); "Accept if ids unique", "ALIVE", "No, read
+it directly", "Typed cases, round trip" (pre-RED, R55-R57); the PRE-RED, RED and GREEN gates "Yes"; REFACTOR "Yes,
+both changes".
+**Commits:** claim `d3a815f`; rulings `7b54eec`; RED `d2c5554`; GREEN `815924d`; REFACTOR `58deb0a`; pushed
+(`4bcfe00..58deb0a`, 7 commits with S18's two close-out commits); close-out commits after, not pushed.
+**Verified:** before the pickers: Pedixplorer 1.8.0 in a scratch library (13 packages there, 47 against renv's
+library), a scratch lock file (`"Bioconductor": {"Version": "3.23"}`), `R CMD check --as-cran` on a scratch copy
+with Pedixplorer suggested (ERROR at the dependencies); kinship2's and Pedixplorer's objects printed; the round trip
+on a prototype, 372 of 372 identical, all 372 differing with the index-0 defect planted; `sample.ped` and
+`minnbreast` as family lists. The drafts against the prototype: 15 tests, 418 expectations, 0 failed (one hand value
+corrected first); with the defect planted 8 of 15 fail. RED 629 tests, 15 failing, each first on the missing
+function, WARN 0, SKIP 0. GREEN and REFACTOR: suite 629, 0 failed, WARN 0, SKIP 0, 4750 expectations;
+`lint_package()` 0; roxygen idempotent; drift 90, 0 differ; `R CMD check --as-cran` 1 NOTE (R16's), PASS 4743 SKIP
+3, twice; coverage 97.74%, `R/asPedFrame.R` 49 of 49; `quality_ratchet --run` 4/4; CI `43626771667` 5/5 `Status:
+OK`, first attempt (macOS PASS 4750; Windows 4749, SKIP 1; Ubuntu 4739, SKIP 2).
 **Self-assessment: 8/10.**
-+ Every picker number was measured (kinship2 on 100 seeds, 350 equivalence cases, 1,292 exact comparisons, three
-  pedigree sizes timed); the faulty-pedigree option was grounded in measured facts (`kinship()` stops; a cycle breaks
-  the founder rule; `addParents()` gives the same pairs on pedSix); the typed swap case was found by shrinking a
-  random case and rebuilt by hand (Learning 21); RED clean; the new file fully covered; CI green first time.
-- Slips: a hand-derived value wrong again (number ids, caught while reviewing the drafts, before their run);
-  `lacy1989Ped` has no sex column (one rerun); a one-animal case dropped a matrix dimension in a scratch script; the
-  prototype's swap pass crashed when no animal was left free (found by the 10,000-animal timing, fixed before the
-  drafts; the swap test now reaches that path); GREEN's first draft had 4 lints and then 1; an `rm` on a shell
-  variable path was refused by the safety check (a fresh folder used instead); the first push timed out.
-**Ledger:** `CHANGELOG.md` S18 entries (the session and the push).
++ Every picker number measured, the install measured three ways (scratch library, scratch lock, scratch check)
+  before the scope picker; the round trip shown able to fail before it became a test, and the tests shown to catch
+  the defect; RED clean; the new file fully covered; the factor branch found redundant by coverage and removed in
+  REFACTOR.
+- Slips: the first dependency count was wrong (13; the scratch snapshot exposed the hidden 34 before the picker);
+  a hand value wrong again (a kinship2 warning that does not come); R started inside the scratch tree once, which
+  left a renv library folder; the prototype's methods unregistered on the first draft run; the RED suite run twice
+  (unset path); a Learning 3 edit duplicated a table cell (caught by counting cells before commit).
+**Ledger:** `CHANGELOG.md` S19 entries (the session and the push).

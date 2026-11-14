@@ -196,16 +196,16 @@ manifest existed are not re-judged.
 ```handoff
 session: S19
 date: 2026-11-14
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 14, asPedFrame(), new code test-first (R9): an S3 generic with methods for kinship2's pedigree and Pedixplorer's Pedigree (contract 4.5); objects measured, Pedixplorer decided in a scope picker, a scratch prototype with the round trip as the slow check, a measured pre-RED picker, rulings R55 on, RED, GREEN, REFACTOR, checks, push, CI
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the asPedFrame() item), docs/planning/pedkindraw-api-contract.md:200 (its interface)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 14's first session is DONE (S19, R55-R57): asPedFrame() exported, an S3 generic with a default method refusing any other class and methods for kinship2's pedigree and pedigreeList, pedkindraw's own new code (R7), the object read as a plain list without kinship2; 15 tests; CI 5/5 green at the first attempt; next is Phase 14's second session, asPedFrame() for Pedixplorer Pedigree objects with Pedixplorer installed into renv first (R55), which completes Phase 14
+what_was_done: claim d3a815f; rulings R55-R57 7b54eec (contract 4.5 updated; measured first: Pedixplorer 1.8.0 in a scratch library, 47 packages against renv's library, a scratch lock with "Bioconductor": {"Version": "3.23"}, R CMD check --as-cran stopping at the dependencies without it; kinship2's and Pedixplorer's objects printed; a prototype's round trip 372 of 372 identical, all 372 differing with the index-0 defect planted; sample.ped and minnbreast as family lists); RED d2c5554 (test_asPedFrame.R, 15 tests, and helper-asPedFrame.R with the round trip; each test failing first on the missing function; WARN 0, SKIP 0); GREEN 815924d (R/asPedFrame.R, NAMESPACE, man/asPedFrame.Rd); REFACTOR 58deb0a (the redundant factor branch removed; .asPedFrameConditions()); pushed 4bcfe00..58deb0a, CI 43626771667 5/5 Status OK; close-out 7a18941 and the commit carrying this receipt
+next_steps: Orient and run the drift tool; read methodology/BACKLOG.md:11 whole (every fact S19 measured on Pedixplorer 1.8.0's objects and install); install Pedixplorer into renv under Learning 3 (dated repository first, BiocManager, Bioconductor 3.23, rebuild = TRUE by name, snapshot dev = TRUE, the lock gate 0) with Pedixplorer in Suggests; a measured pre-RED picker (which of Pedixplorer's own slots become columns, famid, conditions from fill(x) and the all-NA case, the default method's message, the stop without Pedixplorer); rulings R58 on; drafts against a prototype with a Pedigree() round trip as the slow check, shown to fail with the all-NA defect planted; RED, GREEN, REFACTOR; checks; push; CI; Done 14
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Pedixplorer item), :37 (coverage), :86 (context budget), docs/planning/pedkindraw-api-contract.md:197 (section 4.5), :201 (asPedFrame()), docs/planning/standalone-pedigree-package-plan.md:514 (row 14), :159-161 (R55-R57), docs/research/pedigree-package-comparison-2026-11.md:844 (11.2), R/asPedFrame.R:88 (default method's message), :109 (.asPedFrameKinship2()), tests/testthat/test_asPedFrame.R:21 (refusal test), tests/testthat/helper-asPedFrame.R:92 (asPedFrameTrip()), CLAUDE.md:158 (Learning 3)
+gotchas: never start R inside a scratch tree without --no-init-file (S19 left renv/library/tree-86aa6c47 in renv's shared folder, renv only, for Mark to delete); a prototype's S3 methods need NAMESPACE lines in the scratch tree; hand-derived values were wrong again (kinship2's unknown-sex warning); kinship2's 25%-unknown warning is muffled only in asPedFrameK2(); count an install against renv's library alone (13 seen, 47 needed); save long runs to a literal path; CLAUDE.md 30,352 B over its 28,000 B budget; S19's scratch scripts are gone with its scratchpad
+runtime_smoke: the asPedFrame() help example runs under R CMD check --as-cran (Status 1 NOTE, R16's; PASS 4743 SKIP 3; GREEN and REFACTOR), and its code run directly gives A-D with C affected, A DECEASED and the DZ pair C, D; tests 629 FAIL 0 WARN 0 SKIP 0, 4750 expectations; lint_package 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; coverage 97.74%, R/asPedFrame.R 49 of 49; 0.04 s for 100,000 animals; CI 43626771667 5/5 Status OK at the first attempt (macOS PASS 4750; Windows 4749 SKIP 1; Ubuntu 4739 SKIP 2); quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-14 · [BL-Phase 14] S19: plan Phase 14's first session, asPedFrame() for kinship2 objects"
 commit: pending
 ```
 
