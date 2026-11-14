@@ -97,6 +97,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S17's entries were removed in S3-S18 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 19 Did
+**Deliverable:** plan Phase 14, `asPedFrame()`, new code test-first (R9): an S3 generic with methods for kinship2's
+`pedigree` and Pedixplorer's `Pedigree` (contract 4.5); kinship2's and Pedixplorer's help read and their objects
+measured (R14, Learnings 17-19), Pedixplorer decided in a scope picker, a scratch prototype with the round trip on
+every fixture as the slow check, a measured pre-RED picker, rulings R55 on, RED, GREEN, REFACTOR, checks, push, CI;
+Phase 14 DONE (IN PROGRESS)
+**Started:** 2026-11-14 10:42 CST · **Model:** Claude Opus 5.5 · Mark picked "Phase 14: asPedFrame() (Recommended)"
+at the orient picker.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 17 Handoff Evaluation (by Session 18)
 **Score: 9/10.**
 - **What helped:** the ordered steps, which became this session's sequence (drift tool; the three comparison cases

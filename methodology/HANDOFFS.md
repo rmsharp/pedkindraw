@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S19
+date: 2026-11-14
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 14, asPedFrame(), new code test-first (R9): an S3 generic with methods for kinship2's pedigree and Pedixplorer's Pedigree (contract 4.5); objects measured, Pedixplorer decided in a scope picker, a scratch prototype with the round trip as the slow check, a measured pre-RED picker, rulings R55 on, RED, GREEN, REFACTOR, checks, push, CI
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the asPedFrame() item), docs/planning/pedkindraw-api-contract.md:200 (its interface)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S18
 date: 2026-11-13
 status: complete
