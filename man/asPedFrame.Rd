@@ -5,7 +5,9 @@
 \alias{asPedFrame.default}
 \alias{asPedFrame.pedigree}
 \alias{asPedFrame.pedigreeList}
-\title{Convert a kinship2 pedigree object to the package's data frames}
+\alias{asPedFrame.Pedigree}
+\title{Convert a kinship2 or Pedixplorer pedigree object to the package's data
+frames}
 \usage{
 asPedFrame(x, ...)
 
@@ -14,9 +16,12 @@ asPedFrame(x, ...)
 \method{asPedFrame}{pedigree}(x, ...)
 
 \method{asPedFrame}{pedigreeList}(x, ...)
+
+\method{asPedFrame}{Pedigree}(x, ...)
 }
 \arguments{
-\item{x}{a kinship2 \code{pedigree} or \code{pedigreeList} object.}
+\item{x}{a kinship2 \code{pedigree} or \code{pedigreeList} object, or a
+Pedixplorer \code{Pedigree} object.}
 
 \item{...}{not used.}
 }
@@ -25,8 +30,10 @@ A list of two:
 \describe{
 \item{\code{ped}}{a data frame with the character columns \code{id},
 \code{sire}, \code{dam} (an unknown parent is \code{NA}) and \code{sex};
-then \code{famid} for a \code{pedigreeList}; then the condition columns;
-then \code{status}.}
+then \code{famid} for a \code{pedigreeList} or a \code{Pedigree} with
+families; then the condition columns; then \code{status}; and, for a
+\code{Pedigree}, Pedixplorer's fields that hold data and the object's
+other columns.}
 \item{\code{twinRelations}}{a data frame with the character columns
 \code{id1}, \code{id2} and \code{code} (\code{"MZ twin"},
 \code{"DZ twin"} or \code{"UZ twin"}), or \code{NULL} when the object has
@@ -34,16 +41,17 @@ no twin pair.}
 }
 }
 \description{
-Turns a kinship2 \code{pedigree} or \code{pedigreeList} object back into
-the data frames the rest of the package takes: a pedigree with one row per
-animal, and a table of twin pairs.
+Turns a kinship2 \code{pedigree} or \code{pedigreeList} object, or a
+Pedixplorer \code{Pedigree} object, back into the data frames the rest of
+the package takes: a pedigree with one row per animal, and a table of twin
+pairs.
 }
 \details{
-The rows keep the object's order, which is the order the animals were
-given to \code{kinship2::pedigree()}. Each parent is read by its own index,
-so an unknown parent (index 0) never moves another animal's parent. Ids
-become text: a factor's labels, and whole numbers written in full
-(\code{"100000"}, not \code{"1e+05"}), so no id is renamed.
+\strong{kinship2 objects.} The rows keep the object's order, which is the
+order the animals were given to \code{kinship2::pedigree()}. Each parent is
+read by its own index, so an unknown parent (index 0) never moves another
+animal's parent. Ids become text: a factor's labels, and whole numbers
+written in full (\code{"100000"}, not \code{"1e+05"}), so no id is renamed.
 
 Sex becomes \code{M}, \code{F} or \code{U}: male, female, and unknown or
 terminated. kinship2 has no code for a hermaphrodite, so an animal entered
@@ -69,10 +77,46 @@ names them (ten at most, in byte order); one family, such as
 
 A kinship2 object is a plain list, so it is read without calling kinship2:
 kinship2 need not be installed, for an object read back from a file for
-instance. \code{asPedFrame()} stops for an object of any other class,
-naming the class, and for a \code{pedigree} or \code{pedigreeList} that
-lacks a part it needs (\code{id}, \code{findex}, \code{mindex}, \code{sex},
-and \code{famid} for a \code{pedigreeList}), naming the parts.
+instance. \code{asPedFrame()} stops for a \code{pedigree} or
+\code{pedigreeList} that lacks a part it needs (\code{id}, \code{findex},
+\code{mindex}, \code{sex}, and \code{famid} for a \code{pedigreeList}),
+naming the parts.
+
+\strong{Pedixplorer objects.} A \code{Pedigree} is read through
+Pedixplorer's own functions, so Pedixplorer must be installed;
+\code{asPedFrame()} stops, saying so, when it is not. The rows keep the
+object's order. Ids and parents are as the object holds them: when it has
+families, Pedixplorer has joined each id to its family (\code{"F1_A"}),
+and a \code{famid} column names each animal's family. Sex becomes
+\code{M}, \code{F} or \code{U} (Pedixplorer, too, holds a hermaphrodite as
+unknown).
+
+Each condition Pedixplorer holds (one row of \code{fill(x)} and its
+\code{<name>_mods} column) becomes a column with 0, 1 or \code{NA}:
+Pedixplorer's default condition \code{affection}, the name it gives a
+column \code{affected}, becomes \code{affected}; a condition whose name
+starts with \code{affected} keeps it; any other becomes
+\code{affected_<name>}. A condition with no known value is left out: an
+object built with no condition still holds an all-\code{NA}
+\code{affection}, and that is not a condition. The death status becomes
+\code{status}: \code{"DECEASED"}, \code{"ALIVE"}, or \code{NA} where it is
+unknown, with no column when every value is unknown.
+
+Then come those of Pedixplorer's fields \code{fertility},
+\code{miscarriage}, \code{avail}, \code{evaluated}, \code{consultand},
+\code{proband}, \code{carrier}, \code{asymptomatic}, \code{adopted},
+\code{dateofbirth} and \code{dateofdeath} that hold anything besides the
+value Pedixplorer fills in when none is given, under their own names and
+types (Pedixplorer keeps a \code{birth} column it is given as
+\code{dateofbirth}, as text). Last come the object's other columns, of
+its \code{mcols()}, as they are, less Pedixplorer's own (\code{error}, and
+each condition's and the availability's columns). \code{asPedFrame()}
+stops when a column name would appear twice (an extra column called
+\code{sire}, say), naming it. Twin pairs are the MZ, DZ and UZ twins of
+\code{rel(x)}; spouse pairs are left out.
+
+\code{asPedFrame()} stops for an object of any other class, naming the
+class.
 }
 \examples{
 if (requireNamespace("kinship2", quietly = TRUE)) {
@@ -87,6 +131,19 @@ if (requireNamespace("kinship2", quietly = TRUE)) {
     status = c(1, 0, 0, 0),
     relation = data.frame(id1 = "C", id2 = "D", code = 2)
   )
+  asPedFrame(p)
+}
+if (requireNamespace("Pedixplorer", quietly = TRUE)) {
+  ## The same family as a Pedixplorer object, with a name for each animal.
+  p <- Pedixplorer::Pedigree(data.frame(
+    id = c("A", "B", "C", "D"),
+    dadid = c(NA, NA, "A", "A"),
+    momid = c(NA, NA, "B", "B"),
+    sex = c("male", "female", "male", "female"),
+    affected = c(0, 0, 1, 0),
+    status = c(1, 0, 0, 0),
+    name = c("Al", "Bea", "Cy", "Di")
+  ), rel_df = data.frame(id1 = "C", id2 = "D", code = 2))
   asPedFrame(p)
 }
 }
