@@ -196,16 +196,16 @@ manifest existed are not re-judged.
 ```handoff
 session: S18
 date: 2026-11-13
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 13's second session, findUnrelated(), new code test-first (R9); the comparison's three cases reproduced with kinship2 under a time limit, a scratch prototype, a measured pre-RED picker, rulings R52 on, RED, GREEN, REFACTOR, checks, push, CI
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the findUnrelated() item), docs/planning/pedkindraw-api-contract.md:173 (its interface)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 13 is DONE (S17 checkPedigree(); S18 findUnrelated(), R52-R54): findUnrelated() exported, pedkindraw's own new code (R9), relatedness from shared ancestors, the fewest relatives first with ties in byte order then a swap pass, stops where relatedness cannot be read; 19 tests; CI 5/5 green at the first attempt; next is Phase 14, asPedFrame(), the converters from kinship2 and Pedixplorer objects (the orient picker also offers the coverage item)
+what_was_done: claim b77645c; rulings R52-R54 5377808 (contract 4.4 updated; measured first: kinship2 reproduced on the comparison's three cases, 4, 2 and 44 on 100 of 100 seeds; kinship() equivalence in every pair of 350 cases; an exact search on 1,292 random pedigrees; 0.5 s at 10,000 animals); RED d97079e (test_findUnrelated.R, 19 tests, and helper-findUnrelated.R with the slow check; each test failing first on the missing function); GREEN d860336 (R/findUnrelated.R, export, man page; 0.57 s on synthetic_10000); REFACTOR 4bcfe00 (.unrelatedStopMessage(); .checkPedFrame() shared with checkPedigree()); pushed 60a87a7..4bcfe00, CI 43533292116 5/5 Status OK at the first attempt; close-out 7af4153 (plan Done 13, ROADMAP, BACKLOG Phase 14 item and coverage 43 of 2,178, CLAUDE.md Learning 21) and this commit (SESSION_NOTES, this receipt, CHANGELOG)
+next_steps: Orient and run the drift tool; read contract 4.5 and the comparison's section 11.2 whole (what each converter reads; the two required test cases: index 0 must not shift later parents, Pedixplorer's all-NA affection column is not a condition); decide Pedixplorer first in a scope picker with measured facts (not installed; a Bioconductor install is a renv change under Learning 3; without it its tests skip, Learning 14); read kinship2's pedigree and pedigreeList help pages and measure the objects built from sample.ped and the fixtures; a measured pre-RED picker, rulings R55 on in their own commit; drafts against a prototype in a scratch tree, the round trip on every fixture as the slow check; RED, GREEN, REFACTOR; checks; push; CI; Done 14
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Phase 14 item), :28 (coverage), :76 (context budget), docs/planning/pedkindraw-api-contract.md:196 (section 4.5), :200 (asPedFrame()), docs/planning/standalone-pedigree-package-plan.md:510 (row 14), :109 (R7), :155-157 (R52-R54), docs/research/pedigree-package-comparison-2026-11.md:844 (11.2), R/findUnrelated.R:70, R/checkPedigree.R:134 (.checkPedFrame()), tests/testthat/helper-findUnrelated.R:68 (kinship2SampleFamily()), CLAUDE.md:176 (Learning 21)
+gotchas: hand-derived expected values were wrong again (number ids: "10" before "2" in byte order), so run drafts against a prototype before RED; Pedixplorer is not installed and Bioconductor is not the dated CRAN repository renv's lock names; kinship2's sample.ped codes unknown parents 0 and its pedigree() refuses one known parent; Claude Code refuses rm on a path built from a shell variable (use a fresh folder); example() finds no help under load_all(); covr::zero_coverage() needs rstudioapi (filter as.data.frame(cv) instead); CLAUDE.md is over its 28,000 B budget (30,063 B); a push can time out on the network (retry)
+runtime_smoke: the findUnrelated() help example runs under R CMD check --as-cran (Status 1 NOTE, R16's; PASS 4325 SKIP 3; GREEN and REFACTOR), and its code run directly gives d1 f1 s1 and f1 o1; tests 614 FAIL 0 WARN 0 SKIP 0, 4332 expectations; lint_package 0; roxygen idempotent; drift tool exit 0, 90 functions, 0 differ; coverage 97.69%, R/findUnrelated.R 88 of 88; 138 chosen in 0.57 s on synthetic_10000 (kinship2 6.5 s); CI 43533292116 5/5 Status OK at the first attempt (macOS PASS 4332; Windows 4331 SKIP 1; Ubuntu 4321 SKIP 2); quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-13 · [BL-Phase 13] S18: plan Phase 13's second session, findUnrelated(); Phase 13 DONE"
 commit: pending
 ```
 
