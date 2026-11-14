@@ -77,14 +77,7 @@
 #' checkPedigree(data.frame(id = c("s", "d", "o"), sire = c(NA, NA, "s"),
 #'                          dam = c(NA, NA, "d")))
 checkPedigree <- function(ped) {
-  if (!is.data.frame(ped)) {
-    stop("checkPedigree: ped must be a data frame", call. = FALSE)
-  }
-  lacking <- setdiff(c("id", "sire", "dam"), names(ped))
-  if (length(lacking) > 0L) {
-    stop("checkPedigree: ped lacks the column(s) ", toString(lacking),
-         call. = FALSE)
-  }
+  .checkPedFrame(ped, "checkPedigree")
   id <- as.character(ped[["id"]])
   sire <- as.character(ped[["sire"]])
   dam <- as.character(ped[["dam"]])
@@ -133,6 +126,20 @@ checkPedigree <- function(ped) {
                        stringsAsFactors = FALSE)
   rownames(result) <- NULL
   result
+}
+
+## Stops, the message starting with the caller's name, unless ped is a data
+## frame with the columns id, sire and dam (checkPedigree() and
+## findUnrelated()).
+.checkPedFrame <- function(ped, caller) {
+  if (!is.data.frame(ped)) {
+    stop(caller, ": ped must be a data frame", call. = FALSE)
+  }
+  lacking <- setdiff(c("id", "sire", "dam"), names(ped))
+  if (length(lacking) > 0L) {
+    stop(caller, ": ped lacks the column(s) ", toString(lacking),
+         call. = FALSE)
+  }
 }
 
 ## The checks, in the order their rows come (plan R50).

@@ -68,14 +68,7 @@
 #' ## Only the offspring and f1 genotyped: one of the siblings and f1.
 #' findUnrelated(ped, ped$id %in% c("o1", "o2", "f1"))
 findUnrelated <- function(ped, genotyped) {
-  if (!is.data.frame(ped)) {
-    stop("findUnrelated: ped must be a data frame", call. = FALSE)
-  }
-  lacking <- setdiff(c("id", "sire", "dam"), names(ped))
-  if (length(lacking) > 0L) {
-    stop("findUnrelated: ped lacks the column(s) ", toString(lacking),
-         call. = FALSE)
-  }
+  .checkPedFrame(ped, "findUnrelated")
   if (!is.logical(genotyped)) {
     stop("findUnrelated: genotyped must be TRUE or FALSE for each row of ped",
          call. = FALSE)
@@ -89,26 +82,9 @@ findUnrelated <- function(ped, genotyped) {
          .checkListed(which(is.na(genotyped))), call. = FALSE)
   }
   ped <- ped[c("id", "sire", "dam")]
-  problems <- checkPedigree(ped)
-  problems <- problems[problems$check %in% .unrelatedStops, ]
-  if (nrow(problems) > 0L) {
-    named <- problems$id
-    codes <- problems$check == "missingParentCodes"
-    named[codes] <- paste0("\"", named[codes], "\"")
-    rows <- problems$check == "missingIds"
-    named[rows] <- problems$detail[rows]
-    byCheck <- split(named, factor(problems$check, .unrelatedStops))
-    byCheck <- byCheck[lengths(byCheck) > 0L]
-    listed <- paste0(names(byCheck), ": ",
-                     vapply(byCheck, .checkListed, character(1L)),
-                     collapse = "; ")
-    hint <- if ("rowlessParents" %in% names(byCheck)) {
-      " (addParents() adds a row for each parent that has none)"
-    } else {
-      ""
-    }
-    stop("findUnrelated: relatedness cannot be read from ped, ",
-         "checkPedigree() reports ", listed, hint, call. = FALSE)
+  refusal <- .unrelatedStopMessage(checkPedigree(ped))
+  if (!is.null(refusal)) {
+    stop(refusal, call. = FALSE)
   }
   id <- as.character(ped[["id"]])
   chosen <- which(genotyped)
@@ -131,6 +107,33 @@ findUnrelated <- function(ped, genotyped) {
   "missingIds", "duplicateIds", "ownParent", "cycle", "rowlessParents",
   "missingParentCodes"
 )
+
+## The message findUnrelated() stops with, given checkPedigree()'s rows, or
+## NULL when none of them leaves relatedness undefined: the animals under each
+## such check (rows for missing ids, codes quoted), ten at most per check.
+.unrelatedStopMessage <- function(problems) {
+  problems <- problems[problems$check %in% .unrelatedStops, ]
+  if (nrow(problems) == 0L) {
+    return(NULL)
+  }
+  named <- problems$id
+  codes <- problems$check == "missingParentCodes"
+  named[codes] <- paste0("\"", named[codes], "\"")
+  rows <- problems$check == "missingIds"
+  named[rows] <- problems$detail[rows]
+  byCheck <- split(named, factor(problems$check, .unrelatedStops))
+  byCheck <- byCheck[lengths(byCheck) > 0L]
+  listed <- paste0(names(byCheck), ": ",
+                   vapply(byCheck, .checkListed, character(1L)),
+                   collapse = "; ")
+  hint <- if ("rowlessParents" %in% names(byCheck)) {
+    " (addParents() adds a row for each parent that has none)"
+  } else {
+    ""
+  }
+  paste0("findUnrelated: relatedness cannot be read from ped, ",
+         "checkPedigree() reports ", listed, hint)
+}
 
 ## One row per animal, one column per founder (an animal with no known
 ## parent): 1 where the founder is the animal or one of its ancestors. Every
