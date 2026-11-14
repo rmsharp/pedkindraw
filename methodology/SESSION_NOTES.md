@@ -91,6 +91,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S19's entries were removed in S3-S20 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 21 Did
+**Deliverable:** plan Phase 15's design session: user-suppliable layout hints (R3), one design document in
+`docs/planning/`, no code (IN PROGRESS)
+**Started:** 2026-11-14 17:48 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Layout-hints design
+(Recommended)" (orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 19 Handoff Evaluation (by Session 20)
 **Score: 9/10.**
 - **What helped:** the ordered steps, which became this session's sequence (drift tool; the backlog item read
