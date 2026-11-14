@@ -134,30 +134,37 @@ asPedFrame.pedigreeList <- function(x, ...) {
   if (family) {
     ped$famid <- .asPedFrameText(x[["famid"]])
   }
-  affected <- x[["affected"]]
-  if (is.matrix(affected)) {
-    conditionNames <- colnames(affected)
-    if (is.null(conditionNames)) {
-      conditionNames <- as.character(seq_len(ncol(affected)))
-    }
-    for (j in seq_len(ncol(affected))) {
-      ped[[paste0("affected_", conditionNames[j])]] <- affected[, j]
-    }
-  } else if (!is.null(affected)) {
-    ped$affected <- affected
-  }
+  ped <- .asPedFrameConditions(ped, x[["affected"]])
   if (!is.null(x[["status"]])) {
     ped$status <- ifelse(x[["status"]] == 1L, "DECEASED", "ALIVE")
   }
   list(ped = ped, twinRelations = .asPedFrameTwins(x[["relation"]], id))
 }
 
+## ped with kinship2's conditions added: a single affected vector as the
+## column affected, a matrix's columns as affected_<column name>, or
+## affected_<column number> when the matrix has no column names (plan R56).
+.asPedFrameConditions <- function(ped, affected) {
+  if (is.null(affected)) {
+    return(ped)
+  }
+  if (!is.matrix(affected)) {
+    ped$affected <- affected
+    return(ped)
+  }
+  conditionNames <- colnames(affected)
+  if (is.null(conditionNames)) {
+    conditionNames <- as.character(seq_len(ncol(affected)))
+  }
+  for (j in seq_len(ncol(affected))) {
+    ped[[paste0("affected_", conditionNames[j])]] <- affected[, j]
+  }
+  ped
+}
+
 ## Ids as text: a factor's labels, and whole numbers written in full
 ## ("100000", where as.character() gives "1e+05"; plan R56).
 .asPedFrameText <- function(x) {
-  if (is.factor(x)) {
-    return(as.character(x))
-  }
   text <- as.character(x)
   if (is.numeric(x)) {
     whole <- !is.na(x) & x == trunc(x) & abs(x) < 1e15
