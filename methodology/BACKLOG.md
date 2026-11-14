@@ -8,28 +8,22 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 13's second session: `findUnrelated()`** (READY, Effort M, a guess; `checkPedigree()` DONE S17,
-      R49-R51) -- plan row 13 (`docs/planning/standalone-pedigree-package-plan.md:505`; R9; R49: Phase 13 takes two
-      sessions, this is the second); contract section 4.4 (`docs/planning/pedkindraw-api-contract.md:173`, `:187`):
-      `findUnrelated(ped, genotyped)`, character ids that are genotyped, with kinship 0 between every two, to which
-      no genotyped animal can be added, the same answer every time; it stops on a `genotyped` of the wrong length
-      or with an `NA`. kinship2's `pedigree.unrelated()` is a random greedy method (its help page: the row of the
-      kinship matrix with the most zeros first, ties at random), so the same answer every time needs a tie rule
-      (byte order, C16, as R44 and R46). It must give sets as large as kinship2's and Pedixplorer's on the
-      comparison's three pedigrees: 4 and 2 on `sample.ped`'s families 1 and 2 with their own `avail`, 44 on
-      `rhesus375` with 30% available drawn after `set.seed(42L)` (section 5.4,
-      `docs/research/pedigree-package-comparison-2026-11.md:392`; the runs: nprcgenekeepr
-      `tools/pedigreeComparison/runAgreement.R:316` `compareUnrelated()`, whose "maximal" test is the definition,
-      and `:468`), and finish 10,000 animals (kinship2 6.5 s, section 7, `:424`). Open for the pre-RED picker: what
-      it does with a pedigree `checkPedigree()` faults (a cycle, an own parent or a duplicate id leaves kinship
-      undefined); whether relatedness comes from the copied `kinship()` (dense, 8 n^2 bytes) or from shared
-      ancestors (a prediction, not measured: kinship above 0 exactly when two animals share an ancestor or one
-      descends from the other; compare it with `kinship()` on every fixture pedigree before a picker states it); the
-      tie rule. Every expected value computed before RED (Learning 18); kinship2 from its help page and measured
-      results only (R14), each case under a time limit (Learning 19). Pedixplorer is not installed: installing it
-      (Bioconductor) is a renv change under Learning 3, so a picker choice. Plan Phases 14-17 follow, each waiting
-      for the one before (scope: the plan's section 4; summary: `methodology/ROADMAP.md`); each gets its own item
-      here when it is next.
+- [ ] **Phase 14: `asPedFrame()`, converters from kinship2 and Pedixplorer objects** (READY, Effort M, a guess;
+      Phase 13 DONE S17-S18) -- plan row 14 (`docs/planning/standalone-pedigree-package-plan.md:510`; R7); contract
+      section 4.5 (`docs/planning/pedkindraw-api-contract.md:200`): `asPedFrame(x, ...)`, an S3 generic with methods
+      for kinship2's `pedigree` and Pedixplorer's `Pedigree`, returning a list `ped` (a data frame in the package's
+      conventions) and `twinRelations` (a data frame, or `NULL`); it stops for any other class, naming it, and when
+      the object's package is not installed. What each method reads is the comparison's section 11.2 table
+      (`docs/research/pedigree-package-comparison-2026-11.md:844`), and its two test cases are required: an unknown
+      parent's index 0 must not shift later parents, and Pedixplorer's all-`NA` `affection` column is not a
+      condition. kinship2's `pedigreeList` is accepted when no id repeats across families (Claude's proposal in the
+      contract, open for the pre-RED picker). Open for the pre-RED picker: Pedixplorer (Bioconductor) is not installed
+      in pedkindraw's renv (kinship2 1.9.6.2 is); installing it is a renv change under Learning 3 (the dated
+      repository, `rebuild = TRUE`, the `renv-lock-no-latest-repository` gate after the snapshot), and without it the
+      Pedixplorer method's tests skip (Learning 14: read RED's SKIP count). Both packages stay in Suggests (R7). Every
+      expected value computed before RED (Learning 18); kinship2 and Pedixplorer from their help pages and measured
+      results only (R14). Plan Phases 15-17 follow, each waiting for the one before (scope: the plan's section 4;
+      summary: `methodology/ROADMAP.md`); each gets its own item here when it is next.
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -48,7 +42,9 @@ issues).*
       take all 44. S15 on `b314273`: 97.38%, 44 of 1,929, the same 44 (since `dff6509` only new files changed;
       `R/familyCheck.R` 57 of 57). S16 on `b8ade6e`: 97.46%, 44 of 2,006, the same 44 (since `b314273` only
       `R/ibdMatrix.R` changed in `R/`, 77 of 77). S17 on `60a87a7`: 97.57%, 44 of 2,089, the same 44 (since `b8ade6e` only
-      `R/checkPedigree.R` was added in `R/`, 83 of 83).
+      `R/checkPedigree.R` was added in `R/`, 83 of 83). S18 on `4bcfe00`: 97.69%, 43 of 2,178: `R/rbindFill.R:30` (a Date
+      column `addParents()` fills) is now reached by `test_findUnrelated.R`'s pedSix test, so `R/rbindFill.R` has 1
+      left (35); `R/findUnrelated.R` 88 of 88, `R/checkPedigree.R` 84 of 84.
 
 ## Waiting on Mark
 
@@ -81,7 +77,11 @@ issues).*
       `methodology/.context-budget.json` names `SESSION_NOTES.md` at the root, but this repository keeps it in
       `methodology/`, so `python3 methodology/context_budget.py --status` reports it "file does not exist" and the
       budget is UNMEASURED (S6). Its `LEARNINGS.md` entry names a file this project does not keep (learnings are in
-      `CLAUDE.md`; the seed's own note says to delete the entry then).
+      `CLAUDE.md`; the seed's own note says to delete the entry then). S18: `5631f2e` (run from the methodology repository, its S444)
+      gave the notes row and the two synced rows their `methodology/` paths, so they read `ok`; left here: the
+      `LEARNINGS.md` row, and `CLAUDE.md`, over its 28,000 B ceiling (29,371 B at S18's Orient, 30,063 B after
+      S18's Learning 21; `context_budget.py --check` exits 2): move, archive or delete rows as the tool lists, or
+      raise the ceiling only by plan-mode approval.
 
 - [ ] **CI notices: `actions/checkout@v5` and Ubuntu 26** (READY, Effort S) -- warnings, not failures, on run
       `42960032938`: Node 20 is deprecated under `actions/checkout@v4`, and `ubuntu-latest` moves to Ubuntu 26

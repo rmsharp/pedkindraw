@@ -33,9 +33,10 @@ change ported (pedkindraw S12, R37; `DIVERGENCE.md` has no row); Phase 10 DONE (
 and its helpers, 24 tests, R38-R39), so the copy slices, Phases 6-10, are complete; Phase 11 DONE (pedkindraw S14:
 `bitSize()`, `findUnavailable()`, `findAvailNonInform()`, `findAvailAffected()`, the first new code, 32 tests,
 R40-R42); Phase 12 DONE (pedkindraw S15: `familyCheck()`, 16 tests, R43-R45; pedkindraw S16: `ibdMatrix()`, 19
-tests, R46-R48); Phase 13's first session done (pedkindraw S17: `checkPedigree()`, 23 tests, R49-R51).
-**Next:** Phase 13's second session, `findUnrelated()` (R9, R49; contract section 4.4; pedkindraw
-`methodology/BACKLOG.md`).
+tests, R46-R48); Phase 13 DONE (pedkindraw S17: `checkPedigree()`, 23 tests, R49-R51; pedkindraw S18:
+`findUnrelated()`, 19 tests, R52-R54).
+**Next:** Phase 14, `asPedFrame()`, the converters from kinship2 and Pedixplorer objects (R7; contract section 4.5;
+pedkindraw `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -505,7 +506,7 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 |---|---|---|
 | 11 | Export the rewrite's shrink helpers and `bitSize` (contract section 4.3). DONE (pedkindraw S14) | R3, R11, R40-R42 |
 | 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). DONE: `familyCheck()` (pedkindraw S15), `ibdMatrix()` (pedkindraw S16) | R3, R11, R43-R48; gap analysis rows 7, 12 |
-| 13 | Short pedigree checker and short unrelated-set finder (2 sessions, R49). Done: `checkPedigree()` (pedkindraw S17); next `findUnrelated()` | R9, R49-R51; sized at Phase 1, specified at Phase 4 |
+| 13 | Short pedigree checker and short unrelated-set finder (2 sessions, R49). DONE: `checkPedigree()` (pedkindraw S17), `findUnrelated()` (pedkindraw S18) | R9, R49-R54; sized at Phase 1, specified at Phase 4 |
 | 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2) | R7 |
 | 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build | R3 |
 
@@ -564,6 +565,21 @@ check --as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 3675, SKIP 3); cov
 83 of 83 statements; 0.14 s on 100,000 animals, 0.22 s with 5 cycles put in; CI run `43507284539` 5/5 `Status: OK`
 at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 3682; Windows 3681, SKIP 1; Ubuntu 3671, SKIP 2).
 Phase 13's second session, `findUnrelated()`, is next.
+
+**Done 13 (`findUnrelated()`; pedkindraw S18; R52-R54):** `findUnrelated()` exported, pedkindraw's own new code in
+`R/findUnrelated.R` with internal helpers `.founderAncestors()`, `.unrelatedNeighbours()`, `.unrelatedCount()`,
+`.unrelatedPick()`, `.unrelatedSwap()` and `.unrelatedStopMessage()`, and `.checkPedFrame()`, which it shares with
+`checkPedigree()` (REFACTOR). Relatedness from founder ancestors (R52); the fewest relatives first, ties in byte
+order, then a swap pass (R53). Measured before the picker on a scratch prototype: kinship2 1.9.6.2 reproduced on the
+comparison's three cases (4, 2 and 44 on 100 of 100 seeds); the related pairs equal to `kinship()` above 0 in every
+pair of 350 cases; the largest possible set, by an exact search, in 1,290 of 1,292 random pedigrees. 19 tests in a
+new file and a helper (`helper-findUnrelated.R`, with the slow check `findUnrelatedSlow()`), the draft run against
+the prototype before RED (one hand-derived value corrected first); RED 19 of 19 failing, each first on the missing
+function. Checks: tests 614, 0 failed, WARN 0, SKIP 0, 4332 expectations; lint 0; roxygen idempotent; drift tool 90
+functions, 0 differ; `R CMD check --as-cran` 0 errors, 0 warnings, R16's NOTE (tests PASS 4325, SKIP 3); coverage
+97.69%, `R/findUnrelated.R` 88 of 88 statements; on `synthetic_10000` with 30% genotyped, 138 chosen in 0.57 s
+(kinship2 137 in 6.5 s); CI run `43533292116` 5/5 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each
+(macOS PASS 4332; Windows 4331, SKIP 1; Ubuntu 4321, SKIP 2). Phase 13 is DONE; Phase 14, `asPedFrame()`, is next.
 
 ### Phase 16 -- Documentation (new repository)
 

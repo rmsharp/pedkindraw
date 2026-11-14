@@ -11,9 +11,9 @@ nprcgenekeepr is not changed). Each slice copies one group of functions, tests f
 identical to nprcgenekeepr's on the Phase 1 pedigrees. Why: when the five slices are done, pedkindraw computes
 kinship, trims and shrinks pedigrees and draws them interactively, and the drawing is what the comparison found is
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
-section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phase 11 is done (S14), Phase 12
-(S15-S16) and Phase 13's first half, `checkPedigree()` (S17; What's Built, below); next is its second half,
-`findUnrelated()` (Planned, below).
+section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phases 11 (S14), 12 (S15-S16) and 13
+(S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) are done; next is Phase 14, the converters
+(Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -29,11 +29,8 @@ section 10). All five are done (S13). The new work of Phases 11-15 has begun: Ph
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 13, second session:** `findUnrelated()`, a short unrelated-set finder that gives the same answer every
-  time (R9, R49; contract section 4.4). Next (`methodology/BACKLOG.md`). Its first session, `checkPedigree()`, is
-  done (S17).
 - **Phase 14:** `asPedFrame()`, converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects; both packages
-  stay optional (R7; contract section 4.5).
+  stay optional (R7; contract section 4.5). Next (`methodology/BACKLOG.md`).
 - **Phase 15:** layout hints a user can supply: a design session first, then the build (R3).
 - **Phase 16:** documentation: README, a getting-started and a drawing vignette, a pkgdown site, NEWS, the Phase 1-2
   timing tables.
@@ -42,6 +39,14 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Unrelated-set finder (Phase 13, second session), 1 export:** `findUnrelated()` chooses genotyped animals of
+  which no two share an ancestor (kinship 0), to which none can be added and in which no chosen animal can be
+  traded for two, the same set every time (R52-R54): the animal with the fewest relatives first, ties in byte order,
+  then a swap pass. It refuses a pedigree from which relatedness cannot be read (`checkPedigree()`'s missing or
+  duplicate ids, own parents, cycles, parents with no row, `"0"` codes) and does not read sex. pedkindraw's own new
+  code with internal helpers `.founderAncestors()`, `.unrelatedPick()`, `.unrelatedSwap()` and three others. 19
+  tests; checked against a slow check from the definition on 300 random pedigrees and, where installed, against
+  kinship2's set sizes. 138 animals in 0.57 s on 10,000 animals with 30% genotyped, where kinship2 takes 6.5 s.
 - **Pedigree checker (Phase 13, first session), 1 export:** `checkPedigree()` lists a pedigree's problems, one row
   per problem id (`check`, `id`, `detail`), and repairs nothing: ids missing or duplicated, an animal its own
   parent or its own ancestor, parents with no row, `"0"` or blank for an unknown parent, male dams, female sires,
@@ -123,6 +128,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 13's second session, `findUnrelated()`, and with it Phase 13 (pedkindraw S18, 2026-11-13).** New code
+  written test-first (Mark's picks R52-R54: relatedness from shared ancestors; the fewest relatives first, then a
+  swap pass; a stop naming the animals where relatedness cannot be read; tests against a slow check and kinship2);
+  kinship2 reproduced on the comparison's three cases first, and the rule measured against an exact search before
+  the picker; the typed swap case found by shrinking a random one; the new file fully covered; CI green on five jobs
+  at the first attempt.
 - **Phase 13's first session, `checkPedigree()` (pedkindraw S17, 2026-11-13).** New code written test-first
   (Mark's picks R49-R51: `findUnrelated()` next session; one row per problem id; two checks added to the contract's
   nine; `"0"`, `"NA"` and blank as unknown-parent codes; tests against a slow checker and kinship2's `pedigree()`);
