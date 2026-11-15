@@ -8,23 +8,28 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 15, design session: user-suppliable layout hints** (READY, Effort M, a guess; a design document, no
-      code) -- plan row 15 (`docs/planning/standalone-pedigree-package-plan.md:517`: "a design session first
-      (engine-surface design), then the build") and ruling R3 (`:106`, Mark S742: "user-suppliable layout hints"
-      IN); contract `docs/planning/pedkindraw-api-contract.md:229` ("Layout hints (R3) are Phase 15, whose design
-      session comes first"). What the hints close: the gap analysis's `autohint` row
-      (`docs/research/kinship2-feature-gap-analysis-2026-09-20.md:92`, and `:146`: the engine orders siblings and
-      spouses itself and accepts no override). What the others take: kinship2's `align.pedigree(..., hints)` and
-      `autohint()`, Pedixplorer's `align(..., hints)`, `auto_hint()`, `best_hint()` and its `Hints` object (`horder`
-      and `spouse`) (`docs/research/pedigree-package-comparison-2026-11.md:284`; Pedixplorer is installed since S20,
-      so its `Hints` help page can be read). The layout code is copied from nprcgenekeepr
-      (`R/makePedigreeMatingLayout.R`, `R/makePedigreeDiagramData.R` and their helpers), so any change to it is a
-      `DIVERGENCE.md` row or a change mirrored there (drift rule, plan section 5): the design should say which, and
-      whether hints enter as a new argument of the exported functions or a wrapper. Open too: whether
-      `asPedFrame()` should hand on the hints a kinship2 or Pedixplorer object holds (it does not now). The plan states
-      no DONE criteria for Phase 15; the design session writes them. Workstream:
-      `methodology/workstreams/DESIGN_WORKSTREAM.md`. Plan Phases 16-17 follow (scope: the plan's section 4;
-      summary: `methodology/ROADMAP.md`).
+- [ ] **Phase 15a: the `order` layout hint** (READY, Effort M, a guess; strict TDD) -- the design
+      `docs/planning/layout-hints-design.md` (S21): its section 7.1 (`:109`, the interface), 7.2 (`:127`, what
+      `order` does), 7.3 (`:147`, the code changes: `R/layoutHints.R`, call-site lines in
+      `makePedigreeMatingLayout()` and `.positionMatingUnitForest()`, a `DIVERGENCE.md` row each), 9 (`:212`, 15a's
+      DONE criteria) and 10 (`:249`, D1-D5 for the pre-RED picker); rulings R60-R63
+      (`docs/planning/standalone-pedigree-package-plan.md:166`-`:169`). `makePedigreeMatingLayout(..., hints = NULL)`
+      with `hints$order`: the rows of `ped` sorted by the hint, the founder-reordering step `.orderRootSubtrees()`
+      skipped where the hint orders founders. Typed cases (the design's M1 and M5), 100 seeded random family
+      pedigrees (the generator, Appendix A, `:274`) with a floor on what was checked, a kinship2 comparison where it
+      returns. Measure D1-D5 before the picker (Learnings 17-19).
+
+- [ ] **Phase 15b: the `spouse` layout hint** (READY after 15a, Effort M, a guess; strict TDD) -- the design's
+      sections 7.2-7.3, 9 (`:227`) and D6, D7, D9: which side a mate is drawn on (`R/makePedigreeDiagramData.R:1112`,
+      `:1290`) and which partner anchors a mating (`:519`); a `DIVERGENCE.md` row for `.buildMatingUnitForest()`; the
+      help sentence "It cannot be turned off" (`:1579`) amended. The scratch prototype lines are the design's
+      Appendix B (`:337`).
+
+- [ ] **Phase 15c: converters pass hints on** (READY after 15b, Effort S-M, a guess; strict TDD) -- R62 and the
+      design's sections 7.4 (`:175`), 9 (`:238`) and D8: `asPedFrame()` returns `hints` as a third element (kinship2's
+      `order` and `spouse`, Pedixplorer's `horder(x)` and `spouse(x)`, in ids), `NULL` when none; the 9 converter
+      tests that compare the whole returned list gain the element (measured, M8); contract 4.5. Then Phase 15 is
+      DONE; plan Phases 16-17 follow (scope: the plan's section 4; summary: `methodology/ROADMAP.md`).
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on

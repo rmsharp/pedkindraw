@@ -13,7 +13,8 @@ kinship, trims and shrinks pedigrees and draws them interactively, and the drawi
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
 section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phases 11 (S14), 12 (S15-S16) and 13
 (S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) and 14 (S19-S20: `asPedFrame()` for
-kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is next (Planned, below).
+kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is designed (S21) and its build is next
+(Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -29,8 +30,11 @@ kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is next (Pla
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 15:** layout hints a user can supply: a design session first, then the build (R3). Next: its design
-  session (`methodology/BACKLOG.md`).
+- **Phase 15:** layout hints a user can supply (R3): designed in S21 (`docs/planning/layout-hints-design.md`,
+  R60-R63). A `hints` argument on `makePedigreeMatingLayout()` sets the order of siblings, families and founder
+  couples and where mates are drawn, as kinship2's and Pedixplorer's hints do, and `asPedFrame()` passes an
+  object's hints on. Built in three sessions: 15a the order (next, `methodology/BACKLOG.md`), 15b spouse hints,
+  15c the converters.
 - **Phase 16:** documentation: README, a getting-started and a drawing vignette, a pkgdown site, NEWS, the Phase 1-2
   timing tables.
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
@@ -143,6 +147,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 15's design, user-suppliable layout hints (pedkindraw S21, 2026-11-14).** A design document, no code:
+  what kinship2's and Pedixplorer's hints do, read from their help pages; where the copied engine sets left-to-right
+  order (the rows of `ped`, a founder-reordering step, fixed rules for anchors and mate sides); eight measurements
+  before Mark's picks (sorting rows by a hint ordered 9,840 of 9,840 random sibships; scratch prototypes of the
+  spouse hints worked on 1,090 and 1,936 matings); rulings R60-R63 (order and mate placement, a `hints` argument,
+  converters pass hints on, three build sessions with their DONE criteria).
 - **Phase 14's second session, `asPedFrame()` for Pedixplorer objects, and with it Phase 14 (pedkindraw S20,
   2026-11-14).** Pedixplorer (Bioconductor 3.23) installed into renv, the 8 dependencies the lock took from
   "latest" reinstalled from the dated repository; new code written test-first (Mark's picks R58-R59: Pedixplorer's

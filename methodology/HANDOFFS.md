@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S21
 date: 2026-11-14
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 15's design session, user-suppliable layout hints (R3): one design document in docs/planning/, no code; kinship2's and Pedixplorer's hints measured on a small pedigree before the pickers; rulings from R60; the build's DONE criteria written
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 15 design item), docs/planning/standalone-pedigree-package-plan.md:517 (row 15), docs/planning/pedkindraw-api-contract.md:229 (layout hints)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 15's design is DONE: docs/planning/layout-hints-design.md, user-suppliable layout hints (R3), no code, rulings R60-R63 (order and mate placement; a hints argument on makePedigreeMatingLayout(); asPedFrame() passes hints on; three build sessions 15a-15c with DONE criteria); next Phase 15a, the order hint
+what_was_done: claim 7846b2c; design, rulings and contract pointer 2272b3e: kinship2's and Pedixplorer's hint help pages read; the copied engine read where it orders animals (rows of ped, .orderRootSubtrees(), the anchor rule, the mate-side rules, the QP keeping row order); M1-M8 measured before the pickers (rows sorted by a random hint: 190 of 190 fixture and 9,840 of 9,840 random sibships in hinted order; the founder-reordering step changed 216 of 243 hinted founder orders, 243 of 243 held with it skipped; 71% of random matings male-left by a fixed rule; scratch prototypes of the side hint, 1,090 of 1,090, and the anchor hint, 1,936 flipped, 0 errors; a third asPedFrame() element fails 9 of 29 converter tests); five pickers, each the recommended option at the first try; the plan's R60-R63, row 15 and status; the contract's 4.6; ROADMAP; BACKLOG (15a, 15b, 15c)
+next_steps: Orient; drift tool; git -C ../nprcgenekeepr log baef1e12c..HEAD on the three layout files; read the design's sections 4, 7, 9 and 10 and the engine lines they cite; measure D1-D5 (unnamed animals and ties; which founder's number orders a founder couple; when to skip .orderRootSubtrees(); validation errors; twins) before the pre-RED picker; a scratch prototype of R/layoutHints.R and the call sites with test drafts run against it; RED, GREEN, REFACTOR; DIVERGENCE.md rows for makePedigreeMatingLayout() and .positionMatingUnitForest(); the design's section 9 checks including the fidelity tool; push; CI; "Done 15a"
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (15a), :22 (15b), :28 (15c), :34 (coverage), docs/planning/layout-hints-design.md :109 (7.1), :127 (7.2), :147 (7.3), :212 (15a DONE), :249 (D1-D9), :274 (generator), :337 (prototype lines), docs/planning/standalone-pedigree-package-plan.md:166-169 (R60-R63), :523 (row 15), R/makePedigreeDiagramData.R:452, :519, :620, :904, :1023, :1112, :1290, :1670, :1714, R/orderRootSubtrees.R:59
+gotchas: makePedigreeMatingLayout() lives in R/makePedigreeDiagramData.R:1670 (no file of its own); nprcgenekeepr's layout design documents quote kinship2's source: read their measurements only (R14); prototype a copied function in memory by reading its lines, inserting, eval in an env whose parent is the namespace and assigning it there (stopifnot the insertion text: S21 was one line off); asPedFrameFixtures() needs the working folder tests/testthat, and several fixtures name parents with no row (add rows before findGeneration()); macOS file names ignore case (Hints/hints help files); R CMD check from a scratch folder; CLAUDE.md over its budget, nothing added
+runtime_smoke: n/a — docs-only (no file under R/ or tests/ changed; the measurements ran the package's layout on scratch copies, the design's section 5); drift tool exit 0, 90 functions, 0 differ; quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-14 · [BL-Phase 15] S21: plan Phase 15's design, user-suppliable layout hints (R3), rulings R60-R63"
+commit: this receipt's commit (close-out)
 ```
 
 ```handoff
