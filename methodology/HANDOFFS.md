@@ -195,18 +195,18 @@ manifest existed are not re-judged.
 
 ```handoff
 session: S22
-date: 2026-11-14
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 15a, the order layout hint: makePedigreeMatingLayout(..., hints = NULL) with hints$order (rows of ped sorted by the hint; the founder-reordering step skipped where the hint orders founders), strict TDD; D1-D5 measured before the pre-RED picker
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 15a item), docs/planning/layout-hints-design.md (sections 7, 9, 10), R/makePedigreeDiagramData.R:1670 (makePedigreeMatingLayout)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+date: 2026-11-15
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 15a is DONE: makePedigreeMatingLayout(..., hints = list(order = )), R/layoutHints.R, 12 tests, rulings R64-R69 (unnamed animals keep their rows; a founder couple by its female's number; the founder step skipped only where founders are named; twins drawn as ordered; strict checks; kinship2 on typed cases); next Phase 15b, the spouse hint
+what_was_done: claim 8ee4922; D1-D5 measured on a scratch prototype against kinship2 and Pedixplorer (99 and 200 random pedigrees, all 720 founder orders of a 13-animal case, a no-hint baseline 9 of 135) before two pickers, six picks each the recommended option; RED 0ab1230 (test_layoutHintsOrder.R, helper-layoutHints.R; drafts 12/12 on the prototype, 12/12 failing on HEAD); GREEN b598bcd (R/layoutHints.R; call-site lines in makePedigreeMatingLayout() and .positionMatingUnitForest(); code equal to the prototype's); a992463 (DIVERGENCE.md rows, contract 4.1 and 4.6); REFACTOR b9567bd (.layoutHintPlaces()); pushed ccc12ca..b9567bd, CI 43732712028 5/5 Status OK at the first attempt, FAIL 0 WARN 0 on each; close-out: plan R64-R69, status, row 15, Done 15a; ROADMAP; BACKLOG (15b READY, lines re-found; coverage lines re-measured)
+next_steps: Orient; drift tool (2 differ, both with rows); nprcgenekeepr's log on the three layout files at Orient and each gate; read the design's 7.2-7.3, 9, 10 (D6, D7, D9) and Appendix B, and R/makePedigreeDiagramData.R :486 preferAnchor(), :524 anchorOf[u] <- winner, :1126 the S666 sign, :1298-:1304 the seeding side; measure D6, D7, D9 and kinship2's and Pedixplorer's spouse hints on typed cases before the pre-RED picker; prototype in a scratch tree, draft test_layoutHintsSpouse.R against it and against HEAD; RED, GREEN, REFACTOR; .checkLayoutHints() accepts spouse; DIVERGENCE.md row for .buildMatingUnitForest() and S22's two rows updated; the help sentence "It cannot be turned off" (:1593) amended; checks incl. fidelity; push; CI; Done 15b
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (15b), :22 (15c), :28 (coverage), docs/planning/layout-hints-design.md :127 (7.2), :147 (7.3), :227 (15b DONE), :258-:261 (D6-D9), :337 (Appendix B), docs/planning/standalone-pedigree-package-plan.md:167-176 (R60-R69), :530 (row 15), R/layoutHints.R:19 (.checkLayoutHints), :36 (known elements), :137 (.layoutHintRoots), R/makePedigreeDiagramData.R:430, :486, :524, :1032, :1126, :1298, :1304, :1593, :1722, :1746, :1786, tests/testthat/helper-layoutHints.R, DIVERGENCE.md:14-15
+gotchas: a later layout pass can move a founder line after the roots are ordered (seed 28): test on the drawing's x; kinship2 refuses one-parent children (complete the pedigree with a founder row per missing parent before comparing), and its rows differ from pedkindraw's on random pedigrees even without hints (top row 9 of 135): compare on typed cases; Pedixplorer silently ignores a partial horder, unknown names and a repeated name, and drew C D E F for every order with twins; zsh does not word-split an unquoted $var; rectilinear edges route lines around nodes (__jog_ waypoints); scratch-tree recipe and proving GREEN equal to the prototype (SESSION_NOTES); R CMD check from a scratch folder; CLAUDE.md over budget, nothing added
+runtime_smoke: a hinted layout (the 8-animal case, E < D < C, H < G) drawn by drawPedigreeDiagram(): visNetwork widget, rows A B / E D F C / H G, its x identical to the layout's, saved to HTML (not viewed in a browser); fidelity tool 600 of 600 identical without hints; quality_ratchet: 4/4 pass · 0 fail · 0 unmeasured · results 08889eff3b69 · manifest ce7204f4cde2
+changelog_ref: CHANGELOG.md "2026-11-15 · [BL-Phase 15a] S22: plan Phase 15a, the order layout hint" and "2026-11-15 · [BL-Phase 15a] S22 push"
+commit: this receipt's commit (close-out)
 ```
 
 ```handoff
