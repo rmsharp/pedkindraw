@@ -96,6 +96,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S22's entries were removed in S3-S23 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 24 Did
+**Deliverable:** plan Phase 15c: the converters pass hints on, `asPedFrame()` returning `hints` in
+`makePedigreeMatingLayout()`'s form, `list(order = , mate = )`, or `NULL` (R62, R73), strict TDD (IN PROGRESS)
+**Started:** 2026-11-15 17:14 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 15c: converters
+(Recommended)" (orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 22 Handoff Evaluation (by Session 23)
 **Score: 9/10.**
 - **What helped:** the five ordered steps became this session's sequence; every engine line cited (`:430`, `:486`,

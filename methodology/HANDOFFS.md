@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S24
+date: 2026-11-15
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 15c, the converters pass hints on: asPedFrame() returns hints in makePedigreeMatingLayout()'s form, list(order = , mate = ), or NULL (R62, R73), strict TDD; kinship2's and Pedixplorer's hints (user-set and automatic) measured, and whether a converted hint can break R70-R71, before the pre-RED picker
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 15c item), docs/planning/layout-hints-design.md:178 (7.4), R/asPedFrame.R:137 (the generic), R/layoutHints.R:109 (.checkLayoutHintMate)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S23
 date: 2026-11-15
 status: complete
