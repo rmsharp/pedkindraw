@@ -95,6 +95,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S21's entries were removed in S3-S22 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 23 Did
+**Deliverable:** plan Phase 15b: the `spouse` layout hint, `makePedigreeMatingLayout(..., hints = list(spouse = ))`
+(which partner is drawn left, which partner anchors the mating), strict TDD (IN PROGRESS)
+**Started:** 2026-11-15 12:27 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 15b: spouse hint
+(Recommended)" (orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 21 Handoff Evaluation (by Session 22)
 **Score: 9/10.**
 - **What helped:** the five ordered steps became this session's sequence exactly; every engine line cited

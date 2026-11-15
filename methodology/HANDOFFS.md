@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S23
+date: 2026-11-15
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 15b, the spouse layout hint: makePedigreeMatingLayout(..., hints = list(spouse = )) (which partner of a mating is drawn left, which partner the children hang under), strict TDD; D6, D7, D9 and kinship2's and Pedixplorer's spouse hints measured before the pre-RED picker
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 15b item), docs/planning/layout-hints-design.md (sections 7.2-7.3, 9, 10, Appendix B), R/makePedigreeDiagramData.R:430 (.buildMatingUnitForest), R/layoutHints.R:19 (.checkLayoutHints)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S22
 date: 2026-11-15
 status: complete
