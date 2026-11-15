@@ -126,7 +126,7 @@ release (section 6), the last point at which it costs users nothing.
 | `removeUninformativeFounders(ped)` | pedigree | reduced pedigree | stops naming missing columns | 6 |
 | `checkTwinRelations(ped, twinRelations)` | pedigree, twins table | the twins table, ids as character | stops on missing columns, a pair naming one id twice, an id not in `ped`, a bad code, an MZ or DZ pair without the same sire and dam, an MZ pair of different sex | 7 |
 | `makePedigreeDiagramData(ped, twinRelations = NULL)` | pedigree, optional twins | list `nodes`, `edges` for visNetwork | stops when `ped` is not a data frame or lacks columns | 8 |
-| `makePedigreeMatingLayout(ped, edgeStyle = c("rectilinear", "direct"), twinRelations = NULL, kinshipMatrix = NULL, hints = NULL)` | pedigree, options; `hints`: `NULL` or `list(order = )`, a numeric vector named by id that orders siblings, separate families and founder couples (a couple by its female's number; unnamed animals keep their rows; the founder-reordering step skipped where founders are named; R60-R63, Phase 15a) | list `nodes` (positions, symbols, hover text, `deceased`, condition sections) and `edges` | stops on a non-data-frame `ped`, missing columns, a bad `kinshipMatrix`, and `hints` other than `NULL` or a list of `order` (not numeric, a number without a name, a name given twice or not in `ped`, `NA`); warns when same-row line-symbol collisions cannot all be resolved | 8; `hints` 15a |
+| `makePedigreeMatingLayout(ped, edgeStyle = c("rectilinear", "direct"), twinRelations = NULL, kinshipMatrix = NULL, hints = NULL)` | pedigree, options; `hints`: `NULL` or `list(order = , mate = )`, either or both. `order`, a numeric vector named by id, orders siblings, separate families and founder couples (a couple by its female's number; unnamed animals keep their rows; the founder-reordering step skipped where founders are named; R60-R63, Phase 15a). `mate`, a data frame of `left`, `right` (a sire and dam with offspring together) and `anchor` (`"left"`, `"right"`, `"either"`), draws `left` left of `right` at their mating and hangs the offspring under the anchor, the other partner a repeat node when it has parents; an animal's families follow its mates' sides, same-side mates in the order of the rows (as kinship2 draws its `spouse` hint; Phase 15b) | list `nodes` (positions, symbols, hover text, `deceased`, condition sections) and `edges` | stops on a non-data-frame `ped`, missing columns, a bad `kinshipMatrix`, and `hints` other than `NULL` or a list of `order` and `mate`: an `order` not numeric, a number without a name, a name given twice or not in `ped`, `NA`; a `mate` not a data frame or lacking a column, `NA`, the same id as `left` and `right`, an id not in `ped`, a pair with no offspring together or named twice, another `anchor`, an anchor on the earlier-generation partner; warns when same-row line-symbol collisions cannot all be resolved | 8; `hints` 15a, `mate` 15b |
 | `drawPedigreeDiagram(layout, edgeStyle = c("rectilinear", "direct"), onClick = NULL)` | a layout from the function above | a `visNetwork` widget, 500 px tall plus 45 px per condition past the first | stops on a layout of the wrong shape or a bad `onClick` | 9 |
 
 `addIdRecords()` (called only by `addBackSecondParents()`) is copied but **not exported**: it is plumbing, and an
@@ -228,9 +228,9 @@ defect planted; 100,000 animals converted in 0.005 s.
 
 Layout hints (R3) are Phase 15. Its design (pedkindraw S21, `docs/planning/layout-hints-design.md`, plan R60-R63)
 adds no export: `makePedigreeMatingLayout()` gains `hints = NULL` (a list of `order`, a numeric vector named by id,
-and `spouse`, a data frame of `left`, `right`, `anchor`; R61), and `asPedFrame()` a third element, `hints` (R62).
-Their rows in sections 4.1 and 4.5 change when sessions 15a-15c build them (R63): 4.1's `order` in 15a (pedkindraw
-S22), its `spouse` in 15b, 4.5 in 15c. Nothing else from nprcgenekeepr is
+and `spouse`, a data frame of `left`, `right`, `anchor`; R61, the element renamed `mate` in 15b by Mark's pick), and
+`asPedFrame()` a third element, `hints` (R62). Their rows in sections 4.1 and 4.5 change when sessions 15a-15c build
+them (R63): 4.1's `order` in 15a (pedkindraw S22), its `mate` in 15b (pedkindraw S23), 4.5 in 15c. Nothing else from nprcgenekeepr is
 exported.
 
 ---
