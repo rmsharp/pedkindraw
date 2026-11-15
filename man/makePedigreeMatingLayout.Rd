@@ -52,8 +52,9 @@ path. \code{NULL} (default) computes
 twinRelations = twinRelations)}.}
 
 \item{hints}{\code{NULL} (default: the layout's own order) or a list
-with the element \code{order}, a numeric vector named by ids in
-\code{ped}, as kinship2's and Pedixplorer's layout hints give it. Only
+with the elements \code{order} and \code{mate}, either one or both.
+\code{order} is a numeric vector named by ids in \code{ped}, as
+kinship2's and Pedixplorer's layout hints give it. Only
 the order of the numbers matters. Siblings, separate families and
 founder couples are drawn left to right in increasing order of their
 numbers; equal numbers keep the order of the rows of \code{ped}, and an
@@ -63,10 +64,29 @@ his own), as kinship2 and Pedixplorer place them. In a family whose
 founders the order names, the layout's own reordering of founder lines
 (which shortens the lines joining an animal drawn twice) is not done.
 An order may put a sibling between twins; the twin line then crosses
-it. \code{list()}, \code{order = NULL} and an empty \code{order} give
-the layout of no hint. Stops on an element other than \code{order}, an
+it. \code{mate} is a data frame with one row per mating to place and
+the columns \code{left}, \code{right} and \code{anchor}: \code{left}
+and \code{right} are a sire and a dam with offspring together in
+\code{ped}, in either column, and \code{left} is drawn left of
+\code{right} at their mating; \code{anchor} (\code{"left"},
+\code{"right"} or \code{"either"}) names the partner whose own place the
+offspring are drawn under, the other partner then drawn beside it as a
+repeat node when it has parents of its own, and \code{"either"} keeps
+the layout's own choice. As kinship2 draws its \code{spouse} hint, the
+offspring of an animal's several matings follow its mates' sides, mates
+hinted to one side are drawn left to right in the order of the rows,
+and mates not hinted are drawn nearest the animal. A hint can change
+where the layout draws matings it does not name. \code{list()}, and
+\code{order} or \code{mate} \code{NULL} or empty, give the layout of no
+hint. Stops on an element other than \code{order} and \code{mate}; on an
 order that is not numeric, a number without a name, a name given twice
-or not in \code{ped}, and \code{NA}.}
+or not in \code{ped}, and \code{NA}; and on a \code{mate} that is not a
+data frame or lacks a column, \code{NA}, the same id as \code{left} and
+\code{right}, an id not in \code{ped} (a sire or dam without a row of
+its own), a pair with no offspring together or named twice, an
+\code{anchor} other than those three, and an anchor on the partner of
+an earlier generation than its mate (the layout draws a mating on the
+row of its later partner).}
 }
 \value{
 A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
@@ -138,7 +158,8 @@ mate and both have unambiguous \code{"M"}/\code{"F"} sex codes) is
 drawn with the male parent to the left of the female parent. The final
 horizontal positions come from a joint quadratic program that preserves
 each row's provisional left-to-right order, so this rule carries into
-the rendered layout. It cannot be turned off.
+the rendered layout. It cannot be turned off, unless a mate hint says
+otherwise (see \code{hints}).
 }
 \examples{
 ## Seven animals: C and D are full siblings, and so are F and G, D's

@@ -11,7 +11,13 @@
 ## help, a check, a row reorder and hints passed on; .positionMatingUnitForest()
 ## gains hints = NULL, passes it to its per-family call, and skips the
 ## founder-reordering step where an order hint names a founder (the helpers
-## are pedkindraw's own, R/layoutHints.R; DIVERGENCE.md rows). Its comments
+## are pedkindraw's own, R/layoutHints.R; DIVERGENCE.md rows). Plan Phase 15b
+## (pedkindraw S23, R60-R61), the mate hint: .buildMatingUnitForest() gains
+## hints = NULL and takes a hinted anchor; .positionMatingUnitForest() orders
+## an anchor's families and sets each hinted mate's side and distance (the
+## S666 pass and the seeding loop); makePedigreeMatingLayout() checks the
+## hints against ped, sorts rows only for an order hint and passes hints to
+## .buildMatingUnitForest(); the help describes hints$mate. Its comments
 ## name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -418,6 +424,10 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   and \code{gen} columns, same contract as
 #'   \code{\link{makePedigreeDiagramData}}. No real \code{id} may start
 #'   with the reserved \code{"__union_"} or \code{"__dup_"} prefixes.
+#' @param hints \code{NULL} (default) or the checked hints of
+#'   \code{\link{makePedigreeMatingLayout}}: a mating whose
+#'   \code{hints$mate} row anchors it on a named partner takes that partner
+#'   as its anchor (pedkindraw S23).
 #' @return A list with three data frames: \code{matingUnits} (\code{id},
 #'   \code{sire}, \code{dam}, \code{anchor}, \code{nonAnchor} --
 #'   \code{anchor}/\code{nonAnchor} both \code{NA} when neither parent has
@@ -427,7 +437,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   mating-unit id, or a single known parent's real id under the D5
 #'   partial-parentage fallback).
 #' @noRd
-.buildMatingUnitForest <- function(ped) {
+.buildMatingUnitForest <- function(ped, hints = NULL) {
   if (!is.data.frame(ped)) {
     stop(".buildMatingUnitForest() requires 'ped' to be a data frame.")
   }
@@ -521,6 +531,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
       } else {
         p2
       }
+      hinted <- .layoutHintAnchor(hints$mate, p1, p2)
+      if (!is.na(hinted)) winner <- hinted
       anchorOf[u] <- winner
       nonAnchorOf[u] <- if (is.na(winner)) {
         NA_character_
@@ -863,7 +875,10 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #' @param hints \code{NULL} (default) or the checked hints of
 #'   \code{\link{makePedigreeMatingLayout}}: where \code{hints$order} names
 #'   a founder of a family, that family's founder lines are ordered by it and
-#'   the founder-reordering step is skipped (pedkindraw S22).
+#'   the founder-reordering step is skipped (pedkindraw S22); a
+#'   \code{hints$mate} row sets the side its mate is drawn on, and an
+#'   anchor's families are ordered by its mates' hinted sides (pedkindraw
+#'   S23).
 #' @return A data frame with one row per node (\code{id}, \code{x},
 #'   \code{gen}): every real individual in \code{ped}, every duplicate
 #'   node in \code{forest$duplicates}, and every mating-unit node in
@@ -940,6 +955,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   unitChildrenOf <- function(id) {
     myUnits <- unitIds[!is.na(anchorOf) & anchorOf == id]
     if (length(myUnits) == 0L) return(character(0L))
+    myUnits <- .layoutHintFamilies(hints$mate, matingUnits, myUnits, id)
     unlist(lapply(myUnits, function(u) childEdges$to[childEdges$from == u]),
            use.names = FALSE)
   }
@@ -1125,6 +1141,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
     m <- nonAnchorOf[[u]]
     sign <- if (identical(sexOf[[p]], female) &&
                   identical(sexOf[[m]], male)) -1L else 1L
+    hintSide <- .layoutHintSides(hints$mate, matingUnits, u, p)$side
+    if (!is.na(hintSide)) sign <- as.integer(hintSide)
     kids <- childEdges$to[childEdges$from == u]
     if (hasParentEdge(p)) {
       ## Non-root anchor (already positioned as someone else's real
@@ -1291,6 +1309,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
     ux <- unitX[us]
     ux[is.na(ux)] <- tier1X[[a]]
     us <- us[order(ux, us, method = "radix")]
+    hintSides <- .layoutHintSides(hints$mate, matingUnits, us, a)
     for (k in seq_along(us)) {
       u <- us[k]
       m <- nonAnchorOf[[u]]
@@ -1316,6 +1335,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
       } else {
         0.0
       }
+      if (!is.na(hintSides$side[k])) side <- hintSides$side[k]
       if (side == 0.0) next
       mateOff <- 0.9 * minSep
       uGen <- matingUnits$gen[matingUnits$id == u]
@@ -1330,6 +1350,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
       }
       ## * 0.5 rather than / 2: bit-identical (both operands are exact
       ## powers of two) and clean under implicit_integer_linter.
+      mateOff <- mateOff * hintSides$scale[k]
       unionOff <- mateOff * 0.5
       if (!is.na(nn) && nn %in% names(tier1X)) {
         unitX[[u]] <- (tier1X[[a]] + tier1X[[nn]]) * 0.5
@@ -1590,7 +1611,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #' drawn with the male parent to the left of the female parent. The final
 #' horizontal positions come from a joint quadratic program that preserves
 #' each row's provisional left-to-right order, so this rule carries into
-#' the rendered layout. It cannot be turned off.
+#' the rendered layout. It cannot be turned off, unless a mate hint says
+#' otherwise (see \code{hints}).
 #'
 #' @param ped data frame with \code{id}, \code{sire}, \code{dam},
 #'   \code{sex}, and \code{gen} columns, same contract as
@@ -1627,8 +1649,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   \code{kinship(ped$id, ped$sire, ped$dam, ped$gen,
 #'   twinRelations = twinRelations)}.
 #' @param hints \code{NULL} (default: the layout's own order) or a list
-#'   with the element \code{order}, a numeric vector named by ids in
-#'   \code{ped}, as kinship2's and Pedixplorer's layout hints give it. Only
+#'   with the elements \code{order} and \code{mate}, either one or both.
+#'   \code{order} is a numeric vector named by ids in \code{ped}, as
+#'   kinship2's and Pedixplorer's layout hints give it. Only
 #'   the order of the numbers matters. Siblings, separate families and
 #'   founder couples are drawn left to right in increasing order of their
 #'   numbers; equal numbers keep the order of the rows of \code{ped}, and an
@@ -1638,10 +1661,29 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   founders the order names, the layout's own reordering of founder lines
 #'   (which shortens the lines joining an animal drawn twice) is not done.
 #'   An order may put a sibling between twins; the twin line then crosses
-#'   it. \code{list()}, \code{order = NULL} and an empty \code{order} give
-#'   the layout of no hint. Stops on an element other than \code{order}, an
+#'   it. \code{mate} is a data frame with one row per mating to place and
+#'   the columns \code{left}, \code{right} and \code{anchor}: \code{left}
+#'   and \code{right} are a sire and a dam with offspring together in
+#'   \code{ped}, in either column, and \code{left} is drawn left of
+#'   \code{right} at their mating; \code{anchor} (\code{"left"},
+#'   \code{"right"} or \code{"either"}) names the partner whose own place the
+#'   offspring are drawn under, the other partner then drawn beside it as a
+#'   repeat node when it has parents of its own, and \code{"either"} keeps
+#'   the layout's own choice. As kinship2 draws its \code{spouse} hint, the
+#'   offspring of an animal's several matings follow its mates' sides, mates
+#'   hinted to one side are drawn left to right in the order of the rows,
+#'   and mates not hinted are drawn nearest the animal. A hint can change
+#'   where the layout draws matings it does not name. \code{list()}, and
+#'   \code{order} or \code{mate} \code{NULL} or empty, give the layout of no
+#'   hint. Stops on an element other than \code{order} and \code{mate}; on an
 #'   order that is not numeric, a number without a name, a name given twice
-#'   or not in \code{ped}, and \code{NA}.
+#'   or not in \code{ped}, and \code{NA}; and on a \code{mate} that is not a
+#'   data frame or lacks a column, \code{NA}, the same id as \code{left} and
+#'   \code{right}, an id not in \code{ped} (a sire or dam without a row of
+#'   its own), a pair with no offspring together or named twice, an
+#'   \code{anchor} other than those three, and an anchor on the partner of
+#'   an earlier generation than its mate (the layout draws a mating on the
+#'   row of its later partner).
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -1719,7 +1761,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
          "matrix (or Matrix) with row and column names set to individual ",
          "ids, or NULL.")
   }
-  hints <- .checkLayoutHints(hints, ped$id)
+  hints <- .checkLayoutHints(hints, ped)
 
   # S1029: every column whose name starts "affected" is a condition (owner
   # ruling), in file order, the first four drawn (kinship2's own limit).
@@ -1743,7 +1785,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # isolated row at all -- no separate exclusion needed later.
   isolatedIds <- .findIsolatedIds(ped, twinRelations)
   ped <- ped[!ped$id %in% isolatedIds, , drop = FALSE]
-  if (!is.null(hints)) ped <- .layoutHintRows(ped, hints$order)
+  if (!is.null(hints$order)) ped <- .layoutHintRows(ped, hints$order)
 
   if (length(isolatedIds) > 0L) {
     message(sprintf(
@@ -1782,7 +1824,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                 conditionsNotDrawn = conditionsNotDrawn))
   }
 
-  forest <- .buildMatingUnitForest(ped)
+  forest <- .buildMatingUnitForest(ped, hints)
   pos <- .positionMatingUnitForest(ped, forest, hints)
   matingUnits <- forest$matingUnits
   duplicates <- forest$duplicates
