@@ -8,22 +8,16 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 15a: the `order` layout hint** (READY, Effort M, a guess; strict TDD) -- the design
-      `docs/planning/layout-hints-design.md` (S21): its section 7.1 (`:109`, the interface), 7.2 (`:127`, what
-      `order` does), 7.3 (`:147`, the code changes: `R/layoutHints.R`, call-site lines in
-      `makePedigreeMatingLayout()` and `.positionMatingUnitForest()`, a `DIVERGENCE.md` row each), 9 (`:212`, 15a's
-      DONE criteria) and 10 (`:249`, D1-D5 for the pre-RED picker); rulings R60-R63
-      (`docs/planning/standalone-pedigree-package-plan.md:166`-`:169`). `makePedigreeMatingLayout(..., hints = NULL)`
-      with `hints$order`: the rows of `ped` sorted by the hint, the founder-reordering step `.orderRootSubtrees()`
-      skipped where the hint orders founders. Typed cases (the design's M1 and M5), 100 seeded random family
-      pedigrees (the generator, Appendix A, `:274`) with a floor on what was checked, a kinship2 comparison where it
-      returns. Measure D1-D5 before the picker (Learnings 17-19).
-
-- [ ] **Phase 15b: the `spouse` layout hint** (READY after 15a, Effort M, a guess; strict TDD) -- the design's
-      sections 7.2-7.3, 9 (`:227`) and D6, D7, D9: which side a mate is drawn on (`R/makePedigreeDiagramData.R:1112`,
-      `:1290`) and which partner anchors a mating (`:519`); a `DIVERGENCE.md` row for `.buildMatingUnitForest()`; the
-      help sentence "It cannot be turned off" (`:1579`) amended. The scratch prototype lines are the design's
-      Appendix B (`:337`).
+- [ ] **Phase 15b: the `spouse` layout hint** (READY, Effort M, a guess; strict TDD) -- the design's
+      sections 7.2-7.3, 9 (`:227`) and D6, D7, D9: which side a mate is drawn on (`R/makePedigreeDiagramData.R:1126`,
+      the S666 pass's `sign`; `:1304`, the seeding loop's `side`) and which partner anchors a mating (`:524`,
+      `anchorOf[u] <- winner`); a `DIVERGENCE.md` row for `.buildMatingUnitForest()`, the rows S22 wrote for
+      `makePedigreeMatingLayout()` and `.positionMatingUnitForest()` updated; `R/layoutHints.R`'s
+      `.checkLayoutHints()` learns `spouse` (today it stops on any element but `order`, R68); the help sentence "It
+      cannot be turned off" (`:1593`) amended. The scratch prototype lines are the design's Appendix B (`:337`; its
+      line numbers are at `7846b2c`: today's are 5 higher above `.positionMatingUnitForest()`'s help, 9 higher from
+      its `:863` to `:1023`, 14 higher past `:1023`). 15a's rulings R64-R69 and its tests
+      (`tests/testthat/test_layoutHintsOrder.R`, helper `helper-layoutHints.R`) are the pattern.
 
 - [ ] **Phase 15c: converters pass hints on** (READY after 15b, Effort S-M, a guess; strict TDD) -- R62 and the
       design's sections 7.4 (`:175`), 9 (`:238`) and D8: `asPedFrame()` returns `hints` as a third element (kinship2's
@@ -35,9 +29,10 @@ issues).*
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
       the code of `82f2ef3`: 97.16%, 45 of 1,811 statements missed, in 7 files (covr's first line of each
       statement). Re-measured S14 on `dff6509`: 97.32%, 44 of 1,872 (Phase 11's 61 statements all reached, and its
-      tests reach `R/shrinkPedigree.R:97`, the `affected` length error): `R/makePedigreeDiagramData.R` 31 (570, 757,
-      980, 1275, 1321, 2247, 2268, 2309, 2319, 2320, 2324, 2336, 2337, 2339, 2340, 2341, 2346, 2360, 2372, 2403,
-      2404, 2405, 2406, 2407, 2411, 2428, 2445, 2546, 2714, 3043, 3044); `R/positionTreeApportion.R` 6 (388, 392,
+      tests reach `R/shrinkPedigree.R:97`, the `affected` length error): `R/makePedigreeDiagramData.R` 31 (at S22's
+      `b9567bd`: 575, 762, 989, 1289, 1335, 2279, 2300, 2341, 2351, 2352, 2356, 2368, 2369, 2371, 2372, 2373, 2378,
+      2392, 2404, 2435, 2436, 2437, 2438, 2439, 2443, 2460, 2477, 2578, 2746, 3075, 3076; S14-S21 measured them 5 to
+      32 lower, before Phase 15a's lines); `R/positionTreeApportion.R` 6 (388, 392,
       395, 427, 431, 434); `R/orderRootSubtrees.R` 2 (118, 131); `R/rbindFill.R` 2 (30, 35); `R/shrinkPedigree.R` 1
       (278); `R/comparePedigreeStructure.R` 1 (160); `R/kinship.R` 1 (135). The results tool's cases reach 3 of
       them (`kinship.R:135`, `rbindFill.R:35`, `shrinkPedigree.R:278`), but cases are not tests. All 7 files are
@@ -52,7 +47,8 @@ issues).*
       column `addParents()` fills) is now reached by `test_findUnrelated.R`'s pedSix test, so `R/rbindFill.R` has 1
       left (35); `R/findUnrelated.R` 88 of 88, `R/checkPedigree.R` 84 of 84. S19 on `58deb0a`: 97.74%, 43 of 2,227,
       the same 43 (since `4bcfe00` only `R/asPedFrame.R` was added in `R/`, 49 of 49). S20 on `ccc12ca`: 97.79%, 43 of 2,284, the
-      same 43 (since `58deb0a` only `R/asPedFrame.R` changed in `R/`, 106 of 106).
+      same 43 (since `58deb0a` only `R/asPedFrame.R` changed in `R/`, 106 of 106). S22 on `b9567bd`: 97.83%, 43 of
+      2,341, the same 43 (`R/layoutHints.R` added, 52 of 52; `R/makePedigreeDiagramData.R`'s lines moved, above).
 
 ## Waiting on Mark
 

@@ -37,8 +37,9 @@ tests, R46-R48); Phase 13 DONE (pedkindraw S17: `checkPedigree()`, 23 tests, R49
 `findUnrelated()`, 19 tests, R52-R54); Phase 14 DONE (pedkindraw S19: `asPedFrame()` for kinship2's `pedigree` and
 `pedigreeList` objects, 15 tests, R55-R57; pedkindraw S20: Pedixplorer installed into renv and `asPedFrame()` for its
 `Pedigree` objects, 14 tests, R58-R59); Phase 15's design DONE (pedkindraw S21:
-`docs/planning/layout-hints-design.md`, R60-R63).
-**Next:** Phase 15a, the `order` layout hint (R60-R63; row 15; the design's section 9; pedkindraw
+`docs/planning/layout-hints-design.md`, R60-R63); Phase 15a DONE (pedkindraw S22: the `order` layout hint,
+`R/layoutHints.R`, 12 tests, R64-R69).
+**Next:** Phase 15b, the `spouse` layout hint (R60-R69; row 15; the design's section 9; pedkindraw
 `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
@@ -167,6 +168,12 @@ Since then:
 | R61 | How hints are given: a new argument `makePedigreeMatingLayout(..., hints = NULL)`, `hints` a list with `order` (a numeric vector named by animal id; only the order of the numbers matters) and `spouse` (a data frame with `left`, `right`, the ids of two animals with a child together, and `anchor`, `"left"`, `"right"` or `"either"`): kinship2's names, Pedixplorer's keying by id. `drawPedigreeDiagram()` (it draws a finished layout at fixed positions) and `makePedigreeDiagramData()` (it sets no x positions) take none. The copied functions the build changes (`makePedigreeMatingLayout()`, `.positionMatingUnitForest()`, `.buildMatingUnitForest()`) each get a `DIVERGENCE.md` row, not a mirror in nprcgenekeepr: this work does not change nprcgenekeepr (R8), pedkindraw is a sibling product first (R1), and nprcgenekeepr's Diagram tab takes no hints. The hint code lives in pedkindraw's own `R/layoutHints.R`; the copied functions gain call-site lines only. Mark's pick, "hints argument (Recommended)", over a separate row-sorting function (possible only without founder order and mate placement) | pedkindraw S21 | Mark |
 | R62 | Converters pass hints on: `asPedFrame()` returns `list(ped, twinRelations, hints)`, `hints` in R61's form (kinship2's `order`, one number per subject in the object's order, and its `spouse` matrix of subject indices and anchor 1, 2, 0; Pedixplorer's `horder(x)` and `spouse(x)`; each turned into animal ids and `"left"`, `"right"`, `"either"`), or `NULL` when the object holds none. Measured: a `Pedixplorer::Pedigree()` built without hints holds an empty `horder` and no `spouse` rows; with a third element `hints = NULL`, 9 of the 29 converter tests (585 expectations) fail, each comparing the whole returned list, so they gain the element. R58's "a list of two" becomes three when 15c is built. Mark's pick, "Yes, a third element (Recommended)", over leaving the converters unchanged | pedkindraw S21 | Mark |
 | R63 | Phase 15's build is three sessions, each strict TDD with its own pre-RED picker on the design's open details (its section 10, D1-D9): 15a the `order` hint (R/layoutHints.R; `DIVERGENCE.md` rows for `makePedigreeMatingLayout()` and `.positionMatingUnitForest()`), 15b the `spouse` hint (a row for `.buildMatingUnitForest()`; the help page's "It cannot be turned off" amended), 15c the converters (R62; contract 4.5). The DONE criteria are the design's section 9: typed cases (the 8-animal pedigree, the founder-couple case), 100 seeded random family pedigrees with a floor on what was checked, a comparison with kinship2 and Pedixplorer where they return, every error tested, and, each time, the suite 0 failed WARN 0, lint 0, roxygen idempotent, `R CMD check --as-cran` R16's NOTE only, every statement of `R/layoutHints.R` reached, the drift tool listing exactly the functions with rows, the fidelity tool exit 0 (no hint gives nprcgenekeepr's results), CI 5/5. Surface: this Mac and CI; order checked on the layout's x positions, which the widget draws unchanged. Mark's pick, "Approve 3 sessions (Recommended)", over folding the converters into 15b | pedkindraw S21 | Mark |
+| R64 | An `order` hint that names only some animals (Phase 15a, the design's D1): the named animals trade places among their own rows of `ped`, in increasing order of their numbers; every animal it does not name keeps its row's place; equal numbers keep row order, as kinship2 and Pedixplorer keep it. Measured on 99 seeded random pedigrees with one sibship of 3 or more named: that sibship in hinted order 99 of 99 and the order of separate families changed 0 times; sorting the named animals first, which is kinship2's reading when the rest are `NA`, changed it 19 times. Pedixplorer ignores an order that leaves animals out; kinship2's and Pedixplorer's help pages ask for one number per subject | pedkindraw S22 | Mark |
+| R65 | Which founder's number places a founder couple (D2): the female's, as kinship2's and Pedixplorer's help pages say ("the female founders are ordered as though they were sisters"); a male founder line by the smallest number among the female founders he anchors matings with, else his own. Measured on a 13-animal case with three founder couples over all 720 orders of the six founders: the top row equal to kinship2's 720 times (the anchor's number 120, the smaller of the two 348); 200 seeded random pedigrees, 501 of 501 families' founder lines in hinted order | pedkindraw S22 | Mark |
+| R66 | When the founder-reordering step `.orderRootSubtrees()` is skipped (D3): only in a family whose founders the order names; elsewhere it runs as without hints. With one sibship named on 99 random pedigrees the founder order outside the hinted lines changed 11 times (the step choosing again after the siblings moved); skipping it whenever an order is given changed it 88 times | pedkindraw S22 | Mark |
+| R67 | An order that puts a sibling between twins (D5): drawn as ordered, no twin rule; the twin line crosses the sibling (rectilinear edges route around it). kinship2 draws such an order as given, and keeps twins together only without an order; pedkindraw without hints already splits twins whose rows are apart | pedkindraw S22 | Mark |
+| R68 | Checks on `hints` (D4), strict: stops when `hints` is neither `NULL` nor a list (a data frame too), an element is unnamed or not `order` (15b adds `spouse`), `order` is not numeric, a number has no name, a name is given twice or is not an id in `ped`, or a number is `NA`. `list()`, `order = NULL` and an empty `order` mean no hint, the layout unchanged. An isolated animal may be named. Pedixplorer ignores unknown names and keeps the first of a repeated one | pedkindraw S22 | Mark |
+| R69 | 15a's kinship2 comparison (the design's DONE criterion 3) reads: every row on the 8-animal case and the ties case, and the top two rows of the 13-animal founder-couple case on 24 seeded founder orders. The bottom row of that case (cousins K1 and K2) matches in 360 of 720 orders: kinship2 draws the two cross-family couples side by side and repeats a partner, with or without a hint, and pedkindraw does not. On random pedigrees kinship2's rows differ from pedkindraw's without any hint (top row equal in 9 of 135), so the comparison stays on typed cases | pedkindraw S22 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -520,7 +527,7 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 | 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). DONE: `familyCheck()` (pedkindraw S15), `ibdMatrix()` (pedkindraw S16) | R3, R11, R43-R48; gap analysis rows 7, 12 |
 | 13 | Short pedigree checker and short unrelated-set finder (2 sessions, R49). DONE: `checkPedigree()` (pedkindraw S17), `findUnrelated()` (pedkindraw S18) | R9, R49-R54; sized at Phase 1, specified at Phase 4 |
 | 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2; 2 sessions, R55). DONE (pedkindraw S19-S20) | R7, R55-R59 |
-| 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build. Design DONE (pedkindraw S21, `docs/planning/layout-hints-design.md`); the build is three sessions, 15a `order`, 15b `spouse`, 15c converters, DONE criteria in the design's section 9 (R63) | R3, R60-R63 |
+| 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build. Design DONE (pedkindraw S21, `docs/planning/layout-hints-design.md`); the build is three sessions, 15a `order`, 15b `spouse`, 15c converters, DONE criteria in the design's section 9 (R63). 15a DONE (pedkindraw S22, R64-R69) | R3, R60-R69 |
 
 **Done 11 (pedkindraw S14; R40-R42):** `bitSize()`, `findUnavailable()`, `findAvailNonInform()` and
 `findAvailAffected()` exported, pedkindraw's own code in a file each, calling the copied internals of
@@ -629,6 +636,31 @@ the drafts run against the prototype before RED (two drafts wrong in the test an
 97.79%, `R/asPedFrame.R` 106 of 106 statements; CI run `43652270264` 5/5 `Status: OK` at the first attempt, pak
 installing Pedixplorer on all five, `FAIL 0 | WARN 0` on each (macOS PASS 4991; Windows 4990, SKIP 1; Ubuntu 4980,
 SKIP 2). Phase 14 is DONE; Phase 15's design session is next.
+
+**Done 15a (pedkindraw S22; R64-R69):** `makePedigreeMatingLayout()` gained `hints = NULL`, `hints` a list whose
+`order` (a numeric vector named by id) draws siblings, separate families and founder couples left to right in
+increasing order (R60-R61). pedkindraw's own `R/layoutHints.R`: `.checkLayoutHints()` (R68's stops),
+`.layoutHintRows()` (the named animals trade places among their own rows, R64), `.layoutHintKeepsRoots()` and
+`.layoutHintRoots()` (a family whose founders the order names keeps their order, a founder couple placed by its
+female's number, and the founder-reordering step skipped there, R65-R66), and REFACTOR's `.layoutHintPlaces()`. The
+copied `R/makePedigreeDiagramData.R` changed by call-site lines only: `makePedigreeMatingLayout()` (the argument, its
+help, the check, the row reorder, hints passed on) and `.positionMatingUnitForest()` (the argument, the per-family
+call, the founder-step branch); `DIVERGENCE.md` rows for both (`a992463`), not mirrored (R8). Measured before the
+pickers, on a scratch prototype against kinship2 1.9.6.2 and Pedixplorer 1.8.0: ties and partial orders in both;
+one sibship hinted on 99 random pedigrees (family order changed 0 times with R64's rule, 19 with named-first; founder
+order elsewhere 11 with R66's rule, 88 skipping always); all 720 founder orders of a 13-animal case (top row equal to
+kinship2's 720 times with the female's number, 120 the anchor's, 348 the smaller); 200 random pedigrees completed
+with a founder row for each missing parent (501 of 501 families' founder lines in hinted order; kinship2 returned
+135 of 135, its top row equal to pedkindraw's in 17 hinted and 9 without hints); twins split by an order (kinship2
+draws it as given, R67). 12 tests in `tests/testthat/test_layoutHintsOrder.R` and a helper
+`helper-layoutHints.R` (the design's generator, checkers written apart from the code, kinship2's rows): drafts 12
+of 12 passing on the prototype and 12 of 12 failing on unchanged HEAD before RED (`0ab1230`); GREEN `b598bcd`, its
+code equal to the prototype's; REFACTOR `b9567bd`. Checks: suite 655 tests, 0 failed, WARN 0, SKIP 0, 5,066
+expectations; lint 0; roxygen changed `man/makePedigreeMatingLayout.Rd` only; drift tool 2 differ, both with rows;
+fidelity tool 600 of 600 identical without hints, kinship difference 0; coverage `R/layoutHints.R` 52 of 52, package
+97.83%; `R CMD check --as-cran` from a scratch folder R16's NOTE only; a hinted layout drawn by
+`drawPedigreeDiagram()` keeps its x; contract 4.1's row; CI run `43732712028` 5/5 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS
+5066; Windows 5065, SKIP 1; Ubuntu 5055, SKIP 2). Phase 15b, the `spouse` hint, is next.
 
 ### Phase 16 -- Documentation (new repository)
 

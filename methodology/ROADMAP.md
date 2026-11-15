@@ -13,8 +13,8 @@ kinship, trims and shrinks pedigrees and draws them interactively, and the drawi
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
 section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phases 11 (S14), 12 (S15-S16) and 13
 (S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) and 14 (S19-S20: `asPedFrame()` for
-kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is designed (S21) and its build is next
-(Planned, below).
+kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is designed (S21) and its first build session,
+15a the order hint, is done (S22); 15b is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -33,8 +33,8 @@ session each unless marked. They follow the copy slices.
 - **Phase 15:** layout hints a user can supply (R3): designed in S21 (`docs/planning/layout-hints-design.md`,
   R60-R63). A `hints` argument on `makePedigreeMatingLayout()` sets the order of siblings, families and founder
   couples and where mates are drawn, as kinship2's and Pedixplorer's hints do, and `asPedFrame()` passes an
-  object's hints on. Built in three sessions: 15a the order (next, `methodology/BACKLOG.md`), 15b spouse hints,
-  15c the converters.
+  object's hints on. Built in three sessions: 15a the order (done, S22, R64-R69), 15b spouse hints (next,
+  `methodology/BACKLOG.md`), 15c the converters.
 - **Phase 16:** documentation: README, a getting-started and a drawing vignette, a pkgdown site, NEWS, the Phase 1-2
   timing tables.
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
@@ -42,6 +42,15 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Layout hints, the order (Phase 15a), no new export:** `makePedigreeMatingLayout(..., hints = list(order = ))`,
+  a number per animal named by id, draws siblings, separate families and founder couples left to right in the
+  order of the numbers (R60-R61, R64-R68): animals it does not name keep their rows, equal numbers keep row order,
+  a founder couple is placed by its female's number, the founder-reordering step is skipped in a family whose
+  founders it names, twins are drawn as ordered; strict checks. pedkindraw's own `R/layoutHints.R`
+  (`.checkLayoutHints()`, `.layoutHintRows()`, `.layoutHintKeepsRoots()`, `.layoutHintRoots()`,
+  `.layoutHintPlaces()`), called from a few lines in two copied functions (`DIVERGENCE.md`). 12 tests; on 100 seeded
+  random pedigrees 4,670 of 4,670 sibships and 201 of 201 families' founder lines in hinted order; kinship2's rows
+  on the typed cases (R69). Without hints the layout is nprcgenekeepr's (600 of 600 results identical).
 - **Converters from kinship2 and Pedixplorer objects (Phase 14), 1 export:** `asPedFrame()` turns a kinship2
   `pedigree` or `pedigreeList` object back into the package's pedigree data frame and twins table (R55-R57): each
   parent read by its own index, ids as text with whole numbers in full, sex M, F or U, conditions as `affected` or
@@ -113,8 +122,8 @@ session each unless marked. They follow the copy slices.
   `kinship()`, up to four affected conditions) and `makePedigreeDiagramData()` (plain nodes and edges for visNetwork);
   52 internal functions and 4 constants, among them nprcgenekeepr's clean-room solver (C2) and the four that compare a
   layout's structure with kinship2's (`comparePedigreeStructure.R`, used by the tests). Copied from nprcgenekeepr
-  `baef1e12c`, code unchanged; its 333 tests pass as they do there (R29-R33), and its results are identical to
-  nprcgenekeepr's. Imports `quadprog`, `utils`.
+  `baef1e12c`, code unchanged but for the order hint's call-site lines in two functions (S22, `DIVERGENCE.md`);
+  its 333 tests pass as they do there (R29-R33), and its results without hints are identical to nprcgenekeepr's. Imports `quadprog`, `utils`.
 - **Kinship and twins (Phase 7), 2 exports:** `kinship()` (autosomal or X-chromosome kinship, dense or a `Matrix`
   sparse matrix, identical twins declared in a `twinRelations` table made identical) and `checkTwinRelations()`
   (validates that table by kinship2's rules); internal `mzTwinGroups()` and the constant `mzTwinIdsAbsentMessage`.
@@ -147,6 +156,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 15a, the order layout hint (pedkindraw S22, 2026-11-15).** Written test-first after measuring the design's
+  open details D1-D5 on a scratch prototype against kinship2 and Pedixplorer (Mark's picks R64-R69, each the
+  recommended option: unnamed animals keep their rows, family order changed 0 times in 99; a founder couple by its
+  female's number, kinship2's top row 720 of 720; the founder step skipped only where founders are named; twins
+  drawn as ordered; strict checks; kinship2 compared on typed cases, where its rows agree). 12 tests, two
+  `DIVERGENCE.md` rows, the contract's row; fidelity 600 of 600 identical without hints.
 - **Phase 15's design, user-suppliable layout hints (pedkindraw S21, 2026-11-14).** A design document, no code:
   what kinship2's and Pedixplorer's hints do, read from their help pages; where the copied engine sets left-to-right
   order (the rows of `ped`, a founder-reordering step, fixed rules for anchors and mate sides); eight measurements
