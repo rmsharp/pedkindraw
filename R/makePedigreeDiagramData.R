@@ -3,11 +3,16 @@
 ## Copied from nprcgenekeepr R/makePedigreeDiagramData.R at nprcgenekeepr commit
 ## baef1e12c. Its layout solver, from the source's line 1328
 ## (.separationOrder()) to .solveJointQP(), is nprcgenekeepr's clean-room
-## rewrite (plan C2). Changes: help text only; the code is unchanged. The
-## examples of makePedigreeDiagramData() and makePedigreeMatingLayout() type
-## their own pedigree (the values of nprcgenekeepr's lacy1989Ped, with sexes)
-## instead of loading nprcgenekeepr (the source's lines 34-35 and 1637-1639).
-## Its comments name nprcgenekeepr's documents, sessions and app.
+## rewrite (plan C2). Changes: the examples of makePedigreeDiagramData() and
+## makePedigreeMatingLayout() type their own pedigree (the values of
+## nprcgenekeepr's lacy1989Ped, with sexes) instead of loading nprcgenekeepr
+## (the source's lines 34-35 and 1637-1639). Plan Phase 15a (pedkindraw S22,
+## R60-R63): makePedigreeMatingLayout() gains the argument hints = NULL, its
+## help, a check, a row reorder and hints passed on; .positionMatingUnitForest()
+## gains hints = NULL, passes it to its per-family call, and skips the
+## founder-reordering step where an order hint names a founder (the helpers
+## are pedkindraw's own, R/layoutHints.R; DIVERGENCE.md rows). Its comments
+## name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
 #'
@@ -855,12 +860,16 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   \code{\link{makePedigreeDiagramData}}.
 #' @param forest the list returned by \code{\link{.buildMatingUnitForest}}
 #'   for this same \code{ped}.
+#' @param hints \code{NULL} (default) or the checked hints of
+#'   \code{\link{makePedigreeMatingLayout}}: where \code{hints$order} names
+#'   a founder of a family, that family's founder lines are ordered by it and
+#'   the founder-reordering step is skipped (pedkindraw S22).
 #' @return A data frame with one row per node (\code{id}, \code{x},
 #'   \code{gen}): every real individual in \code{ped}, every duplicate
 #'   node in \code{forest$duplicates}, and every mating-unit node in
 #'   \code{forest$matingUnits}.
 #' @noRd
-.positionMatingUnitForest <- function(ped, forest) {
+.positionMatingUnitForest <- function(ped, forest, hints = NULL) {
   ## Same input-validation contract the OLD implementation carried --
   ## preserved across the Phase 3 cutover (found during GREEN: BJL's own
   ## Phase 2a/2b tests never exercised these malformed-input cases, since
@@ -903,7 +912,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
     perComponent <- lapply(components, function(members) {
       .positionMatingUnitForest(
         ped[as.character(ped$id) %in% members, , drop = FALSE],
-        .subsetForest(forest, members)
+        .subsetForest(forest, members), hints
       )
     })
     return(.packComponents(perComponent, minSep))
@@ -1020,8 +1029,13 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   ## Per-component scope is inherited from the recursion above; the
   ## engine's own minSep is the rigid-proxy gap and maxSweeps stays at
   ## the function's default.
-  rootIds <- .orderRootSubtrees(rootIds, childrenOf, matingUnits,
-                                duplicates, minSep)
+  if (.layoutHintKeepsRoots(hints$order, founderIds)) {
+    rootIds <- .layoutHintRoots(rootIds, hints$order, matingUnits,
+                                founderIds, sexOf)
+  } else {
+    rootIds <- .orderRootSubtrees(rootIds, childrenOf, matingUnits,
+                                  duplicates, minSep)
+  }
 
   forestChildrenOf <- .buildForestChildrenOf(rootIds, childrenOf,
                                               superRootId = "__super_root__")
@@ -1612,6 +1626,22 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   path. \code{NULL} (default) computes
 #'   \code{kinship(ped$id, ped$sire, ped$dam, ped$gen,
 #'   twinRelations = twinRelations)}.
+#' @param hints \code{NULL} (default: the layout's own order) or a list
+#'   with the element \code{order}, a numeric vector named by ids in
+#'   \code{ped}, as kinship2's and Pedixplorer's layout hints give it. Only
+#'   the order of the numbers matters. Siblings, separate families and
+#'   founder couples are drawn left to right in increasing order of their
+#'   numbers; equal numbers keep the order of the rows of \code{ped}, and an
+#'   animal the order does not name keeps its row's place. A founder couple
+#'   is placed by its female's number (a male whose mate is not named, by
+#'   his own), as kinship2 and Pedixplorer place them. In a family whose
+#'   founders the order names, the layout's own reordering of founder lines
+#'   (which shortens the lines joining an animal drawn twice) is not done.
+#'   An order may put a sibling between twins; the twin line then crosses
+#'   it. \code{list()}, \code{order = NULL} and an empty \code{order} give
+#'   the layout of no hint. Stops on an element other than \code{order}, an
+#'   order that is not numeric, a number without a name, a name given twice
+#'   or not in \code{ped}, and \code{NA}.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -1670,7 +1700,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                                           "direct"),
                                       twinRelations = NULL,
-                                      kinshipMatrix = NULL) {
+                                      kinshipMatrix = NULL, hints = NULL) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -1689,6 +1719,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
          "matrix (or Matrix) with row and column names set to individual ",
          "ids, or NULL.")
   }
+  hints <- .checkLayoutHints(hints, ped$id)
 
   # S1029: every column whose name starts "affected" is a condition (owner
   # ruling), in file order, the first four drawn (kinship2's own limit).
@@ -1712,6 +1743,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # isolated row at all -- no separate exclusion needed later.
   isolatedIds <- .findIsolatedIds(ped, twinRelations)
   ped <- ped[!ped$id %in% isolatedIds, , drop = FALSE]
+  if (!is.null(hints)) ped <- .layoutHintRows(ped, hints$order)
 
   if (length(isolatedIds) > 0L) {
     message(sprintf(
@@ -1751,7 +1783,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   }
 
   forest <- .buildMatingUnitForest(ped)
-  pos <- .positionMatingUnitForest(ped, forest)
+  pos <- .positionMatingUnitForest(ped, forest, hints)
   matingUnits <- forest$matingUnits
   duplicates <- forest$duplicates
   childEdges <- forest$childEdges

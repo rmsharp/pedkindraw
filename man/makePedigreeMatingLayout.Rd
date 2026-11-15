@@ -8,7 +8,8 @@ makePedigreeMatingLayout(
   ped,
   edgeStyle = c("rectilinear", "direct"),
   twinRelations = NULL,
-  kinshipMatrix = NULL
+  kinshipMatrix = NULL,
+  hints = NULL
 )
 }
 \arguments{
@@ -49,6 +50,23 @@ absent from the matrix's dimnames leaves that unit at the safe
 path. \code{NULL} (default) computes
 \code{kinship(ped$id, ped$sire, ped$dam, ped$gen,
 twinRelations = twinRelations)}.}
+
+\item{hints}{\code{NULL} (default: the layout's own order) or a list
+with the element \code{order}, a numeric vector named by ids in
+\code{ped}, as kinship2's and Pedixplorer's layout hints give it. Only
+the order of the numbers matters. Siblings, separate families and
+founder couples are drawn left to right in increasing order of their
+numbers; equal numbers keep the order of the rows of \code{ped}, and an
+animal the order does not name keeps its row's place. A founder couple
+is placed by its female's number (a male whose mate is not named, by
+his own), as kinship2 and Pedixplorer place them. In a family whose
+founders the order names, the layout's own reordering of founder lines
+(which shortens the lines joining an animal drawn twice) is not done.
+An order may put a sibling between twins; the twin line then crosses
+it. \code{list()}, \code{order = NULL} and an empty \code{order} give
+the layout of no hint. Stops on an element other than \code{order}, an
+order that is not numeric, a number without a name, a name given twice
+or not in \code{ped}, and \code{NA}.}
 }
 \value{
 A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
