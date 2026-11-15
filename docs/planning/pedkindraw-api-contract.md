@@ -226,7 +226,11 @@ defect planted; 100,000 animals converted in 0.005 s.
 
 ### 4.6 Not in this contract
 
-Layout hints (R3) are Phase 15, whose design session comes first. Nothing else from nprcgenekeepr is exported.
+Layout hints (R3) are Phase 15. Its design (pedkindraw S21, `docs/planning/layout-hints-design.md`, plan R60-R63)
+adds no export: `makePedigreeMatingLayout()` gains `hints = NULL` (a list of `order`, a numeric vector named by id,
+and `spouse`, a data frame of `left`, `right`, `anchor`; R61), and `asPedFrame()` a third element, `hints` (R62).
+Their rows in sections 4.1 and 4.5 change when sessions 15a-15c build them (R63). Nothing else from nprcgenekeepr is
+exported.
 
 ---
 
