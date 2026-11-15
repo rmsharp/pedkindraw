@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S22
+date: 2026-11-14
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 15a, the order layout hint: makePedigreeMatingLayout(..., hints = NULL) with hints$order (rows of ped sorted by the hint; the founder-reordering step skipped where the hint orders founders), strict TDD; D1-D5 measured before the pre-RED picker
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 15a item), docs/planning/layout-hints-design.md (sections 7, 9, 10), R/makePedigreeDiagramData.R:1670 (makePedigreeMatingLayout)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S21
 date: 2026-11-14
 status: complete

@@ -97,6 +97,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S20's entries were removed in S3-S21 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 22 Did
+**Deliverable:** plan Phase 15a: the `order` layout hint, `makePedigreeMatingLayout(..., hints = NULL)` with
+`hints$order`, strict TDD (IN PROGRESS)
+**Started:** 2026-11-14 20:52 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 15a: order hint
+(Recommended)" (orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 20 Handoff Evaluation (by Session 21)
 **Score: 9/10.**
 - **What helped:** the ordered steps became this session's sequence: the drift tool; the backlog item and its
