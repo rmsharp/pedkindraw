@@ -5,7 +5,9 @@
 ## pedigreeList objects. Every expected value was computed with a scratch
 ## prototype before RED (Learning 18). The tests that build kinship2 objects
 ## skip without kinship2 (R7, R28); those on hand-built objects do not, since
-## the methods read the object without kinship2 (R55).
+## the methods read the object without kinship2 (R55). Plan Phase 15c (R62,
+## pedkindraw S24): the tests comparing the whole returned list expect its
+## third element, hints, NULL (none of these objects holds hints).
 
 ## Seven animals with founders listed between their offspring: an unknown
 ## parent's index 0 comes before known indexes in findex and mindex.
@@ -42,7 +44,7 @@ test_that("a hand-built pedigree list converts without calling kinship2", {
     list(ped = data.frame(id = c("A", "B", "C"), sire = c(NA, NA, "A"),
                           dam = c(NA, NA, "B"), sex = c("M", "F", "U"),
                           stringsAsFactors = FALSE),
-         twinRelations = NULL)
+         twinRelations = NULL, hints = NULL)
   )
 })
 
@@ -65,7 +67,7 @@ test_that("each parent is read by its own index (unknown parents first)", {
     list(ped = data.frame(id = s$id, sire = s$sire, dam = s$dam,
                           sex = c("M", "F", "M", "F", "F", "M", "M"),
                           stringsAsFactors = FALSE),
-         twinRelations = NULL)
+         twinRelations = NULL, hints = NULL)
   )
 })
 
@@ -198,7 +200,8 @@ test_that("a pedigreeList converts whole, with famid, in the object's order", {
                           stringsAsFactors = FALSE),
          twinRelations = data.frame(id1 = c("13", "23"), id2 = c("14", "24"),
                                     code = c("MZ twin", "DZ twin"),
-                                    stringsAsFactors = FALSE))
+                                    stringsAsFactors = FALSE),
+         hints = NULL)
   )
 })
 

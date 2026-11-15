@@ -4,7 +4,8 @@
 ## rulings R55-R57, pedkindraw S19). It serves test_asPedFrame.R: the round
 ## trip from a pedigree data frame through kinship2::pedigree() and back
 ## through asPedFrame(), on the fixture pedigrees and on seeded random ones
-## (run only where kinship2 is installed, R7, R28).
+## (run only where kinship2 is installed, R7, R28). Plan Phase 15c (R62,
+## pedkindraw S24): what it should give gains hints, NULL.
 
 ## kinship2's sex words for the package's sex codes, and the code each comes
 ## back as (kinship2 has no hermaphrodite).
@@ -134,7 +135,8 @@ asPedFrameTrip <- function(f, cond, withStatus, twins = NULL, seed = 1L) {
     wantTwins <- data.frame(id1 = twins$id1, id2 = twins$id2,
                             code = twins$code, stringsAsFactors = FALSE)
   }
-  list(got = got, want = list(ped = want, twinRelations = wantTwins))
+  list(got = got,
+       want = list(ped = want, twinRelations = wantTwins, hints = NULL))
 }
 
 ## A seeded random pedigree (checkPedigreeClean() in helper-checkPedigree.R)

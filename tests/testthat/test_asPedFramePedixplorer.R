@@ -5,7 +5,9 @@
 ## objects. Every expected value was computed with a scratch prototype before
 ## RED (Learning 18). The tests that build Pedixplorer objects skip without
 ## Pedixplorer (R7); the refusal of a non-S4 Pedigree and the stop without
-## Pedixplorer do not.
+## Pedixplorer do not. Plan Phase 15c (R62, pedkindraw S24): the tests
+## comparing the whole returned list expect its third element, hints, NULL
+## (none of these objects holds hints).
 
 ## Five animals with founders listed after their offspring, and a
 ## hermaphrodite, which Pedixplorer holds as unknown.
@@ -49,7 +51,7 @@ test_that("ids, parents and sex in the object's order; nothing else", {
                           dam = c("B", NA, NA, "D", NA),
                           sex = c("M", "M", "F", "U", "F"),
                           stringsAsFactors = FALSE),
-         twinRelations = NULL)
+         twinRelations = NULL, hints = NULL)
   )
 })
 
@@ -124,7 +126,8 @@ test_that("families: ids as Pedixplorer holds them, with famid", {
          twinRelations = data.frame(id1 = c("f1_C", "f2_C"),
                                     id2 = c("f1_D", "f2_D"),
                                     code = c("MZ twin", "UZ twin"),
-                                    stringsAsFactors = FALSE))
+                                    stringsAsFactors = FALSE),
+         hints = NULL)
   )
 })
 
