@@ -296,6 +296,27 @@
   }
 }
 
+#' Find an anchor's matings in a mate hint
+#'
+#' @param hintMate a checked mate hint.
+#' @param matingUnits the mating-unit table.
+#' @param unitIds the anchor's matings.
+#' @param anchor the anchor's id.
+#' @return A list: \code{row}, the hint's row naming each mating
+#'   (\code{NA} where none), and \code{side}, the side its mate is drawn on
+#'   relative to the anchor (-1 left, 1 right; \code{NA} where none).
+#' @noRd
+.layoutHintMatingSides <- function(hintMate, matingUnits, unitIds, anchor) {
+  units <- matingUnits[match(unitIds, matingUnits$id), , drop = FALSE]
+  hintRow <- vapply(seq_along(unitIds), function(k) {
+    .layoutHintMateRow(hintMate, units$sire[[k]], units$dam[[k]])
+  }, integer(1L))
+  named <- !is.na(hintRow)
+  side <- rep(NA_real_, length(unitIds))
+  side[named] <- ifelse(hintMate$left[hintRow[named]] == anchor, 1.0, -1.0)
+  list(row = hintRow, side = side)
+}
+
 #' The hinted sides of an anchor's mates
 #'
 #' For each of an anchor's matings, the side its mate is drawn on relative
@@ -315,17 +336,14 @@
 #' @noRd
 .layoutHintSides <- function(hintMate, matingUnits, unitIds, anchor) {
   n <- length(unitIds)
-  side <- rep(NA_real_, n)
   scale <- rep(1.0, n)
   if (is.null(hintMate)) {
-    return(list(side = side, scale = scale))
+    return(list(side = rep(NA_real_, n), scale = scale))
   }
-  units <- matingUnits[match(unitIds, matingUnits$id), , drop = FALSE]
-  hintRow <- vapply(seq_len(n), function(k) {
-    .layoutHintMateRow(hintMate, units$sire[[k]], units$dam[[k]])
-  }, integer(1L))
+  found <- .layoutHintMatingSides(hintMate, matingUnits, unitIds, anchor)
+  side <- found$side
+  hintRow <- found$row
   named <- !is.na(hintRow)
-  side[named] <- ifelse(hintMate$left[hintRow[named]] == anchor, 1.0, -1.0)
   if (n < 2L || !any(named)) {
     return(list(side = side, scale = scale))
   }
@@ -361,12 +379,8 @@
   if (is.null(hintMate) || length(unitIds) < 2L) {
     return(unitIds)
   }
-  units <- matingUnits[match(unitIds, matingUnits$id), , drop = FALSE]
-  hintRow <- vapply(seq_along(unitIds), function(k) {
-    .layoutHintMateRow(hintMate, units$sire[[k]], units$dam[[k]])
-  }, integer(1L))
-  named <- !is.na(hintRow)
-  side <- rep(0.0, length(unitIds))
-  side[named] <- ifelse(hintMate$left[hintRow[named]] == anchor, 1.0, -1.0)
-  unitIds[order(side, ifelse(named, hintRow, 0L), seq_along(unitIds))]
+  found <- .layoutHintMatingSides(hintMate, matingUnits, unitIds, anchor)
+  named <- !is.na(found$row)
+  side <- ifelse(named, found$side, 0.0)
+  unitIds[order(side, ifelse(named, found$row, 0L), seq_along(unitIds))]
 }
