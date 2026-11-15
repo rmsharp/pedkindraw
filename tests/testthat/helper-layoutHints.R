@@ -1,12 +1,13 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## pedkindraw's own test helper, not copied from nprcgenekeepr (plan Phase
-## 15a, rulings R60-R63, pedkindraw S22). It serves test_layoutHintsOrder.R:
-## the design's seeded random family pedigrees
-## (docs/planning/layout-hints-design.md, Appendix A), each drawn row's
-## left-to-right order, and checks written from the order hint's definition,
-## apart from the code they check: every sibship, and every family's founder
-## lines, in hinted order.
+## 15a, rulings R60-R63, pedkindraw S22; Phase 15b, pedkindraw S23). It
+## serves test_layoutHintsOrder.R and test_layoutHintsMate.R: the design's
+## seeded random family pedigrees (docs/planning/layout-hints-design.md,
+## Appendix A), each drawn row's left-to-right order, and checks written from
+## each hint's definition, apart from the code they check: every sibship, and
+## every family's founder lines, in hinted order; each mating's partners as
+## drawn at its dot; an animal's families in the order of its mates.
 
 ## A seeded random family pedigree (the design's Appendix A generator, run
 ## inside withr::with_seed() so the caller's random numbers are untouched).
@@ -184,4 +185,105 @@ layoutHintsRowsAgree <- function(a, b) {
     if (length(common) < 2L) return(NA)
     identical(ra[ra %in% common], rb[rb %in% common])
   }, logical(1L))
+}
+
+## A mate hint: one row per mating, 'left' drawn left of 'right', 'anchor'
+## the partner the offspring hang under ("left", "right" or "either").
+layoutHintsMate <- function(left, right, anchor = "either") {
+  data.frame(left = left, right = right, anchor = anchor,
+             stringsAsFactors = FALSE)
+}
+
+## Each row's nodes left to right, top row first, as "A B / C D'": the
+## animals' own nodes and their repeat nodes, a repeat node written as its
+## animal's id followed by '.
+layoutHintsRowTextAll <- function(layout) {
+  nodes <- layout$nodes
+  repeats <- layout$duplicateToReal
+  nodes <- nodes[!grepl("^__", nodes$id) | nodes$id %in% names(repeats), ,
+                 drop = FALSE]
+  nodes$text <- ifelse(nodes$id %in% names(repeats),
+                       paste0(repeats[nodes$id], "'"), nodes$id)
+  rows <- lapply(sort(unique(nodes$y)), function(y) {
+    row <- nodes[nodes$y == y, , drop = FALSE]
+    paste(row$text[order(row$x, row$id, method = "radix")], collapse = " ")
+  })
+  paste(unlist(rows), collapse = " / ")
+}
+
+## The same key for a pair in either order.
+layoutHintsPairKey <- function(a, b) {
+  ifelse(a < b, paste(a, b), paste(b, a))
+}
+
+## Each mating as drawn in a layout made with edgeStyle = "direct": its dot,
+## the node standing for each partner there (the partner's own node or one
+## of its repeat nodes, the two nodes with an edge into the dot), left to
+## right, the partners' ids, and each node's x and y.
+layoutHintsMatings <- function(layout) {
+  edges <- layout$edges
+  nodes <- layout$nodes
+  xOf <- stats::setNames(nodes$x, nodes$id)
+  yOf <- stats::setNames(nodes$y, nodes$id)
+  repeats <- layout$duplicateToReal
+  animal <- function(node) {
+    ifelse(node %in% names(repeats), unname(repeats[node]), node)
+  }
+  dots <- unique(edges$to[grepl("^__union_", edges$to)])
+  matings <- lapply(dots, function(dot) {
+    from <- edges$from[edges$to == dot]
+    from <- from[!grepl("^__", from) | from %in% names(repeats)]
+    if (length(from) != 2L) return(NULL)
+    from <- from[order(xOf[from])]
+    data.frame(dot = dot, leftNode = from[[1L]], rightNode = from[[2L]],
+               left = animal(from[[1L]]), right = animal(from[[2L]]),
+               dotX = xOf[[dot]], dotY = yOf[[dot]],
+               leftX = xOf[[from[[1L]]]], rightX = xOf[[from[[2L]]]],
+               leftY = yOf[[from[[1L]]]], rightY = yOf[[from[[2L]]]],
+               stringsAsFactors = FALSE)
+  })
+  do.call(rbind, matings)
+}
+
+## For every animal that anchors two or more of a layout's matings (in the
+## mating-unit table of the animals drawn): are its mates drawn left to
+## right in the same order as the mean x of each mating's offspring? One
+## TRUE or FALSE per animal. The layout is made with edgeStyle = "direct".
+layoutHintsFamiliesFollow <- function(ped, layout) {
+  drawn <- ped[!ped$id %in% layout$isolatedIds, , drop = FALSE]
+  units <- .buildMatingUnitForest(drawn)$matingUnits
+  matings <- layoutHintsMatings(layout)
+  if (is.null(matings)) return(logical(0L))
+  matings$anchor <- units$anchor[match(
+    layoutHintsPairKey(matings$left, matings$right),
+    layoutHintsPairKey(units$sire, units$dam)
+  )]
+  matings <- matings[!is.na(matings$anchor), , drop = FALSE]
+  x <- layoutHintsX(layout)
+  matings$mateX <- ifelse(matings$anchor == matings$left, matings$rightX,
+                          matings$leftX)
+  matings$offspringX <- vapply(seq_len(nrow(matings)), function(i) {
+    pair <- c(matings$left[[i]], matings$right[[i]])
+    mean(x[drawn$id[drawn$sire %in% pair & drawn$dam %in% pair]])
+  }, numeric(1L))
+  byAnchor <- split(matings, matings$anchor)
+  byAnchor <- byAnchor[vapply(byAnchor, nrow, integer(1L)) >= 2L]
+  vapply(byAnchor, function(m) {
+    identical(order(m$mateX), order(m$offspringX))
+  }, logical(1L), USE.NAMES = FALSE)
+}
+
+## kinship2's drawing with a mate hint (its 'spouse' matrix) and, when
+## given, an order hint; without one, kinship2's own autohint() order.
+layoutHintsKinship2MateRows <- function(ped, hintMate, hintOrder = NULL) {
+  sex <- ifelse(ped$sex == "M", 1L, ifelse(ped$sex == "F", 2L, 3L))
+  p <- kinship2::pedigree(id = ped$id, dadid = ped$sire, momid = ped$dam,
+                          sex = sex, missid = NA)
+  ids <- as.character(p$id)
+  hints <- kinship2::autohint(p)
+  if (!is.null(hintOrder)) hints$order <- unname(hintOrder[ids])
+  hints$spouse <- cbind(match(hintMate$left, ids), match(hintMate$right, ids),
+                        c(left = 1L, right = 2L, either = 0L)[hintMate$anchor])
+  a <- kinship2::align.pedigree(p, hints = hints)
+  lapply(seq_len(nrow(a$nid)), function(r) ids[a$nid[r, seq_len(a$n[r])]])
 }
