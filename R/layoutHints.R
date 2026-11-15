@@ -72,6 +72,22 @@
   list(order = hintOrder)
 }
 
+#' Positions after numbered items trade places
+#'
+#' The items with a number trade places among their own positions, in
+#' increasing order of their numbers (equal numbers keep their order); the
+#' items without one keep their places.
+#'
+#' @param key a numeric vector, \code{NA} for an item without a number.
+#' @return A permutation of \code{seq_along(key)}.
+#' @noRd
+.layoutHintPlaces <- function(key) {
+  numbered <- which(!is.na(key))
+  places <- seq_along(key)
+  places[numbered] <- numbered[order(key[numbered], numbered)]
+  places
+}
+
 #' Reorder the rows of ped by an order hint
 #'
 #' The layout reads left-to-right order from the rows of \code{ped}, so
@@ -85,10 +101,7 @@
 #' @noRd
 .layoutHintRows <- function(ped, hintOrder) {
   key <- unname(hintOrder[as.character(ped$id)])
-  named <- which(!is.na(key))
-  rows <- seq_len(nrow(ped))
-  rows[named] <- named[order(key[named], named)]
-  ped[rows, , drop = FALSE]
+  ped[.layoutHintPlaces(key), , drop = FALSE]
 }
 
 #' Does an order hint name a founder of this family?
@@ -136,8 +149,5 @@
     numbers <- numbers[!is.na(numbers)]
     if (length(numbers) == 0L) own else min(numbers)
   }, numeric(1L), USE.NAMES = FALSE)
-  keyed <- which(!is.na(key))
-  lines <- seq_along(rootIds)
-  lines[keyed] <- keyed[order(key[keyed], keyed)]
-  rootIds[lines]
+  rootIds[.layoutHintPlaces(key)]
 }
