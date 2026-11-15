@@ -38,8 +38,9 @@ tests, R46-R48); Phase 13 DONE (pedkindraw S17: `checkPedigree()`, 23 tests, R49
 `pedigreeList` objects, 15 tests, R55-R57; pedkindraw S20: Pedixplorer installed into renv and `asPedFrame()` for its
 `Pedigree` objects, 14 tests, R58-R59); Phase 15's design DONE (pedkindraw S21:
 `docs/planning/layout-hints-design.md`, R60-R63); Phase 15a DONE (pedkindraw S22: the `order` layout hint,
-`R/layoutHints.R`, 12 tests, R64-R69).
-**Next:** Phase 15b, the `spouse` layout hint (R60-R69; row 15; the design's section 9; pedkindraw
+`R/layoutHints.R`, 12 tests, R64-R69); Phase 15b DONE (pedkindraw S23: the `mate` layout hint, R61's `spouse`
+renamed, 9 tests, R70-R73).
+**Next:** Phase 15c, the converters pass hints on (R62, R73; row 15; the design's section 9; pedkindraw
 `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
@@ -174,6 +175,10 @@ Since then:
 | R67 | An order that puts a sibling between twins (D5): drawn as ordered, no twin rule; the twin line crosses the sibling (rectilinear edges route around it). kinship2 draws such an order as given, and keeps twins together only without an order; pedkindraw without hints already splits twins whose rows are apart | pedkindraw S22 | Mark |
 | R68 | Checks on `hints` (D4), strict: stops when `hints` is neither `NULL` nor a list (a data frame too), an element is unnamed or not `order` (15b adds `spouse`), `order` is not numeric, a number has no name, a name is given twice or is not an id in `ped`, or a number is `NA`. `list()`, `order = NULL` and an empty `order` mean no hint, the layout unchanged. An isolated animal may be named. Pedixplorer ignores unknown names and keeps the first of a repeated one | pedkindraw S22 | Mark |
 | R69 | 15a's kinship2 comparison (the design's DONE criterion 3) reads: every row on the 8-animal case and the ties case, and the top two rows of the 13-animal founder-couple case on 24 seeded founder orders. The bottom row of that case (cousins K1 and K2) matches in 360 of 720 orders: kinship2 draws the two cross-family couples side by side and repeats a partner, with or without a hint, and pedkindraw does not. On random pedigrees kinship2's rows differ from pedkindraw's without any hint (top row equal in 9 of 135), so the comparison stays on typed cases | pedkindraw S22 | Mark |
+| R70 | Checks on `hints$mate` (Phase 15b, the design's D6), strict: stops when `mate` is not a data frame or lacks a column `left`, `right` or `anchor`; on `NA`, the same id as `left` and `right`, an id not in `ped` (which covers a sire or dam with no row of its own), a pair with no offspring together, a pair named twice in either order, and an `anchor` other than `"left"`, `"right"`, `"either"`. `NULL` and zero rows mean no hint. Measured on the 8-animal case: kinship2 1.9.6.2 ignores a pair with no offspring together and a repeated pair, and stops on the same id twice and on an unknown id; Pedixplorer 1.8.0 stops on a repeated pair, the same id twice and an unknown id, ignores the sire and dam A and F (no offspring together), and for the two dams F and B draws B a second time beside F; without checks pedkindraw ignored them, and a hint naming a sire with no row stopped on "pdepth must not be missing". Mark's pick, "Strict: stop (Recommended)", over skipping unusable rows | pedkindraw S23 | Mark |
+| R71 | An anchor on the partner of the earlier generation (D7, D9): stops. The layout draws a mating on the row of its later partner, so such an anchor stays on its own row, away from the mating's dot. Measured on 100 seeded random pedigrees (the design's generator), each mating's anchor flipped, sides as drawn: partners with parents in one generation 1,464 of 1,464 held (the anchor's own node at the dot, on its row, its side kept, the other partner a repeat node, repeat-node counts unchanged); founder pairs 1,061 of 1,061; partners of different generations 2,916 (2,444 a founder anchoring a mate with parents), each anchor drawn rows above its mating's dot, 283 losing their side, while keeping the layout's anchor there held 2,916 of 2,916 sides. kinship2 and Pedixplorer fail on such an anchor (no solution to their quadratic program) or leave animals out. D9: the matings M7's rough test did not find beside their anchor (8 in M7; 13 in this run, its sides held as drawn) are all of this kind (seed 52: the anchor two rows above the dot, 1,221 units away). Mark's pick, "Stop (Recommended)", over keeping the layout's anchor and drawing as asked | pedkindraw S23 | Mark |
+| R72 | An animal that anchors several matings is drawn as kinship2 draws its `spouse` hint: its families (offspring) follow its mates' hinted sides (left-hinted matings first, in the order of the hint's rows; then unhinted ones; then right-hinted ones, in the hint's order), mates hinted to one side are drawn left to right in the order of the hint's rows, and unhinted mates nearest the animal. Measured: a sire with two and with three dams, 18 hints: the mates' row and the offspring row both equal to kinship2's 18 of 18 (a hint moving only its own mating, the design's prototype: 8 and 7 of 18); 100 random pedigrees with a fifth of the matings hinted to the other side: 1,090 of 1,090 on the hinted side, 0 of 197 animals with crossing family lines (36 when a hint moves only its own mating). An "other mate to the free side" rule was measured redundant once families follow (the same on every case) and left out. A hint can change the side the layout gives a mating it does not name (74 in that run). Mark's pick, "kinship2's way (Recommended)", over "Only the named mating" | pedkindraw S23 | Mark |
+| R73 | The hint element is named `mate`, not R61's `spouse` (R61's element name only is superseded): user-facing documentation and code use sire and dam (Mark, S23: "I want user facing documentation and code to use sire and dam"); its columns `left`, `right`, `anchor` are unchanged, and `spouse` is an unknown element (stops). Phase 15c's converters turn kinship2's `spouse` matrix and Pedixplorer's `spouse()` into it. Older committed text that says husband or wife may stay (Mark). Mark's pick, "Rename to hints$mate (Recommended)", over keeping kinship2's name | pedkindraw S23 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -527,7 +532,7 @@ elsewhere (this project's S1117 pattern); say so in each slice's handoff.
 | 12 | Write `familyCheck()` and `ibdMatrix()` from kinship2's documented behaviour, not its source (estimate: 2 sessions). DONE: `familyCheck()` (pedkindraw S15), `ibdMatrix()` (pedkindraw S16) | R3, R11, R43-R48; gap analysis rows 7, 12 |
 | 13 | Short pedigree checker and short unrelated-set finder (2 sessions, R49). DONE: `checkPedigree()` (pedkindraw S17), `findUnrelated()` (pedkindraw S18) | R9, R49-R54; sized at Phase 1, specified at Phase 4 |
 | 14 | Input converters from kinship2 `pedigree` and Pedixplorer `Pedigree` objects (picked S1126; what each reads and two test cases: comparison doc section 11.2; 2 sessions, R55). DONE (pedkindraw S19-S20) | R7, R55-R59 |
-| 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build. Design DONE (pedkindraw S21, `docs/planning/layout-hints-design.md`); the build is three sessions, 15a `order`, 15b `spouse`, 15c converters, DONE criteria in the design's section 9 (R63). 15a DONE (pedkindraw S22, R64-R69) | R3, R60-R69 |
+| 15 | User-suppliable layout hints: a design session first (engine-surface design), then the build. Design DONE (pedkindraw S21, `docs/planning/layout-hints-design.md`); the build is three sessions, 15a `order`, 15b `spouse` (named `mate`, R73), 15c converters, DONE criteria in the design's section 9 (R63). 15a DONE (pedkindraw S22, R64-R69); 15b DONE (pedkindraw S23, R70-R73) | R3, R60-R73 |
 
 **Done 11 (pedkindraw S14; R40-R42):** `bitSize()`, `findUnavailable()`, `findAvailNonInform()` and
 `findAvailAffected()` exported, pedkindraw's own code in a file each, calling the copied internals of
@@ -660,7 +665,33 @@ expectations; lint 0; roxygen changed `man/makePedigreeMatingLayout.Rd` only; dr
 fidelity tool 600 of 600 identical without hints, kinship difference 0; coverage `R/layoutHints.R` 52 of 52, package
 97.83%; `R CMD check --as-cran` from a scratch folder R16's NOTE only; a hinted layout drawn by
 `drawPedigreeDiagram()` keeps its x; contract 4.1's row; CI run `43732712028` 5/5 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS
-5066; Windows 5065, SKIP 1; Ubuntu 5055, SKIP 2). Phase 15b, the `spouse` hint, is next.
+5066; Windows 5065, SKIP 1; Ubuntu 5055, SKIP 2).
+
+**Done 15b (pedkindraw S23; R70-R73):** `makePedigreeMatingLayout(..., hints = list(mate = ))`, `mate` a data frame
+of `left`, `right` (a sire and dam with offspring together) and `anchor`, draws `left` left of `right` at their
+mating and hangs the offspring under the anchor, the other partner a repeat node when it has parents (R60-R61; the
+element renamed from `spouse`, R73). pedkindraw's own `R/layoutHints.R`: `.checkLayoutHints(hints, ped)` (the order
+checks moved unchanged into `.checkLayoutHintOrder()`), `.checkLayoutHintMate()` (R70-R71's stops),
+`.layoutHintMateRow()`, `.layoutHintAnchor()`, `.layoutHintSides()` (each hinted side, and a distance factor for
+same-side mates, R72), `.layoutHintFamilies()` (an anchor's families following its mates, R72), and REFACTOR's
+`.layoutHintMatingSides()`. The copied `R/makePedigreeDiagramData.R` changed by call-site lines only:
+`.buildMatingUnitForest()` (the argument, 2 anchor lines), `.positionMatingUnitForest()` (1 line ordering an
+anchor's families, 2 in the S666 pass, 3 in the seeding loop), `makePedigreeMatingLayout()` (the check takes `ped`,
+rows sorted only for an order hint, `hints` to `.buildMatingUnitForest()`), the help (`hints$mate`; "It cannot be
+turned off, unless a mate hint says otherwise"); `DIVERGENCE.md` rows for all three (`9c1e209`), not mirrored (R8).
+Measured before the pickers on scratch prototypes against kinship2 1.9.6.2 and Pedixplorer 1.8.0: the design's M6
+reproduced (`B A`, `C F D E`, as kinship2; Pedixplorer needs an `horder` with a spouse hint and fails on F left of D
+unless D anchors); 1,090 of 1,090 hinted sides on 100 random pedigrees; anchors by generation (R71); a sire with
+2 or 3 dams under three prototypes (R72); validation cases (R70). 9 tests in `tests/testthat/test_layoutHintsMate.R`
+and six helpers added to `helper-layoutHints.R` (each mating's partners as drawn at its dot, families following
+mates, kinship2's rows with a spouse hint): drafts 9 of 9 passing on the prototype and 9 of 9 failing on unchanged
+HEAD before RED (`034ac3c`); GREEN `7889ec8`, its code equal to the prototype's (one helper's last `if`/`else`
+braced for line length); REFACTOR `ffe042f`. Checks: suite 664 tests, 0 failed, WARN 0, SKIP 0, 5,144
+expectations; lint 0; roxygen changed `man/makePedigreeMatingLayout.Rd` only; drift tool 3 differ, all with rows;
+fidelity tool 600 of 600 identical without hints, kinship difference 0; coverage `R/layoutHints.R` 174 of 174 lines,
+package 97.91%; `R CMD check --as-cran` from a scratch folder R16's NOTE only; an order and mate hinted layout drawn
+by `drawPedigreeDiagram()` keeps its x (20 of 20 nodes); contract 4.1's row; CI run `43771237000`. Phase 15c, the
+converters, is next.
 
 ### Phase 16 -- Documentation (new repository)
 

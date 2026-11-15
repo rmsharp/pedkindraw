@@ -14,7 +14,7 @@ left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedig
 section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phases 11 (S14), 12 (S15-S16) and 13
 (S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) and 14 (S19-S20: `asPedFrame()` for
 kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is designed (S21) and its first build session,
-15a the order hint, is done (S22); 15b is next (Planned, below).
+15a the order hint, and 15b the mate hint are done (S22, S23); 15c is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -33,8 +33,8 @@ session each unless marked. They follow the copy slices.
 - **Phase 15:** layout hints a user can supply (R3): designed in S21 (`docs/planning/layout-hints-design.md`,
   R60-R63). A `hints` argument on `makePedigreeMatingLayout()` sets the order of siblings, families and founder
   couples and where mates are drawn, as kinship2's and Pedixplorer's hints do, and `asPedFrame()` passes an
-  object's hints on. Built in three sessions: 15a the order (done, S22, R64-R69), 15b spouse hints (next,
-  `methodology/BACKLOG.md`), 15c the converters.
+  object's hints on. Built in three sessions: 15a the order (done, S22, R64-R69), 15b the mate hint (R61's
+  `spouse`, renamed `mate`, R73; done, S23, R70-R73), 15c the converters (next, `methodology/BACKLOG.md`).
 - **Phase 16:** documentation: README, a getting-started and a drawing vignette, a pkgdown site, NEWS, the Phase 1-2
   timing tables.
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
@@ -42,6 +42,16 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Layout hints, the mate (Phase 15b), no new export:** `makePedigreeMatingLayout(..., hints = list(mate = ))`,
+  a data frame of `left`, `right` (a sire and dam with offspring together) and `anchor`, draws `left` left of
+  `right` at their mating and hangs the offspring under the anchor, the other partner a repeat node when it has
+  parents (R60-R61, R70-R73): strict checks, no anchor on the earlier-generation partner, an animal with several
+  mates drawn as kinship2 draws it (its families follow its mates, same-side mates in the hint's row order).
+  `R/layoutHints.R` gains `.checkLayoutHintOrder()`, `.checkLayoutHintMate()`, `.layoutHintMateRow()`,
+  `.layoutHintAnchor()`, `.layoutHintMatingSides()`, `.layoutHintSides()`, `.layoutHintFamilies()`, called from a
+  few lines in three copied functions (`DIVERGENCE.md`). 9 tests; on 100 seeded random pedigrees 1,090 of 1,090
+  hinted sides, 197 of 197 animals' families following their mates, 2,525 of 2,525 anchor flips; kinship2's rows
+  on 22 typed cases. Without hints the layout is nprcgenekeepr's (600 of 600 results identical).
 - **Layout hints, the order (Phase 15a), no new export:** `makePedigreeMatingLayout(..., hints = list(order = ))`,
   a number per animal named by id, draws siblings, separate families and founder couples left to right in the
   order of the numbers (R60-R61, R64-R68): animals it does not name keep their rows, equal numbers keep row order,
@@ -156,6 +166,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 15b, the mate layout hint (pedkindraw S23, 2026-11-15).** Written test-first after measuring the design's
+  open details D6, D7 and D9 on scratch prototypes against kinship2 and Pedixplorer (Mark's picks R70-R73, each the
+  recommended option: strict checks; no anchor on the earlier-generation partner, which drew 2,916 random matings'
+  anchors rows away from their dot; several mates as kinship2 draws them, 18 of 18 typed rows equal and 0 of 197
+  crossed families; the element renamed `mate`, user-facing words being sire and dam). 9 tests, three
+  `DIVERGENCE.md` rows, the contract's row; fidelity 600 of 600 identical without hints.
 - **Phase 15a, the order layout hint (pedkindraw S22, 2026-11-15).** Written test-first after measuring the design's
   open details D1-D5 on a scratch prototype against kinship2 and Pedixplorer (Mark's picks R64-R69, each the
   recommended option: unnamed animals keep their rows, family order changed 0 times in 99; a founder couple by its

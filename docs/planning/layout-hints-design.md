@@ -6,7 +6,10 @@
 written or changed; the measurements ran on scratch copies in this session's scratchpad. **Status:** rulings R60-R63
 made (Mark's picks, section 6); the build is three sessions, 15a-15c (section 9), each its own session under strict
 TDD. **Measured at:** `7846b2c` (S21's claim; `R/` identical to `ccc12ca`), kinship2 1.9.6.2, Pedixplorer 1.8.0,
-R 4.6.2, this Mac.
+R 4.6.2, this Mac. **Note (pedkindraw S23, Phase 15b):** the plan's R73 renamed pedkindraw's `spouse` element
+`mate` (user-facing words are sire and dam); read `spouse` below as `mate` where it names pedkindraw's element
+(kinship2's and Pedixplorer's own hints keep their name). R70-R72 settled D6, D7 and D9, and R72 changed the build:
+an animal's families follow its mates' hinted sides (section 7.2 does not say so).
 
 ---
 

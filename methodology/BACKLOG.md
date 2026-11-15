@@ -8,31 +8,26 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 15b: the `spouse` layout hint** (READY, Effort M, a guess; strict TDD) -- the design's
-      sections 7.2-7.3, 9 (`:227`) and D6, D7, D9: which side a mate is drawn on (`R/makePedigreeDiagramData.R:1126`,
-      the S666 pass's `sign`; `:1304`, the seeding loop's `side`) and which partner anchors a mating (`:524`,
-      `anchorOf[u] <- winner`); a `DIVERGENCE.md` row for `.buildMatingUnitForest()`, the rows S22 wrote for
-      `makePedigreeMatingLayout()` and `.positionMatingUnitForest()` updated; `R/layoutHints.R`'s
-      `.checkLayoutHints()` learns `spouse` (today it stops on any element but `order`, R68); the help sentence "It
-      cannot be turned off" (`:1593`) amended. The scratch prototype lines are the design's Appendix B (`:337`; its
-      line numbers are at `7846b2c`: today's are 5 higher above `.positionMatingUnitForest()`'s help, 9 higher from
-      its `:863` to `:1023`, 14 higher past `:1023`). 15a's rulings R64-R69 and its tests
-      (`tests/testthat/test_layoutHintsOrder.R`, helper `helper-layoutHints.R`) are the pattern.
-
-- [ ] **Phase 15c: converters pass hints on** (READY after 15b, Effort S-M, a guess; strict TDD) -- R62 and the
-      design's sections 7.4 (`:175`), 9 (`:238`) and D8: `asPedFrame()` returns `hints` as a third element (kinship2's
-      `order` and `spouse`, Pedixplorer's `horder(x)` and `spouse(x)`, in ids), `NULL` when none; the 9 converter
-      tests that compare the whole returned list gain the element (measured, M8); contract 4.5. Then Phase 15 is
-      DONE; plan Phases 16-17 follow (scope: the plan's section 4; summary: `methodology/ROADMAP.md`).
+- [ ] **Phase 15c: converters pass hints on** (READY, Effort S-M, a guess; strict TDD) -- R62, R73 and the
+      design's sections 7.4 (`:178`), 9 (`:241`) and D8 (`:263`): `asPedFrame()` returns `hints` as a third element in
+      `makePedigreeMatingLayout()`'s form, `list(order = , mate = )` (kinship2's `order` and its `spouse` matrix of
+      subject indices and anchor 1, 2, 0; Pedixplorer's `horder(x)` and `spouse(x)`, `idl`, `idr` and an ordered
+      factor `anchor`; each in ids, the anchor as `"left"`, `"right"`, `"either"`), `NULL` when none; the 9 converter
+      tests that compare the whole returned list gain the element (measured, M8); contract 4.5. Measure before the
+      pre-RED picker (Learnings 17-19): what kinship2's `autohint()` and Pedixplorer's `auto_hint()` put in an
+      object's spouse hints, and whether a converted hint can break R70-R71 (a pair with no offspring together, an
+      anchor on the earlier-generation partner), which would stop `makePedigreeMatingLayout(x$ped, hints =
+      x$hints)`. Then Phase 15 is DONE; plan Phases 16-17 follow (scope: the plan's section 4; summary:
+      `methodology/ROADMAP.md`).
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
       the code of `82f2ef3`: 97.16%, 45 of 1,811 statements missed, in 7 files (covr's first line of each
       statement). Re-measured S14 on `dff6509`: 97.32%, 44 of 1,872 (Phase 11's 61 statements all reached, and its
-      tests reach `R/shrinkPedigree.R:97`, the `affected` length error): `R/makePedigreeDiagramData.R` 31 (at S22's
-      `b9567bd`: 575, 762, 989, 1289, 1335, 2279, 2300, 2341, 2351, 2352, 2356, 2368, 2369, 2371, 2372, 2373, 2378,
-      2392, 2404, 2435, 2436, 2437, 2438, 2439, 2443, 2460, 2477, 2578, 2746, 3075, 3076; S14-S21 measured them 5 to
-      32 lower, before Phase 15a's lines); `R/positionTreeApportion.R` 6 (388, 392,
+      tests reach `R/shrinkPedigree.R:97`, the `affected` length error): `R/makePedigreeDiagramData.R` 31 (at S23's
+      `ffe042f`: 587, 774, 1005, 1307, 1356, 2321, 2342, 2383, 2393, 2394, 2398, 2410, 2411, 2413, 2414, 2415, 2420,
+      2434, 2446, 2477, 2478, 2479, 2480, 2481, 2485, 2502, 2519, 2620, 2788, 3117, 3118; S22 measured them 12 to 42
+      lower, before Phase 15b's lines, and S14-S21 5 to 32 lower than S22); `R/positionTreeApportion.R` 6 (388, 392,
       395, 427, 431, 434); `R/orderRootSubtrees.R` 2 (118, 131); `R/rbindFill.R` 2 (30, 35); `R/shrinkPedigree.R` 1
       (278); `R/comparePedigreeStructure.R` 1 (160); `R/kinship.R` 1 (135). The results tool's cases reach 3 of
       them (`kinship.R:135`, `rbindFill.R:35`, `shrinkPedigree.R:278`), but cases are not tests. All 7 files are
@@ -48,7 +43,9 @@ issues).*
       left (35); `R/findUnrelated.R` 88 of 88, `R/checkPedigree.R` 84 of 84. S19 on `58deb0a`: 97.74%, 43 of 2,227,
       the same 43 (since `4bcfe00` only `R/asPedFrame.R` was added in `R/`, 49 of 49). S20 on `ccc12ca`: 97.79%, 43 of 2,284, the
       same 43 (since `58deb0a` only `R/asPedFrame.R` changed in `R/`, 106 of 106). S22 on `b9567bd`: 97.83%, 43 of
-      2,341, the same 43 (`R/layoutHints.R` added, 52 of 52; `R/makePedigreeDiagramData.R`'s lines moved, above).
+      2,341, the same 43 (`R/layoutHints.R` added, 52 of 52; `R/makePedigreeDiagramData.R`'s lines moved, above). S23 on `ffe042f`:
+      97.91%, 43 of 2,445, the same 43 (`R/layoutHints.R` 174 of 174 lines; `R/makePedigreeDiagramData.R`'s lines
+      moved, above).
 
 ## Waiting on Mark
 
