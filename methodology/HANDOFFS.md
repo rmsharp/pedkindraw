@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S23
 date: 2026-11-15
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 15b, the spouse layout hint: makePedigreeMatingLayout(..., hints = list(spouse = )) (which partner of a mating is drawn left, which partner the children hang under), strict TDD; D6, D7, D9 and kinship2's and Pedixplorer's spouse hints measured before the pre-RED picker
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 15b item), docs/planning/layout-hints-design.md (sections 7.2-7.3, 9, 10, Appendix B), R/makePedigreeDiagramData.R:430 (.buildMatingUnitForest), R/layoutHints.R:19 (.checkLayoutHints)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 15b is DONE: makePedigreeMatingLayout(..., hints = list(mate = )), R/layoutHints.R, 9 tests, rulings R70-R73 (strict checks; no anchor on the earlier-generation partner; an animal with several mates drawn as kinship2 draws it, its families following its mates; the element renamed mate, user-facing words being sire and dam); next Phase 15c, the converters pass hints on
+what_was_done: claim 5e1b84e; D6, D7, D9 measured on four scratch prototypes against kinship2 and Pedixplorer (the design's M6 reproduced; 1,090 of 1,090 hinted sides on 100 random pedigrees; anchor flips held 1,464 of 1,464 same-generation and 1,061 of 1,061 founder pairs, while 2,916 cross-generation anchors were drawn rows away from their dot; a sire with 2 or 3 dams, 18 of 18 typed rows equal to kinship2's with families following, 0 of 197 crossed families) before one pre-RED picker, four picks each the recommended option, plus Mark's ruling on sire/dam words; RED 034ac3c (test_layoutHintsMate.R, six helpers; drafts 9/9 on the prototype, 9/9 failing on HEAD); GREEN 7889ec8 (R/layoutHints.R helpers, call-site lines in three copied functions, help, man; equal to the prototype); rows and contract 9c1e209; REFACTOR ffe042f (.layoutHintMatingSides()); pushed b9567bd..ffe042f, CI run 43771237000 5/5 Status OK at the first attempt, FAIL 0 WARN 0 on each; close-out: plan R70-R73, status, row 15, Done 15b; ROADMAP; BACKLOG (15b removed, 15c READY, coverage lines re-measured); a note atop the design document; a fifth quality gate, user-facing-sire-dam-words
+next_steps: Orient; drift tool (3 differ, all with rows); nprcgenekeepr's log on the three layout files; read the design's 7.4 (:178), 15c's DONE criteria (:241) and D8 (:263), plan R62 and R73, contract 4.5 (:202) and R/asPedFrame.R; before the pre-RED picker measure what kinship2 pedigree and pedigreeList and Pedixplorer Pedigree objects hold in their hints (set by a user and by autohint()/auto_hint()) and whether a converted hint can break R70-R71, which would stop makePedigreeMatingLayout(x$ped, hints = x$hints); prototype, drafts against it and HEAD, RED, GREEN, REFACTOR; contract 4.5 and R58's return; push; CI; Done 15c and Phase 15 DONE
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (15c), :23 (coverage), docs/planning/layout-hints-design.md :178 (7.4), :241 (15c DONE), :263 (D8), docs/planning/standalone-pedigree-package-plan.md:170 (R62), :178-:181 (R70-R73), :535 (row 15), R/asPedFrame.R:137 (generic), :152, :158, :164 (the kinship2 and Pedixplorer methods), R/layoutHints.R:109 (.checkLayoutHintMate, the shape a converted hint needs), tests/testthat/helper-layoutHints.R:278 (layoutHintsKinship2MateRows), docs/planning/pedkindraw-api-contract.md:202 (4.5's row)
+gotchas: user-facing words are sire, dam, mate, mating (gate user-facing-sire-dam-words); translate kinship2's and Pedixplorer's spouse and marriage; Pedixplorer's Hints() needs a non-empty horder naming every idl and idr, stores anchor as an ordered factor (also accepts 0/1/2) and refuses a repeated pair; kinship2's align.pedigree() needs an order with a spouse hint and fails on an anchor on a founder whose mate has parents; layoutHintsRowText() hides repeat nodes (use layoutHintsRowTextAll()); compare kinship2's offspring row as well as the mates' row; zsh ( a; b & ) runs a in the foreground; keep each shell command to one check (Mark rejected a compound one); another Claude session may run R checks at the same time (ps, lsof -d cwd); CLAUDE.md over its budget, nothing added
+runtime_smoke: an order and mate hinted layout (sire A with dams B and C, B right of A, K2 before K1) drawn by drawPedigreeDiagram(): visNetwork widget, rows P Q / C A B / K3 K4 K2 K1, its x identical to the layout's for 20 of 20 nodes, saved to HTML (not viewed in a browser); fidelity tool 600 of 600 identical without hints; quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 6810baa52355
+changelog_ref: CHANGELOG.md "2026-11-15 · [BL-Phase 15b] S23: plan Phase 15b, the mate layout hint" and "2026-11-15 · [BL-Phase 15b] S23 push"
+commit: this receipt's commit (close-out)
 ```
 
 ```handoff

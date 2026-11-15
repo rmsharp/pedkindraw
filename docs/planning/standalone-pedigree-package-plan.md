@@ -690,7 +690,7 @@ braced for line length); REFACTOR `ffe042f`. Checks: suite 664 tests, 0 failed, 
 expectations; lint 0; roxygen changed `man/makePedigreeMatingLayout.Rd` only; drift tool 3 differ, all with rows;
 fidelity tool 600 of 600 identical without hints, kinship difference 0; coverage `R/layoutHints.R` 174 of 174 lines,
 package 97.91%; `R CMD check --as-cran` from a scratch folder R16's NOTE only; an order and mate hinted layout drawn
-by `drawPedigreeDiagram()` keeps its x (20 of 20 nodes); contract 4.1's row; CI run `43771237000`. Phase 15c, the
+by `drawPedigreeDiagram()` keeps its x (20 of 20 nodes); contract 4.1's row; CI run `43771237000` 5/5 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each (macOS PASS 5144; Windows 5143, SKIP 1; Ubuntu 5133, SKIP 2). Phase 15c, the
 converters, is next.
 
 ### Phase 16 -- Documentation (new repository)

@@ -9,76 +9,77 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** **Plan Phase 15b: the `spouse` layout hint**, strict TDD (`methodology/BACKLOG.md:11`; the design
-`docs/planning/layout-hints-design.md`; rulings R60-R69 at `docs/planning/standalone-pedigree-package-plan.md:167`-
-`:176`; row 15 at `:530`). The orient picker asks Mark: this, **tests for full coverage**
-(`methodology/BACKLOG.md:28`, 43 of 2,341 statements missed), or hold.
-**Status:** READY. Phase 15a DONE (S22: RED `0ab1230`, GREEN `b598bcd`, rows `a992463`, REFACTOR `b9567bd`); suite
-655 tests, 0 failed, WARN 0, SKIP 0, 5,066 expectations; drift tool 2 differ, both with rows; pushed through
-`b9567bd`, CI run `43732712028` 5/5 at the first attempt; S22's close-out commits are not pushed.
-**Plan:** the design's section 7.2 (`:127`, what `spouse` does: `left` drawn left of `right`, `anchor` picks the
-partner the children hang under), 7.3 (`:147`), 9 (`:227`, 15b's DONE criteria), 10 (D6 `:258`, D7 `:259`, D9
-`:261`), Appendix B (`:337`, the prototype lines, their numbers at `7846b2c`).
-**Session boundary:** one session, 15b only; 15c (converters) is the next (`methodology/BACKLOG.md:22`).
+**Task:** **Plan Phase 15c: the converters pass hints on**, strict TDD (`methodology/BACKLOG.md:11`; the design
+`docs/planning/layout-hints-design.md` section 7.4 `:178`, 15c's DONE criteria `:241`, D8 `:263`; rulings R62 at
+`docs/planning/standalone-pedigree-package-plan.md:170` and R73 at `:181`; row 15 at `:535`). The orient picker
+asks Mark: this, **tests for full coverage** (`methodology/BACKLOG.md:23`, 43 of 2,445 statements missed), or hold.
+**Status:** READY. Phase 15b DONE (S23: RED `034ac3c`, GREEN `7889ec8`, rows `9c1e209`, REFACTOR `ffe042f`); suite
+664 tests, 0 failed, WARN 0, SKIP 0, 5,144 expectations; drift tool 3 differ, all with rows; pushed through
+`ffe042f` (with S22's two close-out commits), CI run `43771237000` 5/5 at the first attempt; S23's close-out
+commits are not pushed.
+**Plan:** `asPedFrame()` returns `list(ped, twinRelations, hints)`, `hints` in `makePedigreeMatingLayout()`'s form,
+`list(order = , mate = )`, or `NULL` (R62; the element is `mate`, not `spouse`, R73).
+**Session boundary:** one session, 15c only; then Phase 15 is DONE and Phase 16 (documentation) is next.
 **Priority:** HIGH (the plan's next phase).
 
 ### What You Must Do
-1. Orient; drift tool (expect 2 differ, 0 without a row); `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD --
-   R/makePedigreeDiagramData.R R/orderRootSubtrees.R R/positionTreeApportion.R` (Learning 15), again at each gate.
-2. Read the design's sections 7.2-7.3, 9 and 10 (D6, D7, D9) and Appendix B, then the engine where 15b changes it
-   (Key files): the anchor rule and `anchorOf[u] <- winner`, the S666 pass's `sign`, the seeding loop's `side`.
-3. Measure D6, D7, D9 before the pre-RED picker (Learnings 17-19): validation of `spouse`; an anchor hint across
-   generations; print one of M7's 8 unexamined matings. Compare with kinship2's `align.pedigree(hints = list(spouse =
-   ))` and Pedixplorer's `Hints(spouse = )` on typed cases (M6's `B A` and `C F D E` on the 8-animal case).
-4. Prototype in a scratch tree (recipe in Gotchas), draft `test_layoutHintsSpouse.R` against it, every expected value
-   computed, then run the drafts against an unchanged HEAD tree for the RED proof.
-5. RED, GREEN, REFACTOR, each gate an `AskUserQuestion`; `.checkLayoutHints()` accepts `spouse` (R68 stops on it
-   today); a `DIVERGENCE.md` row for `.buildMatingUnitForest()`, the two S22 rows updated; the help sentence "It
-   cannot be turned off" amended; contract 4.1's row; the checks (fidelity tool: no hint gives nprcgenekeepr's
-   results); push; CI; "Done 15b" in the plan.
+1. Orient; drift tool (expect 3 differ, 0 without a row); `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD --
+   R/makePedigreeDiagramData.R R/orderRootSubtrees.R R/positionTreeApportion.R` (Learning 15); nprcgenekeepr's
+   converters are not copied, so only those three files matter for drift.
+2. Read the design's 7.4 and 15c's DONE criteria, R62 and R73, contract 4.5 (`docs/planning/pedkindraw-api-contract.md:202`)
+   and `R/asPedFrame.R` (Key files).
+3. Measure before the pre-RED picker (Learnings 17-19): what kinship2 objects (`pedigree`, `pedigreeList`, D8) and
+   Pedixplorer `Pedigree` objects hold in their hints, set by a user and by `autohint()` / `auto_hint()`; whether a
+   converted hint can break R70-R71 (a pair with no offspring together, an anchor on the earlier-generation partner)
+   and so stop `makePedigreeMatingLayout(x$ped, hints = x$hints)`; the 9 converter tests that compare the whole
+   returned list (M8). Picker questions likely: a hint `makePedigreeMatingLayout()` would refuse (pass it on, drop
+   it, or stop), and `pedigreeList` hints (D8). This list is a guess; the measurements decide.
+4. Prototype in a scratch tree, draft tests against it, run the drafts against unchanged HEAD for the RED proof.
+5. RED, GREEN, REFACTOR, each gate an `AskUserQuestion`; contract 4.5's row and R58's return; the checks (fidelity
+   tool, `R CMD check --as-cran` from a scratch folder, coverage of `R/asPedFrame.R`); push; CI; "Done 15c" and
+   Phase 15 DONE in the plan.
 
 ### Gotchas
-- **A later layout pass can move a whole founder line** after the roots are ordered: seed 28 with the anchor's
-  number had roots `I2, I1` and drew I1's family first. So test founder order on the drawing's x, not on `rootIds`;
-  a spouse hint that flips sides may meet the same pass (the S666 conditional shift).
-- **kinship2 refuses a child with one known parent** ("Subjects must have both a father and mother, or have
-  neither"); the design's generator makes such children (about 1 in 12 dams NA). To compare with kinship2 on random
-  pedigrees, give each such child a founder row for the missing parent, and draw that same completed pedigree in
-  both. Even then kinship2's rows agree with pedkindraw's rarely, with or without hints (no hint: top row 9 of 135),
-  so compare with kinship2 on typed cases (R69).
-- **Pedixplorer ignores what it cannot use:** an `horder` naming only some animals is ignored whole, unknown names
-  are dropped, a repeated name keeps its first; with twins present it drew `C D E F` for every order. Its `Hints()`
-  refuses `NA`. Check what it does with a `spouse` data frame before citing it.
-- **zsh does not split an unquoted `$var` into words:** `for a in "1 25"; do run.sh $a` passes one argument "1 25".
-  Pass two variables (`$lo $hi`).
-- **Rectilinear edges route a line around a node in its way**: the twin edge C to E became `C -> __jog_1_a ->
-  __jog_1_b -> E`. Check an edge by `edgeStyle = "direct"` or by its label.
+- **Words:** user-facing documentation and code say sire, dam, mate, mating, never husband or wife (Mark, S23;
+  gate `user-facing-sire-dam-words` counts them in `R/` and `man/`). kinship2's and Pedixplorer's help pages say
+  spouse and marriage: translate before writing. pedkindraw's element is `hints$mate` (R73).
+- **Pedixplorer's `Hints()`:** a spouse data frame needs a non-empty `horder` whose names include every `idl` and
+  `idr` ("horder slot should be non empty if spouse slot is non empty"); `anchor` is stored as an ordered factor
+  (`left`, `right`, `either`) and accepts `0`/`1`/`2` too; it refuses a repeated pair, the same id twice and an
+  unknown id; ids are family-prefixed (`1_A`, R58).
+- **kinship2's spouse hint:** `hints$spouse` is a matrix (left index, right index, anchor 1/2/0) and
+  `align.pedigree()` needs `hints$order` with it (start from `autohint()`, as `layoutHintsKinship2MateRows()` does);
+  an anchor on a founder whose mate has parents makes its quadratic program fail ("constraints are inconsistent").
+- **A row text hides repeat nodes:** `layoutHintsRowText()` drops `__dup_` nodes, so a hint on an animal drawn twice
+  looks ignored; use `layoutHintsRowTextAll()`. Compare kinship2's offspring row as well as the mates' row: S23 found
+  the families-follow-mates rule only there.
+- **zsh:** `( a; b & )` runs `a` in the foreground; put `&` on each command and `wait`. Keep each shell command to
+  one check: Mark rejected one compound command (a background job plus several `Rscript`s) mid-RED.
+- **Another Claude session may run R checks at the same time** (S23: nprcgenekeepr's `devtools::check()` in a temp
+  folder): runs go slow; `ps` and `lsof -d cwd` show whose they are before blaming the code.
 - **The scratch-tree recipe:** `git archive HEAD | tar -x -C <tree>`, edit there, then `env -u RENV_PROJECT
   R_LIBS=<lib> R_LIBS_USER=<lib> NOT_CRAN=true Rscript --no-init-file ...` from `<tree>`; `<lib>` from
-  `Rscript -e 'cat(renv::paths$library())'`. Patch a copied file with a script that `stopifnot()`s each line's text
-  before changing it; prove the GREEN code equals the prototype (`deparse()` of each function after `sys.source()`).
-- **`R CMD check --as-cran` from the root stops at "CRAN incoming feasibility"**: run it from a scratch folder
-  (`CLAUDE.md`'s table).
-- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S22 added nothing); the reduction is the context-budget
-  item's own session (`methodology/BACKLOG.md`, "Point the context-budget tool").
+  `Rscript -e 'cat(renv::paths$library())'`. One script per tree: loading two trees in one R session is awkward.
+  Prove GREEN equals the prototype by `deparse()` of each function after `sys.source()`.
+- **`R CMD check --as-cran` from the root stops at "CRAN incoming feasibility"**: run it from a scratch folder.
+- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S23 added nothing; the vocabulary rule is a gate instead).
 - **Left outside the repository for Mark:** `~/Library/Caches/org.R-project.R/R/renv/library/tree-86aa6c47` (S19's,
   harmless).
-- **Times on this Mac (S22):** `test_layoutHintsOrder.R` ~43 s (its 100 random pedigrees ~40 s, `skip_on_cran()`);
-  suite ~2 min; fidelity tool ~4 min; `covr` ~4 min; `R CMD check --as-cran` ~4 min; 25 random pedigrees x 3
-  variants with kinship2 ~3 min per process (4 run in parallel).
+- **Times on this Mac (S23, with another session's check running beside it):** `test_layoutHintsMate.R` ~70 s (its
+  100 random pedigrees ~60 s, `skip_on_cran()`); `test_layoutHintsOrder.R` ~43 s; suite ~3 min; fidelity tool
+  ~4 min; `covr` ~5 min; `R CMD check --as-cran` ~5 min.
 
 ### Key files
-- `docs/planning/layout-hints-design.md` (the design; section lines above).
-- `R/layoutHints.R`: `:19` `.checkLayoutHints()` (`:36` the known elements, `order` only), `:84`
-  `.layoutHintPlaces()`, `:102` `.layoutHintRows()`, `:116` `.layoutHintKeepsRoots()`, `:137` `.layoutHintRoots()`.
-- `R/makePedigreeDiagramData.R`: `:430` `.buildMatingUnitForest()`, `:486` `preferAnchor()`, `:524`
-  `anchorOf[u] <- winner`, `:863` `.positionMatingUnitForest()`'s `@param hints`, `:915` hints to the per-family
-  call, `:1032` the founder-step branch, `:1126` the S666 pass's `sign`, `:1298` `sexSide`, `:1304` `side`, `:1593`
-  "It cannot be turned off", `:1629` `makePedigreeMatingLayout()`'s `@param hints`, `:1722` the check, `:1746` the
-  row reorder, `:1786` hints to `.positionMatingUnitForest()`.
-- `tests/testthat/test_layoutHintsOrder.R` and `helper-layoutHints.R` (the generator `layoutHintsFamilies()`, the
-  checkers, `layoutHintsKinship2Rows()`, `layoutHintsRowsAgree()`): 15b's file reuses the helper.
-- `DIVERGENCE.md:14`-`:15` (S22's rows); `docs/planning/pedkindraw-api-contract.md:129` (4.1's row), `:229` (4.6).
+- `R/asPedFrame.R`: `:137` the generic, `:143` default, `:152` `pedigree`, `:158` `pedigreeList`, `:164`
+  `Pedigree`, `:215` `.asPedFrameConditions()`, `:235` `.asPedFrameText()`, `:247` `.asPedFrameTwins()`.
+- `tests/testthat/test_asPedFrame.R`, `test_asPedFramePedixplorer.R`, their helpers `helper-asPedFrame.R`,
+  `helper-asPedFramePedixplorer.R`.
+- `R/layoutHints.R`: `:23` `.checkLayoutHints()`, `:60` `.checkLayoutHintOrder()`, `:109` `.checkLayoutHintMate()`
+  (the shape a converted hint must have), `:271` `.layoutHintMateRow()`, `:284` `.layoutHintAnchor()`, `:309`
+  `.layoutHintMatingSides()`, `:337` `.layoutHintSides()`, `:378` `.layoutHintFamilies()`.
+- `tests/testthat/helper-layoutHints.R`: `:192` `layoutHintsMate()`, `:200` `layoutHintsRowTextAll()`, `:223`
+  `layoutHintsMatings()`, `:278` `layoutHintsKinship2MateRows()`.
+- `docs/planning/pedkindraw-api-contract.md:202` (4.5's `asPedFrame()` row), `:232` (4.6).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -92,53 +93,48 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S21's entries were removed in S3-S22 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S22's entries were removed in S3-S23 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 23 Did
-**Deliverable:** plan Phase 15b: the `spouse` layout hint, `makePedigreeMatingLayout(..., hints = list(spouse = ))`
-(which partner is drawn left, which partner anchors the mating), strict TDD (IN PROGRESS)
-**Started:** 2026-11-15 12:27 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 15b: spouse hint
-(Recommended)" (orient)
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
-
-### Session 21 Handoff Evaluation (by Session 22)
+### Session 22 Handoff Evaluation (by Session 23)
 **Score: 9/10.**
-- **What helped:** the five ordered steps became this session's sequence exactly; every engine line cited
-  (`:452`, `:620`, `:904`-`:909`, `:927`-`:937`, `:993`-`:1023`, `:1714`-`:1754`, `:519`, `:1112`, `:1290`,
-  `:1579`) was right at `8ee4922`; the gotcha that `makePedigreeMatingLayout()` lives in
-  `R/makePedigreeDiagramData.R`; the scratch-tree recipe and "R CMD check from a scratch folder", used as written;
-  D1-D5 named with what to measure, which made both pickers answerable at once.
-- **What was missing:** that kinship2 refuses the generator's one-parent children (2 of 100 random comparisons
-  returned until each such child got a founder row); that kinship2's rows differ from pedkindraw's on random
-  pedigrees even without hints (top row 9 of 135), which decides where a kinship2 comparison can mean anything.
-- **What was wrong:** nothing found. The design's DONE criterion 3 ("each row equal to kinship2's wherever their
-  rows hold the same animals") could not hold for the 13-animal case's bottom row; Mark ruled its reading (R69).
+- **What helped:** the five ordered steps became this session's sequence; every engine line cited (`:430`, `:486`,
+  `:524`, `:1126`, `:1298`, `:1304`, `:1593`, `:1722`, `:1746`, `:1786`; `R/layoutHints.R:19`, `:36`) was right at
+  `a26f46f`; the scratch-tree recipe and "prove GREEN equal to the prototype", used as written; "check what Pedixplorer
+  does with a spouse data frame before citing it" (it needs an `horder`); the zsh word-splitting gotcha.
+- **What was missing:** that the 15a row-reorder line (`if (!is.null(hints)) ped <- .layoutHintRows(ped,
+  hints$order)`) empties `ped` for a hint without an order, which 15b had to guard; that the engine places an
+  animal's families before it sets its mates' sides, so a side hint alone crosses family lines (a design gap more
+  than a handoff gap; found by measuring).
+- **What was wrong:** nothing found.
 - **ROI:** high.
 
-### What Session 22 Did
-**Deliverable:** plan Phase 15a, the `order` layout hint: `makePedigreeMatingLayout(..., hints = list(order = ))`,
-strict TDD; rulings R64-R69.
-**Started:** 2026-11-14 20:52 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Phase 15a: order hint
-(Recommended)" (orient); "They keep their rows", "The female's", "Where it names a founder", "Draw it as ordered",
-"Strict", "Top two rows there" (pre-RED, each the recommended option); "Yes, proceed" at RED, GREEN, REFACTOR.
-**Commits:** claim `8ee4922`; RED `0ab1230`; GREEN `b598bcd`; divergence rows and contract `a992463`; REFACTOR
-`b9567bd`; pushed (with S20's and S21's close-out commits); close-out after, not pushed.
-**Verified:** D1-D5 measured on a scratch prototype against kinship2 and Pedixplorer (99 and 200 random pedigrees, a
-13-animal case over all 720 founder orders, a no-hint baseline); the test drafts run against the prototype (12 of
-12) and against unchanged HEAD (12 of 12 failing) before RED; GREEN's code proven equal to the prototype; suite 655
-tests, 0 failed, WARN 0, SKIP 0; lint 0; roxygen changed `man/makePedigreeMatingLayout.Rd` only; fidelity 600 of 600
-identical (no hint); coverage `R/layoutHints.R` 52 of 52; `R CMD check --as-cran` R16's NOTE only; a hinted layout
-drawn by `drawPedigreeDiagram()` keeps its x (runtime check); CI `43732712028` 5/5 `Status: OK` at the first attempt, `FAIL 0 |
-WARN 0` on each.
+### What Session 23 Did
+**Deliverable:** plan Phase 15b, the mate layout hint: `makePedigreeMatingLayout(..., hints = list(mate = ))`,
+strict TDD; rulings R70-R73.
+**Started:** 2026-11-15 12:27 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Phase 15b: spouse hint
+(Recommended)" (orient); "Strict: stop", "Stop", "kinship2's way", "Rename to hints$mate" (pre-RED, each the
+recommended option); "Yes, proceed" at RED, GREEN, REFACTOR. Mid-session Mark corrected my wording ("why has dam
+changed to wife and sire to husband?") and ruled "I want user facing documentation and code to use sire and dam.
+Older hidden commits with husband or wife can remain."
+**Commits:** claim `5e1b84e`; RED `034ac3c`; GREEN `7889ec8`; divergence rows and contract `9c1e209`; REFACTOR
+`ffe042f`; pushed (with S22's close-out commits); close-out after, not pushed.
+**Verified:** D6, D7, D9 measured on four scratch prototypes against kinship2 and Pedixplorer (the design's M6
+reproduced; 1,090 of 1,090 hinted sides and the anchor flips by generation on 100 random pedigrees; a sire with 2 or
+3 dams, 18 hints, under three prototypes; validation cases); test drafts run against the final prototype (9 of 9)
+and against unchanged HEAD (9 of 9 failing) before RED; GREEN's code proven equal to the prototype; suite 664
+tests, 0 failed, WARN 0, SKIP 0; lint 0; roxygen changed `man/makePedigreeMatingLayout.Rd` only; fidelity 600 of
+600 identical (no hint); coverage `R/layoutHints.R` 174 of 174 lines; `R CMD check --as-cran` R16's NOTE only; an
+order and mate hinted layout drawn by `drawPedigreeDiagram()` keeps its x (20 of 20 nodes; saved to HTML, not viewed
+in a browser); CI `43771237000` 5/5 `Status: OK` at the first attempt, `FAIL 0 | WARN 0` on each.
 **Self-assessment: 8/10.**
-+ Every picker option stated a measured count, both pickers answered at the first try, and the tests' expected
-  values came from the prototype; a draft expectation (M1's kinship2 top row) and two prototype bugs (`[[` on an
-  unnamed founder, `vapply()` on an integer order) were caught before RED.
-- Slips: the first parallel run lost to zsh word splitting; a first side-effect measure too blunt and a tie artifact
-  in a checker, each re-measured before the picker; two lint hits fixed in GREEN; one temporary file written to
-  `/tmp` instead of the scratchpad.
-**Learnings:** no `CLAUDE.md` row added (over its budget); the reusable traps are in the Gotchas above.
-**Ledger:** `CHANGELOG.md` S22 entries.
++ Every pre-RED option stated measured counts, and all four were answered at the first try; comparing kinship2's
+  offspring row as well as the mates' row found the crossing families and led to R72 (18 of 18 typed cases, 0 of
+  197 crossings); the tests' expected values all came from the prototype.
+- Slips: kinship2's human wording (husband, wife) in my messages until Mark corrected it; one picker phrase
+  overstated Pedixplorer ("invents a mating"), corrected in R70's text; a zsh `( a; b & )` that serialized a
+  background run; a crossing counter that first read 0 animals (caught by the zero); one compound command Mark
+  rejected; a typed row text that hid repeat nodes, misread for one message before I redrew with them.
+**Learnings:** no `CLAUDE.md` row (over its budget); the vocabulary rule became the gate
+`user-facing-sire-dam-words`; the reusable traps are in the Gotchas above.
+**Ledger:** `CHANGELOG.md` S23 entries.

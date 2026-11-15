@@ -51,6 +51,15 @@
       "command": "grep -rEc '<- *expect_(message|warning)\\(' tests/testthat | awk -F: '{s += $2} END {print s + 0}'",
       "extract": "^(\\d+)",
       "why": "S9 (2026-11-11): under testthat edition 2 (nprcgenekeepr) expect_message() and expect_warning() return the expression's value, under edition 3 (pedkindraw, plan R29) the condition, so a copied `result <- expect_message(f())` leaves result holding the message (Learning 10). RED cannot show it, because the missing function errors first: S9 met 5 such tests only in GREEN. Assign inside instead: expect_message(result <- f()). Measured 5 on nprcgenekeepr's test_makePedigreeMatingLayout.R at baef1e12c (the only 5 in its tests), 0 as committed."
+    },
+    {
+      "name": "user-facing-sire-dam-words",
+      "direction": "max",
+      "threshold": 0,
+      "unit": "lines",
+      "command": "grep -rEiw 'husband|husbands|wife|wives' R man | wc -l",
+      "extract": "(\\d+)",
+      "why": "S23 (2026-11-15): Mark ruled 'I want user facing documentation and code to use sire and dam' after a session copied kinship2's human-pedigree wording (husband, wife) into its descriptions of layout hints (plan R73). kinship2's and Pedixplorer's help pages use that wording, so it can come back with any comparison. Measured 0 in R/ and man/ at S23's close-out; older committed text elsewhere may stay (Mark)."
     }
   ]
 }
