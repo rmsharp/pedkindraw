@@ -26,7 +26,7 @@ Pedixplorer \code{Pedigree} object.}
 \item{...}{not used.}
 }
 \value{
-A list of two:
+A list of three:
 \describe{
 \item{\code{ped}}{a data frame with the character columns \code{id},
 \code{sire}, \code{dam} (an unknown parent is \code{NA}) and \code{sex};
@@ -38,13 +38,18 @@ other columns.}
 \code{id1}, \code{id2} and \code{code} (\code{"MZ twin"},
 \code{"DZ twin"} or \code{"UZ twin"}), or \code{NULL} when the object has
 no twin pair.}
+\item{\code{hints}}{the object's layout hints as a list of \code{order}
+(numbers named by id) and \code{mate} (a data frame of \code{left},
+\code{right} and \code{anchor}), each only when the object holds it, or
+\code{NULL} when it holds none.}
 }
 }
 \description{
 Turns a kinship2 \code{pedigree} or \code{pedigreeList} object, or a
 Pedixplorer \code{Pedigree} object, back into the data frames the rest of
 the package takes: a pedigree with one row per animal, and a table of twin
-pairs.
+pairs; and its layout hints into the form
+\code{\link{makePedigreeMatingLayout}()} takes.
 }
 \details{
 \strong{kinship2 objects.} The rows keep the object's order, which is the
@@ -115,6 +120,35 @@ stops when a column name would appear twice (an extra column called
 \code{sire}, say), naming it. Twin pairs are the MZ, DZ and UZ twins of
 \code{rel(x)}; spouse pairs are left out.
 
+\strong{Layout hints.} An object's layout hints come back in the form
+\code{\link{makePedigreeMatingLayout}()} takes, so
+\code{makePedigreeMatingLayout(x$ped, hints = x$hints)} draws with them,
+once \code{x$ped} has its generations (\code{\link{findGeneration}()}).
+kinship2 keeps them in the object's \code{hints} element, which a user
+sets, to \code{kinship2::autohint()}'s result for instance: its
+\code{order}, one number per animal in the object's order, becomes
+\code{order}, the numbers named by id (an \code{NA} leaves that animal
+unnumbered); its \code{spouse} rows (the places of the left and the right
+animal and an anchor, 1 left, 2 right, 0 either) become \code{mate}, a
+data frame of the ids \code{left} and \code{right} and the \code{anchor}
+\code{"left"}, \code{"right"} or \code{"either"}. A \code{pedigreeList}'s
+hints are read the same way, one number per animal of the whole list.
+\code{asPedFrame()} stops, saying what is wrong, when they cannot be read
+as ids: hints that are not a list, an order that is not numbers or not one
+per animal, or a \code{spouse} table that is not three columns of whole
+numbers, places from 1 to the number of animals and an anchor 1, 2 or 0.
+Pedixplorer keeps them in the object's hints, \code{horder()} (already
+named by id) and \code{spouse()}, read the same way.
+
+Both packages make their automatic hints for their own layouts, and some
+of the mate rows are ones \code{makePedigreeMatingLayout()} refuses.
+\code{asPedFrame()} fixes them and one message names each change: a pair
+with no offspring together is left out (both packages ignore it); a pair
+named in an earlier row is left out, the first row kept (as kinship2
+keeps it); and an anchor on the partner of the earlier generation
+(\code{\link{findGeneration}()}) becomes \code{"either"}, its side kept,
+since the layout draws a mating on the row of its later partner.
+
 \code{asPedFrame()} stops for an object of any other class, naming the
 class.
 }
@@ -132,6 +166,9 @@ if (requireNamespace("kinship2", quietly = TRUE)) {
     relation = data.frame(id1 = "C", id2 = "D", code = 2)
   )
   asPedFrame(p)
+  ## A layout hint: D drawn left of C.
+  p$hints <- list(order = c(1, 2, 4, 3))
+  asPedFrame(p)$hints
 }
 if (requireNamespace("Pedixplorer", quietly = TRUE)) {
   ## The same family as a Pedixplorer object, with a name for each animal.
