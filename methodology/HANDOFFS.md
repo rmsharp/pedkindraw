@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S27
+date: 2026-11-15
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 16b, the getting-started vignette and the example file: vignettes/pedkindraw.Rmd (docs/planning/documentation-plan.md section 5.3), R80's 375-animal example in inst/extdata/, knitr and rmarkdown in Suggests with VignetteBuilder knitr, ?pedkindraw naming the vignette; TDD phase none (documentation), checks written first
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:148 (5.3), docs/planning/documentation-plan.md:232 (16b's DONE), docs/planning/documentation-plan.md:304 (D3)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S26
 date: 2026-11-15
 status: complete

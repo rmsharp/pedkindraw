@@ -99,6 +99,18 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S25's entries were removed in S3-S26 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 27 Did
+**Deliverable:** plan Phase 16b, the getting-started vignette and the example file
+(`docs/planning/documentation-plan.md` section 5.3, 16b's DONE; `methodology/workstreams/DEVELOPMENT_WORKSTREAM.md`):
+`vignettes/pedkindraw.Rmd`, R80's 375-animal example in `inst/extdata/`, knitr and rmarkdown in Suggests with
+`VignetteBuilder: knitr`, `?pedkindraw` naming the vignette; TDD phase: none (documentation), checks written first;
+no function code (IN PROGRESS)
+**Started:** 2026-11-15 23:05 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Vignette 16b (Recommended)"
+(orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 25 Handoff Evaluation (by Session 26)
 **Score: 8/10.**
 - **What helped:** the stale-copy gotcha (every render and picture ran against a scratch install, and the picture
