@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S27
 date: 2026-11-15
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 16b, the getting-started vignette and the example file: vignettes/pedkindraw.Rmd (docs/planning/documentation-plan.md section 5.3), R80's 375-animal example in inst/extdata/, knitr and rmarkdown in Suggests with VignetteBuilder knitr, ?pedkindraw naming the vignette; TDD phase none (documentation), checks written first
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:148 (5.3), docs/planning/documentation-plan.md:232 (16b's DONE), docs/planning/documentation-plan.md:304 (D3)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 16b is DONE: vignettes/pedkindraw.Rmd ("Getting started with pedkindraw") reads R80's 375-animal rhesus pedigree and its twins table from inst/extdata/ (cmp equal to nprcgenekeepr's at baef1e12c), checks and repairs records, numbers generations and family trees, computes kinship, trims to ED5PDV's 16 ancestors and draws them (Mark's D3 pick), shrinks the pedigree, finds unrelated animals and converts kinship2's sample.ped family 2 (run only with kinship2); every value its text states is held by hidden stopifnot() chunks; knitr and rmarkdown in Suggests with VignetteBuilder knitr; ?pedkindraw names the vignette. Next: the legend item (methodology/BACKLOG.md:26), then 16c
+what_was_done: claim 6397dc4; five candidate trims drawn on trial html_vignette pages in headless Chrome at the page's width (found html_vignette's fig.width 3 draws the widget 288 px wide; out.width "100%" fixes it; 36-37 animals unreadable), three shown to Mark, who picked C; 2da3cb3 (DESCRIPTION Suggests and VignetteBuilder, the snapshot reporting the lock up to date, the contract's section 5, R80's two CSVs, .gitignore); every stated value computed in scratch runs first, which corrected two shrink sentences; d0068a7 (the vignette with its claims chunks, each shown stopping a render with one value changed; ?pedkindraw's Getting started and its Rd); pushed cd0b787..d0068a7; close-out 1 c765fdb (plan, documentation plan, ROADMAP, BACKLOG); close-out 2 (notes, receipt, ledger)
+next_steps: Orient; drift tool; nprcgenekeepr's log on the three layout files and R/affectedConditions.R and R/drawPedigreeDiagram.R; push S27's two close-out commits with the first push; the orient picker offers the legend item (recommended, 16c needs it), 16c, the gap document, coverage, or hold; for the legend item draw typed pedigrees with two to four conditions and each candidate fix in a scratch copy before the pre-RED picker (fix shape and the drift-rule choice: mirror in nprcgenekeepr or a DIVERGENCE.md row), then the RED, GREEN and REFACTOR gates
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:26 (legend item), R/affectedConditions.R:98 (.conditionSectionsHandler), R/drawPedigreeDiagram.R:134 (conditionRows), R/drawPedigreeDiagram.R:172 (afterDrawing), vignettes/pedkindraw.Rmd:174 (drawing chunk, out.width), vignettes/pedkindraw.Rmd:238 (claims chunk), docs/planning/documentation-plan.md:248 (16c's DONE)
+gotchas: a vignette drawing chunk needs out.width = "100%" (html_vignette's fig.width 3 gives 288 px); chromote's ".html-widget" and ".visNetwork" selectors crop at the widget's 500 px box (use "html" or a cliprect); the scratch-install recipe needs env -u RENV_PROJECT R_LIBS=... R_LIBS_USER=... on R CMD INSTALL as well as Rscript; the live vis.js network is document.getElementById('graph' + id).chart; the legend's last row touches the export button; the 375-animal layout warns of 72 collisions (16c); .lintr excludes vignettes; echo after a pipe prints the pipe's status; zsh echo ===== fails; CLAUDE.md over its budget; pedkindraw.Rproj left for Mark
+runtime_smoke: the vignette rendered in 1.6 s against the current tree in a scratch library, and with kinship2 and Pedixplorer absent (their chunks ran nothing); its claims chunks stopped renders with one value changed (29 to 30, 14 to 15); on the scratch page and the built page from R CMD build, headless Chrome found all 51 layout nodes placed and inside the canvas (exit 0; exit 1 zoomed to 4x); the page looked at; R CMD check --as-cran on d0068a7: R16's NOTE only, vignettes re-built OK, installed 2,236 KB; suite 676 tests, 0 failed, WARN 0, 5,929 passed; CI run 43810961086 5/5 Status OK at the first attempt; quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 01151c525b8a
+changelog_ref: CHANGELOG.md "2026-11-15 · [BL-Phase 16b] S27: plan Phase 16b, the getting-started vignette and the example file" and "2026-11-15 · [BL-Phase 16b] S27 push"
+commit: this receipt's commit (close-out 2)
 ```
 
 ```handoff
