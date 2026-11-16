@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-16 · [BL-Phase 16d] S30 claim (in progress): plan Phase 16d, the speed and size-limits vignette (`docs/planning/documentation-plan.md` section 5.5 and 16d's DONE; `methodology/workstreams/DEVELOPMENT_WORKSTREAM.md`): `vignettes/speed.Rmd`, "Speed and size limits", no drawings; `tools/checkSpeedTables.R`, run failing before the tables are filled; the contract's section 7 shrink row; `?pedkindraw`, the getting-started vignette and the drawing vignette pointing to it; TDD phase none (documentation), checks written first; no function code. Mark's orient pick: "Speed vignette (Recommended)".
+
 ### 2026-11-16 · [BL-Phase 16c] S29 push 2: `master` to GitHub at `7ab93a0` (the drawing vignette), CI green on five jobs at the first attempt
 - **Change:** `git push origin master` (`0910a03..7ab93a0`); CI run `43937366764`: 5/5 `success`, attempt 1, 19 min; on each job "checking re-building of vignette outputs ... OK" (both vignettes), "checking installed package size ... OK" and `Status: OK`; `FAIL 0 | WARN 0`: macOS PASS 6109 SKIP 0, Windows PASS 6108 SKIP 1, Ubuntu devel, release and oldrel-1 PASS 6098 SKIP 2 (S28's counts: no test changed).
 - **Commit/PR:** none (push); S29's close-out commits after it are not pushed · **Session:** S29 · **Verified:** `gh run view --json` (conclusion, attempt, each job) and each job's lines in `gh run view --log`.

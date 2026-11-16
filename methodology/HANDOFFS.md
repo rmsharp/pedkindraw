@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S30
+date: 2026-11-16
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 16d, the speed and size-limits vignette (docs/planning/documentation-plan.md section 5.5, DONE at its 16d item): vignettes/speed.Rmd and tools/checkSpeedTables.R, the script run failing before the tables are filled; TDD phase none (documentation), checks written first
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:185 (section 5.5), docs/planning/documentation-plan.md:269 (16d's DONE), docs/planning/pedkindraw-api-contract.md:279 (section 7), R/pedkindraw-package.R:42 (Getting started), vignettes/pedkindraw.Rmd:399 (Where next), vignettes/drawing.Rmd:681 (the size section)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S29
 date: 2026-11-16
 status: complete

@@ -98,6 +98,19 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S28's entries were removed in S3-S29 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 30 Did
+**Deliverable:** plan Phase 16d, the speed and size-limits vignette (`docs/planning/documentation-plan.md:185`,
+section 5.5; DONE at `:269`; `methodology/workstreams/DEVELOPMENT_WORKSTREAM.md`): `vignettes/speed.Rmd`, "Speed and
+size limits", no drawings; `tools/checkSpeedTables.R`, which checks every number in its tables against
+nprcgenekeepr's timing records, written and run failing first; the contract's section 7 shrink row; `?pedkindraw`,
+the getting-started vignette and the drawing vignette pointing to it; TDD phase none (documentation), checks written
+first; no function code (IN PROGRESS)
+**Started:** 2026-11-16 15:15 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Speed vignette (Recommended)"
+(orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 28 Handoff Evaluation (by Session 29)
 **Score: 9/10.**
 - **What helped:** the steps in order (drift tool; nprcgenekeepr's log; push with the first push; trial pages and
