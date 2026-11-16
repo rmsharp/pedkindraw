@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S28
 date: 2026-11-16
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: the legend item (methodology/BACKLOG.md:26): drawPedigreeDiagram()'s legend explains the sections of a symbol with two or more conditions; code copied from nprcgenekeepr, so TDD with the three gates and the drift-rule choice (mirror in nprcgenekeepr in a session there, or a DIVERGENCE.md row) at the pre-RED picker
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:26 (legend item), R/affectedConditions.R:98 (.conditionSectionsHandler), R/drawPedigreeDiagram.R:134 (conditionRows)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: the legend item is DONE (plan R81): with two or more conditions drawPedigreeDiagram()'s legend draws each condition's row as a section picture, a circle cut into the symbols' sections with that condition's section filled (.conditionLegendImage(), R/affectedConditions.R:192); with none or one the hexagon stays; to be ported to nprcgenekeepr in a session there (Mark's "Port later"), DIVERGENCE.md rows and the fidelity tool's allowance until then. Next: Phase 16c, the drawing vignette
+what_was_done: claim f7c2433; both candidates drawn at 2-4 conditions, a prototype measured (1 existing test, 3 checks; 24 of 600 fidelity results, only the condition rows' shape, fill and picture), the browser check prototyped (58 of 58 right, 20 wrong on the old code); Mark's three pre-RED picks; RED 39bf333 (test_conditionLegendImage.R 8 tests incl. 58 pixels in Chrome; 3 checks of the copied test_drawPedigreeDiagram.R); GREEN 1 b6a20bf (.conditionLegendImage(), drawPedigreeDiagram()'s block and help, Rd, DIVERGENCE.md rows, NEWS); GREEN 2 6701d74 (fidelity tool's withoutConditionSymbols(), negative control); REFACTOR reviewed, no change; pushed d0068a7..6701d74; close-out 1 9413b7b (R81, plan status, documentation plan 5.4 note, ROADMAP, BACKLOG); close-out 2 (notes, receipt, ledger)
+next_steps: Orient; drift tool (91 functions, 5 differ, all with rows); nprcgenekeepr's log on the legend's and layout's files (if it has ported R81, BACKLOG.md:28 is unblocked); push S28's close-out commits with the first push; the orient picker offers 16c (recommended), the gap document, coverage, or hold; for 16c draw each candidate on a trial html_vignette page at the page's width and compute every stated value first (documentation-plan.md:162 section 5.4, DONE at :250)
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:162 (5.4), docs/planning/documentation-plan.md:250 (16c DONE), vignettes/pedkindraw.Rmd:399 (Where next), R/pedkindraw-package.R:42 (Getting started), R/affectedConditions.R:192 (.conditionLegendImage), R/drawPedigreeDiagram.R:154 (S28's block), tools/compareResultsWithNprcgenekeepr.R:714 (withoutConditionSymbols), methodology/BACKLOG.md:28 (after nprcgenekeepr's port)
+gotchas: chromote's screenshot(selector = "html") re-fits the legend (33 px), so read positions with JS before the shot; HTMLWidgets.find(...).network and .legend, a legend picture loaded when shape.imageObj.width > 0; the fidelity tool's --child mode measures a scratch tree; run single test files from the root (renv), regexes in script files (zsh); paste0("X", integer(0)) is "X"; the stale pedkindraw 0.0.1 in renv's library (recipe in the notes); out.width = "100%" for a vignette drawing; the 375-animal layout's 72-collision warning; the legend's pictures not measured at 700 px; .lintr excludes vignettes; CLAUDE.md over budget; pedkindraw.Rproj left for Mark
+runtime_smoke: the committed drawing at 2, 3 and 4 conditions photographed in headless Chrome and looked at; the browser test reads 58 pixels (each legend section where the diagram's is); R CMD check --as-cran on 6701d74: 1 NOTE (Maintainer, New submission only), vignettes rebuilt OK, installed size OK; suite 684 tests, 0 failed, WARN 0, 6,109 passed; fidelity tool 600 of 600 identical, exit 0; drift tool 0 without a row; CI run 43913026012 5/5 success at the first attempt, 14 min, FAIL 0 WARN 0 on each (macOS PASS 6109 SKIP 0, Windows 6108 SKIP 1, Ubuntu devel, release and oldrel-1 6098 SKIP 2: S27's counts plus the new file's 180, so the browser test ran on every job); quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 01151c525b8a
+changelog_ref: CHANGELOG.md "2026-11-16 · [BL-legend] S28: the legend item, each condition's legend row a section picture (plan R81)" and "2026-11-16 · [BL-legend] S28 push"
+commit: this receipt's commit (close-out 2)
 ```
 
 ```handoff

@@ -9,84 +9,86 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** **the legend item**, then Phase 16c. The legend does not explain the sections of a symbol with two or more
-conditions (`methodology/BACKLOG.md:26`, Mark's S26 find); 16c's drawing vignette shows two to four conditions, so
-the item comes first (`methodology/BACKLOG.md:11`, the plan's Next at
-`docs/planning/standalone-pedigree-package-plan.md:47`). The orient picker asks Mark: the legend item
-(recommended); 16c without it; **the gap document** (`methodology/BACKLOG.md:36`, Mark's S26 request); tests for
-full coverage (`:46`); or hold.
-**Status:** READY. Phase 16b DONE (S27: claim `6397dc4`, dependencies and example file `2da3cb3`, vignette and help
-page `d0068a7`, pushed with S26's two close-out commits, CI run `43810961086` (5/5); close-out 1 and 2 after,
-not pushed). `R/` gained no code: only `R/pedkindraw-package.R`'s help text changed.
-**Plan (the legend item):** code copied from nprcgenekeepr, so TDD with the three gates, and the drift rule: the
-session's first picker asks whether nprcgenekeepr gets the same fix in a session of its own there or pedkindraw
-records the difference in `DIVERGENCE.md` (plan section 5). With two or more conditions `drawPedigreeDiagram()`
-splits each symbol into equal sections (`.conditionSectionsHandler()`, `R/affectedConditions.R:98`, drawn by
-`.diagramAfterDrawing()`, `R/drawPedigreeDiagram.R:172`) and draws the dividers on unaffected animals too; the
-legend's condition rows (`conditionRows`, `R/drawPedigreeDiagram.R:134`, joined at `:152`) show each condition as a
-whole filled hexagon, so nothing says which section is which.
-**Session boundary:** one session: the legend item only. 16c is a session of its own.
-**Priority:** HIGH (16c waits on it).
+**Task:** **Phase 16c, the drawing vignette** (`docs/planning/documentation-plan.md:162`, section 5.4; its DONE at
+`:250`; the plan's Next at `docs/planning/standalone-pedigree-package-plan.md:48`). The orient picker asks Mark: 16c
+(recommended: the plan's next phase, now unblocked); **the gap document** (`methodology/BACKLOG.md:39`, Mark's S26
+request); tests for full coverage (`:49`); or hold.
+**Status:** READY. The legend item DONE (S28, R81): with two or more conditions each condition's legend row is a
+section picture. Claim `f7c2433`, RED `39bf333`, GREEN `b6a20bf` and `6701d74`, pushed with S27's close-out
+commits (CI run `43913026012`, see the S28 record below); REFACTOR reviewed, no change; close-out 1 `9413b7b` and
+close-out 2 after it, not pushed.
+**Plan (16c):** documentation, so TDD phase none with checks written first, as 16a and 16b: `vignettes/drawing.Rmd`,
+"Drawing pedigrees" (`documentation-plan.md:132`); each statement of where an animal is drawn or what a drawing shows
+held by a hidden `stopifnot()` chunk on the layout, values computed in a scratch run first (DONE item 1); renders
+with kinship2 and Pedixplorer absent; the built page in Chrome, every drawing showing every node; Mark looks at the
+page (item 2); installed size with two vignettes of drawings under 5,120 KB, read with `du -sk` in the check folder
+(item 3). `?pedkindraw`'s Getting started (`R/pedkindraw-package.R:42`) and the getting-started vignette's "Where
+next" (`vignettes/pedkindraw.Rmd:399`) name the new vignette.
+**Session boundary:** one session: 16c only. 16d and 16e are sessions of their own.
+**Priority:** HIGH (Phase 16 is the last phase before the CRAN submission plan).
 
 ### What You Must Do
-1. Orient; drift tool (expect 3 differ, all with rows); `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD --
-   R/makePedigreeDiagramData.R R/orderRootSubtrees.R R/positionTreeApportion.R R/affectedConditions.R
-   R/drawPedigreeDiagram.R` (Learning 15). At S27's close nprcgenekeepr was at `21a4221d5`: nothing new on the three
-   layout files; its three commits on the legend's two files since `baef1e12c` (S1153 `471589138`, S1159
-   `a85311021` and `4283e3502`) are already in pedkindraw's copy (the drift tool reads them the same).
-2. `git push` S27's two close-out commits with the session's first push (CI ran on `d0068a7`; the close-out
-   commits change only `docs/` and `methodology/`).
-3. Measure before the picker (Learning 17): draw typed pedigrees with two, three and four conditions as
-   `tools/makeReadmePicture.R` does, look at each legend as a reader, and draw each candidate fix in a scratch copy
-   before offering it. Read the legend's own limits first: its canvas is 500 px tall and its rows are spaced 60
-   (`stepY`, `R/drawPedigreeDiagram.R`, the long comment above `stepY = 60L`); new rows may not fit.
-4. Pre-RED picker (the fix's shape and the drift choice), then RED, GREEN, REFACTOR, each gate an `AskUserQuestion`
-   (`CLAUDE.md` "Phase-gate format").
+1. Orient; drift tool (expect 91 functions, 5 differ, all with rows: S28 added `drawPedigreeDiagram()` and
+   `.conditionLegendImage()`); `git -C ../nprcgenekeepr log --oneline 4283e3502..HEAD -- R/affectedConditions.R
+   R/drawPedigreeDiagram.R R/deceasedSlash.R` and the three layout files since `baef1e12c` (Learning 15). If
+   nprcgenekeepr has ported R81, the backlog's BLOCKED item (`methodology/BACKLOG.md:28`) is unblocked.
+2. `git push` S28's close-out commits with the session's first push.
+3. Before the pre-work picker (Learning 17), draw each candidate drawing on a trial html_vignette page at the
+   page's width (S27's method) and compute every value the text will state; the conditions section can now point to
+   the legend's pictures (R81).
 
 ### Gotchas
-- **The stale pedkindraw 0.0.1 in renv's library** (`methodology/BACKLOG.md:92`) still runs whenever
-  `library(pedkindraw)` is called without installing first. Recipe: `git archive HEAD | tar -x -C <tree>`; then,
-  each with `env -u RENV_PROJECT R_LIBS=<scratch lib>:<renv lib> R_LIBS_USER=<renv lib>` in front (S26's recipe
-  left it off `R CMD INSTALL`, which then stops: "install.packages('quadprog')"), `R CMD build --no-build-vignettes
-  --no-manual <tree>`, `R CMD INSTALL --no-docs --library=<scratch lib> <tarball>`, and `Rscript --no-init-file
-  ...` (`<renv lib>` from `Rscript -e 'cat(renv::paths$library())'`). Print `find.package("pedkindraw")`.
-- **A drawing in a vignette needs `out.width = "100%"`** on its chunk: html_vignette's `fig.width = 3` drew the
-  widget 288 px wide, the legend's labels cut and no ids shown. At 700 px about 22 animals still read; 36-37 do
-  not (S27's trial pages). 16c has several drawings.
-- **chromote:** `selector = "html"` for a whole page, not `".html-widget"` or `".visNetwork"`: both crop at the
-  widget's 500 px box, and the id box plus the 475 px canvas overflow it, so the bottom row's labels and the export
-  button are cut. For a part of a long page use `cliprect` around the widget's bounding box. Set
-  `Emulation$setDeviceMetricsOverride(deviceScaleFactor = 2)` before `go_to()` (`tools/makeReadmePicture.R:40`).
-- **The drawing's live network** is `document.getElementById('graph' + w.id).chart` for a `.visNetwork` element
-  `w` (`tests/testthat/helper-live-render-positions.R:166`); the nodes R passed are in the page's
-  `script[data-for=<w.id>]` JSON (`x.nodes.id`). S27's check of "every node shown": each passed node placed and,
-  through `canvasToDOM()`, inside the canvas; it failed when `moveTo({scale: 4})` zoomed in.
-- **The legend's last row** ("?", UZ twins) touches the "Export Diagram (PNG)" button on S27's page; the copied
-  drawing's own layout, seen, not changed. The legend item's new rows will make this worse unless measured.
-- **`makePedigreeMatingLayout()` on all 375 animals** warns "72 same-row edge-node collision(s) could not be fully
-  resolved" (1.8 s); 16c's colony-size drawing would print it (`methodology/BACKLOG.md:11`).
-- **`.lintr` excludes `vignettes`** (and `tests`, `inst/extdata`): `lint_package()` reads `R/` only; vignette
-  code is checked by its render and its claims chunks.
-- **Words:** sire, dam, mate, mating; kinship2's `father` and `mother` appear only as its column names in code.
-- **zsh:** `echo =====` fails (S27 hit it again); keep each shell command to one check (Mark, S23). An `echo
-  "exit $?"` after a pipe prints the last command's status, not the script's: run the script alone for its status.
-- **Another Claude session may run R checks at the same time** (nprcgenekeepr's sessions; its S1174 was running at
-  S27's close): `ps` and `lsof -d cwd`.
-- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S23-S27 added nothing).
+- **A screenshot is not the page as loaded (S28).** chromote's `screenshot(selector = "html")` resizes the page, and
+  vis.js then re-fits the legend: its content moved 33 px left (898.5 to 865.7 px) in one page and not in another,
+  so two screenshots seemed to differ when the pages did not. Read positions with JavaScript before the shot
+  (`canvasToDOM()` on the legend's nodes) when judging a layout difference.
+- **The widget's two networks:** `HTMLWidgets.find('#' + el.id)` for `el = document.querySelector('.visNetwork')`
+  gives `.network` (the diagram) and `.legend` (the legend, its own vis.Network); a legend picture has loaded when
+  `node.shape.imageObj.width > 0` (`complete` is undefined). Pixel reading: `tests/testthat/test_conditionLegendImage.R`
+  (`.sectionPixelsJs()`, `.waitForLegendPictures()`).
+- **The fidelity tool measures a scratch tree (S28):** `Rscript tools/compareResultsWithNprcgenekeepr.R --child
+  <package folder> ../nprcgenekeepr/tools/pedigreeComparison/data <out.rds>` from the root runs the cases on any
+  package folder (a `git archive` copy with a prototype); compare two such `.rds` files to count which of the 600
+  results a change moves before a picker. Full tool 3.5-3.8 min. Since S28 it sets aside the condition rows' shape,
+  fill and picture in 36 drawings (`withoutConditionSymbols()`, `tools/compareResultsWithNprcgenekeepr.R:714`).
+- **Run single test files from the root** (renv activates only there): `Rscript -e '...test_file("tests/testthat/
+  test_X.R")'` reads edition 3 from `DESCRIPTION`; from `tests/testthat/` R stops ("quadprog is required"). Put a
+  regex in a script file, not `Rscript -e '...\\s...'` (zsh quoting broke it). Save a suite run's output to a file:
+  S28 ran the suite twice because `tail` cut its summary line.
+- **`paste0("X", integer(0))` is `"X"`**, not empty; `sprintf("X%d", seq_len(k))` is empty for k = 0.
+- **The stale pedkindraw 0.0.1 in renv's library** (`methodology/BACKLOG.md:95`) runs whenever `library(pedkindraw)`
+  is called without installing first; a vignette render needs the current tree installed. Recipe: `git archive HEAD |
+  tar -x -C <tree>`; then, each with `env -u RENV_PROJECT R_LIBS=<scratch lib>:<renv lib> R_LIBS_USER=<renv lib>`
+  in front, `R CMD build --no-build-vignettes --no-manual <tree>`, `R CMD INSTALL --no-docs --library=<scratch lib>
+  <tarball>`, and `Rscript --no-init-file ...`; print `find.package("pedkindraw")`. `pkgload::load_all(".")` is
+  enough for a drawing alone (S28's trial pages).
+- **A vignette drawing chunk needs `out.width = "100%"`** (html_vignette's `fig.width = 3` draws 288 px); at 700
+  px about 22 animals still read (S27). chromote: `selector = "html"` for a whole page (`.html-widget` and
+  `.visNetwork` crop at 500 px); `deviceScaleFactor = 2` before `go_to()` (`tools/makeReadmePicture.R:40`).
+- **`makePedigreeMatingLayout()` on all 375 animals** warns "72 same-row edge-node collision(s)" (1.8 s): 16c's
+  colony-size drawing would print it (`methodology/BACKLOG.md:11`).
+- **The legend's pictures at a vignette's width are not measured:** at 1000 px their circle is about 17 px (scale
+  0.699); at 700 px the legend canvas is 196 px wide.
+- **`.lintr` excludes `vignettes`** (and `tests`, `inst/extdata`): `lint_package()` reads `R/` only.
+- **Words:** sire, dam, mate, mating; kinship2's `father` and `mother` only as its column names in code.
+- **zsh:** `echo =====` fails; one check per shell command (Mark, S23); `echo "exit $?"` after a pipe prints the
+  last command's status.
+- **Another Claude session may run in nprcgenekeepr** (its S1174 and S1175 committed during S28): `ps`, and its log
+  at each gate.
+- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S23-S28 added nothing; learnings go in these Gotchas).
 - **Left for Mark:** `pedkindraw.Rproj` untracked at the root (`.Rbuildignore:6` keeps it out of the build).
-- **Times on this Mac (S27):** the vignette renders in 1.6 s; `R CMD build` 7 s; `R CMD check --as-cran` 178 s
-  (tests 122 s); the suite 4.6 min; the gate run 4.8 min; CI ~15 min.
+- **Times on this Mac (S28):** the suite 4.5 min (268-271 s); the gate run 5.1 min; `R CMD check --as-cran` tests
+  115 s; the fidelity tool 3.5-3.8 min; CI ~15 min.
 
 ### Key files
-- `R/affectedConditions.R:98` (`.conditionSectionsHandler()`); `R/drawPedigreeDiagram.R:134` (`conditionRows`),
-  `:152` (`legendNodes`), `:172` (`afterDrawing`).
-- `methodology/BACKLOG.md:11` (16c-16e, with S27's notes), `:26` (legend), `:36` (gap document), `:46` (coverage),
-  `:92` (the stale copy).
-- `docs/planning/standalone-pedigree-package-plan.md:47` (Next), `:737` (Phase 16), `:774` ("Done 16b").
-- `docs/planning/documentation-plan.md:158` (S27's notes under 5.3), `:162` (5.4, the drawing vignette), `:248`
-  (16c's DONE), `:304` (D3 answered).
-- `vignettes/pedkindraw.Rmd`: `:174` (the drawing chunk, `out.width`), `:238` (the claims chunk), `:399` (Where
-  next, for 16c and 16d to add their vignettes).
+- `docs/planning/documentation-plan.md:132` (the vignettes' table), `:162` (5.4, the drawing vignette), `:250`
+  (16c's DONE).
+- `vignettes/pedkindraw.Rmd:174` (a drawing chunk, `out.width`), `:399` (Where next); `R/pedkindraw-package.R:42`
+  (Getting started).
+- `R/affectedConditions.R:101` (`.conditionSectionsHandler()`), `:192` (`.conditionLegendImage()`);
+  `R/drawPedigreeDiagram.R:143` (`conditionRows`), `:154` (S28's block), `:172` (`legendNodes`).
+- `methodology/BACKLOG.md:11` (16c-16e), `:28` (after nprcgenekeepr's port, BLOCKED), `:39` (gap document), `:49`
+  (coverage), `:95` (the stale copy); `DIVERGENCE.md:17-18` (S28's rows).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -100,65 +102,58 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S26's entries were removed in S3-S27 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S27's entries were removed in S3-S28 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 28 Did
-**Deliverable:** the legend item (`methodology/BACKLOG.md:26`): the drawing's legend explains the sections of a
-symbol with two or more conditions (`R/drawPedigreeDiagram.R`, `R/affectedConditions.R`, copied from nprcgenekeepr;
-`methodology/workstreams/DEVELOPMENT_WORKSTREAM.md`); TDD with the three gates, the drift-rule choice at the pre-RED
-picker (IN PROGRESS)
-**Started:** 2026-11-16 02:51 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Legend fix (Recommended)"
-(orient)
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
-
-### Session 26 Handoff Evaluation (by Session 27)
+### Session 27 Handoff Evaluation (by Session 28)
 **Score: 9/10.**
-- **What helped:** the steps in order (measure candidates before the picker, look as a reader, one condition or
-  none, checks computed first and shown failing); the stale-copy gotcha and the scratch-install recipe (every render
-  and picture ran against the current tree); chromote's device scale; the M7 method; the zsh gotcha; every line
-  cited was right (re-checked at `455d452`: `documentation-plan.md:105`, `:106`, `:148`, `:232`, `:304`; the
-  contract's `:248`; `README.Rmd:92`; `R/pedkindraw-package.R:42`; `BACKLOG.md:11`, `:20`, `:30`, `:40`, `:86`).
-- **What was missing:** that html_vignette's `fig.width = 3` draws a widget 288 px wide (found on the first trial
-  page); that `".visNetwork"` crops like `".html-widget"`.
-- **What was wrong:** the recipe put the `env` line only on `Rscript`; `R CMD INSTALL` without it stopped
-  ("install.packages('quadprog')"). One minute.
+- **What helped:** the steps in order (drift tool; nprcgenekeepr's log on the legend's files; push with the first
+  push; draw two to four conditions and each candidate in a scratch copy; the pre-RED picker asking the drift
+  choice); the warning that the legend's rows are spaced 60 in a fixed canvas, which made the extra-row candidate's
+  cost (45 px) a measured line in the picker; reading the live network; another session's runs (nprcgenekeepr moved
+  three times during S28); every line cited was right (13 checked at `b182464`).
+- **What was missing:** that `tools/compareResultsWithNprcgenekeepr.R` compares whole drawings, five conditions
+  among them, so any legend change moves 24 of its 600 results: found by reading the tool, and it became the third
+  pre-RED question. That a screenshot re-fits the legend (not knowable then).
+- **What was wrong:** nothing in the handoff; the backlog item it pointed to cited `R/affectedConditions.R:84` (the
+  help block) for the function at `:98`.
 - **ROI:** high.
 
-### What Session 27 Did
-**Deliverable:** plan Phase 16b, the getting-started vignette and the example file; TDD phase none
-(documentation), checks first. DONE.
-**Started:** 2026-11-15 23:05 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Vignette 16b (Recommended)"
-(orient); "C: ED5PDV, 16 animals (Recommended)" (D3).
-**Commits:** claim `6397dc4`; `2da3cb3` (DESCRIPTION Suggests knitr and rmarkdown and `VignetteBuilder: knitr`, the
-contract's section 5, R80's two files in `inst/extdata/`, `.gitignore`); `d0068a7` (`vignettes/pedkindraw.Rmd`,
-`R/pedkindraw-package.R`, `man/pedkindraw-package.Rd`); pushed `cd0b787..d0068a7` (5 commits); close-out 1 (plan,
-documentation plan, ROADMAP, BACKLOG) and close-out 2 (notes, receipt, ledger), not pushed.
-**Verified:** five candidate trims drawn on trial html_vignette pages in headless Chrome at the page's width
-(16-37 animals; 36-37 unreadable), three shown to Mark; `renv::snapshot(dev = TRUE)` "already up to date", the lock
-unchanged, gate 0; both CSVs `cmp` equal to nprcgenekeepr's at `baef1e12c`; every stated value computed in a scratch
-run before the text (it corrected two shrink sentences: 3 of the 4 "non-informative" animals had offspring, and the
-last step's 214 removals include 143 ungenotyped animals); the claims chunks stopped a render with one value
-changed (29 to 30; 14 to 15); rendered in 1.6 s, and with kinship2 and Pedixplorer absent (their chunks ran
-nothing); on the scratch page and on the built page from `R CMD build`, all 51 layout nodes placed and inside the
-canvas (exit 0; exit 1 when zoomed to 4x); the page looked at, every mark explained by the legend or the text;
-suite 52 files, 676 tests, 0 failed, 0 skipped, WARN 0, 5,929 passed; lint 0; roxygen changed only
-`man/pedkindraw-package.Rd`, then idempotent; words gate 0; `R CMD check --as-cran` on `d0068a7`: 1 NOTE (R16's
-Maintainer and New submission only), "re-building of vignette outputs ... OK", "installed package size ... OK"
-(2,236 KB); drift tool 90 functions, 3 differ, 0 without a row; `quality_ratchet.py --run` 5/5 pass, results
-`5ddbb5b1aeb3`, manifest `01151c525b8a` (head `d0068a7`); CI run `43810961086`: 5/5 `Status: OK` at the first
-attempt, 14 min, "re-building of vignette outputs ... OK" and "installed package size ... OK" on each, `FAIL 0 |
-WARN 0` (macOS PASS 5929, Windows 5928 SKIP 1, Ubuntu devel, release and oldrel-1 5918 SKIP 2: S26's counts).
+### What Session 28 Did
+**Deliverable:** the legend item (`methodology/BACKLOG.md`, Mark's S26 find): with two or more conditions each
+condition's legend row is a section picture. Strict TDD, three gates. DONE.
+**Started:** 2026-11-16 02:51 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Legend fix (Recommended)"
+(orient); "Section pictures (Recommended)", "Port later (Recommended)", "Skip those fields (Recommended)"
+(pre-RED); "Yes, proceed to RED"; "Yes, proceed to GREEN"; "Yes, REFACTOR: review, no change". Each first try.
+**Commits:** claim `f7c2433`; RED `39bf333` (new `tests/testthat/test_conditionLegendImage.R`, 8 tests; 3 checks of
+the copied `test_drawPedigreeDiagram.R`); GREEN 1 `b6a20bf` (`.conditionLegendImage()` in `R/affectedConditions.R`,
+the block in `drawPedigreeDiagram()` and its help, the Rd, two `DIVERGENCE.md` rows, a NEWS line); GREEN 2 `6701d74`
+(the fidelity tool's `withoutConditionSymbols()`); REFACTOR no change; pushed `d0068a7..6701d74` (6 commits);
+close-out 1 `9413b7b` (R81, the plan's status, the documentation plan's 5.4 note, ROADMAP, BACKLOG); close-out 2
+(these notes, the receipt, the ledger), not pushed.
+**Verified:** before the picker, both candidates drawn at 2-4 conditions in headless Chrome; a prototype in a
+scratch copy broke exactly 1 existing test (3 checks) and moved 24 of the fidelity tool's 600 results, whose only
+difference was the condition rows' shape, fill and picture (0 differ with those taken out); the browser check
+prototyped: 58 of 58 pixels on the prototype, 20 wrong on the old code. RED: the new file 7 of 8 failing (6 on the
+missing function), the copied test its 3 checks, suite 684 tests 8 failed, WARN 0. GREEN: suite 53 files, 684
+tests, 0 failed, 0 skipped, WARN 0, 6,109 passed (268 s); lint 0 (one `paste_linter` lint fixed first); roxygen
+changed only `man/drawPedigreeDiagram.Rd`, then nothing; drift tool 91 functions, 5 differ, 0 without a row;
+fidelity tool 36 drawings set aside in each run, 600 of 600 identical, kinship difference 0, exit 0, and a changed
+condition label still caught (negative control); `R CMD check --as-cran`: 1 NOTE (Maintainer and New submission
+only), vignettes rebuilt OK, installed size OK; the drawings at 2-4 conditions looked at; `quality_ratchet.py --run`
+5/5 pass, results `5ddbb5b1aeb3`, manifest `01151c525b8a` (head `9413b7b`); CI run `43913026012` on `6701d74`: 5/5
+success at the first attempt, 14 min, `FAIL 0 | WARN 0` on each (macOS PASS 6,109 SKIP 0, Windows 6,108 SKIP 1,
+Ubuntu devel, release and oldrel-1 6,098 SKIP 2: S27's counts plus the new file's 180 on each, so the browser test
+ran on every job), vignettes rebuilt and installed size OK on each.
 **Self-assessment: 8/10.**
-+ The drawing chosen by measuring candidates at the page's real width, which found the 288 px trap before any
-  vignette text existed; every stated value held by a check shown able to fail, and the shrink text corrected by
-  measuring what each step removed rather than paraphrasing the help page; DONE item 4's "every node shown"
-  measured, not eyeballed, with a negative control.
-- Two slips: a scratch script wrote `x.rds` one folder above the repository through a bad relative path (removed
-  at once, my own file); and `echo =====` in zsh again despite the gotcha. The first claims draft had a muddled
-  `||` check, rewritten before the commit.
-**Learnings:** no `CLAUDE.md` row (over its budget); in the Gotchas above: `out.width = "100%"` for a vignette
-drawing; chromote's widget selectors crop; reading the live vis.js network; the recipe's `env` on every step.
-**Ledger:** `CHANGELOG.md` S27 entries (the session and its push).
++ Every picker line was a measurement (drawings, the one broken test, the 24 fidelity results and what they differ
+  in, the browser check passing and failing); the browser test checks the property Mark asked about (the legend's
+  section is where the diagram's is), not only the picture's text; the fidelity allowance shown narrow by a
+  negative control.
+- Slips: the suite run twice in RED (`tail` cut its summary, 4.5 min); a test-helper bug (`paste0("X",
+  integer(0))`) caught by the first RED run, fixed before the commit; a first test run from `tests/testthat/` (no
+  renv) and a zsh quoting error; a picture size first written by eye, measured before the commit.
+**Learnings:** no `CLAUDE.md` row (over its budget); in the Gotchas above: a screenshot re-fits the legend; the
+widget's two networks and a picture's load state; the fidelity tool's child mode on a scratch tree; single test
+files from the root; `paste0()` with an empty vector.
+**Ledger:** `CHANGELOG.md` S28 entries (the session and its push).
