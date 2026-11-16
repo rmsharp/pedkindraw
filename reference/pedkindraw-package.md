@@ -99,6 +99,8 @@ draws four.
 
 Useful links:
 
+- <https://rmsharp.github.io/pedkindraw/>
+
 - <https://github.com/rmsharp/pedkindraw>
 
 - Report bugs at <https://github.com/rmsharp/pedkindraw/issues>

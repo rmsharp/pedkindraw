@@ -14,6 +14,12 @@ objects. It does much of what kinship2 does, and carries the pedigree
 drawing of
 [nprcgenekeepr](https://CRAN.R-project.org/package=nprcgenekeepr).
 
+The package’s website, <https://rmsharp.github.io/pedkindraw/>, has
+every help page and two articles: [Getting
+started](https://rmsharp.github.io/pedkindraw/articles/pedkindraw.html)
+and [Drawing
+pedigrees](https://rmsharp.github.io/pedkindraw/articles/drawing.html).
+
 ## Installation
 
 pedkindraw is not on CRAN yet. Install it from GitHub:

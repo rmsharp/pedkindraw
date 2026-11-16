@@ -58,6 +58,7 @@
 <!-- badges: start -->
 
 <p>pedkindraw draws pedigrees as interactive graphs and computes kinship. The drawing joins each offspring to the mating of its sire and dam, and marks what the records say about each animal: its sex, whether it has died, up to four conditions, its twin, and a mating between relatives. It is made from a script and opens in a web browser, the RStudio viewer or an R Markdown page, where it can be zoomed, searched by id and saved as a PNG picture. The package also checks pedigree records, trims and shrinks pedigrees, finds sets of unrelated genotyped animals, and converts <a href="https://CRAN.R-project.org/package=kinship2" class="external-link">kinship2</a> and <a href="https://bioconductor.org/packages/Pedixplorer/" class="external-link">Pedixplorer</a> pedigree objects. It does much of what kinship2 does, and carries the pedigree drawing of <a href="https://CRAN.R-project.org/package=nprcgenekeepr" class="external-link">nprcgenekeepr</a>.</p>
+<p>The package’s website, <a href="https://rmsharp.github.io/pedkindraw/" class="uri">https://rmsharp.github.io/pedkindraw/</a>, has every help page and two articles: <a href="https://rmsharp.github.io/pedkindraw/articles/pedkindraw.html">Getting started</a> and <a href="https://rmsharp.github.io/pedkindraw/articles/drawing.html">Drawing pedigrees</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -71,7 +72,7 @@
 </h2>
 <p>A pedigree is a data frame with one row per animal: its <code>id</code>, <code>sire</code>, <code>dam</code> and <code>sex</code> (<code>"M"</code>, <code>"F"</code>, <code>"H"</code> or <code>"U"</code>), and optionally a <code>status</code> (<code>"DECEASED"</code> marks an animal that has died) and condition columns, whose names start with <code>affected</code>. Twins are listed in a table of their own.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rmsharp/pedkindraw" class="external-link">pedkindraw</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rmsharp.github.io/pedkindraw/">pedkindraw</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Twelve animals in four generations. A has died; E and K have a</span></span>
 <span><span class="co">## condition; I and J are identical (MZ) twins; and H and I, first</span></span>
