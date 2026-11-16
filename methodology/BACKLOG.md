@@ -8,17 +8,16 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 15c: converters pass hints on** (READY, Effort S-M, a guess; strict TDD) -- R62, R73 and the
-      design's sections 7.4 (`:178`), 9 (`:241`) and D8 (`:263`): `asPedFrame()` returns `hints` as a third element in
-      `makePedigreeMatingLayout()`'s form, `list(order = , mate = )` (kinship2's `order` and its `spouse` matrix of
-      subject indices and anchor 1, 2, 0; Pedixplorer's `horder(x)` and `spouse(x)`, `idl`, `idr` and an ordered
-      factor `anchor`; each in ids, the anchor as `"left"`, `"right"`, `"either"`), `NULL` when none; the 9 converter
-      tests that compare the whole returned list gain the element (measured, M8); contract 4.5. Measure before the
-      pre-RED picker (Learnings 17-19): what kinship2's `autohint()` and Pedixplorer's `auto_hint()` put in an
-      object's spouse hints, and whether a converted hint can break R70-R71 (a pair with no offspring together, an
-      anchor on the earlier-generation partner), which would stop `makePedigreeMatingLayout(x$ped, hints =
-      x$hints)`. Then Phase 15 is DONE; plan Phases 16-17 follow (scope: the plan's section 4; summary:
-      `methodology/ROADMAP.md`).
+- [ ] **Phase 16: documentation -- plan it first** (READY, Effort S for the plan, a guess) -- the plan's section 4
+      gives Phase 16 one line of scope (README, a getting-started vignette, a drawing vignette, a pkgdown site, NEWS,
+      the Phase 1-2 timing, memory and capacity tables with their dates and machine) and no DONE criteria (its
+      "Phases 11-15" table stops at 15). A planning session (`SESSION_RUNNER.md` Planning Sessions) writes them: the
+      sessions it takes and each one's DONE criteria and surface (R CMD check builds the vignettes; pkgdown's site
+      where, GitHub Pages or not, is Mark's call), what each vignette shows (`asPedFrame()` with hints into
+      `makePedigreeMatingLayout()` and `drawPedigreeDiagram()` is now the whole drawing path, Phase 15 DONE), the
+      Suggests the vignettes need (contract section 5: knitr, rmarkdown; installed into renv by Learning 3's
+      recipe), and where the timing tables come from (nprcgenekeepr's comparison doc, `docs/research/`). Phase 17,
+      the CRAN submission, follows with its own plan.
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -45,7 +44,8 @@ issues).*
       same 43 (since `58deb0a` only `R/asPedFrame.R` changed in `R/`, 106 of 106). S22 on `b9567bd`: 97.83%, 43 of
       2,341, the same 43 (`R/layoutHints.R` added, 52 of 52; `R/makePedigreeDiagramData.R`'s lines moved, above). S23 on `ffe042f`:
       97.91%, 43 of 2,445, the same 43 (`R/layoutHints.R` 174 of 174 lines; `R/makePedigreeDiagramData.R`'s lines
-      moved, above).
+      moved, above). S24 on `bcdc1b0`: 97.96%, 43 of 2,501, the same 43 (`R/asPedFrame.R` 158 of 158 statements,
+      `R/layoutHints.R` 149 of 149; `R/makePedigreeDiagramData.R` unchanged, its lines as at `ffe042f`).
 
 ## Waiting on Mark
 

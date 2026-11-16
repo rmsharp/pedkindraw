@@ -9,7 +9,11 @@ TDD. **Measured at:** `7846b2c` (S21's claim; `R/` identical to `ccc12ca`), kins
 R 4.6.2, this Mac. **Note (pedkindraw S23, Phase 15b):** the plan's R73 renamed pedkindraw's `spouse` element
 `mate` (user-facing words are sire and dam); read `spouse` below as `mate` where it names pedkindraw's element
 (kinship2's and Pedixplorer's own hints keep their name). R70-R72 settled D6, D7 and D9, and R72 changed the build:
-an animal's families follow its mates' hinted sides (section 7.2 does not say so).
+an animal's families follow its mates' hinted sides (section 7.2 does not say so). **Note (pedkindraw S24, Phase
+15c):** R74-R76 settled D8 and what section 7.4 leaves open: `asPedFrame()` fixes converted mate rows the layout
+would refuse (a pair with no offspring together or named before left out, an earlier-generation anchor set to
+`"either"`), one message naming each change; unreadable kinship2 hints stop; a `pedigreeList`'s hints are read as a
+`pedigree`'s. Phase 15 is DONE.
 
 ---
 

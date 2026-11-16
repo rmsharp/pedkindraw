@@ -13,8 +13,9 @@ kinship, trims and shrinks pedigrees and draws them interactively, and the drawi
 left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedigree-package-comparison-2026-11.md`
 section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phases 11 (S14), 12 (S15-S16) and 13
 (S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) and 14 (S19-S20: `asPedFrame()` for
-kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is designed (S21) and its first build session,
-15a the order hint, and 15b the mate hint are done (S22, S23); 15c is next (Planned, below).
+kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is done: designed (S21), then 15a the order
+hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase 16, documentation, is next
+(Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -30,18 +31,24 @@ kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is designed 
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 15:** layout hints a user can supply (R3): designed in S21 (`docs/planning/layout-hints-design.md`,
-  R60-R63). A `hints` argument on `makePedigreeMatingLayout()` sets the order of siblings, families and founder
-  couples and where mates are drawn, as kinship2's and Pedixplorer's hints do, and `asPedFrame()` passes an
-  object's hints on. Built in three sessions: 15a the order (done, S22, R64-R69), 15b the mate hint (R61's
-  `spouse`, renamed `mate`, R73; done, S23, R70-R73), 15c the converters (next, `methodology/BACKLOG.md`).
-- **Phase 16:** documentation: README, a getting-started and a drawing vignette, a pkgdown site, NEWS, the Phase 1-2
+- **Phase 16 (next, `methodology/BACKLOG.md`):** documentation: README, a getting-started and a drawing vignette, a pkgdown site, NEWS, the Phase 1-2
   timing tables.
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
 - **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8).
 
 ## What's Built
 
+- **Layout hints from kinship2 and Pedixplorer objects (Phase 15c), no new export:** `asPedFrame()` returns a third
+  element, `hints`, the object's layout hints in `makePedigreeMatingLayout()`'s form (`order` named by id, `mate`
+  rows of ids and anchor words), or `NULL`, so `makePedigreeMatingLayout(x$ped, hints = x$hints)` draws with them
+  (R62, R73-R76): kinship2's `x$hints` (`order`, `spouse` by place) and Pedixplorer's `horder()` and `spouse()`;
+  mate rows the layout would refuse fixed, one message naming each change (a pair with no offspring together or
+  named before left out, an earlier-generation anchor set to `"either"`); unreadable kinship2 hints stop; a
+  `pedigreeList`'s read as a `pedigree`'s. Three helpers in `R/layoutHints.R` (`.layoutHintTogether()`,
+  `.layoutHintPairKey()`, `.layoutHintAnchorGenerations()`) give the converter and the layout's check one set of
+  rules. 12 tests; 100 random pedigrees each with kinship2's `autohint()` and Pedixplorer's `auto_hint()` hints
+  converted and drawn, every hinted mating on its side; rows as kinship2 (42 typed cases) and Pedixplorer (21)
+  draw them where they return.
 - **Layout hints, the mate (Phase 15b), no new export:** `makePedigreeMatingLayout(..., hints = list(mate = ))`,
   a data frame of `left`, `right` (a sire and dam with offspring together) and `anchor`, draws `left` left of
   `right` at their mating and hangs the offspring under the anchor, the other partner a repeat node when it has
@@ -166,6 +173,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 15c, the converters pass hints on; Phase 15 DONE (pedkindraw S24, 2026-11-15).** Written test-first after
+  measuring what kinship2 1.9.6.2 and Pedixplorer 1.8.0 objects hold in their hints, set by a user and by
+  `autohint()` and `auto_hint()`, on 212 pedigrees (Mark's picks R74-R76, each the recommended option: mate rows the
+  layout refuses fixed with a message, 40 of 143 kinship2 and 50 of 119 Pedixplorer automatic hints holding such
+  rows; unreadable kinship2 hints stop; a `pedigreeList` read as a `pedigree`). 12 tests and 9 whole-list tests
+  updated; the contract's row; fidelity 600 of 600 identical.
 - **Phase 15b, the mate layout hint (pedkindraw S23, 2026-11-15).** Written test-first after measuring the design's
   open details D6, D7 and D9 on scratch prototypes against kinship2 and Pedixplorer (Mark's picks R70-R73, each the
   recommended option: strict checks; no anchor on the earlier-generation partner, which drew 2,916 random matings'
