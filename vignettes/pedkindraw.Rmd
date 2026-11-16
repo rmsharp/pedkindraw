@@ -398,6 +398,10 @@ stopifnot(
 
 ## Where next
 
-`?pedkindraw` lists every function by what it does. The help pages of
-`makePedigreeMatingLayout()` and `drawPedigreeDiagram()` describe the twins
-table, the kinship matrix and the layout hints the drawing takes.
+`?pedkindraw` lists every function by what it does.
+`vignette("drawing", package = "pedkindraw")` shows what a drawing shows and
+how to change it, one feature at a time: the symbols and the legend,
+conditions, twins, animals drawn twice, the two edge styles and layout
+hints, among others. The help pages of `makePedigreeMatingLayout()` and
+`drawPedigreeDiagram()` describe the twins table, the kinship matrix and the
+layout hints the drawing takes.

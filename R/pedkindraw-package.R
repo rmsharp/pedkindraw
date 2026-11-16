@@ -44,6 +44,11 @@
 #' example pedigree that comes with the package from its records to a drawing:
 #' checking it, its generations and family trees, kinship, trimming it to one
 #' animal's ancestors, drawing them, shrinking it and finding unrelated
-#' animals. The README on the package's GitHub page draws a twelve-animal
-#' pedigree; the example of [drawPedigreeDiagram()] draws four.
+#' animals. `vignette("drawing", package = "pedkindraw")` shows what a drawing
+#' shows and how to change it: the symbols and the legend, deceased animals,
+#' conditions, twins, animals drawn twice, matings of relatives, the two edge
+#' styles, layout hints, kinship2 and Pedixplorer objects, saving a drawing,
+#' clicks in a Shiny application and a colony-size drawing. The README on the
+#' package's GitHub page draws a twelve-animal pedigree; the example of
+#' [drawPedigreeDiagram()] draws four.
 "_PACKAGE"

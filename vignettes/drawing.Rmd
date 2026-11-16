@@ -1,0 +1,694 @@
+---
+title: "Drawing pedigrees"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Drawing pedigrees}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", out.width = "100%")
+```
+
+pedkindraw draws a pedigree in two steps. `makePedigreeMatingLayout()` works
+out where each animal and each mating goes, and `drawPedigreeDiagram()` draws
+that layout as an interactive picture: in the RStudio viewer, in a web page or
+in a document such as this one. This vignette shows what a drawing shows and
+how to change it, one feature at a time, on small pedigrees typed in the code.
+The last drawing is the 375-animal example pedigree that comes with the
+package. In each drawing you can zoom with the mouse wheel or a trackpad, drag
+to move the picture, hover over an animal, and pick one in the "Select by id"
+box.
+
+```{r helpers, include = FALSE}
+## For the hidden checks below, each of which holds what the text around it
+## says: the vignette stops building if one no longer holds. Where a node is
+## drawn, the repeat nodes of an animal, and the mating dot whose two mate
+## lines come from two given nodes.
+xOf <- function(layout, id) layout$nodes$x[match(id, layout$nodes$id)]
+yOf <- function(layout, id) layout$nodes$y[match(id, layout$nodes$id)]
+repeatsOf <- function(layout, id) {
+  names(layout$duplicateToReal)[layout$duplicateToReal == id]
+}
+matingOf <- function(layout, a, b) {
+  e <- layout$edges
+  dots <- unique(e$to[startsWith(e$to, "__union_")])
+  dots[vapply(dots, function(u) setequal(e$from[e$to == u], c(a, b)),
+              logical(1L))][1L]
+}
+animalsOf <- function(layout) {
+  layout$nodes[!startsWith(layout$nodes$id, "__"), ]
+}
+```
+
+## From a data frame to a drawing
+
+A pedigree is a data frame with one row per animal: its `id`, `sire`, `dam`
+and `sex`, and the generation number `gen` that `findGeneration()` gives
+(`vignette("pedkindraw")` describes the columns). Here A and B are the
+parents of C, D and E, and C and F are the parents of G and H.
+
+```{r family}
+library(pedkindraw)
+
+fam <- data.frame(
+  id   = c("A", "B", "C", "D", "E", "F", "G", "H"),
+  sire = c(NA, NA, "A", "A", "A", NA, "C", "C"),
+  dam  = c(NA, NA, "B", "B", "B", NA, "F", "F"),
+  sex  = c("M", "F", "M", "F", "F", "F", "F", "M")
+)
+fam$gen <- findGeneration(fam$id, fam$sire, fam$dam)
+layout <- makePedigreeMatingLayout(fam)
+drawPedigreeDiagram(layout)
+```
+
+Each generation is a row: A and B at the top, their offspring C, D and E
+below them, and G and H at the bottom. F has no parents in the pedigree, so
+she is a founder like A and B, but she is drawn beside her mate C, on his row.
+A mating is the small dot between two mates, with lines down to each of their
+offspring, drawn at right angles as kinship2 draws them. In each mating here
+the sire is drawn left of the dam, and C, D and E are drawn left to right in
+the order of their rows.
+
+The layout is a list. Its `nodes` data frame has a row for each animal and
+each mating dot, and for each of the invisible points that the lines turn at,
+with the node's place: `x`, and `y`, which grows downward. The ids of the
+dots and points start with two underscores. Its `edges` data frame has a row
+for each line.
+
+```{r layoutNodes}
+names(layout)
+animals <- layout$nodes[!startsWith(layout$nodes$id, "__"), ]
+data.frame(id = animals$id, shape = animals$shape,
+           x = round(animals$x), y = animals$y)
+```
+
+```{r familyClaims, include = FALSE}
+rowOf <- function(id) yOf(layout, id)
+stopifnot(
+  rowOf("A") == rowOf("B"), rowOf("C") > rowOf("A"),
+  rowOf("C") == rowOf("D"), rowOf("D") == rowOf("E"),
+  rowOf("G") > rowOf("C"), rowOf("G") == rowOf("H"),
+  identical(sort(unique(animals$y)), c(0, 150, 300)),
+  fam$gen[fam$id == "F"] == 0L, rowOf("F") == rowOf("C"),
+  xOf(layout, "A") < xOf(layout, matingOf(layout, "A", "B")),
+  xOf(layout, matingOf(layout, "A", "B")) < xOf(layout, "B"),
+  rowOf(matingOf(layout, "A", "B")) == rowOf("A"),
+  xOf(layout, "C") < xOf(layout, matingOf(layout, "C", "F")),
+  xOf(layout, matingOf(layout, "C", "F")) < xOf(layout, "F"),
+  rowOf(matingOf(layout, "C", "F")) == rowOf("C"),
+  xOf(layout, "F") < xOf(layout, "D"),
+  xOf(layout, "C") < xOf(layout, "D"), xOf(layout, "D") < xOf(layout, "E"),
+  xOf(layout, "G") < xOf(layout, "H"),
+  any(grepl("^__(bar|drop)_", layout$nodes$id)),
+  all(layout$nodes$size[grepl("^__(bar|drop)_", layout$nodes$id)] == 0),
+  setequal(animals$id, fam$id),
+  all(startsWith(setdiff(layout$nodes$id, fam$id), "__")),
+  identical(names(layout), c("nodes", "edges", "duplicateToReal",
+                             "isolatedIds", "conditions",
+                             "conditionsNotDrawn"))
+)
+```
+
+## Symbols and the legend
+
+The symbol shows the sex: a square for `"M"`, a circle for `"F"`, a star for
+`"H"` (a hermaphrodite), a triangle for `"U"` (unknown) and a diamond for any
+other code or none (`NA`), "Other / Unrecorded" in the legend. An optional
+`status` column marks with a slash each animal whose status is `"DECEASED"`.
+Here S1 and D1 have one offspring of each sex code, and S1 has died.
+
+```{r symbols}
+kids <- data.frame(
+  id     = c("S1", "D1", "female", "male", "hermaphrodite", "unknown",
+             "unrecorded"),
+  sire   = c(NA, NA, "S1", "S1", "S1", "S1", "S1"),
+  dam    = c(NA, NA, "D1", "D1", "D1", "D1", "D1"),
+  sex    = c("M", "F", "F", "M", "H", "U", NA),
+  status = c("DECEASED", "ALIVE", "ALIVE", "ALIVE", "ALIVE", "ALIVE",
+             "ALIVE")
+)
+kids$gen <- findGeneration(kids$id, kids$sire, kids$dam)
+kidsLayout <- makePedigreeMatingLayout(kids)
+drawPedigreeDiagram(kidsLayout)
+```
+
+The legend on the right of every drawing lists the five symbols, then
+"Affected" (see Conditions, below) and "Deceased", then the lines: the dashed
+line that joins two places of the same animal, and the three twin lines.
+Hover over an animal to see its id, sex, generation, sire and dam, and each
+condition; hover over a mating dot to see how many offspring it has. While
+you hover, the animals and lines that are not near the one under the pointer
+turn grey.
+
+```{r symbolsClaims, include = FALSE}
+kidsAnimals <- animalsOf(kidsLayout)
+kidsDiagram <- drawPedigreeDiagram(kidsLayout)
+legendNodes <- kidsDiagram$x$legend$nodes
+legendEdges <- kidsDiagram$x$legend$edges
+dot <- matingOf(kidsLayout, "S1", "D1")
+other <- kids
+other$sex[other$id == "unrecorded"] <- "X"
+otherLayout <- makePedigreeMatingLayout(other)
+stopifnot(
+  identical(kidsAnimals$shape[match(c("male", "female", "hermaphrodite",
+                                      "unknown", "unrecorded"),
+                                    kidsAnimals$id)],
+            c("square", "dot", "star", "triangle", "diamond")),
+  identical(otherLayout$nodes$shape[otherLayout$nodes$id == "unrecorded"],
+            "diamond"),
+  identical(kidsAnimals$id[kidsAnimals$deceased], "S1"),
+  identical(legendNodes$label,
+            c("Female", "Male", "Hermaphrodite", "Unknown",
+              "Other / Unrecorded", "Affected", "Deceased")),
+  identical(legendNodes$shape[1:5],
+            c("dot", "square", "star", "triangle", "diamond")),
+  identical(legendEdges$label, c("Same animal, again", "MZ", "DZ", "?")),
+  isTRUE(legendEdges$dashes[[1L]]),
+  identical(kidsDiagram$x$legend$position, "right"),
+  identical(kidsLayout$nodes$title[kidsLayout$nodes$id == "unknown"],
+            paste0("<b>ID:</b> unknown<br><b>Sex:</b> Unknown",
+                   "<br><b>Generation:</b> 1<br><b>Sire:</b> S1",
+                   "<br><b>Dam:</b> D1")),
+  identical(kidsLayout$nodes$title[kidsLayout$nodes$id == dot],
+            "5 offspring"),
+  isTRUE(kidsDiagram$x$highlight$enabled),
+  isTRUE(kidsDiagram$x$highlight$hoverNearest)
+)
+```
+
+## Conditions
+
+A column whose name starts with `affected` is a condition. With one such
+column, an animal whose value is `TRUE` (or 1) is filled pink; `FALSE`, 0 and
+`NA` leave it white, and hovering over the animal says Yes, No or Unknown.
+Here D and G are affected, and whether H is affected is not known.
+
+```{r oneCondition}
+fam1 <- fam
+fam1$affected <- c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, NA)
+layout1 <- makePedigreeMatingLayout(fam1)
+drawPedigreeDiagram(layout1)
+```
+
+With two to four condition columns, each symbol is cut into one section per
+condition, filled in that condition's colour where the animal is affected,
+and each condition's row in the legend shows the sections with its own
+filled. The sections go counter-clockwise from the top, in the order of the
+columns. The column's name gives the label: `affected_diabetes` becomes
+"Affected (diabetes)". The drawing grows 45 pixels taller for each condition
+past the first, to make room in the legend. Here C has diabetes, B and E are
+obese, and A has arthritis; G has diabetes and is obese, and whether H is
+obese is not known.
+
+```{r threeConditions}
+fam3 <- fam
+fam3$affected_diabetes  <- c(FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE,
+                             FALSE)
+fam3$affected_obesity   <- c(FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, NA)
+fam3$affected_arthritis <- c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,
+                             FALSE)
+layout3 <- makePedigreeMatingLayout(fam3)
+layout3$conditions
+drawPedigreeDiagram(layout3)
+```
+
+A fifth condition column and any after it are not drawn: the layout names
+them in `conditionsNotDrawn`.
+
+```{r fiveConditions}
+fam5 <- fam3
+fam5$affected_cataract     <- FALSE
+fam5$affected_hypertension <- FALSE
+layout5 <- makePedigreeMatingLayout(fam5)
+layout5$conditions$label
+layout5$conditionsNotDrawn
+```
+
+```{r conditionsClaims, include = FALSE}
+fill1 <- layout1$nodes$color.background[match(fam1$id, layout1$nodes$id)]
+title1 <- layout1$nodes$title[match(c("D", "E", "H"), layout1$nodes$id)]
+fam01 <- fam1
+fam01$affected <- c(0, 0, 0, 1, 0, 0, 1, NA)
+sections <- layout3$nodes$affectedSections[match(fam3$id, layout3$nodes$id)]
+names(sections) <- fam3$id
+legend3 <- drawPedigreeDiagram(layout3)$x$legend$nodes
+stopifnot(
+  identical(fill1 == "#CC79A7", c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE,
+                                  TRUE, FALSE)),
+  all(fill1[fill1 != "#CC79A7"] == "#FFFFFF"),
+  identical(makePedigreeMatingLayout(fam01)$nodes, layout1$nodes),
+  endsWith(title1[1L], "<b>Affected:</b> Yes"),
+  endsWith(title1[2L], "<b>Affected:</b> No"),
+  endsWith(title1[3L], "<b>Affected:</b> Unknown"),
+  identical(drawPedigreeDiagram(layout1)$x$legend$nodes$label[6L],
+            "Affected"),
+  identical(layout3$conditions$label,
+            c("Affected (diabetes)", "Affected (obesity)",
+              "Affected (arthritis)")),
+  identical(unname(sections[c("A", "B", "C", "E", "G", "H")]),
+            c("001", "010", "100", "010", "110", "000")),
+  all(sections[c("D", "F")] == "000"),
+  all(animalsOf(layout3)$color.background == "#FFFFFF"),
+  grepl("<b>Affected \\(obesity\\):</b> Unknown",
+        layout3$nodes$title[layout3$nodes$id == "H"]),
+  identical(legend3$label[6:8], layout3$conditions$label),
+  identical(legend3$shape[6:8], rep("image", 3L)),
+  identical(drawPedigreeDiagram(layout)$height, "500px"),
+  identical(drawPedigreeDiagram(layout3)$height, "590px"),
+  nrow(layout5$conditions) == 4L,
+  identical(layout5$conditionsNotDrawn, "affected_hypertension")
+)
+```
+
+## Twins
+
+Twins are listed in a table of their own, one pair per row: `id1`, `id2` and
+`code`, which is `"MZ twin"`, `"DZ twin"` or `"UZ twin"` (identical,
+fraternal or unknown). `checkTwinRelations()` stops if a pair is not
+possible: MZ and DZ twins must have the same sire and dam, and MZ twins the
+same sex. The layout takes the table as `twinRelations` and draws a green
+line between the two animals of each pair: solid and labelled "MZ", dashed
+and labelled "DZ", or with long dashes and labelled "?".
+
+```{r twins}
+litter <- data.frame(
+  id   = c("S1", "D1", "A1", "A2", "B1", "B2", "C1", "C2"),
+  sire = c(NA, NA, "S1", "S1", "S1", "S1", "S1", "S1"),
+  dam  = c(NA, NA, "D1", "D1", "D1", "D1", "D1", "D1"),
+  sex  = c("M", "F", "F", "F", "M", "F", "M", "M")
+)
+litter$gen <- findGeneration(litter$id, litter$sire, litter$dam)
+twins <- data.frame(
+  id1  = c("A1", "B1", "C1"),
+  id2  = c("A2", "B2", "C2"),
+  code = c("MZ twin", "DZ twin", "UZ twin")
+)
+twins <- checkTwinRelations(litter, twins)
+twinLayout <- makePedigreeMatingLayout(litter, twinRelations = twins)
+drawPedigreeDiagram(twinLayout)
+```
+
+```{r twinsClaims, include = FALSE}
+twinEdges <- twinLayout$edges[!is.na(twinLayout$edges$label), ]
+stops <- function(pair) {
+  inherits(try(checkTwinRelations(litter, pair), silent = TRUE),
+           "try-error")
+}
+stopifnot(
+  identical(twinEdges$from, c("A1", "B1", "C1")),
+  identical(twinEdges$to, c("A2", "B2", "C2")),
+  identical(twinEdges$label, c("MZ", "DZ", "?")),
+  all(twinEdges$color == "#009E73"),
+  identical(twinEdges$dashes, list(FALSE, c(4L, 4L), c(14L, 8L))),
+  all(yOf(twinLayout, twins$id1) == yOf(twinLayout, twins$id2)),
+  stops(data.frame(id1 = "B1", id2 = "B2", code = "MZ twin")),
+  stops(data.frame(id1 = "S1", id2 = "D1", code = "DZ twin")),
+  !stops(data.frame(id1 = "S1", id2 = "D1", code = "UZ twin"))
+)
+```
+
+## Animals drawn twice
+
+An animal is drawn in its own row under its sire and dam. When it mates with
+an animal that also has parents in the pedigree, one of the two is drawn a
+second time, beside the other, and a dashed line joins its two places. Here C,
+an offspring of A and B, and R, an offspring of P and Q, are the parents of S
+and T.
+
+```{r drawnTwice}
+two <- data.frame(
+  id   = c("A", "B", "C", "P", "Q", "R", "S", "T"),
+  sire = c(NA, NA, "A", NA, NA, "P", "C", "C"),
+  dam  = c(NA, NA, "B", NA, NA, "Q", "R", "R"),
+  sex  = c("M", "F", "M", "M", "F", "F", "F", "M")
+)
+two$gen <- findGeneration(two$id, two$sire, two$dam)
+twoLayout <- makePedigreeMatingLayout(two)
+twoLayout$duplicateToReal
+drawPedigreeDiagram(twoLayout)
+```
+
+R is drawn under her parents P and Q, and again beside her mate C, where S
+and T are drawn under their mating. The layout's `duplicateToReal` names each
+repeat node and the animal it stands for, and hovering over a repeat says
+"(duplicate occurrence)".
+
+```{r drawnTwiceClaims, include = FALSE}
+rRepeat <- repeatsOf(twoLayout, "R")
+crDot <- matingOf(twoLayout, "C", rRepeat)
+dashedTwo <- twoLayout$edges[vapply(twoLayout$edges$dashes, isTRUE,
+                                    logical(1L)), ]
+stopifnot(
+  identical(unname(twoLayout$duplicateToReal), "R"), length(rRepeat) == 1L,
+  yOf(twoLayout, "R") == yOf(twoLayout, "C"),
+  abs(xOf(twoLayout, "R") - xOf(twoLayout, matingOf(twoLayout, "P", "Q"))) <
+    1e-6,
+  yOf(twoLayout, rRepeat) == yOf(twoLayout, "C"),
+  !is.na(crDot),
+  xOf(twoLayout, "C") < xOf(twoLayout, crDot),
+  xOf(twoLayout, crDot) < xOf(twoLayout, rRepeat),
+  nrow(dashedTwo) == 1L,
+  setequal(c(dashedTwo$from, dashedTwo$to), c("R", rRepeat)),
+  endsWith(twoLayout$nodes$title[twoLayout$nodes$id == rRepeat],
+           "<br><i>(duplicate occurrence)</i>"),
+  yOf(twoLayout, "S") > yOf(twoLayout, crDot),
+  xOf(twoLayout, "S") < xOf(twoLayout, crDot),
+  xOf(twoLayout, crDot) < xOf(twoLayout, "T")
+)
+```
+
+## Matings of relatives
+
+When a sire and dam are related, that is when their kinship coefficient is
+above 0, the two lines from them to their mating are drawn thick and orange;
+kinship2 draws a double line. Here C and D are full siblings, with a kinship
+coefficient of 0.25, so D is drawn again beside C.
+
+```{r relatives}
+sibs <- data.frame(
+  id   = c("A", "B", "C", "D", "K"),
+  sire = c(NA, NA, "A", "A", "C"),
+  dam  = c(NA, NA, "B", "B", "D"),
+  sex  = c("M", "F", "M", "F", "F")
+)
+sibs$gen <- findGeneration(sibs$id, sibs$sire, sibs$dam)
+sibsLayout <- makePedigreeMatingLayout(sibs)
+drawPedigreeDiagram(sibsLayout)
+```
+
+```{r relativesClaims, include = FALSE}
+dRepeat <- repeatsOf(sibsLayout, "D")
+cdDot <- matingOf(sibsLayout, "C", dRepeat)
+orange <- sibsLayout$edges[sibsLayout$edges$color %in% "#D55E00", ]
+kSibs <- kinship(sibs$id, sibs$sire, sibs$dam, sibs$gen)
+stopifnot(
+  kSibs["C", "D"] == 0.25, length(dRepeat) == 1L,
+  yOf(sibsLayout, dRepeat) == yOf(sibsLayout, "C"),
+  !is.na(cdDot), nrow(orange) == 2L,
+  setequal(orange$from, c("C", dRepeat)), all(orange$to == cdDot),
+  all(orange$width == 4),
+  !any(layout$edges$color %in% "#D55E00")
+)
+```
+
+## Two edge styles
+
+`edgeStyle = "direct"` draws a straight line from each parent to the mating
+dot and from the dot to each offspring, instead of lines at right angles. The
+animals and the dots stay where they were. Give `drawPedigreeDiagram()` the
+same `edgeStyle`: it sets how far the highlight reaches when you hover.
+
+```{r direct}
+direct <- makePedigreeMatingLayout(fam, edgeStyle = "direct")
+drawPedigreeDiagram(direct, edgeStyle = "direct")
+```
+
+```{r directClaims, include = FALSE}
+keep <- !startsWith(layout$nodes$id, "__") |
+  startsWith(layout$nodes$id, "__union_")
+same <- match(layout$nodes$id[keep], direct$nodes$id)
+stopifnot(
+  !anyNA(same),
+  isTRUE(all.equal(direct$nodes$x[same], layout$nodes$x[keep])),
+  all(direct$nodes$y[same] == layout$nodes$y[keep]),
+  !any(grepl("^__(bar|drop|proj|jog)_", direct$nodes$id)),
+  all(xor(startsWith(direct$edges$from, "__union_"),
+          startsWith(direct$edges$to, "__union_"))),
+  drawPedigreeDiagram(direct, edgeStyle = "direct")$x$highlight$degree <
+    drawPedigreeDiagram(layout)$x$highlight$degree
+)
+```
+
+## Animals with no relative
+
+An animal with no known parent, no offspring and no twin has nothing to join
+it to the others, so the layout leaves it out, says so in a message, and
+lists it in `isolatedIds`.
+
+```{r isolated}
+withZ <- rbind(fam, data.frame(id = "Z", sire = NA, dam = NA, sex = "M",
+                               gen = 0L))
+zLayout <- makePedigreeMatingLayout(withZ)
+zLayout$isolatedIds
+```
+
+```{r isolatedClaims, include = FALSE}
+stopifnot(
+  identical(zLayout$isolatedIds, "Z"), !"Z" %in% zLayout$nodes$id,
+  identical(zLayout$nodes, layout$nodes)
+)
+```
+
+## Layout hints
+
+The layout chooses the order of siblings and of families, and, for two
+animals with parents of their own, which one their offspring are drawn
+under. Layout hints change these choices. `hints` is a list with `order`,
+`mate` or both, in the form kinship2 and Pedixplorer give them.
+
+`order` is a number for each animal, named by its id. Siblings, separate
+families and founder couples are drawn left to right in increasing order of
+their numbers; an animal without a number keeps its row's place. Here E, D
+and C are drawn in that order, and C's mate F and their offspring move with
+him.
+
+```{r order}
+orderLayout <- makePedigreeMatingLayout(
+  fam, hints = list(order = c(C = 3, D = 2, E = 1))
+)
+drawPedigreeDiagram(orderLayout)
+```
+
+`mate` is a data frame with one row per mating to place. `left` and `right`
+are its two animals, `left` drawn left of `right`, and `anchor` names the one
+under whose own place their offspring are drawn: `"left"`, `"right"`, or
+`"either"` for the layout's own choice. Here the anchor is R, so C, not R, is
+drawn twice, and S and T are drawn under R's place.
+
+```{r mate}
+mateLayout <- makePedigreeMatingLayout(
+  two,
+  hints = list(mate = data.frame(left = "C", right = "R", anchor = "right"))
+)
+drawPedigreeDiagram(mateLayout)
+```
+
+```{r hintsClaims, include = FALSE}
+cRepeat <- repeatsOf(mateLayout, "C")
+rcDot <- matingOf(mateLayout, cRepeat, "R")
+stopifnot(
+  xOf(orderLayout, "E") < xOf(orderLayout, "D"),
+  xOf(orderLayout, "D") < xOf(orderLayout, "C"),
+  xOf(orderLayout, "C") < xOf(orderLayout, "F"),
+  xOf(orderLayout, "G") > xOf(orderLayout, "D"),
+  xOf(orderLayout, "H") > xOf(orderLayout, "D"),
+  identical(unname(mateLayout$duplicateToReal), "C"),
+  length(cRepeat) == 1L, !is.na(rcDot),
+  yOf(mateLayout, "R") == yOf(mateLayout, "C"),
+  xOf(mateLayout, cRepeat) < xOf(mateLayout, rcDot),
+  xOf(mateLayout, rcDot) < xOf(mateLayout, "R"),
+  abs(xOf(mateLayout, "R") - xOf(mateLayout, matingOf(mateLayout, "P",
+                                                      "Q"))) < 1e-6,
+  xOf(mateLayout, "S") < xOf(mateLayout, rcDot),
+  xOf(mateLayout, rcDot) < xOf(mateLayout, "T"),
+  identical(makePedigreeMatingLayout(two, hints = list(mate = data.frame(
+    left = "C", right = "R", anchor = "either"))), twoLayout)
+)
+```
+
+## kinship2 and Pedixplorer objects
+
+`asPedFrame()` converts a kinship2 `pedigree` or a Pedixplorer `Pedigree` to
+the data frame, the twins table and the hints that the layout takes. kinship2
+keeps hints in the object's `hints` element: `order`, and `spouse`, a matrix
+with a row for each mating to place, holding the places (row numbers) of its
+left and right animal and the anchor, 1 for left, 2 for right and 0 for
+either. Here they are set by hand to show their form; `kinship2::autohint()`
+makes them for kinship2's own layout, and gives these same hints for this
+pedigree. Add the generations before the layout. The chunks below run only
+when kinship2 or Pedixplorer is installed.
+
+```{r kinship2, eval = requireNamespace("kinship2", quietly = TRUE)}
+p <- kinship2::pedigree(
+  id = two$id, dadid = two$sire, momid = two$dam,
+  sex = ifelse(two$sex == "M", "male", "female")
+)
+p$hints <- list(order = 1:8, spouse = matrix(c(3, 6, 2), ncol = 3))
+x <- asPedFrame(p)
+x$hints
+x$ped$gen <- findGeneration(x$ped$id, x$ped$sire, x$ped$dam)
+k2Layout <- makePedigreeMatingLayout(x$ped, hints = x$hints)
+identical(k2Layout, mateLayout)
+```
+
+The layout is the one drawn above for the mate hint. Pedixplorer keeps the
+same hints as `horder`, already named by id, and `spouse`, a data frame of
+`idl`, `idr` and `anchor`:
+
+```{r Pedixplorer, eval = requireNamespace("Pedixplorer", quietly = TRUE)}
+px <- Pedixplorer::Pedigree(
+  data.frame(id = two$id, dadid = two$sire, momid = two$dam,
+             sex = ifelse(two$sex == "M", "male", "female")),
+  hints = list(horder = setNames(1:8, two$id),
+               spouse = data.frame(idl = "C", idr = "R", anchor = 2))
+)
+y <- asPedFrame(px)
+y$hints
+```
+
+Both packages' automatic hints are made for their own layouts, and some of
+their mate rows are ones the layout refuses; `asPedFrame()` fixes those, and
+a message names each change.
+
+```{r kinship2Claims, include = FALSE, eval = requireNamespace("kinship2", quietly = TRUE)}
+pAuto <- p
+pAuto$hints <- kinship2::autohint(p)
+stopifnot(
+  identical(k2Layout, mateLayout),
+  identical(x$ped[, c("id", "sire", "dam", "sex")],
+            two[, c("id", "sire", "dam", "sex")]),
+  identical(x$hints$mate, data.frame(left = "C", right = "R",
+                                     anchor = "right")),
+  isTRUE(all.equal(asPedFrame(pAuto)$hints, x$hints))
+)
+```
+
+```{r PedixplorerClaims, include = FALSE, eval = requireNamespace("Pedixplorer", quietly = TRUE) && requireNamespace("kinship2", quietly = TRUE)}
+stopifnot(
+  identical(y$hints, x$hints),
+  identical(y$ped[, c("id", "sire", "dam", "sex")],
+            x$ped[, c("id", "sire", "dam", "sex")])
+)
+```
+
+## Saving a drawing
+
+A drawing is an htmlwidget, so `htmlwidgets::saveWidget()` saves it as a web
+page that any browser opens, with its sections and slashes. The
+"Export Diagram (PNG)" button at the bottom right of each drawing saves a
+picture of the drawing as you see it, as `pedigree_diagram.png`.
+
+```{r save, eval = FALSE}
+diagram <- drawPedigreeDiagram(layout)
+htmlwidgets::saveWidget(diagram, "pedigree.html")
+```
+
+```{r saveClaims, include = FALSE}
+exportOptions <- drawPedigreeDiagram(layout)$x$export
+stopifnot(
+  identical(exportOptions$type, "png"),
+  identical(exportOptions$name, "pedigree_diagram.png"),
+  identical(exportOptions$label, "Export Diagram (PNG)")
+)
+```
+
+## Clicks in a Shiny application
+
+A click on a drawing does nothing unless `onClick` gives a JavaScript function
+to run. In a Shiny application it can send the id of the node clicked to the
+server. The drawing needs 500 pixels of height, 45 more for each condition
+past the first.
+
+```{r shiny, eval = FALSE}
+## In the user interface:
+visNetwork::visNetworkOutput("pedigree", height = "500px")
+
+## In the server function:
+output$pedigree <- visNetwork::renderVisNetwork({
+  drawPedigreeDiagram(layout, onClick = paste(
+    "function(params) {",
+    "Shiny.setInputValue('pedigreeClick', params.nodes);",
+    "}"
+  ))
+})
+shiny::observeEvent(input$pedigreeClick, {
+  print(input$pedigreeClick)
+})
+```
+
+`params.nodes` holds the id of the node clicked: an animal's id, a repeat
+node's, which `duplicateToReal` turns into its animal's, or a mating dot's,
+which starts with `__union_`.
+
+```{r shinyClaims, include = FALSE}
+clickCode <- paste("function(params) {",
+                   "Shiny.setInputValue('pedigreeClick', params.nodes);",
+                   "}")
+stopifnot(
+  is.null(drawPedigreeDiagram(layout)$x$events$click),
+  identical(as.character(drawPedigreeDiagram(layout, onClick = clickCode)
+                         $x$events$click), clickCode)
+)
+```
+
+## A colony-size drawing
+
+The example pedigree that comes with the package (`vignette("pedkindraw")`)
+has 375 rhesus macaques in nine generations, and three twin pairs.
+
+```{r colony}
+pedFile <- system.file("extdata", "obfuscated_rhesus_mhc_ped.csv",
+                       package = "pedkindraw")
+twinFile <- system.file("extdata", "obfuscated_rhesus_mhc_twin_relations.csv",
+                        package = "pedkindraw")
+ped <- read.csv(pedFile, stringsAsFactors = FALSE)
+colonyTwins <- read.csv(twinFile, stringsAsFactors = FALSE)
+ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+colony <- makePedigreeMatingLayout(ped, twinRelations = colonyTwins)
+drawPedigreeDiagram(colony)
+```
+
+The warning says that in 72 places a line may pass close to an animal it
+does not belong to: in the right-angle style the layout steps a line around
+an animal in its way, and these it could not fully clear. Nothing is missing
+from the drawing; all 375 animals are in it.
+
+Fitted to the page, the drawing is too small to read its ids. Zoom in to read
+them, or pick an animal in the "Select by id" box: the animals and lines that
+are not near it turn grey, which shows where it is. The arcs are the dashed
+lines that join each of the 113 animals drawn more than once to its other
+places.
+
+```{r colonyClaims, include = FALSE}
+colonyWarning <- NULL
+colonyAgain <- withCallingHandlers(
+  makePedigreeMatingLayout(ped, twinRelations = colonyTwins),
+  warning = function(w) {
+    colonyWarning <<- conditionMessage(w)
+    invokeRestart("muffleWarning")
+  }
+)
+dashedColony <- colonyAgain$edges[vapply(colonyAgain$edges$dashes, isTRUE,
+                                         logical(1L)), ]
+colonyDiagram <- drawPedigreeDiagram(colonyAgain)
+stopifnot(
+  nrow(ped) == 375L, length(unique(ped$gen)) == 9L,
+  nrow(colonyTwins) == 3L,
+  length(colonyWarning) == 1L,
+  startsWith(colonyWarning, paste0("makePedigreeMatingLayout(): 72 ",
+                                   "same-row edge-node collision(s)")),
+  setequal(animalsOf(colonyAgain)$id, ped$id),
+  length(colonyAgain$isolatedIds) == 0L,
+  length(unique(colonyAgain$duplicateToReal)) == 113L,
+  nrow(dashedColony) == length(colonyAgain$duplicateToReal),
+  all(dashedColony$smooth.enabled),
+  isTRUE(colonyDiagram$x$idselection$enabled)
+)
+```
+
+## How large a drawing can be
+
+Most of the time a drawing takes goes to the layout, in R. In measurements
+made in November 2026 on one Mac (Apple M2 Max), nprcgenekeepr's drawing, from
+which pedkindraw's is copied, drew 1,000 animals in about 16 seconds, and
+2,000 animals not within two minutes. At 1,000 animals an animal could still
+be found by its id, and its lines followed to its parents, once zoomed in.
+
+## Where next
+
+The help pages of `makePedigreeMatingLayout()` and `drawPedigreeDiagram()`
+give every argument, among them `kinshipMatrix`, which passes the layout
+kinship coefficients you have computed; `?asPedFrame` gives each conversion,
+and `vignette("pedkindraw")` the rest of the package.
