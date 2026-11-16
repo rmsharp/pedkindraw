@@ -284,7 +284,7 @@ it, an export or argument is removed only after one release with a `.Deprecated(
 | Kinship, X chromosome | 30,000 animals 23.6 s | memory at 100,000 | the same or better |
 | Generation depth | 100,000 animals 0.101 s | -- | the same |
 | Family numbers | 100,000 animals 12.9 s (close to the square of the size) | -- | the same at copy; a faster version is new work under the drift rule |
-| Shrink to 16 bits | 1,000 animals 21.0 s | past 120 s at 3,000 | the same or better (rewrite) |
+| Shrink to 16 bits | 1,000 animals 21.0 s; the copied rewrite (nprcgenekeepr S1141, `d280dc8e8`, 2026-11-09): 1,000 animals 3.69 s, 3,000 in 92.0 s | past 120 s at 3,000 (the rewrite: 10,000 not run) | the same or better (rewrite) |
 | Unrelated set | none (kinship2 10,000 in 6.5 s) | -- | 10,000 animals |
 | Drawing, layout plus browser | 1,000 animals 16.3 s (15.5 s in R) | past 120 s at 2,000 | the same |
 

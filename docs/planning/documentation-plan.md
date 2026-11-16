@@ -5,7 +5,8 @@
 (`docs/planning/standalone-pedigree-package-plan.md`, "### Phase 16 -- Documentation"). No package code, vignette,
 README or site was written; the measurements ran on scratch copies of the package in this session's scratchpad.
 **Status:** rulings R77-R80 made (Mark's picks, section 4); the build is five sessions, 16a-16e (section 6), each
-its own session. **Measured at:** `3ae3737` (S25's claim; `R/`, `man/`, `tests/` and `DESCRIPTION` identical to
+its own session. S30: 16d deferred by R82 (the standalone plan's section 2) until pedkindraw times itself; its draft
+is on the branch `draft/speed-vignette`, and 16e builds the site with two articles. **Measured at:** `3ae3737` (S25's claim; `R/`, `man/`, `tests/` and `DESCRIPTION` identical to
 `bcdc1b0`), R 4.6.2, knitr 1.52 and rmarkdown 2.32 (both in renv's lock, from the dated repository), pkgdown 2.2.1
 (R's own library, not renv), pandoc 3.12.1, chromote 0.5.1, this Mac (Apple M2 Max, 96 GiB).
 
@@ -130,7 +131,7 @@ renv's library and `RENV_PROJECT` unset (the `CLAUDE.md` recipe).
 | `inst/extdata/obfuscated_rhesus_mhc_ped.csv`, `inst/extdata/obfuscated_rhesus_mhc_twin_relations.csv` | 16b | R80 |
 | `vignettes/pedkindraw.Rmd` | 16b | "Getting started"; named after the package, so pkgdown links it as "Get started" |
 | `vignettes/drawing.Rmd` | 16c | "Drawing pedigrees" |
-| `vignettes/speed.Rmd`, `tools/checkSpeedTables.R` | 16d | "Speed and size limits"; the script reads the result files from the clone (`git show <commit>:<path>`) and the vignette's tables, exits 0 only when every number matches |
+| `vignettes/speed.Rmd`, `tools/checkSpeedTables.R` | 16d (deferred, R82: on the branch `draft/speed-vignette`; no pointer to it in `?pedkindraw` or the other vignettes) | "Speed and size limits"; the script reads the result files from the clone (`git show <commit>:<path>`) and the vignette's tables, exits 0 only when every number matches |
 | `docs/planning/pedkindraw-api-contract.md` | 16b, 16d | 16b: section 5's Suggests; 16d: section 7's shrink row gains S1141's time (the copied rewrite, 1,000 animals in 3.69 s) |
 | `_pkgdown.yml`, `.github/workflows/pkgdown.yaml` | 16e | R78 |
 | `.Rbuildignore`, `.gitignore` | 16a, 16b, 16e | `^README\.Rmd$` (16a); built vignette debris in `vignettes/` ignored by git (16b); `^_pkgdown\.yml$`, `^pkgdown_site$`, `^pkgdown$` and `pkgdown_site/` (16e) |
@@ -196,10 +197,20 @@ records of the built functions (`checkPedigree()` 100,000 animals 0.14 s, 0.22 s
 0.04 s) and, marked as a prototype's, `asPedFrame()` 100,000 animals of a Pedixplorer object 0.005 s; what they
 cannot show (another machine's speed, a smaller machine's limits).
 
+Drafted S30 and deferred (R82): the comparison of pedkindraw with kinship2 and Pedixplorer waits until pedkindraw
+times itself. The draft (`draft/speed-vignette`, `612eed9`) has nine tables, each with a caption naming its dates,
+nprcgenekeepr commits, versions and machine that the script checks too; a table of the copied files that differ
+from the code each record timed (34 copied files; Part A's and Part B's code differs in 6, S1141's in
+`drawPedigreeDiagram.R` only); a "Record" column where a table mixes two records (a date column wrapped at the
+vignette's width); a one-sentence definition of each computation (Mark); kinship2 and Pedixplorer as the comparators,
+BGmisc and ggpedigree left to the study. Its check script's design (markers, captions, `--print`) can serve the
+returning vignette, whose numbers will be pedkindraw's own.
+
 ### 5.6 Website (16e)
 
 `_pkgdown.yml`: `url: https://rmsharp.github.io/pedkindraw/`, `destination: pkgdown_site`, `template: bootstrap:
-5`, a reference index in section 2's six groups plus the package page (32 topics), the three vignettes as articles.
+5`, a reference index in section 2's six groups plus the package page (32 topics), the vignettes as articles (two,
+R82).
 `.github/workflows/pkgdown.yaml`: on push to master (the R-CMD-check workflow's `paths-ignore`) and by hand; R and
 pandoc set up as in `R-CMD-check.yaml`; the package installed for the build (M3); `CLAUDE.md` and `DIVERGENCE.md`
 removed from the runner's copy before building (R78; nothing removed from the repository); `pkgdown_site/`
@@ -266,7 +277,9 @@ only.
 3. The checks above; the installed size, with two vignettes of drawings, read from the check folder (`du -sk`) and
    under 5,120 KB (about 4.1 MB expected: M1, M2).
 
-**16d -- speed and size-limits vignette (one session; close out when done).** DONE when:
+**16d -- speed and size-limits vignette (one session; close out when done).** DEFERRED (S30, R82): items 1 and 2
+wait until pedkindraw times itself (the draft on the branch `draft/speed-vignette` met them for nprcgenekeepr's
+records); item 3 is done. DONE when:
 
 1. `vignettes/speed.Rmd` (section 5.5), each table naming its date, machine, versions and commit.
 2. `Rscript tools/checkSpeedTables.R ../nprcgenekeepr` exits 0, every number of the vignette's tables equal to its
@@ -277,7 +290,8 @@ only.
 **16e -- the website (one session; close out when done).** DONE when:
 
 1. `pkgdown::check_pkgdown()` reports no problem (32 topics in the index); a local build into `pkgdown_site/`
-   exits 0 with no `CLAUDE.html` or `DIVERGENCE.html` and the three articles.
+   exits 0 with no `CLAUDE.html` or `DIVERGENCE.html` and the two articles (R82; three once the speed vignette
+   returns).
 2. `.github/workflows/pkgdown.yaml`'s first run on GitHub succeeds and creates `gh-pages`; Pages turned on (Mark
    approves); `https://rmsharp.github.io/pedkindraw/` answers 200, and its articles' drawings show every node in
    Chrome.
