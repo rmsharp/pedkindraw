@@ -21,7 +21,10 @@
 ## compared whole. Their dependencies name visNetwork's folder, the same in
 ## both runs because both renv libraries link one cache entry of visNetwork
 ## 2.1.4 (measured S11); with two different installs those paths would
-## differ, not the drawings.
+## differ, not the drawings. One exception (S28, plan R81): a legend with two
+## or more condition rows is compared without those rows' shape, fill and
+## picture, where pedkindraw now draws section pictures (see
+## withoutConditionSymbols() below).
 ##
 ## Each package runs in its own R process started in its own folder, so each
 ## uses its own renv library (nprcgenekeepr needs its imports, pedkindraw does
@@ -694,6 +697,49 @@ ours <- runChild(here, tempfile(fileext = ".rds"))
 if (!identical(names(ours), names(theirs))) {
   stop("the two runs produced different cases", call. = FALSE)
 }
+## pedkindraw S28 (plan R81, DIVERGENCE.md): with two or more conditions
+## pedkindraw's legend draws each condition row as a section picture
+## (.conditionLegendImage()) where nprcgenekeepr draws a filled hexagon. Until
+## nprcgenekeepr has the same legend, a drawing whose legend has two or more
+## condition rows is compared with those rows' shape, fill and picture taken
+## out of both sides: their labels and everything else are still compared,
+## and pedkindraw's own tests check the pictures. Measured S28: those three
+## fields are the only difference in the 24 results it touches. Remove this
+## when nprcgenekeepr has the change (its DIVERGENCE.md rows go with it).
+legendFixedRows <- c("Female", "Male", "Hermaphrodite", "Unknown",
+                     "Other / Unrecorded", # nolint: nonportable_path_linter
+                     "Deceased")
+setAside <- new.env(parent = emptyenv())
+setAside$drawings <- 0L
+withoutConditionSymbols <- function(x) {
+  if (inherits(x, "visNetwork")) {
+    nodes <- x$x$legend$nodes
+    rows <- !(nodes$label %in% legendFixedRows)
+    if (sum(rows) >= 2L) {
+      for (column in c("shape", "color.background", "image")) {
+        nodes[[column]][rows] <- NA
+      }
+      x$x$legend$nodes <- nodes
+      setAside$drawings <- setAside$drawings + 1L
+    }
+    return(x)
+  }
+  if (is.list(x) && !is.data.frame(x)) {
+    kept <- attributes(x)
+    x <- lapply(x, withoutConditionSymbols)
+    attributes(x) <- kept
+  }
+  x
+}
+theirs <- withoutConditionSymbols(theirs)
+theirDrawings <- setAside$drawings
+setAside$drawings <- 0L
+ours <- withoutConditionSymbols(ours)
+cat(sprintf(paste(
+  "drawings with two or more condition rows: %d in nprcgenekeepr's run, %d",
+  "in pedkindraw's, compared without those rows' shape, fill and picture",
+  "(DIVERGENCE.md, plan R81)\n"
+), theirDrawings, setAside$drawings))
 same <- unlist(Map(identical, ours, theirs))
 withWarnings <- lengths(lapply(ours, `[[`, "warnings")) > 0L
 withMessages <- lengths(lapply(ours, `[[`, "messages")) > 0L
