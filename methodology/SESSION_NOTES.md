@@ -102,6 +102,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S24's entries were removed in S3-S25 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 26 Did
+**Deliverable:** plan Phase 16a, the README, NEWS and the package help page (`docs/planning/documentation-plan.md`
+section 6, 16a; `methodology/workstreams/DEVELOPMENT_WORKSTREAM.md`): `README.Rmd` and `README.md` with a still
+picture of a small typed pedigree, `NEWS.md`, `R/pedkindraw-package.R` for `?pedkindraw`, the words gate widened;
+TDD phase: none (documentation), checks written first; no function code (IN PROGRESS)
+**Started:** 2026-11-15 22:14 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "16a, no TDD gates
+(Recommended)" (orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 24 Handoff Evaluation (by Session 25)
 **Score: 9/10.**
 - **What helped:** the five steps were this session's sequence; every line cited was right (plan `:730`, `:735`,
