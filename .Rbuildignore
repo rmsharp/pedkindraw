@@ -11,6 +11,8 @@
 ^\.gitattributes$
 ^\.claude$
 ^LICENSE\.md$
+# The README's source; the package carries README.md, made from it.
+^README\.Rmd$
 # Methodology notes and tooling, not package content.
 ^methodology$
 ^CLAUDE.*\.md$
