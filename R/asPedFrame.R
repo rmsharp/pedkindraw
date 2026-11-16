@@ -496,19 +496,12 @@ asPedFrame.Pedigree <- function(x, ...) {
 .asPedFrameUsableMate <- function(hintMate, ped) {
   left <- hintMate$left
   right <- hintMate$right
-  both <- !is.na(ped$sire) & !is.na(ped$dam)
-  pairs <- c(paste(ped$sire[both], ped$dam[both], sep = "\u0001"),
-             paste(ped$dam[both], ped$sire[both], sep = "\u0001"))
-  together <- paste(left, right, sep = "\u0001") %in% pairs
-  key <- ifelse(left < right, paste(left, right, sep = "\u0001"),
-                paste(right, left, sep = "\u0001"))
-  again <- together & duplicated(key)
+  together <- .layoutHintTogether(left, right, ped)
+  again <- together & duplicated(.layoutHintPairKey(left, right))
   keep <- together & !again
   gen <- stats::setNames(findGeneration(ped$id, ped$sire, ped$dam), ped$id)
-  gen[is.na(gen)] <- 0L
-  anchored <- ifelse(hintMate$anchor == "left", left, right)
-  other <- ifelse(hintMate$anchor == "left", right, left)
-  early <- keep & hintMate$anchor != "either" & gen[anchored] < gen[other]
+  early <- keep & .layoutHintAnchorGenerations(left, right, hintMate$anchor,
+                                               gen)$early
   pairText <- function(i) toString(paste(left[i], "and", right[i]))
   changes <- c(
     if (!all(together)) {

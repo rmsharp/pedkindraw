@@ -5,7 +5,9 @@
 ## S23). New code (R3), written from kinship2's and Pedixplorer's help pages
 ## and the measurements of docs/planning/layout-hints-design.md, their
 ## source not read (R14). The layout's copied functions call these helpers
-## from a few lines each (DIVERGENCE.md).
+## from a few lines each (DIVERGENCE.md). Phase 15c (pedkindraw S24): the
+## mate check's pair, key and generation rules are helpers that asPedFrame()
+## shares, so a converted mate hint is fixed by the rules the check applies.
 
 #' Check the hints given to makePedigreeMatingLayout()
 #'
@@ -140,20 +142,13 @@
     stop("makePedigreeMatingLayout() found id(s) in 'hints$mate' that are ",
          "not in 'ped': ", toString(unique(absent)))
   }
-  sire <- as.character(ped$sire)
-  dam <- as.character(ped$dam)
-  both <- !is.na(sire) & !is.na(dam)
-  pairs <- c(paste(sire[both], dam[both], sep = "\u0001"),
-             paste(dam[both], sire[both], sep = "\u0001"))
-  together <- paste(left, right, sep = "\u0001") %in% pairs
+  together <- .layoutHintTogether(left, right, ped)
   if (!all(together)) {
     stop("makePedigreeMatingLayout() found pair(s) in 'hints$mate' with no ",
          "offspring together in 'ped': ",
          toString(paste(left[!together], "and", right[!together])))
   }
-  pairKey <- ifelse(left < right, paste(left, right, sep = "\u0001"),
-                    paste(right, left, sep = "\u0001"))
-  repeated <- duplicated(pairKey)
+  repeated <- duplicated(.layoutHintPairKey(left, right))
   if (any(repeated)) {
     stop("makePedigreeMatingLayout() found pair(s) named more than once in ",
          "'hints$mate': ",
@@ -165,20 +160,68 @@
          "be \"left\", \"right\" or \"either\". Found: ",
          toString(unique(anchor[badAnchor])))
   }
-  gen <- stats::setNames(ped$gen, ids)
-  gen[is.na(gen)] <- 0L
-  anchored <- ifelse(anchor == "left", left, right)
-  other <- ifelse(anchor == "left", right, left)
-  early <- anchor != "either" & gen[anchored] < gen[other]
+  generations <- .layoutHintAnchorGenerations(left, right, anchor,
+                                              stats::setNames(ped$gen, ids))
+  early <- generations$early
   if (any(early)) {
     stop("makePedigreeMatingLayout() cannot anchor a mating on the partner ",
          "of the earlier generation (the layout draws a mating on the row ",
          "of its later partner); 'hints$mate' anchors: ",
-         toString(paste0(anchored[early], " (generation ", gen[anchored[early]],
-                         ") with ", other[early], " (generation ",
-                         gen[other[early]], ")")))
+         toString(paste0(generations$anchored[early], " (generation ",
+                         generations$anchoredGen[early], ") with ",
+                         generations$other[early], " (generation ",
+                         generations$otherGen[early], ")")))
   }
   data.frame(left = left, right = right, anchor = anchor,
+             stringsAsFactors = FALSE)
+}
+
+#' Which mate hint rows name a pair with offspring together
+#'
+#' @param left,right character vectors of ids, one per mate hint row.
+#' @param ped the pedigree data frame, every row's.
+#' @return A logical vector, one per row: \code{TRUE} when some row of
+#'   \code{ped} has the two as its sire and dam, in either role.
+#' @noRd
+.layoutHintTogether <- function(left, right, ped) {
+  sire <- as.character(ped$sire)
+  dam <- as.character(ped$dam)
+  both <- !is.na(sire) & !is.na(dam)
+  pairs <- c(paste(sire[both], dam[both], sep = "\u0001"),
+             paste(dam[both], sire[both], sep = "\u0001"))
+  paste(left, right, sep = "\u0001") %in% pairs
+}
+
+#' A key naming a pair of ids in either order
+#'
+#' @param left,right character vectors of ids.
+#' @return A character vector, the same for a pair whichever id is first.
+#' @noRd
+.layoutHintPairKey <- function(left, right) {
+  ifelse(left < right, paste(left, right, sep = "\u0001"),
+         paste(right, left, sep = "\u0001"))
+}
+
+#' The generations of each mate hint row's anchor and its partner
+#'
+#' @param left,right character vectors of ids, one per mate hint row.
+#' @param anchor \code{"left"}, \code{"right"} or \code{"either"} per row.
+#' @param gen the generations, named by id; an \code{NA} is read as 0.
+#' @return A data frame, one row per hint row: \code{anchored} (the id
+#'   \code{anchor} names, \code{right} for \code{"either"}), \code{other}
+#'   (its partner), \code{anchoredGen}, \code{otherGen}, and \code{early},
+#'   \code{TRUE} when the anchor is the partner of the earlier generation
+#'   (never for \code{"either"}).
+#' @noRd
+.layoutHintAnchorGenerations <- function(left, right, anchor, gen) {
+  gen[is.na(gen)] <- 0L
+  anchored <- ifelse(anchor == "left", left, right)
+  other <- ifelse(anchor == "left", right, left)
+  anchoredGen <- unname(gen[anchored])
+  otherGen <- unname(gen[other])
+  data.frame(anchored = anchored, other = other, anchoredGen = anchoredGen,
+             otherGen = otherGen,
+             early = anchor != "either" & anchoredGen < otherGen,
              stringsAsFactors = FALSE)
 }
 
