@@ -1,0 +1,60 @@
+url: https://rmsharp.github.io/pedkindraw/
+
+# pkgdown builds the site here instead of its default `docs/`, which holds
+# this repository's plans and studies (plan R78). The pkgdown.yaml workflow
+# passes the same folder to build_site_github_pages(). pkgdown publishes every
+# Markdown file at the root except README, NEWS and LICENSE, so the workflow
+# deletes CLAUDE.md and DIVERGENCE.md from its copy before building (R78).
+destination: pkgdown_site
+
+template:
+  bootstrap: 5
+
+# The groups and their names are ?pedkindraw's sections.
+reference:
+- title: The package
+  contents:
+  - pedkindraw-package
+- title: Drawing
+  contents:
+  - makePedigreeMatingLayout
+  - drawPedigreeDiagram
+  - makePedigreeDiagramData
+- title: Kinship and relatedness
+  contents:
+  - kinship
+  - ibdMatrix
+  - findUnrelated
+- title: Pedigree structure
+  contents:
+  - findGeneration
+  - findPedigreeNumber
+  - familyCheck
+  - getParents
+  - getOffspring
+  - getFounders
+  - isFounder
+  - hasBothParents
+  - getIdsWithOneParent
+- title: Checking and repair
+  contents:
+  - checkPedigree
+  - checkTwinRelations
+  - addParents
+  - correctParentSex
+  - addBackSecondParents
+- title: Trimming and shrinking
+  contents:
+  - trimPedigree
+  - getProbandPedigree
+  - getDescendantPedigree
+  - removeUnknownAnimals
+  - removeUninformativeFounders
+  - shrinkPedigree
+  - bitSize
+  - findUnavailable
+  - findAvailNonInform
+  - findAvailAffected
+- title: Converting kinship2 and Pedixplorer objects
+  contents:
+  - asPedFrame

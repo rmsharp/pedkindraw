@@ -23,6 +23,10 @@
 ^DIVERGENCE\.md$
 # Plans and studies, copied from nprcgenekeepr or written here.
 ^docs$
+# The pkgdown website: its settings, its build folder, its extra files.
+^_pkgdown\.yml$
+^pkgdown_site$
+^pkgdown$
 # Build and check output, and testthat debris from interactive runs.
 ^pedkindraw_.*\.tar\.gz$
 ^pedkindraw\.Rcheck$

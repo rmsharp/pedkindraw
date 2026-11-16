@@ -22,4 +22,8 @@ vignettes/*.html
 vignettes/*.R
 vignettes/*_files/
 
+# The pkgdown website, built here by hand; the pkgdown.yaml workflow
+# deploys its own build to the gh-pages branch.
+pkgdown_site/
+
 scratchpad/
