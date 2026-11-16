@@ -1,0 +1,4 @@
+# License
+
+    YEAR: 2017-2026
+    COPYRIGHT HOLDER: R. Mark Sharp

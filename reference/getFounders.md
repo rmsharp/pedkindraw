@@ -1,0 +1,45 @@
+# Get the founder ids from a pedigree
+
+Part of Pedigree Curation
+
+## Usage
+
+``` r
+getFounders(ped)
+```
+
+## Arguments
+
+- ped:
+
+  datatable that is the `Pedigree`. It contains pedigree information.
+  The fields `id`, `sire` and `dam` are required.
+
+## Value
+
+A vector of the `id` values of the founders, in pedigree order. It has
+the same type as `ped$id` and is empty when there are no founders.
+
+## Details
+
+A founder is an animal whose sire and dam are both unknown (`NA`).
+Animals with exactly one known parent (partial parentage) are **not**
+founders.
+
+## See also
+
+[`isFounder`](https://rmsharp.github.io/pedkindraw/reference/isFounder.md)
+for the founder logical mask.
+
+## Examples
+
+``` r
+ped <- data.frame(
+  id = c("A", "B", "C", "D", "E", "F", "G"),
+  sire = c(NA, NA, "A", "A", NA, "D", "D"),
+  dam = c(NA, NA, "B", "B", NA, "E", "E"),
+  stringsAsFactors = FALSE
+)
+getFounders(ped)
+#> [1] "A" "B" "E"
+```
