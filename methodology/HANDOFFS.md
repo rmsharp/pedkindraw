@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S24
 date: 2026-11-15
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 15c, the converters pass hints on: asPedFrame() returns hints in makePedigreeMatingLayout()'s form, list(order = , mate = ), or NULL (R62, R73), strict TDD; kinship2's and Pedixplorer's hints (user-set and automatic) measured, and whether a converted hint can break R70-R71, before the pre-RED picker
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 15c item), docs/planning/layout-hints-design.md:178 (7.4), R/asPedFrame.R:137 (the generic), R/layoutHints.R:109 (.checkLayoutHintMate)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 15c is DONE, so Phase 15 is DONE: asPedFrame() returns list(ped, twinRelations, hints), hints a kinship2 or Pedixplorer object's layout hints in makePedigreeMatingLayout()'s form or NULL; 12 tests; rulings R74-R76 (converted mate rows the layout refuses fixed with one message; unreadable kinship2 hints stop; a pedigreeList's hints read as a pedigree's); next Phase 16, documentation, which needs a planning session first (no DONE criteria in the plan)
+what_was_done: claim 37f4381; kinship2's and Pedixplorer's hints measured on 212 pedigrees before one pre-RED picker (autohint() returned on 143, 40 with mate rows the layout refuses; auto_hint() on 119, 50; with fixes all 262 converted and drew, 1,060 and 898 hinted sides held), three picks each the recommended option; RED 9a0964a (test_asPedFrameHints.R, 12 tests; 9 whole-list tests expect hints = NULL; drafts 41 of 41 on the prototype, the 21 failing on HEAD); GREEN 593c9a8 (R/asPedFrame.R five helpers, help, example; equal to the prototype); contract 6887b8b; REFACTOR bcdc1b0 (three shared rule helpers in R/layoutHints.R); pushed ffe042f..bcdc1b0, CI run 43781542125 5/5 Status OK at the first attempt, FAIL 0 WARN 0 on each; close-out 1 7f6a513 (plan R74-R76, pointers on R56 and R58, status, row 15, Done 15c, Done 15; ROADMAP; BACKLOG; design note)
+next_steps: Orient; drift tool (3 differ, all with rows); nprcgenekeepr's log on the three layout files; the orient picker offers plan Phase 16 (a planning session) or tests for full coverage; for Phase 16 read the plan's Phases 16-17 (:730, :735) and :272-:275, the contract's sections 5 (:248) and 7 (:278), the comparison doc's sections 7 (:424), 9 (:647) and 10 (:776), NAMESPACE and the exports' examples; inventory by search; measure a scratch vignette drawing one pedigree (HTML size, build time, R CMD check --as-cran) before the picker; write the plan under docs/planning/ with per-session DONE criteria, verification commands and surface; rulings from R77; close out without building anything
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (Phase 16), :22 (coverage), docs/planning/standalone-pedigree-package-plan.md:44 (Next), :183-:185 (R74-R76), :700 (Done 15c), :730 (Phase 16), :735 (Phase 17), docs/planning/pedkindraw-api-contract.md:248 (dependencies), :278 (performance), docs/research/pedigree-package-comparison-2026-11.md:424, :647, :776, DESCRIPTION:25 (Suggests), R/asPedFrame.R:176 (asPedFrame), :496 (.asPedFrameUsableMate), R/layoutHints.R:25 (.checkLayoutHints), :186-:216 (shared rules), tests/testthat/test_asPedFrameHints.R:502 (asPedFrameHintsAligned)
+gotchas: user-facing words sire, dam, mate, mating (vignettes and README too; the gate reads only R/ and man/); asPedFrame()'s ped has no gen column, which makePedigreeMatingLayout() requires (add findGeneration()); kinship2's autohint() and Pedixplorer's auto_hint() warn "Unexpected result in autohint" on some pedigrees, autohint() stops "autohint bug 3" on others, auto_hint() refuses multi-family objects; Pedixplorer's align() prints its quadratic-program failure to stderr and returns a drawing with animals missing; Pedigree(hints = ) takes a list, not a Hints() object; renv installs by Learning 3's recipe; a planning session writes no README or vignette (FM #18); pedkindraw.Rproj untracked, left for Mark; CLAUDE.md over its budget, nothing added
+runtime_smoke: a kinship2 object with hints (an order, a repeated pair, an earlier-generation anchor) through asPedFrame(), the message naming two changes, makePedigreeMatingLayout(x$ped, hints = x$hints) drawing B A / E F D C / H G, drawPedigreeDiagram() a visNetwork widget with 8 of 8 nodes at the layout's x, saved to HTML (not viewed in a browser); R CMD check --as-cran ran the new help example; quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 6810baa52355
+changelog_ref: CHANGELOG.md "2026-11-15 · [BL-Phase 15c] S24: plan Phase 15c, the converters pass hints on" and "2026-11-15 · [BL-Phase 15c] S24 push"
+commit: this receipt's commit (close-out 2)
 ```
 
 ```handoff
