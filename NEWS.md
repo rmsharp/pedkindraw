@@ -1,0 +1,56 @@
+# pedkindraw (development version)
+
+The first version, not yet on CRAN. Most of its code is a copy of
+nprcgenekeepr's at nprcgenekeepr's commit `baef1e12c`; the items marked "New"
+were written for pedkindraw. Where the copy now differs from nprcgenekeepr's
+code, `DIVERGENCE.md` in the repository says how and why.
+
+## Drawing
+
+* `makePedigreeMatingLayout()` lays out a pedigree's animals and matings, and
+  `drawPedigreeDiagram()` draws the layout as an interactive visNetwork graph:
+  a symbol for each sex, a slash through each animal that has died, up to four
+  conditions, twin lines, matings between relatives marked, an animal drawn
+  twice where the layout needs it with its two places joined by a dashed line,
+  a legend, a "Select by id" box and a PNG export button.
+  `makePedigreeDiagramData()` makes a simpler drawing's nodes and edges.
+* New: layout hints, `makePedigreeMatingLayout(hints = )`: the left-to-right
+  `order` of animals and, with `mate`, the side of a mating each mate is drawn
+  on, in the form kinship2 and Pedixplorer give their hints.
+
+## Kinship and relatedness
+
+* `kinship()` computes the kinship matrix, dense or sparse; identical twins get
+  the kinship of an animal with itself.
+* New: `ibdMatrix()` builds an IBD matrix from pairs of ids and their values,
+  and `findUnrelated()` finds a set of unrelated genotyped animals.
+
+## Pedigree structure
+
+* `findGeneration()`, `findPedigreeNumber()`, `getParents()`, `getOffspring()`,
+  `getFounders()`, `isFounder()`, `hasBothParents()` and
+  `getIdsWithOneParent()`.
+* New: `familyCheck()` checks family ids against the family trees the sires
+  and dams form.
+
+## Checking and repair
+
+* `checkTwinRelations()`, `addParents()`, `addBackSecondParents()` and
+  `correctParentSex()`.
+* New: `checkPedigree()` lists each problem in a pedigree, one row per
+  problem, and changes nothing.
+
+## Trimming and shrinking
+
+* `trimPedigree()`, `getProbandPedigree()`, `getDescendantPedigree()`,
+  `removeUnknownAnimals()`, `removeUninformativeFounders()` and
+  `shrinkPedigree()`.
+* New: the steps of `shrinkPedigree()`, exported under kinship2's names:
+  `bitSize()`, `findUnavailable()`, `findAvailNonInform()` and
+  `findAvailAffected()`.
+
+## Converters
+
+* New: `asPedFrame()` converts a kinship2 `pedigree` or `pedigreeList` and a
+  Pedixplorer `Pedigree` to pedkindraw's pedigree, twins table and layout
+  hints. kinship2 and Pedixplorer are suggested, never required.
