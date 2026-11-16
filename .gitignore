@@ -17,4 +17,9 @@ __pycache__/
 tests/testthat/_problems/
 tests/testthat/testthat-problems.rds
 
+# A vignette rendered by hand in vignettes/; R CMD build makes its own.
+vignettes/*.html
+vignettes/*.R
+vignettes/*_files/
+
 scratchpad/

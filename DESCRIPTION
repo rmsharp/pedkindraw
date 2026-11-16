@@ -26,10 +26,13 @@ Suggests:
     chromote,
     htmlwidgets,
     kinship2,
+    knitr,
     mockery,
     Pedixplorer,
+    rmarkdown,
     testthat (>= 3.0.0),
     withr
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Language: en-US
 Encoding: UTF-8

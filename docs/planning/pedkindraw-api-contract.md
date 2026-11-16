@@ -262,7 +262,8 @@ them, and none of Phase 6's does (pedkindraw S2-S3; an unused import is a check 
 (`kinship()` calls `methods::new()`; base R, nothing to install). Phase 8 (pedkindraw S9) added `quadprog` (already
 installed as kinship2's dependency) and `utils` (`utils::head()` in the layout). **Suggests:** kinship2 (also the fidelity tests;
 arrived in Phase 7, plan R28), Pedixplorer, `testthat`, `mockery` (the copied tests' stand-ins, Phase 6), `withr`
-(the copied C11 test's `with_seed()`, Phase 7, R28), `chromote`, and what the vignettes need (Phase 16). No circular
+(the copied C11 test's `with_seed()`, Phase 7, R28), `chromote`, and what the vignettes need: `knitr` and `rmarkdown`,
+with `VignetteBuilder: knitr` (Phase 16b, pedkindraw S27; both were in renv's lock already). No circular
 dependencies: each phase's slice uses only earlier slices.
 
 ---
