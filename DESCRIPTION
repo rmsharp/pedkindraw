@@ -10,7 +10,7 @@ Description: Draws pedigrees as interactive 'visNetwork' graphs that can be
     annotated, and computes kinship coefficients. It also trims and shrinks
     pedigrees, checks pedigree records, finds sets of unrelated individuals,
     and converts 'kinship2' 'pedigree' and 'Pedixplorer' 'Pedigree' objects.
-URL: https://github.com/rmsharp/pedkindraw
+URL: https://rmsharp.github.io/pedkindraw/, https://github.com/rmsharp/pedkindraw
 BugReports: https://github.com/rmsharp/pedkindraw/issues
 Depends:
     R (>= 4.1.0)

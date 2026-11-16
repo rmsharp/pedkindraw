@@ -73,6 +73,7 @@ package's GitHub page draws a twelve-animal pedigree; the example of
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://rmsharp.github.io/pedkindraw/}
   \item \url{https://github.com/rmsharp/pedkindraw}
   \item Report bugs at \url{https://github.com/rmsharp/pedkindraw/issues}
 }
