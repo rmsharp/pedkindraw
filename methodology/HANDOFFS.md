@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S26
 date: 2026-11-15
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 16a, the README, NEWS and the package help page: README.Rmd knitted to README.md with a still picture of a small typed pedigree (tools/makeReadmePicture.R), NEWS.md, R/pedkindraw-package.R for ?pedkindraw, the gate user-facing-sire-dam-words widened to the README, NEWS and vignettes; TDD phase: none (documentation), checks first
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:221 (16a's DONE), docs/planning/documentation-plan.md:138 (5.2 README), methodology/.quality-gates.json:56 (the words gate)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 7
+predecessor_score: 8
+active_task: plan Phase 16a is DONE: README.Rmd knitted to README.md (its example run when knitted, every statement its text makes held by a hidden stopifnot() chunk), the picture man/figures/README-pedigree.png made by tools/makeReadmePicture.R from the README's own chunks, NEWS.md under "# pedkindraw 0.0.1 (development version)", R/pedkindraw-package.R for ?pedkindraw, the words gate widened to the README, NEWS and vignettes; next 16b, the getting-started vignette and the example file; two new backlog items from Mark (the legend's unexplained condition sections, before 16c; a document of what kinship2 or Pedixplorer can do that pedkindraw cannot)
+what_was_done: claim 1e062c2; three candidate pictures drawn in headless Chrome before the picker (Mark: E and pak, then on E's unexplained section lines picture D and a backlog item); checks first 13a189d (the words gate widened, shown failing on a scratch tree; the export check run failing, 31 missing); README 02b3a2d (README.Rmd, README.md, the picture at device scale 2, tools/makeReadmePicture.R, .Rbuildignore); NEWS and help e6b20a3; fix cd0b787 (R CMD check's NOTE "No news entries found": the heading needs a version); pushed bcdc1b0..cd0b787 (11 commits), CI run 43805309511 5/5 at the first attempt; close-out 1 e700b05 (plan status and Done 16a, documentation plan, ROADMAP, BACKLOG); close-out 2 (notes, this receipt, ledger), not pushed
+next_steps: Orient; drift tool; nprcgenekeepr's log on the three layout files; the orient picker offers 16b, the legend item (before 16c), the gap document, or hold; for 16b read the documentation plan's 5.3, 16b's DONE, M6-M7 and D3, the contract's section 5; install the current tree into a scratch library before any hand render or picture; draw two or three candidate proband trims of R80's 375 animals with one condition or none and look at each as a reader before the D3 picker; compute each stated value first and write hidden stopifnot() chunks, shown failing once; knitr and rmarkdown in Suggests with renv::snapshot(dev = TRUE); R80's files cmp equal; render with kinship2 and Pedixplorer absent; ?pedkindraw names the vignette; the checks, push, CI 5/5
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:148 (5.3), docs/planning/documentation-plan.md:232 (16b's DONE), docs/planning/documentation-plan.md:304 (D3), docs/planning/pedkindraw-api-contract.md:248 (section 5), docs/planning/standalone-pedigree-package-plan.md:761 (Done 16a), methodology/BACKLOG.md:11 (16b-16e), methodology/BACKLOG.md:20 (legend), methodology/BACKLOG.md:30 (gap document), README.Rmd:92 (the claims chunk), tools/makeReadmePicture.R:40 (device scale), R/pedkindraw-package.R:42 (Getting started)
+gotchas: the stale pedkindraw 0.0.1 in renv's library runs on any library(pedkindraw) without a fresh install (the picture tool prints which copy it used); R's NEWS.md needs a version in each heading; chromote: selector "html" (".html-widget" crops the legend), deviceScaleFactor 2 for a sharp vis.js canvas, a viewport of at least 1,000 px; R CMD check reads README.md's and a vignette's links (no relative link outside the build); github_document writes README.html unless html_preview is false; two or more conditions split every symbol into sections the legend does not explain; the dashboard's LOW flag on the gate's changed command is the widening; CLAUDE.md over budget, nothing added; pedkindraw.Rproj left for Mark
+runtime_smoke: README.Rmd rendered twice the same (985fc344) with the current tree installed; its claims chunk stopped a render with one value changed; tools/makeReadmePicture.R made the picture (4.6 s) and it was looked at; ?pedkindraw opened from the checked install; the repository's GitHub page in headless Chrome showed the README, its badge and the picture (loaded 2000 x 1160); R CMD check --as-cran R16's NOTE only; quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 01151c525b8a (head cd0b787)
+changelog_ref: CHANGELOG.md "2026-11-15 · [BL-Phase 16a] S26: plan Phase 16a, the README, NEWS and the package help page" and "2026-11-15 · [BL-Phase 16a] S26 push"
+commit: this receipt's commit (close-out 2)
 ```
 
 ```handoff

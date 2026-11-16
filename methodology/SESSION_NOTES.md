@@ -9,83 +9,80 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** **Phase 16a: README, NEWS and the package help page**, the first of Phase 16's five build sessions
-(`methodology/BACKLOG.md:11`; DONE criteria at `docs/planning/documentation-plan.md:221`, the design at `:138`
-(5.2) and `:120` (5.1, its files)). The orient picker asks Mark: this, **tests for full coverage**
-(`methodology/BACKLOG.md:23`), or hold.
-**Status:** READY. Phase 16 planned (S25: claim `3ae3737`, plan `b675df5`, close-out 1 `91df0c9`, close-out 2
-after); rulings R77-R80, each Mark's pick of the recommended option. Nothing in `R/`, `man/`, `tests/` or
-`DESCRIPTION` changed since `bcdc1b0`. Not pushed: S24's two close-out commits and S25's four (16a's push carries
-them; CI's `paths-ignore` skips `methodology/**` and `CLAUDE.md` only, so `docs/planning/` changes start a run).
-**Plan:** `README.Rmd` knitted to `README.md` (no `Sys.Date()`), with a still picture of a small typed pedigree made
-by `tools/makeReadmePicture.R` (chromote, the plan's M4); `NEWS.md` under `# pedkindraw (development version)`;
-`R/pedkindraw-package.R` (`"_PACKAGE"`) for `?pedkindraw`; the gate `user-facing-sire-dam-words` widened to read
-`README.Rmd`, `README.md`, `NEWS.md` and `vignettes` too. No function code: the plan's section 5.7 (`:194`) says
-these sessions declare "TDD phase: none (documentation)" and write their checks first, unless Mark asks for the TDD
-gates (that reading is Claude's, not a ruling; put it in the orient picker's 16a option so Mark sees it).
-**Session boundary:** one session. No vignette (16b), no `VignetteBuilder`, no site (16e); the README names no
-site URL until 16e.
+**Task:** **Phase 16b: the getting-started vignette and the example file**, the second of Phase 16's five build
+sessions (`methodology/BACKLOG.md:11`; DONE criteria at `docs/planning/documentation-plan.md:232`, the design at
+`:148` (5.3)). The orient picker asks Mark: this; **the legend item** (`methodology/BACKLOG.md:20`, Mark's S26 find:
+the sections of a two-condition symbol are not explained; code, TDD, must come before 16c, not 16b); **the gap
+document** (`methodology/BACKLOG.md:30`, Mark's S26 request); or hold. Tests for full coverage (`:40`) remains.
+**Status:** READY. Phase 16a DONE (S26: claim `1e062c2`, checks `13a189d`, README `02b3a2d`, NEWS and help
+`e6b20a3`, NEWS fix `cd0b787`, pushed with S24's and S25's commits, CI run `43805309511`; close-out 1 and 2 after,
+not pushed). `R/` gained only `R/pedkindraw-package.R` (the help page's source); `DESCRIPTION` unchanged.
+**Plan:** `DESCRIPTION` Suggests knitr and rmarkdown and `VignetteBuilder: knitr`, `renv::snapshot(dev = TRUE)`
+(both are locked already; read the lock's diff, gate `renv-lock-no-latest-repository` 0); the contract's section 5
+(`docs/planning/pedkindraw-api-contract.md:248`) names them; R80's two files in `inst/extdata/`, `cmp` equal to
+nprcgenekeepr's `inst/extdata/examples/` at `baef1e12c`; `vignettes/pedkindraw.Rmd` per 5.3, each value its prose
+states held by a hidden `stopifnot()` chunk (the README's `claims` chunk is the pattern, `README.Rmd:92`);
+rendered with kinship2 and Pedixplorer absent (M7, `:106`); its drawing opened in Chrome; `?pedkindraw`'s
+"Getting started" section (`R/pedkindraw-package.R:42`) names the vignette. TDD phase: none (documentation), checks
+first (5.7, `:194`), as 16a ran (Mark's S26 pick).
+**Session boundary:** one session. No drawing vignette (16c), no speed tables (16d), no site (16e).
 **Priority:** HIGH (the plan's next session).
 
 ### What You Must Do
 1. Orient; drift tool (expect 3 differ, all with rows); `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD --
    R/makePedigreeDiagramData.R R/orderRootSubtrees.R R/positionTreeApportion.R` (Learning 15; nprcgenekeepr was at
-   `61dad5d2c` at S25's Orient).
-2. Read `docs/planning/documentation-plan.md` sections 2 (`:32`, the exports' six groups), 5.1-5.2, 5.7, 6's
-   preamble and 16a (`:204`-`:230`) and 9 (`:298`, D1-D2); the comparison doc's section 10
-   (`docs/research/pedigree-package-comparison-2026-11.md:776`) for the README's first paragraph; `DESCRIPTION`'s
-   Title and Description (`:3`, `:9`-`:12`); the `drawPedigreeDiagram()` help example (`man/drawPedigreeDiagram.Rd`).
-3. Measure before the picker (Learning 17): type two or three candidate pedigrees for the picture (10-20 animals; a
-   twin pair, a condition, a deceased animal, a consanguineous mating), make each picture in a scratch tree with M4's
-   method (`htmlwidgets::saveWidget()`, then a chromote screenshot), look at each; the picker offers them (D2) and
-   the install line (D1).
-4. Checks first: widen the gate's command (`methodology/.quality-gates.json:56`) and run `python3
-   methodology/quality_ratchet.py --run`; a scratch script that lists `NAMESPACE`'s 31 exports and finds each named
-   in `README.md`, run failing before the README exists.
-5. Write the files (at most 5 per commit), render `README.Rmd` twice (the second leaves `git status` clean),
-   `roxygen2::roxygenise()` (adds `man/pedkindraw-package.Rd` only), `.Rbuildignore` `^README\.Rmd$`.
-6. The checks of the plan's section 6; `R CMD check --as-cran` from a scratch folder (it reads `README.md`'s and
-   `NEWS.md`'s URLs); push; CI 5/5; the repository's GitHub page viewed in a browser (the picture shows); the
-   dashboard's README flag gone.
+   `e2af4365b` at S26's Orient, nothing new on those files); `gh run view 43805309511` if this handoff's CI line
+   says it was still running.
+2. Read the documentation plan's 5.3 (`:148`), 16b's DONE (`:232`), M6 and M7 (`:105`-`:106`), D3 (`:304`); the
+   contract's section 5 (`:248`); `README.Rmd` (the claims chunk and its render comment).
+3. Measure before the picker (Learning 17; D3): trim R80's 375-animal pedigree around two or three candidate
+   proband sets, draw each with chromote as `tools/makeReadmePicture.R` does, and look at each at its fitted view.
+   Look as a reader: every mark in the picture explained by the legend or the text. Use one condition or none
+   (two or more split every symbol into sections the legend does not explain: the legend item).
+4. Checks first: compute every value the prose will state in a scratch run, then write the hidden `stopifnot()`
+   chunks; render once failing (one value changed) before relying on them.
+5. Write the files (at most 5 per commit), render, the checks of the plan's section 6 ("checking re-building of
+   vignette outputs ... OK", "checking installed package size ... OK"), push, CI 5/5.
 
 ### Gotchas
-- **A stale pedkindraw 0.0.1 sits in renv's library** (built 2026-11-12, before `asPedFrame()`;
-  `methodology/BACKLOG.md:69`). Anything that runs `library(pedkindraw)` without installing first loads it: S25's
-  trial pkgdown build with `install = FALSE` stopped on "could not find function asPedFrame". Rendering `README.Rmd`
-  does the same. devtools and remotes are not in renv (pkgbuild 1.4.8 is), so there is no `build_readme()`: install
-  the current tree first (`R CMD INSTALL --no-docs --library=<scratch lib> <tarball>`, that library first in
-  `R_LIBS`), or remove the stale copy first (the backlog item; `renv.lock` does not name pedkindraw).
-- **URLs:** `R CMD check --as-cran` checks the URLs in `README.md` and `NEWS.md`; a bad one adds to the incoming
-  feasibility NOTE, which R16 then fails. No CRAN badges (Phase 17), no site link (16e). The R-CMD-check badge's URL
-  answers (the repository is public).
-- **The widened gate:** `grep -r` on a path that does not exist yet (`vignettes`) prints to stderr and exits 2;
-  check that the ratchet still reads 0 from `wc -l` before relying on it (S25 did not run it).
-- **Words:** sire, dam, mate, mating, never husband or wife (Mark, S23), in the README and NEWS too.
-- **Single-run times:** the plan's Done records give a prototype's time ("Measured before the pickers") and the
-  built function's (in "Checks"); S25 first cited two prototype times as built ones (`checkPedigree()` 0.17 s, built
-  0.14 s; `asPedFrame()` 0.022 s, built 0.04 s) and corrected them before commit. Cite the built function's.
-- **Scratch-tree recipe:** `git archive HEAD | tar -x -C <tree>`, then `env -u RENV_PROJECT R_LIBS=<lib>
-  R_LIBS_USER=<lib> Rscript --no-init-file ...`, `<lib>` from `Rscript -e 'cat(renv::paths$library())'`. Without
-  renv active, R's own library is visible (pkgdown 2.2.1 lives there). An environment variable read inside
-  `Rscript -e` must be passed on the `env` line (S25 lost a run to an unexported `$S`).
-- **zsh:** `echo =====` fails ("= not found"); keep each shell command to one check (Mark, S23).
+- **The stale pedkindraw 0.0.1 in renv's library** (`methodology/BACKLOG.md:86`) still runs whenever
+  `library(pedkindraw)` is called without installing first. S26's recipe: `git archive HEAD | tar -x -C <tree>`,
+  `R CMD build --no-build-vignettes --no-manual <tree>`, `R CMD INSTALL --no-docs --library=<scratch lib>
+  <tarball>`, then `env -u RENV_PROJECT R_LIBS=<scratch lib>:<renv lib> R_LIBS_USER=<renv lib> Rscript
+  --no-init-file ...` from the root (`<renv lib>` from `Rscript -e 'cat(renv::paths$library())'`). Print
+  `find.package("pedkindraw")` to see which copy ran (the picture tool does). `R CMD build` builds vignettes against
+  a copy it installs itself, so this matters for hand renders and pictures, not for the check.
+- **NEWS.md:** R reads a section only under a heading holding a version: S26's plan heading `# pedkindraw
+  (development version)` gave `R CMD check` a second NOTE ("No news entries found"); it is now `# pedkindraw 0.0.1
+  (development version)` (`cd0b787`). New lines go under it.
+- **chromote pictures:** `selector = "html"`, not `".html-widget"` (that crops the legend and the export button);
+  `Emulation$setDeviceMetricsOverride(deviceScaleFactor = 2)` before `go_to()`, or vis.js draws its canvas at 1x and
+  a 2x capture is soft (`tools/makeReadmePicture.R:40`); a viewport under 1,000 px wide cut the legend's labels.
+- **R CMD check reads README.md's links:** a relative link to a file outside the build (`DIVERGENCE.md`) would be
+  flagged; the README uses the GitHub URL. Vignette links are checked the same way.
+- **`github_document`** writes a `README.html` preview unless `html_preview: false` (set in `README.Rmd`); a
+  `![alt](path)` alone in a paragraph becomes a figure whose caption repeats the alt text (the README uses `<img>`).
+- **The dashboard's LOW flag** "Quality gate `user-facing-sire-dam-words` `command` changed in 13a189d": expected,
+  the widening (`grep -s` reads a missing `vignettes/` as no lines).
+- **Words:** sire, dam, mate, mating; the README's prose was checked by the gate and by eye.
+- **Single-run times:** cite a built function's measurement, not its prototype's (S25).
+- **zsh:** `echo =====` fails; keep each shell command to one check (Mark, S23). Pass environment variables on the
+  `env` line.
 - **Another Claude session may run R checks at the same time** (nprcgenekeepr's sessions): `ps` and `lsof -d cwd`.
-- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S23-S25 added nothing).
+- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S23-S26 added nothing).
 - **Left for Mark:** `pedkindraw.Rproj` untracked at the root (`.Rbuildignore:6` keeps it out of the build).
-- **Times on this Mac (S25):** `R CMD build` with three trial vignettes 8.9 s; `R CMD check --as-cran` 161 s (tests
-  111 s); a pkgdown site 34.5 s; a chromote picture 8.7 s; suite ~3 min; CI ~15 min.
+- **Times on this Mac (S26):** README render 1.7 s; the README picture 4.6 s; `R CMD check --as-cran` 169 s (tests
+  116-120 s); the suite ~3 min; the gate run ~4 min; CI ~15 min.
 
 ### Key files
-- `docs/planning/documentation-plan.md`: `:32` section 2 (inventory, the six groups, where the timing numbers live),
-  `:92` section 3 (M1-M8; `:102` M3 the site, `:103` M4 the picture), `:120` 5.1 (files by session), `:138` 5.2
-  (README), `:194` 5.7 (TDD), `:204` section 6 (checks, surface), `:221` 16a's DONE, `:298` section 9 (D1-D4).
-- `docs/planning/standalone-pedigree-package-plan.md`: `:45` the status's Next, `:187`-`:190` R77-R80, `:735` Phase
-  16 (its session table), `:751` "Done 16's plan", `:760` Phase 17.
-- `methodology/BACKLOG.md:11` (16a), `:18` (16b-16e), `:23` (coverage), `:69` (the stale copy);
+- `docs/planning/documentation-plan.md`: `:105`-`:106` M6, M7; `:120` 5.1 (files by session; `:130` R80's files);
+  `:148` 5.3; `:194` 5.7; `:204` section 6; `:232` 16b's DONE; `:298` section 9 (`:304` D3).
+- `docs/planning/standalone-pedigree-package-plan.md`: `:46` Next; `:736` Phase 16; `:761` "Done 16a".
+- `docs/planning/pedkindraw-api-contract.md:248` (section 5, Suggests).
+- `methodology/BACKLOG.md:11` (16b-16e), `:20` (legend), `:30` (gap document), `:86` (the stale copy).
+- `README.Rmd` (its `claims` chunk; `tools/makeReadmePicture.R` runs its chunks `pedigree`, `check`, `drawing`);
+  `R/pedkindraw-package.R:42` ("Getting started"); `DESCRIPTION:4` (Version), `:25` (Suggests);
   `methodology/.quality-gates.json:56` (the words gate).
-- `DESCRIPTION:3` (Title), `:9`-`:12` (Description), `:13` (URL), `:25` (Suggests); `.Rbuildignore:16` (`CLAUDE`),
-  `:23` (`^docs$`); `R/drawPedigreeDiagram.R:66`; `R/makePedigreeDiagramData.R:1742`
-  (`makePedigreeMatingLayout()`); `docs/research/pedigree-package-comparison-2026-11.md:776` (section 10).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -99,60 +96,52 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S24's entries were removed in S3-S25 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S25's entries were removed in S3-S26 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 26 Did
-**Deliverable:** plan Phase 16a, the README, NEWS and the package help page (`docs/planning/documentation-plan.md`
-section 6, 16a; `methodology/workstreams/DEVELOPMENT_WORKSTREAM.md`): `README.Rmd` and `README.md` with a still
-picture of a small typed pedigree, `NEWS.md`, `R/pedkindraw-package.R` for `?pedkindraw`, the words gate widened;
-TDD phase: none (documentation), checks written first; no function code (IN PROGRESS)
-**Started:** 2026-11-15 22:14 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "16a, no TDD gates
-(Recommended)" (orient)
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
-
-### Session 24 Handoff Evaluation (by Session 25)
-**Score: 9/10.**
-- **What helped:** the five steps were this session's sequence; every line cited was right (plan `:730`, `:735`,
-  `:272`-`:275`; contract `:248`, `:278`; comparison doc `:424`, `:647`, `:776`; `DESCRIPTION:25`;
-  `.github/workflows/R-CMD-check.yaml:42`); step 4's scratch vignette, measured for size and with `R CMD check`,
-  gave the numbers that decided R77; the scratch-tree recipe worked as written; the gotchas on the `gen` column and
-  on both packages' automatic hints went into the plan (section 5.4, risks).
-- **What was missing:** that the Phase 1-2 tables timed nprcgenekeepr's code before the clean-room rewrite, and
-  that nprcgenekeepr's S1141 re-timed it (its `docs/research/cleanroom-vs-3.0.0-comparison-2026-11.md`), found by
-  listing nprcgenekeepr's `tools/pedigreeComparison/results/`; the stale pedkindraw 0.0.1 in renv's library; that
-  pkgdown publishes the root's `.md` files (not foreseeable without building).
-- **What was wrong:** nothing found wrong. Of the guessed picker questions, one of the four asked matched (where the
-  site lives); "how many sessions" became plan structure and "NEWS's first version" Phase 17's; the other three
-  asked (vignette size, the timing source, example data) came from measuring.
+### Session 25 Handoff Evaluation (by Session 26)
+**Score: 8/10.**
+- **What helped:** the stale-copy gotcha (every render and picture ran against a scratch install, and the picture
+  tool prints which copy it used); the scratch-tree recipe; the URL gotcha (the README links `DIVERGENCE.md` by its
+  GitHub URL); the widened gate's missing-path gotcha (`grep -s`, shown able to fail); the steps in order; every
+  line cited was right (`:221`, `:138`, `:194`, `:298`, `.quality-gates.json:56`).
+- **What was missing:** that `selector = ".html-widget"` crops the legend and that chromote draws vis.js's canvas at
+  1x (M4's method gave a cropped, soft picture; found by looking); that a two-condition candidate would show
+  section lines the legend does not explain (found by Mark, not by me).
+- **What was wrong:** S25's own plan text, carried into the handoff: `NEWS.md` under `# pedkindraw (development
+  version)` gives `R CMD check` a NOTE (R needs a version in the heading); one extra 3-minute check and a fix
+  commit.
 - **ROI:** high.
 
-### What Session 25 Did
-**Deliverable:** the plan for plan Phase 16, documentation: `docs/planning/documentation-plan.md` (new), rulings
-R77-R80 in the plan's section 2, the plan's status and Phase 16 section; a planning session, nothing built.
-**Started:** 2026-11-15 19:56 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Plan the documentation
-(Recommended)" (orient); "Live drawings in both", "GitHub Pages", "Summarize the records", "Ship one example file"
-(the plan's picker, each the recommended option).
-**Commits:** claim `3ae3737`; plan `b675df5`; close-out 1 `91df0c9` (ROADMAP, BACKLOG); close-out 2 after
-(notes, receipt, ledger). None pushed.
-**Verified:** on scratch copies of `HEAD`, before the picker: three trial vignettes built (8.9 s) and checked with
-`R CMD check --as-cran` (161 s; R16's NOTE only; installed 5.4 MB as INFO, `doc/` 5.0 MB, the package alone 468 KB;
-`_R_CHECK_LOG_USE_INFO_` read in `tools:::.check_packages`); a pkgdown 2.2.1 site (stopped on the stale installed
-copy, then built in 34.5 s with it installed; `CLAUDE.md` and `DIVERGENCE.md` published as pages); a chromote
-picture (8.7 s, 64 KB; a 375-animal fitted view shows no ids); a vignette rendered with kinship2 and Pedixplorer
-hidden; the 375-animal example clean and byte-identical to nprcgenekeepr's at `baef1e12c`; S1141's 11 measured files
-identical to the copy (`git diff d280dc8e8 baef1e12c` empty). Every citation in the new text re-found by `grep`
-before commit. `quality_ratchet.py --run` 5/5 pass, results `5ddbb5b1aeb3` (head `91df0c9`).
-**Self-assessment: 8/10.**
-+ Eight measurements before one picker, all four questions answered at the first try; two traps found by building,
-  not reading (the stale installed copy, pkgdown publishing project notes); the timing question rests on a proof
-  that the re-timed files are the copied files, not on a guess; each DONE criterion names a command and a surface.
-- Slips, each caught before a commit: two prototype times cited as the built functions' (found by reading the Done
-  records' context); a pkgdown run lost to an unexported shell variable; a zsh `echo` error. The plan's "about 4.1
-  MB" for two pages with drawings is a sum of measured parts, not a measured build, and says "expected". I could not
-  set the deepest reasoning mode myself (the runner's planning checklist asks for it).
-**Learnings:** no `CLAUDE.md` row (over its budget); cite a built function's measurement, not its prototype's, and
-render or build documentation against an installed current copy (both in the Gotchas above).
-**Ledger:** `CHANGELOG.md` S25 entry.
+### What Session 26 Did
+**Deliverable:** plan Phase 16a, the README, NEWS and the package help page; TDD phase none (documentation),
+checks first. DONE.
+**Started:** 2026-11-15 22:14 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "16a, no TDD gates
+(Recommended)" (orient); "E: 13 animals (Recommended)" and "pak (Recommended)" (D2, D1); then, on E's unexplained
+section lines, "Use picture D; log the fix (Recommended)"; and, unasked by a picker, the gap-document backlog item.
+**Commits:** claim `1e062c2`; checks `13a189d` (the words gate widened); README `02b3a2d` (README.Rmd, README.md,
+the picture, `tools/makeReadmePicture.R`, `.Rbuildignore`); `e6b20a3` (NEWS.md, `R/pedkindraw-package.R`,
+`man/pedkindraw-package.Rd`); `cd0b787` (NEWS heading with the version); pushed `bcdc1b0..cd0b787` (11 commits);
+close-out 1 (plan, documentation plan, ROADMAP, BACKLOG) and close-out 2 (notes, receipt, ledger), not pushed.
+**Verified:** the widened gate read 0 on clean text and 2 on a scratch tree with the words; the export check ran
+failing (31 missing) before the README, then 31 of 31; two README renders the same (`985fc344`); the hidden claims
+chunk stopped a render with one value changed; the picture looked at (2000 x 1160, 66,575 B); suite 52 files, 676
+tests, 0 failed, 0 skipped, WARN 0, 5,929 passed; lint 0; roxygen added `man/pedkindraw-package.Rd` only and is
+idempotent; `R CMD check --as-cran` on `cd0b787`'s tree R16's NOTE only, installed size OK (608 KB), README and NEWS
+links not flagged (the run on `e6b20a3` had the NEWS NOTE); `?pedkindraw` opens the package page; drift tool 90
+functions, 3 differ, 0 without a row; the GitHub page in headless Chrome: the README with its badge, the picture
+loaded (2000 x 1160) and shown at the README's width; the dashboard's README flag gone (health 82 to 88);
+`quality_ratchet.py --run` 5/5 pass, results `5ddbb5b1aeb3`, manifest `01151c525b8a` (head `cd0b787`); CI run
+`43805309511`: 5/5 `Status: OK` at the first attempt, 15 min, `FAIL 0 | WARN 0` on each (macOS PASS 5929,
+Windows 5928 SKIP 1, Ubuntu devel, release and oldrel-1 5918 SKIP 2: S24's counts).
+**Self-assessment: 7/10.**
++ Every check written and shown failing before the text it checks; the README's statements held by a check that
+  stops the build; the picture made from the README's own code; two traps found by looking (the cropped legend, the
+  soft canvas) and one by the full check (the NEWS heading), each fixed before the push.
+- I recommended picture E without seeing that its section lines are unexplained; Mark caught it. I should look at a
+  candidate picture as a reader does, every mark explained by the legend or the text. Mark also had to ask whether
+  `candE.png` existed: opening three files at once put them in one Preview window. The NEWS NOTE cost a second
+  3-minute check.
+**Learnings:** no `CLAUDE.md` row (over its budget); in the Gotchas above: look at a picture as a reader; R's
+NEWS.md heading needs a version; chromote's selector and device scale.
+**Ledger:** `CHANGELOG.md` S26 entries (the session and its push).
