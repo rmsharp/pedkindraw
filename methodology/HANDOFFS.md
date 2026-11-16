@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S28
+date: 2026-11-16
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: the legend item (methodology/BACKLOG.md:26): drawPedigreeDiagram()'s legend explains the sections of a symbol with two or more conditions; code copied from nprcgenekeepr, so TDD with the three gates and the drift-rule choice (mirror in nprcgenekeepr in a session there, or a DIVERGENCE.md row) at the pre-RED picker
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:26 (legend item), R/affectedConditions.R:98 (.conditionSectionsHandler), R/drawPedigreeDiagram.R:134 (conditionRows)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S27
 date: 2026-11-15
 status: complete

@@ -103,6 +103,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S26's entries were removed in S3-S27 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 28 Did
+**Deliverable:** the legend item (`methodology/BACKLOG.md:26`): the drawing's legend explains the sections of a
+symbol with two or more conditions (`R/drawPedigreeDiagram.R`, `R/affectedConditions.R`, copied from nprcgenekeepr;
+`methodology/workstreams/DEVELOPMENT_WORKSTREAM.md`); TDD with the three gates, the drift-rule choice at the pre-RED
+picker (IN PROGRESS)
+**Started:** 2026-11-16 02:51 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Legend fix (Recommended)"
+(orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 26 Handoff Evaluation (by Session 27)
 **Score: 9/10.**
 - **What helped:** the steps in order (measure candidates before the picker, look as a reader, one condition or
