@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S31
+date: 2026-11-16
+status: pending
+active_task: plan Phase 16e, the website (docs/planning/documentation-plan.md 5.6 and 16e's DONE; R78, R82): the pkgdown site on GitHub Pages with two articles; Mark's pick "Website, 16e (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S30
 date: 2026-11-16
 status: complete

@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-16 · [BL-Phase 16e] S31: plan Phase 16e, the website (in progress)
+- **Change:** session claimed (Mark's pick "Website, 16e (Recommended)"): the pkgdown site on GitHub Pages with two articles (R78, R82). Phase 0 reconcile: nothing to backfill (frontier `1ce7ae0` is HEAD; no merges; S30's receipt complete, its ratchet results `5ddbb5b1aeb3` match); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `141ef2471` (its S1177 in progress), no commits to the copied drawing files since `b4abb9a0b`.
+- **Commit/PR:** the claim commit · **Session:** S31 · **Verified:** pending (close-out).
+
 ### 2026-11-16 · [BL-Phase 16d] S30 push 2: `master` to GitHub at `7de3d09` (the R82 ruling and close-out 1)
 - **Change:** `git push origin master` (`a580612..7de3d09`); CI run `43966717453` (the push touched `docs/planning/`, which `paths-ignore` does not list): 5/5 `success`, attempt 1, 17 min (no package file changed).
 - **Commit/PR:** none (push); S30's close-out 2 after it is not pushed · **Session:** S30 · **Verified:** `gh run view --json`.

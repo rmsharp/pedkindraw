@@ -94,6 +94,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S29's entries were removed in S3-S30 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 31 Did
+**Deliverable:** plan Phase 16e, the website (`docs/planning/documentation-plan.md` 5.6 and 16e's DONE; R78, R82):
+the pkgdown site on GitHub Pages with two articles (IN PROGRESS)
+**Started:** 2026-11-16 16:43 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Website, 16e (Recommended)"
+(orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 29 Handoff Evaluation (by Session 30)
 **Score: 9/10.**
 - **What helped:** the steps in order (drift tool, nprcgenekeepr's log, the push with the first push, and "write
