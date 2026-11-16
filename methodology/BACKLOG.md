@@ -8,16 +8,17 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 16: documentation -- plan it first** (READY, Effort S for the plan, a guess) -- the plan's section 4
-      gives Phase 16 one line of scope (README, a getting-started vignette, a drawing vignette, a pkgdown site, NEWS,
-      the Phase 1-2 timing, memory and capacity tables with their dates and machine) and no DONE criteria (its
-      "Phases 11-15" table stops at 15). A planning session (`SESSION_RUNNER.md` Planning Sessions) writes them: the
-      sessions it takes and each one's DONE criteria and surface (R CMD check builds the vignettes; pkgdown's site
-      where, GitHub Pages or not, is Mark's call), what each vignette shows (`asPedFrame()` with hints into
-      `makePedigreeMatingLayout()` and `drawPedigreeDiagram()` is now the whole drawing path, Phase 15 DONE), the
-      Suggests the vignettes need (contract section 5: knitr, rmarkdown; installed into renv by Learning 3's
-      recipe), and where the timing tables come from (nprcgenekeepr's comparison doc, `docs/research/`). Phase 17,
-      the CRAN submission, follows with its own plan.
+- [ ] **Phase 16a: README, NEWS and the package help page** (READY, Effort S, a guess) -- the first of Phase 16's
+      five sessions (`docs/planning/documentation-plan.md` section 6, DONE criteria there; R77-R80, S25):
+      `README.Rmd` knitted to `README.md` with a still picture of a small typed pedigree (`tools/makeReadmePicture.R`,
+      chromote), `NEWS.md` under `# pedkindraw (development version)`, `R/pedkindraw-package.R` for `?pedkindraw`,
+      and the gate `user-facing-sire-dam-words` widened to read the README, NEWS and vignettes. No function code
+      (the plan's section 5.7: checks first, no TDD phase gates unless Mark asks). Its picker: the plan's D1-D2.
+
+- [ ] **Phase 16b-16e** (READY in turn, one session each) -- 16b the getting-started vignette, knitr and rmarkdown
+      in Suggests, the 375-animal example in `inst/extdata/` (R80); 16c the drawing vignette, the installed package
+      under 5 MB (R77); 16d the speed and size-limits vignette and `tools/checkSpeedTables.R` (R79); 16e the pkgdown
+      site on GitHub Pages (R78), then Phase 16 DONE. Phase 17, the CRAN submission, follows with its own plan.
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -45,7 +46,7 @@ issues).*
       2,341, the same 43 (`R/layoutHints.R` added, 52 of 52; `R/makePedigreeDiagramData.R`'s lines moved, above). S23 on `ffe042f`:
       97.91%, 43 of 2,445, the same 43 (`R/layoutHints.R` 174 of 174 lines; `R/makePedigreeDiagramData.R`'s lines
       moved, above). S24 on `bcdc1b0`: 97.96%, 43 of 2,501, the same 43 (`R/asPedFrame.R` 158 of 158 statements,
-      `R/layoutHints.R` 149 of 149; `R/makePedigreeDiagramData.R` unchanged, its lines as at `ffe042f`).
+      `R/layoutHints.R` 149 of 149; `R/makePedigreeDiagramData.R` unchanged, its lines as at `ffe042f`)). S25 changed nothing in `R/` (a planning session); not re-measured.
 
 ## Waiting on Mark
 
@@ -64,6 +65,13 @@ issues).*
       need a ruling and a plan change first.
 
 ## Ready, small
+
+- [ ] **A stale pedkindraw 0.0.1 in renv's library** (READY, Effort S) -- renv's library
+      (`Rscript -e 'cat(renv::paths$library())'`) holds a pedkindraw 0.0.1 built 2026-11-12, before `asPedFrame()`
+      existed (S25). Anything that calls `library(pedkindraw)` without installing first runs it: a trial pkgdown
+      build with `install = FALSE` stopped on "could not find function asPedFrame" (the documentation plan's M3).
+      Remove it (`remove.packages("pedkindraw", lib = renv::paths$library())`; `renv.lock` does not name it, S25)
+      or reinstall it at each use; the site session builds with the package installed either way.
 
 - [ ] **The drift tool does not watch copied constants** (READY, Effort S) -- `tools/compareWithNprcgenekeepr.R`
       compares only functions assigned at the top level, so `R/sexCodes.R` (a named character vector, R25) is

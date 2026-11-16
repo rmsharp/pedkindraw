@@ -14,8 +14,8 @@ left to offer next to kinship2, Pedixplorer and ggpedigree (`docs/research/pedig
 section 10). All five are done (S13). The new work of Phases 11-15 has begun: Phases 11 (S14), 12 (S15-S16) and 13
 (S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) and 14 (S19-S20: `asPedFrame()` for
 kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is done: designed (S21), then 15a the order
-hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase 16, documentation, is next
-(Planned, below).
+hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase 16, documentation, is planned
+(S25: `docs/planning/documentation-plan.md`, R77-R80) and its first session, 16a, is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -31,8 +31,10 @@ hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 16 (next, `methodology/BACKLOG.md`):** documentation: README, a getting-started and a drawing vignette, a pkgdown site, NEWS, the Phase 1-2
-  timing tables.
+- **Phase 16 (next, `methodology/BACKLOG.md`):** documentation, five sessions (`docs/planning/documentation-plan.md`
+  section 6): 16a README, NEWS and `?pedkindraw`; 16b a getting-started vignette and a 375-animal example file; 16c a
+  drawing vignette; 16d a speed and size-limits vignette from the dated timing records; 16e the pkgdown site on
+  GitHub Pages. The three vignettes ship on CRAN, the package under 5 MB installed (R77-R80).
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
 - **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8).
 
@@ -173,6 +175,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 16 planned (pedkindraw S25, 2026-11-15).** Measured on scratch copies before the picker: a vignette page
+  with drawings is 1.6-1.9 MB and the package without vignettes 0.47 MB, so two such pages fit CRAN's 5 MB and three
+  do not; a trial pkgdown site built in 34.5 s once the package was installed (a stale installed copy stopped it
+  otherwise) and published the root's `CLAUDE.md` and `DIVERGENCE.md`; nprcgenekeepr's re-timing of its rewrite
+  measured the very files pedkindraw copied. Mark's picks R77-R80, each the recommended option: three CRAN vignettes,
+  two with live drawings; the site on GitHub Pages; the timing tables summarized from the records and checked by a
+  script; the 375-animal rhesus pedigree as an example file. Five build sessions, 16a-16e.
 - **Phase 15c, the converters pass hints on; Phase 15 DONE (pedkindraw S24, 2026-11-15).** Written test-first after
   measuring what kinship2 1.9.6.2 and Pedixplorer 1.8.0 objects hold in their hints, set by a user and by
   `autohint()` and `auto_hint()`, on 212 pedigrees (Mark's picks R74-R76, each the recommended option: mate rows the
