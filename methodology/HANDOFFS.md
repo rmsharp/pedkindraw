@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S30
 date: 2026-11-16
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 16d, the speed and size-limits vignette (docs/planning/documentation-plan.md section 5.5, DONE at its 16d item): vignettes/speed.Rmd and tools/checkSpeedTables.R, the script run failing before the tables are filled; TDD phase none (documentation), checks written first
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:185 (section 5.5), docs/planning/documentation-plan.md:269 (16d's DONE), docs/planning/pedkindraw-api-contract.md:279 (section 7), R/pedkindraw-package.R:42 (Getting started), vignettes/pedkindraw.Rmd:399 (Where next), vignettes/drawing.Rmd:681 (the size section)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 7
+predecessor_score: 9
+active_task: Phase 16d is DEFERRED (ruling R82): the comparison of pedkindraw with kinship2 and Pedixplorer waits until pedkindraw times itself; the draft is on the branch draft/speed-vignette (612eed9, not merged). Next: Phase 16e, the website, with two articles (docs/planning/documentation-plan.md section 5.6, DONE at its 16e item), READY; Phase 16 DONE after it
+what_was_done: claim a580612 (pushed with S29's two close-out commits, CI 43958321631 5/5); tools/checkSpeedTables.R written first and run failing (0 of 417 numbers), then the draft vignettes/speed.Rmd (nine captioned tables, 366 of 366 cells holding a number and 621 of 621 cells matching, four planted changes each failing the check, a separate check against the studies' printed tables on 298 cells, a definition of each computation at Mark's request); Mark judged the comparison premature while pedkindraw tracks nprcgenekeepr: R82; the draft on the branch draft/speed-vignette (612eed9, pushed); ruling 6883985 (the plan's R82, notes on R77 and R79, status, Phase 16 row, "Deferred 16d" record; the documentation plan's notes and 16e's two articles; the contract's shrink row with the rewrite's 3.69 s and 92.0 s); close-out 1 7de3d09 (ROADMAP, BACKLOG), pushed, CI 43966717453 5/5; no package file changed
+next_steps: Orient; drift tool (91 functions, 5 differ, all with rows); nprcgenekeepr's log on the copied drawing files since b4abb9a0b (if it has ported R81, BACKLOG.md:41 is unblocked); push S30's close-out 2 with the first push; the orient picker offers 16e (recommended), the "Select by id" bug (BACKLOG.md:32), the gap document (:52), coverage (:62), or hold; for 16e measure D4's two ways (pkgdown into renv by Learning 3's recipe, 9 packages, or from R's own library) and a trial build_site() into a scratch folder with the package installed before the picker; Pages turned on only with Mark's approval; DESCRIPTION's URL only once the site answers
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:209 (5.6, the website), docs/planning/documentation-plan.md:290 (16e's DONE), docs/planning/documentation-plan.md:334 (D4), docs/planning/standalone-pedigree-package-plan.md:192 (R78), docs/planning/standalone-pedigree-package-plan.md:196 (R82), docs/planning/standalone-pedigree-package-plan.md:815 (Deferred 16d), DESCRIPTION:13 (URL), .github/workflows/R-CMD-check.yaml:7 (triggers), methodology/BACKLOG.md:11 (16e), methodology/BACKLOG.md:19 (the speed vignette later), methodology/BACKLOG.md:117 (the stale copy)
+gotchas: show Mark a page's framing in a picker before filling it, and define its terms (S30 built nine checked tables before Mark judged the framing premature, and Mark asked what three rows meant); CI's paths-ignore lists only CLAUDE.md and methodology/**, so docs/planning pushes start a full run; chromote clips in page coordinates (sips --cropOffset ignored its offsets); Table: captions render above html_vignette tables; `cmd | tail; echo $?` is tail's status; zsh does not split an unquoted $VAR; Rscript -e with "\\|" fails, use a file; the suite gate's 300 s limit; the stale pedkindraw 0.0.1; CLAUDE.md over budget; pedkindraw.Rproj untracked
+runtime_smoke: n/a for the package (no package file changed: git diff a580612 HEAD lists docs/planning/ and methodology/ only); the draft vignette rendered and opened in headless Chrome (35 KB, all 9 tables inside the 700 px column); the check script's failing and passing runs and four planted changes; the fidelity tool 600 of 600 identical, exit 0; drift tool exit 0; quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 01151c525b8a
+changelog_ref: CHANGELOG.md "2026-11-16 · [BL-Phase 16d] S30: plan Phase 16d drafted and deferred (ruling R82)", "S30 push 1", "S30 branch" and "S30 push 2"
+commit: this receipt's commit (close-out 2)
 ```
 
 ```handoff
