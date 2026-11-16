@@ -1,4 +1,4 @@
-# pedkindraw (development version)
+# pedkindraw 0.0.1 (development version)
 
 The first version, not yet on CRAN. Most of its code is a copy of
 nprcgenekeepr's at nprcgenekeepr's commit `baef1e12c`; the items marked "New"
