@@ -8,13 +8,13 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 16e, the website** (READY, one session) -- the pkgdown site on GitHub Pages (R78), with the two
-      vignettes as articles (R82: 16d deferred), then Phase 16 DONE (`docs/planning/documentation-plan.md` 5.6 and
-      16e's DONE). Phase 17, the CRAN submission, follows with its own plan. From 16a (S26): render a page with the
-      current tree installed first (README.Rmd's own comment gives the steps; the stale copy below); the README
-      names no vignette or site yet; `NEWS.md` has no section on documentation (16e or Phase 17 adds one).
-      Installed with the two vignettes of drawings: 4,284 KB of R77's 5,120 KB (S29's check folder; `doc/` 3,700
-      KB).
+- [ ] **Phase 17's plan, the CRAN submission** (READY, a planning session) -- Phase 16 is DONE (S31); the plan's
+      Phase 17 (`docs/planning/standalone-pedigree-package-plan.md`, "### Phase 17") is modeled on nprcgenekeepr's
+      `docs/planning/cran-3.0.0-submission-plan.md`, its own plan first. What it inherits: the argument-name review
+      (Later, below; contract section 6) comes before the release; the release's version number, CRAN badges and
+      `cran-comments.md` (the documentation plan's section 7); `NEWS.md` has no section on the documentation (the
+      README, the two vignettes, the website: S26-S31); the installed size 4,284 KB of R77's 5,120 KB; the website
+      (<https://rmsharp.github.io/pedkindraw/>) rebuilds on each push to master, so a release need not touch it.
 
 - [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
       timing runs, Effort L, a guess) -- R82 (S30): "the comparison of pedkindraw with kinship2 and Pedixplorer"
@@ -37,6 +37,13 @@ issues).*
       the same filter. The small drawings have no `__jog_` point, so their boxes list the animals only. Copied code:
       the drift-rule choice (mirror in nprcgenekeepr in a session there, or a `DIVERGENCE.md` row) at its pre-RED
       picker; a test reads `drawPedigreeDiagram(layout)$x$idselection$values` on a layout with jogs.
+
+- [ ] **The legend cuts its "Same animal, again" label** (READY, Effort S) -- seen S31 on the website in headless
+      Chrome (window 1400 px; each widget 776 px wide, its drawing's canvas 559 px, so the legend about 217 px): the
+      row reads "Same animal; agai" in the drawings of both articles. The label is `R/drawPedigreeDiagram.R:119`,
+      an edge row of visNetwork's legend; the vignettes' 700 px column was not measured. Copied code: the drift-rule
+      choice at its pre-RED picker; measure first whether a shorter label or a wider legend column fixes it at
+      both widths.
 
 - [ ] **After nprcgenekeepr has the legend's section pictures, drop pedkindraw's records of the difference**
       (BLOCKED on nprcgenekeepr, Effort S) -- R81 (S28, Mark's "Port later"): nprcgenekeepr is to get S28's

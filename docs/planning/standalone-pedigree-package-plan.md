@@ -46,8 +46,9 @@ README with its picture, NEWS and `?pedkindraw`); Phase 16b DONE (pedkindraw S27
 the 375-animal example file); the backlog's legend item DONE (pedkindraw S28: each condition's legend row a section
 picture when there are two or more, R81; to be ported to nprcgenekeepr); Phase 16c DONE (pedkindraw S29: the
 drawing vignette); Phase 16d deferred (pedkindraw S30, R82: the speed vignette waits until pedkindraw times itself;
-its draft on the branch `draft/speed-vignette`).
-**Next:** Phase 16e, the website (the documentation plan's section 6, with R82's two articles); Phase 16 DONE after it.
+its draft on the branch `draft/speed-vignette`); Phase 16e DONE (pedkindraw S31: the website,
+<https://rmsharp.github.io/pedkindraw/>), so Phase 16 is DONE.
+**Next:** Phase 17, the CRAN submission: its own plan first (section 4, "### Phase 17").
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -752,7 +753,7 @@ criteria, checks and surface, and its section 9 the details left to each session
 | 16b | The getting-started vignette (`vignettes/pedkindraw.Rmd`, one live drawing); knitr and rmarkdown in Suggests; the 375-animal example in `inst/extdata/` | R77, R80 |
 | 16c | The drawing vignette (`vignettes/drawing.Rmd`, several live drawings); the installed package under 5 MB | R77, R80 |
 | 16d | DEFERRED (S30): the speed and size-limits vignette (`vignettes/speed.Rmd`, no drawings), every number checked by `tools/checkSpeedTables.R` against nprcgenekeepr's result files, waits until pedkindraw times itself; the draft on the branch `draft/speed-vignette`; the contract's section 7 shrink row done | R79, R82 |
-| 16e | The pkgdown site on GitHub Pages, built by a workflow into `pkgdown_site/`; then the site in `DESCRIPTION` and the README; Phase 16 DONE | R78 |
+| 16e | DONE (S31): the pkgdown site on GitHub Pages, built by a workflow into `pkgdown_site/`; then the site in `DESCRIPTION` and the README; Phase 16 DONE | R78, R82 |
 
 **Done 16's plan (pedkindraw S25; R77-R80):** measured on scratch copies before the picker: a vignette page with
 drawings is 1.6-1.9 MB (visNetwork's JavaScript on each page), the package without vignettes installs at 0.47 MB,
@@ -824,6 +825,32 @@ nprcgenekeepr: R82. The draft is on the branch `draft/speed-vignette` (`612eed9`
 section 7 shrink row gained the rewrite's 3.69 s at 1,000 animals and 92.0 s at 3,000; `?pedkindraw` and the two
 vignettes name no speed vignette. The fidelity tool, run for the draft's statement that pedkindraw's layouts without
 hints are nprcgenekeepr's: 600 of 600 identical. Phase 16e, the site, is next.
+
+**Done 16e (pedkindraw S31; R78, R82):** the website, <https://rmsharp.github.io/pedkindraw/>: `_pkgdown.yml`
+(`destination: pkgdown_site`, Bootstrap 5, the 32 help pages in `?pedkindraw`'s seven groups) and
+`.github/workflows/pkgdown.yaml` (`4c389e7`), which on each push to master installs the package, deletes
+`CLAUDE.md` and `DIVERGENCE.md` from its copy (pkgdown 2.2.1 publishes every root `.md` but README, NEWS and
+LICENSE, and has no setting to exclude one), builds, and deploys to `gh-pages` with
+`JamesIves/github-pages-deploy-action` v4.8.0 pinned at `d92aa23`; then the site in `DESCRIPTION`'s `URL`, the
+README and `?pedkindraw`'s links (`d00ebda`). Mark's picks: the outline (menu, groups, what is left off) before the
+file was written; pkgdown run locally from R's own library, the dated repository's version (D4: renv would lock it
+only from `Suggests`); the action's version; turning on Pages once the first run had made `gh-pages`. Checks:
+`check_pkgdown()` run on the incomplete index failed (28 topics missing), then "No problems found" (on a scratch
+copy whose `DESCRIPTION` named the site, since pkgdown's URL check stops first; on the tree once it did); a local
+build as the workflow runs it, exit 0, 45 pages, no `CLAUDE.html` or `DIVERGENCE.html`; the first run (`43979094493`)
+3 min, `gh-pages` holding no project note; the site 200 within a minute of Pages turned on, `CLAUDE.html` and
+`DIVERGENCE.html` 404; on the live articles in headless Chrome every node of all 12 drawings inside its canvas
+(Getting started 51 of 51; the colony drawing 1,466 of 1,466; zoomed in 6x, some outside in all 12); every URL in
+`README.md` and `DESCRIPTION` 200; `R CMD check --as-cran` R16's NOTE only, the incoming check reading the live
+URLs, vignettes re-built OK, installed 4,284 KB; suite 684 tests, 0 failed, 0 skipped, WARN 0, 6,109 passed;
+`quality_ratchet.py --run` 5/5; roxygen changed only `man/pedkindraw-package.Rd`, then nothing; drift tool 5 differ,
+all with rows; CI runs `43979094656` and `43981525833` 5/5, and the second site build's sitrep "URLs ok". Found: the
+legend cuts its "Same animal, again" row in the site's 776 px widgets (one window width measured; a backlog item).
+
+**Done 16 (pedkindraw S25-S31; R77-R82):** the README, NEWS and `?pedkindraw` (16a), the getting-started vignette
+with the 375-animal example file (16b), the drawing vignette (16c), and the website with both vignettes as articles
+(16e), each with its section 6 DONE criteria met; 16d, the speed and size-limits vignette, deferred by R82 until
+pedkindraw times itself. The package installs at 4,284 KB, under R77's 5,120 KB. Phase 17 is next.
 
 ### Phase 17 -- CRAN submission (new repository; its own plan first)
 

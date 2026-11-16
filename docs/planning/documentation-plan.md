@@ -6,7 +6,8 @@
 README or site was written; the measurements ran on scratch copies of the package in this session's scratchpad.
 **Status:** rulings R77-R80 made (Mark's picks, section 4); the build is five sessions, 16a-16e (section 6), each
 its own session. S30: 16d deferred by R82 (the standalone plan's section 2) until pedkindraw times itself; its draft
-is on the branch `draft/speed-vignette`, and 16e builds the site with two articles. **Measured at:** `3ae3737` (S25's claim; `R/`, `man/`, `tests/` and `DESCRIPTION` identical to
+is on the branch `draft/speed-vignette`, and 16e builds the site with two articles. S31: 16e built, the site at
+<https://rmsharp.github.io/pedkindraw/>; Phase 16 DONE. **Measured at:** `3ae3737` (S25's claim; `R/`, `man/`, `tests/` and `DESCRIPTION` identical to
 `bcdc1b0`), R 4.6.2, knitr 1.52 and rmarkdown 2.32 (both in renv's lock, from the dated repository), pkgdown 2.2.1
 (R's own library, not renv), pandoc 3.12.1, chromote 0.5.1, this Mac (Apple M2 Max, 96 GiB).
 
@@ -217,6 +218,16 @@ removed from the runner's copy before building (R78; nothing removed from the re
 deployed to `gh-pages`. Pages turned on after the first deploy creates the branch (`gh api -X POST
 repos/rmsharp/pedkindraw/pages`, with Mark's approval); then the `URL` field and the README link.
 
+Built S31 (`4c389e7`, `d00ebda`): as above, the menu (Get started, Reference, Articles, Changelog, GitHub) and the
+index's seven groups as Mark approved them from an outline before the file was written. `check_pkgdown()` stops at
+its URL check, before the index, until `DESCRIPTION`'s `URL` names the site, so the index was checked on a scratch
+copy carrying it until the site answered. pkgdown 2.2.1 publishes every root `.md` file but README, NEWS and
+LICENSE, with no setting to exclude one, hence the workflow's `rm -f`. On the runner renv starts from `.Rprofile`
+and `setup-r-dependencies` installs into its library, as for R-CMD-check; a local build in a scratch copy needs
+`RENV_CONFIG_AUTOLOADER_ENABLED=false`. On the site each article's widget is 776 px wide (its drawing's canvas 559
+px, the rest the legend), wider than the vignettes' 700 px column. CI makes one page more than this Mac,
+`reference/asPedFrame.Pedigree.html`, which a case-insensitive disk merges with `asPedFrame.pedigree.html`.
+
 ### 5.7 How TDD applies
 
 Phase 16 adds no R function: the one new R file, `R/pedkindraw-package.R`, is documentation. The sessions run no
@@ -287,7 +298,8 @@ records); item 3 is done. DONE when:
 3. The contract's section 7 shrink row gains S1141's time (the copied rewrite).
 4. The checks above.
 
-**16e -- the website (one session; close out when done).** DONE when:
+**16e -- the website (one session; close out when done).** DONE (S31; the standalone plan's "Done 16e"). DONE
+when:
 
 1. `pkgdown::check_pkgdown()` reports no problem (32 topics in the index); a local build into `pkgdown_site/`
    exits 0 with no `CLAUDE.html` or `DIVERGENCE.html` and the two articles (R82; three once the speed vignette
@@ -331,4 +343,4 @@ records); item 3 is done. DONE when:
 | D1 | Install line: `remotes::install_github("rmsharp/pedkindraw")` or `pak::pak("rmsharp/pedkindraw")` | 16a: pak (Mark, S26) |
 | D2 | The README picture's pedigree (typed, 10-20 animals, showing twins, a condition and a deceased animal) | 16a: 12 animals, one condition (Mark, S26) |
 | D3 | The getting-started drawing: which probands, and how many animals still read at the fitted view | 16b: ED5PDV, 16 animals; about 22 read, 36-37 do not (Mark, S27) |
-| D4 | pkgdown in renv by Learning 3's recipe (9 packages, section 2) or run from R's own library through the scratch recipe; the deploy step's action and its pinned version | 16e |
+| D4 | pkgdown in renv by Learning 3's recipe (9 packages, section 2) or run from R's own library through the scratch recipe; the deploy step's action and its pinned version | 16e: R's own library (renv would lock pkgdown only from `Suggests`, a `Config/Needs/website` line measured unread); `JamesIves/github-pages-deploy-action` v4.8.0 at `d92aa23`, r-lib's example's pin (Mark, S31) |
