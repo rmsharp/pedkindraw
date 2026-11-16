@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S29
+date: 2026-11-16
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 16c, the drawing vignette (docs/planning/documentation-plan.md section 5.4, DONE at its 16c item): vignettes/drawing.Rmd with its statements held by hidden stopifnot() chunks; TDD phase none (documentation), checks written first
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:162 (section 5.4), docs/planning/documentation-plan.md:250 (16c's DONE), vignettes/pedkindraw.Rmd:399 (Where next), R/pedkindraw-package.R:42 (Getting started)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S28
 date: 2026-11-16
 status: complete

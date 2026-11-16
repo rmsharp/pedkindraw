@@ -105,6 +105,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S27's entries were removed in S3-S28 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 29 Did
+**Deliverable:** plan Phase 16c, the drawing vignette (`docs/planning/documentation-plan.md:162`, section 5.4; DONE
+at `:250`; `methodology/workstreams/DEVELOPMENT_WORKSTREAM.md`): `vignettes/drawing.Rmd`, "Drawing pedigrees", its
+statements held by hidden `stopifnot()` chunks, `?pedkindraw` and the getting-started vignette naming it; TDD phase
+none (documentation), checks written first; no function code (IN PROGRESS)
+**Started:** 2026-11-16 11:29 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Drawing vignette (Recommended)"
+(orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 27 Handoff Evaluation (by Session 28)
 **Score: 9/10.**
 - **What helped:** the steps in order (drift tool; nprcgenekeepr's log on the legend's files; push with the first
