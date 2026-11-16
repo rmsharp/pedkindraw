@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S25
 date: 2026-11-15
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 16, documentation, a planning session: the plan under docs/planning/ (README, a getting-started vignette, a drawing vignette, a pkgdown site, NEWS, the Phase 1-2 timing tables), each build session with DONE criteria, verification commands and surface; a scratch vignette measured before the picker; nothing built
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 16 item), docs/planning/standalone-pedigree-package-plan.md:730 (Phase 16), docs/planning/pedkindraw-api-contract.md:248 (section 5)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: plan Phase 16 is planned (a planning session, nothing built): docs/planning/documentation-plan.md, rulings R77-R80 (Mark's picks, each the recommended option: three CRAN vignettes, two with live drawings, the package under 5 MB installed; the pkgdown site on GitHub Pages from gh-pages, built into pkgdown_site/, CLAUDE.md and DIVERGENCE.md left off; the timing tables summarized from the dated records and checked by tools/checkSpeedTables.R; the 375-animal rhesus pedigree and its twins in inst/extdata/, no export); five build sessions 16a-16e; next 16a, README, NEWS and ?pedkindraw
+what_was_done: claim 3ae3737; measured on scratch copies of HEAD before one picker (a vignette page with drawings 1.6-1.9 MB, the package alone 468 KB, three such pages installed at 5.4 MB, INFO on R 4.6.2 only because _R_CHECK_LOG_USE_INFO_ defaults TRUE; R CMD check --as-cran otherwise R16's NOTE only; a pkgdown 2.2.1 site 34.5 s with the package installed, stopped by a stale installed pedkindraw 0.0.1 without it, publishing CLAUDE.md and DIVERGENCE.md; a chromote picture 8.7 s; a vignette rendered with kinship2 and Pedixplorer hidden; the example file clean and byte-identical to nprcgenekeepr's at baef1e12c; nprcgenekeepr S1141's re-timed files identical to the copy); plan b675df5 (the new document; R77-R80, the status block and Phase 16 section of the plan); close-out 1 91df0c9 (ROADMAP, BACKLOG: 16a READY, 16b-16e, the stale copy item); close-out 2 (notes, this receipt, ledger); nothing pushed
+next_steps: Orient; drift tool; nprcgenekeepr's log on the three layout files; the orient picker offers Phase 16a (README.Rmd and README.md with a still picture of a small typed pedigree, NEWS.md, R/pedkindraw-package.R, the words gate widened; no function code, checks first, the TDD reading of the plan's section 5.7 shown in the option) or tests for full coverage; for 16a, measure two or three candidate pictures before the picker (D1-D2), widen the gate and write the export-name check first, install the current tree before rendering README.Rmd, push with S24's and S25's unpushed commits, CI 5/5, view the GitHub page
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:221 (16a's DONE), docs/planning/documentation-plan.md:138 (5.2 README), docs/planning/documentation-plan.md:194 (5.7 TDD), docs/planning/documentation-plan.md:298 (D1-D4), docs/planning/standalone-pedigree-package-plan.md:187 (R77-R80), methodology/BACKLOG.md:11 (16a), methodology/BACKLOG.md:69 (the stale copy), methodology/.quality-gates.json:56 (the words gate)
+gotchas: a stale pedkindraw 0.0.1 in renv's library runs whenever library(pedkindraw) is called without installing first (README.Rmd's render too; no devtools or remotes in renv); R CMD check --as-cran reads README.md's and NEWS.md's URLs, so no site link until 16e and no CRAN badges; the widened gate's grep on a path not yet there prints to stderr, check the ratchet still reads 0; sire, dam, mate, mating in README and NEWS; cite a built function's time from the Done records' Checks, not the prototype's; pass environment variables on the env line; CLAUDE.md over budget, nothing added; pedkindraw.Rproj left for Mark
+runtime_smoke: n/a -- docs-only (a planning session; the measurements ran on scratch copies); quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 6810baa52355 (head 91df0c9)
+changelog_ref: CHANGELOG.md "2026-11-15 · [BL-Phase 16] S25: the plan for plan Phase 16, documentation"
+commit: this receipt's commit (close-out 2)
 ```
 
 ```handoff
