@@ -2,8 +2,13 @@
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr tests/testthat/test_drawPedigreeDiagram.R at
 ## nprcgenekeepr commit 392dd347e (unchanged to 45e0d8bfe), its lines 1-283:
-## 12 of its 16 tests, unchanged. S11 copied them at baef1e12c; S12 ported
-## 392dd347e's legend-colour checks and .legendFill() (plan R37). Left out
+## 12 of its 16 tests, unchanged but for 3 checks. S11 copied them at
+## baef1e12c; S12 ported 392dd347e's legend-colour checks and .legendFill()
+## (plan R37). pedkindraw S28 (plan R81, DIVERGENCE.md) changed 3 checks of
+## the test of one legend row per condition drawn: with two and with five
+## condition columns each condition row is a section picture
+## (.conditionLegendImage(), tested in test_conditionLegendImage.R), shape
+## "image" and no fill, not a filled hexagon. Left out
 ## (plan R35): its lines 285-365, the 4 tests of nprcgenekeepr's Shiny
 ## module, which pedkindraw does not have (three compare modPedigreeServer's
 ## Diagram widget with drawPedigreeDiagram()'s, one reads R/modPedigree.R).
@@ -130,10 +135,13 @@ test_that(
   legend <- drawPedigreeDiagram(.drawLayout(2L))$x$legend
   expect_identical(legend$nodes$label,
                    c(.sexLabels, "Affected", "Affected 2", "Deceased"))
+  ## pedkindraw S28 (R81): with two or more conditions each condition row is
+  ## its section picture, coloured inside the picture, with no fill of its
+  ## own (was: "hexagon" and the condition's colour as its fill).
   expect_identical(legend$nodes$shape,
-                   c(.sexShapes, "hexagon", "hexagon", "image"))
+                   c(.sexShapes, "image", "image", "image"))
   expect_identical(legend$nodes[["color.background"]],
-                   .legendFill(.conditionColors[1:2]))
+                   .legendFill(rep(NA_character_, 2L)))
   expect_null(legend$nodes[["color"]])
 
   ## Five condition columns: the first four are drawn, so four rows.
@@ -141,8 +149,9 @@ test_that(
   expect_identical(legend$nodes$label,
                    c(.sexLabels, "Affected", "Affected 2", "Affected 3",
                      "Affected 4", "Deceased"))
+  ## pedkindraw S28 (R81), as above (was: .legendFill(.conditionColors)).
   expect_identical(legend$nodes[["color.background"]],
-                   .legendFill(.conditionColors))
+                   .legendFill(rep(NA_character_, 4L)))
   expect_null(legend$nodes[["color"]])
 })
 
