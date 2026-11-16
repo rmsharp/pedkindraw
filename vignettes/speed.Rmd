@@ -1,0 +1,372 @@
+---
+title: "Speed and size limits"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Speed and size limits}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+How long do pedkindraw's computations and drawings take, and how large a
+pedigree can each one handle? This vignette answers from timing studies run
+in November 2026 on one machine. pedkindraw did not time itself: most of its
+code is copied from nprcgenekeepr, and the studies timed nprcgenekeepr's code
+beside kinship2 and Pedixplorer. Each table says which code it timed and
+when, and the second section says why that code stands for pedkindraw's.
+Every number in the tables was checked against the studies' committed result
+files by a script, `tools/checkSpeedTables.R` in pedkindraw's GitHub
+repository. This page has no drawing and runs no code.
+
+## The machine and the method
+
+Every time comes from one machine: an Apple M2 Max with 12 cores and 96 GiB of
+memory, running macOS and R 4.6.2. The packages compared were kinship2 1.9.6.2
+and Pedixplorer 1.8.0.
+
+Each run was a fresh R process. It loaded only the package being timed (and
+Matrix), built its input before the clock started, and timed one call. A step
+a user must run first was inside the timed call: pedkindraw's `kinship()` time
+includes `findGeneration()`, and kinship2's kinship by family includes
+`makefamid()`. For each computation and size, smallest first, a warm-up run
+came first, which was also the test of whether that size fits; then three
+measured runs, and the figure is their median. A run failed when it passed
+120 seconds from the call's start or 32 GB of memory, and the sizes after a
+computation's first failure were not run. Each run started only when at least
+half of the CPU was idle (for the Rewrite record, at least 80% idle and half
+the memory free).
+
+The pedigrees are synthetic colonies of 300 to 100,000 animals, made by one
+seeded generator that grows a colony a year at a time, and, for the drawings,
+the 375-animal example pedigree that comes with pedkindraw
+(`system.file("extdata", "obfuscated_rhesus_mhc_ped.csv", package =
+"pedkindraw")`). Shrinking and the unrelated set use a seeded 30% of the
+animals as genotyped (available) and 10% as affected; trimming to ancestors
+or descendants starts from 5 seeded probands.
+
+<!-- speed-table: records -->
+
+| Record | What it timed | Date | Runs | CPU idle at each run's start (%) | nprcgenekeepr code timed | Results at |
+|---|---|---|---|---|---|---|
+| Part A | Computation (session S1123) | 2026-11-02 | 587 | 54.6-88.8 | `70e0492eb` | `2a1431f30` |
+| Part B | Drawing (session S1125) | 2026-11-03 | 84 | 57.7-85.8 | `fd7c3d8ce` | `5970b1ce5` |
+| Rewrite | The rewrite against 3.0.0 (session S1141) | 2026-11-09 | 157 | 80.1-89.6 | `d280dc8e8` | `25ba45ecb` |
+
+Table: The three records behind the tables, all on one machine: Apple M2 Max, 12 cores, 96 GiB, R 4.6.2; compared: kinship2 1.9.6.2 and Pedixplorer 1.8.0.
+
+"Runs" counts every run, warm-ups included; the sessions are nprcgenekeepr's.
+The studies are in nprcgenekeepr's GitHub repository with their result files:
+Part A and Part B are sections 7 and 9 of its
+`docs/research/pedigree-package-comparison-2026-11.md` (pedkindraw keeps a
+copy in its own `docs/research/`), and the Rewrite record is its
+`docs/research/cleanroom-vs-3.0.0-comparison-2026-11.md`.
+
+## Why these times stand for pedkindraw's
+
+pedkindraw's copied code is nprcgenekeepr's at commit `baef1e12c`, except
+`drawPedigreeDiagram.R`, copied at the later `4283e3502`. This table compares,
+file by file, the code each study timed with the code pedkindraw copied:
+
+<!-- speed-table: code -->
+
+| Record | nprcgenekeepr code timed | Of the 34 copied files, those that differ |
+|---|---|---|
+| Part A | `70e0492eb` | `comparePedigreeStructure.R`, `drawPedigreeDiagram.R`, `kinship.R`, `makePedigreeDiagramData.R`, `mzTwinGroups.R`, `shrinkPedigree.R` |
+| Part B | `fd7c3d8ce` | `comparePedigreeStructure.R`, `drawPedigreeDiagram.R`, `kinship.R`, `makePedigreeDiagramData.R`, `mzTwinGroups.R`, `shrinkPedigree.R` |
+| Rewrite | `d280dc8e8` | `drawPedigreeDiagram.R` |
+
+Table: Each copied file's nprcgenekeepr source at the code a record timed, compared by git with its source at the commit pedkindraw copied.
+
+- Part A timed nprcgenekeepr before it rewrote its kinship and shrinking code
+  (`kinship.R`, `mzTwinGroups.R` and `shrinkPedigree.R`) without code derived
+  from kinship2. The other computations it timed (generation depth, family
+  trees, ancestors and descendants) reach none of the files that differ, so
+  their rows below are Part A's. The kinship and shrinking rows come from the
+  Rewrite record, which timed the rewritten code: there only
+  `drawPedigreeDiagram.R` differs, and that record timed no drawing.
+- Part B timed the drawing before the rewrite of the layout's solver, in
+  `makePedigreeDiagramData.R`. The Rewrite record timed the rewritten layout
+  on one pedigree (the section "The rewrite" below); the drawing rows are
+  Part B's.
+- `drawPedigreeDiagram.R` also carries nprcgenekeepr's later changes to the
+  legend and to the check of `onClick`, and `comparePedigreeStructure.R` is
+  used only by tests.
+- Since the copy, pedkindraw has added layout hints to three of the layout's
+  functions and drawn each condition's legend row as a picture of its
+  sections (`DIVERGENCE.md` in pedkindraw's repository). Given no hints, its
+  layouts are the same as nprcgenekeepr's (`tools/compareResultsWithNprcgenekeepr.R`
+  compares them). Neither change was timed.
+
+## Computation
+
+What each computation is, with the pedkindraw function that does it:
+
+- **Kinship, autosomal**: `kinship()` gives the kinship coefficient of every
+  pair of animals, the chance that a gene drawn at random from each of the
+  two is the same copy inherited from a common ancestor, as a matrix with a
+  row and a column for each animal.
+- **Kinship, sparse**: `kinship(sparse = TRUE)` gives the same values as a
+  sparse matrix, which stores only the pairs above 0. kinship2's nearest is
+  its kinship within each family, `makekinship()`; Pedixplorer has none.
+- **Kinship, X chromosome**: `kinship(chrtype = "x", sex = )` gives the
+  kinship of genes on the X chromosome, which needs each animal's sex.
+- **Generation depth**: `findGeneration()` numbers each animal's generation:
+  0 for a founder (both parents unknown), and otherwise one more than the later
+  of its known parents. A drawing puts the animals in rows by it, and
+  `kinship()` needs it first.
+- **Family trees**: `findPedigreeNumber()` gives each animal a family number,
+  shared by every animal linked to it through sires, dams and offspring; an
+  animal with no relative in the pedigree is a family of its own.
+- **Shrink to 16 bits**: `shrinkPedigree()` removes animals until the
+  pedigree's bit size is 16 or less, keeping the genotyped and affected
+  animals that carry the most information. The bit size, twice the number of
+  animals with a known parent less the number of founders, is kinship2's
+  measure of a pedigree's size for software that cannot handle a large one.
+  Each step tries every animal that could go and removes the one that lowers
+  the bit size most, so the time grows much faster than the pedigree.
+- **Unrelated set**: as many genotyped animals as can be found of which no two
+  are related, that is, share an ancestor or descend one from the other.
+  pedkindraw's `findUnrelated()` is its own code, timed separately below; the
+  table times kinship2's and Pedixplorer's.
+- **Probands and their ancestors**: `trimPedigree()` keeps a chosen group of
+  animals (the probands) and all of their ancestors, and drops the rest.
+- **Probands and their descendants**: `getDescendantPedigree()` keeps the
+  probands and all of their descendants.
+- **Build a pedigree object**: kinship2's `pedigree()` and Pedixplorer's
+  `Pedigree()` turn a table of animals into the object their other functions
+  take. pedkindraw works on the data frame itself.
+
+Seconds for each computation by the number of animals:
+
+<!-- speed-table: computation-seconds -->
+
+| Computation | Package | 300 | 1,000 | 3,000 | 10,000 | 30,000 | 100,000 | Record |
+|---|---|---|---|---|---|---|---|---|
+| Kinship, autosomal | pedkindraw `kinship()` | 0.002 | 0.016 | 0.222 | 2.75 | 28.1 | not run | Rewrite |
+| Kinship, autosomal | kinship2 | 0.002 | 0.018 | 0.267 | 3.12 | 30.5 | memory | Part A |
+| Kinship, autosomal | Pedixplorer | 0.003 | 0.143 | 0.8 | 5.09 | memory |  | Part A |
+| Kinship, sparse | pedkindraw `kinship(sparse = TRUE)` | 0.007 | 0.112 | 0.798 | 5.84 | 50.4 | not run | Rewrite |
+| Kinship, by family | kinship2 | 0.011 | 0.17 | 0.793 | 5.94 | memory |  | Part A |
+| Kinship, X chromosome | pedkindraw `kinship()` | 0.002 | 0.015 | 0.191 | 2.25 | 22.6 | not run | Rewrite |
+| Kinship, X chromosome | kinship2 | 0.002 | 0.013 | 0.24 | 2.49 | 23.5 | memory | Part A |
+| Kinship, X chromosome | Pedixplorer | 0.003 | 0.128 | 0.749 | 4.27 | memory |  | Part A |
+| Generation depth | pedkindraw `findGeneration()` | <0.001 | 0.001 | 0.003 | 0.009 | 0.03 | 0.101 | Part A |
+| Generation depth | kinship2 | <0.001 | 0.001 | 0.001 | 0.003 | 0.014 | 0.082 | Part A |
+| Generation depth | Pedixplorer | <0.001 | 0.001 | 0.001 | 0.003 | 0.014 | 0.082 | Part A |
+| Family trees | pedkindraw `findPedigreeNumber()` | 0.002 | 0.004 | 0.016 | 0.147 | 1.35 | 12.9 | Part A |
+| Family trees | kinship2 | 0.003 | 0.005 | 0.015 | 0.048 | 0.203 | 0.663 | Part A |
+| Family trees | Pedixplorer | 0.001 | 0.005 | 0.015 | 0.047 | 0.142 | 0.564 | Part A |
+| Shrink to 16 bits | pedkindraw `shrinkPedigree()` | 0.105 | 3.69 | 92 | not run | not run | not run | Rewrite |
+| Shrink to 16 bits | kinship2 | 2.56 | 101 | time |  |  |  | Part A |
+| Shrink to 16 bits | Pedixplorer | 89.4 | time |  |  |  |  | Part A |
+| Unrelated set | kinship2 | 0.003 | 0.028 | 0.512 | 6.53 | memory |  | Part A |
+| Unrelated set | Pedixplorer | 0.022 | 0.29 | 1.38 | 15.4 | memory |  | Part A |
+| Probands and their ancestors | pedkindraw `trimPedigree()` | <0.001 | <0.001 | 0.001 | 0.002 | 0.008 | 0.028 | Part A |
+| Probands and their ancestors | Pedixplorer | 0.001 | 0.001 | 0.001 | 0.001 | 0.001 | <0.001 | Part A |
+| Probands and their descendants | pedkindraw `getDescendantPedigree()` | <0.001 | 0.001 | <0.001 | 0.001 | 0.003 | 0.005 | Part A |
+| Probands and their descendants | Pedixplorer | 0.001 | 0.001 | 0.001 | <0.001 | 0.002 | 0.005 | Part A |
+| Build a pedigree object | kinship2 | 0.001 | 0.001 | 0.001 | 0.002 | 0.006 | 0.019 | Part A |
+| Build a pedigree object | Pedixplorer | 0.096 | 0.126 | 0.204 | 0.638 | 3.18 | 8.14 | Part A |
+
+Table: Seconds, by the number of animals. Part A: 2026-11-02, nprcgenekeepr `70e0492eb`, kinship2 1.9.6.2 and Pedixplorer 1.8.0; Rewrite: 2026-11-09, nprcgenekeepr `d280dc8e8` against its 3.0.0 (`fa1f2849e`). Apple M2 Max, 12 cores, 96 GiB, R 4.6.2.
+
+Each figure is the median of 3 measured runs, to three significant figures;
+"<0.001" is under a millisecond. "memory": the run passed 32 GB (R's own
+limit on its heap, or the watchdog on the process's memory); "time": it passed
+120 seconds; an empty cell: not run, after a failure; "not run": the Rewrite
+record did not try that size. pedkindraw's rows name the function a user calls;
+kinship2's
+and Pedixplorer's ran their own counterparts (the study's section 3 lists
+them). kinship2's kinship by family, `makekinship()`, is block-sparse, the
+nearest it has to pedkindraw's sparse kinship; Pedixplorer has none.
+
+What this means for pedkindraw:
+
+- Its kinship is as fast as kinship2's, and a dense kinship matrix of 30,000
+  animals takes under half a minute. The Rewrite record did not try 100,000
+  animals; Part A stopped the code before the rewrite there on memory, and the
+  Rewrite record found that the rewrite uses the same memory as that code.
+- `findPedigreeNumber()` is the one slow row. Its time grows about with the
+  square of the number of animals (tripling them from 10,000 to 30,000 took
+  about 9 times as long), where kinship2's and Pedixplorer's grow about in
+  proportion: 12.9 seconds at 100,000 animals, against well under a second.
+- `shrinkPedigree()` shrinks 3,000 animals in 92 seconds; kinship2 and
+  Pedixplorer passed 120 seconds at 3,000 and 1,000 animals. The Rewrite
+  record did not try 10,000, which is likely far past the limit, but untested.
+- The unrelated set is pedkindraw's own `findUnrelated()`, which the studies
+  did not time; see "pedkindraw's own functions" below.
+- pedkindraw takes a data frame, so it has no pedigree object to build;
+  kinship2's and Pedixplorer's functions need theirs first.
+
+The largest size each computation finished, and its memory there:
+
+<!-- speed-table: computation-capacity -->
+
+| Computation | Package | Largest size within the limits | Next size | Process peak there (GiB) | R heap peak there (GiB) | Record |
+|---|---|---|---|---|---|---|
+| Kinship, autosomal | pedkindraw `kinship()` | 30,000 | 100,000 not run | 13.22 | 9.70 | Rewrite |
+| Kinship, autosomal | kinship2 | 30,000 | memory at 100,000 | 19.49 | 13.42 | Part A |
+| Kinship, autosomal | Pedixplorer | 10,000 | memory at 30,000 | 5.47 | 4.50 | Part A |
+| Kinship, sparse | pedkindraw `kinship(sparse = TRUE)` | 30,000 | 100,000 not run | 23.12 | 23.92 | Rewrite |
+| Kinship, by family | kinship2 | 10,000 | memory at 30,000 | 7.33 | 4.30 | Part A |
+| Kinship, X chromosome | pedkindraw `kinship()` | 30,000 | 100,000 not run | 13.21 | 9.70 | Rewrite |
+| Kinship, X chromosome | kinship2 | 30,000 | memory at 100,000 | 19.54 | 13.42 | Part A |
+| Kinship, X chromosome | Pedixplorer | 10,000 | memory at 30,000 | 5.62 | 4.48 | Part A |
+| Generation depth | pedkindraw `findGeneration()` | 100,000 | none up to 100,000 | 0.31 | 0.04 | Part A |
+| Generation depth | kinship2 | 100,000 | none up to 100,000 | 0.29 | 0.03 | Part A |
+| Generation depth | Pedixplorer | 100,000 | none up to 100,000 | 0.48 | 0.04 | Part A |
+| Family trees | pedkindraw `findPedigreeNumber()` | 100,000 | none up to 100,000 | 0.35 | 0.04 | Part A |
+| Family trees | kinship2 | 100,000 | none up to 100,000 | 0.30 | 0.07 | Part A |
+| Family trees | Pedixplorer | 100,000 | none up to 100,000 | 0.47 | 0.07 | Part A |
+| Shrink to 16 bits | pedkindraw `shrinkPedigree()` | 3,000 | 10,000 not run | 0.38 | 0.04 | Rewrite |
+| Shrink to 16 bits | kinship2 | 1,000 | time at 3,000 | 0.33 | 0.07 | Part A |
+| Shrink to 16 bits | Pedixplorer | 300 | time at 1,000 | 0.42 | 0.09 | Part A |
+| Unrelated set | kinship2 | 10,000 | memory at 30,000 | 4.62 | 2.86 | Part A |
+| Unrelated set | Pedixplorer | 10,000 | memory at 30,000 | 8.01 | 4.52 | Part A |
+| Probands and their ancestors | pedkindraw `trimPedigree()` | 100,000 | none up to 100,000 | 0.30 | 0.04 | Part A |
+| Probands and their ancestors | Pedixplorer | 100,000 | none up to 100,000 | 0.45 | 0.00 | Part A |
+| Probands and their descendants | pedkindraw `getDescendantPedigree()` | 100,000 | none up to 100,000 | 0.28 | 0.01 | Part A |
+| Probands and their descendants | Pedixplorer | 100,000 | none up to 100,000 | 0.44 | 0.01 | Part A |
+| Build a pedigree object | kinship2 | 100,000 | none up to 100,000 | 0.27 | 0.02 | Part A |
+| Build a pedigree object | Pedixplorer | 100,000 | none up to 100,000 | 2.04 | 1.11 | Part A |
+
+Table: The largest size and its memory. Part A: 2026-11-02, nprcgenekeepr `70e0492eb`, kinship2 1.9.6.2 and Pedixplorer 1.8.0; Rewrite: 2026-11-09, nprcgenekeepr `d280dc8e8` against its 3.0.0 (`fa1f2849e`). Apple M2 Max, 12 cores, 96 GiB, R 4.6.2.
+
+"Largest size within the limits": the largest size that finished within 120
+seconds and 32 GB. "Process peak": the process's largest resident memory there
+(`/usr/bin/time -l`). "R heap peak": the most R's heap held above its starting
+point, read at its garbage collections. macOS's resident figure leaves out
+compressed memory, so near the limit the two can disagree, as for the sparse
+kinship at 30,000. Part A stopped the code before the rewrite there for passing
+32 GB, yet the Rewrite record, whose runs each waited for half the memory to be
+free, finished it with both versions. Why was not found; at that size whether a
+run fits depends on the machine's state.
+
+## The rewrite
+
+The Rewrite record timed nprcgenekeepr's rewritten code (`d280dc8e8`, the code
+pedkindraw copied) against its 3.0.0 release, which still held code derived
+from kinship2. Both gave identical results. Kinship took the same time to
+within a few percent at every size, so only shrinking and the layout are shown
+here:
+
+<!-- speed-table: rewrite -->
+
+| Computation | Animals | Before the rewrite (s) | The rewrite (s) | Before (MiB) | The rewrite (MiB) |
+|---|---|---|---|---|---|
+| Shrink to 16 bits | 300 | 0.703 | 0.105 | 156 | 57 |
+| Shrink to 16 bits | 1,000 | 20.5 | 3.69 | 291 | 101 |
+| Shrink to 16 bits | 3,000 | time | 92 |  | 128 |
+| Layout, direct edges | 708 (a trimmed example) | 3.4 | 3.32 | 258 | 244 |
+
+Table: Seconds and memory, before and after the rewrite. Rewrite: 2026-11-09, nprcgenekeepr `d280dc8e8` against its 3.0.0 (`fa1f2849e`). Apple M2 Max, 12 cores, 96 GiB, R 4.6.2.
+
+Seconds: the median of three measured runs; "time": past 120 seconds. MiB: the
+call's memory, the process's peak resident memory less its memory just before
+the call. The layout is `makePedigreeMatingLayout()` with direct edges on a
+708-animal trim of nprcgenekeepr's example pedigree.
+
+## Drawing
+
+Seconds from the pedigree to a drawing a user can open, on a canvas of 3,600
+by 1,500 pixels:
+
+<!-- speed-table: drawing-seconds -->
+
+| Package | Drawing | 300 | 1,000 | 2,000 | The 375-animal example |
+|---|---|---|---|---|---|
+| nprcgenekeepr (copied by pedkindraw) | web page, `drawPedigreeDiagram()` | 1.27 | 16.3 | time | 2.1 |
+| kinship2 | picture, `plot.pedigree()` | 0.464 | 12.9 | time | 1.49 |
+| Pedixplorer | picture, `plot()` | refused |  |  | 3.68 |
+| Pedixplorer | picture, `plot()`, alignment off | 1.2 | 16 | time | 3.46 |
+| Pedixplorer | plotly page, its app's call | refused |  |  | 34.4 |
+| Pedixplorer | plotly page, its app's call, alignment off | 29.3 | time |  | 34.9 |
+
+Table: Seconds, by the number of animals. Part B: 2026-11-03, nprcgenekeepr `fd7c3d8ce`, kinship2 1.9.6.2 and Pedixplorer 1.8.0, Chrome. Apple M2 Max, 12 cores, 96 GiB, R 4.6.2.
+
+A picture is a file written by R; a web page was opened in Chrome, and its
+time is R's and the browser's together. Each figure is the median of 3
+measured runs. "time": R and the browser together passed 120 seconds;
+"refused": the package stopped with an error. No drawing reached 3,000
+animals. The first row is nprcgenekeepr's drawing before its layout's rewrite,
+with the layout's default, rectilinear edges; pedkindraw's is a copy of it
+after the rewrite, which took about as long on the one pedigree the Rewrite
+record timed.
+Pedixplorer refused the synthetic colonies with its parent alignment on, and
+its own warning suggests turning it off (`align_parents = FALSE`); its plotly
+page is drawn by the call its Shiny application uses.
+
+Almost all of the drawing's time is spent in R, before the browser draws
+anything:
+
+<!-- speed-table: drawing-parts -->
+
+| Part | 300 | 1,000 | The 375-animal example |
+|---|---|---|---|
+| In R: generations, layout and drawing, saved as a web page | 1.11 | 15.5 | 1.95 |
+| In Chrome: from opening the page to its first drawn frame | 0.16 | 0.838 | 0.15 |
+
+Table: Seconds of nprcgenekeepr's drawing, in two parts. Part B: 2026-11-03, nprcgenekeepr `fd7c3d8ce`, Chrome. Apple M2 Max, 12 cores, 96 GiB, R 4.6.2.
+
+The largest size each drawing finished, and its memory there:
+
+<!-- speed-table: drawing-capacity -->
+
+| Package | Drawing | Largest size drawn within 120 s | Next size | Process peak there (GiB) | JavaScript heap there (MiB) |
+|---|---|---|---|---|---|
+| nprcgenekeepr (copied by pedkindraw) | web page, `drawPedigreeDiagram()` | 1,000 | time at 2,000 | 0.95 | 42.9 |
+| kinship2 | picture, `plot.pedigree()` | 1,000 | time at 2,000 | 0.53 |  |
+| Pedixplorer | picture, `plot()` | below 300 | refused at 300 |  |  |
+| Pedixplorer | picture, `plot()`, alignment off | 1,000 | time at 2,000 | 1.05 |  |
+| Pedixplorer | plotly page, its app's call | below 300 | refused at 300 |  |  |
+| Pedixplorer | plotly page, its app's call, alignment off | 300 | time at 1,000 | 0.76 | 13.4 |
+
+Table: The largest size drawn and its memory. Part B: 2026-11-03, nprcgenekeepr `fd7c3d8ce`, kinship2 1.9.6.2 and Pedixplorer 1.8.0, Chrome. Apple M2 Max, 12 cores, 96 GiB, R 4.6.2.
+
+The JavaScript heap is the page's heap in use once it had drawn: a reading at
+one moment, not a peak, which varied from run to run. Can a reader use a
+drawing that large? In Part B the drawings were judged by eye for the largest
+size at which an animal can still be found by its id and its lines followed
+to its parents. nprcgenekeepr's drawing, pedkindraw's source, was readable at
+1,000 animals once zoomed in; at its fitted view it shows no ids. kinship2's
+and Pedixplorer's drawings were not readable at any size drawn, not even 300.
+
+## pedkindraw's own functions
+
+pedkindraw's new code is not in the studies. Each of these figures was timed
+on the same Mac by the pedkindraw session that wrote the function and recorded
+in the project's plan as a single figure, not with the studies' method:
+
+<!-- speed-table: single-runs -->
+
+| Function | Animals | Seconds | Note | Session |
+|---|---|---|---|---|
+| `checkPedigree()` | 100,000 (the study's colony) | 0.14 |  | S17, 2026-11-13 |
+| `checkPedigree()` | the same, with 5 cycles put in | 0.22 |  | S17, 2026-11-13 |
+| `findUnrelated()` | 10,000 (the study's colony), 30% genotyped | 0.57 | kinship2 in the study's Part A: 6.53 s | S18, 2026-11-13 |
+| `asPedFrame()` of a kinship2 `pedigree` | 100,000 | 0.04 |  | S19, 2026-11-14 |
+| `asPedFrame()` of a Pedixplorer `Pedigree` | 100,000 | 0.005 | a prototype's run, before the method was written | S20, 2026-11-14 |
+
+Table: Single figures from the Done 13 and Done 14 records of pedkindraw's plan, each timing pedkindraw's code as that session wrote it. Apple M2 Max, 12 cores, 96 GiB, R 4.6.2.
+
+pedkindraw's other functions of its own, `familyCheck()`, `ibdMatrix()`,
+`bitSize()`, `findUnavailable()`, `findAvailNonInform()`,
+`findAvailAffected()` and the layout hints, have no recorded time.
+
+## What these numbers cannot tell you
+
+- Another machine's times: these are one Mac's.
+- A smaller machine's limits: the runs were allowed 32 GB on a machine with
+  96 GiB, and the kinship matrices of the largest sizes need most of that; on
+  a machine with less memory they can stop at a smaller size.
+- Another browser's drawing time: the browser's part was timed in Chrome.
+- The cost of pedkindraw's changes since the copy, the layout hints and the
+  legend's pictures, which were not timed.
+- A real pedigree's times: the studies' pedigrees are synthetic colonies, and
+  a real pedigree of the same size can take longer or shorter.
+
+## Where next
+
+`vignette("pedkindraw", package = "pedkindraw")` takes the 375-animal example
+pedigree from its records to a drawing, and `vignette("drawing", package =
+"pedkindraw")` shows what a drawing shows and how to change it. `?pedkindraw`
+lists every function by what it does.
