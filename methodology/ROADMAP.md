@@ -16,8 +16,8 @@ section 10). All five are done (S13). The new work of Phases 11-15 has begun: Ph
 kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is done: designed (S21), then 15a the order
 hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase 16, documentation, is planned
 (S25: `docs/planning/documentation-plan.md`, R77-R80); its first sessions are done, 16a, the README, NEWS and
-`?pedkindraw` (S26), and 16b, the getting-started vignette (S27); 16c is next, after the legend item
-(`methodology/BACKLOG.md`; Planned, below).
+`?pedkindraw` (S26), and 16b, the getting-started vignette (S27); the legend item the drawing vignette needed is
+done (S28, R81); 16c is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -33,7 +33,7 @@ hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 16 (16c next, after the legend item, `methodology/BACKLOG.md`):** documentation, five sessions
+- **Phase 16 (16c next):** documentation, five sessions
   (`docs/planning/documentation-plan.md` section 6): 16a README, NEWS and `?pedkindraw` (done, S26); 16b a
   getting-started vignette and a 375-animal example file (done, S27); 16c a drawing vignette; 16d a speed and size-limits vignette from the dated timing records; 16e the pkgdown site on
   GitHub Pages. The three vignettes ship on CRAN, the package under 5 MB installed (R77-R80).
@@ -147,7 +147,10 @@ session each unless marked. They follow the copy slices.
   from nprcgenekeepr `471589138` (R34) and `baef1e12c`, code unchanged, help rewritten (R36); its 12 tests and the
   3 Chrome tests pass as there, and its widgets are identical to nprcgenekeepr's. Imports `visNetwork`; CI sets up
   Chrome. nprcgenekeepr's later legend fill (S1159: the five sex symbols open, as the diagram draws an unaffected
-  animal) was ported in S12 (R37), so the copy matches nprcgenekeepr `4283e3502`.
+  animal) was ported in S12 (R37), so the copy matches nprcgenekeepr `4283e3502`. Since S28 (R81) the legend
+  explains a multi-condition symbol: with two or more conditions each condition's row is a circle cut into the same
+  sections, its own filled (`.conditionLegendImage()`; 8 tests, one reading 58 pixels in Chrome); nprcgenekeepr is to
+  get the same change, and `DIVERGENCE.md` records it until then.
 - **Layout engine (Phase 8), 2 exports:** `makePedigreeMatingLayout()` (each animal's position, symbol and hover
   text, union nodes for matings, lines routed `"rectilinear"` or `"direct"`, twins, consanguineous matings marked from
   `kinship()`, up to four affected conditions) and `makePedigreeDiagramData()` (plain nodes and edges for visNetwork);
@@ -187,6 +190,13 @@ session each unless marked. They follow the copy slices.
   widened it from `R/` and `man/` to the README, NEWS and vignettes).
 
 ## Completed Milestones
+
+- **The legend explains a multi-condition symbol's sections (pedkindraw S28, 2026-11-16; R81).** Mark's S26 find:
+  the dividing lines in a symbol with two or more conditions "are not explained in the legend. It looks like an
+  error." Each condition's legend row now shows a circle cut the same way with its own section filled. Mark picked
+  it over an extra legend row after both were drawn at two, three and four conditions, and ruled that nprcgenekeepr
+  gets the same change later. A browser test checks that the legend's filled section sits where the diagram fills
+  that condition. The comparison with nprcgenekeepr's results now sets aside those rows' symbols, its only change.
 
 - **Phase 16b, the getting-started vignette and the example file (pedkindraw S27, 2026-11-15).** Mark picked the
   drawing, ED5PDV's 16 ancestors with a mating of half siblings, from three candidates drawn on trial pages at the

@@ -169,7 +169,9 @@ the two edge styles; hover text and the id search box; animals with no relative 
 `gen` column added first; chunks run only when each package is installed; hints set by hand, since both packages'
 automatic hints warn on some pedigrees); saving a drawing as a web page and the PNG export button; `onClick` for
 Shiny; R80's 375 animals as one colony-size drawing (zoom, search); the size limit, from the speed vignette. Words:
-sire, dam, mate, mating; kinship2's `spouse` named only as kinship2's own element (R73).
+sire, dam, mate, mating; kinship2's `spouse` named only as kinship2's own element (R73). Since pedkindraw S28 (the
+standalone plan's R81) the legend draws each condition as a circle cut into the symbols' sections, its own filled,
+when there are two or more, so the sections' text can point to the legend.
 
 ### 5.5 Speed and size-limits vignette (16d)
 

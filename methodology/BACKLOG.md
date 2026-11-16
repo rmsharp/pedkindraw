@@ -15,23 +15,26 @@ issues).*
       steps; the stale copy below); `?pedkindraw`'s "Getting started" section (`R/pedkindraw-package.R`) names
       the README and, since 16b, the getting-started vignette; 16c and 16d add theirs there and to the vignette's
       "Where next" section (`vignettes/pedkindraw.Rmd`, its last section), which names only help pages today; the
-      README names no vignette or site yet; 16c's sections of a multi-condition symbol meet the legend item below
-      first. From 16b (S27): a drawing chunk needs `out.width = "100%"`, or html_vignette's `fig.width = 3` draws
+      README names no vignette or site yet. Since S28 (R81) the legend explains a multi-condition symbol's sections
+      with a picture per condition, its circle about 17 px across in a 1000 px wide page (28 world units, 44/50 of
+      it the circle, at the legend's measured scale 0.699 for two conditions); the legend's rows and height are as
+      before; not measured at a vignette's 700 px. From 16b (S27): a drawing chunk needs `out.width = "100%"`, or html_vignette's `fig.width = 3` draws
       the widget 288 px wide with the legend's labels cut; about 22 animals is the most whose ids still read at
       a page's fitted view (36-37 drew them too small or not at all); `makePedigreeMatingLayout()` on all 375
       animals takes 1.8 s and warns "72 same-row edge-node collision(s)", which would print on 16c's colony-size
       drawing; installed size with one drawing page 2,236 KB (S27's check folder); `NEWS.md` has no section on
       documentation (16e or Phase 17 adds one).
 
-- [ ] **The legend does not explain the sections of a multi-condition symbol** (READY, Effort S-M, a guess) --
-      Mark (S26), on a candidate README picture with two conditions: "It has vertical lines in the symbols that are
-      not explained in the legend. It looks like an error." With two or more conditions `drawPedigreeDiagram()`
-      splits every symbol into equal sections, the first of two the left half (`R/affectedConditions.R:84`,
-      `.conditionSectionsHandler()`), and draws the dividers on unaffected animals too; the legend shows each
-      condition as a whole filled hexagon (`R/drawPedigreeDiagram.R`, `conditionRows`), so nothing says which
-      section is which. The code is nprcgenekeepr's, copied unchanged (its S1029), so nprcgenekeepr's drawing has
-      the same gap: a fix here is mirrored there or recorded in `DIVERGENCE.md` (plan section 5); the session's
-      first picker asks which. Code, so TDD. Before 16c, whose drawing vignette shows two to four conditions.
+- [ ] **After nprcgenekeepr has the legend's section pictures, drop pedkindraw's records of the difference**
+      (BLOCKED on nprcgenekeepr, Effort S) -- R81 (S28, Mark's "Port later"): nprcgenekeepr is to get S28's
+      change in a session of its own there, which Mark starts (pedkindraw's sessions leave nprcgenekeepr unchanged,
+      R8): `.conditionLegendImage()` beside `.conditionSectionsHandler()` in its `R/affectedConditions.R`, the
+      `if (nConditions >= 2L)` block after `conditionRows` in its `R/drawPedigreeDiagram.R`, the tests of
+      pedkindraw's `test_conditionLegendImage.R` and the 3 changed checks of `test_drawPedigreeDiagram.R`
+      (pedkindraw `39bf333`, `b6a20bf`). Once it lands, a pedkindraw session deletes the two `DIVERGENCE.md` rows,
+      removes `withoutConditionSymbols()` from `tools/compareResultsWithNprcgenekeepr.R` (the tool must then read
+      600 of 600 identical with nothing set aside), moves the two copied files' headers to the new commit, and
+      re-runs the drift tool (3 differ).
 
 - [ ] **What kinship2 or Pedixplorer can do that pedkindraw cannot** (READY, Effort M, a guess) -- Mark (S26): "Add
       to backlog to document what pedkindraw does not do that kinship2 or pedixplorer can do. Later we will decide
