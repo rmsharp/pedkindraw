@@ -199,7 +199,7 @@ possible, and 0.7 s at 10,000 animals with 30% genotyped.
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
-| `asPedFrame(x, ...)`, S3 generic, methods for kinship2's `pedigree` and `pedigreeList` (pedkindraw S19) and Pedixplorer's `Pedigree` (pedkindraw S20) | an object of one of those classes | list `ped` (data frame in the conventions above: for kinship2, R56's columns, for Pedixplorer, R58's; one row per animal in the object's order) and `twinRelations` (data frame `id1`, `id2`, `code`, or `NULL` when the object has no twin pair) | stops for any other class, naming it (a `Pedigree` that is not an S4 object included); for kinship2, when the object lacks a field it needs, naming the fields, and when a `pedigreeList`'s ids repeat across families, naming them (R56); for Pedixplorer, when a column name would appear twice, naming it (R58); Pedixplorer's method stops when Pedixplorer is not installed, kinship2's does not need kinship2 (R55) | 14 |
+| `asPedFrame(x, ...)`, S3 generic, methods for kinship2's `pedigree` and `pedigreeList` (pedkindraw S19) and Pedixplorer's `Pedigree` (pedkindraw S20) | an object of one of those classes | list `ped` (data frame in the conventions above: for kinship2, R56's columns, for Pedixplorer, R58's; one row per animal in the object's order), `twinRelations` (data frame `id1`, `id2`, `code`, or `NULL` when the object has no twin pair) and `hints` (the object's layout hints in `makePedigreeMatingLayout()`'s form, a list of `order`, numbers named by id, and `mate`, a data frame of `left`, `right`, `anchor`, each only when the object holds it, or `NULL`; mate rows the layout would refuse fixed, one message naming each change; R62, R73, R74, R76) | stops for any other class, naming it (a `Pedigree` that is not an S4 object included); for kinship2, when the object lacks a field it needs, naming the fields, and when a `pedigreeList`'s ids repeat across families, naming them (R56), and when its hints cannot be read as ids (not a list; an order not numbers or not one per animal; a `spouse` table not three columns of whole numbers, places 1 to the number of animals and an anchor 1, 2 or 0), saying what is wrong (R75); for Pedixplorer, when a column name would appear twice, naming it (R58); Pedixplorer's method stops when Pedixplorer is not installed, kinship2's does not need kinship2 (R55) | 14; `hints` 15c |
 
 What each method reads is the comparison doc's section 11.2 table; its two test cases are required (an unknown
 parent's index 0 must not shift later parents; Pedixplorer's all-`NA` `affection` column is not a condition).
@@ -223,6 +223,16 @@ that holds more than its filled-in value, then the object's extra columns less P
 `rel(x)`, spouses left out. Measured on a prototype: 108 fixture cases and 300 seeded random pedigrees through
 `Pedixplorer::Pedigree()` and back identical, all 136 built without a condition differing with the all-`NA`
 defect planted; 100,000 animals converted in 0.005 s.
+The third element, `hints` (plan Phase 15c, R62 and R73), was ruled before its RED (plan R74-R76, pedkindraw
+S24). kinship2's `x$hints` (`order`, one number per animal in the object's order; `spouse`, rows of two places and
+an anchor 1, 2, 0) and Pedixplorer's `horder()` and `spouse()` become `order` (named by id; an `NA` leaves that
+animal unnumbered) and `mate` (ids, `"left"`, `"right"`, `"either"`). Mate rows `makePedigreeMatingLayout()`
+would refuse are fixed, one message naming each change (R74): a pair with no offspring together left out, a pair
+named before left out (the first row kept, as kinship2 keeps it), an anchor on the partner of the earlier
+generation set to `"either"`. kinship2 hints that cannot be read as ids stop (R75); a `pedigreeList`'s hints are
+read as a `pedigree`'s (R76). Measured on a prototype: kinship2's `autohint()` returned on 143 of 212 pedigrees
+and 40 of those held rows the layout refuses; Pedixplorer's `auto_hint()` on 119, 50 of them; with the fixes all
+262 converted and the 231 of 600 animals or fewer drew, every hinted mating on its hinted side (1,060 and 898).
 
 ### 4.6 Not in this contract
 
@@ -230,7 +240,7 @@ Layout hints (R3) are Phase 15. Its design (pedkindraw S21, `docs/planning/layou
 adds no export: `makePedigreeMatingLayout()` gains `hints = NULL` (a list of `order`, a numeric vector named by id,
 and `spouse`, a data frame of `left`, `right`, `anchor`; R61, the element renamed `mate` in 15b by Mark's pick), and
 `asPedFrame()` a third element, `hints` (R62). Their rows in sections 4.1 and 4.5 change when sessions 15a-15c build
-them (R63): 4.1's `order` in 15a (pedkindraw S22), its `mate` in 15b (pedkindraw S23), 4.5 in 15c. Nothing else from nprcgenekeepr is
+them (R63): 4.1's `order` in 15a (pedkindraw S22), its `mate` in 15b (pedkindraw S23), 4.5 in 15c (pedkindraw S24). Nothing else from nprcgenekeepr is
 exported.
 
 ---
