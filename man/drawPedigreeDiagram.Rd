@@ -42,6 +42,12 @@ RStudio viewer, in an R Markdown or Quarto document, or in a web page saved
 with \code{htmlwidgets::saveWidget()}.
 }
 \details{
+With two or more conditions, every animal's symbol is cut into equal
+sections, one per condition, counter-clockwise from the top (the first of
+two is the left half), and each condition's legend row shows a circle cut
+the same way with that condition's section filled in its color, so the
+legend says which section is which.
+
 A click does nothing unless \code{onClick} is given: a Shiny application
 can pass one to act on the clicked animal, which needs a live Shiny
 session, so a script leaves \code{onClick} out.

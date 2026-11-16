@@ -14,6 +14,11 @@ code, `DIVERGENCE.md` in the repository says how and why.
   twice where the layout needs it with its two places joined by a dashed line,
   a legend, a "Select by id" box and a PNG export button.
   `makePedigreeDiagramData()` makes a simpler drawing's nodes and edges.
+* New: with two or more conditions, each condition's row in
+  `drawPedigreeDiagram()`'s legend shows a circle cut into the same sections as
+  the animals' symbols, with that condition's section filled, so the legend
+  says which section is which. nprcgenekeepr's legend still shows a filled
+  hexagon for each condition.
 * New: layout hints, `makePedigreeMatingLayout(hints = )`: the left-to-right
   `order` of animals and, with `mate`, the side of a mating each mate is drawn
   on, in the form kinship2 and Pedixplorer give their hints.

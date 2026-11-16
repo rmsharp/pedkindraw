@@ -1,7 +1,10 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/affectedConditions.R at nprcgenekeepr commit
-## baef1e12c (unchanged to 4375e2715), whole. Changes: none. Phase 8 copied
+## baef1e12c (unchanged to 4375e2715), whole. Changes: pedkindraw S28 added
+## .conditionLegendImage() after .conditionSectionsHandler() (plan R81; a
+## DIVERGENCE.md row until nprcgenekeepr has it); the copied code is
+## unchanged. Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
 ## 9 its lines 76-201, the three the drawing uses
@@ -166,6 +169,47 @@
     "  ctx.restore();\n",
     "}"
   )
+}
+
+#' The legend's picture of one condition's section
+#'
+#' pedkindraw S28 (plan R81). With two or more conditions the diagram cuts
+#' every symbol into equal sections, one per condition
+#' (\code{.conditionSectionsHandler()}), and draws the dividing lines on an
+#' unaffected animal too. The legend is its own vis.Network and cannot run that
+#' handler, so each condition's row is an inline SVG image, as the
+#' \dQuote{Deceased} row is: that row's circle (radius 22 in a 50-pixel
+#' square, white, outlined in the diagram's blue), the dividing lines at the
+#' handler's angles, and the condition's own section filled. Section \code{i}
+#' of \code{k} runs from -pi/2 - i * d to -pi/2 - (i - 1) * d, d = 2 * pi / k,
+#' clockwise on the page, where the handler fills it: the first of two is the
+#' left half.
+#' @param section the condition's number, 1 to \code{nSections}.
+#' @param nSections the number of conditions drawn, 2 to 4.
+#' @param color the condition's fill.
+#' @return A \code{data:} URI, as a character string.
+#' @noRd
+.conditionLegendImage <- function(section, nSections, color) {
+  step <- 2.0 * pi / nSections
+  from <- -pi / 2.0 - section * step
+  to <- -pi / 2.0 - (section - 1L) * step
+  edges <- -pi / 2.0 - (seq_len(nSections) - 1L) * step
+  svg <- paste0(
+    "<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'>",
+    "<circle cx='25' cy='25' r='22' fill='white'/>",
+    sprintf(paste0("<path d='M25 25 L%.1f %.1f A22 22 0 0 1 %.1f %.1f Z' ",
+                   "fill='%s'/>"),
+            25.0 + 22.0 * cos(from), 25.0 + 22.0 * sin(from),
+            25.0 + 22.0 * cos(to), 25.0 + 22.0 * sin(to), color),
+    paste(sprintf(paste0("<line x1='25' y1='25' x2='%.1f' y2='%.1f' ",
+                         "stroke='#2B7CE9' stroke-width='2'/>"),
+                  25.0 + 22.0 * cos(edges), 25.0 + 22.0 * sin(edges)),
+          collapse = ""),
+    "<circle cx='25' cy='25' r='22' fill='none' stroke='#2B7CE9' ",
+    "stroke-width='2'/></svg>"
+  )
+  paste0("data:image/svg+xml;charset=utf-8,",
+         utils::URLencode(svg, reserved = TRUE))
 }
 
 #' The one afterDrawing handler of the Diagram

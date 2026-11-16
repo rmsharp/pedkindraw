@@ -3,7 +3,10 @@
 ## Copied from nprcgenekeepr R/drawPedigreeDiagram.R at nprcgenekeepr commit
 ## 4283e3502 (S11 copied it at 471589138 for its .checkOnClick(), plan R34;
 ## S12 ported S1159's legend fill and its tidy-up, plan R37).
-## Changes: help text only; the code is unchanged. The help describes the
+## Changes: pedkindraw S28's section pictures in the legend (plan R81: the
+## block after conditionRows, and the help's paragraph on them; a
+## DIVERGENCE.md row until nprcgenekeepr has them); otherwise help text only.
+## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
 ## Shiny application and its Pedigree Browser (the source's lines 7, 9-13,
@@ -29,6 +32,12 @@
 #' script inside the widget, so they appear wherever the widget is shown: in the
 #' RStudio viewer, in an R Markdown or Quarto document, or in a web page saved
 #' with \code{htmlwidgets::saveWidget()}.
+#'
+#' With two or more conditions, every animal's symbol is cut into equal
+#' sections, one per condition, counter-clockwise from the top (the first of
+#' two is the left half), and each condition's legend row shows a circle cut
+#' the same way with that condition's section filled in its color, so the
+#' legend says which section is which.
 #'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
@@ -138,6 +147,17 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
     image = NA_character_,
     stringsAsFactors = FALSE
   )
+  # pedkindraw S28 (plan R81): with two or more conditions every animal's
+  # symbol is cut into sections, one per condition, so each condition's row
+  # is a picture of those sections with its own filled
+  # (.conditionLegendImage()); the colour is in the picture, not a fill.
+  if (nConditions >= 2L) {
+    conditionRows$shape <- "image"
+    conditionRows$color.background <- NA_character_
+    conditionRows$image <- vapply(seq_len(nConditions), function(i) {
+      .conditionLegendImage(i, nConditions, legendConditions$color[[i]])
+    }, character(1L))
+  }
   # S1028: the "Deceased" row is a picture (a circle with the slash), after
   # the condition rows and before the edge rows, so the last legend row
   # stays the short "?" one (S921). Measured in the real app: a label
