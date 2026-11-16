@@ -17,7 +17,8 @@ kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is done: des
 hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase 16, documentation, is planned
 (S25: `docs/planning/documentation-plan.md`, R77-R80); its first sessions are done, 16a, the README, NEWS and
 `?pedkindraw` (S26), 16b, the getting-started vignette (S27), and 16c, the drawing vignette (S29), after the
-legend item it needed (S28, R81); 16d is next (Planned, below).
+legend item it needed (S28, R81); 16d, the speed vignette, is deferred until pedkindraw times itself (S30, R82),
+so 16e, the website, is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -33,11 +34,14 @@ legend item it needed (S28, R81); 16d is next (Planned, below).
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 16 (16d next):** documentation, five sessions
-  (`docs/planning/documentation-plan.md` section 6): 16a README, NEWS and `?pedkindraw` (done, S26); 16b a
-  getting-started vignette and a 375-animal example file (done, S27); 16c a drawing vignette (done, S29); 16d a
-  speed and size-limits vignette from the dated timing records; 16e the pkgdown site on GitHub Pages. The three
-  vignettes ship on CRAN, the package under 5 MB installed (R77-R80; 4.2 MB with the two vignettes of drawings).
+- **Phase 16 (16e next):** documentation (`docs/planning/documentation-plan.md` section 6): 16a README, NEWS and
+  `?pedkindraw` (done, S26); 16b a getting-started vignette and a 375-animal example file (done, S27); 16c a drawing
+  vignette (done, S29); 16d a speed and size-limits vignette, deferred (S30, R82; below); 16e the pkgdown site on
+  GitHub Pages, with the two vignettes as articles. The vignettes ship on CRAN, the package under 5 MB installed
+  (R77-R80; 4.2 MB with the two vignettes of drawings).
+- **Later, after pedkindraw times itself:** the comparison of pedkindraw with kinship2 and Pedixplorer, as a speed
+  and size-limits vignette (R82). It needs a plan of its own for timing runs of pedkindraw's own installed code,
+  replacing R79's summary of nprcgenekeepr's records. A draft built to R79 is on the branch `draft/speed-vignette`.
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
 - **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8).
 
@@ -197,6 +201,13 @@ session each unless marked. They follow the copy slices.
   widened it from `R/` and `man/` to the README, NEWS and vignettes).
 
 ## Completed Milestones
+
+- **Phase 16d decided: the speed vignette waits (pedkindraw S30, 2026-11-16; R82).** A draft built to R79 gave
+  nprcgenekeepr's November 2026 timings in nine tables, every cell checked against the committed results by a
+  script written and run failing first. Reading it, Mark judged the comparison premature while pedkindraw still
+  tracks nprcgenekeepr: "Disambiguation between pedkindraw and nprcgenekeepr may need to wait until pedkindraw is
+  completely separated." It returns when pedkindraw times itself; the draft is kept on a branch, and the contract
+  records the copied shrinking code's own time.
 
 - **Phase 16c, the drawing vignette (pedkindraw S29, 2026-11-16).** Mark approved the draft from a trial page at
   the vignette's width, chose to show the colony drawing's layout warning with a sentence explaining it, and to

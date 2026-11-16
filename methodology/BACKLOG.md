@@ -8,18 +8,26 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 16d-16e** (READY in turn, one session each) -- 16d the speed and size-limits vignette and
-      `tools/checkSpeedTables.R` (R79); 16e the pkgdown site on GitHub Pages (R78), then Phase 16 DONE. Phase 17,
-      the CRAN submission, follows with its own plan. From 16a (S26): render a page with the current tree
-      installed first (README.Rmd's own comment gives the steps; the stale copy below); the README names no
-      vignette or site yet; `NEWS.md` has no section on documentation (16e or Phase 17 adds one). From 16c (S29):
-      16d adds its vignette to `?pedkindraw`'s "Getting started" (`R/pedkindraw-package.R:42`), to the
-      getting-started vignette's "Where next" (`vignettes/pedkindraw.Rmd`, its last section), and to the drawing
-      vignette's "How large a drawing can be" (`vignettes/drawing.Rmd`, its next-to-last section), which states the
-      limit from the comparison doc's section 9 (1,000 animals in about 16 s, 2,000 not within 2 minutes, readable
-      at 1,000 once zoomed; Mark's S29 pick) and names no vignette yet. Installed with the two vignettes of
-      drawings: 4,284 KB of R77's 5,120 KB (S29's check folder; `doc/` 3,700 KB), so 16d's page, with no drawing,
-      has about 800 KB.
+- [ ] **Phase 16e, the website** (READY, one session) -- the pkgdown site on GitHub Pages (R78), with the two
+      vignettes as articles (R82: 16d deferred), then Phase 16 DONE (`docs/planning/documentation-plan.md` 5.6 and
+      16e's DONE). Phase 17, the CRAN submission, follows with its own plan. From 16a (S26): render a page with the
+      current tree installed first (README.Rmd's own comment gives the steps; the stale copy below); the README
+      names no vignette or site yet; `NEWS.md` has no section on documentation (16e or Phase 17 adds one).
+      Installed with the two vignettes of drawings: 4,284 KB of R77's 5,120 KB (S29's check folder; `doc/` 3,700
+      KB).
+
+- [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
+      timing runs, Effort L, a guess) -- R82 (S30): "the comparison of pedkindraw with kinship2 and Pedixplorer"
+      (Mark) waits until pedkindraw has timing runs of its own installed code, under a plan of its own that
+      replaces R79's summary of nprcgenekeepr's records. A draft built to R79 is on the branch
+      `draft/speed-vignette` (`612eed9`, not merged): `vignettes/speed.Rmd` (nine captioned tables, a definition of
+      each computation, Mark's request) and `tools/checkSpeedTables.R`, whose design (a marker before each table,
+      each table and caption built from the result files and compared cell for cell, `--print=<name>`, a failure
+      on any unmarked table) can check the returning vignette's numbers against pedkindraw's own results. When it
+      returns: point to it from `?pedkindraw`'s "Getting started" (`R/pedkindraw-package.R:42`), the
+      getting-started vignette's "Where next" and the drawing vignette's "How large a drawing can be", which states
+      the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
+      page.
 
 - [ ] **"Select by id" lists invisible routing points** (READY, Effort S) -- found S29 in Chrome: in the
       375-animal drawing the box has 571 entries, the 375 animals and 196 `__jog_` points that
