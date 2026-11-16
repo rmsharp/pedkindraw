@@ -8,22 +8,27 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 16c-16e** (READY in turn, one session each) -- 16c the drawing vignette, the installed package
-      under 5 MB (R77); 16d the speed and size-limits vignette and `tools/checkSpeedTables.R` (R79); 16e the pkgdown
-      site on GitHub Pages (R78), then Phase 16 DONE. Phase 17, the CRAN submission, follows with its own plan.
-      From 16a (S26): render a page with the current tree installed first (README.Rmd's own comment gives the
-      steps; the stale copy below); `?pedkindraw`'s "Getting started" section (`R/pedkindraw-package.R`) names
-      the README and, since 16b, the getting-started vignette; 16c and 16d add theirs there and to the vignette's
-      "Where next" section (`vignettes/pedkindraw.Rmd`, its last section), which names only help pages today; the
-      README names no vignette or site yet. Since S28 (R81) the legend explains a multi-condition symbol's sections
-      with a picture per condition, its circle about 17 px across in a 1000 px wide page (28 world units, 44/50 of
-      it the circle, at the legend's measured scale 0.699 for two conditions); the legend's rows and height are as
-      before; not measured at a vignette's 700 px. From 16b (S27): a drawing chunk needs `out.width = "100%"`, or html_vignette's `fig.width = 3` draws
-      the widget 288 px wide with the legend's labels cut; about 22 animals is the most whose ids still read at
-      a page's fitted view (36-37 drew them too small or not at all); `makePedigreeMatingLayout()` on all 375
-      animals takes 1.8 s and warns "72 same-row edge-node collision(s)", which would print on 16c's colony-size
-      drawing; installed size with one drawing page 2,236 KB (S27's check folder); `NEWS.md` has no section on
-      documentation (16e or Phase 17 adds one).
+- [ ] **Phase 16d-16e** (READY in turn, one session each) -- 16d the speed and size-limits vignette and
+      `tools/checkSpeedTables.R` (R79); 16e the pkgdown site on GitHub Pages (R78), then Phase 16 DONE. Phase 17,
+      the CRAN submission, follows with its own plan. From 16a (S26): render a page with the current tree
+      installed first (README.Rmd's own comment gives the steps; the stale copy below); the README names no
+      vignette or site yet; `NEWS.md` has no section on documentation (16e or Phase 17 adds one). From 16c (S29):
+      16d adds its vignette to `?pedkindraw`'s "Getting started" (`R/pedkindraw-package.R:42`), to the
+      getting-started vignette's "Where next" (`vignettes/pedkindraw.Rmd`, its last section), and to the drawing
+      vignette's "How large a drawing can be" (`vignettes/drawing.Rmd`, its next-to-last section), which states the
+      limit from the comparison doc's section 9 (1,000 animals in about 16 s, 2,000 not within 2 minutes, readable
+      at 1,000 once zoomed; Mark's S29 pick) and names no vignette yet. Installed with the two vignettes of
+      drawings: 4,284 KB of R77's 5,120 KB (S29's check folder; `doc/` 3,700 KB), so 16d's page, with no drawing,
+      has about 800 KB.
+
+- [ ] **"Select by id" lists invisible routing points** (READY, Effort S) -- found S29 in Chrome: in the
+      375-animal drawing the box has 571 entries, the 375 animals and 196 `__jog_` points that
+      `.resolveEdgeNodeCollisions()` adds (`vignettes/drawing.Rmd`'s colony drawing shows it). The filter that
+      leaves internal nodes out of the box, `R/drawPedigreeDiagram.R:292`, names `__union_`, `__dup_`, `__drop_`,
+      `__bar_` and `__proj_` but not `__jog_`; nprcgenekeepr's `R/drawPedigreeDiagram.R:252` (at `b4abb9a0b`) has
+      the same filter. The small drawings have no `__jog_` point, so their boxes list the animals only. Copied code:
+      the drift-rule choice (mirror in nprcgenekeepr in a session there, or a `DIVERGENCE.md` row) at its pre-RED
+      picker; a test reads `drawPedigreeDiagram(layout)$x$idselection$values` on a layout with jogs.
 
 - [ ] **After nprcgenekeepr has the legend's section pictures, drop pedkindraw's records of the difference**
       (BLOCKED on nprcgenekeepr, Effort S) -- R81 (S28, Mark's "Port later"): nprcgenekeepr is to get S28's
@@ -91,6 +96,15 @@ issues).*
       need a ruling and a plan change first.
 
 ## Ready, small
+
+- [ ] **The suite gate's time limit is below the suite's time** (READY, Effort S) -- `test-suite-warnings-zero`
+      in `methodology/.quality-gates.json` sets `timeout_seconds: 300`, and the suite took 261 s alone in S29
+      (`test_local()`, 684 tests), 268-271 s in S28; S29's `quality_ratchet.py --run` read the gate UNMEASURED,
+      "timeout (300 s)", 4/5 pass (results `42b564bc4c70`), so its receipt names it unmeasured with the suite run by
+      hand (WARN 0). The manifest's own note says to set the limit above the slowest honest run; the tool's default
+      is 600 s. Raising it is not a loosening (the threshold stays 0); the ratchet prints a changed
+      `timeout_seconds` as a warning and the dashboard notes a changed gate, so make the change in a commit of its
+      own with the reason in the ledger, then run the gates again.
 
 - [ ] **A stale pedkindraw 0.0.1 in renv's library** (READY, Effort S) -- renv's library
       (`Rscript -e 'cat(renv::paths$library())'`) holds a pedkindraw 0.0.1 built 2026-11-12, before `asPedFrame()`

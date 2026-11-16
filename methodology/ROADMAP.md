@@ -16,8 +16,8 @@ section 10). All five are done (S13). The new work of Phases 11-15 has begun: Ph
 kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is done: designed (S21), then 15a the order
 hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase 16, documentation, is planned
 (S25: `docs/planning/documentation-plan.md`, R77-R80); its first sessions are done, 16a, the README, NEWS and
-`?pedkindraw` (S26), and 16b, the getting-started vignette (S27); the legend item the drawing vignette needed is
-done (S28, R81); 16c is next (Planned, below).
+`?pedkindraw` (S26), 16b, the getting-started vignette (S27), and 16c, the drawing vignette (S29), after the
+legend item it needed (S28, R81); 16d is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -33,10 +33,11 @@ done (S28, R81); 16c is next (Planned, below).
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 16 (16c next):** documentation, five sessions
+- **Phase 16 (16d next):** documentation, five sessions
   (`docs/planning/documentation-plan.md` section 6): 16a README, NEWS and `?pedkindraw` (done, S26); 16b a
-  getting-started vignette and a 375-animal example file (done, S27); 16c a drawing vignette; 16d a speed and size-limits vignette from the dated timing records; 16e the pkgdown site on
-  GitHub Pages. The three vignettes ship on CRAN, the package under 5 MB installed (R77-R80).
+  getting-started vignette and a 375-animal example file (done, S27); 16c a drawing vignette (done, S29); 16d a
+  speed and size-limits vignette from the dated timing records; 16e the pkgdown site on GitHub Pages. The three
+  vignettes ship on CRAN, the package under 5 MB installed (R77-R80; 4.2 MB with the two vignettes of drawings).
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
 - **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8).
 
@@ -52,6 +53,12 @@ session each unless marked. They follow the copy slices.
   16 ancestors and draws them, shrinks it and finds unrelated animals, and converts a kinship2 pedigree (run only
   when kinship2 is installed); a hidden check stops the build if a value its text states stops holding. knitr and
   rmarkdown in Suggests.
+- **The drawing vignette (Phase 16c):** `vignette("drawing")` shows what a drawing shows and how to change it, one
+  feature at a time on small pedigrees typed in the code: rows and mating dots, the sex symbols, the deceased
+  slash and the legend, hover text, one condition and three as sections, twins, an animal drawn twice, a mating of
+  relatives, the two edge styles, animals with no relative, the order and mate hints, kinship2 and Pedixplorer
+  objects with hints, saving a drawing, clicks in Shiny, and the 375-animal pedigree as one colony-size drawing;
+  11 drawings, each statement held by a hidden check.
 - **Layout hints from kinship2 and Pedixplorer objects (Phase 15c), no new export:** `asPedFrame()` returns a third
   element, `hints`, the object's layout hints in `makePedigreeMatingLayout()`'s form (`order` named by id, `mate`
   rows of ids and anchor words), or `NULL`, so `makePedigreeMatingLayout(x$ped, hints = x$hints)` draws with them
@@ -190,6 +197,13 @@ session each unless marked. They follow the copy slices.
   widened it from `R/` and `man/` to the README, NEWS and vignettes).
 
 ## Completed Milestones
+
+- **Phase 16c, the drawing vignette (pedkindraw S29, 2026-11-16).** Mark approved the draft from a trial page at
+  the vignette's width, chose to show the colony drawing's layout warning with a sentence explaining it, and to
+  state the drawing size limit from the November 2026 records until the speed vignette exists. Two of the drafted
+  hidden checks were wrong and stopped the trial build before anything was committed. Measuring the page in Chrome
+  found that the "Select by id" box of a large drawing also lists invisible routing points (a backlog item). The
+  package installs at 4.2 MB with both vignettes of drawings.
 
 - **The legend explains a multi-condition symbol's sections (pedkindraw S28, 2026-11-16; R81).** Mark's S26 find:
   the dividing lines in a symbol with two or more conditions "are not explained in the legend. It looks like an

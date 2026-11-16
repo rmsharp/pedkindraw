@@ -173,6 +173,15 @@ sire, dam, mate, mating; kinship2's `spouse` named only as kinship2's own elemen
 standalone plan's R81) the legend draws each condition as a circle cut into the symbols' sections, its own filled,
 when there are two or more, so the sections' text can point to the legend.
 
+Built S29 (`7ab93a0`): 11 drawings, one small typed pedigree per feature and R80's 375 animals last; the page
+2,041,640 B, the package installed at 4,284 KB with both vignettes of drawings. `out.width = "100%"` is set for
+every chunk in the setup chunk. kinship2's and Pedixplorer's objects are converted, not drawn: their layout is
+`identical()` to the mate hint's drawing. The colony drawing's layout warning (72 same-row collisions) is shown
+and explained (Mark). The size limit is stated from the comparison doc's section 9 until 16d, which adds the
+pointer to its vignette here and in `?pedkindraw` and the getting-started vignette's "Where next". In Chrome the
+"Select by id" box of the colony drawing also lists 196 `__jog_` routing points (a backlog item); the legend's last
+row touches the Export button at a 700 px column, as before.
+
 ### 5.5 Speed and size-limits vignette (16d)
 
 How the numbers were measured (fresh process per run, warm-up, median of 3, 120 s and 32 GB limits, the idle-CPU

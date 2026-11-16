@@ -44,8 +44,9 @@ tests, R74-R76), so Phase 15 is DONE; Phase 16's plan DONE (pedkindraw S25:
 `docs/planning/documentation-plan.md`, R77-R80; five build sessions, 16a-16e); Phase 16a DONE (pedkindraw S26: the
 README with its picture, NEWS and `?pedkindraw`); Phase 16b DONE (pedkindraw S27: the getting-started vignette and
 the 375-animal example file); the backlog's legend item DONE (pedkindraw S28: each condition's legend row a section
-picture when there are two or more, R81; to be ported to nprcgenekeepr).
-**Next:** Phase 16c, the drawing vignette (the documentation plan's section 6).
+picture when there are two or more, R81; to be ported to nprcgenekeepr); Phase 16c DONE (pedkindraw S29: the
+drawing vignette).
+**Next:** Phase 16d, the speed and size-limits vignette (the documentation plan's section 6).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -785,6 +786,29 @@ absent; on the built page in headless Chrome all 51 layout nodes inside the draw
 when zoomed in); suite 676 tests, 0 failed, WARN 0, 5,929 passed; lint 0; roxygen idempotent; `R CMD check
 --as-cran` R16's NOTE only, vignettes re-built OK, installed 2,236 KB; drift tool 3 differ, all with rows;
 `quality_ratchet.py --run` 5/5; CI run `43810961086` 5/5, the vignette re-built on each.
+
+**Done 16c (pedkindraw S29):** `vignettes/drawing.Rmd`, "Drawing pedigrees" (`7ab93a0`): section 5.4's topics in
+11 drawings, each a small typed pedigree but the last (R80's 375 animals with its twins): rows and mating dots, the
+five sex symbols, the deceased slash, the legend and hover text; one condition, three as sections with the legend's
+pictures (R81), and `conditionsNotDrawn`; twins checked by `checkTwinRelations()`; an animal drawn twice; a mating of
+full siblings; the two edge styles; `isolatedIds`; the order and mate hints; kinship2 and Pedixplorer objects with
+hints set by hand through `asPedFrame()` (run only when each is installed; the same layout as the mate hint, and
+`kinship2::autohint()` gives the same hints here); `saveWidget()` and the PNG button; `onClick` in Shiny (not run;
+the ids a click passes measured in Chrome); the colony-size drawing. Mark's picks: the draft as drawn on a trial page
+at the vignette's width; the colony layout's warning (72 same-row collisions) shown and explained; the size limit
+stated from the November 2026 records (comparison doc section 9) until 16d's vignette, which then adds the pointer.
+Each statement of where an animal is drawn or what a drawing shows is held by a hidden `stopifnot()` chunk, six
+shown stopping a render with one value changed; two drafted checks were wrong (the turning points' rows, an integer
+against a double) and stopped the trial render before the commit. `?pedkindraw` and the getting-started vignette's
+"Where next" name it. Checks: rendered with kinship2 and Pedixplorer absent; on the built page in headless Chrome
+every node of all 11 drawings inside its canvas (1,466 of 1,466 for the colony; the check failing when zoomed in),
+the hover greying and tooltip as the text says; suite 684 tests, 0 failed, WARN 0, 6,109 passed; lint 0; roxygen
+changed only `man/pedkindraw-package.Rd`; words gate 0; `R CMD check --as-cran` R16's NOTE only, vignettes re-built
+OK, installed 4,284 KB (`doc/` 3,700 KB, the drawing page 2,041,640 B; under R77's 5,120 KB); drift tool 5 differ,
+all with rows; `quality_ratchet.py --run` 4/5 pass, the suite gate unmeasured (its 300 s limit; the suite by hand
+WARN 0; a backlog item); CI run `43937366764` 5/5, the vignettes re-built on each; Mark looked at the built page. Found:
+`drawPedigreeDiagram()`'s "Select by id" box also lists the layout's `__jog_` routing points (196 in the colony
+drawing), nprcgenekeepr's code the same (a backlog item).
 
 ### Phase 17 -- CRAN submission (new repository; its own plan first)
 
