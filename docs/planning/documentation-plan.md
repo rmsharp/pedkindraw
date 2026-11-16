@@ -123,7 +123,7 @@ renv's library and `RENV_PROJECT` unset (the `CLAUDE.md` recipe).
 |---|---|---|
 | `README.Rmd`, `README.md` | 16a | the source knitted with `rmarkdown::render("README.Rmd")` (`github_document`); no `Sys.Date()`, so a second render changes nothing; `^README\.Rmd$` in `.Rbuildignore` |
 | `man/figures/README-pedigree.png`, `tools/makeReadmePicture.R` | 16a | the picture of a small typed pedigree (M4's method); the script remakes it |
-| `NEWS.md` | 16a | `# pedkindraw (development version)`, then one section per group of section 2's table; Phase 17 numbers the version |
+| `NEWS.md` | 16a | `# pedkindraw 0.0.1 (development version)` (S26: R reads a NEWS section only under a heading that holds a version, so the plan's first heading without one gave `R CMD check` a NOTE), then one section per group of section 2's table; Phase 17 numbers the release |
 | `R/pedkindraw-package.R`, `man/pedkindraw-package.Rd` | 16a | `"_PACKAGE"`: `?pedkindraw` names the vignettes and the groups |
 | `methodology/.quality-gates.json` | 16a | `user-facing-sire-dam-words` reads `R man vignettes README.Rmd README.md NEWS.md` (a tightening: no approval needed, `SAFEGUARDS.md` "Blast Radius Limits") |
 | `DESCRIPTION` | 16b, 16e | 16b: `Suggests` knitr and rmarkdown, `VignetteBuilder: knitr`; 16e: the site in `URL`, only once it answers |
@@ -223,7 +223,7 @@ only.
 1. `README.Rmd` and `README.md` (section 5.2): a second `rmarkdown::render("README.Rmd")` leaves `git status`
    clean; a script reading `NAMESPACE` finds every one of the 31 exports named in `README.md`; the picture is
    remade by `Rscript tools/makeReadmePicture.R`.
-2. `NEWS.md` under `# pedkindraw (development version)`; `?pedkindraw` opens the package page.
+2. `NEWS.md` under `# pedkindraw 0.0.1 (development version)` (S26, see 5.1); `?pedkindraw` opens the package page.
 3. The words gate widened, read 0, and `quality_ratchet.py --run` all pass.
 4. The checks above; `R CMD check --as-cran` finds no bad URL in `README.md` or `NEWS.md`; after the push the
    repository's GitHub page shows the README with its picture (viewed in a browser); the dashboard's README flag
@@ -299,7 +299,7 @@ only.
 
 | # | Question | Session |
 |---|---|---|
-| D1 | Install line: `remotes::install_github("rmsharp/pedkindraw")` or `pak::pak("rmsharp/pedkindraw")` | 16a |
-| D2 | The README picture's pedigree (typed, 10-20 animals, showing twins, a condition and a deceased animal) | 16a |
+| D1 | Install line: `remotes::install_github("rmsharp/pedkindraw")` or `pak::pak("rmsharp/pedkindraw")` | 16a: pak (Mark, S26) |
+| D2 | The README picture's pedigree (typed, 10-20 animals, showing twins, a condition and a deceased animal) | 16a: 12 animals, one condition (Mark, S26) |
 | D3 | The getting-started drawing: which probands, and how many animals still read at the fitted view | 16b |
 | D4 | pkgdown in renv by Learning 3's recipe (9 packages, section 2) or run from R's own library through the scratch recipe; the deploy step's action and its pinned version | 16e |

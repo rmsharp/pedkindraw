@@ -15,7 +15,8 @@ section 10). All five are done (S13). The new work of Phases 11-15 has begun: Ph
 (S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) and 14 (S19-S20: `asPedFrame()` for
 kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is done: designed (S21), then 15a the order
 hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase 16, documentation, is planned
-(S25: `docs/planning/documentation-plan.md`, R77-R80) and its first session, 16a, is next (Planned, below).
+(S25: `docs/planning/documentation-plan.md`, R77-R80); its first session, 16a, the README, NEWS and `?pedkindraw`,
+is done (S26), and 16b is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -31,8 +32,8 @@ hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 16 (next, `methodology/BACKLOG.md`):** documentation, five sessions (`docs/planning/documentation-plan.md`
-  section 6): 16a README, NEWS and `?pedkindraw`; 16b a getting-started vignette and a 375-animal example file; 16c a
+- **Phase 16 (16b next, `methodology/BACKLOG.md`):** documentation, five sessions (`docs/planning/documentation-plan.md`
+  section 6): 16a README, NEWS and `?pedkindraw` (done, S26); 16b a getting-started vignette and a 375-animal example file; 16c a
   drawing vignette; 16d a speed and size-limits vignette from the dated timing records; 16e the pkgdown site on
   GitHub Pages. The three vignettes ship on CRAN, the package under 5 MB installed (R77-R80).
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
@@ -40,6 +41,10 @@ session each unless marked. They follow the copy slices.
 
 ## What's Built
 
+- **Documentation, a start (Phase 16a):** `README.md` (made from `README.Rmd`) says what the package does, how to
+  install it from GitHub, and runs a 12-animal example: checked, kinship, laid out and drawn, with a picture of the
+  drawing (`man/figures/README-pedigree.png`, remade by `tools/makeReadmePicture.R`) and every export named in six
+  groups; `NEWS.md`; the package help page `?pedkindraw`. No vignettes or site yet (16b-16e).
 - **Layout hints from kinship2 and Pedixplorer objects (Phase 15c), no new export:** `asPedFrame()` returns a third
   element, `hints`, the object's layout hints in `makePedigreeMatingLayout()`'s form (`order` named by id, `mate`
   rows of ids and anchor words), or `NULL`, so `makePedigreeMatingLayout(x$ped, hints = x$hints)` draws with them
@@ -171,10 +176,16 @@ session each unless marked. They follow the copy slices.
   for a copied test: the QC'd rhesus pedigree (until Phase 10 also `shrinkPedigree()`'s Track B results, for a
   stand-in deleted in S13, R39). Both it and the results tool start R in nprcgenekeepr's folder with `tools/renvFreeEnv.R`.
 - **Quality gates** (`methodology/.quality-gates.json`): `renv-lock-no-latest-repository`, `lint-package-zero`,
-  `test-suite-warnings-zero` (S8), `tests-no-saved-expect-condition` (S9).
+  `test-suite-warnings-zero` (S8), `tests-no-saved-expect-condition` (S9), `user-facing-sire-dam-words` (S23; S26
+  widened it from `R/` and `man/` to the README, NEWS and vignettes).
 
 ## Completed Milestones
 
+- **Phase 16a, the README, NEWS and `?pedkindraw` (pedkindraw S26, 2026-11-15).** The README's example runs when
+  the README is built, and a hidden check stops the build if a statement its text makes stops holding; its picture
+  is made from the README's own code. Mark picked the install line (pak) and the picture's pedigree from three
+  drawn candidates, dropping one whose two-condition symbols show divider lines the legend does not explain (a
+  backlog item). `R CMD check` showed the plan's NEWS heading needs a version number.
 - **Phase 16 planned (pedkindraw S25, 2026-11-15).** Measured on scratch copies before the picker: a vignette page
   with drawings is 1.6-1.9 MB and the package without vignettes 0.47 MB, so two such pages fit CRAN's 5 MB and three
   do not; a trial pkgdown site built in 34.5 s once the package was installed (a stale installed copy stopped it

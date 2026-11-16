@@ -8,17 +8,34 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 16a: README, NEWS and the package help page** (READY, Effort S, a guess) -- the first of Phase 16's
-      five sessions (`docs/planning/documentation-plan.md` section 6, DONE criteria there; R77-R80, S25):
-      `README.Rmd` knitted to `README.md` with a still picture of a small typed pedigree (`tools/makeReadmePicture.R`,
-      chromote), `NEWS.md` under `# pedkindraw (development version)`, `R/pedkindraw-package.R` for `?pedkindraw`,
-      and the gate `user-facing-sire-dam-words` widened to read the README, NEWS and vignettes. No function code
-      (the plan's section 5.7: checks first, no TDD phase gates unless Mark asks). Its picker: the plan's D1-D2.
-
 - [ ] **Phase 16b-16e** (READY in turn, one session each) -- 16b the getting-started vignette, knitr and rmarkdown
       in Suggests, the 375-animal example in `inst/extdata/` (R80); 16c the drawing vignette, the installed package
       under 5 MB (R77); 16d the speed and size-limits vignette and `tools/checkSpeedTables.R` (R79); 16e the pkgdown
       site on GitHub Pages (R78), then Phase 16 DONE. Phase 17, the CRAN submission, follows with its own plan.
+      From 16a (S26): render a page with the current tree installed first (README.Rmd's own comment gives the
+      steps; the stale copy below); `?pedkindraw`'s "Getting started" section (`R/pedkindraw-package.R`) names
+      the README today, and 16b-16d add each vignette there; the README names no vignette or site yet; 16c's
+      sections of a multi-condition symbol meet the legend item below first.
+
+- [ ] **The legend does not explain the sections of a multi-condition symbol** (READY, Effort S-M, a guess) --
+      Mark (S26), on a candidate README picture with two conditions: "It has vertical lines in the symbols that are
+      not explained in the legend. It looks like an error." With two or more conditions `drawPedigreeDiagram()`
+      splits every symbol into equal sections, the first of two the left half (`R/affectedConditions.R:84`,
+      `.conditionSectionsHandler()`), and draws the dividers on unaffected animals too; the legend shows each
+      condition as a whole filled hexagon (`R/drawPedigreeDiagram.R`, `conditionRows`), so nothing says which
+      section is which. The code is nprcgenekeepr's, copied unchanged (its S1029), so nprcgenekeepr's drawing has
+      the same gap: a fix here is mirrored there or recorded in `DIVERGENCE.md` (plan section 5); the session's
+      first picker asks which. Code, so TDD. Before 16c, whose drawing vignette shows two to four conditions.
+
+- [ ] **What kinship2 or Pedixplorer can do that pedkindraw cannot** (READY, Effort M, a guess) -- Mark (S26): "Add
+      to backlog to document what pedkindraw does not do that kinship2 or pedixplorer can do. Later we will decide
+      if those gaps should be addressed and removed." A document under `docs/research/` listing each gap with its
+      evidence; deciding which to close is a later step, Mark's. Starting points: the gap table of kinship2's 25
+      exports (`docs/research/kinship2-feature-gap-analysis-2026-09-20.md`, written for nprcgenekeepr before
+      pedkindraw existed; re-check each row against pedkindraw's 31 exports); the comparison study's section 10
+      (`docs/research/pedigree-package-comparison-2026-11.md`: no SVG or PDF export, no fitted view of a large
+      pedigree that shows ids); Pedixplorer has no gap table yet (its exports and help, Bioconductor 1.8.0 in
+      renv). Measure each claimed gap on a typed case (Learnings 18-19).
 
 - [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
@@ -46,7 +63,7 @@ issues).*
       2,341, the same 43 (`R/layoutHints.R` added, 52 of 52; `R/makePedigreeDiagramData.R`'s lines moved, above). S23 on `ffe042f`:
       97.91%, 43 of 2,445, the same 43 (`R/layoutHints.R` 174 of 174 lines; `R/makePedigreeDiagramData.R`'s lines
       moved, above). S24 on `bcdc1b0`: 97.96%, 43 of 2,501, the same 43 (`R/asPedFrame.R` 158 of 158 statements,
-      `R/layoutHints.R` 149 of 149; `R/makePedigreeDiagramData.R` unchanged, its lines as at `ffe042f`)). S25 changed nothing in `R/` (a planning session); not re-measured.
+      `R/layoutHints.R` 149 of 149; `R/makePedigreeDiagramData.R` unchanged, its lines as at `ffe042f`)). S25 changed nothing in `R/` (a planning session), and S26 only added `R/pedkindraw-package.R`, the package help page's source (no function); not re-measured.
 
 ## Waiting on Mark
 

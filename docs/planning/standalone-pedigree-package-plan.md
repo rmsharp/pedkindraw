@@ -41,9 +41,10 @@ tests, R46-R48); Phase 13 DONE (pedkindraw S17: `checkPedigree()`, 23 tests, R49
 `R/layoutHints.R`, 12 tests, R64-R69); Phase 15b DONE (pedkindraw S23: the `mate` layout hint, R61's `spouse`
 renamed, 9 tests, R70-R73); Phase 15c DONE (pedkindraw S24: `asPedFrame()` returns the object's layout hints, 12
 tests, R74-R76), so Phase 15 is DONE; Phase 16's plan DONE (pedkindraw S25:
-`docs/planning/documentation-plan.md`, R77-R80; five build sessions, 16a-16e).
-**Next:** Phase 16a, README, NEWS and the package help page (the documentation plan's section 6; pedkindraw
-`methodology/BACKLOG.md`).
+`docs/planning/documentation-plan.md`, R77-R80; five build sessions, 16a-16e); Phase 16a DONE (pedkindraw S26: the
+README with its picture, NEWS and `?pedkindraw`).
+**Next:** Phase 16b, the getting-started vignette and the example file (the documentation plan's section 6;
+pedkindraw `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -756,6 +757,18 @@ installed, stopped on the stale pedkindraw 0.0.1 in renv's library without it, a
 and `DIVERGENCE.md`; a still picture by chromote in 8.7 s; a vignette rendered with kinship2 and Pedixplorer absent;
 nprcgenekeepr S1141's re-timed files identical to those pedkindraw copied at `baef1e12c`. Mark picked the
 recommended option on all four questions.
+
+**Done 16a (pedkindraw S26):** `README.Rmd` knitted to `README.md` (two renders the same), its example run when
+knitted and each statement its text makes held by a hidden `stopifnot()` chunk; the picture
+`man/figures/README-pedigree.png`, made by `tools/makeReadmePicture.R` from the README's own chunks; `NEWS.md`;
+`R/pedkindraw-package.R` for `?pedkindraw`; the words gate widened to the README, NEWS and vignettes. Mark's picks:
+D1 pak; D2 a 12-animal pedigree with one condition, after the 13-animal one with two conditions showed every
+symbol split into sections the legend does not explain (a backlog item). NEWS's heading names the version,
+`# pedkindraw 0.0.1 (development version)`: without a number R finds no entries and `R CMD check` adds a NOTE.
+Checks: all 31 exports named in `README.md`; suite 676 tests, 0 failed, WARN 0, 5,929 passed; lint 0; roxygen
+added `man/pedkindraw-package.Rd` only; `R CMD check --as-cran` R16's NOTE only, installed 608 KB; drift tool 3
+differ, all with rows; CI run `43805309511` 5/5; the README and its picture viewed on the repository's GitHub
+page.
 
 ### Phase 17 -- CRAN submission (new repository; its own plan first)
 
