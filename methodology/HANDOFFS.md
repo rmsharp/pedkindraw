@@ -196,17 +196,17 @@ manifest existed are not re-judged.
 ```handoff
 session: S29
 date: 2026-11-16
-status: pending
-self_score: pending
-predecessor_score: pending
-active_task: plan Phase 16c, the drawing vignette (docs/planning/documentation-plan.md section 5.4, DONE at its 16c item): vignettes/drawing.Rmd with its statements held by hidden stopifnot() chunks; TDD phase none (documentation), checks written first
-what_was_done: pending
-next_steps: pending
-key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:162 (section 5.4), docs/planning/documentation-plan.md:250 (16c's DONE), vignettes/pedkindraw.Rmd:399 (Where next), R/pedkindraw-package.R:42 (Getting started)
-gotchas: pending
-runtime_smoke: pending
-changelog_ref: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 16c is DONE: vignettes/drawing.Rmd, "Drawing pedigrees", 11 drawings, each statement of where an animal is drawn or what a drawing shows held by a hidden stopifnot() chunk; Mark looked at the built page. Next: Phase 16d, the speed and size-limits vignette (docs/planning/documentation-plan.md section 5.5, DONE at its 16d item), READY
+what_was_done: claim 0910a03 (pushed with S28's two close-out commits, CI 43918919966 5/5); a trial page at the vignette's width (every node of 11 drawings inside its canvas in headless Chrome; page 2,040,883 B; installed 4,316 KB from a scratch build; the colony warning and the direct style measured; a click's ids and the "Select by id" box measured); Mark's picks "As drafted", "Show and explain", "Numbers now"; vignette 7ab93a0 (vignettes/drawing.Rmd; ?pedkindraw and the getting-started vignette's Where next name it; man/pedkindraw-package.Rd), pushed, CI 43937366764 5/5; Mark's "Looks right" on the built page; close-out 1 5c1eb1c (the plan's status and Done 16c, the documentation plan's S29 note, ROADMAP, BACKLOG: 16d's pointers, the "Select by id" bug, the suite gate's time limit)
+next_steps: Orient; drift tool (91 functions, 5 differ, all with rows); nprcgenekeepr's log on the copied drawing files since b4abb9a0b (if it has ported R81, BACKLOG.md:33 is unblocked); push S29's two close-out commits with the first push; the orient picker offers 16d (recommended), the "Select by id" bug (BACKLOG.md:24), the gap document (:44), coverage (:54), or hold; for 16d list every number its tables will state with its source file, commit and cell, and write tools/checkSpeedTables.R and run it failing before the tables are filled; then point ?pedkindraw, the getting-started vignette and the drawing vignette's size section at the new vignette
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/documentation-plan.md:67 (the timing records), docs/planning/documentation-plan.md:185 (5.5), docs/planning/documentation-plan.md:269 (16d DONE), docs/planning/pedkindraw-api-contract.md:279 (section 7), vignettes/drawing.Rmd:681 (the size section), vignettes/pedkindraw.Rmd:399 (Where next), R/pedkindraw-package.R:42 (Getting started), R/drawPedigreeDiagram.R:292 (the box's filter), methodology/BACKLOG.md:11 (16d-16e), methodology/BACKLOG.md:100 (the suite gate's limit)
+gotchas: a widget's first canvas is the legend's, the diagram's is network.canvas.frame.canvas; judge what a reader sees from a picture (an escaped .vis-tooltip read misled, the picture showed the tooltip rendered), a screenshot clip needs page coordinates (r.top + scrollY) and a screenshot re-fits the legend; the invisible turning points sit between the animals' rows, y is integer under direct and double under rectilinear; an isolated animal gives a message; the suite gate's 300 s limit is below the suite's 261-271 s (cite by hand if it times out); the scratch-install recipe and the render without kinship2 (links to 123 of renv's 126 packages); installed 4,284 KB of 5,120; nprcgenekeepr's sessions commit during a session; grep -F for code text with ^ or |; .lintr excludes vignettes; words; CLAUDE.md over budget; pedkindraw.Rproj left for Mark
+runtime_smoke: the built page opened in headless Chrome: every node of all 11 drawings inside its canvas (1,466 of 1,466 for the colony; 2 of 17 when zoomed to 4), hover greys the animals not near the pointer and its tooltip renders (a picture); rendered with kinship2 and Pedixplorer absent; six changed values each stopped a render; R CMD check --as-cran: 1 NOTE (Maintainer, New submission only), vignettes re-built OK, installed 4,284 KB; suite 684 tests, 0 failed, 0 skipped, WARN 0, 6,109 passed; Mark looked at the built page; CI 43937366764 5/5; quality_ratchet: 4/5 pass · 0 fail · 1 unmeasured · results 42b564bc4c70 · manifest 01151c525b8a; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: test_local() on 7ab93a0's files, 684 tests, WARN 0
+changelog_ref: CHANGELOG.md "2026-11-16 · [BL-Phase 16c] S29: plan Phase 16c, the drawing vignette", "S29 push 1" and "S29 push 2"
+commit: this receipt's commit (close-out 2)
 ```
 
 ```handoff
