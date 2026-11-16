@@ -57,9 +57,9 @@
       "direction": "max",
       "threshold": 0,
       "unit": "lines",
-      "command": "grep -rEiw 'husband|husbands|wife|wives' R man | wc -l",
+      "command": "grep -rsEiw 'husband|husbands|wife|wives' R man vignettes README.Rmd README.md NEWS.md | wc -l",
       "extract": "(\\d+)",
-      "why": "S23 (2026-11-15): Mark ruled 'I want user facing documentation and code to use sire and dam' after a session copied kinship2's human-pedigree wording (husband, wife) into its descriptions of layout hints (plan R73). kinship2's and Pedixplorer's help pages use that wording, so it can come back with any comparison. Measured 0 in R/ and man/ at S23's close-out; older committed text elsewhere may stay (Mark)."
+      "why": "S23 (2026-11-15): Mark ruled 'I want user facing documentation and code to use sire and dam' after a session copied kinship2's human-pedigree wording (husband, wife) into its descriptions of layout hints (plan R73). kinship2's and Pedixplorer's help pages use that wording, so it can come back with any comparison. Measured 0 in R/ and man/ at S23's close-out; older committed text elsewhere may stay (Mark). S26 (plan Phase 16a, R77): widened to the README, NEWS and vignettes, the user-facing text Phase 16 writes; -s because vignettes/ does not exist until 16b (a path not there reads as no lines, not an error)."
     }
   ]
 }
