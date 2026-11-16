@@ -15,6 +15,8 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-15 · [BL-Phase 16] S25 claim (in progress): plan Phase 16, documentation, a planning session (`methodology/SESSION_RUNNER.md` "Planning Sessions", `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`): the plan under `docs/planning/` for the README, two vignettes, a pkgdown site, NEWS and the Phase 1-2 timing tables, each build session with DONE criteria, verification commands and surface; nothing built
+
 ### 2026-11-15 · [BL-Phase 15c] S24 push: `master` to GitHub at `bcdc1b0` (7 commits: S23's two close-out commits, S24's claim through REFACTOR), CI green on five jobs at the first attempt
 - **Change:** `git push origin master` (`ffe042f..bcdc1b0`); CI run `43781542125`: 5/5 `Status: OK`, attempt 1, 15 min; `FAIL 0 | WARN 0` on each: macOS PASS 5929 SKIP 0, Windows PASS 5928 SKIP 1, Ubuntu devel, release and oldrel-1 PASS 5918 SKIP 2 (each 785 more than S23's runs: the 12 new tests ran everywhere, the random-pedigree tests included, CI setting `NOT_CRAN`).
 - **Commit/PR:** none (push); S24's close-out commits after it are not pushed · **Session:** S24 · **Verified:** `gh run watch --exit-status`, `gh run view --json` (status, conclusion, attempt, each job) and each job's testthat summary line in `gh run view --log`.

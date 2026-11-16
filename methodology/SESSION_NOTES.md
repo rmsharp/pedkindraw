@@ -113,6 +113,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S23's entries were removed in S3-S24 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 25 Did
+**Deliverable:** plan Phase 16, documentation: a planning session (`methodology/SESSION_RUNNER.md` "Planning
+Sessions", `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`); the plan under `docs/planning/`, its sessions each
+with DONE criteria, verification commands and surface; a scratch vignette measured before the picker; no README or
+vignette written (IN PROGRESS)
+**Started:** 2026-11-15 19:56 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Plan the documentation
+(Recommended)" (orient)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 23 Handoff Evaluation (by Session 24)
 **Score: 9/10.**
 - **What helped:** the five ordered steps became this session's sequence, and step 3's measurements decided the

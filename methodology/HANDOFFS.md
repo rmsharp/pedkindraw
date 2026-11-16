@@ -194,6 +194,22 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S25
+date: 2026-11-15
+status: pending
+self_score: pending
+predecessor_score: pending
+active_task: plan Phase 16, documentation, a planning session: the plan under docs/planning/ (README, a getting-started vignette, a drawing vignette, a pkgdown site, NEWS, the Phase 1-2 timing tables), each build session with DONE criteria, verification commands and surface; a scratch vignette measured before the picker; nothing built
+what_was_done: pending
+next_steps: pending
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), methodology/BACKLOG.md:11 (the Phase 16 item), docs/planning/standalone-pedigree-package-plan.md:730 (Phase 16), docs/planning/pedkindraw-api-contract.md:248 (section 5)
+gotchas: pending
+runtime_smoke: pending
+changelog_ref: pending
+commit: pending
+```
+
+```handoff
 session: S24
 date: 2026-11-15
 status: complete
