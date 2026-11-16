@@ -57,8 +57,12 @@ functions above take.
 
 \section{Getting started}{
 
-The README on the package's GitHub page draws a twelve-animal pedigree; the
-example of \code{\link[=drawPedigreeDiagram]{drawPedigreeDiagram()}} draws four.
+\code{vignette("pedkindraw", package = "pedkindraw")} takes the 375-animal
+example pedigree that comes with the package from its records to a drawing:
+checking it, its generations and family trees, kinship, trimming it to one
+animal's ancestors, drawing them, shrinking it and finding unrelated
+animals. The README on the package's GitHub page draws a twelve-animal
+pedigree; the example of \code{\link[=drawPedigreeDiagram]{drawPedigreeDiagram()}} draws four.
 }
 
 \seealso{

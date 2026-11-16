@@ -1,0 +1,403 @@
+---
+title: "Getting started with pedkindraw"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with pedkindraw}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+This vignette takes one pedigree from its records to a drawing. It reads the
+example pedigree that comes with the package, checks it, numbers its
+generations and family trees, computes kinship, trims it to one animal's
+ancestors and draws them. Then it shrinks the pedigree and finds a set of
+unrelated animals in it. The last section converts a kinship2 pedigree.
+
+## A pedigree is a data frame
+
+A pedigree has one row per animal: its `id`, `sire` and `dam` (`NA` for an
+unknown parent; an animal may have one known parent), and optionally its `sex`
+(`"M"`, `"F"`, `"H"` for a hermaphrodite or `"U"` for unknown), a `status`
+(`"DECEASED"` marks an animal that has died) and condition columns, whose names
+start with `affected`. Other columns are kept. Twins are listed in a table of
+their own, one pair per row: `id1`, `id2` and `code` (`"MZ twin"`, `"DZ twin"`
+or `"UZ twin"`, for identical, fraternal and unknown).
+
+pedkindraw comes with a pedigree of 375 rhesus macaques and the table of its
+three twin pairs. Both are files copied unchanged from the examples of the
+package nprcgenekeepr, which disguised (obfuscated) the records for use in
+examples.
+
+```{r read}
+library(pedkindraw)
+
+pedFile <- system.file("extdata", "obfuscated_rhesus_mhc_ped.csv",
+                       package = "pedkindraw")
+twinFile <- system.file("extdata", "obfuscated_rhesus_mhc_twin_relations.csv",
+                        package = "pedkindraw")
+ped <- read.csv(pedFile, stringsAsFactors = FALSE)
+twins <- read.csv(twinFile, stringsAsFactors = FALSE)
+nrow(ped)
+head(ped)
+twins
+```
+
+Besides `id`, `sire`, `dam` and `sex`, the file gives each animal's
+generation (`gen`), birth date, exit date and age. It has no `status` or
+condition column, so the drawing below marks neither.
+
+## Checking the records
+
+`checkPedigree()` lists each problem it finds, one row per problem, and
+changes nothing. It finds none in the example. `checkTwinRelations()` stops if
+a twin pair is not possible, for instance MZ or DZ twins that do not share a
+sire and a dam, and otherwise returns the table.
+
+```{r check}
+checkPedigree(ped)
+twins <- checkTwinRelations(ped, twins)
+```
+
+Records with problems look like this. Here `s2` is the sire of `o2` but has
+no row of its own, and `d1`, the dam of `o1` and `o2`, is recorded as male.
+
+```{r problems}
+records <- data.frame(
+  id   = c("s1", "d1", "o1", "o2"),
+  sire = c(NA, NA, "s1", "s2"),
+  dam  = c(NA, NA, "d1", "d1"),
+  sex  = c("M", "M", "F", "M")
+)
+checkPedigree(records)
+```
+
+`addParents()` adds a row for each sire or dam that has none, and marks the
+rows in a `recordStatus` column. `correctParentSex()` sets the sex of each
+sire recorded as female and each dam recorded as male. After both, the check
+finds nothing.
+
+```{r repair}
+records <- addParents(records)
+records$sex <- correctParentSex(records$id, records$sire, records$dam,
+                                records$sex, records$recordStatus)
+records
+checkPedigree(records)
+```
+
+## Generations and family trees
+
+`findGeneration()` numbers each animal's generation: 0 for a founder, an
+animal with no known sire or dam, and one more than its later parent's for
+every other. The layout and `kinship()` need these numbers. The example spans
+nine generations, 0 to 8, and the numbers are the same as the file's own
+`gen` column, which this line replaces.
+
+```{r generations}
+ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+table(ped$gen)
+```
+
+`findPedigreeNumber()` numbers the family trees: animals joined through their
+sires and dams share a number. The example has five trees, one of 343 animals
+and four of 3 to 13.
+
+```{r families}
+ped$family <- findPedigreeNumber(ped$id, ped$sire, ped$dam)
+table(ped$family)
+```
+
+## Kinship
+
+`kinship()` computes the kinship coefficient of every pair of animals: the
+chance that an allele taken at random from one animal and an allele taken at
+random from the other are identical by descent. An animal's coefficient with
+itself is 0.5, or more when it is inbred. With `sparse = TRUE` it returns a
+sparse matrix, which saves memory in a large pedigree.
+
+```{r kinship}
+k <- kinship(ped$id, ped$sire, ped$dam, ped$gen, twinRelations = twins)
+dim(k)
+k[c("E06FRB", "HV7LZ3", "8GSXTQ", "P844CW"),
+  c("E06FRB", "HV7LZ3", "8GSXTQ", "P844CW")]
+```
+
+E06FRB and HV7LZ3 are identical (MZ) twins. The twins table gives them a
+coefficient of 0.5, the same as each has with itself; without it they would
+have 0.25, that of full siblings. 8GSXTQ and P844CW are fraternal (DZ) twins,
+full siblings, at 0.25.
+
+An animal whose sire and dam are related is inbred. The example has 29 such
+animals.
+
+```{r inbred}
+sum(diag(k) > 0.5)
+k[c("81MJXH", "H16XSK", "ED5PDV"), c("81MJXH", "H16XSK", "ED5PDV")]
+```
+
+One of them is ED5PDV. Its sire 81MJXH and its dam H16XSK are half siblings,
+both offspring of YPHFHF, and their kinship coefficient is 0.125. So ED5PDV's
+coefficient with itself is (1 + 0.125) / 2 = 0.5625.
+
+## Trimming a pedigree to the animals of interest
+
+`getProbandPedigree()` keeps the animals of interest, the probands, and all
+of their ancestors. ED5PDV and its ancestors are 16 animals in five
+generations, 8 of them founders.
+
+```{r trim}
+small <- getProbandPedigree("ED5PDV", ped)
+nrow(small)
+```
+
+`trimPedigree()` does the same, and with `removeUninformative = TRUE` it also
+removes each founder that has only one offspring, again and again until none
+is left. Such a founder changes no kinship coefficient among the animals
+left. Here that leaves the four animals that make ED5PDV inbred: YPHFHF, its
+offspring 81MJXH and H16XSK, and ED5PDV.
+
+```{r core}
+core <- trimPedigree("ED5PDV", ped, removeUninformative = TRUE)
+core[, c("id", "sire", "dam", "sex")]
+```
+
+## Drawing a pedigree
+
+`makePedigreeMatingLayout()` places each animal and each mating of a
+pedigree, and `drawPedigreeDiagram()` draws the layout as an interactive
+graph. The layout can also take a twins table, a kinship matrix and layout
+hints, which its help page describes.
+
+```{r drawing, out.width = "100%"}
+layout <- makePedigreeMatingLayout(small)
+drawPedigreeDiagram(layout)
+```
+
+Squares are males and circles females. The small dot between two animals is
+their mating, and a line goes down from it to each of their offspring. The
+mating of the half siblings 81MJXH and H16XSK is drawn in orange, because
+their kinship coefficient is above 0. Three animals are drawn twice, and a
+dashed line joins the two places of each: YPHFHF beside each of its two
+mates, and 5LDNWE and H16XSK under their sire and dam and again beside their
+mate. In the drawing you can zoom, hover over an animal to highlight the
+animals joined to it, pick an animal in the "Select by id" box, and save the
+picture with the "Export Diagram (PNG)" button.
+
+## Shrinking a pedigree
+
+`shrinkPedigree()` trims a pedigree to the animals needed to keep it
+informative within a budget on its bit size, given which animals are
+genotyped and, optionally, which are affected. It follows kinship2's
+`pedigree.shrink()`. The bit size, which `bitSize()` gives, is twice the
+number of animals with a known parent less the number of founders. The
+example has no genotypes, so 30 percent of the animals are picked at random
+to stand for the genotyped ones: 109 of the 375.
+
+```{r genotyped}
+set.seed(42)
+genotyped <- runif(nrow(ped)) < 0.3
+sum(genotyped)
+bitSize(ped)
+```
+
+The whole pedigree's bit size is 2 * 251 - 124 = 378.
+
+```{r shrink}
+shrunk <- shrinkPedigree(ped, genotyped, maxBits = 16L)
+lengths(shrunk$idList)
+c(shrunk$pedSizeOriginal, shrunk$pedSizeIntermed, shrunk$pedSizeFinal)
+shrunk$bitSize[c(1L, 2L, length(shrunk$bitSize))]
+```
+
+It works in steps. It first removes 104 unavailable animals: those not
+genotyped that are left with no offspring, and founders that add nothing.
+Then it removes 4 genotyped animals with no offspring left whose sire and dam
+are both genotyped. That takes the pedigree from 375 animals to 267, and its
+bit size from 378 to 237. Last, it removes one genotyped animal with no
+offspring left at a time, each time the one whose removal leaves the smallest
+bit size, with the animals that removal leaves unavailable, until the bit size
+is at most 16. That takes 214 more animals and leaves 53, at a bit size of 16.
+Its help page gives each rule.
+
+## Finding unrelated animals
+
+`findUnrelated()` chooses genotyped animals of which no two are related, as
+many as it can: 44 of the 109 genotyped animals here. Their kinship
+coefficients with each other are all 0.
+
+```{r unrelated}
+unrelated <- findUnrelated(ped, genotyped)
+length(unrelated)
+kU <- k[unrelated, unrelated]
+all(kU[upper.tri(kU)] == 0)
+```
+
+```{r claims, include = FALSE}
+## Each value the text above states, held here: the vignette stops
+## building if one no longer holds.
+stopifnot(
+  nrow(ped) == 375L, nrow(twins) == 3L,
+  !any(c("status", "affected") %in% names(ped)),
+  nrow(checkPedigree(ped)) == 0L,
+  identical(checkTwinRelations(ped, twins), twins)
+)
+problems <- checkPedigree(data.frame(
+  id   = c("s1", "d1", "o1", "o2"),
+  sire = c(NA, NA, "s1", "s2"),
+  dam  = c(NA, NA, "d1", "d1"),
+  sex  = c("M", "M", "F", "M")
+))
+stopifnot(
+  identical(problems$check, c("rowlessParents", "maleDams")),
+  identical(problems$id, c("s2", "d1")),
+  identical(records$id, c("s1", "d1", "o1", "o2", "s2")),
+  identical(records$sex, c("M", "F", "F", "M", "M")),
+  identical(records$recordStatus, c(rep("original", 4L), "added")),
+  nrow(checkPedigree(records)) == 0L
+)
+fileGen <- read.csv(pedFile, stringsAsFactors = FALSE)$gen
+founder <- is.na(ped$sire) & is.na(ped$dam)
+names(fileGen) <- ped$id
+laterParent <- pmax(fileGen[ped$sire], fileGen[ped$dam], na.rm = TRUE)
+stopifnot(
+  all(ped$gen == fileGen),
+  identical(sort(unique(ped$gen)), 0:8),
+  all(ped$gen[founder] == 0L),
+  all(ped$gen[!founder] == laterParent[!founder] + 1L),
+  identical(as.vector(sort(table(ped$family), decreasing = TRUE)),
+            c(343L, 13L, 11L, 5L, 3L))
+)
+kNoTwins <- kinship(ped$id, ped$sire, ped$dam, ped$gen)
+stopifnot(
+  identical(dim(k), c(375L, 375L)),
+  all(diag(k) >= 0.5),
+  methods::is(kinship(ped$id, ped$sire, ped$dam, ped$gen, sparse = TRUE),
+              "sparseMatrix"),
+  k["E06FRB", "HV7LZ3"] == 0.5, k["E06FRB", "E06FRB"] == 0.5,
+  k["HV7LZ3", "HV7LZ3"] == 0.5, kNoTwins["E06FRB", "HV7LZ3"] == 0.25,
+  identical(twins$code[twins$id1 == "E06FRB" & twins$id2 == "HV7LZ3"],
+            "MZ twin"),
+  identical(twins$code[twins$id1 == "8GSXTQ" & twins$id2 == "P844CW"],
+            "DZ twin"),
+  k["8GSXTQ", "P844CW"] == 0.25,
+  ped$sire[ped$id == "8GSXTQ"] == ped$sire[ped$id == "P844CW"],
+  ped$dam[ped$id == "8GSXTQ"] == ped$dam[ped$id == "P844CW"],
+  sum(diag(k) > 0.5) == 29L,
+  identical(ped$sire[ped$id == "ED5PDV"], "81MJXH"),
+  identical(ped$dam[ped$id == "ED5PDV"], "H16XSK"),
+  identical(ped$sire[ped$id %in% c("81MJXH", "H16XSK")],
+            c("YPHFHF", "YPHFHF")),
+  ped$dam[ped$id == "81MJXH"] != ped$dam[ped$id == "H16XSK"],
+  k["81MJXH", "H16XSK"] == 0.125, k["ED5PDV", "ED5PDV"] == 0.5625
+)
+core$gen <- findGeneration(core$id, core$sire, core$dam)
+kCore <- kinship(core$id, core$sire, core$dam, core$gen)
+stopifnot(
+  nrow(small) == 16L, "ED5PDV" %in% small$id,
+  sum(is.na(small$sire) & is.na(small$dam)) == 8L,
+  length(unique(small$gen)) == 5L,
+  identical(trimPedigree("ED5PDV", ped), small),
+  setequal(core$id, c("YPHFHF", "81MJXH", "H16XSK", "ED5PDV")),
+  isTRUE(all.equal(kCore, k[core$id, core$id]))
+)
+## The drawing: no warning from the layout, the orange mating, the animals
+## drawn twice, and one mating dot per sire and dam pair.
+withCallingHandlers(
+  makePedigreeMatingLayout(small),
+  warning = function(w) stop("the layout warned: ", conditionMessage(w))
+)
+realId <- function(nodeId) {
+  ifelse(nodeId %in% names(layout$duplicateToReal),
+         unname(layout$duplicateToReal[nodeId]), nodeId)
+}
+rowOf <- function(nodeId) layout$nodes$y[match(nodeId, layout$nodes$id)]
+dupOf <- function(id) names(layout$duplicateToReal)[layout$duplicateToReal == id]
+orange <- layout$edges$color %in% "#D55E00"
+matings <- unique(small[!is.na(small$sire), c("sire", "dam")])
+animals <- layout$nodes[realId(layout$nodes$id) %in% small$id, ]
+animalSex <- small$sex[match(realId(animals$id), small$id)]
+stopifnot(
+  setequal(realId(layout$edges$from[orange]), c("81MJXH", "H16XSK")),
+  length(unique(layout$edges$to[orange])) == 1L,
+  identical(sort(unname(layout$duplicateToReal)),
+            sort(c("YPHFHF", "5LDNWE", "H16XSK"))),
+  all(animals$shape[animalSex == "M"] == "square"),
+  all(animals$shape[animalSex == "F"] == "dot"),
+  sum(startsWith(layout$nodes$id, "__union_")) == nrow(matings),
+  identical(sort(unique(small$dam[small$sire %in% "YPHFHF"])),
+            c("5LDNWE", "WFGRY3")),
+  rowOf(dupOf("5LDNWE")) == rowOf("YPHFHF"),
+  rowOf(dupOf("H16XSK")) == rowOf("81MJXH"),
+  rowOf(dupOf("YPHFHF")) == rowOf("WFGRY3"),
+  identical(small$sire[small$id == "5LDNWE"], "WDBGPF"),
+  rowOf("5LDNWE") > rowOf("WDBGPF"), rowOf("H16XSK") > rowOf("YPHFHF")
+)
+stopifnot(
+  sum(genotyped) == 109L,
+  identical(bitSize(ped), list(bitSize = 378L, nFounder = 124L,
+                               nNonFounder = 251L)),
+  identical(lengths(shrunk$idList),
+            c(unavail = 104L, noninform = 4L, affected = 214L)),
+  shrunk$pedSizeOriginal == 375L, shrunk$pedSizeIntermed == 267L,
+  shrunk$pedSizeFinal == 53L, nrow(shrunk$ped) == 53L,
+  shrunk$bitSize[1L] == 378, shrunk$bitSize[2L] == 237,
+  shrunk$bitSize[length(shrunk$bitSize)] == 16,
+  bitSize(shrunk$ped)$bitSize == 16L,
+  all(genotyped[match(shrunk$idList$noninform, ped$id)]),
+  all(genotyped[match(ped$sire[match(shrunk$idList$noninform, ped$id)],
+                      ped$id)]),
+  all(genotyped[match(ped$dam[match(shrunk$idList$noninform, ped$id)],
+                      ped$id)]),
+  length(unrelated) == 44L, all(unrelated %in% ped$id[genotyped]),
+  all(kU[upper.tri(kU)] == 0)
+)
+```
+
+## For kinship2 users
+
+`asPedFrame()` converts a kinship2 `pedigree` or `pedigreeList`, or a
+Pedixplorer `Pedigree`, to a list: the pedigree as a data frame (`ped`), its
+twins table (`twinRelations`) and its layout hints (`hints`), each `NULL` when
+the object has none. The chunks below run only when kinship2 is installed.
+They convert family 2 of kinship2's `sample.ped`, 14 animals. kinship2 codes
+sex as 1 and 2 and an unknown parent as 0; the data frame has `"M"`, `"F"` and
+`NA`.
+
+```{r kinship2, eval = requireNamespace("kinship2", quietly = TRUE)}
+data("sample.ped", package = "kinship2")
+fam2 <- sample.ped[sample.ped$ped == 2, ]
+p <- kinship2::pedigree(id = fam2$id, dadid = fam2$father,
+                        momid = fam2$mother, sex = fam2$sex,
+                        affected = fam2$affected)
+x <- asPedFrame(p)
+head(x$ped)
+```
+
+The data frame then goes to the functions above, and `kinship()` gives the
+same coefficients as kinship2's own `kinship()`.
+
+```{r kinship2Kinship, eval = requireNamespace("kinship2", quietly = TRUE)}
+x$ped$gen <- findGeneration(x$ped$id, x$ped$sire, x$ped$dam)
+k2 <- kinship(x$ped$id, x$ped$sire, x$ped$dam, x$ped$gen)
+all.equal(k2, kinship2::kinship(p)[x$ped$id, x$ped$id])
+```
+
+```{r kinship2Claims, include = FALSE, eval = requireNamespace("kinship2", quietly = TRUE)}
+stopifnot(
+  nrow(x$ped) == 14L, is.null(x$twinRelations), is.null(x$hints),
+  identical(sort(unique(x$ped$sex)), c("F", "M")),
+  all(fam2$sex %in% 1:2), any(fam2$father == 0),
+  identical(is.na(x$ped$sire), fam2$father == 0),
+  nrow(checkPedigree(x$ped)) == 0L,
+  isTRUE(all.equal(k2, kinship2::kinship(p)[x$ped$id, x$ped$id]))
+)
+```
+
+## Where next
+
+`?pedkindraw` lists every function by what it does. The help pages of
+`makePedigreeMatingLayout()` and `drawPedigreeDiagram()` describe the twins
+table, the kinship matrix and the layout hints the drawing takes.
