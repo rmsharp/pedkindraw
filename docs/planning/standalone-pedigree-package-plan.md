@@ -42,9 +42,10 @@ tests, R46-R48); Phase 13 DONE (pedkindraw S17: `checkPedigree()`, 23 tests, R49
 renamed, 9 tests, R70-R73); Phase 15c DONE (pedkindraw S24: `asPedFrame()` returns the object's layout hints, 12
 tests, R74-R76), so Phase 15 is DONE; Phase 16's plan DONE (pedkindraw S25:
 `docs/planning/documentation-plan.md`, R77-R80; five build sessions, 16a-16e); Phase 16a DONE (pedkindraw S26: the
-README with its picture, NEWS and `?pedkindraw`).
-**Next:** Phase 16b, the getting-started vignette and the example file (the documentation plan's section 6;
-pedkindraw `methodology/BACKLOG.md`).
+README with its picture, NEWS and `?pedkindraw`); Phase 16b DONE (pedkindraw S27: the getting-started vignette and
+the 375-animal example file).
+**Next:** Phase 16c, the drawing vignette (the documentation plan's section 6), after the backlog's legend item,
+which it needs (pedkindraw `methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -769,6 +770,20 @@ Checks: all 31 exports named in `README.md`; suite 676 tests, 0 failed, WARN 0, 
 added `man/pedkindraw-package.Rd` only; `R CMD check --as-cran` R16's NOTE only, installed 608 KB; drift tool 3
 differ, all with rows; CI run `43805309511` 5/5; the README and its picture viewed on the repository's GitHub
 page.
+
+**Done 16b (pedkindraw S27):** `vignettes/pedkindraw.Rmd`, "Getting started with pedkindraw": R80's two files in
+`inst/extdata/` (`cmp` equal to nprcgenekeepr's at `baef1e12c`), read with `system.file()`; checking and repairing,
+generations and family trees, kinship, trimming, one drawing, shrinking, unrelated animals, and kinship2's
+`sample.ped` through `asPedFrame()` (run only when kinship2 is installed). Each value its text states is held by a
+hidden `stopifnot()` chunk, each shown stopping a render with one value changed. Mark's pick (D3): the drawing of
+ED5PDV's 16 ancestors, whose sire and dam are half siblings, from three candidates drawn on trial pages at the
+vignette's width; 36-37 animals drew their ids too small or not at all. A drawing chunk needs `out.width = "100%"`
+(html_vignette's `fig.width = 3` drew it 288 px wide). knitr and rmarkdown in Suggests with `VignetteBuilder:
+knitr` (the lock unchanged). `?pedkindraw` names the vignette. Checks: rendered with kinship2 and Pedixplorer
+absent; on the built page in headless Chrome all 51 layout nodes inside the drawing's canvas (the check failing
+when zoomed in); suite 676 tests, 0 failed, WARN 0, 5,929 passed; lint 0; roxygen idempotent; `R CMD check
+--as-cran` R16's NOTE only, vignettes re-built OK, installed 2,236 KB; drift tool 3 differ, all with rows;
+`quality_ratchet.py --run` 5/5; CI run `43810961086` 5/5, the vignette re-built on each.
 
 ### Phase 17 -- CRAN submission (new repository; its own plan first)
 

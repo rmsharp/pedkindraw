@@ -8,14 +8,20 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 16b-16e** (READY in turn, one session each) -- 16b the getting-started vignette, knitr and rmarkdown
-      in Suggests, the 375-animal example in `inst/extdata/` (R80); 16c the drawing vignette, the installed package
+- [ ] **Phase 16c-16e** (READY in turn, one session each) -- 16c the drawing vignette, the installed package
       under 5 MB (R77); 16d the speed and size-limits vignette and `tools/checkSpeedTables.R` (R79); 16e the pkgdown
       site on GitHub Pages (R78), then Phase 16 DONE. Phase 17, the CRAN submission, follows with its own plan.
       From 16a (S26): render a page with the current tree installed first (README.Rmd's own comment gives the
       steps; the stale copy below); `?pedkindraw`'s "Getting started" section (`R/pedkindraw-package.R`) names
-      the README today, and 16b-16d add each vignette there; the README names no vignette or site yet; 16c's
-      sections of a multi-condition symbol meet the legend item below first.
+      the README and, since 16b, the getting-started vignette; 16c and 16d add theirs there and to the vignette's
+      "Where next" section (`vignettes/pedkindraw.Rmd`, its last section), which names only help pages today; the
+      README names no vignette or site yet; 16c's sections of a multi-condition symbol meet the legend item below
+      first. From 16b (S27): a drawing chunk needs `out.width = "100%"`, or html_vignette's `fig.width = 3` draws
+      the widget 288 px wide with the legend's labels cut; about 22 animals is the most whose ids still read at
+      a page's fitted view (36-37 drew them too small or not at all); `makePedigreeMatingLayout()` on all 375
+      animals takes 1.8 s and warns "72 same-row edge-node collision(s)", which would print on 16c's colony-size
+      drawing; installed size with one drawing page 2,236 KB (S27's check folder); `NEWS.md` has no section on
+      documentation (16e or Phase 17 adds one).
 
 - [ ] **The legend does not explain the sections of a multi-condition symbol** (READY, Effort S-M, a guess) --
       Mark (S26), on a candidate README picture with two conditions: "It has vertical lines in the symbols that are

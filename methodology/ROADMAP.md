@@ -15,8 +15,9 @@ section 10). All five are done (S13). The new work of Phases 11-15 has begun: Ph
 (S17-S18: `checkPedigree()` and `findUnrelated()`; What's Built, below) and 14 (S19-S20: `asPedFrame()` for
 kinship2 and Pedixplorer objects) are done; Phase 15, layout hints, is done: designed (S21), then 15a the order
 hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase 16, documentation, is planned
-(S25: `docs/planning/documentation-plan.md`, R77-R80); its first session, 16a, the README, NEWS and `?pedkindraw`,
-is done (S26), and 16b is next (Planned, below).
+(S25: `docs/planning/documentation-plan.md`, R77-R80); its first sessions are done, 16a, the README, NEWS and
+`?pedkindraw` (S26), and 16b, the getting-started vignette (S27); 16c is next, after the legend item
+(`methodology/BACKLOG.md`; Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -32,9 +33,9 @@ is done (S26), and 16b is next (Planned, below).
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 16 (16b next, `methodology/BACKLOG.md`):** documentation, five sessions (`docs/planning/documentation-plan.md`
-  section 6): 16a README, NEWS and `?pedkindraw` (done, S26); 16b a getting-started vignette and a 375-animal example file; 16c a
-  drawing vignette; 16d a speed and size-limits vignette from the dated timing records; 16e the pkgdown site on
+- **Phase 16 (16c next, after the legend item, `methodology/BACKLOG.md`):** documentation, five sessions
+  (`docs/planning/documentation-plan.md` section 6): 16a README, NEWS and `?pedkindraw` (done, S26); 16b a
+  getting-started vignette and a 375-animal example file (done, S27); 16c a drawing vignette; 16d a speed and size-limits vignette from the dated timing records; 16e the pkgdown site on
   GitHub Pages. The three vignettes ship on CRAN, the package under 5 MB installed (R77-R80).
 - **Phase 17:** the CRAN submission, its own plan first. Before it, a review of argument names (contract section 6).
 - **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8).
@@ -44,7 +45,13 @@ session each unless marked. They follow the copy slices.
 - **Documentation, a start (Phase 16a):** `README.md` (made from `README.Rmd`) says what the package does, how to
   install it from GitHub, and runs a 12-animal example: checked, kinship, laid out and drawn, with a picture of the
   drawing (`man/figures/README-pedigree.png`, remade by `tools/makeReadmePicture.R`) and every export named in six
-  groups; `NEWS.md`; the package help page `?pedkindraw`. No vignettes or site yet (16b-16e).
+  groups; `NEWS.md`; the package help page `?pedkindraw`. No site yet (16e).
+- **The getting-started vignette and the example pedigree (Phase 16b):** `vignette("pedkindraw")` reads the
+  375-animal rhesus pedigree that ships in `inst/extdata/` (with its twins table, both from nprcgenekeepr's
+  examples), checks it, numbers its generations and family trees, computes kinship, trims it to one inbred animal's
+  16 ancestors and draws them, shrinks it and finds unrelated animals, and converts a kinship2 pedigree (run only
+  when kinship2 is installed); a hidden check stops the build if a value its text states stops holding. knitr and
+  rmarkdown in Suggests.
 - **Layout hints from kinship2 and Pedixplorer objects (Phase 15c), no new export:** `asPedFrame()` returns a third
   element, `hints`, the object's layout hints in `makePedigreeMatingLayout()`'s form (`order` named by id, `mate`
   rows of ids and anchor words), or `NULL`, so `makePedigreeMatingLayout(x$ped, hints = x$hints)` draws with them
@@ -181,6 +188,11 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 16b, the getting-started vignette and the example file (pedkindraw S27, 2026-11-15).** Mark picked the
+  drawing, ED5PDV's 16 ancestors with a mating of half siblings, from three candidates drawn on trial pages at the
+  vignette's width (36-37 animals drew their ids too small or not at all). Measuring what each shrink step removed
+  corrected the draft's description before it was committed. The vignette builds with kinship2 and Pedixplorer
+  absent, and the package installs at 2.2 MB.
 - **Phase 16a, the README, NEWS and `?pedkindraw` (pedkindraw S26, 2026-11-15).** The README's example runs when
   the README is built, and a hidden check stops the build if a statement its text makes stops holding; its picture
   is made from the README's own code. Mark picked the install line (pak) and the picture's pedigree from three

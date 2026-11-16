@@ -155,6 +155,10 @@ problems) and on a typed pedigree with problems, repaired with `addParents()` an
 pedigree small enough to read at its fitted view; `asPedFrame()` for kinship2 users (a chunk run only when kinship2
 is installed); where to read next (`vignette("drawing", package = "pedkindraw")`, `vignette("speed", ...)`).
 
+Built S27: the drawing is ED5PDV's 16 ancestors (D3). A drawing chunk needs `out.width = "100%"`: without it
+html_vignette's `fig.width = 3` drew the widget 288 px wide, the legend's labels cut; at 700 px about 22 animals
+still read at the fitted view. "Where next" names help pages only until 16c and 16d add their vignettes there.
+
 ### 5.4 Drawing vignette (16c)
 
 From a data frame to a drawing; the five sex shapes and the legend; the deceased slash (`status`); one condition,
@@ -301,5 +305,5 @@ only.
 |---|---|---|
 | D1 | Install line: `remotes::install_github("rmsharp/pedkindraw")` or `pak::pak("rmsharp/pedkindraw")` | 16a: pak (Mark, S26) |
 | D2 | The README picture's pedigree (typed, 10-20 animals, showing twins, a condition and a deceased animal) | 16a: 12 animals, one condition (Mark, S26) |
-| D3 | The getting-started drawing: which probands, and how many animals still read at the fitted view | 16b |
+| D3 | The getting-started drawing: which probands, and how many animals still read at the fitted view | 16b: ED5PDV, 16 animals; about 22 read, 36-37 do not (Mark, S27) |
 | D4 | pkgdown in renv by Learning 3's recipe (9 packages, section 2) or run from R's own library through the scratch recipe; the deploy step's action and its pinned version | 16e |
