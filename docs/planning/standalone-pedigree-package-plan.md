@@ -40,9 +40,10 @@ tests, R46-R48); Phase 13 DONE (pedkindraw S17: `checkPedigree()`, 23 tests, R49
 `docs/planning/layout-hints-design.md`, R60-R63); Phase 15a DONE (pedkindraw S22: the `order` layout hint,
 `R/layoutHints.R`, 12 tests, R64-R69); Phase 15b DONE (pedkindraw S23: the `mate` layout hint, R61's `spouse`
 renamed, 9 tests, R70-R73); Phase 15c DONE (pedkindraw S24: `asPedFrame()` returns the object's layout hints, 12
-tests, R74-R76), so Phase 15 is DONE.
-**Next:** Phase 16, documentation (section 4's "Phase 16 -- Documentation", one line of scope and no DONE criteria
-yet, so a planning session first; pedkindraw `methodology/BACKLOG.md`).
+tests, R74-R76), so Phase 15 is DONE; Phase 16's plan DONE (pedkindraw S25:
+`docs/planning/documentation-plan.md`, R77-R80; five build sessions, 16a-16e).
+**Next:** Phase 16a, README, NEWS and the package help page (the documentation plan's section 6; pedkindraw
+`methodology/BACKLOG.md`).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -183,6 +184,10 @@ Since then:
 | R74 | Mate rows of a converted object that `makePedigreeMatingLayout()` would refuse (Phase 15c; the design's sections 7.4 and 10): `asPedFrame()` fixes them, and one message names each change: a pair with no offspring together is left out (kinship2 and Pedixplorer ignore it), a pair named in an earlier row is left out, the first row kept (as kinship2 keeps it), and an anchor on the partner of the earlier generation (`findGeneration()`) becomes `"either"`, its side kept (R71: the layout draws a mating on the row of its later partner). Measured before the pick on 212 pedigrees (the design's M1, kinship2's `testped1` and `sample.ped`'s two families, 8 fixture pedigrees, 100 random family pedigrees from the design's generator and 100 random pedigrees, each prepared for kinship2): kinship2 1.9.6.2's `autohint()` returned on 143 (69 stopped, "autohint bug 3"), 40 of them holding rows the layout refuses (of 1,605 rows: 113 repeated pairs, often in the other order with the other side, 5 pairs with no offspring together, 35 earlier-generation anchors); Pedixplorer 1.8.0's `auto_hint()` returned on 119, 50 of them refused (of 1,522 rows: 2 pairs with no offspring together, 175 earlier-generation anchors; it refuses repeated pairs itself, and objects with more than one family); passed on as held, `makePedigreeMatingLayout(x$ped, hints = x$hints)` stopped on those 40 and 50; with the fixes all 262 converted, the 231 of 600 animals or fewer drew, and every hinted mating was drawn on its side (1,060 of 1,060; 898 of 898). Both packages warn "Unexpected result in autohint" on some pedigrees and still return hints. Mark's pick, "Fix them, say so (Recommended)", over fixing them silently, passing them on as held, and refusing the object | pedkindraw S24 | Mark |
 | R75 | kinship2 hints that cannot be read as ids stop `asPedFrame()`, saying what is wrong: hints that are not a list, an `order` that is not numbers or not one number per animal, a `spouse` table that is not three columns of whole numbers with places 1 to the number of animals and an anchor 1, 2 or 0. kinship2's `align.pedigree()` stops on the same ("Wrong length for order component", "Invalid order component", "Invalid spouse value"). What kinship2 accepts is read: an `NA` in the order leaves that animal unnumbered (it keeps its row's place, R64); a `spouse` table with no `order` is converted (kinship2 refuses it, "Missing order component"; pedkindraw needs no order); a data frame reads as the matrix; other elements are ignored; an empty `spouse` is no mate hint. Pedixplorer checks its hints when the object is made (it refuses an `horder` leaving an animal out, an `NA` or an unknown id), so its method needs no such stop. Mark's pick, "Stop, naming it (Recommended)", over dropping the hints with a message | pedkindraw S24 | Mark |
 | R76 | A `pedigreeList`'s hints (the design's D8) are read as a `pedigree`'s: `order` one number per animal of the whole list, `spouse` places in the whole list. kinship2 sets none in a `pedigreeList`: `autohint()` stops on one ("argument of length 0"), it has no plot method for one, and `pl["1"]` hands one family the whole list's hints unchanged (55 numbers for the 41 animals of `sample.ped`'s family 1). Pedixplorer's `horder()` names are its ids, family-prefixed (`F1_A`) as R58 keeps them. Mark's pick, "Read as for a pedigree (Recommended)", over always `NULL` | pedkindraw S24 | Mark |
+| R77 | Phase 16's vignettes are three, built by knitr and rmarkdown (`html_vignette`) and shipped on CRAN: getting started with one live drawing, drawing with several, and speed and size limits with none (R79). The installed package stays under CRAN's 5 MB. Measured on a scratch build (S25): a page with drawings is 1.6-1.9 MB (each carries visNetwork's JavaScript; 375 more animals add 0.3 MB), the package without vignettes 0.47 MB, about 4.1 MB expected for the two pages with drawings; three such pages installed at 5.4 MB, which R 4.6.2's check reports as INFO (`_R_CHECK_LOG_USE_INFO_`, default TRUE) and as a NOTE where that is off. A later page with drawings goes on the website only. pedkindraw's `docs/planning/documentation-plan.md` (M1, M2). Mark's pick, "Live drawings in both (Recommended)", over a still picture in the getting-started vignette and over the drawing guide on the website only | pedkindraw S25 | Mark |
+| R78 | The pkgdown site is published on GitHub Pages, `https://rmsharp.github.io/pedkindraw/`, from a `gh-pages` branch that a GitHub Actions workflow rebuilds on each push to master, as nprcgenekeepr's is. It builds into `pkgdown_site/`, not pkgdown's default `docs/`, which holds this repository's plans; the root's `CLAUDE.md` and `DIVERGENCE.md` are left off (a trial build, pkgdown 2.2.1, published both as pages although `.Rbuildignore` lists them). Turning Pages on is a repository setting approved in the session that does it; the site's URL enters `DESCRIPTION` only once it answers (R16). pedkindraw's `docs/planning/documentation-plan.md` (M3). Mark's pick, "GitHub Pages (Recommended)", over a site built only locally until Phase 17 | pedkindraw S25 | Mark |
+| R79 | The speed, memory and size-limit tables are summarized from the dated records, not re-measured: the comparison doc's sections 7 and 9 (nprcgenekeepr `70e0492eb` and `fd7c3d8ce`, 2026-11-02 and 2026-11-03) and nprcgenekeepr S1141's re-timing of the clean-room code (`d280dc8e8`, 2026-11-09; its 11 measured files identical to those pedkindraw copied at `baef1e12c`, `git diff` empty, S25). Each table names its date, machine, versions and the code it measured; a script, pedkindraw's `tools/checkSpeedTables.R`, checks every number against the committed result files; pedkindraw's new functions get the single-run times of this plan's Done records. A vignette of its own, no drawings. Mark's pick, "Summarize the records (Recommended)", over re-measuring pedkindraw with a timing tool of its own and over a README section only | pedkindraw S25 | Mark |
+| R80 | The vignettes' colony-size example is nprcgenekeepr's obfuscated 375-animal rhesus pedigree and its 3 twin pairs, shipped as files in `inst/extdata/` (`obfuscated_rhesus_mhc_ped.csv`, `obfuscated_rhesus_mhc_twin_relations.csv`, byte for byte from nprcgenekeepr's `inst/extdata/examples/` at `baef1e12c`, as the test fixtures already are) and read with `system.file()`: no export and no help page (R21 unchanged); small typed pedigrees show each feature. Measured (S25): `checkPedigree()` finds no problem, the twins pass `checkTwinRelations()`, 9 generations, 5 families, its layout 1.9 s. Mark's pick, "Ship one example file (Recommended)", over typed pedigrees only and over a documented dataset | pedkindraw S25 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -731,6 +736,26 @@ with its section 9 DONE criteria met. Without hints every result is nprcgenekeep
 
 README, a getting-started vignette, a drawing vignette, pkgdown site, NEWS; the Phase 1-2 timing, memory and
 capacity tables summarized with their dates and machine.
+
+Planned in pedkindraw's `docs/planning/documentation-plan.md` (pedkindraw S25; R77-R80): its section 6 gives each session's DONE
+criteria, checks and surface, and its section 9 the details left to each session's picker.
+
+| Session | Work | Source |
+|---|---|---|
+| 16a | `README.Rmd` and `README.md` with a still picture, `NEWS.md`, the package help page `?pedkindraw`; the words gate reads the README, NEWS and vignettes too | R77 |
+| 16b | The getting-started vignette (`vignettes/pedkindraw.Rmd`, one live drawing); knitr and rmarkdown in Suggests; the 375-animal example in `inst/extdata/` | R77, R80 |
+| 16c | The drawing vignette (`vignettes/drawing.Rmd`, several live drawings); the installed package under 5 MB | R77, R80 |
+| 16d | The speed and size-limits vignette (`vignettes/speed.Rmd`, no drawings), every number checked by `tools/checkSpeedTables.R` against nprcgenekeepr's result files; the contract's section 7 shrink row | R79 |
+| 16e | The pkgdown site on GitHub Pages, built by a workflow into `pkgdown_site/`; then the site in `DESCRIPTION` and the README; Phase 16 DONE | R78 |
+
+**Done 16's plan (pedkindraw S25; R77-R80):** measured on scratch copies before the picker: a vignette page with
+drawings is 1.6-1.9 MB (visNetwork's JavaScript on each page), the package without vignettes installs at 0.47 MB,
+and three such pages installed at 5.4 MB, an INFO on R 4.6.2 that is a NOTE with `_R_CHECK_LOG_USE_INFO_` off;
+`R CMD check --as-cran` otherwise R16's NOTE only; a pkgdown 2.2.1 trial site built in 34.5 s with the package
+installed, stopped on the stale pedkindraw 0.0.1 in renv's library without it, and published the root's `CLAUDE.md`
+and `DIVERGENCE.md`; a still picture by chromote in 8.7 s; a vignette rendered with kinship2 and Pedixplorer absent;
+nprcgenekeepr S1141's re-timed files identical to those pedkindraw copied at `baef1e12c`. Mark picked the
+recommended option on all four questions.
 
 ### Phase 17 -- CRAN submission (new repository; its own plan first)
 
