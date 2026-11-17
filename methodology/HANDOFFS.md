@@ -196,11 +196,25 @@ manifest existed are not re-judged.
 ```handoff
 session: S31
 date: 2026-11-16
-status: pending
-active_task: plan Phase 16e, the website (docs/planning/documentation-plan.md 5.6 and 16e's DONE; R78, R82): the pkgdown site on GitHub Pages with two articles; Mark's pick "Website, 16e (Recommended)" at the orient picker
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 16 is DONE (Phase 16e, the website, https://rmsharp.github.io/pedkindraw/). Next by the plan: Phase 17, the CRAN submission, its own plan first; the orient picker offers Phase 17's plan, the argument-name review, the "Select by id" bug or the cut legend label, the gap document, coverage, or hold
+what_was_done: claim 81a2829; _pkgdown.yml (url, destination pkgdown_site, Bootstrap 5, the 32 help pages in ?pedkindraw's seven groups; check_pkgdown() run on the incomplete index first, 28 topics missing, then "No problems found") and .github/workflows/pkgdown.yaml (push to master and by hand, the package installed, CLAUDE.md and DIVERGENCE.md deleted from the runner's copy, deploy to gh-pages with JamesIves v4.8.0 at d92aa23) with .Rbuildignore and .gitignore lines, 4c389e7; the first site run made gh-pages (no project note on it); GitHub Pages turned on with Mark's approval; the site 200, the notes 404, every node of all 12 drawings inside its canvas on the live articles; the site in DESCRIPTION's URL, the README and ?pedkindraw's links, d00ebda; close-out 1 93e3cae (the plan's Done 16e and Done 16, the documentation plan, ROADMAP, BACKLOG: Phase 17's plan and the legend label added)
+next_steps: Orient; drift tool (91 functions, 5 differ, all with rows); nprcgenekeepr's log on the six copied drawing files since b4abb9a0b (R81's port unblocks BACKLOG.md:48); push S31's close-out 2 with the first push (methodology only); check the site answers (R CMD check --as-cran reads it); the orient picker: Phase 17's plan (a planning session modeled on nprcgenekeepr's docs/planning/cran-3.0.0-submission-plan.md; recommended, not measured), the argument-name review, "Select by id" or the legend label, the gap document, coverage
+key_files: methodology/SESSION_NOTES.md:11 (ACTIVE TASK), docs/planning/standalone-pedigree-package-plan.md:51 (Next), docs/planning/standalone-pedigree-package-plan.md:829 (Done 16e), docs/planning/standalone-pedigree-package-plan.md:855 (Phase 17), docs/planning/documentation-plan.md:221 (Built S31), docs/planning/documentation-plan.md:314 (what waits for Phase 17), docs/planning/pedkindraw-api-contract.md:271 (versioning, the name review), _pkgdown.yml:14 (reference index), .github/workflows/pkgdown.yaml:49 (notes deleted), .github/workflows/pkgdown.yaml:57 (deploy pin), DESCRIPTION:13 (URL), README.Rmd:34 (the site's paragraph), methodology/BACKLOG.md:11 (Phase 17's plan), methodology/BACKLOG.md:41 (legend label), methodology/BACKLOG.md:185 (name review)
+gotchas: check_pkgdown() stops at its URL check before the index until DESCRIPTION's URL holds the site; R run inside a scratch copy of the repository starts renv from .Rprofile (RENV_CONFIG_AUTOLOADER_ENABLED=false), and renv is active on the runners too; both workflows run on any push beyond CLAUDE.md and methodology/** and never save their package cache (a post-step Path Validation Error); pkgdown publishes every root .md but README, NEWS and LICENSE; the README is the site's home page; this Mac's case-insensitive disk makes 45 pages to CI's 46; the suite gate counts warnings, not failures; CLAUDE.md over its budget; pedkindraw.Rproj untracked (Mark's)
+runtime_smoke: the site run on GitHub (43979094493, 43981525853) and served by Pages: https://rmsharp.github.io/pedkindraw/ 200 with both articles, every node of all 12 drawings inside its canvas in headless Chrome (failing when zoomed in); R CMD check --as-cran R16's NOTE only, the live URLs read; suite 684 tests, 0 failed, WARN 0, 6,109 passed; quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 01151c525b8a
+changelog_ref: CHANGELOG.md "2026-11-16 · [BL-Phase 16e] S31: plan Phase 16e, the website; Phase 16 DONE", "S31 Pages" and "S31 push 1" to "S31 push 4"
+commit: this receipt's commit (close-out 2)
 ```
+S31 built the pkgdown website and closed Phase 16. Mark approved the site's outline before its settings were
+written (S30's lesson), chose pkgdown from R's own library for local builds and the deploy action's version, and
+approved turning on GitHub Pages after the first run had made `gh-pages`. The site's address went into `DESCRIPTION`
+and the README only once it answered. Self 8: + every picker stated measured counts; the check failed first; the
+live site was checked in a browser with a check that could fail; the suite tallied for failures. - one wasted run
+(renv started inside the scratch tree); a grep's false 404, explained; the legend's cut label seen at one width
+only.
 
 ```handoff
 session: S30

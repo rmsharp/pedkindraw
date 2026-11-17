@@ -15,9 +15,29 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
-### 2026-11-16 · [BL-Phase 16e] S31: plan Phase 16e, the website (in progress)
-- **Change:** session claimed (Mark's pick "Website, 16e (Recommended)"): the pkgdown site on GitHub Pages with two articles (R78, R82). Phase 0 reconcile: nothing to backfill (frontier `1ce7ae0` is HEAD; no merges; S30's receipt complete, its ratchet results `5ddbb5b1aeb3` match); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `141ef2471` (its S1177 in progress), no commits to the copied drawing files since `b4abb9a0b`.
-- **Commit/PR:** the claim commit · **Session:** S31 · **Verified:** pending (close-out).
+### 2026-11-16 · [BL-Phase 16e] S31 push 4: `master` to GitHub at `93e3cae` (close-out 1)
+- **Change:** `git push origin master` (`d00ebda..93e3cae`); the push touched `docs/planning/`, so both workflows ran: CI run `43983763668` 5/5 `success`, attempt 1, 14 min; site run `43983763347` `success`, 2.7 min; the site 200 afterwards. S31's close-out 2 after it is not pushed.
+- **Commit/PR:** none (push) · **Session:** S31 · **Verified:** `gh run view --json`; `curl`.
+
+### 2026-11-16 · [BL-Phase 16e] S31 push 3: `master` to GitHub at `d00ebda` (the site named in `DESCRIPTION` and the README)
+- **Change:** `git push origin master` (`4c389e7..d00ebda`); CI run `43981525833`: 5/5 `success`, attempt 1, 15 min; site run `43981525853` `success` (3 min), its sitrep "URLs ok"; the live home page shows the README's new paragraph.
+- **Commit/PR:** none (push) · **Session:** S31 · **Verified:** `gh run view --json`; `curl` of the home page.
+
+### 2026-11-16 · [BL-Phase 16e] S31 Pages: GitHub Pages turned on for `rmsharp/pedkindraw`, serving `gh-pages` at <https://rmsharp.github.io/pedkindraw/>
+- **Change:** Mark's pick "Turn on Pages (Recommended)", after the first site run had made `gh-pages` (46 pages, no project note); `gh api -X POST repos/rmsharp/pedkindraw/pages -f "source[branch]=gh-pages" -f "source[path]=/"` (build type legacy, https enforced). The site answered 200 at the third try (15 s apart); `CLAUDE.html` and `DIVERGENCE.html` 404.
+- **Commit/PR:** none (repository setting, outward-facing) · **Session:** S31 · **Verified:** the API's reply; `curl` of seven pages; headless Chrome on both articles.
+
+### 2026-11-16 · [BL-Phase 16e] S31 push 2: `master` to GitHub at `4c389e7` (the site's settings and workflow); the workflow made `gh-pages`
+- **Change:** `git push origin master` (`81a2829..4c389e7`); CI run `43979094656`: 5/5 `success`, attempt 1, 17.5 min; the new workflow's first run `43979094493`: `success`, 3 min, which created the branch `gh-pages` (`f7121de`) through the deploy action.
+- **Commit/PR:** none (push; the branch is the workflow's) · **Session:** S31 · **Verified:** `gh run view --json`; `git ls-tree origin/gh-pages` (no `CLAUDE`, `DIVERGENCE`, `methodology` or session-notes file).
+
+### 2026-11-16 · [BL-Phase 16e] S31 push 1: `master` to GitHub at `81a2829` (S30's close-out 2 and S31's claim)
+- **Change:** `git push origin master` (`7de3d09..81a2829`); methodology files only, so no run started.
+- **Commit/PR:** none (push) · **Session:** S31 · **Verified:** the push's output; `gh run list`.
+
+### 2026-11-16 · [BL-Phase 16e] S31: plan Phase 16e, the website; Phase 16 DONE
+- **Change:** TDD phase none (documentation, documentation plan 5.7), the check run first. Mark's picks: "Website, 16e (Recommended)"; then, after the measurements (a trial site build, 25.6 s, 43 pages, publishing `CLAUDE.html` and `DIVERGENCE.html`; pkgdown's 9 packages new to the lock, which renv would lock only from `Suggests`, a `Config/Needs/website` line measured unread; the deploy action's v4.8.0 tag traced to `d92aa23`): "This outline (Recommended)", "R's own library (Recommended)", "v4.8.0 (Recommended)"; then "Turn on Pages (Recommended)". `_pkgdown.yml` and `.github/workflows/pkgdown.yaml` with `.Rbuildignore` and `.gitignore` lines (`4c389e7`); Pages turned on; the site in `DESCRIPTION`'s `URL`, the README and `?pedkindraw`'s links (`d00ebda`); close-out 1 (`93e3cae`): the plan's "Done 16e" and "Done 16" records and status, the documentation plan (status, "Built S31", 16e DONE, D4), ROADMAP, BACKLOG (the 16e item removed; Phase 17's plan and the legend's cut "Same animal, again" label added); close-out 2: session notes, receipt, ledger.
+- **Commit/PR:** `81a2829`, `4c389e7`, `d00ebda`, `93e3cae`, close-out 2 · **Session:** S31 · **Verified:** `check_pkgdown()` 28 topics missing on the incomplete index, then "No problems found" (scratch copy naming the site, then the tree); a local build as the workflow runs it, exit 0, 45 pages, no notes; the site 200, the notes 404; on the live articles every node of all 12 drawings inside its canvas (51 of 51; the colony 1,466 of 1,466), some outside in all 12 zoomed 6x; every URL in `README.md` and `DESCRIPTION` 200; a second README render identical; roxygen changed `man/pedkindraw-package.Rd` once, then nothing; `R CMD check --as-cran` R16's NOTE only (the live URLs read), installed 4,284 KB, vignettes re-built OK; suite 684 tests, 0 failed, 0 skipped, WARN 0, 6,109 passed; `quality_ratchet.py --run` 5/5, 0 unmeasured, results `5ddbb5b1aeb3`; drift tool 91 functions, 5 differ, 0 without a row; CI 5/5 on each push that ran it.
 
 ### 2026-11-16 · [BL-Phase 16d] S30 push 2: `master` to GitHub at `7de3d09` (the R82 ruling and close-out 1)
 - **Change:** `git push origin master` (`a580612..7de3d09`); CI run `43966717453` (the push touched `docs/planning/`, which `paths-ignore` does not list): 5/5 `success`, attempt 1, 17 min (no package file changed).

@@ -9,75 +9,74 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** **Phase 16e, the website** (`docs/planning/documentation-plan.md:209`, section 5.6; its DONE at `:290`;
-its open detail D4 at `:334`; ruling R78 at `docs/planning/standalone-pedigree-package-plan.md:192`). The orient
-picker asks Mark: 16e (recommended: the plan's next phase, `standalone-pedigree-package-plan.md:50`); the "Select by
-id" bug (`methodology/BACKLOG.md:32`); the gap document (`:52`, Mark's S26 request); tests for full coverage
-(`:62`); or hold.
-**Status:** READY. Phase 16d DEFERRED (S30, ruling R82 at `standalone-pedigree-package-plan.md:196`): "the
-comparison of pedkindraw with kinship2 and Pedixplorer" (Mark) waits until pedkindraw times itself (its own timing
-runs, a plan of its own replacing R79). The draft is on the branch `draft/speed-vignette` (`612eed9`, pushed, NOT
-merged; leave it). So 16e builds the site with TWO articles (`pedkindraw.Rmd`, `drawing.Rmd`), and Phase 16 is DONE
-after it.
-**Plan (16e):** `_pkgdown.yml` (`url`, `destination: pkgdown_site`, `template: bootstrap: 5`, the reference index
-in the six groups plus the package page, 32 topics; two articles); `pkgdown::check_pkgdown()` run before the file is
-complete (the documentation plan's 5.7); `.github/workflows/pkgdown.yaml` (on push to master and by hand, R and pandoc
-as `R-CMD-check.yaml` sets them up, the package installed for the build, `CLAUDE.md` and `DIVERGENCE.md` removed from
-the runner's copy, `pkgdown_site/` deployed to `gh-pages`); `.Rbuildignore` and `.gitignore` lines (5.1's last row);
-GitHub Pages turned on only with Mark's approval (`gh api -X POST repos/rmsharp/pedkindraw/pages`, outward-facing);
-then `DESCRIPTION:13`'s `URL` and the README name the site, only once it answers (R16).
-**Session boundary:** one session, 16e only; then Phase 16 DONE. Phase 17 (CRAN) starts with its own plan.
-**Priority:** HIGH (the last session of Phase 16).
+**Task:** Phase 16 is DONE (S31: the website, <https://rmsharp.github.io/pedkindraw/>). Next by the plan: **Phase
+17, the CRAN submission, its own plan first** (`docs/planning/standalone-pedigree-package-plan.md:855`; the backlog
+item `methodology/BACKLOG.md:11`). The orient picker asks Mark (4 options at most; "Other" for hold): Phase 17's plan
+(a recommendation, not measured: the plan can make the argument-name review its first build session); the
+argument-name review (`methodology/BACKLOG.md:185`; contract section 6, `docs/planning/pedkindraw-api-contract.md:271`:
+"the last session before Phase 17 reviews the names"); the "Select by id" bug (`:32`) or the cut legend label (`:41`),
+both copied code; the gap document (`:59`); tests for full coverage (`:69`).
+**Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
+**If Phase 17's plan:** a planning session (`methodology/SESSION_RUNNER.md` "Planning Sessions": deepest reasoning
+mode; the plan written to `docs/planning/`; an evidence inventory by search; each phase with DONE, verification
+commands and its surface; plan, not code). The model: nprcgenekeepr's `docs/planning/cran-3.0.0-submission-plan.md`
+(read from the clone; R8). What it inherits is listed in the backlog item: the version number, CRAN badges,
+`cran-comments.md` (pkgdown does not render it), a `NEWS.md` section on the documentation, the installed size (4,284
+KB of R77's 5,120 KB), the argument-name review's place.
+**Session boundary:** one deliverable. **Priority:** HIGH (the plan's next phase).
 
 ### What You Must Do
 1. Orient; drift tool (expect 91 functions, 5 differ, all with rows); `git -C ../nprcgenekeepr log --oneline
    b4abb9a0b..HEAD -- R/affectedConditions.R R/drawPedigreeDiagram.R R/deceasedSlash.R R/makePedigreeDiagramData.R
-   R/orderRootSubtrees.R R/positionTreeApportion.R` (Learning 15); if it has ported R81, `methodology/BACKLOG.md:41`
+   R/orderRootSubtrees.R R/positionTreeApportion.R` (Learning 15); if it has ported R81, `methodology/BACKLOG.md:48`
    is unblocked.
-2. Push S30's close-out 2 commit with the session's first push (methodology only: it starts no CI run).
-3. Before the pre-work picker (Learning 17), measure D4's two ways: pkgdown into renv by Learning 3's recipe (9
-   packages: `pkgdown`, `downlit`, `fansi`, `httr2`, `ragg`, `systemfonts`, `textshaping`, `whisker`, `xml2`; run the
-   gate `renv-lock-no-latest-repository` after the snapshot) or from R's own library (pkgdown 2.2.1) through the
-   scratch recipe; and a trial `pkgdown::build_site()` into a scratch folder with the package installed (S25's M3:
-   34.5 s, 45 pages; it published `CLAUDE.md` and `DIVERGENCE.md` and stopped on the stale 0.0.1 without install).
+2. Push S31's close-out 2 commit with the session's first push (methodology only: it starts no run of either
+   workflow).
+3. Check the site still answers (`curl -s -o /dev/null -w '%{http_code}' https://rmsharp.github.io/pedkindraw/`):
+   `R CMD check --as-cran` now reads it in the incoming check, so a dead site grows R16's NOTE.
 
 ### Gotchas
-- **Show Mark a page's framing before filling it (S30's lesson).** S30 built and checked nine tables before Mark
-  read the page and judged its framing premature (a third of it explained nprcgenekeepr's code; R82). For a page
-  whose sources or framing could be questioned, put an outline (sections, what each table compares, what the page
-  explains) in a picker after the inventory, before the table work. Define on the page every term a table uses:
-  Mark asked what "Generation depth", "Family trees" and "Shrink to 16 bits" were.
-- **CI's `paths-ignore` lists only `CLAUDE.md` and `methodology/**`** (`.github/workflows/R-CMD-check.yaml:11-13`):
-  a push touching `docs/planning/` starts a full run (16-19 min). The draft branch starts none (CI runs on
-  `main`/`master` only).
-- **Pictures of a page:** chromote `b$screenshot(selector = "html", cliprect = c(0, top, 1000, h))` with `top` in
-  page coordinates; `sips -c ... --cropOffset` ignored its offsets and returned the wrong parts (S30). Pandoc's
-  `Table:` caption line renders as a `<caption>` above the table in `html_vignette`.
-- **Shell traps (S30):** `cmd | tail -2; echo $?` prints `tail`'s status, not `cmd`'s (capture the status first); zsh
-  does not split an unquoted `$VAR` into words (`xargs`, or `${=VAR}`); `Rscript -e '...grepl("^\\|", x)...'` stopped
-  with "'\|' is an unrecognized escape" (put the R code in a file).
-- **The suite gate's 300 s limit** (`methodology/BACKLOG.md:108`) is below the suite's 4.3-4.5 min; cite a timed-out
-  run with the suite's WARN count by hand.
-- **Scratch install recipe** (stale pedkindraw 0.0.1 in renv's library, `methodology/BACKLOG.md:117`): `git archive
-  HEAD | tar -x -C <tree>`; `env -u RENV_PROJECT R_LIBS=<scratch lib>:<renv lib> R_LIBS_USER=<renv lib> R CMD build
-  --no-manual <tree>` and `R CMD INSTALL --library=<scratch lib> <tarball>`.
-- **`.lintr` excludes `vignettes`, `tests`, `inst/extdata`**; the words gate reads `R man vignettes README.Rmd
-  README.md NEWS.md`.
-- **nprcgenekeepr moves during a session:** its S1177 was in progress through S30 (HEAD `1500e74e1`, then
-  `9d51ecca4`; none on the copied files).
-- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S23-S30 added nothing; learnings go in these Gotchas).
-- **Left for Mark:** `pedkindraw.Rproj` untracked at the root (`.Rbuildignore:6` keeps it out of the build).
-- **Times on this Mac:** the suite 4.3 min; `quality_ratchet.py --run` about 5 min; `R CMD check --as-cran` 3.0 min;
-  a vignette page render 5-8 s; CI 14-19 min.
+- **`check_pkgdown()` stops at its URL check** until `DESCRIPTION`'s `URL` holds `_pkgdown.yml`'s `url`, before it
+  reads the reference index; S31 checked the index on a scratch copy carrying the URL. `build_site()` only warns.
+- **R started inside a scratch copy of this repository starts renv** from its `.Rprofile`, with an empty library
+  ("Bootstrapping renv"): set `RENV_CONFIG_AUTOLOADER_ENABLED=false` beside `env -u RENV_PROJECT R_LIBS=...`, or run
+  from outside the tree. On GitHub's runners renv is active too: `setup-r-dependencies` installs into its library,
+  for both workflows.
+- **Both workflows run on every push not limited to `CLAUDE.md` and `methodology/**`**: a `docs/planning/` push
+  starts R-CMD-check (15-18 min) and a site rebuild (3 min, one at a time). Both print a post-step "Path Validation
+  Error": the package cache is never saved (renv's library is not the path the action caches), so each run
+  reinstalls (the site's about 1.5 min).
+- **pkgdown publishes every root `.md` but README, NEWS and LICENSE** (2.2.1's `package_mds()`; `cran-comments.md`
+  is not rendered): the workflow deletes `CLAUDE.md` and `DIVERGENCE.md`
+  (`.github/workflows/pkgdown.yaml:49`); any new root `.md` goes on the site.
+- **The README is the site's home page:** edit `README.Rmd`, then render `README.md` with today's package installed
+  (S31: the scratch install's library first in `R_LIBS`, the autoloader off, run in the repository root); the site
+  shows it after the push.
+- **This Mac's disk ignores case:** a local site has 45 pages, CI's 46 (`reference/asPedFrame.Pedigree.html` and
+  `asPedFrame.pedigree.html` are one file here).
+- **Shell traps carried (S30):** `cmd | tail -2; echo $?` prints `tail`'s status; zsh does not split `$VAR`; a
+  grep of `URL:` keeps `DESCRIPTION`'s comma on the first address (S31 read it as a 404).
+- **The suite gate counts warnings, not failures** (`methodology/.quality-gates.json`): tally the suite by hand for
+  "0 failed" (S31: `as.data.frame(testthat::test_local(...))`, 684 tests, 6,109 passed). It ran inside its 300 s in
+  S30 and S31 (282 s for all five gates); the backlog item `:115` stands.
+- **nprcgenekeepr moves:** its S1177 was in progress through S31 (HEAD `141ef2471`, 2 test files modified there; none
+  on the copied files).
+- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S23-S31 added nothing; learnings go in these Gotchas).
+- **Left for Mark:** `pedkindraw.Rproj` untracked at the root (`.Rbuildignore:6`).
+- **Times on this Mac:** suite 4.3 min; `quality_ratchet.py --run` 282 s; `R CMD check --as-cran` 190 s; a local
+  site build 36 s; CI 15-18 min; the site workflow 3 min.
 
 ### Key files
-- `docs/planning/documentation-plan.md:209` (5.6, the website), `:290` (16e's DONE), `:334` (D4), `:186` (5.5,
-  with S30's note on the draft); `docs/planning/standalone-pedigree-package-plan.md:50` (Next), `:192` (R78), `:196`
-  (R82), `:815` (the "Deferred 16d" record).
-- `DESCRIPTION:13` (`URL`); `.github/workflows/R-CMD-check.yaml:7-13` (triggers, `paths-ignore`); `.Rbuildignore`.
-- `methodology/BACKLOG.md:11` (16e), `:19` (the speed vignette, later), `:32` ("Select by id"), `:41` (after
-  nprcgenekeepr's port, BLOCKED), `:108` (the suite gate's time limit), `:117` (the stale copy).
-- The branch `draft/speed-vignette` (`612eed9`): `vignettes/speed.Rmd`, `tools/checkSpeedTables.R`.
+- `docs/planning/standalone-pedigree-package-plan.md:51` (Next), `:829` (Done 16e), `:850` (Done 16), `:855`
+  (Phase 17).
+- `docs/planning/documentation-plan.md:221` (Built S31), `:314` (section 7: what waits for Phase 17), `:346` (D4).
+- `docs/planning/pedkindraw-api-contract.md:271` (section 6, versioning and the name review).
+- `_pkgdown.yml:1` (url), `:8` (destination), `:14` (the reference index); `.github/workflows/pkgdown.yaml:11`
+  (paths-ignore), `:49` (the notes deleted), `:53` (build), `:57` (the deploy action, v4.8.0 at `d92aa23`).
+- `DESCRIPTION:13` (`URL`); `README.Rmd:34` (the site's paragraph).
+- `methodology/BACKLOG.md:11` (Phase 17's plan), `:32` ("Select by id"), `:41` (the legend label), `:48` (after
+  nprcgenekeepr's port, BLOCKED), `:59` (gaps), `:69` (coverage), `:115` (the suite gate's limit), `:124` (the stale
+  copy), `:185` (the name review).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -91,63 +90,51 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S29's entries were removed in S3-S30 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S30's entries were removed in S3-S31 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 31 Did
-**Deliverable:** plan Phase 16e, the website (`docs/planning/documentation-plan.md` 5.6 and 16e's DONE; R78, R82):
-the pkgdown site on GitHub Pages with two articles (IN PROGRESS)
-**Started:** 2026-11-16 16:43 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Website, 16e (Recommended)"
-(orient picker)
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
-
-### Session 29 Handoff Evaluation (by Session 30)
+### Session 30 Handoff Evaluation (by Session 31)
 **Score: 9/10.**
-- **What helped:** the steps in order (drift tool, nprcgenekeepr's log, the push with the first push, and "write
-  `tools/checkSpeedTables.R` against them first", which made the failing run before the tables part of the plan);
-  every key line it cited was right when read (`documentation-plan.md:67`, `:185`, `:269`; the contract's `:279`;
-  `drawing.Rmd:681`; `pedkindraw.Rmd:399`; `R/pedkindraw-package.R:42`); the shell gotchas (zsh, `grep -F`); the
-  suite gate's time limit.
-- **What was missing:** the result files' layout and rounding (each summary script prints `format(signif(s, 3))`,
-  S1141's prints three decimals); that S1141 ran kinship only to 30,000 animals and shrinking to 3,000, so the
-  rewrite's rows have cells no record tried; that pedkindraw's `drawPedigreeDiagram.R` is copied at `4283e3502`, not
-  `baef1e12c`, which matters to any "the timed code is the copy" claim. Each cost one lookup.
+- **What helped:** the steps in order (drift tool, nprcgenekeepr's log, the push, then "measure D4's two ways and a
+  trial `build_site()` before the picker"), which made the picker state counts; the gotcha "show Mark a page's
+  framing before filling it", which became the outline picker before `_pkgdown.yml` was written; the scratch
+  install recipe; "Pages only with Mark's approval" and "the URL only once the site answers". All 14 line citations
+  were right when read at `1ce7ae0`.
+- **What was missing:** that the plan's DONE items 1 and 3 interact: `check_pkgdown()` cannot report "no problem"
+  until the URL that item 3 adds is in `DESCRIPTION`; and that R run inside a scratch copy of the repository starts
+  renv from its `.Rprofile` (the recipe ran `R CMD build` and `INSTALL` from outside the tree, a site build runs
+  inside it). Each cost one run.
 - **What was wrong:** nothing found.
 - **ROI:** high.
 
-### What Session 30 Did
-**Deliverable:** plan Phase 16d, the speed and size-limits vignette, drafted to R79 and then, on Mark's reading,
-deferred: ruling R82. TDD phase none (documentation), checks written first. No package file changed.
-**Started:** 2026-11-16 15:15 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Speed vignette (Recommended)"
-(orient); "Add definitions (Recommended)" (after asking what three computation rows meant); "Defer it (Recommended)"
-and "pedkindraw times itself" (after "Disambiguation between pedkindraw and nprcgenekeepr may need to wait until
-pedkindraw is completely separated. That is, this comparison may be premature." and "The comparison of pedkindraw
-with kinship2 and Pedixplorer").
-**Commits:** claim `a580612` (pushed with S29's close-out commits, CI `43958321631` 5/5); the draft `612eed9` on the
-branch `draft/speed-vignette` (pushed, not merged); ruling `6883985` (the plan's R82, the documentation plan's notes,
-the contract's shrink row); close-out 1 `7de3d09` (ROADMAP, BACKLOG), pushed with the ruling, CI `43966717453` 5/5;
-close-out 2 (these notes, the receipt, the ledger), not pushed.
-**Verified:** the check script run before the tables were filled, exit 1, 0 of 417 numbers; at the end 366 of 366
-cells holding a number and 621 of 621 cells, exit 0; a changed number, swapped rows, an unmarked table and a changed
-Done record each failed it (scratch tree); a separate cross-check against the studies' printed tables (comparison doc
-7.1, 7.2, 9.2, 9.3; S1141's 4.2) agreed on 298 cells and caught planted changes; the code each record timed against
-the copy by `git diff` (Part A and Part B differ from the copy in 6 of 34 copied files, S1141 in 1); the functions
-Part A's other rows reach (codetools) touch none of the 6; the study's `rhesus375` the shipped example's ids, sires,
-dams and sexes; the fidelity tool 600 of 600 identical, kinship difference 0; the trial page in headless Chrome, 35
-KB, all 9 tables inside the 700 px column; drift tool 91 functions, 5 differ, 0 without a row; `quality_ratchet.py --run` 5/5 pass, 0 fail, 0
-unmeasured, results `5ddbb5b1aeb3`, manifest `01151c525b8a` (the suite gate within its 300 s this time).
-**Self-assessment: 7/10.**
-+ The check was written and run failing first, then proved by four planted changes and by a second path that did
-  not share its mapping; captions put each table's date, commits, versions and machine where the reader looks, and
-  the script checks them against the documents that state them; claims were measured before the page stated them
-  (the copy's identity, the call closure, the fidelity run); one unsupported sentence ("most of it on the layout")
-  was cut before Mark saw it; the deferral left nothing half-done: the draft kept on a branch, the pointers taken
-  out, every document that expected 16d updated.
-- The framing (a third of the page about nprcgenekeepr's code) reached Mark only with the finished draft; an outline
-  picker after the inventory would have found R82 two hours earlier. The page defined none of its computations
-  until Mark asked. One shell slip each: crops from `sips` in the wrong order, and an exit status read from `tail`.
-**Learnings:** no `CLAUDE.md` row (over its budget); in the Gotchas above: show Mark a page's framing before filling
-it, and define its terms; CI's `paths-ignore`; chromote clips and `Table:` captions; three shell traps.
-**Ledger:** `CHANGELOG.md` S30 entries (the session, the branch push and the two master pushes).
+### What Session 31 Did
+**Deliverable:** plan Phase 16e, the website, so Phase 16 DONE. TDD phase none (documentation, documentation plan
+5.7); `check_pkgdown()` run on the incomplete index first.
+**Started:** 2026-11-16 16:43 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Website, 16e (Recommended)"
+(orient); "This outline (Recommended)", "R's own library (Recommended)", "v4.8.0 (Recommended)" (one picker, after
+the measurements); "Turn on Pages (Recommended)" (after the first run made `gh-pages`).
+**Commits:** claim `81a2829` (pushed with S30's close-out 2); the settings and workflow `4c389e7` (pushed: CI
+`43979094656` 5/5, site run `43979094493`); Pages turned on (no commit); the site named `d00ebda` (pushed: CI
+`43981525833` 5/5, site run `43981525853`); close-out 1 `93e3cae` (plan, documentation plan, ROADMAP, BACKLOG;
+pushed: CI `43983763668` 5/5, site run `43983763347`); close-out 2 (these notes, the receipt, the ledger), not pushed.
+**Verified:** `check_pkgdown()` 28 topics missing, then "No problems found" (scratch copy, then the tree); a local
+build as the workflow runs it, exit 0, 45 pages, no notes published; `gh-pages` with no project note; the site 200
+(home, both articles, reference, changelog), `CLAUDE.html` and `DIVERGENCE.html` 404; on the live articles every node
+of all 12 drawings inside its canvas, some outside in all 12 when zoomed in 6x; every URL in `README.md` and
+`DESCRIPTION` 200; a second README render byte-identical; roxygen changed `man/pedkindraw-package.Rd` once, then
+nothing; `R CMD check --as-cran` R16's NOTE only, installed 4,284 KB, vignettes re-built OK; suite 53 files, 684
+tests, 0 failed, 0 skipped, WARN 0, 6,109 passed; `quality_ratchet.py --run` 5/5, 0 unmeasured, results
+`5ddbb5b1aeb3`; drift tool 91 functions, 5 differ, 0 without a row; the second site build's sitrep "URLs ok".
+**Self-assessment: 8/10.**
++ Measured before every picker (D4 both ways, renv's `DESCRIPTION` fields tried on a scratch copy, the action's tag
+  traced to its commit), so the picker stated counts; the outline went to Mark before the settings file (S30's
+  lesson); the check was run failing first, and its URL ordering was handled on a scratch copy instead of naming the
+  site before it answered; Pages turned on only after Mark's approval and a look at what the branch held; the live
+  site checked in a browser with a check that could fail; the suite tallied for failures, which its gate does not
+  count.
+- One wasted run: the first local site build started renv inside the scratch tree. A grep kept a comma and printed a
+  false 404, explained before it went anywhere. The legend's cut label was seen at one width only.
+**Learnings:** no `CLAUDE.md` row (over its budget); in the Gotchas above: `check_pkgdown()`'s URL check first;
+renv starts in a scratch copy and on the runners; the workflows' cache warning; pkgdown's root `.md` rule; the
+README as the home page; the case-insensitive disk; the suite gate counts warnings only.
+**Ledger:** `CHANGELOG.md` S31 entries (the session, Pages turned on, and the three master pushes).
