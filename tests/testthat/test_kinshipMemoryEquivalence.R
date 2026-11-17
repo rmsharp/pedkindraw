@@ -15,7 +15,9 @@
 ## the saved sparse matrix"); and eight tests of nprcgenekeepr's
 ## kinMatrix2LongForm(), highKinshipPairs() and getAnimalsWithHighKinship().
 ## pedkindraw's tools/compareResultsWithNprcgenekeepr.R compares kinship()
-## with nprcgenekeepr's instead.
+## with nprcgenekeepr's instead. Ruling R87 (pedkindraw S35): the three length
+## messages say sire and dam, not fatherId and motherId (the source's lines
+## 188-190).
 
 ## A seeded pedigree of n animals in birth order: a fifth are founders, each
 ## later animal draws a sire and a dam from the animals before it, one parent
@@ -70,10 +72,9 @@ malformedKinshipMessages <- c(
   `sparse = 0` = "sparse must be TRUE or FALSE",
   `no animals` = "id must hold at least one animal",
   `a missing generation` = "pdepth must not be missing for any animal",
-  `one generation short` =
-    "fatherId, motherId and pdepth must each be as long as id",
-  `one sire short` = "fatherId, motherId and pdepth must each be as long as id",
-  `one dam short` = "fatherId, motherId and pdepth must each be as long as id",
+  `one generation short` = "sire, dam and pdepth must each be as long as id",
+  `one sire short` = "sire, dam and pdepth must each be as long as id",
+  `one dam short` = "sire, dam and pdepth must each be as long as id",
   `no generations` = "pdepth must be a vector of generation numbers",
   `generations as a list` = "pdepth must be a vector of generation numbers",
   `generations as a function` = "pdepth must be a vector of generation numbers"

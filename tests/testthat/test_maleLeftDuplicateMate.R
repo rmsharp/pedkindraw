@@ -2,8 +2,11 @@
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr tests/testthat/test_maleLeftDuplicateMate.R at
 ## nprcgenekeepr commit baef1e12c. Changes: nprcgenekeepr::<dataset> reads the
-## dataset helper-fixtures.R supplies (lines 55-58, 89). The comments below name
-## nprcgenekeepr's documents, sessions and files.
+## dataset helper-fixtures.R supplies (lines 55-58, 89). Ruling R92 (pedkindraw
+## S35): smallPed's generations come from findGeneration() (line 58), because
+## its stored gen puts L and M in their sire's generation, which kinship(),
+## called by the layout, now refuses. The comments below name nprcgenekeepr's
+## documents, sessions and files.
 
 ## Male-left placement for a mating whose mate is drawn as a duplicate node
 ## (S858; found S857). makePedigreeMatingLayout() documents that a mating
@@ -59,7 +62,7 @@
   rhesusPedigree = rhesusPedigree,
   qcPed = qcPed,
   pedWithGenotype = pedWithGenotype,
-  smallPed = smallPed)
+  smallPed = within(smallPed, gen <- findGeneration(id, sire, dam)))
 
 for (pedName in names(.bundledPedigrees)) {
   for (style in c("rectilinear", "direct")) {

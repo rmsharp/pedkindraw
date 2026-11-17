@@ -3,7 +3,9 @@
 ## Copied from nprcgenekeepr tests/testthat/test_kinship.R at nprcgenekeepr
 ## commit baef1e12c. Changes: the data() call is dropped, and the last test
 ## reads ped from lacy1989Ped instead of nprcgenekeepr::lacy1989Ped (the
-## source's line 241); helper-fixtures.R supplies lacy1989Ped. The comments
+## source's line 241); helper-fixtures.R supplies lacy1989Ped. Ruling R87
+## (pedkindraw S35): the C13 test (the source's lines 234-247) asks for the
+## parent arguments sire and dam, not fatherId and motherId. The comments
 ## below name nprcgenekeepr's documents and files (docs/, inst/extdata/).
 library(testthat)
 ped <- lacy1989Ped
@@ -235,17 +237,16 @@ test_that("kinship() with sparse = TRUE and MZ twins gives the dense result", {
   expect_identical(dense[["t1", "t2"]], 0.5)
 })
 
-## Mark's ruling C13 (docs/planning/cleanroom-rewrite-plan.md section 2): the
-## parent arguments are fatherId and motherId (were father.id and mother.id),
-## and a call that names them gives the same matrix as one by position.
-test_that("kinship()'s parent arguments are fatherId and motherId", {
-  expect_named(formals(kinship), c("id", "fatherId", "motherId", "pdepth",
-                                   "sparse", "twinRelations", "chrtype",
-                                   "sex"))
+## Mark's ruling R87 (docs/planning/standalone-pedigree-package-plan.md
+## section 2; was C13's fatherId and motherId): the parent arguments are sire
+## and dam, in the same positions, and a call that names them gives the same
+## matrix as one by position.
+test_that("kinship()'s parent arguments are sire and dam", {
+  expect_named(formals(kinship), c("id", "sire", "dam", "pdepth", "sparse",
+                                   "twinRelations", "chrtype", "sex"))
   ped <- lacy1989Ped
   expect_identical(
-    kinship(id = ped$id, fatherId = ped$sire, motherId = ped$dam,
-            pdepth = ped$gen),
+    kinship(id = ped$id, sire = ped$sire, dam = ped$dam, pdepth = ped$gen),
     kinship(ped$id, ped$sire, ped$dam, ped$gen)
   )
 })
