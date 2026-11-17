@@ -19,8 +19,8 @@ hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase
 `?pedkindraw` (S26), 16b, the getting-started vignette (S27), and 16c, the drawing vignette (S29), after the
 legend item it needed (S28, R81); 16d, the speed vignette, is deferred until pedkindraw times itself (S30, R82);
 and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN submission, is planned (S32,
-`docs/planning/cran-submission-plan.md`) and under way: 17a, the check time on win-builder, is done (S33); 17b is
-next (Planned, below).
+`docs/planning/cran-submission-plan.md`) and under way: 17a, the check time on win-builder, is done (S33); 17b, the
+argument-name review, is done (S34); 17c1 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -37,11 +37,13 @@ Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-a
 session each unless marked. They follow the copy slices.
 
 - **Phase 17 (under way), the CRAN submission:** planned (S32, `docs/planning/cran-submission-plan.md`, R83-R86)
-  as phases 17a-17q, about 18 to 22 sessions (a guess). 17a is done (S33): win-builder R-devel read 398 s, under
-  the 540 s target, with its tests on an idle machine, so whether to cut tests on CRAN is decided by one more
-  reading after 17j (R86). Next, 17b, the argument-name review. Before the release, by Mark's picks
-  (R84): the argument-name review (contract section 6), the "Select by id" and legend-label fixes, a document of
-  what kinship2 or Pedixplorer can do that pedkindraw cannot, pedkindraw's own timing runs and the speed and
+  as phases 17a-17q, about 20 to 23 sessions (a guess; R93). 17a is done (S33): win-builder R-devel read 398 s,
+  under the 540 s target, with its tests on an idle machine, so whether to cut tests on CRAN is decided by one more
+  reading after 17j (R86). 17b is done (S34, R87-R93): `kinship()` takes `sire` and `dam`, the pedigree argument is
+  `ped` and comes first in every export, `kinship()` refuses generation numbers that put a parent at or after its
+  offspring, and the shared export names stay; 17c makes the changes test-first in three sessions, 17c1
+  (`kinship()`) next. Before the release, by Mark's picks (R84): the argument-name review (contract section 6;
+  ruled S34, its changes 17c1-17c3), the "Select by id" and legend-label fixes, a document of what kinship2 or Pedixplorer can do that pedkindraw cannot, pedkindraw's own timing runs and the speed and
   size-limits vignette (R82; the draft built to R79 is on the branch `draft/speed-vignette`), and tests for full
   coverage. Then the CRAN-mode test cut if needed, hygiene and noSuggests, the release text and version, the frozen
   gate, the cross-platform runs, Mark's submission, and the steps after acceptance.
@@ -209,6 +211,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17b, the argument-name review (pedkindraw S34, 2026-11-17).** Before the first CRAN release, the last time
+  a change costs users nothing, Mark ruled on each name: `kinship()`'s parents become `sire` and `dam` like every
+  other function's; the pedigree argument is `ped` in every function and comes first in each; `addIdRecords()` stays
+  internal; names shared with nprcgenekeepr, kinship2 and Pedixplorer stay, with a note. Measuring the shared
+  `kinship()` found that kinship2's own call form gives pedkindraw a wrong kinship matrix without any error; Mark
+  ruled that `kinship()` will refuse such input. The changes are three test-first sessions, 17c1-17c3 (R87-R93).
 - **Phase 17a, the check time on win-builder (pedkindraw S33, 2026-11-17).** Mark approved Claude uploading the
   package to win-builder R-devel, where CRAN's 10-minute limit applies. The check took 398 s, under the 540 s
   target and far under S32's estimate of 615-688 s, with only the new-submission NOTE. Its tests ran on an idle

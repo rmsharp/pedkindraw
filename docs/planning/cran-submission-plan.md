@@ -211,8 +211,8 @@ the tool's one such use, `lapply(few, fn("hasBothParents"), ped = ped)` (`:268`)
 Each of R87-R89 and R92 is a divergence from nprcgenekeepr (D2): 9 `DIVERGENCE.md` rows in all (`kinship()`, for
 R87 and R92; the four of R88; the four of R89; `addBackSecondParents()`'s row from R88 also covers its call to
 `hasBothParents()`), each until nprcgenekeepr makes the same change in a session there. Each changed copied file's
-header ("Changes: help text only; the function's code is unchanged") is rewritten to say what changed. nprcgenekeepr's own callers outside each
-function's file, for such a session (a text count, `git grep` at `366899961`, `R/` and `inst/application`): `kinship(`
+header ("Changes: help text only; the function's code is unchanged") is rewritten to say what changed.
+nprcgenekeepr's own callers outside each function's file, for such a session (a text count, `git grep` at `366899961`, `R/` and `inst/application`): `kinship(`
 24 lines, `trimPedigree(` 2, `getProbandPedigree(` 2, `getParents(` 2, `getOffspring(` 2, one each for the others.
 
 ### 2.5 Version, CI and the website
@@ -377,8 +377,8 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
 - **Surface:** documents only.
 - **Done (S34; R87-R93):** seven rulings from seven questions in three pickers, each Mark's pick of Claude's
   recommendation: `kinship()` says `sire` and `dam` (R87); the pedigree argument is `ped` everywhere, `trimmedPed`
-  beside it in `addBackSecondParents()` (R88); the pedigree comes first in every export that takes one (R89); `addIdRecords()`
-  stays internal (R90); the shared export names stay, with a note in `kinship()`'s help and the README (R91);
+  beside it in `addBackSecondParents()` (R88); the pedigree comes first in every export that takes one (R89);
+  `addIdRecords()` stays internal (R90); the shared export names stay, with a note in `kinship()`'s help and the README (R91);
   `kinship()` refuses a `pdepth` that puts a parent at or after its offspring (R92, a silent wrong answer found
   while measuring the shared names); 17c is three sessions (R93). The inventory: section 2.4. The contract's
   sections 4 and 6 give the new signatures.

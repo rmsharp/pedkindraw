@@ -8,12 +8,22 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 17b: review argument names before the first CRAN release** (READY, a decision session: 17b decides,
-      17c changes; R84; Effort M) -- the inventory is `docs/planning/cran-submission-plan.md` section 2.4; contract
-      section 6 and section 10 item 4: the copied functions keep nprcgenekeepr's names, so
-      `findGeneration(id, sire, dam)` sits beside `kinship(id, fatherId, motherId)`; also whether `addIdRecords()`
-      should be exported. Each change is recorded as a divergence. 17a is DONE (S33: win-builder R-devel 398 s; R86:
-      17k opens with one more reading after 17j).
+- [ ] **Phase 17c1: `kinship()` takes `sire` and `dam` and refuses generation numbers out of order** (READY,
+      strict TDD; R87, R91, R92, R93; Effort M) -- `docs/planning/cran-submission-plan.md` section 6 (17c1) and the
+      inventory in section 2.4: rename `fatherId`/`motherId` (the copied C13 test `test_kinship.R:241` and the
+      message at `R/kinship.R:115` with its 3 expected copies change with them); stop when a known parent's
+      `pdepth` is not below its offspring's, the check after the existing input checks (tests on typed cases and
+      kinship2's `sample.ped` and `minnbreast`); the help and the README say the 4th argument is `pdepth`, not
+      kinship2's `sex`, and which names kinship2 and Pedixplorer share. One `DIVERGENCE.md` row.
+
+- [ ] **Phase 17c2: the pedigree argument is `ped` in four more exports** (READY after 17c1, strict TDD; R88, R93;
+      Effort S) -- `getParents(ped, ids)`, `getOffspring(ped, ids)`, `getIdsWithOneParent(ped)`,
+      `addBackSecondParents(trimmedPed, ped)`; no caller passes the old names; four `DIVERGENCE.md` rows.
+
+- [ ] **Phase 17c3: the pedigree first in four exports** (READY after 17c2, strict TDD; R89, R93; Effort M) --
+      `getProbandPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands,
+      ...)`, `hasBothParents(ped, id)`; the 23 calls by position that section 2.4 lists by line (the fidelity tool's
+      six given names); four `DIVERGENCE.md` rows.
 
 - [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
       timing runs, Effort L, a guess; before the release, Phases 17g-17i of

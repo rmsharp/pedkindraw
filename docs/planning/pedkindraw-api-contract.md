@@ -348,6 +348,7 @@ with Pedixplorer included, with a note in `kinship()`'s help and the README on t
    under its rulings table).
 3. **nprcgenekeepr's own license**: it ships the same code (section 3) under MIT. Separate work, recorded as its
    own `BACKLOG.md` item (Mark's ruling, S1128); nothing here changes it.
-4. **Argument names** (section 6): reviewed before the first CRAN release.
+4. **Argument names** (section 6): reviewed before the first CRAN release. Ruled pedkindraw S34 (plan R87-R93);
+   the changes are Phases 17c1-17c3.
 5. **`findPedigreeNumber()`'s speed** (section 7): new work after the copy.
 6. **`data.table`** (section 5): kept; replacing it is a recorded divergence if ever wanted.
