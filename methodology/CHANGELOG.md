@@ -15,9 +15,21 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
-### 2026-11-17 · [BL-Phase 17a] S33: Phase 17a, the check time on win-builder R-devel (in progress)
-- **Change:** session claimed (Mark's pick "Phase 17a: win-builder time (Recommended)" at the orient picker): a measurement, no R code or tests change. Phase 0 reconcile: nothing to backfill (frontier `a4e940e` is HEAD, S32's close-out 2; no merges; S32's receipt complete, its ratchet results `42b564bc4c70` match the saved file, 4/5, 1 unmeasured); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `3c87a17a9` (169 commits after `baef1e12c`; its S1179 in progress, uncommitted test files not copied here), its log on the 79 copied files exactly the 4 commits already in the copy; dashboard 93/100; `pedkindraw.Rproj` untracked, left for Mark.
-- **Commit/PR:** the claim commit · **Session:** S33 · **Verified:** pending (close-out).
+### 2026-11-17 · [BL-Phase 17a] S33 push 2: `master` to GitHub at `b8ff56b` (the 17a record and close-out 1)
+- **Change:** `git push origin master` (`eaff4a7..b8ff56b`); the push touched `docs/planning/`, so both workflows ran: CI run `44153786408` 5/5 `success` at the first attempt (20 min); site run `44153786342` `success` (3 min; no package change). S33's close-out 2 after it is not pushed.
+- **Commit/PR:** none (push) · **Session:** S33 · **Verified:** `gh run view --json`.
+
+### 2026-11-17 · [BL-Phase 17a] S33 upload: the tarball from `eaff4a7` sent to win-builder R-devel by FTP
+- **Change:** outward action, Mark's D1 pick "I upload it via FTP (Recommended)": `curl -T pedkindraw_0.0.1.tar.gz ftp://win-builder.r-project.org/R-devel/` at 16:31 UTC, 1,382,525 B (SHA-256 `23386dc96ff7...`), reply 226. Sent after the same tarball's local `R CMD check --as-cran` passed (R16's NOTE only). win-builder emailed the result to the maintainer; Mark pasted it: `W1Ko4S0RDs2W`, R-devel r90914, check time 398 s, `Status: 1 NOTE`.
+- **Commit/PR:** none (upload) · **Session:** S33 · **Verified:** curl's reply code; the emailed result; the result folder's `00check.log`.
+
+### 2026-11-17 · [BL-Phase 17a] S33 push 1: `master` to GitHub at `eaff4a7` (S32's close-out 2 and S33's claim)
+- **Change:** `git push origin master` (`53afbfe..eaff4a7`); methodology files only, so no run started.
+- **Commit/PR:** none (push) · **Session:** S33 · **Verified:** the push's output; `gh run list`.
+
+### 2026-11-17 · [BL-Phase 17a] S33: Phase 17a, the check time on win-builder R-devel
+- **Change:** a measurement; nothing in `R/`, `tests/`, `man/`, `vignettes/`, `inst/` or `DESCRIPTION` changed. Mark's picks: "Phase 17a: win-builder time (Recommended)" (orient), "I upload it via FTP (Recommended)" (D1), "Decide after 17j (Recommended)" (R86). The tarball from `eaff4a7` (package files identical to `d00ebda`; contents proven against `git ls-files`) passed `R CMD check --as-cran` here (208 s at load 10-13, R16's NOTE only), then win-builder R-devel r90914 read 398 s (`W1Ko4S0RDs2W`, R16's NOTE only, the spelling step flagging nothing; tests 286 s, vignettes 18 s, R code 16 s, examples 13 s, PDF manual 13 s), 142 s under R85's 540 s and far under S32's 615-688 s estimate (the ratio to this Mac is 1.9, not 3.4-3.8). The tests ran on an idle machine (286.3 s elapsed, 286.4 s CPU), so a busy day could read about 470-550 s; R86: 17k opens with one more win-builder reading after 17j and cuts tests on CRAN only if it is over 540 s. Recorded in both plans (`8a27fcf`), ROADMAP and BACKLOG (`b8ff56b`: 17a removed, 17b to Up Next). Phase 0 reconcile: nothing to backfill (frontier `a4e940e`; S32's receipt complete, its ratchet results `42b564bc4c70` match); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `3c87a17a9`, the same 4 commits on the 79 copied files.
+- **Commit/PR:** `eaff4a7`, `8a27fcf`, `b8ff56b`, close-out 2 · **Session:** S33 · **Verified:** `quality_ratchet.py --run` 5/5 pass, 0 unmeasured, results `5ddbb5b1aeb3`; CI `44153786408` 5/5 `success` at the first attempt; site run `44153786342` `success`; every number in the record re-computed from the logs before its commit.
 
 ### 2026-11-16 · [BL-Phase 17] S32 push 2: `master` to GitHub at `53afbfe` (the plan and close-out 1)
 - **Change:** `git push origin master` (`ba811e7..53afbfe`); the push touched `docs/planning/`, so both workflows ran: CI run `43990847828` 5/5 `success` at the first attempt (19 min); site run `43990847843` `success` (about 3 min; the site carries no package change). S32's close-out 2 after it is not pushed.

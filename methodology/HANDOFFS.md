@@ -196,11 +196,24 @@ manifest existed are not re-judged.
 ```handoff
 session: S33
 date: 2026-11-17
-status: pending
-active_task: Phase 17a, the check time on win-builder R-devel (R85): today's tarball uploaded with Mark's approval (D1), the emailed reading recorded in the plan's section 2.1, whether 17k is needed against 540 s; Mark's pick "Phase 17a: win-builder time (Recommended)" at the orient picker
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17a DONE (win-builder R-devel 398 s, R16's NOTE only; R86: 17k opens with one more reading after 17j). Next: Phase 17b, the argument-name review, a decision session (docs/planning/cran-submission-plan.md:341, inventory :165); the orient picker offers 17b (recommended) or a drawing fix (17d, 17e)
+what_was_done: claim eaff4a7 (pushed with S32's close-out 2); the tarball from eaff4a7 built by the scratch recipe, its contents proven against git ls-files (170 kept less .Rbuildignore, plus 7 built); the same tarball's local R CMD check --as-cran 208 s at load 10-13, R16's NOTE only; uploaded by FTP to win-builder R-devel (Mark's D1 pick "I upload it via FTP (Recommended)"), result W1Ko4S0RDs2W: 398 s, install 11 s, tests 286 s (286.4 s CPU, an idle machine), vignettes 18 s, R code 16 s, examples 13 s, PDF manual 13 s, FAIL 0 WARN 0 SKIP 9 PASS 5400, the spelling step flagging nothing; ratio to this Mac 1.9 (S32 estimated 3.4-3.8); Mark's pick "Decide after 17j (Recommended)" became R86. The record 8a27fcf (cran-submission-plan.md: status, summary, section 2.1's table and decision, 17a Done, 17k rewritten, session map 18-22, dragon 8; the standalone plan: status, Next, R86, the 17k row, Done 17a); close-out 1 b8ff56b (ROADMAP; BACKLOG: 17a removed, 17b to Up Next), pushed
+next_steps: Orient; drift tool (91, 5 differ, all with rows); nprcgenekeepr's log on every copied file (expect exactly 4 commits, 4283e3502 a85311021 392dd347e 471589138, already in the copy); push S33's close-out 2 (methodology only); Phase 17b: re-run section 2.4's git grep -w inventory, read C13 (contract :102, :146; standalone plan :544) before offering to rename kinship()'s fatherId/motherId, then a picker per item (parent names, the pedigree argument's name, argument order, exporting addIdRecords(), shared export names; two AskUserQuestion calls for five items); the picks become rulings, the contract's sections 4 and 6 and the plan's inventory updated; no code
+key_files: docs/planning/cran-submission-plan.md:96 (S33's win-builder record, R86), docs/planning/cran-submission-plan.md:165 (2.4 names, 17b's inventory), docs/planning/cran-submission-plan.md:341 (17b), docs/planning/cran-submission-plan.md:422 (17k), docs/planning/cran-submission-plan.md:493 (decisions; D2 :498), docs/planning/cran-submission-plan.md:554 (dragon 8), docs/planning/standalone-pedigree-package-plan.md:53 (Next), docs/planning/standalone-pedigree-package-plan.md:204 (R86), docs/planning/standalone-pedigree-package-plan.md:544 (C13 names), docs/planning/pedkindraw-api-contract.md:102 (C13), docs/planning/pedkindraw-api-contract.md:271 (6, versioning), methodology/BACKLOG.md:11 (17b)
+gotchas: a win-builder reading may come from an idle machine: read examples_and_tests/tests/testthat.Rout's proc.time() (CPU against elapsed) before trusting a margin; the check time in seconds is in the email, not 00check.log, which times only steps of 10 s or more; the FTP upload worked (curl -T to ftp://win-builder.r-project.org/R-devel/, reply 226, result in about 15 min), each upload needs Mark's approval in the session; this Mac at load 10-13 during S33's timings; the copied test_positionMatingUnitForest.R prints three message() lines into the check's test output (not flagged); the sire/dam words gate binds any parent-argument rename in user-facing text; carried: no hunspell dictionary here, 7 of 9 Suggests in R's own library, count copied files by the capitalized header (79), nprcgenekeepr counts go stale (169 at 3c87a17a9), the suite gate counts warnings only and times out under load, CLAUDE.md over budget, pedkindraw.Rproj untracked (Mark's)
+runtime_smoke: n/a -- no package code changed (R/, tests/, vignettes/, man/, inst/, DESCRIPTION identical to d00ebda); the tarball's R CMD check --as-cran here R16's NOTE only, tests FAIL 0 WARN 0 SKIP 8 PASS 5401; win-builder R-devel W1Ko4S0RDs2W R16's NOTE only, FAIL 0 WARN 0 SKIP 9 PASS 5400; site run 44153786342 success; CI 44153786408 5/5 success at the first attempt (20 min); quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 01151c525b8a (load 4.6-14.8)
+changelog_ref: CHANGELOG.md "2026-11-17 · [BL-Phase 17a] S33: Phase 17a, the check time on win-builder R-devel", "S33 push 1", "S33 upload" and "S33 push 2"
+commit: this receipt's commit (close-out 2)
 ```
+S33 measured Phase 17a. The tarball from `eaff4a7` passed the local CRAN-style check, then went to win-builder R-devel
+by FTP with Mark's approval: 398 s and only the new-submission NOTE, against S32's estimate of 615-688 s. The tests'
+CPU time equalled their elapsed time, so win-builder was idle; a busy day could read about 470-550 s. Mark chose to
+decide any cut of the tests CRAN runs after 17j, by one more reading (R86). Self 8: + measured before every picker,
+read the reading's busyness instead of its face value, proved the tarball's contents; - the first replies lacked the
+TDD phase line, and the 10-40 s for 17b-17j is a guess. Model: Claude Opus 5.5, one tier.
 
 ```handoff
 session: S32

@@ -9,74 +9,78 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** Phase 17, the CRAN submission, is planned (S32: `docs/planning/cran-submission-plan.md`, rulings R83-R85,
-phases 17a-17q, about 17 to 22 sessions, a guess). Next: **Phase 17a, the check time on win-builder R-devel**
-(`docs/planning/cran-submission-plan.md:283`; `methodology/BACKLOG.md:11`): build today's tarball, upload it to
-win-builder R-devel with Mark's approval (D1, `:446`), record the reading in the plan's section 2.1 (`:57`), and say
-whether 17k (the CRAN-mode test cut) is needed against R85's 540 s, counting what 17b-17j will add.
+**Task:** Phase 17, the CRAN submission, is under way (`docs/planning/cran-submission-plan.md`). 17a is DONE (S33:
+win-builder R-devel 398 s, R16's NOTE only; R86: 17k opens with one more reading after 17j). Next: **Phase 17b, the
+argument-name review, a decision session** (`docs/planning/cran-submission-plan.md:341`; inventory section 2.4,
+`:165`; `methodology/BACKLOG.md:11`): one picker per item of section 2.4, Mark's picks become rulings, the
+contract's sections 4 and 6 say what changed, and the plan records each change's inventory. No code changes (17c
+makes them, test-first).
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker** (4 options at most, "Other" for hold): 17a (recommended: R85, Mark's pick, comes first);
-17b, the name review (`:297`; the plan orders it after 17a, but it does not depend on 17a's number).
+**The orient picker** (4 options at most, "Other" for hold): 17b (recommended: the plan's order, R84); 17d or 17e,
+the two drawing fixes (the plan puts them after 17c, since a rename would touch the same files, but they do not
+depend on 17b if 17b keeps every name).
 **Session boundary:** one deliverable. **Priority:** HIGH (the plan's next phase).
 
 ### What You Must Do
 1. Orient; drift tool (expect 91 functions, 5 differ, all with rows); nprcgenekeepr's log on every copied file:
    `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R
-   tests/testthat/*.R)` printed exactly 4 commits at S32's close (`4283e3502`, `a85311021`, `392dd347e`,
-   `471589138`: S1153's and S1159's, already in the copy, whose header names `4283e3502`). Any other line is a
-   change to a copied file: the plan's section 4.4 and R37.
-2. Push S32's close-out 2 commit with the session's first push (methodology only: no run starts).
-3. 17a: build as the plan's section 2.1 did (recipe in the Gotchas); the D1 picker (Mark uploads through
-   <https://win-builder.r-project.org/upload.aspx>, R-devel; or Claude uploads after his OK in that session, the way
-   devtools does, `curl -T <tarball> ftp://win-builder.r-project.org/R-devel/`, not tried here: devtools is
-   installed nowhere on this Mac). The result goes to the maintainer's address in about 15-30 minutes; Mark passes on
-   the result folder's link, and the session reads its `00check.log` ("Check time in seconds", each step's time, the
-   NOTEs: the spelling step runs there). One reading near 540 s is uploaded again before it decides anything
-   (nprcgenekeepr read 284-617 s for nearly the same code).
+   tests/testthat/*.R)` printed exactly 4 commits at S33 (`4283e3502`, `a85311021`, `392dd347e`, `471589138`, all
+   already in the copy). Any other line is a change to a copied file: the plan's section 4.4 and R37.
+2. Push S33's close-out 2 commit with the session's first push (methodology only: no run starts).
+3. 17b, before any picker (Learning 17): re-run section 2.4's `git grep -w` inventory on today's tree (it was taken
+   at `ba811e7`; `R/`, `tests/`, `vignettes/` are unchanged since `d00ebda`, so the counts should hold; the picker
+   states them as measured). Read why `kinship()` says `fatherId`/`motherId` before offering to change it: ruling C13
+   of nprcgenekeepr's clean-room plan (`docs/planning/pedkindraw-api-contract.md:102`, `:146`;
+   `docs/planning/standalone-pedigree-package-plan.md:544`). Five items: the parent names (`fatherId`/`motherId`
+   against `sire`/`dam`), the pedigree argument's name (`ped`, `pedSourceDf`, `uPed`), the argument order
+   (`probands, ped`), exporting `addIdRecords()`, the export names shared with nprcgenekeepr, kinship2 and
+   Pedixplorer. `AskUserQuestion` takes 4 questions per call, so 5 items need two calls (or one per item). Each
+   change is a divergence from nprcgenekeepr (D2; a `DIVERGENCE.md` row in 17c, and the drift tool lists it).
 
 ### Gotchas
-- **The scratch check recipe (S32, worked):** in a new scratch folder, `L=$(Rscript -e 'cat(renv::paths$library())')`
-  from the repository, then `env -u RENV_PROJECT R_LIBS=$L R_LIBS_USER=$L RENV_CONFIG_AUTOLOADER_ENABLED=false R CMD
-  build <repo>` and the same with `R CMD check --as-cran --timings pedkindraw_*.tar.gz`. The check prints a step's
-  time only when it is over 10 s. CRAN-mode per-file times: `testthat::test_dir(<repo>/tests/testthat, package =
-  "pedkindraw", load_package = "installed")`, `as.data.frame()` of the result, with the check's `pedkindraw.Rcheck`
-  first in `R_LIBS` and `NOT_CRAN` unset (S32: 103.6 s summed, 119 s wall).
-- **This Mac is loaded by other projects:** S32 timed at load average 5.3-12.7, and ran the gates at 84-89 (vitest,
-  grep, quarto). Record `uptime` beside every timing; compare timings only under similar load.
-- **No English dictionary for hunspell on this Mac:** the incoming check's spelling step is skipped here (forced, it
-  prints "No suitable spell-checker program found"). `spelling::spell_check_package()` from R's own library (run
-  from `~`, renv's variables unset) works: 49 words, 0 in `DESCRIPTION`.
-- **R's own library holds 7 of the 9 Suggests** (`.Library`, 242 non-base packages): a depends-only check here hides
-  only kinship2 and Pedixplorer (17l; nprcgenekeepr's dragon 9).
-- **Count copied files by the header's form:** `grep -l 'Copied from nprcgenekeepr'` (capital C); a looser grep also
-  matches `tools/compareWithNprcgenekeepr.R`'s comment ("copied from nprcgenekeepr"), so S32 first counted 80, not 79.
-- **A count taken in nprcgenekeepr goes stale within the session:** its commits after `baef1e12c` read 163, then
-  165 at `363137511` (its S1178 committed six times during S32). Write the commit beside each count.
-- **Outward actions in Phase 17** (uploads to win-builder, the macOS builder, R-hub, the submission) need Mark's
-  approval in the session; the results go to his email; CRAN's own page for pedkindraw is a 404 until acceptance, so
-  no CRAN link or badge before 17q (the URL check would grow R16's NOTE).
-- **The suite gate's 300 s limit fails under load:** S32's `quality_ratchet.py --run` read 4/5, the suite gate
-  unmeasured (timeout) at load 88-214, so the suite was run by hand; the backlog item (`methodology/BACKLOG.md:123`)
-  is scheduled in 17l. Until then, run the gates when the machine is quiet, or run the suite by hand.
-- **Carried:** the suite gate counts warnings, not failures (tally "0 failed" by hand); both workflows run on any
-  push beyond `CLAUDE.md` and `methodology/**`; `check_pkgdown()` and renv in a scratch copy (S31's notes, in
-  `HANDOFFS.md`'s S31 receipt); `CLAUDE.md` is over its 28,000 B budget (30,795 B; S23-S32 added nothing, learnings
-  go here); `pedkindraw.Rproj` untracked, left for Mark (`.Rbuildignore:6`).
-- **Times on this Mac:** `R CMD check --as-cran` 181 s under load (S31: 190 s); suite 4.3 min; `quality_ratchet.py
-  --run` 282 s (S31); CI 15-18 min; the site workflow 3 min.
+- **Read a win-builder reading's busyness before trusting its margin (S33, dragon 8):** the result folder has
+  `examples_and_tests/tests/testthat.Rout`, whose `proc.time()` gives the tests' CPU beside their elapsed time.
+  S33's 398 s ran its tests at 286.3 s elapsed for 286.4 s CPU (an idle machine); nprcgenekeepr's slow reading ran
+  1.54 s elapsed per CPU second. `00check.log` prints a step's time only when it is 10 s or more, and the overall
+  "Check time in seconds" is in the email, not in `00check.log`.
+- **The win-builder upload, worked (S33):** `curl -sS -T pedkindraw_0.0.1.tar.gz
+  ftp://win-builder.r-project.org/R-devel/` (anonymous, 3 s, reply 226); the email came to Mark about 15 minutes
+  later, and the check itself took about 6 minutes on win-builder. Mark approves each upload in the session (17k, 17o).
+- **The scratch build and check recipe** (S32, worked again in S33): in a new scratch folder, `L=$(Rscript -e
+  'cat(renv::paths$library())')` from the repository, then `env -u RENV_PROJECT R_LIBS=$L R_LIBS_USER=$L
+  RENV_CONFIG_AUTOLOADER_ENABLED=false R CMD build <repo>` and the same with `R CMD check --as-cran --timings`.
+  Prove the tarball's contents: `tar -tzf` against `git ls-files` less `.Rbuildignore`'s patterns (S33: 170 kept,
+  less `.Rbuildignore`, plus 7 built files; `.Rhistory` is git-ignored and left out by R CMD build's defaults).
+- **This Mac is loaded by other projects:** S33's local check ran at load 10-13 (208 s; S32 181 s at 5-13). Record
+  `uptime` beside every timing; compare timings only under similar load.
+- **The copied `test_positionMatingUnitForest.R` prints three `message()` lines** into the check's test output
+  (`:2078`, `:2178`, `:2530`, mentioning nprcgenekeepr's sessions and issue #166). The check does not flag them;
+  noted in the plan's section 2.1 for 17l, not a backlog item.
+- **The sire/dam words gate** (`user-facing-sire-dam-words` in `methodology/.quality-gates.json`) reads `R/`,
+  `man/`, the README, NEWS and vignettes: any 17b ruling that renames parent arguments must keep to sire, dam,
+  mate, mating in user-facing text.
+- **Carried:** no English hunspell dictionary on this Mac (the spelling step runs on win-builder, which flagged
+  nothing in `DESCRIPTION`); R's own library holds 7 of the 9 Suggests; count copied files by the header's
+  capitalized "Copied from nprcgenekeepr" (79); counts taken in nprcgenekeepr go stale within a session (169 at
+  `3c87a17a9`, S33); the suite gate's 300 s limit fails under load and counts warnings, not failures (tally "0
+  failed" by hand); both workflows run on any push beyond `CLAUDE.md` and `methodology/**`; `CLAUDE.md` is over its
+  28,000 B budget (30,795 B; S23-S33 added nothing, learnings go here); `pedkindraw.Rproj` untracked, left for Mark.
+- **Times on this Mac:** `R CMD build` 18 s; `R CMD check --as-cran` 181-208 s under load; suite 4.3 min;
+  `quality_ratchet.py --run` about 5 min; CI 15-19 min; the site workflow 3 min.
 
 ### Key files
-- `docs/planning/cran-submission-plan.md:23` (summary), `:57` (2.1, the check time), `:112` (2.3, Suggests),
-  `:124` (2.4, names and the call-site inventory), `:166` (3, the open work), `:193` (4, nprcgenekeepr), `:244` (5,
-  the comparison), `:283` (17a), `:297` (17b), `:446` (7, decisions D1-D10), `:463` (8, session map), `:491` (9,
-  dragons).
-- `docs/planning/standalone-pedigree-package-plan.md:52` (Next), `:200`-`:202` (R83-R85), `:860` (Phase 17),
-  `:889` (Done 17's plan).
-- `docs/planning/pedkindraw-api-contract.md:271` (section 6), `:277` (S32's note: the review is 17b).
-- `methodology/BACKLOG.md:11` (17a), `:21` (speed vignette, 17g-17i), `:36` ("Select by id", 17d), `:46` (legend,
-  17e), `:65` (gaps, 17f), `:76` (coverage, 17j), `:195` (the name review, 17b-17c).
-- nprcgenekeepr's `docs/planning/cran-3.0.0-submission-plan.md` (the model): `:189` (3.2, the check-time estimate),
-  `:895` (Phase 8, the runs), `:999` (6, decisions), `:1068` (8, dragons).
+- `docs/planning/cran-submission-plan.md:23` (summary), `:59` (2.1, the check time), `:96` (S33's win-builder
+  record and the R86 decision), `:165` (2.4, names, the 17b inventory), `:207` (3, the open work), `:234` (4,
+  nprcgenekeepr), `:324` (17a, with its Done line), `:341` (17b), `:352` (17c), `:422` (17k, rewritten by R86),
+  `:464` (17o), `:493` (7, decisions; D2 at `:498`), `:510` (8, session map), `:538` (9, dragons; dragon 8 at `:554`).
+- `docs/planning/standalone-pedigree-package-plan.md:53` (Next), `:202`-`:204` (R84-R86), `:544` (`kinship()`'s
+  C13 names), `:862` (Phase 17), `:899` (Done 17a).
+- `docs/planning/pedkindraw-api-contract.md:91` (4, interface catalogue), `:102` and `:146` (C13), `:271` (6,
+  versioning), `:277` (the review is 17b).
+- `methodology/BACKLOG.md:11` (17b), `:18` (speed vignette, 17g-17i), `:33` ("Select by id", 17d), `:43` (legend,
+  17e), `:62` (gaps, 17f), `:73` (coverage, 17j), `:120` (the suite gate's limit, 17l).
+- win-builder's result `https://win-builder.r-project.org/W1Ko4S0RDs2W/` (removed about 2026-11-20); its logs are
+  copied in S33's scratchpad, not in the repository.
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -90,62 +94,54 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S31's entries were removed in S3-S32 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S32's entries were removed in S3-S33 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 33 Did
-**Deliverable:** Phase 17a, the check time on win-builder R-devel (`docs/planning/cran-submission-plan.md:283`, R85):
-build today's tarball, upload it with Mark's approval (D1), record the emailed reading in the plan's section 2.1 and
-say whether 17k is needed against 540 s; a measurement, no R code or tests change (IN PROGRESS)
-**Started:** 2026-11-17 10:22 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 17a: win-builder time
-(Recommended)" (orient picker)
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
-
-### Session 31 Handoff Evaluation (by Session 32)
+### Session 32 Handoff Evaluation (by Session 33)
 **Score: 9/10.**
-- **What helped:** the orient picker's options with their backlog lines; the steps in order (drift tool,
-  nprcgenekeepr's log, the push first, the site's 200), each of which ran as written; naming nprcgenekeepr's
-  `cran-3.0.0-submission-plan.md` as the model, which supplied the check-time ratio, the dragons and the phase shape;
-  the gotcha on R inside a scratch copy (`RENV_CONFIG_AUTOLOADER_ENABLED=false`, used for every scratch run); the
-  backlog item's list of what the plan inherits (the NEWS section on the documentation went into 17m). All 19 line
-  citations were right at `aeaed75`.
-- **What was missing:** that the check time is the likely critical path. S31's own times (the check 190 s) and the
-  model plan's 3.4-3.8 ratio already put it near 600 s; S32 found it by reading the model. And that this Mac has no
-  spelling dictionary, so the incoming spelling step never runs here. Neither cost a run.
-- **What was wrong:** nothing found.
+- **What helped:** every step ran as written. The drift tool and nprcgenekeepr's log gave exactly the expected
+  output (91/5/0; the same 4 commits). The push went first. The scratch build recipe worked unchanged. The D1
+  facts were ready: the upload page, and devtools' FTP command, which worked as given. The "about 15-30 minutes"
+  held (about 15). The rule to upload again near 540 s framed the decision. All 27 line citations in its steps and
+  Key files were right at `a4e940e` (each checked by its text).
+- **What was missing:** that a win-builder reading can come from an idle machine, and where to see it
+  (`examples_and_tests/tests/testthat.Rout`'s `proc.time()`). Without that, 398 s reads as a 142 s margin. Also,
+  that a local check of the same tarball gives the ratio the later phases will need. Neither cost a run.
+- **What was wrong:** one small thing. Step 3 says the session reads `00check.log` for "Check time in seconds", but
+  that line is in the email, not the log.
 - **ROI:** high.
 
-### What Session 32 Did
-**Deliverable:** Phase 17's plan, the CRAN submission: `docs/planning/cran-submission-plan.md` (planning session;
-nothing in `R/`, `tests/`, `man/`, `vignettes/`, `inst/` or `DESCRIPTION` changed).
-**Started:** 2026-11-16 18:22 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** the first orient picker sent back
-to clarify, with Mark's direction: "It looks the a plan for a CRAN release should include, at least, consideration
-of the other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on
-pedkindraw, and the comparison of pedkindraw with kinship2 and Pedixplorer."; then "Release plan, all three
-(Recommended)"; then, after the measurements, "This outline (Recommended)", all four open items before the release
-("Two drawing fixes (Recommended)", "Gaps document (Recommended)", "Timing runs + speed vignette", "Full test
-coverage") and "Measure on win-builder first (Recommended)".
-**Commits:** claim `ba811e7` (pushed with S31's close-out 2; no run); the plan `4886bb9`; close-out 1 `53afbfe`
-(the standalone plan's status, R83-R85 and Phase 17's table; the contract's section 6 note; ROADMAP; BACKLOG; pushed:
-CI `43990847828` 5/5 `success`, attempt 1, 19 min; site `43990847843` `success`, 3 min); close-out 2 (these notes, the receipt, the ledger), not pushed.
-**Measured:** `R CMD check --as-cran` 181 s (tests 118 s, examples 1.1 s), R16's NOTE only, under load 5.3-12.7;
-win-builder estimate 615-688 s; CRAN-mode tests 684, 0 failed, 8 skipped, 103.6 s, eight files 81%; static checks
-clean (no `\dontrun`, `\value` and examples on every export page, no console output or options); spelling 49 words,
-0 in `DESCRIPTION`; `mockery` and `withr` unguarded in tests; 7 of 9 Suggests in R's own library; 20 exports take
-`ped`, 22 of 31 names shared with nprcgenekeepr, 6 with kinship2, 1 with Pedixplorer; the call sites of each name the
-review may change; nprcgenekeepr 165 commits after `baef1e12c`, none to the 79 copied files' sources after their copy
-commits. **Verified:** drift tool 91, 5 differ, 0 without a row; `quality_ratchet.py --run` 4/5 pass, 0 fail, 1 unmeasured (`test-suite-warnings-zero`, its 300 s limit at load 88-214), results `42b564bc4c70`; the suite by hand (`testthat::test_local()`, `NOT_CRAN=true`): 684 tests, 0 failed, 0 skipped, WARN 0, 6,109 passed, 399 s at load 183-212; `R/`, `tests/`, `vignettes/` identical to `d00ebda` (S31's 5/5 run).
+### What Session 33 Did
+**Deliverable:** Phase 17a, the check time on win-builder R-devel: 398 s, `Status: 1 NOTE` (R16's); ruling R86
+(17k decided by one more reading after 17j). A measurement; nothing in `R/`, `tests/`, `man/`, `vignettes/`,
+`inst/` or `DESCRIPTION` changed.
+**Started:** 2026-11-17 10:22 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Phase 17a: win-builder time
+(Recommended)" (orient); "I upload it via FTP (Recommended)" (D1); "Decide after 17j (Recommended)" (the 17k
+decision, R86). Each was answered at the first asking.
+**Commits:** claim `eaff4a7` (pushed with S32's close-out 2; no run); the record `8a27fcf` (both plans: section
+2.1's win-builder table, 17a's Done line, 17k rewritten, the session map, dragon 8, R86, "Done 17a"); close-out 1
+`b8ff56b` (ROADMAP, BACKLOG: 17a removed, 17b moved to Up Next), pushed (CI and site runs under Verified);
+close-out 2 (these notes, the receipt, the ledger), not pushed.
+**Measured:** the tarball from `eaff4a7` (1,382,525 B, SHA-256 `23386dc96ff7...`; package files identical to
+`d00ebda`; contents proven against `git ls-files`). On this Mac at load 10-13: `R CMD check --as-cran --timings`
+208 s, R16's NOTE only, tests 136 s (124.9 s CPU). Uploaded by FTP at 16:31 UTC. win-builder R-devel r90914
+(`W1Ko4S0RDs2W`): 398 s, install 11 s, tests 286 s (286.4 s CPU), vignettes 18 s, R code 16 s, examples 13 s, PDF
+manual 13 s; tests FAIL 0, WARN 0, SKIP 9 (the 8 `skip_on_cran()` and one Rblas skip), PASS 5,400. The spelling
+step flagged nothing. The ratio to this Mac is 1.9 (2.3 for the tests' CPU), against S32's 3.4-3.8. A busy day
+could read about 470-550 s; 17b-17j add a guessed 10-40 s.
+**Verified:** drift tool 91, 5 differ, 0 without a row; nprcgenekeepr at `3c87a17a9`, the same 4 commits on the
+copied files; every number in the record re-computed from the logs before the commit (`8a27fcf`);
+`quality_ratchet.py --run` 5/5 pass, 0 unmeasured, results `5ddbb5b1aeb3` (load 4.6-14.8); site run `44153786342`
+`success`; CI `44153786408` 5/5 `success` at the first attempt (20 min).
 **Self-assessment: 8/10.**
-+ Measured before each picker (the check by step, per-file test times, the names, nprcgenekeepr's changes, the
-  Suggests), so the scope picker stated counts; the outline went to Mark before the plan was written; each phase
-  names its surface and what that surface cannot show; every number in the draft was re-checked against its source
-  before the commit, which caught five (165 not 163, 20 not 19, 79 not 80, 688 not 690, and a claim R77 never made).
-- The first orient picker offered the release plan beside the other items, where Mark saw that the release plan
-  must weigh them all; one round of clarification. The timings were taken under load from other projects, so the
-  estimate's base is high by an unmeasured amount. The picker told Mark "615-690 s" before the arithmetic was exact.
-**Learnings:** no `CLAUDE.md` row (over its budget); in the Gotchas above: the scratch check and per-file timing
-recipe; the machine's load; no spelling dictionary; R's own library and the depends-only check; counting copied
-files by the header's form; counts in nprcgenekeepr go stale within a session.
-**Ledger:** `CHANGELOG.md` S32 entries (the session, push 1, push 2).
++ Measured before each picker: the FTP server answered and the upload page returned 200 before D1; the local check
+  of the same tarball passed before the upload. Read the tests' CPU against elapsed time instead of taking 398 s at
+  face value, and checked what nprcgenekeepr's 284-617 s spread measured (the same tarball: 617 and 520 s) before
+  framing the 17k picker. The tarball's contents were proven by machine. All three picks came at the first asking.
+- The first replies of the session did not declare the TDD phase at the top, as `CLAUDE.md` requires of every
+  response (corrected from the orientation report on). The additions (10-40 s) are a guess, not measured, and the
+  record labels them so. The busy-day figure leans on nprcgenekeepr's one slow reading.
+**Learnings:** no `CLAUDE.md` row (over its budget). In the plan's dragon 8: read the tests' `proc.time()` before
+trusting a margin. In the Gotchas above: the FTP upload, worked; the email carries the check time; proving the
+tarball's contents.
+**Ledger:** `CHANGELOG.md` S33 entries (the session, push 1, the win-builder upload, push 2).
