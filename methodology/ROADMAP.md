@@ -20,7 +20,8 @@ hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase
 legend item it needed (S28, R81); 16d, the speed vignette, is deferred until pedkindraw times itself (S30, R82);
 and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN submission, is planned (S32,
 `docs/planning/cran-submission-plan.md`) and under way: 17a, the check time on win-builder, is done (S33); 17b, the
-argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2 is next (Planned, below).
+argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2, the pedigree argument's name, is done
+(S36); 17c3 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -42,7 +43,8 @@ session each unless marked. They follow the copy slices.
   reading after 17j (R86). 17b is done (S34, R87-R93): `kinship()` takes `sire` and `dam`, the pedigree argument is
   `ped` and comes first in every export, `kinship()` refuses generation numbers that put a parent at or after its
   offspring, and the shared export names stay; 17c makes the changes test-first in three sessions: 17c1
-  (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) next. Before the release, by Mark's picks (R84):
+  (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) is done (S36), 17c3 (the pedigree first) next.
+  Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
   Pedixplorer can do that pedkindraw cannot, pedkindraw's own timing runs and the speed and
@@ -213,6 +215,10 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17c2, the pedigree argument is `ped` (pedkindraw S36, 2026-11-17).** `getParents()`, `getOffspring()`
+  and `getIdsWithOneParent()` now call the pedigree `ped`, like every other function, and `addBackSecondParents()`
+  calls its trimmed pedigree `trimmedPed` beside the full `ped`. Each argument kept its position, so no call in the
+  package, its tests or its documents changed; only a call that names the old argument stops. NEWS says so.
 - **Phase 17c1, `kinship()` takes `sire` and `dam` (pedkindraw S35, 2026-11-17).** `kinship()`'s parent arguments
   now say sire and dam like every other function's, and it stops with a plain message when an animal's generation
   number is not above its sire's and dam's. Called the way kinship2's users call their own `kinship()`, with the sex

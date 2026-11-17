@@ -108,7 +108,7 @@ release (section 6), the last point at which it costs users nothing.
 `addBackSecondParents()` (R88); every export that takes a pedigree takes it first (R89). The rows below give these
 names, each marked with the phase that makes it (17c1-17c3, test-first); until then the code has the old ones,
 which each row also names. Each change is a `DIVERGENCE.md` row (plan section 5). Made so far: 17c1 (pedkindraw
-S35, `kinship()`).
+S35, `kinship()`) and 17c2 (pedkindraw S36, the four R88 names).
 
 ### 4.1 Copied exports (20)
 

@@ -50,9 +50,10 @@ its draft on the branch `draft/speed-vignette`); Phase 16e DONE (pedkindraw S31:
 <https://rmsharp.github.io/pedkindraw/>), so Phase 16 is DONE; Phase 17's plan DONE (pedkindraw S32:
 `docs/planning/cran-submission-plan.md`, R83-R85; phases 17a-17q); Phase 17a DONE (pedkindraw S33: win-builder
 R-devel 398 s, R86); Phase 17b DONE (pedkindraw S34: six name rulings, 17c in three sessions, R87-R93); Phase
-17c1 DONE (pedkindraw S35: `kinship(id, sire, dam, pdepth, ...)` and its `pdepth` check, R87, R91, R92).
-**Next:** Phase 17c2, the pedigree argument is `ped` in `getParents()`, `getOffspring()`, `getIdsWithOneParent()`
-and `addBackSecondParents()` (R88; strict TDD; `docs/planning/cran-submission-plan.md` section 6).
+17c1 DONE (pedkindraw S35: `kinship(id, sire, dam, pdepth, ...)` and its `pdepth` check, R87, R91, R92); Phase
+17c2 DONE (pedkindraw S36: the pedigree argument is `ped` in four more exports, R88).
+**Next:** Phase 17c3, the pedigree first in `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()` and
+`hasBothParents()` (R89; strict TDD; `docs/planning/cran-submission-plan.md` section 6).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -926,6 +927,12 @@ kinship2's and Pedixplorer's `kinship()` take a pedigree object or the vectors `
 kinship2's call form is stopped in all 428 families of `sample.ped` and `minnbreast`. One copied test computes
 `smallPed`'s `gen` (its stored one is wrong in 8 of 17 animals). A `DIVERGENCE.md` row; REFACTOR skipped (Mark's
 pick). Fidelity tool 600 of 600 identical; `R CMD check --as-cran` R16's NOTE only.
+
+**Done 17c2 (pedkindraw S36; R88):** `getParents(ped, ids)`, `getOffspring(ped, ids)`, `getIdsWithOneParent(ped)`
+and `addBackSecondParents(trimmedPed, ped)`, in the old positions, so no caller changed; a call that names
+`pedSourceDf` or `uPed` now stops ("unused argument"). Four `DIVERGENCE.md` rows; a NEWS bullet (Mark's pick);
+`getIdsWithOneParent()` has a test file of its own (Mark's pick); REFACTOR skipped (Mark's pick). Fidelity tool 600
+of 600 identical; `R CMD check --as-cran` R16's NOTE only.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

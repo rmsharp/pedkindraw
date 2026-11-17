@@ -5,7 +5,8 @@
 `vignettes/`, `inst/` or `DESCRIPTION` changed.
 **Status:** Phase 17a DONE (S33: win-builder R-devel read 398 s, section 2.1; R86). Phase 17b DONE (S34: six
 name rulings and 17c in three sessions, section 2.4; R87-R93). Phase 17c1 DONE (S35: `kinship(id, sire, dam,
-pdepth, ...)` and its `pdepth` check). Next: Phase 17c2, the pedigree argument's name.
+pdepth, ...)` and its `pdepth` check). Phase 17c2 DONE (S36: the pedigree argument is `ped` in four more exports).
+Next: Phase 17c3, the pedigree first.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -415,8 +416,20 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   tool 600 of 600 identical; `R CMD check --as-cran` R16's NOTE only.
 - **17c2, the pedigree argument (R88):** `getParents()`, `getOffspring()`, `getIdsWithOneParent()`,
   `addBackSecondParents()`. No caller changes. About 12 files.
+  **Done (S36):** RED `ef101e8`, GREEN 1 `91f65e5`, GREEN 2 `858cfc9`, GREEN 3 `7d4de5d` (NEWS, Mark's pick);
+  REFACTOR skipped (Mark's pick: the code keeps nprcgenekeepr's line breaks, so a port is the rename alone). 14
+  files: the four `R/` files and their pages, `DIVERGENCE.md` (four rows), `NEWS.md`, `test_getParents.R`,
+  `test_getOffspring.R`, `test_addBackSecondParents.R` and the new `test_getIdsWithOneParent.R` (Mark's pick: a
+  file of its own, the function's first direct test). The parse found R88's 24 calls, none naming the old
+  arguments, and the whole suite passed on a scratch copy with the renames drafted, before RED. Under the old names
+  R's partial matching let `getParents(ped = )` and `getOffspring(ped = )` reach `pedSourceDf`, so in those two
+  RED blocks only the names check failed (dragon 20). Fidelity tool 600 of 600 identical; `R CMD check --as-cran`
+  R16's NOTE only.
 - **17c3, the pedigree first (R89):** `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()`,
-  `hasBothParents()`, and the 23 calls section 2.4 lists, the fidelity tool's given names. About 16 files.
+  `hasBothParents()`, and the 23 calls section 2.4 lists, the fidelity tool's given names. About 16 files. Also
+  `getParents()`'s `@param ped` (`R/getParents.R:14`-`:16`: the pedigree is first "unlike getProbandPedigree() and
+  getDescendantPedigree(), which take the animal ids first"), which 17c3 makes false; `getOffspring()`'s page
+  inherits it (S36's search: no other help text describes the order).
 - **DONE (each):** suite 0 failed, WARN 0; lint 0; roxygen idempotent; `R CMD check --as-cran` R16's NOTE only; the
   drift tool lists each changed function with its row; the fidelity tool's cases run under the new names, all
   identical; `git grep` of each old name finds only history and headers; CI 5/5.
@@ -650,6 +663,10 @@ pedkindraw's own:
     `kinship()` take a pedigree object; `methods(kinship2::kinship)` and `showMethods("kinship")` showed both also
     take the vectors, the form R92 is about. Count shared names on the loaded source (`pkgload::load_all()`): the
     installed copy in renv's library was older and reported 1 name shared with kinship2, not 6.
+20. **R matches a shortened argument name to the old one** (S36): with `getParents(pedSourceDf, ids)`, a call
+    `getParents(ped = x)` already worked, `ped` being a prefix of `pedSourceDf` (partial matching), so a RED test
+    that only calls the new name passes on the old code. `expect_named(formals(f), ...)` is what fails there; put
+    it in every rename's RED block. After the rename, a call that names the old argument stops ("unused argument").
 
 ---
 
