@@ -44,6 +44,12 @@ code, `DIVERGENCE.md` in the repository says how and why.
 * `findGeneration()`, `findPedigreeNumber()`, `getParents()`, `getOffspring()`,
   `getFounders()`, `isFounder()`, `hasBothParents()` and
   `getIdsWithOneParent()`.
+* New: the pedigree argument is `ped` in `getParents()`, `getOffspring()` and
+  `getIdsWithOneParent()`, in the place of nprcgenekeepr's `pedSourceDf` and
+  `uPed`, and `addBackSecondParents(trimmedPed, ped)` calls the trimmed
+  pedigree `trimmedPed`, in the place of `uPed`. A call that passes the
+  pedigree by position is unchanged; one that names the old argument stops
+  with "unused argument".
 * New: `familyCheck()` checks family ids against the family trees the sires
   and dams form.
 
