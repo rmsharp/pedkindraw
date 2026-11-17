@@ -108,6 +108,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S33's entries were removed in S3-S34 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 35 Did
+**Deliverable:** Phase 17c1, `kinship()` (`docs/planning/cran-submission-plan.md:394`; R87, R91, R92): `sire` and
+`dam` for `fatherId` and `motherId`, a stop when a known parent's `pdepth` is not below its offspring's, the help
+and the README on the 4th argument and the shared names; one `DIVERGENCE.md` row; strict TDD (IN PROGRESS)
+**Started:** 2026-11-17 14:21 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17c1: kinship() (Recommended)"
+(orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 33 Handoff Evaluation (by Session 34)
 **Score: 9/10.**
 - **What helped:** every step ran as written: the drift tool (91/5/0) and nprcgenekeepr's log (the same 4 commits)

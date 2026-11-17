@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-17 · [BL-Phase 17c1] S35: Phase 17c1, `kinship()` takes `sire` and `dam` and refuses generation numbers out of order (in progress)
+- **Change:** session claimed (Mark's pick "17c1: kinship() (Recommended)" at the orient picker): strict TDD. Phase 0 reconcile: nothing to backfill (frontier `2fd19e9` is HEAD, S34's close-out 2; no merges; S34's receipt complete, its ratchet results `5ddbb5b1aeb3` match the saved file, 5/5); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `f47499a6e` (its S1181), its log on the 79 copied files exactly the 4 commits already in the copy, none on `kinship()`'s three files; dashboard 93/100; `pedkindraw.Rproj` untracked, left for Mark.
+- **Commit/PR:** the claim commit · **Session:** S35 · **Verified:** pending (close-out).
+
 ### 2026-11-17 · [BL-Phase 17b] S34 push 2: `master` to GitHub at `44bef08` (the 17b record and close-out 1)
 - **Change:** `git push origin master` (`5525edd..44bef08`); the push touched `docs/planning/`, so both workflows ran: CI run `44162710948` 5/5 `success` at the first attempt (16 min); site run `44162711010` `success` (3 min; no package change). S34's close-out 2 after it is not pushed.
 - **Commit/PR:** none (push) · **Session:** S34 · **Verified:** `gh run view --json`.

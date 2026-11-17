@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S35
+date: 2026-11-17
+status: pending
+active_task: Phase 17c1, kinship() (strict TDD; R87, R91, R92): sire and dam for fatherId and motherId in the same positions; a stop when a known parent's pdepth is not below its offspring's, after the existing input checks; the help and the README on the 4th argument (pdepth, not kinship2's sex) and the names shared with kinship2 and Pedixplorer; one DIVERGENCE.md row; Mark's pick "17c1: kinship() (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S34
 date: 2026-11-17
 status: complete
