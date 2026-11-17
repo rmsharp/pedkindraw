@@ -196,11 +196,26 @@ manifest existed are not re-judged.
 ```handoff
 session: S32
 date: 2026-11-16
-status: pending
-active_task: plan Phase 17, the CRAN release, a planning session: each open backlog item's place, nprcgenekeepr's recent and ongoing changes against the copied code, and where the comparison with kinship2 and Pedixplorer fits; Mark's pick "Release plan, all three (Recommended)" at the orient picker
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17, the CRAN submission, is planned (docs/planning/cran-submission-plan.md, R83-R85, phases 17a-17q). Next: Phase 17a, the check time on win-builder R-devel, Mark approving the upload; the orient picker offers 17a (recommended) or 17b, the name review
+what_was_done: claim ba811e7 (pushed with S31's close-out 2); measured on this Mac under load 5.3-12.7: R CMD check --as-cran 181 s (tests 118 s, examples 1.1 s), R16's NOTE only, win-builder estimate 615-688 s; CRAN-mode tests 684, 0 failed, 8 skipped, 103.6 s, eight files 81%; static checks clean; spelling 49 words, 0 in DESCRIPTION; mockery and withr unguarded in tests; 7 of 9 Suggests in R's own library; names shared with nprcgenekeepr (22 of 31), kinship2 (6), Pedixplorer (1) and the call sites of each name the review may change; nprcgenekeepr 165 commits after baef1e12c, none to the 79 copied files' sources. Mark's picks: "Release plan, all three (Recommended)" after his clarification, "This outline (Recommended)", all four open items before the release, "Measure on win-builder first (Recommended)". The plan 4886bb9; close-out 1 53afbfe (standalone plan status, R83-R85, Phase 17's table and Done record; contract section 6 note; ROADMAP; BACKLOG retagged), pushed
+next_steps: Orient; drift tool (91, 5 differ, all with rows); nprcgenekeepr's log on every copied file (expect exactly 4 commits, 4283e3502 a85311021 392dd347e 471589138, already in the copy); push S32's close-out 2 (methodology only); Phase 17a: build the tarball by the scratch recipe, the D1 picker (Mark uploads at win-builder.r-project.org/upload.aspx, or Claude after his OK), read the emailed result's 00check.log, record it in the plan's section 2.1, decide whether 17k is needed against 540 s
+key_files: docs/planning/cran-submission-plan.md:57 (2.1 check time), docs/planning/cran-submission-plan.md:124 (2.4 names), docs/planning/cran-submission-plan.md:193 (4 nprcgenekeepr), docs/planning/cran-submission-plan.md:283 (17a), docs/planning/cran-submission-plan.md:446 (decisions), docs/planning/cran-submission-plan.md:463 (session map), docs/planning/standalone-pedigree-package-plan.md:52 (Next), docs/planning/standalone-pedigree-package-plan.md:200 (R83-R85), docs/planning/standalone-pedigree-package-plan.md:860 (Phase 17), docs/planning/pedkindraw-api-contract.md:277 (the review is 17b), methodology/BACKLOG.md:11 (17a), methodology/BACKLOG.md:195 (name review)
+gotchas: this Mac is loaded by other projects (timings at load 5-13, gates at 84-89): record uptime beside every timing; no English hunspell dictionary, so the incoming spelling step never runs here (use the spelling package from R's own library); R's own library holds 7 of 9 Suggests, so a depends-only check here hides only kinship2 and Pedixplorer; count copied files by the header's capitalized "Copied from nprcgenekeepr"; counts taken in nprcgenekeepr go stale within a session (163, then 165); uploads and the submission are outward actions needing Mark's approval; no CRAN link or badge before acceptance; the suite gate counts warnings only; CLAUDE.md over budget; pedkindraw.Rproj untracked (Mark's)
+runtime_smoke: n/a -- docs-only (no package code changed: R/, tests/, vignettes/ identical to d00ebda); the CRAN-mode check R16's NOTE only; site run 43990847843 success; CI 43990847828 5/5 success at the first attempt; quality_ratchet: 4/5 pass · 0 fail · 1 unmeasured · results 42b564bc4c70 · manifest 01151c525b8a; unmeasured: test-suite-warnings-zero (timeout 300 s at load 88-214) — by hand: test_local() 684 tests, 0 failed, 0 skipped, WARN 0, 6,109 passed
+changelog_ref: CHANGELOG.md "2026-11-16 · [BL-Phase 17] S32: Phase 17's plan, the CRAN submission", "S32 push 1" and "S32 push 2"
+commit: this receipt's commit (close-out 2)
 ```
+S32 wrote Phase 17's plan. Mark sent the first orient picker back to say that a release plan should weigh the other
+open work, nprcgenekeepr's changes and the comparison with kinship2 and Pedixplorer; the plan does all three. The
+measurements came before the scope picker: the check near CRAN's 10-minute limit on CRAN's slower machines, the
+tests' time by file, the names, the unguarded Suggests, nprcgenekeepr unchanged on every copied file. Mark put all
+four open items before the release and chose to measure on win-builder first. Self 8: + counts in every picker; the
+outline before the writing; each phase's surface named; five wrong numbers caught by re-checking the draft before
+its commit. - the first picker's framing missed what Mark wanted; timings under other projects' load; "615-690 s"
+told to Mark before the arithmetic was exact (615-688).
 
 ```handoff
 session: S31

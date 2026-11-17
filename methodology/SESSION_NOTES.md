@@ -9,74 +9,74 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** Phase 16 is DONE (S31: the website, <https://rmsharp.github.io/pedkindraw/>). Next by the plan: **Phase
-17, the CRAN submission, its own plan first** (`docs/planning/standalone-pedigree-package-plan.md:855`; the backlog
-item `methodology/BACKLOG.md:11`). The orient picker asks Mark (4 options at most; "Other" for hold): Phase 17's plan
-(a recommendation, not measured: the plan can make the argument-name review its first build session); the
-argument-name review (`methodology/BACKLOG.md:185`; contract section 6, `docs/planning/pedkindraw-api-contract.md:271`:
-"the last session before Phase 17 reviews the names"); the "Select by id" bug (`:32`) or the cut legend label (`:41`),
-both copied code; the gap document (`:59`); tests for full coverage (`:69`).
+**Task:** Phase 17, the CRAN submission, is planned (S32: `docs/planning/cran-submission-plan.md`, rulings R83-R85,
+phases 17a-17q, about 17 to 22 sessions, a guess). Next: **Phase 17a, the check time on win-builder R-devel**
+(`docs/planning/cran-submission-plan.md:283`; `methodology/BACKLOG.md:11`): build today's tarball, upload it to
+win-builder R-devel with Mark's approval (D1, `:446`), record the reading in the plan's section 2.1 (`:57`), and say
+whether 17k (the CRAN-mode test cut) is needed against R85's 540 s, counting what 17b-17j will add.
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**If Phase 17's plan:** a planning session (`methodology/SESSION_RUNNER.md` "Planning Sessions": deepest reasoning
-mode; the plan written to `docs/planning/`; an evidence inventory by search; each phase with DONE, verification
-commands and its surface; plan, not code). The model: nprcgenekeepr's `docs/planning/cran-3.0.0-submission-plan.md`
-(read from the clone; R8). What it inherits is listed in the backlog item: the version number, CRAN badges,
-`cran-comments.md` (pkgdown does not render it), a `NEWS.md` section on the documentation, the installed size (4,284
-KB of R77's 5,120 KB), the argument-name review's place.
+**The orient picker** (4 options at most, "Other" for hold): 17a (recommended: R85, Mark's pick, comes first);
+17b, the name review (`:297`; the plan orders it after 17a, but it does not depend on 17a's number).
 **Session boundary:** one deliverable. **Priority:** HIGH (the plan's next phase).
 
 ### What You Must Do
-1. Orient; drift tool (expect 91 functions, 5 differ, all with rows); `git -C ../nprcgenekeepr log --oneline
-   b4abb9a0b..HEAD -- R/affectedConditions.R R/drawPedigreeDiagram.R R/deceasedSlash.R R/makePedigreeDiagramData.R
-   R/orderRootSubtrees.R R/positionTreeApportion.R` (Learning 15); if it has ported R81, `methodology/BACKLOG.md:48`
-   is unblocked.
-2. Push S31's close-out 2 commit with the session's first push (methodology only: it starts no run of either
-   workflow).
-3. Check the site still answers (`curl -s -o /dev/null -w '%{http_code}' https://rmsharp.github.io/pedkindraw/`):
-   `R CMD check --as-cran` now reads it in the incoming check, so a dead site grows R16's NOTE.
+1. Orient; drift tool (expect 91 functions, 5 differ, all with rows); nprcgenekeepr's log on every copied file:
+   `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R
+   tests/testthat/*.R)` printed exactly 4 commits at S32's close (`4283e3502`, `a85311021`, `392dd347e`,
+   `471589138`: S1153's and S1159's, already in the copy, whose header names `4283e3502`). Any other line is a
+   change to a copied file: the plan's section 4.4 and R37.
+2. Push S32's close-out 2 commit with the session's first push (methodology only: no run starts).
+3. 17a: build as the plan's section 2.1 did (recipe in the Gotchas); the D1 picker (Mark uploads through
+   <https://win-builder.r-project.org/upload.aspx>, R-devel; or Claude uploads after his OK in that session, the way
+   devtools does, `curl -T <tarball> ftp://win-builder.r-project.org/R-devel/`, not tried here: devtools is
+   installed nowhere on this Mac). The result goes to the maintainer's address in about 15-30 minutes; Mark passes on
+   the result folder's link, and the session reads its `00check.log` ("Check time in seconds", each step's time, the
+   NOTEs: the spelling step runs there). One reading near 540 s is uploaded again before it decides anything
+   (nprcgenekeepr read 284-617 s for nearly the same code).
 
 ### Gotchas
-- **`check_pkgdown()` stops at its URL check** until `DESCRIPTION`'s `URL` holds `_pkgdown.yml`'s `url`, before it
-  reads the reference index; S31 checked the index on a scratch copy carrying the URL. `build_site()` only warns.
-- **R started inside a scratch copy of this repository starts renv** from its `.Rprofile`, with an empty library
-  ("Bootstrapping renv"): set `RENV_CONFIG_AUTOLOADER_ENABLED=false` beside `env -u RENV_PROJECT R_LIBS=...`, or run
-  from outside the tree. On GitHub's runners renv is active too: `setup-r-dependencies` installs into its library,
-  for both workflows.
-- **Both workflows run on every push not limited to `CLAUDE.md` and `methodology/**`**: a `docs/planning/` push
-  starts R-CMD-check (15-18 min) and a site rebuild (3 min, one at a time). Both print a post-step "Path Validation
-  Error": the package cache is never saved (renv's library is not the path the action caches), so each run
-  reinstalls (the site's about 1.5 min).
-- **pkgdown publishes every root `.md` but README, NEWS and LICENSE** (2.2.1's `package_mds()`; `cran-comments.md`
-  is not rendered): the workflow deletes `CLAUDE.md` and `DIVERGENCE.md`
-  (`.github/workflows/pkgdown.yaml:49`); any new root `.md` goes on the site.
-- **The README is the site's home page:** edit `README.Rmd`, then render `README.md` with today's package installed
-  (S31: the scratch install's library first in `R_LIBS`, the autoloader off, run in the repository root); the site
-  shows it after the push.
-- **This Mac's disk ignores case:** a local site has 45 pages, CI's 46 (`reference/asPedFrame.Pedigree.html` and
-  `asPedFrame.pedigree.html` are one file here).
-- **Shell traps carried (S30):** `cmd | tail -2; echo $?` prints `tail`'s status; zsh does not split `$VAR`; a
-  grep of `URL:` keeps `DESCRIPTION`'s comma on the first address (S31 read it as a 404).
-- **The suite gate counts warnings, not failures** (`methodology/.quality-gates.json`): tally the suite by hand for
-  "0 failed" (S31: `as.data.frame(testthat::test_local(...))`, 684 tests, 6,109 passed). It ran inside its 300 s in
-  S30 and S31 (282 s for all five gates); the backlog item `:115` stands.
-- **nprcgenekeepr moves:** its S1177 was in progress through S31 (HEAD `141ef2471`, 2 test files modified there; none
-  on the copied files).
-- **`CLAUDE.md` is over its 28,000 B budget** (30,795 B; S23-S31 added nothing; learnings go in these Gotchas).
-- **Left for Mark:** `pedkindraw.Rproj` untracked at the root (`.Rbuildignore:6`).
-- **Times on this Mac:** suite 4.3 min; `quality_ratchet.py --run` 282 s; `R CMD check --as-cran` 190 s; a local
-  site build 36 s; CI 15-18 min; the site workflow 3 min.
+- **The scratch check recipe (S32, worked):** in a new scratch folder, `L=$(Rscript -e 'cat(renv::paths$library())')`
+  from the repository, then `env -u RENV_PROJECT R_LIBS=$L R_LIBS_USER=$L RENV_CONFIG_AUTOLOADER_ENABLED=false R CMD
+  build <repo>` and the same with `R CMD check --as-cran --timings pedkindraw_*.tar.gz`. The check prints a step's
+  time only when it is over 10 s. CRAN-mode per-file times: `testthat::test_dir(<repo>/tests/testthat, package =
+  "pedkindraw", load_package = "installed")`, `as.data.frame()` of the result, with the check's `pedkindraw.Rcheck`
+  first in `R_LIBS` and `NOT_CRAN` unset (S32: 103.6 s summed, 119 s wall).
+- **This Mac is loaded by other projects:** S32 timed at load average 5.3-12.7, and ran the gates at 84-89 (vitest,
+  grep, quarto). Record `uptime` beside every timing; compare timings only under similar load.
+- **No English dictionary for hunspell on this Mac:** the incoming check's spelling step is skipped here (forced, it
+  prints "No suitable spell-checker program found"). `spelling::spell_check_package()` from R's own library (run
+  from `~`, renv's variables unset) works: 49 words, 0 in `DESCRIPTION`.
+- **R's own library holds 7 of the 9 Suggests** (`.Library`, 242 non-base packages): a depends-only check here hides
+  only kinship2 and Pedixplorer (17l; nprcgenekeepr's dragon 9).
+- **Count copied files by the header's form:** `grep -l 'Copied from nprcgenekeepr'` (capital C); a looser grep also
+  matches `tools/compareWithNprcgenekeepr.R`'s comment ("copied from nprcgenekeepr"), so S32 first counted 80, not 79.
+- **A count taken in nprcgenekeepr goes stale within the session:** its commits after `baef1e12c` read 163, then
+  165 at `363137511` (its S1178 committed six times during S32). Write the commit beside each count.
+- **Outward actions in Phase 17** (uploads to win-builder, the macOS builder, R-hub, the submission) need Mark's
+  approval in the session; the results go to his email; CRAN's own page for pedkindraw is a 404 until acceptance, so
+  no CRAN link or badge before 17q (the URL check would grow R16's NOTE).
+- **The suite gate's 300 s limit fails under load:** S32's `quality_ratchet.py --run` read 4/5, the suite gate
+  unmeasured (timeout) at load 88-214, so the suite was run by hand; the backlog item (`methodology/BACKLOG.md:123`)
+  is scheduled in 17l. Until then, run the gates when the machine is quiet, or run the suite by hand.
+- **Carried:** the suite gate counts warnings, not failures (tally "0 failed" by hand); both workflows run on any
+  push beyond `CLAUDE.md` and `methodology/**`; `check_pkgdown()` and renv in a scratch copy (S31's notes, in
+  `HANDOFFS.md`'s S31 receipt); `CLAUDE.md` is over its 28,000 B budget (30,795 B; S23-S32 added nothing, learnings
+  go here); `pedkindraw.Rproj` untracked, left for Mark (`.Rbuildignore:6`).
+- **Times on this Mac:** `R CMD check --as-cran` 181 s under load (S31: 190 s); suite 4.3 min; `quality_ratchet.py
+  --run` 282 s (S31); CI 15-18 min; the site workflow 3 min.
 
 ### Key files
-- `docs/planning/standalone-pedigree-package-plan.md:51` (Next), `:829` (Done 16e), `:850` (Done 16), `:855`
-  (Phase 17).
-- `docs/planning/documentation-plan.md:221` (Built S31), `:314` (section 7: what waits for Phase 17), `:346` (D4).
-- `docs/planning/pedkindraw-api-contract.md:271` (section 6, versioning and the name review).
-- `_pkgdown.yml:1` (url), `:8` (destination), `:14` (the reference index); `.github/workflows/pkgdown.yaml:11`
-  (paths-ignore), `:49` (the notes deleted), `:53` (build), `:57` (the deploy action, v4.8.0 at `d92aa23`).
-- `DESCRIPTION:13` (`URL`); `README.Rmd:34` (the site's paragraph).
-- `methodology/BACKLOG.md:11` (Phase 17's plan), `:32` ("Select by id"), `:41` (the legend label), `:48` (after
-  nprcgenekeepr's port, BLOCKED), `:59` (gaps), `:69` (coverage), `:115` (the suite gate's limit), `:124` (the stale
-  copy), `:185` (the name review).
+- `docs/planning/cran-submission-plan.md:23` (summary), `:57` (2.1, the check time), `:112` (2.3, Suggests),
+  `:124` (2.4, names and the call-site inventory), `:166` (3, the open work), `:193` (4, nprcgenekeepr), `:244` (5,
+  the comparison), `:283` (17a), `:297` (17b), `:446` (7, decisions D1-D10), `:463` (8, session map), `:491` (9,
+  dragons).
+- `docs/planning/standalone-pedigree-package-plan.md:52` (Next), `:200`-`:202` (R83-R85), `:860` (Phase 17),
+  `:889` (Done 17's plan).
+- `docs/planning/pedkindraw-api-contract.md:271` (section 6), `:277` (S32's note: the review is 17b).
+- `methodology/BACKLOG.md:11` (17a), `:21` (speed vignette, 17g-17i), `:36` ("Select by id", 17d), `:46` (legend,
+  17e), `:65` (gaps, 17f), `:76` (coverage, 17j), `:195` (the name review, 17b-17c).
+- nprcgenekeepr's `docs/planning/cran-3.0.0-submission-plan.md` (the model): `:189` (3.2, the check-time estimate),
+  `:895` (Phase 8, the runs), `:999` (6, decisions), `:1068` (8, dragons).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -90,62 +90,52 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S30's entries were removed in S3-S31 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S31's entries were removed in S3-S32 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 32 Did
-**Deliverable:** plan Phase 17, the CRAN release, a planning session (SESSION_RUNNER "Planning Sessions",
-ARCHITECTURE_WORKSTREAM): the plan under `docs/planning/`, covering at Mark's direction each open backlog item's
-place before or after the release, the effect of nprcgenekeepr's recent and ongoing changes on the copied code, and
-where the comparison with kinship2 and Pedixplorer fits; nothing built (FM #18) (IN PROGRESS)
-**Started:** 2026-11-16 18:22 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Release plan, all three
-(Recommended)" (orient picker, reworded after Mark's clarification)
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
-
-### Session 30 Handoff Evaluation (by Session 31)
+### Session 31 Handoff Evaluation (by Session 32)
 **Score: 9/10.**
-- **What helped:** the steps in order (drift tool, nprcgenekeepr's log, the push, then "measure D4's two ways and a
-  trial `build_site()` before the picker"), which made the picker state counts; the gotcha "show Mark a page's
-  framing before filling it", which became the outline picker before `_pkgdown.yml` was written; the scratch
-  install recipe; "Pages only with Mark's approval" and "the URL only once the site answers". All 14 line citations
-  were right when read at `1ce7ae0`.
-- **What was missing:** that the plan's DONE items 1 and 3 interact: `check_pkgdown()` cannot report "no problem"
-  until the URL that item 3 adds is in `DESCRIPTION`; and that R run inside a scratch copy of the repository starts
-  renv from its `.Rprofile` (the recipe ran `R CMD build` and `INSTALL` from outside the tree, a site build runs
-  inside it). Each cost one run.
+- **What helped:** the orient picker's options with their backlog lines; the steps in order (drift tool,
+  nprcgenekeepr's log, the push first, the site's 200), each of which ran as written; naming nprcgenekeepr's
+  `cran-3.0.0-submission-plan.md` as the model, which supplied the check-time ratio, the dragons and the phase shape;
+  the gotcha on R inside a scratch copy (`RENV_CONFIG_AUTOLOADER_ENABLED=false`, used for every scratch run); the
+  backlog item's list of what the plan inherits (the NEWS section on the documentation went into 17m). All 19 line
+  citations were right at `aeaed75`.
+- **What was missing:** that the check time is the likely critical path. S31's own times (the check 190 s) and the
+  model plan's 3.4-3.8 ratio already put it near 600 s; S32 found it by reading the model. And that this Mac has no
+  spelling dictionary, so the incoming spelling step never runs here. Neither cost a run.
 - **What was wrong:** nothing found.
 - **ROI:** high.
 
-### What Session 31 Did
-**Deliverable:** plan Phase 16e, the website, so Phase 16 DONE. TDD phase none (documentation, documentation plan
-5.7); `check_pkgdown()` run on the incomplete index first.
-**Started:** 2026-11-16 16:43 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "Website, 16e (Recommended)"
-(orient); "This outline (Recommended)", "R's own library (Recommended)", "v4.8.0 (Recommended)" (one picker, after
-the measurements); "Turn on Pages (Recommended)" (after the first run made `gh-pages`).
-**Commits:** claim `81a2829` (pushed with S30's close-out 2); the settings and workflow `4c389e7` (pushed: CI
-`43979094656` 5/5, site run `43979094493`); Pages turned on (no commit); the site named `d00ebda` (pushed: CI
-`43981525833` 5/5, site run `43981525853`); close-out 1 `93e3cae` (plan, documentation plan, ROADMAP, BACKLOG;
-pushed: CI `43983763668` 5/5, site run `43983763347`); close-out 2 (these notes, the receipt, the ledger), not pushed.
-**Verified:** `check_pkgdown()` 28 topics missing, then "No problems found" (scratch copy, then the tree); a local
-build as the workflow runs it, exit 0, 45 pages, no notes published; `gh-pages` with no project note; the site 200
-(home, both articles, reference, changelog), `CLAUDE.html` and `DIVERGENCE.html` 404; on the live articles every node
-of all 12 drawings inside its canvas, some outside in all 12 when zoomed in 6x; every URL in `README.md` and
-`DESCRIPTION` 200; a second README render byte-identical; roxygen changed `man/pedkindraw-package.Rd` once, then
-nothing; `R CMD check --as-cran` R16's NOTE only, installed 4,284 KB, vignettes re-built OK; suite 53 files, 684
-tests, 0 failed, 0 skipped, WARN 0, 6,109 passed; `quality_ratchet.py --run` 5/5, 0 unmeasured, results
-`5ddbb5b1aeb3`; drift tool 91 functions, 5 differ, 0 without a row; the second site build's sitrep "URLs ok".
+### What Session 32 Did
+**Deliverable:** Phase 17's plan, the CRAN submission: `docs/planning/cran-submission-plan.md` (planning session;
+nothing in `R/`, `tests/`, `man/`, `vignettes/`, `inst/` or `DESCRIPTION` changed).
+**Started:** 2026-11-16 18:22 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** the first orient picker sent back
+to clarify, with Mark's direction: "It looks the a plan for a CRAN release should include, at least, consideration
+of the other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on
+pedkindraw, and the comparison of pedkindraw with kinship2 and Pedixplorer."; then "Release plan, all three
+(Recommended)"; then, after the measurements, "This outline (Recommended)", all four open items before the release
+("Two drawing fixes (Recommended)", "Gaps document (Recommended)", "Timing runs + speed vignette", "Full test
+coverage") and "Measure on win-builder first (Recommended)".
+**Commits:** claim `ba811e7` (pushed with S31's close-out 2; no run); the plan `4886bb9`; close-out 1 `53afbfe`
+(the standalone plan's status, R83-R85 and Phase 17's table; the contract's section 6 note; ROADMAP; BACKLOG; pushed:
+CI `43990847828` 5/5 `success`, attempt 1, 19 min; site `43990847843` `success`, 3 min); close-out 2 (these notes, the receipt, the ledger), not pushed.
+**Measured:** `R CMD check --as-cran` 181 s (tests 118 s, examples 1.1 s), R16's NOTE only, under load 5.3-12.7;
+win-builder estimate 615-688 s; CRAN-mode tests 684, 0 failed, 8 skipped, 103.6 s, eight files 81%; static checks
+clean (no `\dontrun`, `\value` and examples on every export page, no console output or options); spelling 49 words,
+0 in `DESCRIPTION`; `mockery` and `withr` unguarded in tests; 7 of 9 Suggests in R's own library; 20 exports take
+`ped`, 22 of 31 names shared with nprcgenekeepr, 6 with kinship2, 1 with Pedixplorer; the call sites of each name the
+review may change; nprcgenekeepr 165 commits after `baef1e12c`, none to the 79 copied files' sources after their copy
+commits. **Verified:** drift tool 91, 5 differ, 0 without a row; `quality_ratchet.py --run` 4/5 pass, 0 fail, 1 unmeasured (`test-suite-warnings-zero`, its 300 s limit at load 88-214), results `42b564bc4c70`; the suite by hand (`testthat::test_local()`, `NOT_CRAN=true`): 684 tests, 0 failed, 0 skipped, WARN 0, 6,109 passed, 399 s at load 183-212; `R/`, `tests/`, `vignettes/` identical to `d00ebda` (S31's 5/5 run).
 **Self-assessment: 8/10.**
-+ Measured before every picker (D4 both ways, renv's `DESCRIPTION` fields tried on a scratch copy, the action's tag
-  traced to its commit), so the picker stated counts; the outline went to Mark before the settings file (S30's
-  lesson); the check was run failing first, and its URL ordering was handled on a scratch copy instead of naming the
-  site before it answered; Pages turned on only after Mark's approval and a look at what the branch held; the live
-  site checked in a browser with a check that could fail; the suite tallied for failures, which its gate does not
-  count.
-- One wasted run: the first local site build started renv inside the scratch tree. A grep kept a comma and printed a
-  false 404, explained before it went anywhere. The legend's cut label was seen at one width only.
-**Learnings:** no `CLAUDE.md` row (over its budget); in the Gotchas above: `check_pkgdown()`'s URL check first;
-renv starts in a scratch copy and on the runners; the workflows' cache warning; pkgdown's root `.md` rule; the
-README as the home page; the case-insensitive disk; the suite gate counts warnings only.
-**Ledger:** `CHANGELOG.md` S31 entries (the session, Pages turned on, and the three master pushes).
++ Measured before each picker (the check by step, per-file test times, the names, nprcgenekeepr's changes, the
+  Suggests), so the scope picker stated counts; the outline went to Mark before the plan was written; each phase
+  names its surface and what that surface cannot show; every number in the draft was re-checked against its source
+  before the commit, which caught five (165 not 163, 20 not 19, 79 not 80, 688 not 690, and a claim R77 never made).
+- The first orient picker offered the release plan beside the other items, where Mark saw that the release plan
+  must weigh them all; one round of clarification. The timings were taken under load from other projects, so the
+  estimate's base is high by an unmeasured amount. The picker told Mark "615-690 s" before the arithmetic was exact.
+**Learnings:** no `CLAUDE.md` row (over its budget); in the Gotchas above: the scratch check and per-file timing
+recipe; the machine's load; no spelling dictionary; R's own library and the depends-only check; counting copied
+files by the header's form; counts in nprcgenekeepr go stale within a session.
+**Ledger:** `CHANGELOG.md` S32 entries (the session, push 1, push 2).
