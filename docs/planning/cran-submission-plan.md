@@ -4,7 +4,8 @@
 "Planning Sessions"; `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`). Nothing under `R/`, `tests/`, `man/`,
 `vignettes/`, `inst/` or `DESCRIPTION` changed.
 **Status:** Phase 17a DONE (S33: win-builder R-devel read 398 s, section 2.1; R86). Phase 17b DONE (S34: six
-name rulings and 17c in three sessions, section 2.4; R87-R93). Next: Phase 17c1, `kinship()`.
+name rulings and 17c in three sessions, section 2.4; R87-R93). Phase 17c1 DONE (S35: `kinship(id, sire, dam,
+pdepth, ...)` and its `pdepth` check). Next: Phase 17c2, the pedigree argument's name.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -400,6 +401,18 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   other `kinship()` case there passes `findGeneration()`'s numbers or founders at 0 (read at `5525edd`), which the
   check passes, so those results stay identical to nprcgenekeepr's. The help says the 4th argument is `pdepth`, not
   kinship2's `sex`, and, with the README, which names kinship2 and Pedixplorer share. About 7 files.
+  **Done (S35):** RED `3faf597`, GREEN 1 `9e72121`, GREEN 2 `5adcba9`; REFACTOR skipped (Mark's pick: the
+  internal names `father` and `mother` stay as nprcgenekeepr has them). 10 files: `R/kinship.R`, `man/kinship.Rd`,
+  `DIVERGENCE.md`, `README.Rmd`, `README.md`, `NEWS.md`, `test_kinship.R`, `test_kinshipMemoryEquivalence.R`, the
+  new `test_kinshipPdepthOrder.R` (23 expectations; kinship2's call form stopped in all 2 + 426 families in 0.19 s,
+  so no CRAN skip), and `test_maleLeftDuplicateMate.R`, which no inventory named: `smallPed`'s stored `gen`
+  is wrong in 8 of its 17 animals (L and M in their sire's generation), so the layout's own `kinship()` call
+  stopped; the test now computes it with `findGeneration()` (Mark's pick; a port to nprcgenekeepr needs the same
+  line). The message (Mark's pick): "pdepth must be greater for each animal than for its sire and dam: C has 1 and
+  its dam B has 1 (pdepth is the 4th argument, generation numbers such as findGeneration() gives, not sex)". R91's
+  "their `kinship()` takes a pedigree object" was half the story: kinship2's `kinship.default()` and Pedixplorer's
+  method for `"character"` also take `id`, `dadid`, `momid`, `sex`, which the help and README now say. Fidelity
+  tool 600 of 600 identical; `R CMD check --as-cran` R16's NOTE only.
 - **17c2, the pedigree argument (R88):** `getParents()`, `getOffspring()`, `getIdsWithOneParent()`,
   `addBackSecondParents()`. No caller changes. About 12 files.
 - **17c3, the pedigree first (R89):** `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()`,
@@ -630,6 +643,13 @@ pedkindraw's own:
 17. **A shared name is called the way the other package's users call it** (S34, R92): kinship2's positional
     `kinship(id, dadid, momid, sex)` gave pedkindraw's `kinship()` the sex codes as generations, a wrong matrix with
     no error. When a shared export's arguments differ, run the other package's documented call on it.
+18. **A new check meets old fixtures** (S35): no inventory named `test_maleLeftDuplicateMate.R`, yet `kinship()`'s
+    new check stopped it, through the layout's own `kinship()` call on `smallPed`'s stored `gen` (8 of 17 wrong).
+    Run the whole suite against a scratch copy with a draft of the check before RED, and read every failure.
+19. **Read the other package's methods before describing them** (S35): R91 said kinship2's and Pedixplorer's
+    `kinship()` take a pedigree object; `methods(kinship2::kinship)` and `showMethods("kinship")` showed both also
+    take the vectors, the form R92 is about. Count shared names on the loaded source (`pkgload::load_all()`): the
+    installed copy in renv's library was older and reported 1 name shared with kinship2, not 6.
 
 ---
 

@@ -107,7 +107,8 @@ release (section 6), the last point at which it costs users nothing.
 `kinship()` included (R87); the pedigree argument is `ped` in every export, with `trimmedPed` beside it in
 `addBackSecondParents()` (R88); every export that takes a pedigree takes it first (R89). The rows below give these
 names, each marked with the phase that makes it (17c1-17c3, test-first); until then the code has the old ones,
-which each row also names. Each change is a `DIVERGENCE.md` row (plan section 5).
+which each row also names. Each change is a `DIVERGENCE.md` row (plan section 5). Made so far: 17c1 (pedkindraw
+S35, `kinship()`).
 
 ### 4.1 Copied exports (20)
 
@@ -142,7 +143,7 @@ exports it). Ruled by Mark at the review (pedkindraw S34, R90).
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
-| `kinship(id, sire, dam, pdepth, sparse = FALSE, twinRelations = NULL, chrtype = "autosome", sex = NULL)` (were `fatherId`, `motherId`, R87) | vectors; `pdepth` from `findGeneration()` (the 4th argument, where kinship2's `kinship()` takes `sex`); optional twins; `chrtype = "x"` needs `sex` | square kinship matrix named by `id`; a `Matrix` sparse matrix when `sparse = TRUE` | stops on duplicate ids, a bad `sex` vector, an MZ id not in `id`; from 17c1, on a known parent whose `pdepth` is not below its offspring's (R92) | 7; names and check 17c1 |
+| `kinship(id, sire, dam, pdepth, sparse = FALSE, twinRelations = NULL, chrtype = "autosome", sex = NULL)` (were `fatherId`, `motherId`, R87) | vectors; `pdepth` from `findGeneration()` (the 4th argument, where kinship2's `kinship()` takes `sex`); optional twins; `chrtype = "x"` needs `sex` | square kinship matrix named by `id`; a `Matrix` sparse matrix when `sparse = TRUE` | stops on duplicate ids, a bad `sex` vector, an MZ id not in `id`; on a known parent whose `pdepth` is not below its offspring's (R92) | 7; names and check 17c1 (S35) |
 | `shrinkPedigree(ped, genotyped, affected = NULL, maxBits = 16L)` | pedigree, logical per row | list `ped`, `idTrimmed`, `idList` (`unavail`, `noninform`, `affected`), `bitSize`, `genotyped`, `pedSizeOriginal`, `pedSizeIntermed`, `pedSizeFinal` | stops on missing columns, wrong lengths, NA in `genotyped` | 10 |
 
 Unchanged behaviour is the contract: an animal with one known parent is legal (X chromosome included), and

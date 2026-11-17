@@ -8,15 +8,7 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 17c1: `kinship()` takes `sire` and `dam` and refuses generation numbers out of order** (READY,
-      strict TDD; R87, R91, R92, R93; Effort M) -- `docs/planning/cran-submission-plan.md` section 6 (17c1) and the
-      inventory in section 2.4: rename `fatherId`/`motherId` (the copied C13 test `test_kinship.R:241` and the
-      message at `R/kinship.R:115` with its 3 expected copies change with them); stop when a known parent's
-      `pdepth` is not below its offspring's, the check after the existing input checks (tests on typed cases and
-      kinship2's `sample.ped` and `minnbreast`); the help and the README say the 4th argument is `pdepth`, not
-      kinship2's `sex`, and which names kinship2 and Pedixplorer share. One `DIVERGENCE.md` row.
-
-- [ ] **Phase 17c2: the pedigree argument is `ped` in four more exports** (READY after 17c1, strict TDD; R88, R93;
+- [ ] **Phase 17c2: the pedigree argument is `ped` in four more exports** (READY, strict TDD; R88, R93;
       Effort S) -- `getParents(ped, ids)`, `getOffspring(ped, ids)`, `getIdsWithOneParent(ped)`,
       `addBackSecondParents(trimmedPed, ped)`; no caller passes the old names; four `DIVERGENCE.md` rows.
 

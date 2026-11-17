@@ -20,7 +20,7 @@ hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase
 legend item it needed (S28, R81); 16d, the speed vignette, is deferred until pedkindraw times itself (S30, R82);
 and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN submission, is planned (S32,
 `docs/planning/cran-submission-plan.md`) and under way: 17a, the check time on win-builder, is done (S33); 17b, the
-argument-name review, is done (S34); 17c1 is next (Planned, below).
+argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -41,9 +41,10 @@ session each unless marked. They follow the copy slices.
   under the 540 s target, with its tests on an idle machine, so whether to cut tests on CRAN is decided by one more
   reading after 17j (R86). 17b is done (S34, R87-R93): `kinship()` takes `sire` and `dam`, the pedigree argument is
   `ped` and comes first in every export, `kinship()` refuses generation numbers that put a parent at or after its
-  offspring, and the shared export names stay; 17c makes the changes test-first in three sessions, 17c1
-  (`kinship()`) next. Before the release, by Mark's picks (R84): the argument-name review (contract section 6;
-  ruled S34, its changes 17c1-17c3), the "Select by id" and legend-label fixes, a document of what kinship2 or
+  offspring, and the shared export names stay; 17c makes the changes test-first in three sessions: 17c1
+  (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) next. Before the release, by Mark's picks (R84):
+  the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
+  legend-label fixes, a document of what kinship2 or
   Pedixplorer can do that pedkindraw cannot, pedkindraw's own timing runs and the speed and
   size-limits vignette (R82; the draft built to R79 is on the branch `draft/speed-vignette`), and tests for full
   coverage. Then the CRAN-mode test cut if needed, hygiene and noSuggests, the release text and version, the frozen
@@ -212,6 +213,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17c1, `kinship()` takes `sire` and `dam` (pedkindraw S35, 2026-11-17).** `kinship()`'s parent arguments
+  now say sire and dam like every other function's, and it stops with a plain message when an animal's generation
+  number is not above its sire's and dam's. Called the way kinship2's users call their own `kinship()`, with the sex
+  codes 4th, it gave a wrong matrix without any error; now it stops, in every family of kinship2's two example
+  pedigrees. Its help page and the README say which names pedkindraw shares with kinship2 and Pedixplorer. The new
+  check also found a test pedigree whose stored generation numbers were wrong.
 - **Phase 17b, the argument-name review (pedkindraw S34, 2026-11-17).** Before the first CRAN release, the last time
   a change costs users nothing, Mark ruled on each name: `kinship()`'s parents become `sire` and `dam` like every
   other function's; the pedigree argument is `ped` in every function and comes first in each; `addIdRecords()` stays

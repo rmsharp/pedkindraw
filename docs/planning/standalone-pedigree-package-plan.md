@@ -49,9 +49,10 @@ drawing vignette); Phase 16d deferred (pedkindraw S30, R82: the speed vignette w
 its draft on the branch `draft/speed-vignette`); Phase 16e DONE (pedkindraw S31: the website,
 <https://rmsharp.github.io/pedkindraw/>), so Phase 16 is DONE; Phase 17's plan DONE (pedkindraw S32:
 `docs/planning/cran-submission-plan.md`, R83-R85; phases 17a-17q); Phase 17a DONE (pedkindraw S33: win-builder
-R-devel 398 s, R86); Phase 17b DONE (pedkindraw S34: six name rulings, 17c in three sessions, R87-R93).
-**Next:** Phase 17c1, `kinship()`: `sire` and `dam`, the `pdepth` check and the shared-names note (strict TDD;
-`docs/planning/cran-submission-plan.md` section 6).
+R-devel 398 s, R86); Phase 17b DONE (pedkindraw S34: six name rulings, 17c in three sessions, R87-R93); Phase
+17c1 DONE (pedkindraw S35: `kinship(id, sire, dam, pdepth, ...)` and its `pdepth` check, R87, R91, R92).
+**Next:** Phase 17c2, the pedigree argument is `ped` in `getParents()`, `getOffspring()`, `getIdsWithOneParent()`
+and `addBackSecondParents()` (R88; strict TDD; `docs/planning/cran-submission-plan.md` section 6).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -917,6 +918,14 @@ so a busy day could read about 470-550 s. Mark picked "Decide after 17j": 17k op
 internal (R90); the shared export names stay, with a note (R91); `kinship()` refuses a `pdepth` that puts a parent
 at or after its offspring (R92); 17c is three sessions (R93). Measured by parsing every call: 23 calls to rewrite for
 R89, none for R87 (but the copied C13 test) or R88. No code changed.
+
+**Done 17c1 (pedkindraw S35; R87, R91, R92):** `kinship(id, sire, dam, pdepth, ...)`; it stops, after its other
+input checks, when a known parent's `pdepth` is not below its offspring's, naming the animal and saying the 4th
+argument is `pdepth`, not `sex` (Mark's message pick); its help and the README name the shared exports and say that
+kinship2's and Pedixplorer's `kinship()` take a pedigree object or the vectors `id`, `dadid`, `momid`, `sex`.
+kinship2's call form is stopped in all 428 families of `sample.ped` and `minnbreast`. One copied test computes
+`smallPed`'s `gen` (its stored one is wrong in 8 of 17 animals). A `DIVERGENCE.md` row; REFACTOR skipped (Mark's
+pick). Fidelity tool 600 of 600 identical; `R CMD check --as-cran` R16's NOTE only.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 
