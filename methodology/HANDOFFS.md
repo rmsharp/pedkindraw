@@ -196,11 +196,25 @@ manifest existed are not re-judged.
 ```handoff
 session: S34
 date: 2026-11-17
-status: pending
-active_task: Phase 17b, the argument-name review (a decision session): a picker per item of the CRAN plan's section 2.4 (parent argument names, the pedigree argument's name, argument order, exporting addIdRecords(), export names shared with nprcgenekeepr, kinship2 and Pedixplorer); Mark's picks become rulings, the contract's sections 4 and 6 updated; Mark's pick "17b: name review (Recommended)" at the orient picker
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17b DONE (seven rulings R87-R93, no code changed). Next: Phase 17c1, kinship(), strict TDD (docs/planning/cran-submission-plan.md:394; inventory :193): parents sire and dam (R87), the pdepth check (R92), the help and README note on names shared with kinship2 and Pedixplorer (R91); then 17c2 (R88) and 17c3 (R89). The orient picker offers 17c1 (recommended) or a drawing fix (17d, 17e need 17b only)
+what_was_done: claim 5525edd (pushed with S33's close-out 2, no run); 17b's inventory re-run (section 2.4's name counts held) and every call parsed to see what each change breaks; seven questions in three AskUserQuestion calls, every pick Claude's recommendation at the first asking: R87 kinship(id, sire, dam, pdepth, ...); R88 ped in getParents/getOffspring/getIdsWithOneParent, addBackSecondParents(trimmedPed, ped); R89 the pedigree first in getProbandPedigree/getDescendantPedigree/trimPedigree/hasBothParents; R90 addIdRecords() internal; R91 shared names kept with a note; R92 kinship() refuses a pdepth that puts a known parent at or after its offspring (found: kinship2's kinship(id, dadid, momid, sex) gives a silent wrong matrix, 425 of minnbreast's 426 families; the check stops all 426 and passes findGeneration()'s numbers in all 426); R93 17c in three sessions. Record 92333c3 (both plans, the contract); close-out 1 44bef08 (ROADMAP, BACKLOG), pushed; close-out 2 (notes, receipt, ledger, dragons 16-17)
+next_steps: Orient; drift tool (91, 5 differ, all with rows); nprcgenekeepr's log on every copied file (expect exactly 4 commits, all in the copy); push S34's close-out 2 (methodology only); 17c1: nprcgenekeepr's log on kinship's files, re-parse kinship( calls (43, 1 by name), draft and run the check's typed cases and time the kinship2 cases in a scratch copy, then the pre-RED scope picker (minnbreast subset or skip_on_cran; a NEWS line now or in 17m) and the RED gate; RED the C13 test (test_kinship.R:238-252), the three messages (test_kinshipMemoryEquivalence.R:74-76), the check's tests; GREEN R/kinship.R, its header, roxygen, README.Rmd and its render, a DIVERGENCE.md row; 17c's DONE list (plan :407), fidelity tool included
+key_files: docs/planning/cran-submission-plan.md:193 (2.4 Decided, table :201), :211 (9 DIVERGENCE.md rows), :386 (17c; 17c1 :394, check placement :398, DONE :407), :560 (session map), :592 (dragons; 16-17 last); docs/planning/standalone-pedigree-package-plan.md:205-211 (R87-R93), :882 (17c rows), :914 (Done 17b); docs/planning/pedkindraw-api-contract.md:106, :118-129, :145, :288; R/kinship.R:3, :101, :115, :118-136, :144, :165; tests/testthat/test_kinship.R:241; tests/testthat/test_kinshipMemoryEquivalence.R:74; README.Rmd:84, :145; DIVERGENCE.md:12; methodology/BACKLOG.md:11, :19, :23
+gotchas: count what a change breaks by parsing (tools::Rd2ex for examples, knitr::purl for README and vignettes), recording each call's pkg:: before stripping it (the picker's 45 of 46 was 42 of 43), and read the fidelity tool's fn("name")(...) calls by hand; zsh does not split an unquoted variable (P="R tests"; git grep -- $P finds nothing); kinship()'s silent wrong answer is live until 17c1; minnbreast's sex has 1,761 NA (code 3); the new check goes after every existing input check so the fidelity tool's kinshipErrors messages stay; the sire/dam words gate; CLAUDE.md over budget, learnings in the notes and the plan's dragons
+runtime_smoke: n/a -- documents only (R/, tests/, vignettes/, man/, inst/, tools/, DESCRIPTION unchanged); quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 01151c525b8a (load 3.7-5.6); site run 44162711010 success; CI 44162710948 5/5 success at the first attempt (16 min)
+changelog_ref: CHANGELOG.md "2026-11-17 · [BL-Phase 17b] S34: Phase 17b, the argument-name review", "S34 push 1" and "S34 push 2"
+commit: this receipt's commit (close-out 2)
 ```
+S34 ran Phase 17b, the argument-name review, as seven questions in three pickers, each answered with Claude's
+recommendation: `kinship()` takes `sire` and `dam`; the pedigree argument is `ped` and comes first in every export;
+`addIdRecords()` stays internal; shared names stay, with a note. Measuring the shared `kinship()` found that
+kinship2's own call form gives pedkindraw a wrong matrix silently; Mark ruled that 17c1 adds a check. The changes are
+three test-first sessions (R93). Self 8: + parsed every call rather than counting text, and checked the new check on
+426 families before claiming it; - two picker counts were corrected only in the record (neither changed a decision),
+and three wrapping slips took later commits. Model: Claude Opus 5.5, one tier.
 
 ```handoff
 session: S33

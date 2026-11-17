@@ -15,9 +15,17 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
-### 2026-11-17 · [BL-Phase 17b] S34: Phase 17b, the argument-name review (in progress)
-- **Change:** session claimed (Mark's pick "17b: name review (Recommended)" at the orient picker): a decision session, no code changes. Phase 0 reconcile: nothing to backfill (frontier `15c7627` is HEAD, S33's close-out 2; no merges; S33's receipt complete, its ratchet results `5ddbb5b1aeb3` match the saved file, 5/5); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `366899961` (its S1180), its log on the 79 copied files exactly the 4 commits already in the copy; dashboard 93/100; `pedkindraw.Rproj` untracked, left for Mark.
-- **Commit/PR:** the claim commit · **Session:** S34 · **Verified:** pending (close-out).
+### 2026-11-17 · [BL-Phase 17b] S34 push 2: `master` to GitHub at `44bef08` (the 17b record and close-out 1)
+- **Change:** `git push origin master` (`5525edd..44bef08`); the push touched `docs/planning/`, so both workflows ran: CI run `44162710948` 5/5 `success` at the first attempt (16 min); site run `44162711010` `success` (3 min; no package change). S34's close-out 2 after it is not pushed.
+- **Commit/PR:** none (push) · **Session:** S34 · **Verified:** `gh run view --json`.
+
+### 2026-11-17 · [BL-Phase 17b] S34 push 1: `master` to GitHub at `5525edd` (S33's close-out 2 and S34's claim)
+- **Change:** `git push origin master` (`b8ff56b..5525edd`); methodology files only, so no run started.
+- **Commit/PR:** none (push) · **Session:** S34 · **Verified:** the push's output; `gh run list`.
+
+### 2026-11-17 · [BL-Phase 17b] S34: Phase 17b, the argument-name review
+- **Change:** a decision session; nothing in `R/`, `tests/`, `man/`, `vignettes/`, `inst/`, `tools/` or `DESCRIPTION` changed. Seven rulings, each Mark's pick of Claude's recommendation at the first asking: R87 `kinship(id, sire, dam, pdepth, ...)` (were `fatherId`, `motherId`); R88 the pedigree argument is `ped` in `getParents()`, `getOffspring()`, `getIdsWithOneParent()`, with `addBackSecondParents(trimmedPed, ped)`; R89 the pedigree first in `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()`, `hasBothParents()`; R90 `addIdRecords()` stays internal; R91 the shared export names stay, with a note in `kinship()`'s help and the README; R92 `kinship()` stops when a known parent's `pdepth` is not below its offspring's (found while measuring R91: kinship2's call form `kinship(id, dadid, momid, sex)` returns a wrong matrix with no error, in 425 of `minnbreast`'s 426 families); R93 17c is three sessions, 17c1-17c3. Measured at `5525edd` by parsing every call: R87 43 calls, 1 by name; R88 24, none by name; R89 65, 23 to rewrite. Both plans and the contract record the rulings and the inventory (`92333c3`); the roadmap and backlog (`44bef08`); the plan's dragons 16-17 and the handoff (close-out 2). Phase 0 reconcile at the claim: nothing to backfill.
+- **Commit/PR:** `5525edd`, `92333c3`, `44bef08`, close-out 2 · **Session:** S34 · **Verified:** `quality_ratchet.py --run` 5/5 pass, 0 fail, 0 unmeasured, results `5ddbb5b1aeb3`, manifest `01151c525b8a` (load 3.7-5.6); site run `44162711010` `success`; CI `44162710948` 5/5 `success` at the first attempt (16 min); drift tool 91 functions, 5 differ, 0 without a row; 18 `file:line` citations checked by machine.
 
 ### 2026-11-17 · [BL-Phase 17a] S33 push 2: `master` to GitHub at `b8ff56b` (the 17a record and close-out 1)
 - **Change:** `git push origin master` (`eaff4a7..b8ff56b`); the push touched `docs/planning/`, so both workflows ran: CI run `44153786408` 5/5 `success` at the first attempt (20 min); site run `44153786342` `success` (3 min; no package change). S33's close-out 2 after it is not pushed.

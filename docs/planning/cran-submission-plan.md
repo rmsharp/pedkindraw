@@ -622,6 +622,14 @@ pedkindraw's own:
 13. **The suite gate counts warnings, not failures** (`methodology/.quality-gates.json`): tally "0 failed" by hand.
 14. **nprcgenekeepr moves during a session** (Learning 15): its S1178 committed six times during S32.
 15. **A rename is a divergence**: the drift tool lists every renamed copied function until its row exists (17c).
+16. **A call count from a text search is not what a change breaks** (S34): text matches include definitions and help
+    text, and say nothing about which calls pass arguments by position. Parse instead (section 2.4's method), and
+    record each call's `pkg::` before stripping it: S34's first parse counted kinship2's 3 `kinship()` calls as
+    pedkindraw's (its picker said "45 of the 46", the record 42 of 43). Calls through a lookup, as the fidelity
+    tool's `fn("name")(...)`, are invisible to a parse for the name: read them by hand.
+17. **A shared name is called the way the other package's users call it** (S34, R92): kinship2's positional
+    `kinship(id, dadid, momid, sex)` gave pedkindraw's `kinship()` the sex codes as generations, a wrong matrix with
+    no error. When a shared export's arguments differ, run the other package's documented call on it.
 
 ---
 

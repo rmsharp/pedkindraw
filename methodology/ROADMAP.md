@@ -43,7 +43,8 @@ session each unless marked. They follow the copy slices.
   `ped` and comes first in every export, `kinship()` refuses generation numbers that put a parent at or after its
   offspring, and the shared export names stay; 17c makes the changes test-first in three sessions, 17c1
   (`kinship()`) next. Before the release, by Mark's picks (R84): the argument-name review (contract section 6;
-  ruled S34, its changes 17c1-17c3), the "Select by id" and legend-label fixes, a document of what kinship2 or Pedixplorer can do that pedkindraw cannot, pedkindraw's own timing runs and the speed and
+  ruled S34, its changes 17c1-17c3), the "Select by id" and legend-label fixes, a document of what kinship2 or
+  Pedixplorer can do that pedkindraw cannot, pedkindraw's own timing runs and the speed and
   size-limits vignette (R82; the draft built to R79 is on the branch `draft/speed-vignette`), and tests for full
   coverage. Then the CRAN-mode test cut if needed, hygiene and noSuggests, the release text and version, the frozen
   gate, the cross-platform runs, Mark's submission, and the steps after acceptance.
