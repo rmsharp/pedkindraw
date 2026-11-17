@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S32
+date: 2026-11-16
+status: pending
+active_task: plan Phase 17, the CRAN release, a planning session: each open backlog item's place, nprcgenekeepr's recent and ongoing changes against the copied code, and where the comparison with kinship2 and Pedixplorer fits; Mark's pick "Release plan, all three (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S31
 date: 2026-11-16
 status: complete

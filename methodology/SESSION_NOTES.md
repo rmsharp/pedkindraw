@@ -93,6 +93,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S30's entries were removed in S3-S31 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 32 Did
+**Deliverable:** plan Phase 17, the CRAN release, a planning session (SESSION_RUNNER "Planning Sessions",
+ARCHITECTURE_WORKSTREAM): the plan under `docs/planning/`, covering at Mark's direction each open backlog item's
+place before or after the release, the effect of nprcgenekeepr's recent and ongoing changes on the copied code, and
+where the comparison with kinship2 and Pedixplorer fits; nothing built (FM #18) (IN PROGRESS)
+**Started:** 2026-11-16 18:22 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Release plan, all three
+(Recommended)" (orient picker, reworded after Mark's clarification)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 30 Handoff Evaluation (by Session 31)
 **Score: 9/10.**
 - **What helped:** the steps in order (drift tool, nprcgenekeepr's log, the push, then "measure D4's two ways and a

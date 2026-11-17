@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-16 · [BL-Phase 17] S32: plan Phase 17, the CRAN release (in progress)
+- **Change:** session claimed (Mark's pick "Release plan, all three (Recommended)", after his clarification that the release plan consider the other open items, nprcgenekeepr's recent and ongoing changes, and the comparison with kinship2 and Pedixplorer): a planning session, nothing built. Phase 0 reconcile: nothing to backfill (frontier `aeaed75` is HEAD; no merges; S31's receipt complete, its ratchet results `5ddbb5b1aeb3` match, 5/5); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `b60b10931` (its S1178 in progress, tree clean), no commits to the copied drawing files since `b4abb9a0b`; the site 200.
+- **Commit/PR:** the claim commit · **Session:** S32 · **Verified:** pending (close-out).
+
 ### 2026-11-16 · [BL-Phase 16e] S31 push 4: `master` to GitHub at `93e3cae` (close-out 1)
 - **Change:** `git push origin master` (`d00ebda..93e3cae`); the push touched `docs/planning/`, so both workflows ran: CI run `43983763668` 5/5 `success`, attempt 1, 14 min; site run `43983763347` `success`, 2.7 min; the site 200 afterwards. S31's close-out 2 after it is not pushed.
 - **Commit/PR:** none (push) · **Session:** S31 · **Verified:** `gh run view --json`; `curl`.
