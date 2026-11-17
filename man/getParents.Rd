@@ -4,10 +4,10 @@
 \alias{getParents}
 \title{Get parents to corresponding animal IDs provided}
 \usage{
-getParents(pedSourceDf, ids)
+getParents(ped, ids)
 }
 \arguments{
-\item{pedSourceDf}{dataframe with pedigree structure having at least the
+\item{ped}{dataframe with pedigree structure having at least the
 columns id, sire, and dam. The pedigree is the first argument, unlike
 \code{\link{getProbandPedigree}()} and
 \code{\link{getDescendantPedigree}()}, which take the animal ids first.}

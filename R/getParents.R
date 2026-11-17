@@ -1,14 +1,16 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/getParents.R at nprcgenekeepr commit
-## baef1e12c. Changes: help text only; the function's code is unchanged. The
-## links to getPedDirectRelatives() and findOffspring(), which pedkindraw
-## does not have, are dropped, and the example types its own pedigree
-## instead of loading nprcgenekeepr's dataset.
+## baef1e12c. Changes to the code (plan Phase 17c2, pedkindraw S36; a
+## DIVERGENCE.md row): the pedigree argument is ped, was pedSourceDf, in the
+## same position (R88). Changes to the help text: the ped argument; the links
+## to getPedDirectRelatives() and findOffspring(), which pedkindraw does not
+## have, are dropped, and the example types its own pedigree instead of
+## loading nprcgenekeepr's dataset.
 
 #' Get parents to corresponding animal IDs provided
 #'
-#' @param pedSourceDf dataframe with pedigree structure having at least the
+#' @param ped dataframe with pedigree structure having at least the
 #' columns id, sire, and dam. The pedigree is the first argument, unlike
 #' \code{\link{getProbandPedigree}()} and
 #' \code{\link{getDescendantPedigree}()}, which take the animal ids first.
@@ -25,11 +27,11 @@
 #'   stringsAsFactors = FALSE
 #' )
 #' getParents(ped, c("C", "F"))
-getParents <- function(pedSourceDf, ids) {
+getParents <- function(ped, ids) {
   unique(c(
-    pedSourceDf$sire[(is.element(pedSourceDf$id, ids) &
-      !is.na(pedSourceDf$sire))],
-    pedSourceDf$dam[(is.element(pedSourceDf$id, ids) &
-      !is.na(pedSourceDf$dam))]
+    ped$sire[(is.element(ped$id, ids) &
+      !is.na(ped$sire))],
+    ped$dam[(is.element(ped$id, ids) &
+      !is.na(ped$dam))]
   ))
 }
