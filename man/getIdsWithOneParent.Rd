@@ -4,10 +4,10 @@
 \alias{getIdsWithOneParent}
 \title{Get ids of animals with only one parent}
 \usage{
-getIdsWithOneParent(uPed)
+getIdsWithOneParent(ped)
 }
 \arguments{
-\item{uPed}{a trimmed pedigree dataframe with uninformative founders removed.}
+\item{ped}{a trimmed pedigree dataframe with uninformative founders removed.}
 }
 \value{
 Character vector of the IDs of animals with exactly one known

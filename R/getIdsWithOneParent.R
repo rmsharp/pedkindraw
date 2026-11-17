@@ -1,13 +1,14 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/getIdsWithOneParent.R at nprcgenekeepr commit
-## baef1e12c. Changes: help text only; the function's code is unchanged. The
-## example types its own pedigree instead of using nprcgenekeepr's
-## examplePedigree and qcStudbook().
+## baef1e12c. Changes to the code (plan Phase 17c2, pedkindraw S36; a
+## DIVERGENCE.md row): the pedigree argument is ped, was uPed (R88). Changes
+## to the help text: the ped argument; the example types its own pedigree
+## instead of using nprcgenekeepr's examplePedigree and qcStudbook().
 
 #' Get ids of animals with only one parent
 #'
-#' @param uPed a trimmed pedigree dataframe with uninformative founders removed.
+#' @param ped a trimmed pedigree dataframe with uninformative founders removed.
 #' @return Character vector of the IDs of animals with exactly one known
 #' parent.
 #'
@@ -24,7 +25,7 @@
 #' p <- removeUninformativeFounders(ped)
 #' p
 #' getIdsWithOneParent(p)
-getIdsWithOneParent <- function(uPed) {
-  uPed$id[(is.na(uPed$sire) & !is.na(uPed$dam)) |
-    (!is.na(uPed$sire) & is.na(uPed$dam))]
+getIdsWithOneParent <- function(ped) {
+  ped$id[(is.na(ped$sire) & !is.na(ped$dam)) |
+    (!is.na(ped$sire) & is.na(ped$dam))]
 }
