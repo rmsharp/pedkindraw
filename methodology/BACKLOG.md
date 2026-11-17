@@ -8,16 +8,20 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 17's plan, the CRAN submission** (READY, a planning session) -- Phase 16 is DONE (S31); the plan's
-      Phase 17 (`docs/planning/standalone-pedigree-package-plan.md`, "### Phase 17") is modeled on nprcgenekeepr's
-      `docs/planning/cran-3.0.0-submission-plan.md`, its own plan first. What it inherits: the argument-name review
-      (Later, below; contract section 6) comes before the release; the release's version number, CRAN badges and
-      `cran-comments.md` (the documentation plan's section 7); `NEWS.md` has no section on the documentation (the
-      README, the two vignettes, the website: S26-S31); the installed size 4,284 KB of R77's 5,120 KB; the website
-      (<https://rmsharp.github.io/pedkindraw/>) rebuilds on each push to master, so a release need not touch it.
+- [ ] **Phase 17a: the check time on win-builder R-devel** (READY, Effort S; Mark approves the upload) -- the first
+      phase of `docs/planning/cran-submission-plan.md` (S32; R85): build today's tarball from a scratch folder and
+      upload it to win-builder R-devel, where CRAN's 10-minute limit is enforced; record its "Check time in
+      seconds", each step's time and its NOTEs (the spelling step runs there, not on this Mac) in the plan's section
+      2.1, and say whether 17k (the CRAN-mode test cut) is needed against the 540 s target. S32 measured 181 s here
+      under load, 615-688 s by nprcgenekeepr's ratio. Then 17b, the argument-name review (Later, below). The plan's
+      phases 17a-17q carry what the S31 item for the plan listed: `NEWS.md` has no section on the documentation
+      (README, two vignettes, website; 17m), the version, badges and `cran-comments.md` (17m, 17o, 17q), the
+      installed size 4,284 KB of 5,120 KB (17i, 17n).
 
 - [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
-      timing runs, Effort L, a guess) -- R82 (S30): "the comparison of pedkindraw with kinship2 and Pedixplorer"
+      timing runs, Effort L, a guess; before the release, Phases 17g-17i of
+      `docs/planning/cran-submission-plan.md`, R84)
+      -- R82 (S30): "the comparison of pedkindraw with kinship2 and Pedixplorer"
       (Mark) waits until pedkindraw has timing runs of its own installed code, under a plan of its own that
       replaces R79's summary of nprcgenekeepr's records. A draft built to R79 is on the branch
       `draft/speed-vignette` (`612eed9`, not merged): `vignettes/speed.Rmd` (nine captioned tables, a definition of
@@ -29,7 +33,8 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **"Select by id" lists invisible routing points** (READY, Effort S) -- found S29 in Chrome: in the
+- [ ] **"Select by id" lists invisible routing points** (READY, Effort S; before the release, Phase 17d, R84)
+      -- found S29 in Chrome: in the
       375-animal drawing the box has 571 entries, the 375 animals and 196 `__jog_` points that
       `.resolveEdgeNodeCollisions()` adds (`vignettes/drawing.Rmd`'s colony drawing shows it). The filter that
       leaves internal nodes out of the box, `R/drawPedigreeDiagram.R:292`, names `__union_`, `__dup_`, `__drop_`,
@@ -38,7 +43,8 @@ issues).*
       the drift-rule choice (mirror in nprcgenekeepr in a session there, or a `DIVERGENCE.md` row) at its pre-RED
       picker; a test reads `drawPedigreeDiagram(layout)$x$idselection$values` on a layout with jogs.
 
-- [ ] **The legend cuts its "Same animal, again" label** (READY, Effort S) -- seen S31 on the website in headless
+- [ ] **The legend cuts its "Same animal, again" label** (READY, Effort S; before the release, Phase 17e, R84)
+      -- seen S31 on the website in headless
       Chrome (window 1400 px; each widget 776 px wide, its drawing's canvas 559 px, so the legend about 217 px): the
       row reads "Same animal; agai" in the drawings of both articles. The label is `R/drawPedigreeDiagram.R:119`,
       an edge row of visNetwork's legend; the vignettes' 700 px column was not measured. Copied code: the drift-rule
@@ -56,7 +62,8 @@ issues).*
       600 of 600 identical with nothing set aside), moves the two copied files' headers to the new commit, and
       re-runs the drift tool (3 differ).
 
-- [ ] **What kinship2 or Pedixplorer can do that pedkindraw cannot** (READY, Effort M, a guess) -- Mark (S26): "Add
+- [ ] **What kinship2 or Pedixplorer can do that pedkindraw cannot** (READY, Effort M, a guess; before the release,
+      Phase 17f, R84) -- Mark (S26): "Add
       to backlog to document what pedkindraw does not do that kinship2 or pedixplorer can do. Later we will decide
       if those gaps should be addressed and removed." A document under `docs/research/` listing each gap with its
       evidence; deciding which to close is a later step, Mark's. Starting points: the gap table of kinship2's 25
@@ -66,7 +73,8 @@ issues).*
       pedigree that shows ids); Pedixplorer has no gap table yet (its exports and help, Bioconductor 1.8.0 in
       renv). Measure each claimed gap on a typed case (Learnings 18-19).
 
-- [ ] **Tests for full coverage** (READY, Effort M) -- Mark's request (S13, after its close-out): add tests until
+- [ ] **Tests for full coverage** (READY, Effort M; before the release, Phase 17j, R84)
+      -- Mark's request (S13, after its close-out): add tests until
       the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
       the code of `82f2ef3`: 97.16%, 45 of 1,811 statements missed, in 7 files (covr's first line of each
       statement). Re-measured S14 on `dff6509`: 97.32%, 44 of 1,872 (Phase 11's 61 statements all reached, and its
@@ -112,7 +120,8 @@ issues).*
 
 ## Ready, small
 
-- [ ] **The suite gate's time limit is below the suite's time** (READY, Effort S) -- `test-suite-warnings-zero`
+- [ ] **The suite gate's time limit is below the suite's time** (READY, Effort S; Phase 17l)
+      -- `test-suite-warnings-zero`
       in `methodology/.quality-gates.json` sets `timeout_seconds: 300`, and the suite took 261 s alone in S29
       (`test_local()`, 684 tests), 268-271 s in S28; S29's `quality_ratchet.py --run` read the gate UNMEASURED,
       "timeout (300 s)", 4/5 pass (results `42b564bc4c70`), so its receipt names it unmeasured with the suite run by
@@ -121,7 +130,7 @@ issues).*
       `timeout_seconds` as a warning and the dashboard notes a changed gate, so make the change in a commit of its
       own with the reason in the ledger, then run the gates again.
 
-- [ ] **A stale pedkindraw 0.0.1 in renv's library** (READY, Effort S) -- renv's library
+- [ ] **A stale pedkindraw 0.0.1 in renv's library** (READY, Effort S; Phase 17l) -- renv's library
       (`Rscript -e 'cat(renv::paths$library())'`) holds a pedkindraw 0.0.1 built 2026-11-12, before `asPedFrame()`
       existed (S25). Anything that calls `library(pedkindraw)` without installing first runs it: a trial pkgdown
       build with `install = FALSE` stopped on "could not find function asPedFrame" (the documentation plan's M3).
@@ -147,7 +156,8 @@ issues).*
       S18's Learning 21; `context_budget.py --check` exits 2): move, archive or delete rows as the tool lists, or
       raise the ceiling only by plan-mode approval.
 
-- [ ] **CI notices: `actions/checkout@v5` and Ubuntu 26** (READY, Effort S) -- warnings, not failures, on run
+- [ ] **CI notices: `actions/checkout@v5` and Ubuntu 26** (READY, Effort S; Phase 17l, if still shown)
+      -- warnings, not failures, on run
       `42960032938`: Node 20 is deprecated under `actions/checkout@v4`, and `ubuntu-latest` moves to Ubuntu 26
       (from 2026-10-19). `.github/workflows/R-CMD-check.yaml:39` (`actions/checkout@v4`) and `:30-32` (the three
       `ubuntu-latest` jobs). S7: the move has happened (the runners are Ubuntu 26.04, "resolute"), and in run
@@ -182,7 +192,8 @@ issues).*
       size (contract section 7); new work after the copy (contract section 10 item 5). A faster version here is a
       divergence from nprcgenekeepr: mirror it there or record it in `DIVERGENCE.md` (plan section 5).
 
-- [ ] **Review argument names before the first CRAN release** (BLOCKED -- the last session before Phase 17, Effort M)
-      -- contract section 6 and section 10 item 4: the copied functions keep nprcgenekeepr's names, so
+- [ ] **Review argument names before the first CRAN release** (READY after 17a: Phase 17b decides, 17c changes;
+      R84; Effort M) -- the inventory is `docs/planning/cran-submission-plan.md` section 2.4; contract section 6 and
+      section 10 item 4: the copied functions keep nprcgenekeepr's names, so
       `findGeneration(id, sire, dam)` sits beside `kinship(id, fatherId, motherId)`; also whether `addIdRecords()`
       should be exported. Each change is recorded as a divergence.

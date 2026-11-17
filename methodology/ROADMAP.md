@@ -18,8 +18,8 @@ hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase
 (S25: `docs/planning/documentation-plan.md`, R77-R80); its first sessions are done, 16a, the README, NEWS and
 `?pedkindraw` (S26), 16b, the getting-started vignette (S27), and 16c, the drawing vignette (S29), after the
 legend item it needed (S28, R81); 16d, the speed vignette, is deferred until pedkindraw times itself (S30, R82);
-and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN submission, is next, its own plan
-first (Planned, below).
+and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN submission, is planned (S32,
+`docs/planning/cran-submission-plan.md`) and next, starting with 17a (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -35,11 +35,14 @@ first (Planned, below).
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 17 (next):** the CRAN submission, its own plan first. Before it, a review of argument names (contract
-  section 6).
-- **Later, after pedkindraw times itself:** the comparison of pedkindraw with kinship2 and Pedixplorer, as a speed
-  and size-limits vignette (R82). It needs a plan of its own for timing runs of pedkindraw's own installed code,
-  replacing R79's summary of nprcgenekeepr's records. A draft built to R79 is on the branch `draft/speed-vignette`.
+- **Phase 17 (next), the CRAN submission:** planned (S32, `docs/planning/cran-submission-plan.md`, R83-R85) as
+  phases 17a-17q, about 17 to 22 sessions (a guess). First, 17a: the check time measured on win-builder R-devel,
+  where CRAN's 10-minute limit applies (estimated 615-688 s from this Mac). Before the release, by Mark's picks
+  (R84): the argument-name review (contract section 6), the "Select by id" and legend-label fixes, a document of
+  what kinship2 or Pedixplorer can do that pedkindraw cannot, pedkindraw's own timing runs and the speed and
+  size-limits vignette (R82; the draft built to R79 is on the branch `draft/speed-vignette`), and tests for full
+  coverage. Then the CRAN-mode test cut if needed, hygiene and noSuggests, the release text and version, the frozen
+  gate, the cross-platform runs, Mark's submission, and the steps after acceptance.
 - **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8).
 
 ## What's Built
@@ -204,6 +207,11 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17's plan, the CRAN submission (pedkindraw S32, 2026-11-16).** Mark asked that the release plan weigh
+  the other open work, nprcgenekeepr's recent and ongoing changes, and the comparison with kinship2 and
+  Pedixplorer. Measured first: the check takes 181 s on this Mac, which puts it near CRAN's 10-minute limit on
+  CRAN's slower machines; nprcgenekeepr has changed none of the copied files since the copy. Mark put all four
+  open items before the release and chose to measure the check time on win-builder first.
 - **Phase 16e, the website; Phase 16 DONE (pedkindraw S31, 2026-11-16).** Mark approved the site's outline before
   its settings were written, chose to run pkgdown locally from R's own library (no change to the lock), and
   approved turning on GitHub Pages once the first build had made the `gh-pages` branch. The site answered within a

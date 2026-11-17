@@ -274,6 +274,11 @@ dependencies: each phase's slice uses only earlier slices.
 reviews the names (section 4's argument mismatch, `addIdRecords()`) and records any change as a divergence. After
 it, an export or argument is removed only after one release with a `.Deprecated()` warning.
 
+**pedkindraw S32 (plan R84):** the review is Phase 17b of pedkindraw's `docs/planning/cran-submission-plan.md`,
+inside Phase 17, before the release (17c makes any change, test-first). That plan's section 2.4 lists the argument
+names, the argument order, `addIdRecords()` and the export names shared with nprcgenekeepr, kinship2 and
+Pedixplorer, with the call sites of each.
+
 ---
 
 ## 7. Performance budget (this Mac: Apple M2 Max, 96 GiB, R 4.6.2; comparison doc sections 7 and 9)

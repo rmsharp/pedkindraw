@@ -47,8 +47,10 @@ the 375-animal example file); the backlog's legend item DONE (pedkindraw S28: ea
 picture when there are two or more, R81; to be ported to nprcgenekeepr); Phase 16c DONE (pedkindraw S29: the
 drawing vignette); Phase 16d deferred (pedkindraw S30, R82: the speed vignette waits until pedkindraw times itself;
 its draft on the branch `draft/speed-vignette`); Phase 16e DONE (pedkindraw S31: the website,
-<https://rmsharp.github.io/pedkindraw/>), so Phase 16 is DONE.
-**Next:** Phase 17, the CRAN submission: its own plan first (section 4, "### Phase 17").
+<https://rmsharp.github.io/pedkindraw/>), so Phase 16 is DONE; Phase 17's plan DONE (pedkindraw S32:
+`docs/planning/cran-submission-plan.md`, R83-R85; phases 17a-17q).
+**Next:** Phase 17a, the check time on win-builder R-devel (`docs/planning/cran-submission-plan.md` section 6;
+Mark approves the upload).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -195,6 +197,9 @@ Since then:
 | R80 | The vignettes' colony-size example is nprcgenekeepr's obfuscated 375-animal rhesus pedigree and its 3 twin pairs, shipped as files in `inst/extdata/` (`obfuscated_rhesus_mhc_ped.csv`, `obfuscated_rhesus_mhc_twin_relations.csv`, byte for byte from nprcgenekeepr's `inst/extdata/examples/` at `baef1e12c`, as the test fixtures already are) and read with `system.file()`: no export and no help page (R21 unchanged); small typed pedigrees show each feature. Measured (S25): `checkPedigree()` finds no problem, the twins pass `checkTwinRelations()`, 9 generations, 5 families, its layout 1.9 s. Mark's pick, "Ship one example file (Recommended)", over typed pedigrees only and over a documented dataset | pedkindraw S25 | Mark |
 | R81 | With two or more conditions `drawPedigreeDiagram()`'s legend draws each condition's row as a section picture: a circle cut into the same sections as the animals' symbols (`.conditionSectionsHandler()`'s angles), that condition's section filled in its colour (`.conditionLegendImage()`, in `R/affectedConditions.R` beside the handler; shape `"image"`, no fill); with no condition or one the hexagon stays. Before the pick both candidates were drawn at 2, 3 and 4 conditions in headless Chrome; the other, one extra row with every section filled, would have grown the canvas 45 px. To be ported to nprcgenekeepr in a session of its own there; until then `DIVERGENCE.md` has rows for `drawPedigreeDiagram()` and `.conditionLegendImage()`, and `tools/compareResultsWithNprcgenekeepr.R` compares a drawing with two or more condition rows without those rows' shape, fill and picture (36 drawings in 24 of its 600 results; measured on a scratch prototype, those three fields were their only difference), all removed when the port lands. Source: the backlog's legend item (Mark's S26 find: the dividing lines "are not explained in the legend. It looks like an error."); Mark's picks "Section pictures (Recommended)", "Port later (Recommended)" and "Skip those fields (Recommended)" | pedkindraw S28 | Mark |
 | R82 | Phase 16d, the speed and size-limits vignette, is deferred: "the comparison of pedkindraw with kinship2 and Pedixplorer" (Mark) waits until pedkindraw times itself, that is, until pedkindraw has timing runs of its own installed code, under a plan of its own that replaces R79's summary of nprcgenekeepr's records. Mark, after reading the draft built to R79: "Disambiguation between pedkindraw and nprcgenekeepr may need to wait until pedkindraw is completely separated. That is, this comparison may be premature." The draft (nine tables of nprcgenekeepr's November 2026 records, every cell and caption checked by `tools/checkSpeedTables.R` against the committed result files; a third of the page explaining why nprcgenekeepr's code stands for pedkindraw's) is kept on the branch `draft/speed-vignette` (`612eed9`), pushed and not merged. Until it returns: two vignettes ship (R77 amended); Phase 16 goes on to 16e, the site, with two articles; the drawing vignette's "How large a drawing can be" keeps the limit S29 stated from the records, with no pointer; the contract's section 7 shrink row carries the rewrite's time (16d's DONE item 3, done S30). Mark's picks "Defer it (Recommended)", over a short version without the explanation of nprcgenekeepr's code and over the draft as written, and "pedkindraw times itself", over full separation and over deciding later | pedkindraw S30 | Mark |
+| R83 | Phase 17's plan is pedkindraw's `docs/planning/cran-submission-plan.md` (S32), written to Mark's direction: "It looks the a plan for a CRAN release should include, at least, consideration of the other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw, and the comparison of pedkindraw with kinship2 and Pedixplorer." Its outline: what was measured (the check time by step, scaled to win-builder; static checks; Suggests in the tests; export names; version places; CI), each open backlog item before or after the release, nprcgenekeepr's changes and what the release changes for the drift rule, the comparison with kinship2 and Pedixplorer, then phases 17a-17q (each with DONE, commands, surface and session boundary), the decisions left to each phase's picker (D1-D10), a session map and the dragons. Mark's pick, "This outline (Recommended)", over the same content with the phases first | pedkindraw S32 | Mark |
+| R84 | Before the first CRAN release: the argument-name review (contract section 6; 17b, and 17c if it changes anything), the two drawing fixes ("Select by id" leaves out the `__jog_` routing points, 17d; the legend's "Same animal, again" label fits, 17e), the document of what kinship2 or Pedixplorer can do that pedkindraw cannot (17f), pedkindraw's own timing runs under a plan of their own and the speed vignette (R82's condition; 17g-17i), and tests for full coverage (17j). They come before the CRAN-mode test cut (17k) and the release steps (17l-17q), so the cut and the release measure the code that ships. A gap Mark chooses at 17f to close first becomes a phase of its own, before 17g. Mark's picks: all four offered ("Two drawing fixes (Recommended)", "Gaps document (Recommended)", "Timing runs + speed vignette", "Full test coverage") | pedkindraw S32 | Mark |
+| R85 | The check time is measured where CRAN's 10-minute limit is enforced before any test is cut: Phase 17a uploads the tree to win-builder R-devel (Mark approves the upload; the result is emailed to the maintainer), and the target is 540 s or less, 10% under CRAN's 600 s, as nprcgenekeepr's D4. Measured S32 on this Mac under load: the check 181 s, its tests 118 s, which nprcgenekeepr's ratio of 3.4-3.8 puts at 615-688 s on win-builder. Mark's pick, "Measure on win-builder first (Recommended)", over a local estimate only | pedkindraw S32 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -856,6 +861,38 @@ pedkindraw times itself. The package installs at 4,284 KB, under R77's 5,120 KB.
 
 Modeled on `docs/planning/cran-3.0.0-submission-plan.md`. The readers stay out (R13), so the linux-arm64 read problem
 this project met (`readWithFinalNewline()`, S1093) does not apply.
+
+Planned in pedkindraw's `docs/planning/cran-submission-plan.md` (pedkindraw S32; R83-R85): its section 6 gives each
+phase's DONE criteria, commands and surface, its section 7 the decisions left to each phase's picker, its section 8
+the order and a guess of 17 to 22 sessions.
+
+| Phase | Work | Source |
+|---|---|---|
+| 17a | The check time on win-builder R-devel, against 540 s | R85 |
+| 17b | The argument-name review: a ruling per name (no code) | contract section 6, R84 |
+| 17c | The renames, if 17b changes anything (strict TDD) | R84 |
+| 17d | "Select by id" leaves out the `__jog_` routing points (strict TDD) | R84 |
+| 17e | The legend's "Same animal, again" label fits (strict TDD) | R84 |
+| 17f | What kinship2 or Pedixplorer can do that pedkindraw cannot (`docs/research/`) | R84 |
+| 17g | The plan for pedkindraw's own timing runs (a planning session) | R82, R84 |
+| 17h | The timing runs (sessions set by 17g) | R82, R84 |
+| 17i | The speed vignette (Phase 16d returns) | R79, R82, R84 |
+| 17j | Tests for full coverage | R84 |
+| 17k | The CRAN-mode test time, if 17a and the additions require it | R85 |
+| 17l | Static hygiene and noSuggests | |
+| 17m | NEWS, the README, the version number | |
+| 17n | The full local gate; the tree freezes | |
+| 17o | `cran-comments.md` and the cross-platform runs | |
+| 17p | Submission (Mark's action) | |
+| 17q | After acceptance | |
+
+**Done 17's plan (pedkindraw S32; R83-R85):** measured on this Mac under load (load average 5.3-12.7): `R CMD check
+--as-cran` 181 s with R16's NOTE only, its tests 118 s, examples 1.1 s; win-builder estimate 615-688 s against CRAN's
+600 s; in CRAN mode 684 tests, 0 failed, 8 skipped, 103.6 s, eight files 81% of it; `mockery` and `withr` used in
+tests without a guard, 7 of the 9 Suggests in R's own library; 49 words for the spelling check, 0 in `DESCRIPTION`;
+22 of the 31 export names shared with nprcgenekeepr, 6 with kinship2, 1 with Pedixplorer; nprcgenekeepr 165 commits
+after `baef1e12c` (to `363137511`), none to the 79 copied files' sources after their copy commits. Mark picked the
+outline, all four open items before the release, and the win-builder measurement first.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

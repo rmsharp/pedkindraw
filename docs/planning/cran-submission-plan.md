@@ -399,7 +399,7 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
 ### Phase 17m. The release text and the version
 
 - **Work:** NEWS: the development heading becomes the release's (D8), each item checked against the code as 17b-17l
-  left it; the README's install section (CRAN first only after acceptance: a CRAN link before then is a 404 the
+  left it, and a section on the documentation (the README, the vignettes, the website), which NEWS lacks (S31); the README's install section (CRAN first only after acceptance: a CRAN link before then is a 404 the
   incoming check reports), re-rendered; the version in `DESCRIPTION`; `?pedkindraw` if it names the version.
 - **DONE:** `R CMD check --as-cran` R16's NOTE only, its NEWS step reading the release's entries; `git grep` of the
   old version finds none outside history; the README rendered twice the same.
