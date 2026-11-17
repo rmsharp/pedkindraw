@@ -103,6 +103,11 @@ nprcgenekeepr's clean-room ruling C13). Reason: the plan's checks compare each c
 nprcgenekeepr's (Phases 6-10), and the drift tool compares bodies (plan section 5); renaming now would make every
 function a divergence from the first day. Making the names consistent is a review step before the first CRAN
 release (section 6), the last point at which it costs users nothing.
+**The review, pedkindraw S34 (Phase 17b; plan R87-R93):** a parent argument is `sire` or `dam` in every export,
+`kinship()` included (R87); the pedigree argument is `ped` in every export, with `trimmedPed` beside it in
+`addBackSecondParents()` (R88); every export that takes a pedigree takes it first (R89). The rows below give these
+names, each marked with the phase that makes it (17c1-17c3, test-first); until then the code has the old ones,
+which each row also names. Each change is a `DIVERGENCE.md` row (plan section 5).
 
 ### 4.1 Copied exports (20)
 
@@ -110,18 +115,18 @@ release (section 6), the last point at which it costs users nothing.
 |---|---|---|---|---|
 | `findGeneration(id, sire, dam)` | vectors | integer generation per id, founders 0; NA plus a warning naming the ids it cannot place (cycle, parent without a row) | none of its own | 6 |
 | `findPedigreeNumber(id, sire, dam)` | vectors | integer family per id, from 1; NA for an id not reachable from a founder | none | 6 |
-| `getParents(pedSourceDf, ids)` | pedigree, ids | character parent ids | none | 6 |
-| `getOffspring(pedSourceDf, ids)` | pedigree, ids | character offspring ids, no duplicates | none | 6 |
+| `getParents(ped, ids)` (was `pedSourceDf`, R88) | pedigree, ids | character parent ids | none | 6; name 17c2 |
+| `getOffspring(ped, ids)` (was `pedSourceDf`, R88) | pedigree, ids | character offspring ids, no duplicates | none | 6; name 17c2 |
 | `getFounders(ped)` | pedigree | founder ids, in pedigree order, same type as `ped$id` | none | 6 |
 | `isFounder(ped)` | pedigree | logical per row, never NA | none | 6 |
-| `hasBothParents(id, ped)` | one id, pedigree | `TRUE`/`FALSE`; `logical(0)` when the id is absent | none | 6 |
-| `getIdsWithOneParent(uPed)` | pedigree | character ids with exactly one known parent | none | 6 |
+| `hasBothParents(ped, id)` (was `(id, ped)`, R89) | pedigree, one id | `TRUE`/`FALSE`; `logical(0)` when the id is absent | none | 6; order 17c3 |
+| `getIdsWithOneParent(ped)` (was `uPed`, R88) | pedigree | character ids with exactly one known parent | none | 6; name 17c2 |
 | `addParents(ped)` | pedigree | pedigree with a row added for each parent that has none; `recordStatus` `"original"`/`"added"` | none | 6 |
-| `addBackSecondParents(uPed, ped)` | trimmed pedigree, full pedigree | trimmed pedigree with second parents added back; a `data.table` once a row is added, else a data frame (as today) | none | 6 |
+| `addBackSecondParents(trimmedPed, ped)` (was `uPed`, R88) | trimmed pedigree, full pedigree | trimmed pedigree with second parents added back; a `data.table` once a row is added, else a data frame (as today) | none | 6 |
 | `correctParentSex(id, sire, dam, sex, recordStatus, reportErrors = FALSE)` | vectors | corrected sex codes; or, with `reportErrors = TRUE`, a list `sireAndDam`, `femaleSires`, `maleDams` | stops when an id is both sire and dam | 6 |
-| `trimPedigree(probands, ped, removeUninformative = FALSE, addBackParents = FALSE)` | ids, pedigree | probands and their ancestors | none | 6 |
-| `getProbandPedigree(probands, ped)` | ids, pedigree | probands and their ancestors | none | 6 |
-| `getDescendantPedigree(probands, ped)` | ids, pedigree | probands and their descendants | none | 6 |
+| `trimPedigree(ped, probands, removeUninformative = FALSE, addBackParents = FALSE)` (was `(probands, ped, ...)`, R89) | pedigree, ids | probands and their ancestors | none | 6; order 17c3 |
+| `getProbandPedigree(ped, probands)` (was `(probands, ped)`, R89) | pedigree, ids | probands and their ancestors | none | 6; order 17c3 |
+| `getDescendantPedigree(ped, probands)` (was `(probands, ped)`, R89) | pedigree, ids | probands and their descendants | none | 6; order 17c3 |
 | `removeUnknownAnimals(ped)` | pedigree | pedigree without rows whose `recordStatus` is `"added"` | none | 6 |
 | `removeUninformativeFounders(ped)` | pedigree | reduced pedigree | stops naming missing columns | 6 |
 | `checkTwinRelations(ped, twinRelations)` | pedigree, twins table | the twins table, ids as character | stops on missing columns, a pair naming one id twice, an id not in `ped`, a bad code, an MZ or DZ pair without the same sire and dam, an MZ pair of different sex | 7 |
@@ -131,19 +136,20 @@ release (section 6), the last point at which it costs users nothing.
 
 `addIdRecords()` (called only by `addBackSecondParents()`) is copied but **not exported**: it is plumbing, and an
 export can be added later without breaking anyone, while removing one cannot (Claude's proposal; nprcgenekeepr
-exports it).
+exports it). Ruled by Mark at the review (pedkindraw S34, R90).
 
 ### 4.2 Rewritten exports (R11, C2): copied from nprcgenekeepr's clean-room rewrite
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
-| `kinship(id, fatherId, motherId, pdepth, sparse = FALSE, twinRelations = NULL, chrtype = "autosome", sex = NULL)` | vectors; `pdepth` from `findGeneration()`; optional twins; `chrtype = "x"` needs `sex` | square kinship matrix named by `id`; a `Matrix` sparse matrix when `sparse = TRUE` | stops on duplicate ids, a bad `sex` vector, an MZ id not in `id` | 7 |
+| `kinship(id, sire, dam, pdepth, sparse = FALSE, twinRelations = NULL, chrtype = "autosome", sex = NULL)` (were `fatherId`, `motherId`, R87) | vectors; `pdepth` from `findGeneration()` (the 4th argument, where kinship2's `kinship()` takes `sex`); optional twins; `chrtype = "x"` needs `sex` | square kinship matrix named by `id`; a `Matrix` sparse matrix when `sparse = TRUE` | stops on duplicate ids, a bad `sex` vector, an MZ id not in `id`; from 17c1, on a known parent whose `pdepth` is not below its offspring's (R92) | 7; names and check 17c1 |
 | `shrinkPedigree(ped, genotyped, affected = NULL, maxBits = 16L)` | pedigree, logical per row | list `ped`, `idTrimmed`, `idList` (`unavail`, `noninform`, `affected`), `bitSize`, `genotyped`, `pedSizeOriginal`, `pedSizeIntermed`, `pedSizeFinal` | stops on missing columns, wrong lengths, NA in `genotyped` | 10 |
 
 Unchanged behaviour is the contract: an animal with one known parent is legal (X chromosome included), and
 `shrinkPedigree()` breaks ties the same way every time.
 The clean-room functions pedkindraw copies (C2) differ from nprcgenekeepr 3.0.0's, and the copies carry the
-differences (`nprcgenekeepr:docs/planning/cleanroom-rewrite-plan.md` section 2): the parent argument names above (C13);
+differences (`nprcgenekeepr:docs/planning/cleanroom-rewrite-plan.md` section 2): the parent argument names (C13,
+`fatherId` and `motherId`; pedkindraw's review renames them `sire` and `dam`, R87);
 a plain error for each kind of malformed input to `kinship()` (C11) and to `shrinkPedigree()` (C15), beyond the
 errors listed; `shrinkPedigree()`'s ties go to the first id in byte order, whatever the locale (C16).
 
@@ -278,6 +284,15 @@ it, an export or argument is removed only after one release with a `.Deprecated(
 inside Phase 17, before the release (17c makes any change, test-first). That plan's section 2.4 lists the argument
 names, the argument order, `addIdRecords()` and the export names shared with nprcgenekeepr, kinship2 and
 Pedixplorer, with the call sites of each.
+
+**pedkindraw S34 (Phase 17b, plan R87-R93):** the review's rulings. Changed (17c1-17c3, test-first, each a
+`DIVERGENCE.md` row): `kinship()`'s parents are `sire` and `dam` (R87); `getParents(ped, ids)`, `getOffspring(ped,
+ids)`, `getIdsWithOneParent(ped)`, `addBackSecondParents(trimmedPed, ped)` (R88); `getProbandPedigree(ped,
+probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands, ...)`, `hasBothParents(ped, id)`
+(R89); `kinship()` stops on a `pdepth` that puts a known parent at or after its offspring (R92). Kept:
+`addIdRecords()` internal (R90); every export name, the 22 shared with nprcgenekeepr, the 6 with kinship2 and the 1
+with Pedixplorer included, with a note in `kinship()`'s help and the README on the kinship2 and Pedixplorer names
+(R91). After the first CRAN release, the deprecation rule above governs any further change.
 
 ---
 

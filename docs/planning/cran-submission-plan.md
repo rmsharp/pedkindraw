@@ -3,7 +3,8 @@
 **Date:** 2026-11-16 · **Session:** pedkindraw S32 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 "Planning Sessions"; `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`). Nothing under `R/`, `tests/`, `man/`,
 `vignettes/`, `inst/` or `DESCRIPTION` changed.
-**Status:** Phase 17a DONE (S33: win-builder R-devel read 398 s, section 2.1; R86). Next: Phase 17b.
+**Status:** Phase 17a DONE (S33: win-builder R-devel read 398 s, section 2.1; R86). Phase 17b DONE (S34: six
+name rulings and 17c in three sessions, section 2.4; R87-R93). Next: Phase 17c1, `kinship()`.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -49,8 +50,9 @@ CI passes on five jobs.
 the legend change S12 already ported; its work in progress touches no copied function. It needs watching, not
 work, unless it changes a copied function before the submission.
 
-**How many sessions:** about 18 to 22 (a guess; section 8): 17a-17o and 17q are sessions, 17h may be several,
-17k is at least one reading (R86, S33; S32's guess was 17 to 22 with 17k possibly none), and 17p is Mark's action. The release follows the last of them.
+**How many sessions:** about 20 to 23 (a guess; section 8): 17a-17o and 17q are sessions, 17c is three (R93, S34;
+S33's guess was 18 to 22 with 17c one or two), 17h may be several, 17k is at least one reading (R86, S33; S32's
+guess was 17 to 22 with 17k possibly none), and 17p is Mark's action. The release follows the last of them.
 
 ---
 
@@ -187,6 +189,31 @@ dragon 9): 17l needs a library without them.
   `getIdsWithOneParent(` 2 in 4, `kinship(` 74 in 14 (the README and both vignettes among them). 17b repeats the
   search for each change it decides, and `tools/compareResultsWithNprcgenekeepr.R`'s `runCases()` is among the
   callers.
+
+**Decided (17b, S34; R87-R93).** Measured at `5525edd` (`R/`, `tests/`, `vignettes/`, `man/` unchanged since
+`d00ebda`), nprcgenekeepr at `366899961`. The name counts above held exactly. The call counts above are text matches
+(definitions and help text among them); what a change breaks was counted by parsing instead: every call in `R/`,
+the tests, `tools/`, the help examples (`tools::Rd2ex()`), the README and the vignettes (`knitr::purl()`), each
+sorted by which arguments it passes by position, plus the fidelity tool's `fn("name")(...)` calls read by hand.
+Outside the fidelity tool no code passes any of these functions bare (as in `lapply(ids, hasBothParents, ...)`);
+the tool's one such use, `lapply(few, fn("hasBothParents"), ped = ped)` (`:268`), names `ped`.
+
+| Ruling | Change (made in) | What the change touches, measured |
+|---|---|---|
+| R87 | `kinship(id, sire, dam, pdepth, ...)`, were `fatherId`, `motherId` (17c1) | 43 calls to pedkindraw's `kinship()` here (3 more are kinship2's), 42 by position; the one by name is the copied C13 test (`test_kinship.R:241`), which also checks the names with `expect_named(formals(kinship), ...)`. The error message "fatherId, motherId and pdepth must each be as long as id" (`R/kinship.R:115`) and its 3 expected copies (`test_kinshipMemoryEquivalence.R:74-76`). The fidelity tool's 8 calls pass them by position. Files: `R/kinship.R`, `man/kinship.Rd`, the two test files, `DIVERGENCE.md` |
+| R88 | `getParents(ped, ids)`, `getOffspring(ped, ids)` (were `pedSourceDf`), `getIdsWithOneParent(ped)`, `addBackSecondParents(trimmedPed, ped)` (were `uPed`) (17c2) | 24 calls (19 here, 5 in the fidelity tool), none passing these arguments by name; 35 lines (`pedSourceDf` 15, `uPed` 20) in `R/getParents.R`, `R/getOffspring.R`, `R/getIdsWithOneParent.R`, `R/addBackSecondParents.R` and their 4 help pages. Tests for the new names go in `test_getParents.R`, `test_getOffspring.R`, `test_addBackSecondParents.R` (no test file calls `getIdsWithOneParent()`; `addBackSecondParents()` reaches it) |
+| R89 | `getProbandPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands, ...)`, `hasBothParents(ped, id)` (17c3) | 65 calls: the 42 that name `probands =` or `ped =` keep working; the 23 that pass both by position are rewritten: `R/trimPedigree.R:59`, `R/addBackSecondParents.R:45`, the help examples in `R/trimPedigree.R` (2) and `R/hasBothParents.R` (2), `test_trimPedigree.R` (4), `test_kinshipHasBothParentsHelp.R` (4), `vignettes/pedkindraw.Rmd:152`, `:163`, `:302`, and `tools/compareResultsWithNprcgenekeepr.R:104`, `:124`, `:157`, `:227`, `:228`, `:291`, which then name their arguments so one call runs on both packages (`:268`'s `hasBothParents` call already names `ped`). An old-order call stops with "$ operator is invalid for atomic vectors" in each of the four (a scratch run), never a wrong answer |
+| R90 | `addIdRecords()` stays internal | nothing |
+| R91 | the shared export names stay; `kinship()`'s help and the README say which names kinship2 and Pedixplorer share and that their `kinship()` takes a pedigree object (17c1) | `R/kinship.R`'s help, `README.Rmd` and `README.md` |
+| R92 | `kinship()` stops when a known parent's `pdepth` is not below its offspring's; its help says the 4th argument is `pdepth`, not kinship2's `sex` (17c1) | `R/kinship.R`, its help, a test file; the cases: kinship2's `sample.ped` (both families) and `minnbreast` (426 families), where the check stopped the sex-codes call in every family and passed `findGeneration()`'s numbers in every family |
+| R93 | 17c is three sessions: 17c1, 17c2, 17c3 | section 6 |
+
+Each of R87-R89 and R92 is a divergence from nprcgenekeepr (D2): 9 `DIVERGENCE.md` rows in all (`kinship()`, for
+R87 and R92; the four of R88; the four of R89; `addBackSecondParents()`'s row from R88 also covers its call to
+`hasBothParents()`), each until nprcgenekeepr makes the same change in a session there. Each changed copied file's
+header ("Changes: help text only; the function's code is unchanged") is rewritten to say what changed. nprcgenekeepr's own callers outside each
+function's file, for such a session (a text count, `git grep` at `366899961`, `R/` and `inst/application`): `kinship(`
+24 lines, `trimPedigree(` 2, `getProbandPedigree(` 2, `getParents(` 2, `getOffspring(` 2, one each for the others.
 
 ### 2.5 Version, CI and the website
 
@@ -348,15 +375,38 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
 - **DONE:** a ruling per item (change or keep), the contract updated, the inventory of each change in this plan.
   No code changed.
 - **Surface:** documents only.
+- **Done (S34; R87-R93):** seven rulings from seven questions in three pickers, each Mark's pick of Claude's
+  recommendation: `kinship()` says `sire` and `dam` (R87); the pedigree argument is `ped` everywhere, `trimmedPed`
+  beside it in `addBackSecondParents()` (R88); the pedigree comes first in every export that takes one (R89); `addIdRecords()`
+  stays internal (R90); the shared export names stay, with a note in `kinship()`'s help and the README (R91);
+  `kinship()` refuses a `pdepth` that puts a parent at or after its offspring (R92, a silent wrong answer found
+  while measuring the shared names); 17c is three sessions (R93). The inventory: section 2.4. The contract's
+  sections 4 and 6 give the new signatures.
 
-### Phase 17c. The renames (strict TDD; only if 17b changes anything)
+### Phase 17c. The renames and the `pdepth` check (strict TDD; three sessions, R93)
 
-- **Work:** RED: tests call the new names and fail; GREEN: the functions, their help, every caller from 17b's
-  inventory, `DIVERGENCE.md` rows, the copied files' headers; REFACTOR at Mark's gate. One session, two if 17b's
-  changes touch more than about ten files (a guess).
-- **DONE:** suite 0 failed, WARN 0; lint 0; roxygen idempotent; `R CMD check --as-cran` R16's NOTE only; the drift
-  tool lists each renamed function with its row; the fidelity tool's cases run under the new names, all identical;
-  `git grep` of each old name finds only history and headers; CI 5/5.
+Each session is one RED-GREEN-REFACTOR cycle, the gates put to Mark: RED adds tests that call the new names or
+order (`expect_named(formals(f), ...)` among them) and fail; GREEN changes the functions, their help, every caller
+from section 2.4's inventory, the `DIVERGENCE.md` rows and the copied files' headers; REFACTOR at Mark's gate. Each
+session re-runs section 2.4's parse of the calls on its own tree first (the counts are `5525edd`'s), and
+`git -C ../nprcgenekeepr log` on the files it changes (Learning 15).
+
+- **17c1, `kinship()` (R87, R91, R92):** the parent arguments `sire` and `dam` (the copied C13 test and the three
+  expected messages change with them); the `pdepth` check, with a plain message naming the first offending
+  animal (the message's words are GREEN's to propose), tested on typed cases and on kinship2's `sample.ped` and
+  `minnbreast` under `skip_if_not_installed("kinship2")`. The check goes after the existing input checks (they
+  end with the MZ twins' check, `R/kinship.R:134`-`:136` at `5525edd`), so the errors the fidelity tool's
+  `kinshipErrors` cases compare stay the same; every
+  other `kinship()` case there passes `findGeneration()`'s numbers or founders at 0 (read at `5525edd`), which the
+  check passes, so those results stay identical to nprcgenekeepr's. The help says the 4th argument is `pdepth`, not
+  kinship2's `sex`, and, with the README, which names kinship2 and Pedixplorer share. About 7 files.
+- **17c2, the pedigree argument (R88):** `getParents()`, `getOffspring()`, `getIdsWithOneParent()`,
+  `addBackSecondParents()`. No caller changes. About 12 files.
+- **17c3, the pedigree first (R89):** `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()`,
+  `hasBothParents()`, and the 23 calls section 2.4 lists, the fidelity tool's given names. About 16 files.
+- **DONE (each):** suite 0 failed, WARN 0; lint 0; roxygen idempotent; `R CMD check --as-cran` R16's NOTE only; the
+  drift tool lists each changed function with its row; the fidelity tool's cases run under the new names, all
+  identical; `git grep` of each old name finds only history and headers; CI 5/5.
 - **Surface:** this Mac and GitHub Actions.
 
 ### Phase 17d. "Select by id" leaves out the routing points (strict TDD)
@@ -495,7 +545,7 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
 | # | Question | Phase | What is known now |
 |---|---|---|---|
 | D1 | Who uploads to win-builder: Mark, or Claude with Mark's approval in the session | 17a | the result goes to the maintainer's email either way; nprcgenekeepr's D5 ruled the owner, and once let the agent |
-| D2 | Each name change of section 2.4: change or keep | 17b | the inventory above; each change is a divergence from nprcgenekeepr |
+| D2 | Each name change of section 2.4: change or keep | 17b | **Decided S34** (R87-R93): section 2.4's "Decided" table; 9 `DIVERGENCE.md` rows in 17c |
 | D3 | Each drawing fix: also fixed in nprcgenekeepr (a session there, Mark starts it) or a `DIVERGENCE.md` row | 17d, 17e | nprcgenekeepr has the same filter and label |
 | D4 | Which gaps, if any, are closed before the release | 17f | each would be a phase of its own, before 17g |
 | D5 | The timing plan's scope | 17g | R82; the draft's nine tables |
@@ -513,10 +563,12 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
 |---|---|---|---|
 | 17a | check time on win-builder | Mark approves an upload | 1 |
 | 17b | name review, decisions | 17a | 1 |
-| 17c | renames | 17b changes something | 1-2 |
-| 17d | "Select by id" | 17c | 1 |
-| 17e | legend label | 17c | 1 |
-| 17f | gaps document | 17c-17e | 1 |
+| 17c1 | `kinship()`: `sire`, `dam`, the `pdepth` check, the shared-names note | 17b | 1 |
+| 17c2 | the pedigree argument's name | 17c1 | 1 |
+| 17c3 | the pedigree first | 17c2 | 1 |
+| 17d | "Select by id" | 17b | 1 |
+| 17e | legend label | 17b | 1 |
+| 17f | gaps document | 17c3-17e | 1 |
 | 17g | timing plan | 17f (and any gap closed) | 1 |
 | 17h | timing runs | 17g | set by 17g |
 | 17i | speed vignette | 17h | 1 |
@@ -531,7 +583,9 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
 
 The order puts the code and tests that change (17b-17j) before the cut (17k), and the cut before the release text,
 the version and the frozen gate, as nprcgenekeepr's plan did. 17d and 17e may swap; 17f comes after them so the gaps
-it lists are the shipped package's.
+it lists are the shipped package's. S34 (R93): 17d and 17e need 17b only, since none of the functions R87-R89 change
+is in `R/drawPedigreeDiagram.R` (`grep -w` at `5525edd`), so they may also come before or between 17c1-17c3; 17c1-17c3
+run in that order (17c3 rewrites calls in files 17c2 has just changed: `R/addBackSecondParents.R`).
 
 ---
 

@@ -49,9 +49,9 @@ drawing vignette); Phase 16d deferred (pedkindraw S30, R82: the speed vignette w
 its draft on the branch `draft/speed-vignette`); Phase 16e DONE (pedkindraw S31: the website,
 <https://rmsharp.github.io/pedkindraw/>), so Phase 16 is DONE; Phase 17's plan DONE (pedkindraw S32:
 `docs/planning/cran-submission-plan.md`, R83-R85; phases 17a-17q); Phase 17a DONE (pedkindraw S33: win-builder
-R-devel 398 s, R86).
-**Next:** Phase 17b, the argument-name review, a decision session (`docs/planning/cran-submission-plan.md`
-section 6).
+R-devel 398 s, R86); Phase 17b DONE (pedkindraw S34: six name rulings, 17c in three sessions, R87-R93).
+**Next:** Phase 17c1, `kinship()`: `sire` and `dam`, the `pdepth` check and the shared-names note (strict TDD;
+`docs/planning/cran-submission-plan.md` section 6).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -202,6 +202,13 @@ Since then:
 | R84 | Before the first CRAN release: the argument-name review (contract section 6; 17b, and 17c if it changes anything), the two drawing fixes ("Select by id" leaves out the `__jog_` routing points, 17d; the legend's "Same animal, again" label fits, 17e), the document of what kinship2 or Pedixplorer can do that pedkindraw cannot (17f), pedkindraw's own timing runs under a plan of their own and the speed vignette (R82's condition; 17g-17i), and tests for full coverage (17j). They come before the CRAN-mode test cut (17k) and the release steps (17l-17q), so the cut and the release measure the code that ships. A gap Mark chooses at 17f to close first becomes a phase of its own, before 17g. Mark's picks: all four offered ("Two drawing fixes (Recommended)", "Gaps document (Recommended)", "Timing runs + speed vignette", "Full test coverage") | pedkindraw S32 | Mark |
 | R85 | The check time is measured where CRAN's 10-minute limit is enforced before any test is cut: Phase 17a uploads the tree to win-builder R-devel (Mark approves the upload; the result is emailed to the maintainer), and the target is 540 s or less, 10% under CRAN's 600 s, as nprcgenekeepr's D4. Measured S32 on this Mac under load: the check 181 s, its tests 118 s, which nprcgenekeepr's ratio of 3.4-3.8 puts at 615-688 s on win-builder. Mark's pick, "Measure on win-builder first (Recommended)", over a local estimate only | pedkindraw S32 | Mark |
 | R86 | Whether CRAN-mode tests are cut (Phase 17k) is decided by one more win-builder R-devel reading of the tree after 17j, not by 17a's reading. Tests are skipped on CRAN only if that reading is over R85's 540 s; 17o's reading of 540 s or less still gates the submission. 17a's reading (S33, tarball from `eaff4a7`, `W1Ko4S0RDs2W`): 398 s, `Status: 1 NOTE` (R16's), its tests 286 s elapsed for 286 s of CPU, so on an idle machine; a busy day could read about 470-550 s, and 17b-17j add a guessed 10-40 s (`docs/planning/cran-submission-plan.md` section 2.1). Claude uploaded by FTP (D1: Mark's pick "I upload it via FTP (Recommended)"). Mark's pick, "Decide after 17j (Recommended)", over a small cut planned now or a second upload of the same tarball first | pedkindraw S33 | Mark |
+| R87 | `kinship()`'s parent arguments become `sire` and `dam`, in the same positions: `kinship(id, sire, dam, pdepth, sparse = FALSE, twinRelations = NULL, chrtype = "autosome", sex = NULL)` (Phase 17c1). `fatherId` and `motherId` came from nprcgenekeepr's clean-room ruling C13, which only took the dots out of `father.id` and `mother.id`; every other export and the pedigree's own columns say sire and dam (Mark's S23 vocabulary ruling). Measured at `5525edd`: 43 calls to pedkindraw's `kinship()` in `R/`, the tests, `tools/`, the help examples, the README and the vignettes, 42 by position; the one by name is the copied C13 test (`tests/testthat/test_kinship.R:241`), so that test, the error message "fatherId, motherId and pdepth must each be as long as id" and its 3 expected copies change with the function and its help (the picker said 45 of 46 calls, counting kinship2's 3). A divergence from nprcgenekeepr: a `DIVERGENCE.md` row until nprcgenekeepr makes the same change in a session there. Mark's pick "Rename to sire, dam (Recommended)" over keeping the names | pedkindraw S34 | Mark |
+| R88 | The pedigree argument is `ped` in the four exports that named it otherwise: `getParents(ped, ids)` and `getOffspring(ped, ids)` (were `pedSourceDf`), `getIdsWithOneParent(ped)`, and `addBackSecondParents(trimmedPed, ped)` (were `uPed`; `trimmedPed` is the trimmed pedigree, `ped` the full one) (Phase 17c2). Measured: none of the 24 calls (19 here, 5 in the fidelity tool) passes these arguments by name; 35 lines in 8 files change. Four `DIVERGENCE.md` rows. Mark's pick "Rename all four (Recommended)" over three (keeping `uPed`) or none | pedkindraw S34 | Mark |
+| R89 | Every export that takes a pedigree takes it first: `getProbandPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands, removeUninformative = FALSE, addBackParents = FALSE)` and `hasBothParents(ped, id)` (Phase 17c3), so `ped |> trimPedigree("A")` works. Measured: of 65 calls, the 42 that name `probands =` or `ped =` keep working; the 23 that pass both by position are rewritten (2 in `R/`, 4 help examples, 8 in tests, 3 in the getting-started vignette, 6 in the fidelity tool, which then name their arguments so one call runs on both packages; listed in `docs/planning/cran-submission-plan.md` section 2.4). An old-order call stops with "$ operator is invalid for atomic vectors" in each of the four (a scratch run), never a wrong answer. Four `DIVERGENCE.md` rows (`addBackSecondParents()`'s call to `hasBothParents()` falls under R88's row). Mark's pick "Pedigree first, all four (Recommended)" over three (keeping `hasBothParents(id, ped)`) or none | pedkindraw S34 | Mark |
+| R90 | `addIdRecords()` stays internal, as contract section 4.1 proposed: only `addBackSecondParents()` calls it, and an export can be added in a later release without breaking anyone, while removing one takes a deprecation release. nprcgenekeepr exports it. Mark's pick "Keep it internal (Recommended)" over exporting it | pedkindraw S34 | Mark |
+| R91 | The export names shared with other packages stay: 22 of the 31 with nprcgenekeepr (240 exports at `366899961`), 6 with kinship2 1.9.6.2 (`bitSize`, `findAvailAffected`, `findAvailNonInform`, `findUnavailable`, `ibdMatrix`, `kinship`), 1 with Pedixplorer 1.8.0 (`kinship`). Phase 17c1 adds to `kinship()`'s help page and the README which names kinship2 and Pedixplorer share, and that their `kinship()` takes a pedigree object while pedkindraw's takes vectors (`asPedFrame()` converts one). Mark's pick "Keep, and say so in help (Recommended)" over keeping them with no note | pedkindraw S34 | Mark |
+| R92 | `kinship()` stops with a plain message when a known parent's `pdepth` is not below its offspring's, and its help says the 4th argument is `pdepth`, not `sex` as in kinship2 (Phase 17c1, test-first; the same `DIVERGENCE.md` row as R87). Found in S34 while measuring R91: kinship2's own call form `kinship(id, dadid, momid, sex)`, sent to pedkindraw's `kinship()`, returns with no error or warning a matrix computed with the sex codes as generations, because `kinship()` fills each animal from its parents generation by generation in `pdepth`'s order. On kinship2's `minnbreast` (426 families, 28,081 animals, sex coded 1, 2, and 3 where missing) the values were wrong in 425 families; in `sample.ped`'s family 1, 414 of 1,681 values, by up to 0.25. The check stopped that call in all 426 families and in both `sample.ped` families, and passed `findGeneration()`'s numbers in all of them. Mark's pick "Add the check in 17c (Recommended)" over a help-page warning only or no change | pedkindraw S34 | Mark |
+| R93 | Phase 17c is three sessions, each one strict-TDD cycle with its own check and CI run, in this order: 17c1 `kinship()` (R87, R91, R92; about 7 files), 17c2 the pedigree argument's name (R88; about 12 files, no callers), 17c3 the pedigree first (R89; about 16 files, the 23 calls). R84's one or two sessions assumed about ten files; the rulings touch about 31. Phase 17's guess becomes about 20 to 23 sessions. 17d and 17e need 17b only: none of the changed functions is in their file. Mark's pick "Three sessions (Recommended)" over two (the renames and the order together) | pedkindraw S34 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -866,13 +873,15 @@ this project met (`readWithFinalNewline()`, S1093) does not apply.
 
 Planned in pedkindraw's `docs/planning/cran-submission-plan.md` (pedkindraw S32; R83-R85): its section 6 gives each
 phase's DONE criteria, commands and surface, its section 7 the decisions left to each phase's picker, its section 8
-the order and a guess of 17 to 22 sessions.
+the order and a guess of 17 to 22 sessions (about 20 to 23 since R93).
 
 | Phase | Work | Source |
 |---|---|---|
 | 17a | The check time on win-builder R-devel, against 540 s | R85 |
 | 17b | The argument-name review: a ruling per name (no code) | contract section 6, R84 |
-| 17c | The renames, if 17b changes anything (strict TDD) | R84 |
+| 17c1 | `kinship()`: `sire` and `dam`, the `pdepth` check, the shared-names note (strict TDD) | R87, R91, R92, R93 |
+| 17c2 | The pedigree argument is `ped` in four more exports (strict TDD) | R88, R93 |
+| 17c3 | The pedigree first in four exports (strict TDD) | R89, R93 |
 | 17d | "Select by id" leaves out the `__jog_` routing points (strict TDD) | R84 |
 | 17e | The legend's "Same animal, again" label fits (strict TDD) | R84 |
 | 17f | What kinship2 or Pedixplorer can do that pedkindraw cannot (`docs/research/`) | R84 |
@@ -901,6 +910,13 @@ outline, all four open items before the release, and the win-builder measurement
 16 s, examples 13 s, PDF manual 13 s. The same tarball took 208 s on this Mac at load 10-13, a ratio of 1.9 (2.3 for
 the tests' CPU time), so S32's 615-688 s estimate was high. The tests ran on an idle machine (elapsed equal to CPU),
 so a busy day could read about 470-550 s. Mark picked "Decide after 17j": 17k opens with one more reading.
+
+**Done 17b (pedkindraw S34; R87-R93):** seven rulings, each Mark's pick of Claude's recommendation: `kinship()` says
+`sire` and `dam` (R87); the pedigree argument is `ped` in every export, `trimmedPed` beside it in
+`addBackSecondParents()` (R88); the pedigree comes first in every export that takes one (R89); `addIdRecords()` stays
+internal (R90); the shared export names stay, with a note (R91); `kinship()` refuses a `pdepth` that puts a parent
+at or after its offspring (R92); 17c is three sessions (R93). Measured by parsing every call: 23 calls to rewrite for
+R89, none for R87 (but the copied C13 test) or R88. No code changed.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 
