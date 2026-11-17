@@ -10,8 +10,8 @@ and passed in.
 ``` r
 kinship(
   id,
-  fatherId,
-  motherId,
+  sire,
+  dam,
   pdepth,
   sparse = FALSE,
   twinRelations = NULL,
@@ -26,18 +26,24 @@ kinship(
 
   character vector of IDs for a set of animals.
 
-- fatherId:
+- sire:
 
   character vector or NA for the IDs of the sires for the set of
   animals.
 
-- motherId:
+- dam:
 
   character vector or NA for the IDs of the dams for the set of animals.
 
 - pdepth:
 
-  integer vector indicating the generation number for each animal.
+  integer vector indicating the generation number for each animal. Each
+  animal's must be greater than its sire's and its dam's, as
+  [`findGeneration()`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md)'s
+  numbers are; otherwise `kinship()` stops, naming the first animal in
+  `id`'s order that breaks the rule. This is the 4th argument, where
+  kinship2's `kinship(id, dadid, momid, sex)` takes `sex`: see the
+  section on names shared with kinship2 and Pedixplorer.
 
 - sparse:
 
@@ -98,6 +104,28 @@ The rows (cols) of founders are just 0.5 \* identity matrix, no further
 processing is needed for them. Parents must be processed before their
 children, and then a child's kinship is just the average of the kinship
 values for his or her parents.
+
+## Names shared with kinship2 and Pedixplorer
+
+kinship2 and Pedixplorer each export a `kinship()` too. Theirs takes a
+pedigree object, or the vectors `id`, `dadid`, `momid` and `sex`, and
+works out the generation numbers itself; this one takes `id`, `sire`,
+`dam` and `pdepth`, the generation numbers. Called the kinship2 way,
+with `sex` 4th, it stops whenever a sire's or dam's sex code is not
+below its offspring's, as in every family of kinship2's `sample.ped` and
+`minnbreast`. kinship2 also exports
+[`bitSize()`](https://rmsharp.github.io/pedkindraw/reference/bitSize.md),
+[`findAvailAffected()`](https://rmsharp.github.io/pedkindraw/reference/findAvailAffected.md),
+[`findAvailNonInform()`](https://rmsharp.github.io/pedkindraw/reference/findAvailNonInform.md),
+[`findUnavailable()`](https://rmsharp.github.io/pedkindraw/reference/findUnavailable.md)
+and
+[`ibdMatrix()`](https://rmsharp.github.io/pedkindraw/reference/ibdMatrix.md),
+names this package's functions have too. With both packages attached, a
+bare name calls the one attached last, so name the package:
+`pedkindraw::kinship()`.
+[`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
+turns a kinship2 pedigree or a Pedixplorer Pedigree into a list whose
+`ped` is the data frame this package's functions take.
 
 ## References
 

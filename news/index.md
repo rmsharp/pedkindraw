@@ -37,6 +37,19 @@ why.
   computes the kinship matrix, dense or sparse; identical twins get the
   kinship of an animal with itself.
 - New:
+  [`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md)’s
+  parent arguments are `sire` and `dam`, in the places of
+  nprcgenekeepr’s `fatherId` and `motherId`, and it stops when a known
+  sire’s or dam’s generation number (`pdepth`) is not below its
+  offspring’s, naming the animal. Before, kinship2’s call form
+  `kinship(id, dadid, momid, sex)` gave a wrong matrix with no error,
+  taking the sex codes for generation numbers.
+  [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md),
+  unless given a `kinshipMatrix`, passes the pedigree’s `gen` column to
+  [`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md),
+  so it stops the same way. The help page and the README name the
+  functions kinship2 and Pedixplorer also export.
+- New:
   [`ibdMatrix()`](https://rmsharp.github.io/pedkindraw/reference/ibdMatrix.md)
   builds an IBD matrix from pairs of ids and their values, and
   [`findUnrelated()`](https://rmsharp.github.io/pedkindraw/reference/findUnrelated.md)

@@ -51,6 +51,7 @@
 <h3 id="kinship-and-relatedness-0-0-1">Kinship and relatedness<a class="anchor" aria-label="anchor" href="#kinship-and-relatedness-0-0-1"></a></h3>
 <ul><li>
 <code><a href="../reference/kinship.html">kinship()</a></code> computes the kinship matrix, dense or sparse; identical twins get the kinship of an animal with itself.</li>
+<li>New: <code><a href="../reference/kinship.html">kinship()</a></code>’s parent arguments are <code>sire</code> and <code>dam</code>, in the places of nprcgenekeepr’s <code>fatherId</code> and <code>motherId</code>, and it stops when a known sire’s or dam’s generation number (<code>pdepth</code>) is not below its offspring’s, naming the animal. Before, kinship2’s call form <code>kinship(id, dadid, momid, sex)</code> gave a wrong matrix with no error, taking the sex codes for generation numbers. <code><a href="../reference/makePedigreeMatingLayout.html">makePedigreeMatingLayout()</a></code>, unless given a <code>kinshipMatrix</code>, passes the pedigree’s <code>gen</code> column to <code><a href="../reference/kinship.html">kinship()</a></code>, so it stops the same way. The help page and the README name the functions kinship2 and Pedixplorer also export.</li>
 <li>New: <code><a href="../reference/ibdMatrix.html">ibdMatrix()</a></code> builds an IBD matrix from pairs of ids and their values, and <code><a href="../reference/findUnrelated.html">findUnrelated()</a></code> finds a set of unrelated genotyped animals.</li>
 </ul></div>
 <div class="section level3">

@@ -49,8 +49,8 @@ elsewhere, for example with <code><a href="findGeneration.html">findGeneration()
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">kinship</span><span class="op">(</span></span>
 <span>  <span class="va">id</span>,</span>
-<span>  <span class="va">fatherId</span>,</span>
-<span>  <span class="va">motherId</span>,</span>
+<span>  <span class="va">sire</span>,</span>
+<span>  <span class="va">dam</span>,</span>
 <span>  <span class="va">pdepth</span>,</span>
 <span>  sparse <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  twinRelations <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -67,19 +67,24 @@ elsewhere, for example with <code><a href="findGeneration.html">findGeneration()
 <dd><p>character vector of IDs for a set of animals.</p></dd>
 
 
-<dt id="arg-fatherid">fatherId<a class="anchor" aria-label="anchor" href="#arg-fatherid"></a></dt>
+<dt id="arg-sire">sire<a class="anchor" aria-label="anchor" href="#arg-sire"></a></dt>
 <dd><p>character vector or NA for the IDs of the sires for the set
 of animals.</p></dd>
 
 
-<dt id="arg-motherid">motherId<a class="anchor" aria-label="anchor" href="#arg-motherid"></a></dt>
+<dt id="arg-dam">dam<a class="anchor" aria-label="anchor" href="#arg-dam"></a></dt>
 <dd><p>character vector or NA for the IDs of the dams for the set
 of animals.</p></dd>
 
 
 <dt id="arg-pdepth">pdepth<a class="anchor" aria-label="anchor" href="#arg-pdepth"></a></dt>
 <dd><p>integer vector indicating the generation number for each
-animal.</p></dd>
+animal. Each animal's must be greater than its sire's and its dam's, as
+<code><a href="findGeneration.html">findGeneration()</a></code>'s numbers are; otherwise <code>kinship()</code> stops,
+naming the first animal in <code>id</code>'s order that breaks the rule. This is
+the 4th argument, where kinship2's <code>kinship(id, dadid, momid, sex)</code>
+takes <code>sex</code>: see the section on names shared with kinship2 and
+Pedixplorer.</p></dd>
 
 
 <dt id="arg-sparse">sparse<a class="anchor" aria-label="anchor" href="#arg-sparse"></a></dt>
@@ -143,6 +148,25 @@ processing is needed for them.
 Parents must be processed before their children, and then a child's
 kinship is just the average of the kinship values for his or her
 parents.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="names-shared-with-kinship-and-pedixplorer">Names shared with kinship2 and Pedixplorer<a class="anchor" aria-label="anchor" href="#names-shared-with-kinship-and-pedixplorer"></a></h2>
+
+
+<p>kinship2 and Pedixplorer each export a <code>kinship()</code> too. Theirs takes a
+pedigree object, or the vectors <code>id</code>, <code>dadid</code>, <code>momid</code> and
+<code>sex</code>, and works out the generation numbers itself; this one takes
+<code>id</code>, <code>sire</code>, <code>dam</code> and <code>pdepth</code>, the generation
+numbers. Called the kinship2 way, with <code>sex</code> 4th, it stops whenever a
+sire's or dam's sex code is not below its offspring's, as in every family
+of kinship2's <code>sample.ped</code> and <code>minnbreast</code>. kinship2 also
+exports <code><a href="bitSize.html">bitSize()</a></code>, <code><a href="findAvailAffected.html">findAvailAffected()</a></code>,
+<code><a href="findAvailNonInform.html">findAvailNonInform()</a></code>, <code><a href="findUnavailable.html">findUnavailable()</a></code> and
+<code><a href="ibdMatrix.html">ibdMatrix()</a></code>, names this package's functions have too. With both
+packages attached, a bare name calls the one attached last, so name the
+package: <code>pedkindraw::kinship()</code>. <code><a href="asPedFrame.html">asPedFrame()</a></code> turns a
+kinship2 pedigree or a Pedixplorer Pedigree into a list whose <code>ped</code>
+is the data frame this package's functions take.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
