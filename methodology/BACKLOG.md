@@ -8,15 +8,12 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 17a: the check time on win-builder R-devel** (READY, Effort S; Mark approves the upload) -- the first
-      phase of `docs/planning/cran-submission-plan.md` (S32; R85): build today's tarball from a scratch folder and
-      upload it to win-builder R-devel, where CRAN's 10-minute limit is enforced; record its "Check time in
-      seconds", each step's time and its NOTEs (the spelling step runs there, not on this Mac) in the plan's section
-      2.1, and say whether 17k (the CRAN-mode test cut) is needed against the 540 s target. S32 measured 181 s here
-      under load, 615-688 s by nprcgenekeepr's ratio. Then 17b, the argument-name review (Later, below). The plan's
-      phases 17a-17q carry what the S31 item for the plan listed: `NEWS.md` has no section on the documentation
-      (README, two vignettes, website; 17m), the version, badges and `cran-comments.md` (17m, 17o, 17q), the
-      installed size 4,284 KB of 5,120 KB (17i, 17n).
+- [ ] **Phase 17b: review argument names before the first CRAN release** (READY, a decision session: 17b decides,
+      17c changes; R84; Effort M) -- the inventory is `docs/planning/cran-submission-plan.md` section 2.4; contract
+      section 6 and section 10 item 4: the copied functions keep nprcgenekeepr's names, so
+      `findGeneration(id, sire, dam)` sits beside `kinship(id, fatherId, motherId)`; also whether `addIdRecords()`
+      should be exported. Each change is recorded as a divergence. 17a is DONE (S33: win-builder R-devel 398 s; R86:
+      17k opens with one more reading after 17j).
 
 - [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
       timing runs, Effort L, a guess; before the release, Phases 17g-17i of
@@ -191,9 +188,3 @@ issues).*
 - [ ] **`findPedigreeNumber()`'s speed** (READY, Effort M) -- 12.9 s for 100,000 animals, close to the square of the
       size (contract section 7); new work after the copy (contract section 10 item 5). A faster version here is a
       divergence from nprcgenekeepr: mirror it there or record it in `DIVERGENCE.md` (plan section 5).
-
-- [ ] **Review argument names before the first CRAN release** (READY after 17a: Phase 17b decides, 17c changes;
-      R84; Effort M) -- the inventory is `docs/planning/cran-submission-plan.md` section 2.4; contract section 6 and
-      section 10 item 4: the copied functions keep nprcgenekeepr's names, so
-      `findGeneration(id, sire, dam)` sits beside `kinship(id, fatherId, motherId)`; also whether `addIdRecords()`
-      should be exported. Each change is recorded as a divergence.

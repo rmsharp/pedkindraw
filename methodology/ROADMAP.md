@@ -19,7 +19,8 @@ hint, 15b the mate hint and 15c the converters passing hints on (S22-S24). Phase
 `?pedkindraw` (S26), 16b, the getting-started vignette (S27), and 16c, the drawing vignette (S29), after the
 legend item it needed (S28, R81); 16d, the speed vignette, is deferred until pedkindraw times itself (S30, R82);
 and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN submission, is planned (S32,
-`docs/planning/cran-submission-plan.md`) and next, starting with 17a (Planned, below).
+`docs/planning/cran-submission-plan.md`) and under way: 17a, the check time on win-builder, is done (S33); 17b is
+next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -35,9 +36,10 @@ and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN sub
 Scoped in the plan (section 4) and the API contract (`docs/planning/pedkindraw-api-contract.md` section 4); one
 session each unless marked. They follow the copy slices.
 
-- **Phase 17 (next), the CRAN submission:** planned (S32, `docs/planning/cran-submission-plan.md`, R83-R85) as
-  phases 17a-17q, about 17 to 22 sessions (a guess). First, 17a: the check time measured on win-builder R-devel,
-  where CRAN's 10-minute limit applies (estimated 615-688 s from this Mac). Before the release, by Mark's picks
+- **Phase 17 (under way), the CRAN submission:** planned (S32, `docs/planning/cran-submission-plan.md`, R83-R86)
+  as phases 17a-17q, about 18 to 22 sessions (a guess). 17a is done (S33): win-builder R-devel read 398 s, under
+  the 540 s target, with its tests on an idle machine, so whether to cut tests on CRAN is decided by one more
+  reading after 17j (R86). Next, 17b, the argument-name review. Before the release, by Mark's picks
   (R84): the argument-name review (contract section 6), the "Select by id" and legend-label fixes, a document of
   what kinship2 or Pedixplorer can do that pedkindraw cannot, pedkindraw's own timing runs and the speed and
   size-limits vignette (R82; the draft built to R79 is on the branch `draft/speed-vignette`), and tests for full
@@ -207,6 +209,11 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17a, the check time on win-builder (pedkindraw S33, 2026-11-17).** Mark approved Claude uploading the
+  package to win-builder R-devel, where CRAN's 10-minute limit applies. The check took 398 s, under the 540 s
+  target and far under S32's estimate of 615-688 s, with only the new-submission NOTE. Its tests ran on an idle
+  machine, so a busy day could read about 470-550 s; Mark chose to decide any cut of the tests run on CRAN after the
+  last tests are written (17j), by one more reading.
 - **Phase 17's plan, the CRAN submission (pedkindraw S32, 2026-11-16).** Mark asked that the release plan weigh
   the other open work, nprcgenekeepr's recent and ongoing changes, and the comparison with kinship2 and
   Pedixplorer. Measured first: the check takes 181 s on this Mac, which puts it near CRAN's 10-minute limit on
