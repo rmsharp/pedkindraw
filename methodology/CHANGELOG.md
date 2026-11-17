@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-17 · [BL-Phase 17c3] S37: Phase 17c3, the pedigree first in `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()` and `hasBothParents()` (in progress)
+- **Change:** session claimed (Mark's pick "17c3: pedigree first (Recommended)" at the orient picker): strict TDD. Phase 0 reconcile: nothing to backfill (frontier `345c6fc` is HEAD, S36's close-out 2; no merges; S36's receipt complete, its ratchet results `5ddbb5b1aeb3` matching the results file); drift tool 91 functions, 10 differ, 0 without a row; nprcgenekeepr at `0b7afae51` (one uncommitted change to a file pedkindraw never copied), its log on the copied files exactly the 4 commits already in the copy, none on the four 17c3 files; dashboard 93/100; `pedkindraw.Rproj` untracked, left for Mark.
+- **Commit/PR:** the claim commit · **Session:** S37 · **Verified:** pending (close-out).
+
 ### 2026-11-17 · [BL-Phase 17c2] S36 push 2: `master` to GitHub at `7d4de5d` (RED, GREEN 1, GREEN 2, GREEN 3)
 - **Change:** `git push origin master` (`a78de5b..7d4de5d`); a package change, so both workflows ran: CI run `44191349985` 5/5 `success` at the first attempt (17 min); site run `44191349596` `success` (24 min). S36's close-out 1 and 2 after it are not pushed.
 - **Commit/PR:** none (push) · **Session:** S36 · **Verified:** `gh run view --json`.

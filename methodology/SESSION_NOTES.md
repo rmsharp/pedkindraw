@@ -112,6 +112,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S35's entries were removed in S3-S36 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 37 Did
+**Deliverable:** Phase 17c3, the pedigree first (`docs/planning/cran-submission-plan.md:428`; R89):
+`getProbandPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands, ...)`,
+`hasBothParents(ped, id)`, and the calls that pass both arguments by position; four `DIVERGENCE.md` rows; strict TDD
+(IN PROGRESS)
+**Started:** 2026-11-17 17:55 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17c3: pedigree first
+(Recommended)" (orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 35 Handoff Evaluation (by Session 36)
 **Score: 9/10.**
 - **What helped:** every step ran as written and every count held: the drift tool (91/6/0), nprcgenekeepr's log
