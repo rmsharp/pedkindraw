@@ -6,8 +6,8 @@
 \usage{
 kinship(
   id,
-  fatherId,
-  motherId,
+  sire,
+  dam,
   pdepth,
   sparse = FALSE,
   twinRelations = NULL,
@@ -18,14 +18,19 @@ kinship(
 \arguments{
 \item{id}{character vector of IDs for a set of animals.}
 
-\item{fatherId}{character vector or NA for the IDs of the sires for the set
+\item{sire}{character vector or NA for the IDs of the sires for the set
 of animals.}
 
-\item{motherId}{character vector or NA for the IDs of the dams for the set
+\item{dam}{character vector or NA for the IDs of the dams for the set
 of animals.}
 
 \item{pdepth}{integer vector indicating the generation number for each
-animal.}
+animal. Each animal's must be greater than its sire's and its dam's, as
+\code{findGeneration()}'s numbers are; otherwise \code{kinship()} stops,
+naming the first animal in \code{id}'s order that breaks the rule. This is
+the 4th argument, where kinship2's \code{kinship(id, dadid, momid, sex)}
+takes \code{sex}: see the section on names shared with kinship2 and
+Pedixplorer.}
 
 \item{sparse}{logical flag. If \code{TRUE}, the result is a sparse matrix
 of the Matrix package with the same values: a \code{ddiMatrix} when no two
@@ -83,6 +88,24 @@ Parents must be processed before their children, and then a child's
 kinship is just the average of the kinship values for his or her
 parents.
 }
+\section{Names shared with kinship2 and Pedixplorer}{
+
+kinship2 and Pedixplorer each export a \code{kinship()} too. Theirs takes a
+pedigree object, or the vectors \code{id}, \code{dadid}, \code{momid} and
+\code{sex}, and works out the generation numbers itself; this one takes
+\code{id}, \code{sire}, \code{dam} and \code{pdepth}, the generation
+numbers. Called the kinship2 way, with \code{sex} 4th, it stops whenever a
+sire's or dam's sex code is not below its offspring's, as in every family
+of kinship2's \code{sample.ped} and \code{minnbreast}. kinship2 also
+exports \code{bitSize()}, \code{findAvailAffected()},
+\code{findAvailNonInform()}, \code{findUnavailable()} and
+\code{ibdMatrix()}, names this package's functions have too. With both
+packages attached, a bare name calls the one attached last, so name the
+package: \code{pedkindraw::kinship()}. \code{\link{asPedFrame}()} turns a
+kinship2 pedigree or a Pedixplorer Pedigree into a list whose \code{ped}
+is the data frame this package's functions take.
+}
+
 \examples{
 ## Seven animals: C and D are full siblings, and so are F and G, D's
 ## offspring

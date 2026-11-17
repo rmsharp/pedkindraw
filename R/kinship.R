@@ -1,8 +1,13 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/kinship.R at nprcgenekeepr commit
-## baef1e12c, its clean-room rewrite (plan C2). Changes: help text only;
-## the function's code is unchanged. The twinRelations description no
+## baef1e12c, its clean-room rewrite (plan C2). Changes to the code (plan
+## Phase 17c1, pedkindraw S35; a DIVERGENCE.md row): the parent arguments are
+## sire and dam, were fatherId and motherId (R87), and the length message
+## names them; after the other input checks, kinship() stops when a known
+## parent's pdepth is not below its offspring's (R92). Changes to the help
+## text: the sire, dam and pdepth arguments, and a section on the names
+## kinship2 and Pedixplorer share (R91); the twinRelations description no
 ## longer points to an nprcgenekeepr planning document (the source's lines
 ## 40-42); the example types its own pedigree (the values of
 ## nprcgenekeepr's lacy1989Ped) instead of loading nprcgenekeepr (lines
@@ -24,12 +29,17 @@
 #'    parents.
 #'
 #' @param id character vector of IDs for a set of animals.
-#' @param fatherId character vector or NA for the IDs of the sires for the set
+#' @param sire character vector or NA for the IDs of the sires for the set
 #' of animals.
-#' @param motherId character vector or NA for the IDs of the dams for the set
+#' @param dam character vector or NA for the IDs of the dams for the set
 #' of animals.
 #' @param pdepth integer vector indicating the generation number for each
-#' animal.
+#' animal. Each animal's must be greater than its sire's and its dam's, as
+#' \code{findGeneration()}'s numbers are; otherwise \code{kinship()} stops,
+#' naming the first animal in \code{id}'s order that breaks the rule. This is
+#' the 4th argument, where kinship2's \code{kinship(id, dadid, momid, sex)}
+#' takes \code{sex}: see the section on names shared with kinship2 and
+#' Pedixplorer.
 #' @param sparse logical flag. If \code{TRUE}, the result is a sparse matrix
 #' of the Matrix package with the same values: a \code{ddiMatrix} when no two
 #' animals have a kinship, otherwise a \code{dgCMatrix}. If \code{FALSE}, the
@@ -71,6 +81,22 @@
 #'
 #' @return A kinship square matrix
 #'
+#' @section Names shared with kinship2 and Pedixplorer:
+#' kinship2 and Pedixplorer each export a \code{kinship()} too. Theirs takes a
+#' pedigree object, or the vectors \code{id}, \code{dadid}, \code{momid} and
+#' \code{sex}, and works out the generation numbers itself; this one takes
+#' \code{id}, \code{sire}, \code{dam} and \code{pdepth}, the generation
+#' numbers. Called the kinship2 way, with \code{sex} 4th, it stops whenever a
+#' sire's or dam's sex code is not below its offspring's, as in every family
+#' of kinship2's \code{sample.ped} and \code{minnbreast}. kinship2 also
+#' exports \code{bitSize()}, \code{findAvailAffected()},
+#' \code{findAvailNonInform()}, \code{findUnavailable()} and
+#' \code{ibdMatrix()}, names this package's functions have too. With both
+#' packages attached, a bare name calls the one attached last, so name the
+#' package: \code{pedkindraw::kinship()}. \code{\link{asPedFrame}()} turns a
+#' kinship2 pedigree or a Pedixplorer Pedigree into a list whose \code{ped}
+#' is the data frame this package's functions take.
+#'
 #' @references Lange K (1997). \emph{Mathematical and Statistical Methods for
 #' Genetic Analysis}. Springer, pp. 71-72: the kinship matrix.
 #' @references Sinnwell JP, Therneau TM, Schaid DJ (2014). "The kinship2 R
@@ -98,7 +124,7 @@
 # (a base matrix, or a Matrix ddiMatrix / dgCMatrix when sparse is TRUE),
 # by the recursion over generations, on the autosomes or the X chromosome,
 # with declared identical twins made identical after each round.
-kinship <- function(id, fatherId, motherId, pdepth, sparse = FALSE,
+kinship <- function(id, sire, dam, pdepth, sparse = FALSE,
                     twinRelations = NULL, chrtype = "autosome", sex = NULL) {
   if (!(isTRUE(sparse) || isFALSE(sparse))) {
     stop("sparse must be TRUE or FALSE", call. = FALSE)
@@ -110,10 +136,8 @@ kinship <- function(id, fatherId, motherId, pdepth, sparse = FALSE,
   if (is.null(pdepth) || !is.atomic(pdepth)) {
     stop("pdepth must be a vector of generation numbers", call. = FALSE)
   }
-  if (length(fatherId) != n || length(motherId) != n ||
-        length(pdepth) != n) {
-    stop("fatherId, motherId and pdepth must each be as long as id",
-         call. = FALSE)
+  if (length(sire) != n || length(dam) != n || length(pdepth) != n) {
+    stop("sire, dam and pdepth must each be as long as id", call. = FALSE)
   }
   if (anyNA(pdepth)) {
     stop("pdepth must not be missing for any animal", call. = FALSE)
@@ -141,8 +165,21 @@ kinship <- function(id, fatherId, motherId, pdepth, sparse = FALSE,
     }
   }
 
-  father <- match(fatherId, id)
-  mother <- match(motherId, id)
+  father <- match(sire, id)
+  mother <- match(dam, id)
+  sireLate <- !is.na(father) & pdepth[father] >= pdepth
+  damLate <- !is.na(mother) & pdepth[mother] >= pdepth
+  late <- which(sireLate | damLate)
+  if (length(late) > 0L) {
+    i <- late[[1L]]
+    role <- if (sireLate[[i]]) "sire" else "dam"
+    parent <- if (sireLate[[i]]) father[[i]] else mother[[i]]
+    stop("pdepth must be greater for each animal than for its sire and ",
+         "dam: ", id[[i]], " has ", pdepth[[i]], " and its ", role, " ",
+         id[[parent]], " has ", pdepth[[parent]], " (pdepth is the 4th ",
+         "argument, generation numbers such as findGeneration() gives, not ",
+         "sex)", call. = FALSE)
+  }
   diagonal <- seq(1.0, by = n + 1.0, length.out = n)
   kin <- matrix(0.0, n, n)
   u <- numeric(n)
