@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S34
+date: 2026-11-17
+status: pending
+active_task: Phase 17b, the argument-name review (a decision session): a picker per item of the CRAN plan's section 2.4 (parent argument names, the pedigree argument's name, argument order, exporting addIdRecords(), export names shared with nprcgenekeepr, kinship2 and Pedixplorer); Mark's picks become rulings, the contract's sections 4 and 6 updated; Mark's pick "17b: name review (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S33
 date: 2026-11-17
 status: complete

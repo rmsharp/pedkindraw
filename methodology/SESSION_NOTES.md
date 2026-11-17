@@ -97,6 +97,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S32's entries were removed in S3-S33 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 34 Did
+**Deliverable:** Phase 17b, the argument-name review (`docs/planning/cran-submission-plan.md:341`, inventory
+section 2.4 at `:165`): a picker per item, Mark's picks become rulings, the contract's sections 4 and 6 say what
+changed, the plan records each change's inventory; a decision session, no code changes (IN PROGRESS)
+**Started:** 2026-11-17 13:29 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17b: name review (Recommended)"
+(orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 32 Handoff Evaluation (by Session 33)
 **Score: 9/10.**
 - **What helped:** every step ran as written. The drift tool and nprcgenekeepr's log gave exactly the expected

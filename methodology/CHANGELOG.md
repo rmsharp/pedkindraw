@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-17 · [BL-Phase 17b] S34: Phase 17b, the argument-name review (in progress)
+- **Change:** session claimed (Mark's pick "17b: name review (Recommended)" at the orient picker): a decision session, no code changes. Phase 0 reconcile: nothing to backfill (frontier `15c7627` is HEAD, S33's close-out 2; no merges; S33's receipt complete, its ratchet results `5ddbb5b1aeb3` match the saved file, 5/5); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `366899961` (its S1180), its log on the 79 copied files exactly the 4 commits already in the copy; dashboard 93/100; `pedkindraw.Rproj` untracked, left for Mark.
+- **Commit/PR:** the claim commit · **Session:** S34 · **Verified:** pending (close-out).
+
 ### 2026-11-17 · [BL-Phase 17a] S33 push 2: `master` to GitHub at `b8ff56b` (the 17a record and close-out 1)
 - **Change:** `git push origin master` (`eaff4a7..b8ff56b`); the push touched `docs/planning/`, so both workflows ran: CI run `44153786408` 5/5 `success` at the first attempt (20 min); site run `44153786342` `success` (3 min; no package change). S33's close-out 2 after it is not pushed.
 - **Commit/PR:** none (push) · **Session:** S33 · **Verified:** `gh run view --json`.
