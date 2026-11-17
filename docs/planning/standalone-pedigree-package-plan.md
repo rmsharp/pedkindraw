@@ -48,9 +48,10 @@ picture when there are two or more, R81; to be ported to nprcgenekeepr); Phase 1
 drawing vignette); Phase 16d deferred (pedkindraw S30, R82: the speed vignette waits until pedkindraw times itself;
 its draft on the branch `draft/speed-vignette`); Phase 16e DONE (pedkindraw S31: the website,
 <https://rmsharp.github.io/pedkindraw/>), so Phase 16 is DONE; Phase 17's plan DONE (pedkindraw S32:
-`docs/planning/cran-submission-plan.md`, R83-R85; phases 17a-17q).
-**Next:** Phase 17a, the check time on win-builder R-devel (`docs/planning/cran-submission-plan.md` section 6;
-Mark approves the upload).
+`docs/planning/cran-submission-plan.md`, R83-R85; phases 17a-17q); Phase 17a DONE (pedkindraw S33: win-builder
+R-devel 398 s, R86).
+**Next:** Phase 17b, the argument-name review, a decision session (`docs/planning/cran-submission-plan.md`
+section 6).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -200,6 +201,7 @@ Since then:
 | R83 | Phase 17's plan is pedkindraw's `docs/planning/cran-submission-plan.md` (S32), written to Mark's direction: "It looks the a plan for a CRAN release should include, at least, consideration of the other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw, and the comparison of pedkindraw with kinship2 and Pedixplorer." Its outline: what was measured (the check time by step, scaled to win-builder; static checks; Suggests in the tests; export names; version places; CI), each open backlog item before or after the release, nprcgenekeepr's changes and what the release changes for the drift rule, the comparison with kinship2 and Pedixplorer, then phases 17a-17q (each with DONE, commands, surface and session boundary), the decisions left to each phase's picker (D1-D10), a session map and the dragons. Mark's pick, "This outline (Recommended)", over the same content with the phases first | pedkindraw S32 | Mark |
 | R84 | Before the first CRAN release: the argument-name review (contract section 6; 17b, and 17c if it changes anything), the two drawing fixes ("Select by id" leaves out the `__jog_` routing points, 17d; the legend's "Same animal, again" label fits, 17e), the document of what kinship2 or Pedixplorer can do that pedkindraw cannot (17f), pedkindraw's own timing runs under a plan of their own and the speed vignette (R82's condition; 17g-17i), and tests for full coverage (17j). They come before the CRAN-mode test cut (17k) and the release steps (17l-17q), so the cut and the release measure the code that ships. A gap Mark chooses at 17f to close first becomes a phase of its own, before 17g. Mark's picks: all four offered ("Two drawing fixes (Recommended)", "Gaps document (Recommended)", "Timing runs + speed vignette", "Full test coverage") | pedkindraw S32 | Mark |
 | R85 | The check time is measured where CRAN's 10-minute limit is enforced before any test is cut: Phase 17a uploads the tree to win-builder R-devel (Mark approves the upload; the result is emailed to the maintainer), and the target is 540 s or less, 10% under CRAN's 600 s, as nprcgenekeepr's D4. Measured S32 on this Mac under load: the check 181 s, its tests 118 s, which nprcgenekeepr's ratio of 3.4-3.8 puts at 615-688 s on win-builder. Mark's pick, "Measure on win-builder first (Recommended)", over a local estimate only | pedkindraw S32 | Mark |
+| R86 | Whether CRAN-mode tests are cut (Phase 17k) is decided by one more win-builder R-devel reading of the tree after 17j, not by 17a's reading. Tests are skipped on CRAN only if that reading is over R85's 540 s; 17o's reading of 540 s or less still gates the submission. 17a's reading (S33, tarball from `eaff4a7`, `W1Ko4S0RDs2W`): 398 s, `Status: 1 NOTE` (R16's), its tests 286 s elapsed for 286 s of CPU, so on an idle machine; a busy day could read about 470-550 s, and 17b-17j add a guessed 10-40 s (`docs/planning/cran-submission-plan.md` section 2.1). Claude uploaded by FTP (D1: Mark's pick "I upload it via FTP (Recommended)"). Mark's pick, "Decide after 17j (Recommended)", over a small cut planned now or a second upload of the same tarball first | pedkindraw S33 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -878,7 +880,7 @@ the order and a guess of 17 to 22 sessions.
 | 17h | The timing runs (sessions set by 17g) | R82, R84 |
 | 17i | The speed vignette (Phase 16d returns) | R79, R82, R84 |
 | 17j | Tests for full coverage | R84 |
-| 17k | The CRAN-mode test time, if 17a and the additions require it | R85 |
+| 17k | The CRAN-mode test time: a win-builder reading after 17j, a cut only if over 540 s | R85, R86 |
 | 17l | Static hygiene and noSuggests | |
 | 17m | NEWS, the README, the version number | |
 | 17n | The full local gate; the tree freezes | |
@@ -893,6 +895,12 @@ tests without a guard, 7 of the 9 Suggests in R's own library; 49 words for the 
 22 of the 31 export names shared with nprcgenekeepr, 6 with kinship2, 1 with Pedixplorer; nprcgenekeepr 165 commits
 after `baef1e12c` (to `363137511`), none to the 79 copied files' sources after their copy commits. Mark picked the
 outline, all four open items before the release, and the win-builder measurement first.
+
+**Done 17a (pedkindraw S33; R86):** win-builder R-devel (r90914) read 398 s for the tarball built from `eaff4a7`
+(`W1Ko4S0RDs2W`), `Status: 1 NOTE` (R16's), the spelling step flagging nothing; tests 286 s, vignettes 18 s, R code
+16 s, examples 13 s, PDF manual 13 s. The same tarball took 208 s on this Mac at load 10-13, a ratio of 1.9 (2.3 for
+the tests' CPU time), so S32's 615-688 s estimate was high. The tests ran on an idle machine (elapsed equal to CPU),
+so a busy day could read about 470-550 s. Mark picked "Decide after 17j": 17k opens with one more reading.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

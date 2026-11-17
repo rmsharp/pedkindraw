@@ -3,7 +3,7 @@
 **Date:** 2026-11-16 · **Session:** pedkindraw S32 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 "Planning Sessions"; `methodology/workstreams/ARCHITECTURE_WORKSTREAM.md`). Nothing under `R/`, `tests/`, `man/`,
 `vignettes/`, `inst/` or `DESCRIPTION` changed.
-**Status:** written; no phase started. Next: Phase 17a.
+**Status:** Phase 17a DONE (S33: win-builder R-devel read 398 s, section 2.1; R86). Next: Phase 17b.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -34,6 +34,8 @@ CI passes on five jobs.
    min"). The whole check took 181 s here, 118 s of it tests. nprcgenekeepr measured win-builder at 3.4-3.8 times
    this machine, which gives 615-688 s, at or over the 600 s limit; nprcgenekeepr's own readings for nearly the
    same code spread from 284 to 617 s. Unsettled until measured where the limit applies: Phase 17a (R85).
+   **Measured (17a, S33):** win-builder R-devel read 398 s, 142 s under R85's 540 s, with its tests on an idle
+   machine; a busy day could read about 470-550 s. One more reading after 17j decides the cut (R86).
 2. **Five pieces of work Mark put before the release** (R84; section 3): the argument-name review (17b-17c), two
    drawing fixes in copied code (17d-17e), the gaps document (17f), pedkindraw's own timing runs and the speed
    vignette (17g-17i), and tests for full coverage (17j). Each adds code, tests or pages, so the test-time cut
@@ -47,8 +49,8 @@ CI passes on five jobs.
 the legend change S12 already ported; its work in progress touches no copied function. It needs watching, not
 work, unless it changes a copied function before the submission.
 
-**How many sessions:** about 17 to 22 (a guess; section 8): 17a-17o and 17q are sessions, 17h may be several,
-17k may be none, and 17p is Mark's action. The release follows the last of them.
+**How many sessions:** about 18 to 22 (a guess; section 8): 17a-17o and 17q are sessions, 17h may be several,
+17k is at least one reading (R86, S33; S32's guess was 17 to 22 with 17k possibly none), and 17p is Mark's action. The release follows the last of them.
 
 ---
 
@@ -90,6 +92,45 @@ estimate cannot say which side of 600 s the check falls: R85 measures it (17a).
 
 Six files already call `skip_on_cran()` in some tests. The Pedixplorer file runs on CRAN wherever Pedixplorer is
 installed (CRAN's machines carry Bioconductor packages for Suggests).
+
+**Measured on win-builder R-devel (Phase 17a, S33, 2026-11-17).** The tarball was built from `eaff4a7` by the
+recipe above. `R/`, `tests/`, `vignettes/`, `man/`, `inst/` and `DESCRIPTION` are identical to `d00ebda`, the code
+of S31's CI run. It is 1,382,525 B, SHA-256 `23386dc96ff7...`. It holds the 170 tracked files `.Rbuildignore`
+keeps, less `.Rbuildignore` itself, plus the 7 the build makes, compared by machine. Claude uploaded it by FTP to
+`ftp://win-builder.r-project.org/R-devel/` at 16:31 UTC (Mark's D1 pick: "I upload it via FTP (Recommended)").
+The result is `https://win-builder.r-project.org/W1Ko4S0RDs2W/` (removed after about 72 hours): R-devel r90914
+ucrt, Windows Server 2022, check started 16:40 UTC. Beside it is the same tarball checked on this Mac minutes
+earlier (`R CMD check --as-cran --timings`, load average 13.3 at the start, 10.0 at the end):
+
+| Step | win-builder R-devel | This Mac, same tarball | Ratio |
+|---|---:|---:|---:|
+| tests (`Running 'testthat.R'`), elapsed | 286 s | 136 s | 2.1 |
+| tests, CPU (user + system, `proc.time()`) | 286.4 s | 124.9 s | 2.3 |
+| re-building vignettes | 18 s | 10 s | 1.8 |
+| R code for possible problems | 16 s | under 10 s | |
+| examples (the process, elapsed) | 13 s (12.4 s) | 5.4 s | |
+| PDF manual | 13 s | under 10 s | |
+| **check time** | **398 s** | **208 s** (wall) | **1.9** |
+| install | 11 s | not timed | |
+
+- `Status: 1 NOTE`, R16's lines only (Maintainer, "New submission"). The incoming spelling step runs on
+  win-builder (it flagged "de" in nprcgenekeepr's NOTE) and flagged no word here, as section 2.2 found.
+- The tests read `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 5400 ]`. Eight skips are this Mac's `skip_on_cran()` ones; the
+  ninth is `test_diagramSolverEquivalence.R:318` ("this R does not use its own math library (Rblas)"), which passes
+  here (5,401). The output also carries three `message()` lines from the copied
+  `test_positionMatingUnitForest.R` (`:2078`, `:2178`, `:2530`); the check does not flag test output.
+- **The tests ran on an idle machine:** 286.3 s elapsed for 286.4 s of CPU (264.3 user, 22.0 system).
+  nprcgenekeepr's slower reading of one tarball (617 s against 520 s, its section 3.6) ran its tests at 1.54 s
+  elapsed per CPU second. So 398 s is near this code's fastest reading, not its middle. The tests stretched by 1.54
+  give about 550 s; the whole check scaled by 617/520 gives about 470 s.
+- S32's estimate of 615-688 s, from nprcgenekeepr's ratio of 3.4-3.8, was high. For this package the ratio is 1.9
+  against this Mac at load 10-13, and 2.3 for the tests' CPU time.
+- **Decision (R86; Mark's pick "Decide after 17j (Recommended)"):** 17k is not needed on this reading. 17b-17j will
+  add a guessed 10-40 s on win-builder: 17j's coverage tests the most, then 17i's speed vignette in the rebuild;
+  17c's renames add nothing, and 17f's document is not in the package. With them the check would read about
+  410-440 s on an idle machine and 480-590 s on a busy one. So 17k opens with one more win-builder reading of the
+  tree after 17j (Mark approves the upload) and skips slow tests on CRAN only if that reading is over 540 s. 17o's
+  reading of 540 s or less still gates the submission.
 
 ### 2.2 Static checks
 
@@ -293,6 +334,9 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
   reading near 540 s is uploaded again before it decides anything.
 - **Outward action:** an upload sends the package to win-builder and an email to the maintainer; Mark approves it
   in the session.
+- **Done (S33):** 398 s on win-builder R-devel (`W1Ko4S0RDs2W`), tarball from `eaff4a7`, `Status: 1 NOTE`
+  (R16's); its tests ran on an idle machine, so a busy day could read about 470-550 s. 17k is decided by one more
+  reading after 17j (R86). Section 2.1 has the steps and the reasoning.
 
 ### Phase 17b. The argument-name review (a decision session)
 
@@ -375,13 +419,16 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
   new tests' CRAN-mode time recorded for 17k.
 - **Surface:** this Mac (covr).
 
-### Phase 17k. The CRAN-mode test time (only if 17a and the additions require it)
+### Phase 17k. The CRAN-mode test time (a reading after 17j; a cut only if it requires one, R86)
 
-- **Work:** the files of section 2.1's table, re-measured after 17c-17j, are skipped on CRAN (D6) until the
-  estimate meets R85's 540 s with a margin; CI and local runs still run every test (`NOT_CRAN=true`). Every export
-  keeps at least one test that runs on CRAN.
-- **DONE:** a win-builder R-devel reading of 540 s or less (an upload, Mark's approval); the list of skipped files
-  and why; each export called by a test that runs in CRAN mode (a check that fails otherwise).
+- **Work:** first, one win-builder R-devel reading of the tree after 17j (Mark approves the upload; R86), its tests'
+  elapsed time read against their CPU time (`examples_and_tests/tests/testthat.Rout`, `proc.time()`). If it reads
+  540 s or less, 17k is DONE with that reading and nothing is skipped. If over, the files of section 2.1's table,
+  re-measured after 17c-17j, are skipped on CRAN (D6) until the estimate meets R85's 540 s with a margin; CI and
+  local runs still run every test (`NOT_CRAN=true`). Every export keeps at least one test that runs on CRAN.
+- **DONE:** a win-builder R-devel reading of 540 s or less (an upload, Mark's approval); if anything was cut, the
+  list of skipped files and why, and each export called by a test that runs in CRAN mode (a check that fails
+  otherwise).
 - **Surface:** win-builder R-devel; one reading again.
 
 ### Phase 17l. Static hygiene and noSuggests
@@ -474,7 +521,7 @@ log (section 4.4). "Surface" names where DONE is shown and what that place canno
 | 17h | timing runs | 17g | set by 17g |
 | 17i | speed vignette | 17h | 1 |
 | 17j | full coverage | the code final (17c-17i) | 1-2 |
-| 17k | CRAN-mode test time | 17j | 0-2 |
+| 17k | a reading, then the test cut if needed (R86) | 17j | 1-2 |
 | 17l | hygiene, noSuggests | 17k | 1 |
 | 17m | NEWS, README, version | 17l | 1 |
 | 17n | full local gate | 17m | 1 |
@@ -505,7 +552,9 @@ From nprcgenekeepr's plan (its section 8), as they apply here:
 6. **`_R_CHECK_DEPENDS_ONLY_` cannot hide R's own library:** 7 of the 9 Suggests are there (section 2.3).
 7. **A copied tree runs its `.Rprofile`:** set `RENV_CONFIG_AUTOLOADER_ENABLED=false` (S31's gotcha too).
 8. **win-builder's reading spreads:** 284-617 s for nearly the same code in nprcgenekeepr; upload again before
-   acting on one reading near the target.
+   acting on one reading near the target. A reading far from the target can mislead too: pedkindraw's 398 s (S33)
+   ran its tests on an idle machine (elapsed equal to CPU), so read the tests' `proc.time()` in
+   `examples_and_tests/tests/testthat.Rout` before trusting a margin.
 
 pedkindraw's own:
 
