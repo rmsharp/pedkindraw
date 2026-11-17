@@ -66,6 +66,16 @@ why.
   [`hasBothParents()`](https://rmsharp.github.io/pedkindraw/reference/hasBothParents.md)
   and
   [`getIdsWithOneParent()`](https://rmsharp.github.io/pedkindraw/reference/getIdsWithOneParent.md).
+- New: the pedigree argument is `ped` in
+  [`getParents()`](https://rmsharp.github.io/pedkindraw/reference/getParents.md),
+  [`getOffspring()`](https://rmsharp.github.io/pedkindraw/reference/getOffspring.md)
+  and
+  [`getIdsWithOneParent()`](https://rmsharp.github.io/pedkindraw/reference/getIdsWithOneParent.md),
+  in the place of nprcgenekeepr’s `pedSourceDf` and `uPed`, and
+  `addBackSecondParents(trimmedPed, ped)` calls the trimmed pedigree
+  `trimmedPed`, in the place of `uPed`. A call that passes the pedigree
+  by position is unchanged; one that names the old argument stops with
+  “unused argument”.
 - New:
   [`familyCheck()`](https://rmsharp.github.io/pedkindraw/reference/familyCheck.md)
   checks family ids against the family trees the sires and dams form.

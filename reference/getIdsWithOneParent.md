@@ -5,12 +5,12 @@ Get ids of animals with only one parent
 ## Usage
 
 ``` r
-getIdsWithOneParent(uPed)
+getIdsWithOneParent(ped)
 ```
 
 ## Arguments
 
-- uPed:
+- ped:
 
   a trimmed pedigree dataframe with uninformative founders removed.
 

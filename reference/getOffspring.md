@@ -5,12 +5,12 @@ Get offspring to corresponding animal IDs provided
 ## Usage
 
 ``` r
-getOffspring(pedSourceDf, ids)
+getOffspring(ped, ids)
 ```
 
 ## Arguments
 
-- pedSourceDf:
+- ped:
 
   dataframe with pedigree structure having at least the columns id,
   sire, and dam. The pedigree is the first argument, unlike

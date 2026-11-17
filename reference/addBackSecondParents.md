@@ -1,20 +1,20 @@
 # Add back second parents to a trimmed pedigree
 
 Uses the `ped` dataframe, which has full complement of parents and the
-`uPed` dataframe, which has all uninformative parents removed to add
-back single parents to the `uPed` dataframe where one parent is known.
-The parents are added back to the pedigree as an ID record with NA for
-both sire and dam of the added back ID.
+`trimmedPed` dataframe, which has all uninformative parents removed to
+add back single parents to the `trimmedPed` dataframe where one parent
+is known. The parents are added back to the pedigree as an ID record
+with NA for both sire and dam of the added back ID.
 
 ## Usage
 
 ``` r
-addBackSecondParents(uPed, ped)
+addBackSecondParents(trimmedPed, ped)
 ```
 
 ## Arguments
 
-- uPed:
+- trimmedPed:
 
   a trimmed pedigree dataframe with uninformative founders removed.
 
