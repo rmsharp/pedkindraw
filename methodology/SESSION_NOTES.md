@@ -108,6 +108,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S34's entries were removed in S3-S35 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 36 Did
+**Deliverable:** Phase 17c2, the pedigree argument is `ped` (`docs/planning/cran-submission-plan.md:416`; R88):
+`getParents(ped, ids)` and `getOffspring(ped, ids)` (were `pedSourceDf`), `getIdsWithOneParent(ped)` and
+`addBackSecondParents(trimmedPed, ped)` (were `uPed`); names only, positions unchanged; four `DIVERGENCE.md` rows;
+strict TDD (IN PROGRESS)
+**Started:** 2026-11-17 16:00 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17c2: rename to ped
+(Recommended)" (orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 34 Handoff Evaluation (by Session 35)
 **Score: 8/10.**
 - **What helped:** steps 1 and 3 ran as written: the drift tool (91/5/0), nprcgenekeepr's log (the same 4

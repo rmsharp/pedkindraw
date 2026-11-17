@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S36
+date: 2026-11-17
+status: pending
+active_task: Phase 17c2, the pedigree argument is ped (strict TDD; R88): getParents(ped, ids) and getOffspring(ped, ids) for pedSourceDf, getIdsWithOneParent(ped) and addBackSecondParents(trimmedPed, ped) for uPed, in the same positions; four DIVERGENCE.md rows; Mark's pick "17c2: rename to ped (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S35
 date: 2026-11-17
 status: complete
