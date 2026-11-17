@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S33
+date: 2026-11-17
+status: pending
+active_task: Phase 17a, the check time on win-builder R-devel (R85): today's tarball uploaded with Mark's approval (D1), the emailed reading recorded in the plan's section 2.1, whether 17k is needed against 540 s; Mark's pick "Phase 17a: win-builder time (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S32
 date: 2026-11-16
 status: complete

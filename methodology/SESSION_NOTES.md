@@ -93,6 +93,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S31's entries were removed in S3-S32 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 33 Did
+**Deliverable:** Phase 17a, the check time on win-builder R-devel (`docs/planning/cran-submission-plan.md:283`, R85):
+build today's tarball, upload it with Mark's approval (D1), record the emailed reading in the plan's section 2.1 and
+say whether 17k is needed against 540 s; a measurement, no R code or tests change (IN PROGRESS)
+**Started:** 2026-11-17 10:22 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 17a: win-builder time
+(Recommended)" (orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 31 Handoff Evaluation (by Session 32)
 **Score: 9/10.**
 - **What helped:** the orient picker's options with their backlog lines; the steps in order (drift tool,

@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-17 · [BL-Phase 17a] S33: Phase 17a, the check time on win-builder R-devel (in progress)
+- **Change:** session claimed (Mark's pick "Phase 17a: win-builder time (Recommended)" at the orient picker): a measurement, no R code or tests change. Phase 0 reconcile: nothing to backfill (frontier `a4e940e` is HEAD, S32's close-out 2; no merges; S32's receipt complete, its ratchet results `42b564bc4c70` match the saved file, 4/5, 1 unmeasured); drift tool 91 functions, 5 differ, 0 without a row; nprcgenekeepr at `3c87a17a9` (169 commits after `baef1e12c`; its S1179 in progress, uncommitted test files not copied here), its log on the 79 copied files exactly the 4 commits already in the copy; dashboard 93/100; `pedkindraw.Rproj` untracked, left for Mark.
+- **Commit/PR:** the claim commit · **Session:** S33 · **Verified:** pending (close-out).
+
 ### 2026-11-16 · [BL-Phase 17] S32 push 2: `master` to GitHub at `53afbfe` (the plan and close-out 1)
 - **Change:** `git push origin master` (`ba811e7..53afbfe`); the push touched `docs/planning/`, so both workflows ran: CI run `43990847828` 5/5 `success` at the first attempt (19 min); site run `43990847843` `success` (about 3 min; the site carries no package change). S32's close-out 2 after it is not pushed.
 - **Commit/PR:** none (push) · **Session:** S32 · **Verified:** `gh run view --json`.
