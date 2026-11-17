@@ -27,6 +27,15 @@ code, `DIVERGENCE.md` in the repository says how and why.
 
 * `kinship()` computes the kinship matrix, dense or sparse; identical twins get
   the kinship of an animal with itself.
+* New: `kinship()`'s parent arguments are `sire` and `dam`, in the places of
+  nprcgenekeepr's `fatherId` and `motherId`, and it stops when a known sire's
+  or dam's generation number (`pdepth`) is not below its offspring's, naming
+  the animal. Before, kinship2's call form `kinship(id, dadid, momid, sex)`
+  gave a wrong matrix with no error, taking the sex codes for generation
+  numbers. `makePedigreeMatingLayout()`, unless given a `kinshipMatrix`,
+  passes the pedigree's `gen` column to `kinship()`, so it stops the same way.
+  The help page and the README name the functions kinship2 and Pedixplorer
+  also export.
 * New: `ibdMatrix()` builds an IBD matrix from pairs of ids and their values,
   and `findUnrelated()` finds a set of unrelated genotyped animals.
 

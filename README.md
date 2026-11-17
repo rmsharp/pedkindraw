@@ -92,6 +92,15 @@ identical twins I and J have 0.5, as each has with itself. K, an
 offspring of H and I, is inbred: its coefficient with itself is (1 +
 0.0625) / 2 = 0.53125.
 
+pedkindraw’s `kinship()` takes `id`, `sire`, `dam` and `pdepth`, the
+generation numbers. kinship2 and Pedixplorer each export a `kinship()`
+too, which takes a pedigree object or the vectors `id`, `dadid`, `momid`
+and `sex`; called that way, with sex codes 4th, pedkindraw’s stops
+whenever a sire’s or dam’s code is not below its offspring’s. kinship2
+also exports `bitSize()`, `findAvailAffected()`, `findAvailNonInform()`,
+`findUnavailable()` and `ibdMatrix()`. With both packages attached, name
+the package: `pedkindraw::kinship()`.
+
 ``` r
 layout <- makePedigreeMatingLayout(ped, twinRelations = twins)
 diagram <- drawPedigreeDiagram(layout)
