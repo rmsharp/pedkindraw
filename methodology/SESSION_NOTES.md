@@ -10,88 +10,88 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission, is under way (`docs/planning/cran-submission-plan.md`). 17a DONE (S33),
-17b DONE (S34: seven rulings, R87-R93, no code changed). Next: **Phase 17c1, `kinship()`, strict TDD**
-(`docs/planning/cran-submission-plan.md:394`; inventory section 2.4, its "Decided" table at `:193`;
-`methodology/BACKLOG.md:11`): rename `fatherId`/`motherId` to `sire`/`dam` in the same positions (R87); stop with
-a plain message when a known parent's `pdepth` is not below its offspring's (R92); the help says the 4th argument is
-`pdepth`, not kinship2's `sex`, and the help and the README say which names kinship2 and Pedixplorer share (R91).
-One `DIVERGENCE.md` row. 17c2 (the pedigree argument's name, R88) and 17c3 (the pedigree first, R89) follow, in
-that order (R93).
+17b DONE (S34), 17c1 DONE (S35: `kinship(id, sire, dam, pdepth, ...)` and its `pdepth` check). Next: **Phase
+17c2, the pedigree argument is `ped`, strict TDD** (`docs/planning/cran-submission-plan.md:416`; R88 at `:205`;
+`methodology/BACKLOG.md:11`): `getParents(ped, ids)` and `getOffspring(ped, ids)` (were `pedSourceDf`),
+`getIdsWithOneParent(ped)` (was `uPed`), `addBackSecondParents(trimmedPed, ped)` (was `uPed`). Names only; the
+positions stay, so no caller changes (S34: 24 calls, none by name). Four `DIVERGENCE.md` rows. 17c3 (the pedigree
+first, R89) follows (R93).
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker** (4 options at most, "Other" for hold): 17c1 (recommended: the plan's order, R93); 17d or 17e,
-the drawing fixes, which need 17b only (none of the functions R87-R89 change is in `R/drawPedigreeDiagram.R`; the
-session map's S34 paragraph, `docs/planning/cran-submission-plan.md:586`).
+**The orient picker** (4 options at most, "Other" for hold): 17c2 (recommended: the plan's order, R93); 17d or 17e,
+the drawing fixes, which need 17b only (none of the R87-R89 functions is in `R/drawPedigreeDiagram.R`).
 **Session boundary:** one deliverable. **Priority:** HIGH (the plan's next phase).
 
 ### What You Must Do
-1. Orient; drift tool (expect 91 functions, 5 differ, all with rows); nprcgenekeepr's log on every copied file:
-   `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R
-   tests/testthat/*.R)` printed exactly 4 commits at S34 (`4283e3502`, `a85311021`, `392dd347e`, `471589138`, all
-   already in the copy; nprcgenekeepr at `366899961`). Any other line is a change to a copied file: plan section
-   4.4 and R37.
-2. Push S34's close-out 2 commit with the session's first push (methodology only: no run starts).
-3. 17c1 before RED (Learnings 15, 17, 18): `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- R/kinship.R
-   tests/testthat/test_kinship.R tests/testthat/test_kinshipMemoryEquivalence.R`; re-run the parse of `kinship(`
-   calls (recipe in Gotchas; expect 43 calls, 1 naming `fatherId`/`motherId`, the copied C13 test). Draft the
-   check and its typed cases in a scratch copy and run them before RED: a dam at the same `pdepth` as its
-   offspring; a sire above; founders at 0; a parent named but not in `id` (ignored: `match()` gives `NA`); MZ twins
-   (same parents, same depth: must pass); X chromosome with `sex`. Time the kinship2 cases: the sex-codes call
-   stops cheaply, but `findGeneration()` plus `kinship()` on all 426 `minnbreast` families costs more, and CRAN's
-   test time matters (R86); put a subset or `skip_on_cran()` in the pre-RED picker with the measured seconds.
-   Also a scope question for that picker: a NEWS line now, or in 17m.
-4. RED: the copied C13 test (`tests/testthat/test_kinship.R:238`-`:252`) asks for `sire` and `dam` (its file
-   header names the change, as Learning 10 does); the three expected messages
-   (`tests/testthat/test_kinshipMemoryEquivalence.R:74`-`:76`); the new check's tests. GREEN: `R/kinship.R` (the
-   signature `:101`, `@param` `:27`/`:29`, the length check and its message `:113`-`:116`, `match()` `:144`-`:145`,
-   the new check after the MZ twins' check `:134`-`:136`), its header `:3`-`:6` (no longer "help text only"),
-   `roxygen2::roxygenise()`, `README.Rmd` then `rmarkdown::render("README.Rmd")`, a `DIVERGENCE.md` row (columns at
-   `DIVERGENCE.md:12`; nprcgenekeepr commit `baef1e12c`). Then 17c's DONE list (plan `:407`), the fidelity tool
-   included: its `kinship()` calls pass the parents by position and `findGeneration()`'s numbers (or founders at
-   0), so it should stay exit 0.
+1. Orient; drift tool (expect 91 functions, **6** differ, all with rows: `kinship()` is the 6th); nprcgenekeepr's
+   log on every copied file: `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from
+   nprcgenekeepr' R/*.R tests/testthat/*.R)` printed exactly 4 commits at S35 (`4283e3502`, `a85311021`,
+   `392dd347e`, `471589138`, all already in the copy; nprcgenekeepr at `7806ae72e`). Any other line is a change to
+   a copied file: plan section 4.4 and R37.
+2. Push S35's two close-out commits (`94024bc` and close-out 2) with the session's first push. They touch
+   `docs/planning/`, so **both workflows run** (S34's handoff said a close-out push starts none; its close-out 2 had
+   edited the plan).
+3. 17c2 before RED (Learnings 15, 17, 18): `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- R/getParents.R
+   R/getOffspring.R R/getIdsWithOneParent.R R/addBackSecondParents.R` and their test files (0 lines at S35);
+   re-parse the calls to the four (recipe in Gotchas; S34: 24 calls, none naming `pedSourceDf` or `uPed`);
+   `git grep -n -w -e pedSourceDf -e uPed -- R man tests tools vignettes README.Rmd` (35 lines in 8 files at S35:
+   the 4 R files and their 4 pages, none in tests). **Then run the whole suite against a scratch copy with the
+   renames applied** (dragon 18: S35's draft found a test no inventory named). Pre-RED picker: where the
+   `expect_named(formals(getIdsWithOneParent), "ped")` test goes, since there is no `test_getIdsWithOneParent.R`
+   (in `test_addBackSecondParents.R`, which reaches it, or a new file).
+4. RED: in `test_getParents.R`, `test_getOffspring.R`, `test_addBackSecondParents.R` (and the chosen home for
+   `getIdsWithOneParent()`), `expect_named(formals(f), ...)` and a call that names the new argument, each equal to
+   the call by position; each copied test file's header names the change (Learning 10). GREEN, at most 5 files a
+   commit: e.g. GREEN 1 `R/getParents.R` (`:11` `@param`, `:28`-`:33`), `R/getOffspring.R` (`:24`-`:29`; its
+   `@param` comes from `@inheritParams getParents`, `:10`), their two pages and two `DIVERGENCE.md` rows; GREEN 2
+   `R/getIdsWithOneParent.R` (`:10`, `:27`-`:29`), `R/addBackSecondParents.R` (`:11`-`:16`, `:38`-`:55`; its call
+   `getIdsWithOneParent(uPed)` by position stays one), their pages and two rows. Each file's header `:4` ("Changes:
+   help text only") is rewritten. Then 17c's DONE list (plan `:420`), the fidelity tool and `R CMD check` included.
 
 ### Gotchas
-- **Count what a change breaks by parsing, not by text (S34; plan dragon 16).** Recipe: parse each file in `R/`,
-  `tests/`, `tools/`; `tools::Rd2ex()` each `man/*.Rd` for the examples; `knitr::purl(documentation = 0)` the README
-  and each vignette; walk each parse tree and, for each call to the function, record which arguments pass by
-  position (skip the empty symbol before recursing, or R errors "argument is missing"). Two traps: record the
-  `pkg::` prefix before stripping it (S34's first count took kinship2's 3 `kinship()` calls for pedkindraw's: the
-  picker said 45 of 46, the record says 42 of 43), and the fidelity tool calls through `fn("name")(...)`, which a
-  parse for the name does not see: `grep -n 'fn("' tools/compareResultsWithNprcgenekeepr.R` (`:268` passes
-  `hasBothParents` bare to `lapply()`, naming `ped`).
-- **zsh does not split an unquoted variable:** `P="R tests"; git grep x -- $P` searches one path named "R tests"
-  and finds nothing (S34's first inventory read 0 everywhere). Use `bash -c '...'` or write the paths out.
-  `$(...)` is split, so step 1's command works as written.
-- **`kinship()`'s silent wrong answer is live until 17c1 (R92):** kinship2's positional `kinship(id, dadid, momid,
-  sex)` takes `sex` as `pdepth`. `minnbreast`'s `sex` has 1,761 `NA`: code them 3 (kinship2's unknown), or the call
-  stops on "pdepth must not be missing for any animal" before the new check. kinship2 is a Suggests:
-  `skip_if_not_installed("kinship2")`.
-- **The fidelity tool's `kinshipErrors` cases** compare error messages with nprcgenekeepr's: the new check must come
-  after every existing input check (plan `:398`), or a case that now stops earlier changes its message.
+- **Count what a change breaks by parsing (plan dragon 16).** Parse `R/`, `tests/`, `tools/`; `tools::Rd2ex()` each
+  `man/*.Rd`; `knitr::purl(documentation = 0)` the README and vignettes. Walk each tree by index and skip the empty
+  argument, or R stops "argument is missing" (S35 hit it again): `x <- as.list(e); for (k in seq_along(x)) { if
+  (is.name(x[[k]]) && !nzchar(as.character(x[[k]]))) next; walk(x[[k]]) }`. Record `pkg::` before stripping it;
+  read the fidelity tool's `fn("name")(...)` calls by hand
+  (`grep -n 'fn("' tools/compareResultsWithNprcgenekeepr.R`).
+- **A scratch copy runs without touching renv's project:** `git archive HEAD | tar -x -C <scratch>`, then from the
+  scratch folder `env -u RENV_PROJECT R_LIBS=<lib> R_LIBS_USER=<lib> Rscript --no-init-file ...` (`<lib>` is
+  `renv::paths$library()`; `--no-init-file` skips the copy's `.Rprofile`, which would start renv there). S35 ran
+  the whole suite this way against the drafted check (4 min) and found `test_maleLeftDuplicateMate.R`.
+- **Old fixtures can be wrong:** `tests/testthat/fixtures/smallPed.rds`'s `gen` is wrong in 8 of 17 animals
+  (founders B, E, J, K, N at 1 and O at 2, not 0; L and M in their sire's generation). Only
+  `test_maleLeftDuplicateMate.R` now computes it; 12 other test and helper files name `smallPed`, and with the
+  check in place none of them stops (S35's suite). A port of R92 to nprcgenekeepr needs the same line there.
+- **Render the README after installing the tree** (the README's own comment): `R CMD INSTALL -l <lib> .`, then
+  `rmarkdown::render("README.Rmd")`; renv's installed copy predated `checkPedigree()` and the render stopped. Count
+  exports on `pkgload::load_all()`, not on the installed copy (it reported 1 name shared with kinship2, not 6).
+- **`kinship()` now stops what was silently wrong before:** kinship2's call form with numeric sex codes, an `NA`
+  id (every unknown parent matched it), a character `pdepth` past 9 ("10" < "9" as text). A factor `pdepth` stops
+  as before ("'max' not meaningful for factors") but now warns twice first. `makePedigreeMatingLayout()` stops the
+  same way on a `gen` column out of order, unless given a `kinshipMatrix`.
 - **The sire/dam words gate** (`user-facing-sire-dam-words`) reads `R/`, `man/`, the README, NEWS and vignettes for
-  husband/wife; R87's text keeps to sire, dam, mate, mating. "father"/"mother" are not in the gate, but S23's
-  vocabulary ruling covers them too.
-- **Carried:** `CLAUDE.md` is over its 28,000 B budget (30,795 B; S23-S34 added nothing: learnings go here and in
-  the plan's dragons); no English hunspell dictionary on this Mac; R's own library holds 7 of the 9 Suggests; count
-  copied files by the header's capitalized "Copied from nprcgenekeepr" (79); the suite gate's 300 s limit fails
-  under load and counts warnings, not failures (tally "0 failed" by hand); both workflows run on any push beyond
-  `CLAUDE.md` and `methodology/**`; the copied `test_positionMatingUnitForest.R` prints three `message()` lines
-  (17l); `pedkindraw.Rproj` untracked, left for Mark.
-- **Times on this Mac:** `R CMD build` 18 s; `R CMD check --as-cran` 181-208 s under load; suite 4.3 min;
-  `quality_ratchet.py --run` about 5 min; CI 15-20 min; the site workflow 3 min. The scratch build and check
-  recipe is in the plan's section 2.1 and S33's receipt.
+  husband/wife. "father"/"mother" are outside it, but S23's ruling covers them: `R/kinship.R:66`'s copied help
+  still says a male's X comes "from his mother"; `kinship()`'s locals `father`/`mother` stay (Mark's S35 REFACTOR
+  pick: smaller port).
+- **Carried:** `CLAUDE.md` is over its 28,000 B budget (S23-S35 added nothing: learnings go here and in the plan's
+  dragons, 18-19 from S35); no English hunspell dictionary on this Mac; R's own library holds 7 of the 9 Suggests;
+  count copied files by the header's capitalized "Copied from nprcgenekeepr" (79); the suite gate's 300 s limit
+  fails under load and counts warnings, not failures (tally "0 failed" by hand); the copied
+  `test_positionMatingUnitForest.R` prints three `message()` lines (17l); `pedkindraw.Rproj` untracked, Mark's.
+- **Times on this Mac (S35):** suite 248-258 s; `R CMD build` plus `check --as-cran` 184 s (tests 111 s); the
+  fidelity tool 213 s; `quality_ratchet.py --run` about 5 min; CI 15-20 min; the site workflow 3 min.
 
 ### Key files
-- `docs/planning/cran-submission-plan.md:6` (status), `:167` (2.4), `:193` ("Decided", the inventory table at
-  `:201`), `:211` (the 9 `DIVERGENCE.md` rows), `:368` (17b, Done `:378`), `:386` (17c; 17c1 `:394`, 17c2 `:403`,
-  17c3 `:405`, DONE `:407`), `:548` (D2), `:560` (8, session map; 17c1 `:566`), `:592` (9, dragons 16-17 at the end).
-- `docs/planning/standalone-pedigree-package-plan.md:53` (Next), `:205`-`:211` (R87-R93), `:882` (17c1-17c3 rows),
-  `:914` (Done 17b).
-- `docs/planning/pedkindraw-api-contract.md:106` (section 4's review paragraph), `:118`-`:129` (4.1's new
-  signatures), `:145` (`kinship()`, 4.2), `:288` (section 6, S34), `:351` (10, item 4).
-- `R/kinship.R:3` (header), `:101` (signature), `:115` (the message), `:118`-`:136` (input checks), `:144`
-  (`match()`), `:165` (the generation loop that makes `pdepth`'s order matter);
-  `tests/testthat/test_kinship.R:241`; `tests/testthat/test_kinshipMemoryEquivalence.R:74`; `README.Rmd:84`, `:145`;
-  `DIVERGENCE.md:12`; `methodology/BACKLOG.md:11` (17c1), `:19` (17c2), `:23` (17c3).
+- `docs/planning/cran-submission-plan.md:6` (status), `:168` (2.4), `:194` ("Decided"; table `:202`, R88 `:205`),
+  `:212` (the 9 `DIVERGENCE.md` rows), `:387` (17c; 17c1 `:395`, its Done `:404`, 17c2 `:416`, 17c3 `:418`, DONE
+  `:420`), `:573` (8, session map; 17c2 `:580`), `:605` (9, dragons; 18 `:646`, 19 `:649`).
+- `docs/planning/standalone-pedigree-package-plan.md:54` (Next), `:207` (R88), `:884` (17c2 row), `:922` (Done
+  17c1).
+- `docs/planning/pedkindraw-api-contract.md:119`, `:120`, `:124`, `:126` (the four 17c2 signatures, old names
+  beside them), `:289` (section 6, S34).
+- `R/getParents.R:4`, `:11`, `:28`; `R/getOffspring.R:4`, `:10`, `:24`; `R/getIdsWithOneParent.R:4`, `:10`, `:27`;
+  `R/addBackSecondParents.R:4`, `:16`, `:38`, `:40`; `tests/testthat/test_getParents.R`, `test_getOffspring.R`,
+  `test_addBackSecondParents.R`; `DIVERGENCE.md:19` (the `kinship()` row, the newest); `methodology/BACKLOG.md:11`.
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -105,64 +105,59 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S33's entries were removed in S3-S34 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S34's entries were removed in S3-S35 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 35 Did
-**Deliverable:** Phase 17c1, `kinship()` (`docs/planning/cran-submission-plan.md:394`; R87, R91, R92): `sire` and
-`dam` for `fatherId` and `motherId`, a stop when a known parent's `pdepth` is not below its offspring's, the help
-and the README on the 4th argument and the shared names; one `DIVERGENCE.md` row; strict TDD (IN PROGRESS)
-**Started:** 2026-11-17 14:21 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17c1: kinship() (Recommended)"
-(orient picker)
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
-
-### Session 33 Handoff Evaluation (by Session 34)
-**Score: 9/10.**
-- **What helped:** every step ran as written: the drift tool (91/5/0) and nprcgenekeepr's log (the same 4 commits)
-  gave the expected output; the push went first. Step 3 was the right order: re-run section 2.4's inventory before
-  any picker (the five name counts held exactly) and read C13 first, which showed `fatherId`/`motherId` only took
-  the dots out of the old names, the fact that framed R87. The five items, the two-picker note and the sire/dam
-  gate gotcha were all used. Its line citations (`cran-submission-plan.md:341`, `:165`; contract `:102`, `:146`;
-  standalone plan `:544`; `BACKLOG.md:11`) were right at `15c7627`.
-- **What was missing:** that section 2.4's call counts are text matches, which do not say what an order change
-  breaks (S34 parsed every call instead), and that the fidelity tool calls through `fn("name")(...)`. Neither is
-  a fault of the handoff so much as of 2.4's method.
-- **What was wrong:** one small thing: it repeated the plan's reason for putting 17d and 17e after 17c ("a rename
-  would touch the same files"); measured, no renamed function is in their file.
+### Session 34 Handoff Evaluation (by Session 35)
+**Score: 8/10.**
+- **What helped:** steps 1 and 3 ran as written: the drift tool (91/5/0), nprcgenekeepr's log (the same 4
+  commits), the `kinship(` parse (43 calls, 1 by name, exactly). Its RED and GREEN line citations were right at
+  `2fd19e9` (`R/kinship.R:101`, `:115`, `:134`-`:136`, `:144`; `test_kinshipMemoryEquivalence.R:74`-`:76`;
+  `DIVERGENCE.md:12`). The two placement facts held: the check after every input check kept the fidelity tool's
+  `kinshipErrors` identical, and every other fidelity case passes `findGeneration()`'s numbers. The typed-case list
+  was the right list, and "time the kinship2 cases" turned a feared cost into a measured 0.19 s.
+- **What was missing:** that `makePedigreeMatingLayout()` passes its own `gen` to `kinship()`
+  (`R/makePedigreeDiagramData.R:1863`), so the check reaches the layout's tests: S34's parse counted that call but
+  not what it passes, and `smallPed`'s wrong `gen` stopped `test_maleLeftDuplicateMate.R`, a 10th file. Also that
+  `minnbreast`'s `sex` is the text "M"/"F", which must become 1/2 before the silent wrong answer shows (the note
+  said only to code the `NA` as 3; S35's first run passed text, which HEAD already refuses).
+- **What was wrong:** "push S34's close-out 2 (methodology only: no run starts)": that commit edited
+  `docs/planning/cran-submission-plan.md`, so CI and the site ran (both passed).
 - **ROI:** high.
 
-### What Session 34 Did
-**Deliverable:** Phase 17b, the argument-name review: seven rulings (R87-R93), no code changed.
-**Started:** 2026-11-17 13:29 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** "17b: name review
-(Recommended)" (orient); then, each Claude's recommendation and each at the first asking: "Rename to sire, dam"
-(R87), "Rename all four" (R88), "Pedigree first, all four" (R89), "Keep it internal" (R90), "Keep, and say so in
-help" (R91), "Add the check in 17c" (R92), "Three sessions" (R93).
-**Commits:** claim `5525edd` (pushed with S33's close-out 2, methodology only, no run); the record `92333c3` (both
-plans and the contract: section 2.4's Decided table, 17b's Done line, 17c rewritten as 17c1-17c3, D2, the session
-map, R87-R93, the new signatures); close-out 1 `44bef08` (ROADMAP, BACKLOG: 17b removed, 17c1-17c3 added; the
-contract's open item 4), pushed with the record (CI and site runs under Verified); close-out 2 (these notes, the
-receipt, the ledger, dragons 16-17, a roadmap line re-wrapped), not pushed.
-**Measured** (at `5525edd`; nprcgenekeepr `366899961`): section 2.4's name counts held exactly; a parse of every
-call (`R/`, tests, `tools/`, help examples, README, vignettes): R87 43 calls to pedkindraw's `kinship()`, 1 by
-name; R88 24 calls, none by name; R89 65 calls, 42 survive the order change, 23 rewritten (listed by line in 2.4);
-an old-order call stops with "$ operator is invalid for atomic vectors", never a wrong answer. Shared names: 22 of
-31 with nprcgenekeepr (240 exports), 6 with kinship2 1.9.6.2, 1 with Pedixplorer 1.8.0. kinship2's `kinship(id,
-dadid, momid, sex)` on pedkindraw's `kinship()`: wrong in 425 of `minnbreast`'s 426 families (28,081 animals) and
-414 of 1,681 values in `sample.ped` family 1, with no error; the check "each known parent's `pdepth` below its
-offspring's" stopped it in all 426 and passed `findGeneration()`'s numbers in all 426. 17c touches about 31 files.
-**Verified:** drift tool 91, 5 differ, 0 without a row; nprcgenekeepr's log on the 79 copied files the same 4
-commits; 18 `file:line` citations in the record checked by machine at `92333c3`; `quality_ratchet.py --run` 5/5 pass, 0 fail, 0 unmeasured, results `5ddbb5b1aeb3`, manifest `01151c525b8a` (load 3.7-5.6); site run `44162711010` `success`; CI `44162710948` 5/5 `success` at the first attempt (16 min).
+### What Session 35 Did
+**Deliverable:** Phase 17c1, `kinship()` takes `sire` and `dam` and refuses generation numbers out of order (R87,
+R91, R92), strict TDD.
+**Started:** 2026-11-17 14:21 CST · **Model:** Claude Opus 5.5 · **Mark's picks**, each Claude's recommendation at
+the first asking: "17c1: kinship() (Recommended)" (orient); pre-RED: the message "With the hint", "Compute them"
+(`smallPed`'s `gen` in the one layout test), "Add it now" (NEWS); the gates "Yes, proceed to RED", "Yes, proceed to
+GREEN"; "Skip REFACTOR".
+**Commits:** claim `4fc0e1a` (pushed with S34's close-out 2: CI `44168447176` 5/5, site success); RED `3faf597`;
+GREEN 1 `9e72121` (`R/kinship.R`, `man/kinship.Rd`, `DIVERGENCE.md`); GREEN 2 `5adcba9` (README, NEWS); these three
+pushed (CI `44178145615` 5/5 `success` at the first attempt, 16 min; site `44178145626` `success`); close-out 1
+`94024bc` (both plans, the contract, ROADMAP, BACKLOG) and close-out 2 (these notes, the receipt, the ledger),
+neither pushed.
+**Measured before RED** (scratch copy with a drafted check): every expected value; HEAD silently wrong in 425 of
+`minnbreast`'s 426 families and both `sample.ped` families, the draft stopping all 428 and passing
+`findGeneration()`'s numbers in all 428 (0.19 s); the 12 fidelity pedigrees pass in every `kinship()` form the tool
+uses; the whole suite against the draft: one file errored (`smallPed`); 300 random shuffled pedigrees pass with
+`findGeneration()`'s numbers; a cycle never reaches the check (`findGeneration()` leaves it `NA`).
+**Verified:** RED 9 blocks failing, exactly the planned, WARN 0; GREEN suite 54 files, 693 blocks, 0 failed, 0
+errors, WARN 0; lint 0; roxygen unchanged on a re-run; the new check's 10 statements all reached (`R/kinship.R` 97
+of 98); drift tool 91, 6 differ, 0 without a row; fidelity tool exit 0, 600 of 600 identical, 132 matrices, largest
+difference 0; `R CMD check --as-cran` 1 NOTE, R16's (Maintainer, New submission); README rendered twice the same;
+`quality_ratchet.py --run` 5/5 pass, 0 fail, 0 unmeasured, results `5ddbb5b1aeb3`, manifest `01151c525b8a`; the 43
+`file:line` citations in these notes and the receipt checked by machine against their text after the last edit.
 **Self-assessment: 8/10.**
-+ Measured before every picker, by parse rather than text, and found what text counts hide: which calls an order
-  change breaks (23 of 65), and a silent wrong answer behind a shared name (R92), checked on 426 families before
-  the picker claimed it. All eight picks came at the first asking. The record names the old signature beside each
-  new one, so 17c and readers of the contract see both.
-- Two counts in the pickers were off and corrected only in the record: "45 of the 46 calls" (kinship2's 3 counted;
-  42 of 43) and "5 `DIVERGENCE.md` rows" for R89 (4 once R88 also passed, sharing `addBackSecondParents()`'s row).
-  Neither changed a decision. The first inventory read 0 everywhere (zsh), caught at once. Three wrapping slips
-  (two long lines in `92333c3`, one made by close-out 1's own fix) needed later commits.
-**Learnings:** no `CLAUDE.md` row (over its budget). The plan's dragons 16 (parse, and record `pkg::` first) and 17
-(call a shared name the other package's way); in the Gotchas above: the parse recipe, zsh's unsplit variables.
-**Ledger:** `CHANGELOG.md` S34 entries (the session, push 1, push 2).
++ Measured before each gate, and the whole-suite run against a draft found what no inventory named (a wrong
+  fixture reaching `kinship()` through the layout), before RED rather than in GREEN. Running the drafted tests
+  against both the draft and HEAD caught one wrong expected value (a "founders" case that kept a dam). Read
+  kinship2's and Pedixplorer's methods before the help described them: R91's wording was half the story. Every
+  pick at the first asking.
+- Three slips, each caught before a commit: the first `minnbreast` run passed the text sex codes; the first GREEN
+  help said `asPedFrame()` returns the data frame (it returns a list), fixed while the suite ran (a roxygen comment
+  only; the slice's tests re-run after); the plan's Done line first said "9 files" and listed 10. The parse hit the
+  empty-argument trap the handoff had named.
+**Learnings:** no `CLAUDE.md` row (over budget); the plan's dragons 18 (run the suite against a draft of a new
+check) and 19 (read the other package's methods; count exports on the loaded source); the Gotchas above.
+**Ledger:** `CHANGELOG.md` S35 entries (the session, push 1, push 2).
