@@ -4,7 +4,9 @@
 "Planning Sessions"). No package code changed in either repository. nprcgenekeepr was read from an archive of its
 commit in a scratch folder and run there with its own renv library; its folder was not changed (R8).
 **Answers:** ruling R96 (Mark's direction, S40); Phase 17f2 of `docs/planning/cran-submission-plan.md`.
-**Status:** sections 1-3 (the evidence) written; the decisions of section 4 are put to Mark one picker at a time.
+**Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
+R97-R101 (section 4). Next: G1 in pedkindraw (section 5.1); N1 and N2 are nprcgenekeepr sessions Mark starts (section
+5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -290,3 +292,188 @@ no new package to install for nprcgenekeepr's users.
   R94's `__jog_` prefix and R95's legend lines; and the `DIVERGENCE.md` rows for R87-R89 and R92 each say "Not yet
   made in nprcgenekeepr". nprcgenekeepr's own backlog still lists S1159's legend fill as "Not yet mirrored", though
   pedkindraw S12 ported it (`docs/planning/cran-submission-plan.md` section 4.2).
+
+---
+
+## 4. Decisions (Mark's picks, S41; rulings R97-R101)
+
+Each was put to Mark by a picker in plain words, after sections 1-3 were committed (`5bebd3c`) for him to read. The
+rulings are copied into section 2 of `docs/planning/standalone-pedigree-package-plan.md`.
+
+| Ruling | Decision | Mark's pick | What it decides |
+|---|---|---|---|
+| R97 | D4 | "All before release (Recommended)" | Every row of section 3.1 is closed before the first CRAN release, where possible, in this order: N and B2 (the two that change behaviour); the size-S additions B6, B5's colours, C4, C5, C6, C2, B7; the M additions C3, C1, B4, B3's marks, B5's sizes and spacing; the L additions B1, A1 with A2, and A3, each starting with a planning session of its own. Not possible, as measured in the gaps document: A2 inside the browser (ids would be drawn under a pixel tall; A2 closes through A1's files) and B3's "asymptomatic" mark (Pedixplorer itself stops when the column is given). These are phases G1-G17 (section 5.1), before 17g. An L row whose own plan finds it far larger may move after the release by a ruling then. |
+| R98 | D11 | "Name calls now, switch later (Recommended)" | nprcgenekeepr comes to use pedkindraw's functions. **Now**, in a session there (N2), it writes its calls to the functions whose argument order pedkindraw changed (R89) with named arguments, wherever they are called, so each runs with its own copies and with pedkindraw's. Its copies stay as they are, and pedkindraw's changes to copied functions are not ported into them: each stays a `DIVERGENCE.md` row marked "at the switch". **After CRAN accepts pedkindraw** (N3), nprcgenekeepr imports it, deletes its 82 copied definitions and 43 copied test files, and re-exports (R100), in a release with a NEWS item for its users. This is the decision R8 left to Mark ("until Mark later decides to have it use the new package"), and it schedules the standalone plan's "Later, optional". It replaces "port later" for R81, R94, R95 and the name rulings R87-R89 and R92. |
+| R99 | The two faults (section 3.4) | "Next nprcgenekeepr session (Recommended)" | The next nprcgenekeepr work Mark starts (N1), ahead of R98's steps: `.simulateKinship()` recomputes the generations after `makeSimPed()`; `smallPed`'s `gen` is corrected, with any test pinned to it; a NEWS item, since 3.0.0's simulated kinships can be wrong. |
+| R100 | D12 | "Re-export all 22 (Recommended)" | At the switch nprcgenekeepr imports the 22 shared exports (its code calls 13) and re-exports all 22, so its users' scripts keep the names, each now pedkindraw's function (NEWS tells them of R87-R89's names and order and R92's check). It keeps its own copies of the 7 internals it calls (`isEmpty()`, `isAddedRecord()`, `walkPedigree()`, `mzTwinGroups()`, `.escapeHtml()`, `.checkOnClick()`, `.diagramHeight()`) and of `addIdRecords()` (internal in pedkindraw, R90). It does not re-export pedkindraw's 9 own exports (point 5: it does not need them). |
+| R101 | D13 | "pedkindraw leads shared code (Recommended)" | Until the switch, a change to any of the 91 copied functions starts in pedkindraw. nprcgenekeepr does not change its copies of them, except a fix its users need before the switch, ported from pedkindraw in a session of its own that Mark decides on. Its other work goes on (the app, the colony tools, N1 and N2). pedkindraw's Orient keeps the drift tool and Learning 15's log, and reports to Mark any nprcgenekeepr commit to a copied file as a departure from this rule. nprcgenekeepr's drift-watch backlog item is reworded to this rule, and its stale S1159 line removed, in N2. |
+
+The clarifications before R97, in Mark's words: "I do not see how this picker's options map to the
+maps-and-shared-code-plan. Clarify" (the first two pickers offered sets of rows without naming them, and left the M
+and L rows in no option), then "The last four rows do not seem to be covered. I have not seen a reason to not close
+all gaps." The third picker named each option's rows, gave the reasons against closing all (time, a later CRAN
+answer, more drift, check time, the app's `shiny`) with the measured pace of 4.6 sessions a day (41 sessions,
+2026-11-10 to 2026-11-18), and offered "All before release".
+
+**What R98 and R101 change in the drift rule** (standalone plan section 5): until the switch, a change pedkindraw makes
+to a copied function is recorded as a `DIVERGENCE.md` row ("at the switch") and is not ported; nprcgenekeepr makes
+no change to its copies (R101's exception aside). At the switch every row goes, since nprcgenekeepr then has no
+copies. If CRAN does not accept pedkindraw, N3 does not happen: nprcgenekeepr keeps its copies with its named calls
+(which work either way), the rows stay, and Mark decides then between two copies for good (R8's state) and a new
+submission.
+
+---
+
+## 5. Phases
+
+### 5.1 pedkindraw: the gap phases G1-G17 (R97), before 17g
+
+**Every G phase:**
+
+- **Process:** strict TDD (`CLAUDE.md`), its three gates put to Mark by picker; a pre-RED picker for the phase's
+  choices (named in the table), each option measured on a scratch copy first (Learning 17); every expected value
+  computed with the reference package where it does the same thing, run on typed, fixture and seeded random cases
+  under a time limit (Learnings 18-21).
+- **DONE, common:** the full suite 0 failed, WARN 0; `lintr::lint_package()` 0; `roxygen2::roxygenise()` leaves
+  `NAMESPACE` and `man/` unchanged; `covr` reaches every new statement; `R CMD check --as-cran` R16's NOTE only;
+  a NEWS bullet; the contract's section 4 gains any new export or argument. In copied code: a `DIVERGENCE.md` row
+  marked "at the switch" (R98) and the drift tool exit 0; the fidelity tool against nprcgenekeepr exit 0, with
+  **600 of 600 identical for an addition** (its default must leave every case as it was, which is the check that it
+  only adds) or one new, counted set-aside for a change (as R81, R94 and R95 have).
+- **Commands:** `CLAUDE.md`'s Build / Test / Verify table; `Rscript tools/compareWithNprcgenekeepr.R ../nprcgenekeepr`;
+  `Rscript tools/compareResultsWithNprcgenekeepr.R ../nprcgenekeepr`; the gap's case,
+  `Rscript tools/gapCases.R <case>`.
+- **Surface:** this Mac; headless Chrome (chromote) for anything drawn, measured from vis.js rather than a screenshot
+  (plan dragon 25 of `docs/planning/cran-submission-plan.md`); GitHub Actions after the push. kinship2 and
+  Pedixplorer are compared only where each returns (Learning 19).
+- **Session boundary:** each G phase is its own session or sessions, as the table says (a guess); close out when its
+  DONE is met.
+
+| Phase | Gap | Work | DONE, the phase's own (its case in `tools/gapCases.R`) | Choices at its pre-RED picker | Sessions (a guess) |
+|---|---|---|---|---|---|
+| G1 | N | A condition column that is not true-or-false is reported at both places it is read (`R/makePedigreeDiagramData.R:117`, `:1913`), naming the column | `measuredTrait`: the numbers 2.5, 0, 0.3, 9 give the message; true, false and `NA` columns draw as before (fidelity 600 of 600) | a warning or a stop; whether 0 and 1 count as true-or-false | 1 |
+| G2 | B2 | An unknown affected status (`NA`) gets its own look, in one-condition and several-condition symbols, and a legend row when any animal has it | `unknownAffected`: B's fill differs from C's in headless Chrome and the legend has the row; the drawings with an `NA` status counted as a set-aside | grey fill (Pedixplorer) or a "?" (kinship2); the legend's words | 1-2 |
+| G3 | B6 | The 15-character limit on the notes under an id becomes an argument (`.nameLabelCharBudget`, `:240`) | `labels`: the 26-character note written whole when asked; default 15 (600 of 600) | the argument's name and which function takes it; a value for "no limit" | 1 |
+| G4 | B5 colours | A colours argument carried to the fills, the sections script and the legend, so all three agree (the gaps document's section 9, item 2) | `style`: chosen colours in fills, sections and legend, read in headless Chrome; default unchanged (600 of 600) | which function takes it; how colours are checked | 1 |
+| G5 | C4 | A function that rewrites missing-parent codes ("0", "") and sex codes (1/2, male/female, m/f) into pedkindraw's (`NA`, "M", "F") | `inputCodes`: afterwards `checkPedigree()` reports no such code, `findGeneration()` places all 4 animals, no diamond is drawn; sex codes read as nprcgenekeepr's `convertSexCodes()` reads them | its name; which codes by default; "0" read as missing only when asked (an animal may be named "0") | 1 |
+| G6 | C5 | Each animal's offspring count, and its mates | `lookups`: counts 2, 2, 0, 0, as Pedixplorer's; mates checked against the fixture pedigrees | names; one function or two | 1 |
+| G7 | C6 | A function that removes listed animals and clears their offspring's links to them | `removeAnimals`: C removed, F's and G's sire cleared, `kinship()` then computes (F with G 0.125); compared with Pedixplorer's `subset(del_parents = "one")`, which also clears the other parent | clear the one link, or both as Pedixplorer does | 1 |
+| G8 | C2 | `findGeneration()` gains aligned generations, written from the method kinship2 describes (R11) | `alignedDepth`: equal to kinship2's `kindepth(align = TRUE)` on sample family 1 (6 of 41 differ from plain) and on every fixture pedigree where kinship2 returns; default unchanged (600 of 600) | the argument's name | 1 |
+| G9 | B7 | A documented example: the pedigree drawn with the animals `shrinkPedigree()` removed marked, from `idTrimmed` | `shrinkPicture`: the example runs and the removed animals are marked in the drawing | a help example or a vignette section | 1 |
+| G10 | C3 | `makePedigreeMatingLayout()` returns the hints it used (`:1836`, `:2219`), in the form it takes (`R/layoutHints.R`) | `ownHints`: the returned hints, passed back, give the same positions; the new list element counted as a set-aside | the element's name; order hints only, or mate hints too | 2-3 |
+| G11 | C1 | A function that keeps the relatives within k steps of chosen animals, its rule written from Pedixplorer's help and measured results (as R52) | `distanceSubset`: 14, 30 and 33 of 41 kept for k = 1, 2, 3, as Pedixplorer's `useful_inds()`, or a measured, stated difference; seeded random cases compared (Learnings 19-21) | its name; what "informative" means by default | 2-3 |
+| G12 | B4 | A measured trait drawn by a threshold, with the rule in the legend; builds on G1 | `measuredTrait`: at threshold 5, A, B, C unaffected and D affected; the legend states the rule | threshold argument or a colour scale; above or at-and-above | 2-3 |
+| G13 | B3 | Pedixplorer's marks: carrier, proband, consultand, evaluated, genotyped border, infertile, miscarriage; each a column read by the layout, a mark drawn, a legend row | `markings`: each mark drawn and in the legend, read in headless Chrome; no column, no change (600 of 600) | which marks first (the genotyped border is the colony's), their shapes; the phase's session count | 8-9 |
+| G14 | B5 sizes | Symbol and text sizes, and spacing, as arguments | `style`: each setting measured in headless Chrome; defaults unchanged (600 of 600) | which settings | 2-3 |
+| G15 | B1 | **A planning session first** (the layout builds every mating from shared offspring, `.buildMatingUnitForest()`, `R/makePedigreeDiagramData.R:454`), then its build sessions | its plan's; `matesNoOffspring`: E and F drawn as a mating, not isolated | its plan's | 1 + 3-5 |
+| G16 | A1, A2 | **A planning session first** (a renderer with R graphics from the layout, or a headless-browser picture; which file types), then its build sessions | its plan's; `files`: a PDF, SVG and PNG written by a script; `largeIds`: the 375 ids of the rhesus pedigree in one PDF page, counted as for kinship2 | its plan's | 1 + 3-6 |
+| G17 | A3 | **A planning session first** (what the app does, `shiny` in Suggests or Imports, its tests' CRAN time), then its build sessions | its plan's; `app`: the app builds and starts | its plan's | 1 + 4-8 |
+
+**Before G1:** the numeric-condition item and the gaps are already in `methodology/BACKLOG.md`; each G phase removes
+its item when done. The order may change by ruling, but G1 comes before G12 (G12 builds on it).
+
+### 5.2 nprcgenekeepr: N1-N3 (R98-R100), sessions Mark starts there
+
+Each runs under nprcgenekeepr's own `CLAUDE.md`, protocol and TDD gates; its commands are its own ("Clean regression
+read", `devtools::check()`, its E2E tests, its workflows). pedkindraw's sessions do not make them (R8).
+
+| Phase | Work | DONE | Needs first | Sessions (a guess) |
+|---|---|---|---|---|
+| N1 (R99) | `.simulateKinship()` (`R/simulateKinship.R:25-28` at `eafd54851`) recomputes the generations of the simulated pedigree, a parent with no row read as unknown, before `kinship()`; `smallPed`'s `gen` corrected (8 of 17 animals), with the tests pinned to it; NEWS | section 3.4's simulation case: 0 of 200 draws differ from kinship2; `smallPed$gen` equals `findGeneration()` in 17 of 17; its clean regression read 0 failed, 0 errors; `devtools::check()` 0/0/0 | nothing | 1 |
+| N2 (R98, R101) | Inventory by parse (as section 3.2's scratch `callsites.R` did) every call to the functions R88-R89 changed, outside its copied code: in `R/`, tests, `tools/`, vignettes, articles and `data-raw/`. Write R89's four (`getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()`, `hasBothParents()`) with named arguments, since their names are the same in both packages and their order is not; leave R88's (`getParents()`, `getOffspring()`, `getIdsWithOneParent()`, `addBackSecondParents()`) positional, since their positions are the same and their names are not. Reword the drift-watch backlog item to R101, removing the stale S1159 line | the parse finds no positional call to R89's four and no named call to R88's old names outside the copied code; section 3.3's scratch run repeated (pedkindraw installed in a scratch library) shows no failure of the argument-order cause; its suite 0 failed, 0 errors; its vignettes build | nothing (N1 first by R99) | 1 |
+| N3 (R98, R100) | **After CRAN accepts pedkindraw:** `Imports: pedkindraw (>=` the accepted version`)`; `importFrom()` for the 22 and a re-exports help page; the 82 copied definitions and 43 copied test files deleted (the 8 of R100 kept); its pkgdown reference and README; NEWS for its users (R87-R89's names and order, R92's check, R81, R94 and R95's drawing changes, and what G1-G17 add) | `identical(nprcgenekeepr::kinship, pedkindraw::kinship)` and the same for the other 21; its suite 0 failed, 0 errors; `R CMD check --as-cran` 0/0/0; its E2E tests; all its workflows green; its next CRAN submission names the new dependency | 17q (acceptance) | 2 |
+
+**After N1, in pedkindraw:** its own `tests/testthat/fixtures/smallPed.rds` has the same 8 of 17 wrong (measured
+S41); S35 made the one test that used its `gen` compute it with `findGeneration()`. Correct the fixture to
+nprcgenekeepr's corrected dataset (a backlog item; the fixture's provenance is R21's).
+
+### 5.3 pedkindraw after the switch: P1
+
+- **Work:** retire `tools/compareWithNprcgenekeepr.R` and `tools/compareResultsWithNprcgenekeepr.R` (nprcgenekeepr
+  then has no copies to compare); empty `DIVERGENCE.md` of the rows marked "at the switch", keeping its history; close
+  the BLOCKED backlog items; README and NEWS say nprcgenekeepr uses pedkindraw; every later pedkindraw release checks
+  nprcgenekeepr as a reverse dependency (CRAN policy, section 3.5) and allows its two weeks' notice.
+- **DONE:** nothing in `tools/`, `CLAUDE.md` or the plans runs the two tools; `DIVERGENCE.md` has no open row; the
+  next release plan names the reverse-dependency check. **Needs first:** N3 on CRAN. **Sessions:** 1.
+
+---
+
+## 6. How the two repositories keep in step (R101)
+
+1. **The shared code is the 91 copied functions.** Until the switch a change to one starts in pedkindraw: a G phase,
+   or a fix found in either repository.
+2. **nprcgenekeepr does not change its copies,** except a fix its users need before the switch, ported from pedkindraw
+   in a session Mark decides on. N1 and N2 do not touch the copies: N1 changes `.simulateKinship()` and a dataset,
+   neither copied; N2 changes callers.
+3. **pedkindraw records, nprcgenekeepr does not port:** each pedkindraw change to a copied function is a
+   `DIVERGENCE.md` row marked "at the switch", and the drift tool fails without it, as now.
+4. **Every pedkindraw Orient** runs the drift tool and `git -C ../nprcgenekeepr log --oneline <copy commit>..HEAD --`
+   the copied files (Learning 15). A new nprcgenekeepr commit there is reported to Mark: it departs from rule 2, and
+   R37 applies (a port or a row) until he rules.
+5. **Releases.** nprcgenekeepr may release before the switch with N1 and N2 (Mark's choice of when; CRAN's pace is no
+   more than every 1-2 months, and 3.0.0 was 2026-11-01). pedkindraw releases after G1-G17 and 17g-17q. nprcgenekeepr's
+   switch release (N3) follows pedkindraw's acceptance; from then on each pedkindraw release passes nprcgenekeepr's
+   check first.
+6. **If CRAN does not accept pedkindraw,** N3 waits; the named calls work with nprcgenekeepr's copies; Mark decides
+   between two copies for good and another submission.
+
+---
+
+## 7. Session order, risks, out of scope, sources
+
+### 7.1 Session order
+
+| Step | Repository | Work | Needs first | Sessions (a guess) |
+|---|---|---|---|---|
+| N1 | nprcgenekeepr | the two faults (R99) | nothing | 1 |
+| N2 | nprcgenekeepr | named calls; the drift-watch item (R98, R101) | N1 | 1 |
+| G1-G9 | pedkindraw | N, B2 and the size-S additions | 17f2 | 9-10 |
+| G10-G14 | pedkindraw | the M additions | G9 (G12 after G1) | 16-21 |
+| G15-G17 | pedkindraw | the L additions, each planned first | G14 | 13-22 |
+| 17g-17q | pedkindraw | the release phases as planned | G17 | 14-17 |
+| N3 | nprcgenekeepr | the switch (R98, R100) | 17q, CRAN's acceptance | 2 |
+| P1 | pedkindraw | retire the drift and fidelity tools | N3 on CRAN | 1 |
+
+N1 and N2 run whenever Mark starts them, beside the G phases (they touch no copied function). pedkindraw's sessions to
+submission: about 52-70 (38-53 for G1-G17, the sum of the guesses, and 14-17 for 17g-17q); at the measured 4.6
+sessions a day, about 11-15 days, an estimate.
+
+### 7.2 Here be dragons
+
+1. **An addition must leave the 600 fidelity cases identical.** That is the measured proof a G phase only adds; a
+   difference in a phase called an addition is a defect, not a set-aside.
+2. **R88's renamed arguments do not all partial-match.** `getParents(ped = x)` reaches nprcgenekeepr's `pedSourceDf`
+   by partial matching (dragon 20 of the CRAN plan), but `ped` is not a prefix of `uPed`
+   (`getIdsWithOneParent()`, `addBackSecondParents()`). N2 names R89's four and leaves R88's positional.
+3. **nprcgenekeepr moves during a session** (Learning 15; 521 commits in 18 days). R101 makes a commit to a copied
+   file there a finding for Mark, not a quiet port.
+4. **The check time grows with every G phase.** 398 s on win-builder against 540 s (S33); 17k's reading after 17j
+   (R86) decides what is skipped on CRAN; browser and app tests skip on CRAN already.
+5. **A3 brings `shiny`:** in Suggests, every use is conditional and the noSuggests check (17l) must pass without it.
+6. **kinship2 and Pedixplorer are GPL** (R11): G8's aligned generations, G11's distance rule and G12's threshold are
+   written from the described method and measured results, not from their code.
+7. **The sizes are guesses** from the code each gap touches; each L phase's own plan re-sizes it, and R97 lets Mark
+   move an L row after the release then.
+8. **A scratch substitution reads its own artifacts:** S41's first run re-wrapped `DESCRIPTION` with `write.dcf()` and
+   a wording test failed; edit `DESCRIPTION` as text when repeating section 3.3.
+
+### 7.3 Out of scope
+
+- Any change to nprcgenekeepr from a pedkindraw session (R8): N1-N3 are nprcgenekeepr sessions.
+- nprcgenekeepr's own release dates.
+- What R3 (block kinship), R13 (file readers), R21 (datasets) and R7 (objects) ruled out; copying nprcgenekeepr's
+  colony overview (still a decision for later, `docs/planning/cran-submission-plan.md` section 3).
+
+### 7.4 Sources
+
+- pedkindraw: `docs/research/pedkindraw-gaps-2026-11-18.md` and its two records; `docs/planning/cran-submission-plan.md`
+  (sections 2.1, 3, 4, 6, 9); `docs/planning/standalone-pedigree-package-plan.md` (R1, R3, R7-R9, R11, R13, R21, R37,
+  R52, R81, R86-R96; section 4 "Later, optional"; section 5); `docs/planning/pedkindraw-api-contract.md` (section 6);
+  `docs/research/pedigree-diagram-package-split-scoping-2026-09-02.md` (section 7, the split checklist N3 follows);
+  `DIVERGENCE.md`; `methodology/BACKLOG.md`; `CLAUDE.md` (Learnings 5, 6, 12, 15, 17-21).
+- nprcgenekeepr at `eafd54851`, read from an archive: `R/`, `NAMESPACE`, `DESCRIPTION`, `tests/testthat/`,
+  `vignettes/`, `data/`, `data-raw/`, `tools/`, `BACKLOG.md`, `methodology/ROADMAP.md`, `CLAUDE.md` (its clean
+  regression read); `git show v3.0.0:R/simulateKinship.R`.
+- CRAN Repository Policy, revision 6985 (read 2026-11-18); R 4.6.2's `tools:::format.check_packages_used()`.
+- S41's scratch scripts (not committed; the steps of sections 3.2-3.4 say what each did): `callers.R`, `callsites.R`,
+  `testcalls.R`, `substitute.R`, `runtests.R`, `rerun.R`, `classify.R`, `pdepthProbe.R`, `simProbe.R`.
