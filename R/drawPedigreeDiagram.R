@@ -4,10 +4,12 @@
 ## 4283e3502 (S11 copied it at 471589138 for its .checkOnClick(), plan R34;
 ## S12 ported S1159's legend fill and its tidy-up, plan R37).
 ## Changes: pedkindraw S28's section pictures in the legend (plan R81: the
-## block after conditionRows, and the help's paragraph on them) and S38's
+## block after conditionRows, and the help's paragraph on them), S38's
 ## "Select by id" filter, which also leaves out __jog_ ids and reads the
-## prefixes from .reservedIdPattern (plan R94), each a DIVERGENCE.md row until
-## nprcgenekeepr has it; otherwise help text only.
+## prefixes from .reservedIdPattern (plan R94), and S39's legend lines drawn
+## without arrowheads, their labels on white (plan R95: the two columns after
+## legendEdges), each a DIVERGENCE.md row until nprcgenekeepr has it;
+## otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
@@ -122,6 +124,14 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
                dashes = I(list(TRUE)), stringsAsFactors = FALSE),
     twinLegendEdges
   )
+  # pedkindraw S39 (plan R95): no arrowheads, as the diagram's own lines have
+  # none. visLegend() gives a line with no `arrows` value an arrowhead at its
+  # right end, over the end of the label: measured in headless Chrome, it
+  # covered "Same animal, again" by 5.5 px in a 776 px drawing and 10.1 px in
+  # a 700 px one. Each label on white, so the line stops at the label rather
+  # than running through it (the comma read as a semicolon).
+  legendEdges$arrows <- ""
+  legendEdges$font.background <- "#FFFFFF"
   # The legend's symbol rows, as three tables so each row's label, shape,
   # fill and picture sit together (S1159). The fill alone, as the diagram's
   # animals get it: the 5 sex rows are open (white) like an unaffected
