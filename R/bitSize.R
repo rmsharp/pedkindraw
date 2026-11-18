@@ -3,8 +3,10 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase 11,
 ## rulings R40-R42, pedkindraw S14). It calls internals of
 ## R/shrinkPedigree.R, which is copied from nprcgenekeepr's clean-room
-## rewrite and stays as copied. Written from kinship2's help page for
-## bitSize(), not its source (R11).
+## rewrite and stays as copied but for Phase G1's check on affected (R104).
+## Written from kinship2's help page for bitSize(), not its source (R11).
+## Phase G1 (pedkindraw S42, R105): it passes no affected status to the
+## input check, so the affected column, which it does not use, is not read.
 
 #' Bit size of a pedigree
 #'
@@ -45,7 +47,7 @@
 #' )
 #' bitSize(ped)
 bitSize <- function(ped) {
-  .checkShrinkInput(ped, logical(NROW(ped)), NULL, 16L)
+  .checkShrinkInput(ped, logical(NROW(ped)), logical(NROW(ped)), 16L)
   pos <- .parentPositions(ped)
   nFounder <- sum(is.na(pos$sireIdx) & is.na(pos$damIdx))
   list(bitSize = .bitSize(pos$sireIdx, pos$damIdx,

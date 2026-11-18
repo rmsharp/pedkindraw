@@ -3,8 +3,10 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase 11,
 ## rulings R40-R42, pedkindraw S14). It calls internals of
 ## R/shrinkPedigree.R, which is copied from nprcgenekeepr's clean-room
-## rewrite and stays as copied. Written from kinship2's help page for
-## findUnavailable(), not its source (R11).
+## rewrite and stays as copied but for Phase G1's check on affected (R104).
+## Written from kinship2's help page for findUnavailable(), not its source
+## (R11). Phase G1 (pedkindraw S42, R105): it passes no affected status to the
+## input check, so the affected column, which it does not use, is not read.
 
 #' Find the animals a pedigree can lose because they are unavailable
 #'
@@ -58,7 +60,7 @@
 #' genotyped <- c(FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, FALSE, TRUE, FALSE)
 #' findUnavailable(ped, genotyped)
 findUnavailable <- function(ped, genotyped) {
-  read <- .checkShrinkInput(ped, genotyped, NULL, 16L)
+  read <- .checkShrinkInput(ped, genotyped, logical(NROW(ped)), 16L)
   pos <- .parentPositions(ped)
   pass <- .removalPass(pos$sireIdx, pos$damIdx, rep(TRUE, length(pos$id)),
                        read$genotyped)
