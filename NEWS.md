@@ -27,6 +27,12 @@ code, `DIVERGENCE.md` in the repository says how and why.
   `__jog_`, as for the other prefixes it keeps for its own nodes;
   nprcgenekeepr accepts one, and its drawing can then have two nodes with that
   id.
+* New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` stop when
+  a condition column (`affected`, `affected2`, ...) holds a number other than
+  0 and 1, naming the column and the numbers. A measured trait (2.5, 0.3, 9)
+  was drawn affected wherever it was not 0, with no message, as it still is in
+  nprcgenekeepr. `TRUE`, `FALSE`, `NA`, 0 and 1 (kinship2's codes, which
+  `asPedFrame()` writes) and text read as before.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's
@@ -89,6 +95,10 @@ code, `DIVERGENCE.md` in the repository says how and why.
 * New: the steps of `shrinkPedigree()`, exported under kinship2's names:
   `bitSize()`, `findUnavailable()`, `findAvailNonInform()` and
   `findAvailAffected()`.
+* New: `shrinkPedigree()`, `findAvailNonInform()` and `findAvailAffected()`
+  stop in the same way when `affected`, the argument or the column, holds a
+  number other than 0 and 1, which they counted as affected; `bitSize()` and
+  `findUnavailable()`, which do not use the status, do not read the column.
 
 ## Converters
 
