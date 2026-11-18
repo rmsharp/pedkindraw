@@ -35,6 +35,12 @@ why.
   stops on an animal id that starts with `__jog_`, as for the other
   prefixes it keeps for its own nodes; nprcgenekeepr accepts one, and
   its drawing can then have two nodes with that id.
+- New: the legend’s four lines (the dashed line joining two places of
+  the same animal, and the three twin lines) have no arrowheads, as the
+  drawing’s own lines have none, and each line’s label sits on white.
+  nprcgenekeepr’s legend draws an arrowhead at the right end of each
+  line, which covers the end of “Same animal, again” in drawings 776 px
+  wide (the package’s website) and 700 px wide.
 - New: layout hints, `makePedigreeMatingLayout(hints = )`: the
   left-to-right `order` of animals and, with `mate`, the side of a
   mating each mate is drawn on, in the form kinship2 and Pedixplorer
