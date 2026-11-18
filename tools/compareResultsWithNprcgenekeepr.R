@@ -26,6 +26,11 @@
 ## picture, where pedkindraw now draws section pictures (see
 ## withoutConditionSymbols() below).
 ##
+## pedkindraw's getProbandPedigree(), getDescendantPedigree(), trimPedigree()
+## and hasBothParents() take the pedigree first, nprcgenekeepr's the ids first
+## (pedkindraw S37, plan R89), so the cases name both arguments and one call
+## runs on both packages.
+##
 ## Each package runs in its own R process started in its own folder, so each
 ## uses its own renv library (nprcgenekeepr needs its imports, pedkindraw does
 ## not have them). The pedigrees are the clone's
@@ -101,7 +106,7 @@ runCases <- function(ns, dataDir) {
     status <- ifelse(is.na(ped$sire), "added", "original")
     ## Phase 6b: the probands' pedigree, before and after removing the
     ## uninformative founders, for addBackSecondParents().
-    trimmed <- function() fn("getProbandPedigree")(few, ped)
+    trimmed <- function() fn("getProbandPedigree")(ped = ped, probands = few)
     ## Phase 6b: the Phase 1 pedigrees list a record for every parent, have no
     ## female sire or male dam, and (but one) no animal with one known parent,
     ## so these made-up variants reach the branches the pedigrees do not:
@@ -121,7 +126,7 @@ runCases <- function(ns, dataDir) {
     kin <- if (nrow(ped) <= 2000L) {
       ped
     } else {
-      fn("getProbandPedigree")(spread(ped$id, 100L), ped)
+      fn("getProbandPedigree")(ped = ped, probands = spread(ped$id, 100L))
     }
     kin$gen <- fn("findGeneration")(kin$id, kin$sire, kin$dam)
     ## The pedigree's own twins table where it has one (rhesus375), else
@@ -154,7 +159,7 @@ runCases <- function(ns, dataDir) {
     lay <- if (nrow(ped) <= 400L) {
       ped
     } else {
-      fn("getProbandPedigree")(spread(ped$id, 20L), ped)
+      fn("getProbandPedigree")(ped = ped, probands = spread(ped$id, 20L))
     }
     lay$gen <- fn("findGeneration")(lay$id, lay$sire, lay$dam)
     layTwins <- if (file.exists(twinsFile)) twins else madeUpTwins(lay)
@@ -224,8 +229,12 @@ runCases <- function(ns, dataDir) {
       getFounders = function() fn("getFounders")(ped),
       getParents = function() fn("getParents")(ped, some),
       getOffspring = function() fn("getOffspring")(ped, some),
-      getProbandPedigree = function() fn("getProbandPedigree")(few, ped),
-      getDescendantPedigree = function() fn("getDescendantPedigree")(few, ped),
+      getProbandPedigree = function() {
+        fn("getProbandPedigree")(ped = ped, probands = few)
+      },
+      getDescendantPedigree = function() {
+        fn("getDescendantPedigree")(ped = ped, probands = few)
+      },
       walkPedigree = function() {
         lapply(c("ancestors", "descendants", "both"), function(direction) {
           fn("walkPedigree")(few, ped, direction)
@@ -288,7 +297,7 @@ runCases <- function(ns, dataDir) {
           c(FALSE, FALSE), c(TRUE, FALSE), c(FALSE, TRUE), c(TRUE, TRUE)
         )
         lapply(flags, function(f) {
-          fn("trimPedigree")(few, ped,
+          fn("trimPedigree")(ped = ped, probands = few,
             removeUninformative = f[[1L]], addBackParents = f[[2L]]
           )
         })
