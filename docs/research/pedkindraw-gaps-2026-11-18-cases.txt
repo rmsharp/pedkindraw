@@ -1,0 +1,213 @@
+# Output of `Rscript tools/gapCases.R` (docs/research/pedkindraw-gaps-2026-11-18.md), run 2026-11-18 09:14 CST
+# on this Mac (load average 6.7), pedkindraw at 2626c16 loaded from the working copy, kinship2 1.9.6.2, Pedixplorer 1.8.0
+files | kinship2 version | 1.9.6.2
+files | Pedixplorer version | 1.8.0
+files | kinship2 plot.pedigree() to pdf bytes | 4742
+files | Pedixplorer plot() to pdf bytes | 4752
+files | kinship2 plot.pedigree() to svg bytes | 8606
+files | Pedixplorer plot() to svg bytes | 8957
+files | kinship2 plot.pedigree() to png bytes | 9872
+files | Pedixplorer plot() to png bytes | 9489
+files | kinship2 pdf pages | 1
+files | Pedixplorer pdf pages | 1
+files | Pedixplorer plot(ggplot_gen = TRUE) element ggplot class | ggplot2::ggplot
+files | pedkindraw drawPedigreeDiagram() class | visNetwork / htmlwidget
+files | pedkindraw plot(widget) inside pdf() | stops: 'x' is a list, but does not have components 'x' and 'y'
+files | pedkindraw pdf pages after plot(widget) | 0
+files | S3 methods for a visNetwork or htmlwidget object | print.htmlwidget
+files | pedkindraw saveWidget() html bytes | 6586
+== files: exit 0 in 3 s (limit 60 s)
+largeIds | kinship2 version | 1.9.6.2
+largeIds | Pedixplorer version | 1.8.0
+largeIds | rhesus animals | 375
+largeIds | kinship2 pedigree() class | pedigree
+largeIds | kinship2 id labels written (repeat animals too); distinct | 520 / 375
+largeIds | Pedixplorer id labels written at cex 1 (repeat animals too); distinct | stops: Labels leave no room for the graph, reduce cex
+largeIds | Pedixplorer id labels written at cex 0.5 (repeat animals too); distinct | 473 / 357
+largeIds | Pedixplorer id labels written at cex 0.2 (repeat animals too); distinct | 473 / 357
+largeIds | pedkindraw animals drawn | 375
+largeIds | pedkindraw fitted view at 776 px: canvas width px | 691
+largeIds | pedkindraw fitted view: zoom scale | 0.0456
+largeIds | pedkindraw fitted view: label height on screen px | 0.638
+largeIds | vis.js draws a label only when that height is at least px | 4
+largeIds | pedkindraw zoom needed before ids show | 6.27
+== largeIds: exit 0 in 21 s (limit 180 s)
+app | kinship2 version | 1.9.6.2
+app | Pedixplorer version | 1.8.0
+app | Pedixplorer ped_shiny() arguments | port / host / precision / ind_max_warning / ind_max_error
+app | Pedixplorer ped_ui() builds, class | shiny.tag.list
+app | pedkindraw exports naming an app, Shiny, server or UI | 
+app | pedkindraw drawPedigreeDiagram() arguments | layout / edgeStyle / onClick
+== app: exit 0 in 2 s (limit 60 s)
+matesNoOffspring | kinship2 version | 1.9.6.2
+matesNoOffspring | Pedixplorer version | 1.8.0
+matesNoOffspring | kinship2 matings drawn (align.pedigree spouse marks) | 2
+matesNoOffspring | Pedixplorer matings drawn (align() spouse marks) | 2
+matesNoOffspring | pedkindraw makePedigreeMatingLayout() runs | TRUE
+matesNoOffspring | pedkindraw isolatedIds (left out of the drawing) | E / F
+matesNoOffspring | pedkindraw mate hint naming E and F | stops: makePedigreeMatingLayout() found pair(s) in 'hints$mate' with no offspring together in 'ped': E and F
+== matesNoOffspring: exit 0 in 3 s (limit 60 s)
+unknownAffected | kinship2 version | 1.9.6.2
+unknownAffected | Pedixplorer version | 1.8.0
+unknownAffected | kinship2 '?' marks drawn, B unknown | 1
+unknownAffected | kinship2 '?' marks drawn, none unknown | 0
+unknownAffected | Pedixplorer fills A, B (unknown), C, D | red / grey / white / red
+unknownAffected | pedkindraw fills A, B (unknown), C, D | #CC79A7 / #FFFFFF / #FFFFFF / #CC79A7
+unknownAffected | pedkindraw hover text for B mentions | Affected:</b> Unknown
+== unknownAffected: exit 0 in 2 s (limit 60 s)
+markings | kinship2 version | 1.9.6.2
+markings | Pedixplorer version | 1.8.0
+markings | Pedixplorer carrier : picture elements added or changed | 1 points
+markings | pedkindraw carrier : layout identical without it | TRUE
+markings | Pedixplorer proband : picture elements added or changed | 1 arrows / 1 text
+markings | pedkindraw proband : layout identical without it | TRUE
+markings | Pedixplorer consultand : picture elements added or changed | 1 arrows
+markings | pedkindraw consultand : layout identical without it | TRUE
+markings | Pedixplorer evaluated : picture elements added or changed | 1 text
+markings | pedkindraw evaluated : layout identical without it | TRUE
+markings | Pedixplorer avail : picture elements added or changed | 2 circle / 2 square
+markings | pedkindraw avail : layout identical without it | TRUE
+markings | Pedixplorer fertility : picture elements added or changed | 3 segments
+markings | pedkindraw fertility : layout identical without it | TRUE
+markings | Pedixplorer miscarriage : picture elements added or changed | 1 triangle
+markings | pedkindraw miscarriage : layout identical without it | TRUE
+markings | Pedixplorer adopted : picture elements added or changed | none
+markings | pedkindraw adopted : layout identical without it | TRUE
+markings | Pedixplorer asymptomatic : picture elements added or changed | stops: arguments imply differing number of rows: 0, 1
+markings | pedkindraw asymptomatic : layout identical without it | TRUE
+markings | kinship2 pedigree() arguments | id / dadid / momid / sex / affected / status / relation / famid / missid
+== markings: exit 0 in 4 s (limit 60 s)
+measuredTrait | kinship2 version | 1.9.6.2
+measuredTrait | Pedixplorer version | 1.8.0
+measuredTrait | Pedixplorer fills, affected above 5 | white / white / white / red
+measuredTrait | Pedixplorer legend labels | Healthy <= to 5 / Affected > to 5
+measuredTrait | pedkindraw fills, affected = 2.5, 0, 0.3, 9 | #CC79A7 / #FFFFFF / #CC79A7 / #CC79A7
+== measuredTrait: exit 0 in 3 s (limit 60 s)
+style | kinship2 version | 1.9.6.2
+style | Pedixplorer version | 1.8.0
+style | kinship2 plot.pedigree() style arguments | cex / col / symbolsize / branch / packed / align / width / density / angle
+style | kinship2 symbol borders with col = red, blue, black, black | red / blue / black / black
+style | Pedixplorer plot() style arguments | cex / symbolsize / branch / packed / align / width / leg_cex / lwd / label_cex
+style | Pedixplorer fills with colors_aff = orange | orange / white
+style | pedkindraw drawPedigreeDiagram() arguments | layout / edgeStyle / onClick
+style | pedkindraw, 1 condition, fill 333333: count outside script | 2 / 1
+style | pedkindraw, 2 conditions, 111111 222222: count outside script | 1 / 1 / 0 / 0
+style | pedkindraw sections script colours (the drawing's own list) | var colors = ['#CC79A7', '#E69F00', '#56B4E9', '#009E73']
+== style: exit 0 in 3 s (limit 60 s)
+labels | kinship2 version | 1.9.6.2
+labels | Pedixplorer version | 1.8.0
+labels | kinship2 labels written, id = id plus text | A\nage 7\nMHC A01/B02 long text / B\n / C\n / D\n
+labels | Pedixplorer extra label texts written | age 7\nMHC A01/B02 long text /  /  / 
+labels | pedkindraw labels with a name column | A\nage 7\nMHC A01 / B\nage 7\nMHC A01/B... / C / D
+== labels: exit 0 in 2 s (limit 60 s)
+shrinkPicture | kinship2 version | 1.9.6.2
+shrinkPicture | Pedixplorer version | 1.8.0
+shrinkPicture | kinship2 pedigree.shrink() class | pedigree.shrink
+shrinkPicture | kinship2 plot.pedigree.shrink() pdf pages | 1
+shrinkPicture | pedkindraw shrinkPedigree() returns | ped / idTrimmed / idList / bitSize / genotyped / pedSizeOriginal / pedSizeIntermed / pedSizeFinal
+== shrinkPicture: exit 0 in 1 s (limit 60 s)
+distanceSubset | kinship2 version | 1.9.6.2
+distanceSubset | Pedixplorer version | 1.8.0
+distanceSubset | animals; informative (available and affected) | 41 /  7
+distanceSubset | Pedixplorer useful_inds(max_dist = 1 ) keeps | 14
+distanceSubset | Pedixplorer useful_inds(max_dist = 2 ) keeps | 30
+distanceSubset | Pedixplorer useful_inds(max_dist = 3 ) keeps | 33
+distanceSubset | pedkindraw trimPedigree(ped, informative) keeps | 18
+distanceSubset | pedkindraw trimPedigree(..., removeUninformative) keeps | 13
+distanceSubset | pedkindraw trimPedigree() arguments | ped / probands / removeUninformative / addBackParents
+== distanceSubset: exit 0 in 2 s (limit 60 s)
+alignedDepth | kinship2 version | 1.9.6.2
+alignedDepth | Pedixplorer version | 1.8.0
+alignedDepth | kinship2 kindepth(align = TRUE) differs from plain in | 6
+alignedDepth | pedkindraw findGeneration() equals kinship2's plain in | 41
+alignedDepth | pedkindraw findGeneration() arguments | id / sire / dam
+== alignedDepth: exit 0 in 1 s (limit 60 s)
+ownHints | kinship2 version | 1.9.6.2
+ownHints | Pedixplorer version | 1.8.0
+ownHints | kinship2 autohint() elements | order / spouse
+ownHints | Pedixplorer auto_hint() class | Hints
+ownHints | Pedixplorer best_hint() class | stops: there is no package called ‘R.utils’
+ownHints | pedkindraw makePedigreeMatingLayout() returns | nodes / edges / duplicateToReal / isolatedIds / conditions / conditionsNotDrawn
+ownHints | pedkindraw asPedFrame() of kinship2's autohint: order, mates | 41 /  1
+== ownHints: exit 0 in 3 s (limit 60 s)
+inputCodes | kinship2 version | 1.9.6.2
+inputCodes | Pedixplorer version | 1.8.0
+inputCodes | kinship2 pedigree(missid = "0") animals | 4
+inputCodes | Pedixplorer Pedigree() with "0" parents: founders | 2
+inputCodes | pedkindraw checkPedigree() with "0" parents | missingParentCodes 0
+inputCodes | pedkindraw findGeneration() with "0" parents | warns: findGeneration: 4 id(s) could not be assigned a generation; the pedigree may contain a cycle or a parent ID absent as an ego ID. Unplaced id(s): A, B, C, D. Parent ID(s) with no record: 0
+inputCodes | pedkindraw findGeneration() with "0" parents | NA / NA / NA / NA
+inputCodes | pedkindraw checkPedigree() with "" parents | missingParentCodes 
+inputCodes | kinship2 pedigree() sex as numbers 1/2 : sex read | male / female / male / female
+inputCodes | pedkindraw sex as numbers 1/2 : checkPedigree() rows | 4
+inputCodes | pedkindraw sex as numbers 1/2 : shapes drawn | diamond / diamond / diamond / diamond
+inputCodes | kinship2 pedigree() sex as text "1"/"2" : sex read | stops: Invalid values for 'sex'
+inputCodes | pedkindraw sex as text "1"/"2" : checkPedigree() rows | 4
+inputCodes | pedkindraw sex as text "1"/"2" : shapes drawn | diamond / diamond / diamond / diamond
+inputCodes | kinship2 pedigree() sex as text "male"/"female" : sex read | male / female / male / female
+inputCodes | pedkindraw sex as text "male"/"female" : checkPedigree() rows | 4
+inputCodes | pedkindraw sex as text "male"/"female" : shapes drawn | diamond / diamond / diamond / diamond
+inputCodes | kinship2 pedigree() sex as text "m"/"f" : sex read | male / female / male / female
+inputCodes | pedkindraw sex as text "m"/"f" : checkPedigree() rows | 4
+inputCodes | pedkindraw sex as text "m"/"f" : shapes drawn | diamond / diamond / diamond / diamond
+== inputCodes: exit 0 in 3 s (limit 60 s)
+lookups | kinship2 version | 1.9.6.2
+lookups | Pedixplorer version | 1.8.0
+lookups | Pedixplorer Pedigree() offspring counts A, B, C, D | 2 / 2 / 0 / 0
+lookups | Pedixplorer lookup functions | num_child / parent_of / is_parent / ancestors / is_founder / descendants / spouse
+lookups | pedkindraw lookup exports | getDescendantPedigree / getFounders / getIdsWithOneParent / getOffspring / getParents / getProbandPedigree / hasBothParents / isFounder
+lookups | pedkindraw getOffspring(ped, "A") | C / D
+== lookups: exit 0 in 2 s (limit 60 s)
+blockKinship | kinship2 version | 1.9.6.2
+blockKinship | Pedixplorer version | 1.8.0
+blockKinship | minnbreast people, families | 28081 /   426
+blockKinship | kinship2 makekinship(): seconds, R's peak memory MB |   0.4 / 202.3
+blockKinship | kinship2 makekinship(): class, values stored | dsCMatrix / 512843
+blockKinship | pedkindraw kinship(sparse = TRUE): seconds, R's peak memory MB |   14.4 / 8863.2
+blockKinship | pedkindraw kinship(sparse = TRUE): class, values stored | dgCMatrix / 997605
+blockKinship | same ids in the same order | FALSE
+blockKinship | largest difference between the two, matched by id | 0
+== blockKinship: exit 0 in 17 s (limit 600 s)
+removeAnimals | kinship2 version | 1.9.6.2
+removeAnimals | Pedixplorer version | 1.8.0
+removeAnimals | kinship2 pedigree.trim("C") (C sires F and G) | stops: A subpedigree cannot choose only one parent of a subject
+removeAnimals | kinship2 pedigree.trim("I") (a leaf) | 8
+removeAnimals | pedkindraw checkPedigree() after dropping C's row | rowlessParents / C / sire of F, G
+removeAnimals | pedkindraw kinship() after dropping C's row: K(F, G) | warns: findGeneration: 2 id(s) could not be assigned a generation; the pedigree may contain a cycle or a parent ID absent as an ego ID. Unplaced id(s): F, G. Parent ID(s) with no record: C
+removeAnimals | pedkindraw kinship() after dropping C's row: K(F, G) | stops: pdepth must not be missing for any animal
+removeAnimals | pedkindraw addParents() after dropping C's row: rows, K(F, G) | 9.00 / 0.25
+removeAnimals | pedkindraw C's offspring given an unknown sire by hand: K(F, G) | 0.125
+removeAnimals | Pedixplorer subset(all but C, del_parents = NULL): ids kept; F's sire and dam | ABCDEFGHI / C / E
+removeAnimals | Pedixplorer subset(all but C, del_parents = one): ids kept; F's sire and dam | ABDEFGHI / NA / NA
+removeAnimals | Pedixplorer subset(all but C, del_parents = both): ids kept; F's sire and dam | ABCDEFGHI / C / E
+== removeAnimals: exit 0 in 3 s (limit 60 s)
+fiveConditions | kinship2 version | 1.9.6.2
+fiveConditions | Pedixplorer version | 1.8.0
+fiveConditions | kinship2 plot.pedigree() with 5 conditions | stops: More columns in the affected matrix than angle/density values
+fiveConditions | pedkindraw conditions drawn | affected1 / affected2 / affected3 / affected4
+fiveConditions | pedkindraw conditionsNotDrawn | affected5
+== fiveConditions: exit 0 in 1 s (limit 60 s)
+plinkReader | kinship2 version | 1.9.6.2
+plinkReader | Pedixplorer version | 1.8.0
+plinkReader | Pedixplorer plink_to_pedigree() class | Pedigree
+plinkReader | pedkindraw exports naming read, file or plink | 
+== plinkReader: exit 0 in 2 s (limit 60 s)
+datasets | kinship2 version | 1.9.6.2
+datasets | Pedixplorer version | 1.8.0
+datasets | kinship2 datasets | minnbreast / sample.ped / testped1
+datasets | Pedixplorer datasets | minnbreast / relped / sampleped
+datasets | pedkindraw datasets | 
+datasets | pedkindraw files in its extdata folder | obfuscated_rhesus_mhc_ped.csv / obfuscated_rhesus_mhc_twin_relations.csv
+== datasets: exit 0 in 1 s (limit 60 s)
+
+Exit codes (124 = time limit reached):
+           files         largeIds              app matesNoOffspring 
+               0                0                0                0 
+ unknownAffected         markings    measuredTrait            style 
+               0                0                0                0 
+          labels    shrinkPicture   distanceSubset     alignedDepth 
+               0                0                0                0 
+        ownHints       inputCodes          lookups     blockKinship 
+               0                0                0                0 
+   removeAnimals   fiveConditions      plinkReader         datasets 
+               0                0                0                0 
