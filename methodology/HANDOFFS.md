@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S39
+date: 2026-11-17
+status: pending
+active_task: Phase 17e, the legend's "Same animal, again" label fits (strict TDD; R84): the label R/drawPedigreeDiagram.R:121, the legend's width = 0.28 at :236; measure a shorter label and a wider legend at 776 px and 700 px first; the drift choice D3 at the pre-RED picker; Mark's pick "Fix the legend label (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S38
 date: 2026-11-17
 status: complete

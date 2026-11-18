@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-17 · [BL-Phase 17e] S39: Phase 17e, the legend's "Same animal, again" label fits (in progress)
+- **Change:** session claimed (Mark's pick "Fix the legend label (Recommended)" at the orient picker): strict TDD. Phase 0 reconcile: nothing to backfill (frontier `bf3ff69` is HEAD, S38's close-out 2; no merges; S38's receipt complete, its ratchet results `42b564bc4c70` matching the results file); drift tool 91 functions, 14 differ, 0 without a row; nprcgenekeepr at `ba8e56f32` (its S1185 REFACTOR, not a copied file; its ledgers uncommitted, its own close-out), its log on the copied files the same 4 commits. CI run `44227398574` (on `48e4c92`) still in progress at the claim: ubuntu-devel in `setup-r-dependencies` since 03:12 UTC, the other 4 jobs `success`.
+- **Commit/PR:** the claim commit · **Session:** S39 · **Verified:** pending (close-out).
+
 ### 2026-11-17 · [BL-Phase 17d] S38 push 3: `master` to GitHub at `7c9e306` (REFACTOR)
 - **Change:** `git push origin master` (`48e4c92..7c9e306`); a package change, so both workflows ran: CI run `44228850631` 5/5 `success` at the first attempt (15 min); site run `44228850623` `success`. S38's close-out 1 and 2 after it are not pushed.
 - **Commit/PR:** none (push) · **Session:** S38 · **Verified:** `gh run view --json`.

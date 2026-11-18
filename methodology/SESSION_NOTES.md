@@ -108,6 +108,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S37's entries were removed in S3-S38 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 39 Did
+**Deliverable:** Phase 17e, the legend's "Same animal, again" label fits (`docs/planning/cran-submission-plan.md:471`;
+R84; `methodology/BACKLOG.md:26`): the label `R/drawPedigreeDiagram.R:121`, the legend's `width = 0.28` `:236`;
+measure first; the drift choice D3; strict TDD (IN PROGRESS)
+**Started:** 2026-11-17 21:42 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Fix the legend label
+(Recommended)" (orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 37 Handoff Evaluation (by Session 38)
 **Score: 9/10.**
 - **What helped:** every count and citation held: the drift tool (91/14/0), nprcgenekeepr's log (the same 4
