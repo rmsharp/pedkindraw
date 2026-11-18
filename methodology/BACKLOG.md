@@ -8,12 +8,6 @@ issues).*
 
 ## Up Next
 
-- [ ] **Phase 17c3: the pedigree first in four exports** (READY, strict TDD; R89, R93; Effort M) --
-      `getProbandPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands,
-      ...)`, `hasBothParents(ped, id)`; the 23 calls by position that section 2.4 lists by line (the fidelity tool's
-      six given names); four `DIVERGENCE.md` rows; `getParents()`'s help sentence on the order
-      (`R/getParents.R:14`).
-
 - [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
       timing runs, Effort L, a guess; before the release, Phases 17g-17i of
       `docs/planning/cran-submission-plan.md`, R84)

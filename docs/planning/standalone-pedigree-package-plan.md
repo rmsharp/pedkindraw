@@ -51,9 +51,10 @@ its draft on the branch `draft/speed-vignette`); Phase 16e DONE (pedkindraw S31:
 `docs/planning/cran-submission-plan.md`, R83-R85; phases 17a-17q); Phase 17a DONE (pedkindraw S33: win-builder
 R-devel 398 s, R86); Phase 17b DONE (pedkindraw S34: six name rulings, 17c in three sessions, R87-R93); Phase
 17c1 DONE (pedkindraw S35: `kinship(id, sire, dam, pdepth, ...)` and its `pdepth` check, R87, R91, R92); Phase
-17c2 DONE (pedkindraw S36: the pedigree argument is `ped` in four more exports, R88).
-**Next:** Phase 17c3, the pedigree first in `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()` and
-`hasBothParents()` (R89; strict TDD; `docs/planning/cran-submission-plan.md` section 6).
+17c2 DONE (pedkindraw S36: the pedigree argument is `ped` in four more exports, R88); Phase 17c3 DONE (pedkindraw
+S37: the pedigree first in four exports, R89), so Phase 17c is DONE.
+**Next:** Phase 17d ("Select by id" leaves out the routing points) or 17e (the legend's "Same animal, again" label
+fits), in either order (strict TDD; `docs/planning/cran-submission-plan.md` section 6).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -933,6 +934,14 @@ and `addBackSecondParents(trimmedPed, ped)`, in the old positions, so no caller 
 `pedSourceDf` or `uPed` now stops ("unused argument"). Four `DIVERGENCE.md` rows; a NEWS bullet (Mark's pick);
 `getIdsWithOneParent()` has a test file of its own (Mark's pick); REFACTOR skipped (Mark's pick). Fidelity tool 600
 of 600 identical; `R CMD check --as-cran` R16's NOTE only.
+
+**Done 17c3 (pedkindraw S37; R89):** `getProbandPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`,
+`trimPedigree(ped, probands, removeUninformative, addBackParents)` and `hasBothParents(ped, id)`, with the 23 calls
+that passed both by position rewritten (the fidelity tool's name both arguments, so one call runs on both
+packages); a call in nprcgenekeepr's order now stops ("$ operator is invalid for atomic vectors"), tested. Four
+`DIVERGENCE.md` rows; `getParents()`'s sentence on the order dropped and a NEWS bullet (Mark's picks);
+`hasBothParents()` has a test file of its own (Mark's pick); REFACTOR skipped (Mark's pick). Fidelity tool 600 of 600
+identical; `R CMD check --as-cran` R16's NOTE only.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

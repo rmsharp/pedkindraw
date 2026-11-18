@@ -21,7 +21,8 @@ legend item it needed (S28, R81); 16d, the speed vignette, is deferred until ped
 and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN submission, is planned (S32,
 `docs/planning/cran-submission-plan.md`) and under way: 17a, the check time on win-builder, is done (S33); 17b, the
 argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2, the pedigree argument's name, is done
-(S36); 17c3 is next (Planned, below).
+(S36); 17c3, the pedigree first, is done (S37), so 17c is done; 17d or 17e, a drawing fix, is next (Planned,
+below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -43,7 +44,8 @@ session each unless marked. They follow the copy slices.
   reading after 17j (R86). 17b is done (S34, R87-R93): `kinship()` takes `sire` and `dam`, the pedigree argument is
   `ped` and comes first in every export, `kinship()` refuses generation numbers that put a parent at or after its
   offspring, and the shared export names stay; 17c makes the changes test-first in three sessions: 17c1
-  (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) is done (S36), 17c3 (the pedigree first) next.
+  (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) is done (S36), 17c3 (the pedigree first) is
+  done (S37); 17d and 17e, the two drawing fixes, are next, in either order.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
@@ -215,6 +217,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17c3, the pedigree first (pedkindraw S37, 2026-11-17).** `getProbandPedigree()`,
+  `getDescendantPedigree()`, `trimPedigree()` and `hasBothParents()` now take the pedigree as their first argument,
+  like every other function that takes one. The calls that passed both arguments by position changed with them, in
+  the package, its tests, its help, the getting-started vignette and the comparison tool; a call in nprcgenekeepr's
+  order stops with an error rather than giving a wrong answer. NEWS says so. With it, 17c, the argument-name
+  changes, is done.
 - **Phase 17c2, the pedigree argument is `ped` (pedkindraw S36, 2026-11-17).** `getParents()`, `getOffspring()`
   and `getIdsWithOneParent()` now call the pedigree `ped`, like every other function, and `addBackSecondParents()`
   calls its trimmed pedigree `trimmedPed` beside the full `ped`. Each argument kept its position, so no call in the

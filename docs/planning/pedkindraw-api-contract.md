@@ -106,9 +106,9 @@ release (section 6), the last point at which it costs users nothing.
 **The review, pedkindraw S34 (Phase 17b; plan R87-R93):** a parent argument is `sire` or `dam` in every export,
 `kinship()` included (R87); the pedigree argument is `ped` in every export, with `trimmedPed` beside it in
 `addBackSecondParents()` (R88); every export that takes a pedigree takes it first (R89). The rows below give these
-names, each marked with the phase that makes it (17c1-17c3, test-first); until then the code has the old ones,
-which each row also names. Each change is a `DIVERGENCE.md` row (plan section 5). Made so far: 17c1 (pedkindraw
-S35, `kinship()`) and 17c2 (pedkindraw S36, the four R88 names).
+names, each marked with the phase that makes it (17c1-17c3, test-first); the old ones each row also names are
+nprcgenekeepr's. Each change is a `DIVERGENCE.md` row (plan section 5). All three are made: 17c1 (pedkindraw S35,
+`kinship()`), 17c2 (pedkindraw S36, the four R88 names) and 17c3 (pedkindraw S37, the R89 order).
 
 ### 4.1 Copied exports (20)
 
@@ -350,6 +350,6 @@ with Pedixplorer included, with a note in `kinship()`'s help and the README on t
 3. **nprcgenekeepr's own license**: it ships the same code (section 3) under MIT. Separate work, recorded as its
    own `BACKLOG.md` item (Mark's ruling, S1128); nothing here changes it.
 4. **Argument names** (section 6): reviewed before the first CRAN release. Ruled pedkindraw S34 (plan R87-R93);
-   the changes are Phases 17c1-17c3.
+   the changes are Phases 17c1-17c3, made in pedkindraw S35-S37.
 5. **`findPedigreeNumber()`'s speed** (section 7): new work after the copy.
 6. **`data.table`** (section 5): kept; replacing it is a recorded divergence if ever wanted.

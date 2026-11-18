@@ -6,7 +6,8 @@
 **Status:** Phase 17a DONE (S33: win-builder R-devel read 398 s, section 2.1; R86). Phase 17b DONE (S34: six
 name rulings and 17c in three sessions, section 2.4; R87-R93). Phase 17c1 DONE (S35: `kinship(id, sire, dam,
 pdepth, ...)` and its `pdepth` check). Phase 17c2 DONE (S36: the pedigree argument is `ped` in four more exports).
-Next: Phase 17c3, the pedigree first.
+Phase 17c3 DONE (S37: the pedigree first in four exports), so 17c is done. Next: Phase 17d or 17e, the drawing
+fixes (either order, section 8).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -204,7 +205,7 @@ the tool's one such use, `lapply(few, fn("hasBothParents"), ped = ped)` (`:268`)
 |---|---|---|
 | R87 | `kinship(id, sire, dam, pdepth, ...)`, were `fatherId`, `motherId` (17c1) | 43 calls to pedkindraw's `kinship()` here (3 more are kinship2's), 42 by position; the one by name is the copied C13 test (`test_kinship.R:241`), which also checks the names with `expect_named(formals(kinship), ...)`. The error message "fatherId, motherId and pdepth must each be as long as id" (`R/kinship.R:115`) and its 3 expected copies (`test_kinshipMemoryEquivalence.R:74-76`). The fidelity tool's 8 calls pass them by position. Files: `R/kinship.R`, `man/kinship.Rd`, the two test files, `DIVERGENCE.md` |
 | R88 | `getParents(ped, ids)`, `getOffspring(ped, ids)` (were `pedSourceDf`), `getIdsWithOneParent(ped)`, `addBackSecondParents(trimmedPed, ped)` (were `uPed`) (17c2) | 24 calls (19 here, 5 in the fidelity tool), none passing these arguments by name; 35 lines (`pedSourceDf` 15, `uPed` 20) in `R/getParents.R`, `R/getOffspring.R`, `R/getIdsWithOneParent.R`, `R/addBackSecondParents.R` and their 4 help pages. Tests for the new names go in `test_getParents.R`, `test_getOffspring.R`, `test_addBackSecondParents.R` (no test file calls `getIdsWithOneParent()`; `addBackSecondParents()` reaches it) |
-| R89 | `getProbandPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands, ...)`, `hasBothParents(ped, id)` (17c3) | 65 calls: the 42 that name `probands =` or `ped =` keep working; the 23 that pass both by position are rewritten: `R/trimPedigree.R:59`, `R/addBackSecondParents.R:45` (`:49` since S36's 17c2 header), the help examples in `R/trimPedigree.R` (2) and `R/hasBothParents.R` (2), `test_trimPedigree.R` (4), `test_kinshipHasBothParentsHelp.R` (4), `vignettes/pedkindraw.Rmd:152`, `:163`, `:302`, and `tools/compareResultsWithNprcgenekeepr.R:104`, `:124`, `:157`, `:227`, `:228`, `:291`, which then name their arguments so one call runs on both packages (`:268`'s `hasBothParents` call already names `ped`). An old-order call stops with "$ operator is invalid for atomic vectors" in each of the four (a scratch run), never a wrong answer |
+| R89 | `getProbandPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands, ...)`, `hasBothParents(ped, id)` (17c3) | 65 calls: the 42 that name `probands =` or `ped =` keep working; the 23 that pass both by position are rewritten: `R/trimPedigree.R:59`, `R/addBackSecondParents.R:45` (`:49` since S36's 17c2 header, `:50` since S37's), the help examples in `R/trimPedigree.R` (2) and `R/hasBothParents.R` (2), `test_trimPedigree.R` (4), `test_kinshipHasBothParentsHelp.R` (4), `vignettes/pedkindraw.Rmd:152`, `:163`, `:302`, and `tools/compareResultsWithNprcgenekeepr.R:104`, `:124`, `:157`, `:227`, `:228`, `:291`, which then name their arguments so one call runs on both packages (`:268`'s `hasBothParents` call already names `ped`). An old-order call stops with "$ operator is invalid for atomic vectors" in each of the four (a scratch run), never a wrong answer |
 | R90 | `addIdRecords()` stays internal | nothing |
 | R91 | the shared export names stay; `kinship()`'s help and the README say which names kinship2 and Pedixplorer share and that their `kinship()` takes a pedigree object (17c1) | `R/kinship.R`'s help, `README.Rmd` and `README.md` |
 | R92 | `kinship()` stops when a known parent's `pdepth` is not below its offspring's; its help says the 4th argument is `pdepth`, not kinship2's `sex` (17c1) | `R/kinship.R`, its help, a test file; the cases: kinship2's `sample.ped` (both families) and `minnbreast` (426 families), where the check stopped the sex-codes call in every family and passed `findGeneration()`'s numbers in every family |
@@ -430,6 +431,18 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   `getParents()`'s `@param ped` (`R/getParents.R:14`-`:16`: the pedigree is first "unlike getProbandPedigree() and
   getDescendantPedigree(), which take the animal ids first"), which 17c3 makes false; `getOffspring()`'s page
   inherits it (S36's search: no other help text describes the order).
+  **Done (S37):** RED `374f970`, GREEN 1 `8f921d5` (`getProbandPedigree()`, `trimPedigree()`, the vignette's three
+  calls), GREEN 2 `6a2caf9` (`getDescendantPedigree()`, `hasBothParents()` and `addBackSecondParents()`'s call),
+  GREEN 3 `4602b7c` (the fidelity tool's calls name `ped` and `probands`; four `DIVERGENCE.md` rows), GREEN 4
+  `2b6ef7a` (`getParents()`'s order sentence dropped, a NEWS bullet; Mark's picks); REFACTOR skipped (Mark's pick).
+  21 files: the five `R/` files and six pages, the vignette, the fidelity tool, `DIVERGENCE.md`, `NEWS.md`, and five
+  test files, among them the new `test_hasBothParents.R` (Mark's pick). The parse at `e241cd0` found R89's 65 calls
+  exactly (42 unchanged by the order, 23 to rewrite), and the whole suite passed on a scratch copy with all of them
+  drafted (703 blocks), before RED. The 8 old-order test calls changed in RED (Mark's pick), so `test_trimPedigree.R`,
+  whose 4 calls run outside `test_that()`, failed RED as one file error (dragon 21). Each of the four now stops on
+  an old-order call ("$ operator is invalid for atomic vectors"), tested. Fidelity tool 600 of 600 identical against
+  nprcgenekeepr at `8ebd33d39`; `R CMD check --as-cran` R16's NOTE only on a second run (the first also listed a
+  GitHub link at 503, which answered 200 a minute later).
 - **DONE (each):** suite 0 failed, WARN 0; lint 0; roxygen idempotent; `R CMD check --as-cran` R16's NOTE only; the
   drift tool lists each changed function with its row; the fidelity tool's cases run under the new names, all
   identical; `git grep` of each old name finds only history and headers; CI 5/5.
@@ -642,6 +655,8 @@ pedkindraw's own:
    the `spelling` package.
 10. **A URL in the package that does not answer grows R16's NOTE**: the website must answer at every check and at
     submission, and CRAN's own page for pedkindraw is a 404 until acceptance, so no CRAN link or badge before 17q.
+    A link can also fail for a moment (S37: README's GitHub link to `DIVERGENCE.md` read 503 in one check and 200 a
+    minute later, `tools:::check_url_db()` 0 problems in 17 URLs): check the URL again before acting on it.
 11. **pkgdown publishes every root `.md` but README, NEWS and LICENSE** (S31); `cran-comments.md` is the
     exception it skips. Any other new root `.md` needs the site workflow's delete line (`.github/workflows/pkgdown.yaml`).
 12. **A push beyond `CLAUDE.md` and `methodology/**` starts both workflows** (15-18 min and 3 min).
@@ -667,6 +682,14 @@ pedkindraw's own:
     `getParents(ped = x)` already worked, `ped` being a prefix of `pedSourceDf` (partial matching), so a RED test
     that only calls the new name passes on the old code. `expect_named(formals(f), ...)` is what fails there; put
     it in every rename's RED block. After the rename, a call that names the old argument stops ("unused argument").
+21. **Code outside `test_that()` fails RED as one file error** (S37): `test_trimPedigree.R` builds its four trimmed
+    pedigrees at the top of the file, so on the old code the new-order calls stopped the file before any test ran:
+    one error, "(code run outside of `test_that()`)", in place of its two blocks, the new one among them. Count RED
+    by file as well as by block, and say in the picker which files will fail whole (measured on a scratch copy).
+22. **The fidelity tool runs from the repository, not a scratch copy** (S37): started outside renv's project, its
+    nprcgenekeepr process inherited pedkindraw's library and stopped ("The package "openxlsx" is required") before
+    any case, since it restores renv's saved `RENV_DEFAULT_*` values (Learning 5), which only an R started in renv's
+    project has. Run it in the repository at GREEN, against nprcgenekeepr at a commit.
 
 ---
 
