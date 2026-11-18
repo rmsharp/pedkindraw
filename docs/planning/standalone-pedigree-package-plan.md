@@ -52,9 +52,10 @@ its draft on the branch `draft/speed-vignette`); Phase 16e DONE (pedkindraw S31:
 R-devel 398 s, R86); Phase 17b DONE (pedkindraw S34: six name rulings, 17c in three sessions, R87-R93); Phase
 17c1 DONE (pedkindraw S35: `kinship(id, sire, dam, pdepth, ...)` and its `pdepth` check, R87, R91, R92); Phase
 17c2 DONE (pedkindraw S36: the pedigree argument is `ped` in four more exports, R88); Phase 17c3 DONE (pedkindraw
-S37: the pedigree first in four exports, R89), so Phase 17c is DONE.
-**Next:** Phase 17d ("Select by id" leaves out the routing points) or 17e (the legend's "Same animal, again" label
-fits), in either order (strict TDD; `docs/planning/cran-submission-plan.md` section 6).
+S37: the pedigree first in four exports, R89), so Phase 17c is DONE; Phase 17d DONE (pedkindraw S38: "Select by
+id" lists the animals only, and a real id starting `__jog_` is refused, R94).
+**Next:** Phase 17e (the legend's "Same animal, again" label fits; strict TDD;
+`docs/planning/cran-submission-plan.md` section 6).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -943,6 +944,14 @@ packages); a call in nprcgenekeepr's order now stops ("$ operator is invalid for
 `DIVERGENCE.md` rows; `getParents()`'s sentence on the order dropped and a NEWS bullet (Mark's picks);
 `hasBothParents()` has a test file of its own (Mark's pick); REFACTOR skipped (Mark's pick). Fidelity tool 600 of 600
 identical; `R CMD check --as-cran` R16's NOTE only.
+
+**Done 17d (pedkindraw S38; R94):** the "Select by id" box leaves out `__jog_`, the routing points
+`.resolveEdgeNodeCollisions()` adds (the drawing vignette's colony box, read in headless Chrome, 376 options for its
+375 animals, was 572), and `.buildMatingUnitForest()` refuses a real id that starts with `__jog_` (Mark's pick: it
+had collided silently with a routing point). The six reserved prefixes are written once, `.reservedIdPrefixes` and
+`.reservedIdPattern` (REFACTOR, Mark's pick). Port later (Mark's pick): two `DIVERGENCE.md` rows and the fidelity
+tool's `withoutJogSelections()` until nprcgenekeepr has it; two NEWS bullets. Fidelity tool 600 of 600 identical;
+`R CMD check --as-cran` R16's NOTE only.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

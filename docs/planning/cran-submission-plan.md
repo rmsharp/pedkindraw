@@ -6,8 +6,9 @@
 **Status:** Phase 17a DONE (S33: win-builder R-devel read 398 s, section 2.1; R86). Phase 17b DONE (S34: six
 name rulings and 17c in three sessions, section 2.4; R87-R93). Phase 17c1 DONE (S35: `kinship(id, sire, dam,
 pdepth, ...)` and its `pdepth` check). Phase 17c2 DONE (S36: the pedigree argument is `ped` in four more exports).
-Phase 17c3 DONE (S37: the pedigree first in four exports), so 17c is done. Next: Phase 17d or 17e, the drawing
-fixes (either order, section 8).
+Phase 17c3 DONE (S37: the pedigree first in four exports), so 17c is done. Phase 17d DONE (S38: "Select by id"
+lists the animals only, and a real id starting `__jog_` is refused; R94). Next: Phase 17e, the legend's label
+(section 8).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -455,6 +456,17 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **DONE:** the colony drawing's box lists its 375 animals only; the checks as 17c; the drawing vignette's
   colony drawing checked in headless Chrome.
 - **Surface:** this Mac, headless Chrome, GitHub Actions.
+- **Done (S38; R94):** ruling `2ac5308` (Mark's pre-RED picks: the input check too, "Box and check"; "Port
+  later"); RED `88798f0` (one test per file, 2 of 705 blocks failing); GREEN 1 `21a164e` (the filter and the input
+  check gain `__jog_`), GREEN 2 `e75171e` (the fidelity tool's `withoutJogSelections()`; two `DIVERGENCE.md` rows),
+  GREEN 3 `48e4c92` (two NEWS bullets); REFACTOR `7c9e306` (Mark's pick over Claude's "skip": the six prefixes
+  written once, `.reservedIdPrefixes` and `.reservedIdPattern`, read by the check and the filter; a before/after
+  record of 14 ids' check results and 5 drawings, identical). Measured before RED on scratch copies: smallPed with
+  B renamed `__jog_1_a` gave two nodes of that id and no error; the vignette's colony box drawn in headless Chrome,
+  572 options (the placeholder, 375 animals, 196 `__jog_`); pedkindraw's own fidelity runs, 33 of 600 results
+  differing only by 3,152 `__jog_` box entries. After: suite 705 blocks, 0 failed, WARN 0; the shipped vignette's
+  colony box (read from `R CMD build`'s tarball) 376 options; fidelity 600 of 600 against nprcgenekeepr at
+  `83c50c611`; `R CMD check --as-cran` R16's NOTE only.
 
 ### Phase 17e. The legend's "Same animal, again" label fits (strict TDD)
 
@@ -585,7 +597,7 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 |---|---|---|---|
 | D1 | Who uploads to win-builder: Mark, or Claude with Mark's approval in the session | 17a | the result goes to the maintainer's email either way; nprcgenekeepr's D5 ruled the owner, and once let the agent |
 | D2 | Each name change of section 2.4: change or keep | 17b | **Decided S34** (R87-R93): section 2.4's "Decided" table; 9 `DIVERGENCE.md` rows in 17c |
-| D3 | Each drawing fix: also fixed in nprcgenekeepr (a session there, Mark starts it) or a `DIVERGENCE.md` row | 17d, 17e | nprcgenekeepr has the same filter and label |
+| D3 | Each drawing fix: also fixed in nprcgenekeepr (a session there, Mark starts it) or a `DIVERGENCE.md` row | 17d, 17e | nprcgenekeepr has the same filter and label. **17d decided S38** (R94): port later, `DIVERGENCE.md` rows and the fidelity tool's `withoutJogSelections()` until then |
 | D4 | Which gaps, if any, are closed before the release | 17f | each would be a phase of its own, before 17g |
 | D5 | The timing plan's scope | 17g | R82; the draft's nine tables |
 | D6 | How tests are kept off CRAN: `skip_on_cran()` per file or block, or a list of slow files as nprcgenekeepr's `slowTestFiles.txt` | 17k | eight files take 81% (section 2.1) |
@@ -690,12 +702,21 @@ pedkindraw's own:
     nprcgenekeepr process inherited pedkindraw's library and stopped ("The package "openxlsx" is required") before
     any case, since it restores renv's saved `RENV_DEFAULT_*` values (Learning 5), which only an R started in renv's
     project has. Run it in the repository at GREEN, against nprcgenekeepr at a commit.
+23. **pedkindraw's own half of the fidelity tool does run from a scratch copy** (S38): `Rscript
+    tools/compareResultsWithNprcgenekeepr.R --child <copy> <clone>/tools/pedigreeComparison/data <out.rds>`, with
+    the scratch environment of the session notes' gotchas, saves every case's result for that copy. Run it on HEAD
+    and on a draft, then compare the two lists: S38 found the 33 results its fix changes, and that taking the
+    `__jog_` entries out of HEAD's boxes made all 600 identical, before any picker named the allowance.
+24. **A drawing check in the browser reads the vignette as shipped** (S38): `R CMD build` puts the rendered
+    `inst/doc/drawing.html` in the tarball; extract it and read it with chromote (`select[id^=nodeSelect]`). A
+    "Select by id" box has one option more than its values, the "Select by id" placeholder (visNetwork's
+    `setNodeIdList()`), so the colony's 375 animals show as 376 options.
 
 ---
 
 ## 10. Out of scope
 
-- Any change to nprcgenekeepr (R8): the R81 port, removing its stale S1159 line, its edition-3 conversion and the
+- Any change to nprcgenekeepr (R8): the R81 and R94 ports, removing its stale S1159 line, its edition-3 conversion and the
   vacuous test are for sessions Mark starts there.
 - Copying the colony overview; `findPedigreeNumber()`'s speed; the drift tool's constants; the methodology tools'
   items (section 3).

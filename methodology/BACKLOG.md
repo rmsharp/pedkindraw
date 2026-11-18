@@ -23,16 +23,6 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **"Select by id" lists invisible routing points** (READY, Effort S; before the release, Phase 17d, R84)
-      -- found S29 in Chrome: in the
-      375-animal drawing the box has 571 entries, the 375 animals and 196 `__jog_` points that
-      `.resolveEdgeNodeCollisions()` adds (`vignettes/drawing.Rmd`'s colony drawing shows it). The filter that
-      leaves internal nodes out of the box, `R/drawPedigreeDiagram.R:292`, names `__union_`, `__dup_`, `__drop_`,
-      `__bar_` and `__proj_` but not `__jog_`; nprcgenekeepr's `R/drawPedigreeDiagram.R:252` (at `b4abb9a0b`) has
-      the same filter. The small drawings have no `__jog_` point, so their boxes list the animals only. Copied code:
-      the drift-rule choice (mirror in nprcgenekeepr in a session there, or a `DIVERGENCE.md` row) at its pre-RED
-      picker; a test reads `drawPedigreeDiagram(layout)$x$idselection$values` on a layout with jogs.
-
 - [ ] **The legend cuts its "Same animal, again" label** (READY, Effort S; before the release, Phase 17e, R84)
       -- seen S31 on the website in headless
       Chrome (window 1400 px; each widget 776 px wide, its drawing's canvas 559 px, so the legend about 217 px): the
@@ -51,6 +41,16 @@ issues).*
       removes `withoutConditionSymbols()` from `tools/compareResultsWithNprcgenekeepr.R` (the tool must then read
       600 of 600 identical with nothing set aside), moves the two copied files' headers to the new commit, and
       re-runs the drift tool (3 differ).
+
+- [ ] **After nprcgenekeepr has the "Select by id" fix, drop pedkindraw's records of the difference**
+      (BLOCKED on nprcgenekeepr, Effort S) -- R94 (S38, Mark's "Port later"): nprcgenekeepr is to get S38's change
+      in a session of its own there, which Mark starts (R8): `__jog_` joins the reserved prefixes of its
+      `R/drawPedigreeDiagram.R:252` filter and its `R/makePedigreeDiagramData.R:417` input check (at `ae826ccb5`),
+      or both read one list as pedkindraw's `.reservedIdPrefixes` and `.reservedIdPattern` do (pedkindraw
+      `21a164e`, REFACTOR `7c9e306`), with the tests of RED `88798f0`. Once it lands, a pedkindraw session removes
+      the R94 parts of the `drawPedigreeDiagram()` and `.buildMatingUnitForest()` rows in `DIVERGENCE.md`, removes
+      `withoutJogSelections()` from `tools/compareResultsWithNprcgenekeepr.R` (the tool must then read 600 of 600
+      with no `__jog_` entry set aside), and re-runs the drift tool.
 
 - [ ] **What kinship2 or Pedixplorer can do that pedkindraw cannot** (READY, Effort M, a guess; before the release,
       Phase 17f, R84) -- Mark (S26): "Add
