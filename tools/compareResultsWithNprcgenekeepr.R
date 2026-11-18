@@ -27,7 +27,11 @@
 ## withoutConditionSymbols() below). A second (S38, plan R94): the __jog_
 ## entries of nprcgenekeepr's "Select by id" boxes are taken out before the
 ## comparison, since pedkindraw's box leaves them out (see
-## withoutJogSelections() below).
+## withoutJogSelections() below). A third (S39, plan R95): pedkindraw's legend
+## draws its lines without arrowheads and their labels on white, two columns
+## of its line table that nprcgenekeepr's leaves out; they are taken out of
+## pedkindraw's legends before the comparison when they hold exactly those
+## values (see withoutLegendLineStyle() below).
 ##
 ## pedkindraw's getProbandPedigree(), getDescendantPedigree(), trimPedigree()
 ## and hasBothParents() take the pedigree first, nprcgenekeepr's the ids first
@@ -787,6 +791,45 @@ cat(sprintf(paste(
   "run, %d entries taken out before the comparison (DIVERGENCE.md, plan",
   "R94)\n"
 ), setAside$jogDrawings, setAside$jogEntries))
+## pedkindraw S39 (plan R95, DIVERGENCE.md): pedkindraw's legend draws its four
+## lines without arrowheads (arrows "") and each label on white
+## (font.background "#FFFFFF"); nprcgenekeepr's line table has neither column,
+## so visLegend() draws an arrowhead at each line's end. Until nprcgenekeepr
+## has the same change, the two columns are taken out of pedkindraw's legends
+## before the comparison, only where every row holds exactly those values, so
+## any other value, or the columns in nprcgenekeepr's legends, would still
+## differ. Measured S39 on pedkindraw's own runs before and after the fix: 48
+## of the 600 results differed (every drawing case of the 12 pedigrees), and
+## all 600 were identical with the two columns taken out. Remove this when
+## nprcgenekeepr has the change.
+setAside$lineStyleDrawings <- 0L
+withoutLegendLineStyle <- function(x) {
+  if (inherits(x, "visNetwork")) {
+    edges <- x$x$legend$edges
+    if (is.data.frame(edges) &&
+          identical(edges$arrows, rep("", nrow(edges))) &&
+          identical(edges[["font.background"]],
+                    rep("#FFFFFF", nrow(edges)))) {
+      edges$arrows <- NULL
+      edges[["font.background"]] <- NULL
+      x$x$legend$edges <- edges
+      setAside$lineStyleDrawings <- setAside$lineStyleDrawings + 1L
+    }
+    return(x)
+  }
+  if (is.list(x) && !is.data.frame(x)) {
+    kept <- attributes(x)
+    x <- lapply(x, withoutLegendLineStyle)
+    attributes(x) <- kept
+  }
+  x
+}
+ours <- withoutLegendLineStyle(ours)
+cat(sprintf(paste(
+  "drawings whose legend lines have no arrowheads and white labels: %d in",
+  "pedkindraw's run, compared without those two columns (DIVERGENCE.md, plan",
+  "R95)\n"
+), setAside$lineStyleDrawings))
 same <- unlist(Map(identical, ours, theirs))
 withWarnings <- lengths(lapply(ours, `[[`, "warnings")) > 0L
 withMessages <- lengths(lapply(ours, `[[`, "messages")) > 0L
