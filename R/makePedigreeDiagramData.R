@@ -20,7 +20,9 @@
 ## .buildMatingUnitForest(); the help describes hints$mate. Plan Phase 17d
 ## (pedkindraw S38, R94): .buildMatingUnitForest()'s input check also refuses
 ## an id starting __jog_, the prefix of .resolveEdgeNodeCollisions()'s routing
-## points (a DIVERGENCE.md row). Its comments name nprcgenekeepr's documents,
+## points; its REFACTOR writes the six prefixes once, .reservedIdPrefixes and
+## .reservedIdPattern, which drawPedigreeDiagram() also reads (a DIVERGENCE.md
+## row). Its comments name nprcgenekeepr's documents,
 ## sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -379,6 +381,15 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   ids[!hasParent & !isParent & !(ids %in% twinIds)]
 }
 
+## pedkindraw S38 (plan R94): the prefixes of the ids the layout gives its own
+## nodes, written once. .buildMatingUnitForest() refuses a real id that starts
+## with one, and drawPedigreeDiagram()'s "Select by id" box leaves those nodes
+## out; __jog_, the prefix of .resolveEdgeNodeCollisions()'s routing points,
+## had been missing from both lists.
+.reservedIdPrefixes <- c("__union_", "__dup_", "__drop_", "__bar_", "__proj_",
+                         "__jog_")
+.reservedIdPattern <- paste0("^", .reservedIdPrefixes, collapse = "|")
+
 #' Transform a pedigree into a mating-unit forest (Option 2 layout, D1/D2)
 #'
 #' Internal helper for the kinship2-parity pedigree layout (Pedigree
@@ -452,11 +463,10 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   }
 
   ids <- as.character(ped$id)
-  reserved <- grepl("^__union_|^__dup_|^__drop_|^__bar_|^__proj_|^__jog_",
-                    ids)
+  reserved <- grepl(.reservedIdPattern, ids)
   if (any(reserved)) {
     stop(".buildMatingUnitForest() found real id(s) using a reserved ",
-         "'__union_'/'__dup_'/'__drop_'/'__bar_'/'__proj_'/'__jog_' prefix, ",
+         paste0("'", .reservedIdPrefixes, "'", collapse = "/"), " prefix, ",
          "which must be unique to package-generated nodes: ",
          toString(ids[reserved]))
   }

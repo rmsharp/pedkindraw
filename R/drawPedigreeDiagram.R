@@ -5,8 +5,9 @@
 ## S12 ported S1159's legend fill and its tidy-up, plan R37).
 ## Changes: pedkindraw S28's section pictures in the legend (plan R81: the
 ## block after conditionRows, and the help's paragraph on them) and S38's
-## "Select by id" filter, which also leaves out __jog_ ids (plan R94), each a
-## DIVERGENCE.md row until nprcgenekeepr has it; otherwise help text only.
+## "Select by id" filter, which also leaves out __jog_ ids and reads the
+## prefixes from .reservedIdPattern (plan R94), each a DIVERGENCE.md row until
+## nprcgenekeepr has it; otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
@@ -288,13 +289,13 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
     # to listing names while its caption still reads "Select by id"
     # (confirmed hands-on Pre-RED, design doc sec 2.5).
     #
-    # pedkindraw S38 (plan R94): the filter also leaves out __jog_, the
+    # pedkindraw S38 (plan R94): the filter leaves out every prefix of
+    # .reservedIdPattern (R/makePedigreeDiagramData.R), __jog_ included, the
     # routing points .resolveEdgeNodeCollisions() adds.
     visNetwork::visOptions(
       nodesIdSelection = list(
         enabled = TRUE, useLabels = FALSE, values = layout$nodes$id[
-          !grepl("^__union_|^__dup_|^__drop_|^__bar_|^__proj_|^__jog_",
-                 layout$nodes$id)
+          !grepl(.reservedIdPattern, layout$nodes$id)
         ]
       ),
       highlightNearest = list(
