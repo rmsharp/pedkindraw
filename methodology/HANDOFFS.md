@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S42
+date: 2026-11-18
+status: pending
+active_task: Phase G1, a number in a condition column reported, not drawn as affected in silence (docs/planning/gaps-and-shared-code-plan.md:354; R97; methodology/BACKLOG.md:26): measure first, a pre-RED picker (a warning or a stop; which values count), RED, GREEN, REFACTOR by the gates; strict TDD, copied code, a DIVERGENCE.md row "at the switch" (R98); Mark's pick "Phase G1 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S41
 date: 2026-11-18
 status: complete

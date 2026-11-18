@@ -93,6 +93,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S40's entries were removed in S3-S41 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 42 Did
+**Deliverable:** Phase G1, a number in a condition column reported, not drawn as affected in silence
+(`docs/planning/gaps-and-shared-code-plan.md:354`; R97; `methodology/BACKLOG.md:26`): measure first (Learning 17),
+a pre-RED picker (a warning or a stop; which values count), then RED, GREEN and REFACTOR by the gates; strict TDD,
+copied code, a `DIVERGENCE.md` row marked "at the switch" (R98) (IN PROGRESS)
+**Started:** 2026-11-18 14:07 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase G1 (Recommended)" (orient
+picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 40 Handoff Evaluation (by Session 41)
 **Score: 9/10.**
 - **What helped:** Mark's five points verbatim, so the plan could answer each; every count held (drift tool 91/14/0,
