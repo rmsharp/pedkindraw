@@ -5,8 +5,8 @@
 commit in a scratch folder and run there with its own renv library; its folder was not changed (R8).
 **Answers:** ruling R96 (Mark's direction, S40); Phase 17f2 of `docs/planning/cran-submission-plan.md`.
 **Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
-R97-R101 (section 4). Next: G1 in pedkindraw (section 5.1); N1 and N2 are nprcgenekeepr sessions Mark starts (section
-5.2).
+R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). Next: G2 in pedkindraw (section
+5.1); N1 and N2 are nprcgenekeepr sessions Mark starts (section 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -461,6 +461,16 @@ sessions a day, about 11-15 days, an estimate.
    reads a parent with no row as unknown, so even the recomputed generations "differed" in 190 of 200 draws. With
    those parents set to unknown for kinship2 too, the recomputed generations agreed in 200 of 200. Print one
    differing cell before trusting a count (two half-siblings through a made-up dam: 0.125 against 0).
+10. **Find every caller of a shared check before a picker describes its reach** (S42, G1): R104's picker named the
+    three functions that pass `affected` to `.checkShrinkInput()`, found by grepping for `affected`, and missed
+    `bitSize()` and `findUnavailable()`, which call it with `affected = NULL` and so read the column too; GREEN 1
+    made them stop, found only by grepping the check's own name (R105). Grep the name of the function you change
+    (`grep -n '\.checkShrinkInput(' R/*.R`), and run each caller on the case, before the picker.
+11. **Log what the code reads before a picker on its input** (S42, G1): a scratch copy that wrote each read
+    column's class and values to a file, keyed by fidelity case and test file, answered "which cases have such a
+    column" for all 600 cases and 707 tests in one run (about 6 minutes), and showed samplePed's text "0"/"1",
+    which `as.logical()` reads as unknown; delete the scratch copy's `.Rprofile` first, or renv starts there with
+    an empty library.
 
 ### 7.3 Out of scope
 

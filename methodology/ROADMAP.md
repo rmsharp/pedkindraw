@@ -24,7 +24,8 @@ argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2, the
 (S36); 17c3, the pedigree first, is done (S37), so 17c is done; 17d, the "Select by id" fix, is done (S38); 17e,
 the legend's label, is done (S39); 17f, the gaps document, is done (S40); 17f2, the plan for closing the gaps in
 both repositories and coordinating them, is done (S41, `docs/planning/gaps-and-shared-code-plan.md`, R97-R101):
-every gap closes before the release, phases G1-G17, and G1 is next (Planned, below).
+every gap closes before the release, phases G1-G17; G1, a number in a condition column, is done (S42, R102-R105),
+and G2 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -49,10 +50,10 @@ session each unless marked. They follow the copy slices.
   (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) is done (S36), 17c3 (the pedigree first) is
   done (S37); 17d, the "Select by id" fix, is done (S38); 17e, the legend's label, is done (S39); 17f, the gaps
   document, is done (S40); 17f2 is done (S41, R97-R101): every gap closes before the release, in phases G1-G17
-  (`docs/planning/gaps-and-shared-code-plan.md` section 5.1; 38-53 sessions, a guess), starting with G1 (a number
-  in a condition column reported, not drawn as affected in silence) and G2 (an unknown affected status drawn), then
-  the small additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG and PNG files;
-  an app), each large one planned first; then 17g-17q.
+  (`docs/planning/gaps-and-shared-code-plan.md` section 5.1; 38-53 sessions, a guess): G1 (a number in a
+  condition column stops, not drawn as affected in silence) is done (S42); next G2 (an unknown affected status
+  drawn), then the small additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG
+  and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
@@ -228,6 +229,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G1, a number in a condition column (pedkindraw S42, 2026-11-18).** A condition column holding a number
+  other than 0 and 1 (a measured trait, 2.5, 0.3, 9) stops `makePedigreeMatingLayout()`,
+  `makePedigreeDiagramData()`, `shrinkPedigree()`, `findAvailNonInform()` and `findAvailAffected()`, naming the
+  column and the numbers; before, every number but 0 was drawn or counted affected with no message. TRUE, FALSE,
+  NA, 0, 1 and text read as before; `bitSize()` and `findUnavailable()` do not read the column. Mark's picks:
+  stop, not warn (R102); numbers only (R103); all three reads (R104); the two functions that do not use the
+  status ignore the column (R105). 12 tests; the fidelity cases 600 of 600 identical.
 - **Phase 17f2, the plan for closing the gaps in both repositories (pedkindraw S41, 2026-11-18).**
   `docs/planning/gaps-and-shared-code-plan.md`: what closing each gap would touch, how nprcgenekeepr calls the copied
   code (57 calls from 24 files), its whole test suite run with pedkindraw's functions in place of its copies (31 of

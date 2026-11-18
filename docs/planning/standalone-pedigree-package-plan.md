@@ -57,9 +57,10 @@ id" lists the animals only, and a real id starting `__jog_` is refused, R94); Ph
 legend's lines have no arrowheads and their labels sit on white, R95); Phase 17f DONE (pedkindraw S40: the gaps
 document, 16 open gaps, 13 of them in nprcgenekeepr too; D4 goes to a planning session, R96); Phase 17f2 DONE
 (pedkindraw S41: `docs/planning/gaps-and-shared-code-plan.md`, R97-R101: every gap closed before the release, phases
-G1-G17; nprcgenekeepr names its calls now and switches to pedkindraw after CRAN accepts it).
-**Next:** Phase G1 (a number in a condition column reported; `docs/planning/gaps-and-shared-code-plan.md` section
-5.1), then G2-G17, then 17g. In nprcgenekeepr, sessions Mark starts: N1 (its two faults, R99), N2 (named calls, R98).
+G1-G17; nprcgenekeepr names its calls now and switches to pedkindraw after CRAN accepts it); Phase G1 DONE
+(pedkindraw S42: a number other than 0 and 1 in a condition column stops, R102-R105).
+**Next:** Phase G2 (an unknown affected status drawn; `docs/planning/gaps-and-shared-code-plan.md` section 5.1),
+then G3-G17, then 17g. In nprcgenekeepr, sessions Mark starts: N1 (its two faults, R99), N2 (named calls, R98).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -225,6 +226,10 @@ Since then:
 | R99 | The two faults in nprcgenekeepr that R92's check found (the plan's section 3.4: its kinship simulation passes stale generations after `makeSimPed()`, wrong in 200 of 200 seeded draws of its `simulatedKValues` vignette's case and in 3.0.0 on CRAN; its dataset `smallPed` stores 8 of 17 generations wrong) are the next nprcgenekeepr work Mark starts (N1), ahead of R98's steps, with a NEWS item. Mark's pick "Next nprcgenekeepr session (Recommended)" | pedkindraw S41 | Mark |
 | R100 | D12 (point 5): at the switch nprcgenekeepr imports the 22 shared exports (its code calls 13) and re-exports all 22, so its users' scripts keep the names; it keeps its own copies of the 7 internals it calls and of `addIdRecords()` (R90), and does not re-export pedkindraw's 9 own exports. Mark's pick "Re-export all 22 (Recommended)" | pedkindraw S41 | Mark |
 | R101 | D13 (point 4): until the switch, a change to any of the 91 copied functions starts in pedkindraw; nprcgenekeepr does not change its copies, except a fix its users need before the switch, ported from pedkindraw in a session of its own that Mark decides on; its other work goes on. pedkindraw's Orient keeps the drift tool and Learning 15's log and reports any nprcgenekeepr commit to a copied file to Mark. nprcgenekeepr's drift-watch backlog item is reworded to this rule in N2. Mark's pick "pedkindraw leads shared code (Recommended)" | pedkindraw S41 | Mark |
+| R102 | Phase G1 (the gap N): a condition column (`affected`, `affected2`, ...) holding a number other than 0 and 1 stops, naming the column and up to five of the numbers, with the advice to give TRUE or FALSE (or 1 or 0) and to compare a measured trait with a threshold first; before G1 `as.logical()` drew every number but 0 as affected with no message. kinship2 1.9.6.2's `pedigree()` also stops on such codes ("Invalid code for affected status"). Measured first: no test (707) and no fidelity case (600) has such a number. Mark's pick "Stop (Recommended)" over "Warn and draw" | pedkindraw S42 | Mark |
+| R103 | Phase G1: only numbers are reported. TRUE, FALSE and NA, the numbers 0 and 1 (kinship2's codes, which `asPedFrame()` writes from kinship2 and Pedixplorer) and NaN (unknown) are accepted; text as `as.logical()` reads it, other text as unknown with no message, as nprcgenekeepr's issue #133 chose (samplePed's text "0"/"1" stays unknown in 8 fidelity cases). Mark's pick "Report numbers only (Recommended)" over reporting unreadable text (3 copied tests and 8 fidelity cases changed) and reading text "0"/"1" | pedkindraw S42 | Mark |
+| R104 | Phase G1: the check is made at all three reads: `makePedigreeMatingLayout()`'s drawn conditions (checked right after they are chosen, before any animal is left out; a fifth column, not drawn, is not checked), `makePedigreeDiagramData()`'s `affected`, and `.checkShrinkInput()`, the input check of `shrinkPedigree()`, `findAvailNonInform()` and `findAvailAffected()` (the `affected` argument, or the column when it is `NULL`). Mark's pick "All three reads (Recommended)" over the two drawing reads only | pedkindraw S42 | Mark |
+| R105 | Phase G1: `bitSize()` and `findUnavailable()`, which call `.checkShrinkInput()` but do not use affected status, pass it none, so they never read the `affected` column and do not stop on it. Found in GREEN: R104's picker had named three of the check's five callers, and GREEN 1 made these two stop. Mark's pick "Ignore the column (Recommended)" over "Stop there too" | pedkindraw S42 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -990,6 +995,12 @@ check; CRAN's dependency rules. Mark's picks: every gap before the release, phas
 its calls now and imports pedkindraw after acceptance (R98), fixing its two faults first (R99) and re-exporting the 22
 shared functions (R100); changes to the copied functions start in pedkindraw until then (R101). No package code
 changed.
+
+**Done G1 (pedkindraw S42; R102-R105):** a condition column holding a number other than 0 and 1 stops, naming the
+column and the numbers, in `makePedigreeMatingLayout()`, `makePedigreeDiagramData()` and the shrink functions'
+input check (`.checkConditionNumbers()`, `R/conditionValues.R`); `bitSize()` and `findUnavailable()` do not read
+the column. 12 tests (`tests/testthat/test_conditionValues.R`); three `DIVERGENCE.md` rows "at the switch"; the
+fidelity cases 600 of 600 identical; NEWS and the contract's section 4.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 
