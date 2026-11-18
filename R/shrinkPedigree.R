@@ -1,11 +1,13 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/shrinkPedigree.R at nprcgenekeepr commit
-## baef1e12c, its clean-room rewrite (plan C2). Changes: help text only; the
-## code is unchanged. The example types its own pedigree (the values of
-## nprcgenekeepr's lacy1989Ped) instead of loading nprcgenekeepr (the
-## source's lines 209-210; plan R21). Its comments name nprcgenekeepr's
-## specification, cleanroom/spec/C/SPEC.md.
+## baef1e12c, its clean-room rewrite (plan C2). Changes: help text; and plan
+## Phase G1 (pedkindraw S42, R104): .checkShrinkInput() stops on an affected
+## value that is a number other than 0 and 1 (.checkConditionNumbers(),
+## pedkindraw's own, R/conditionValues.R; a DIVERGENCE.md row). The example
+## types its own pedigree (the values of nprcgenekeepr's lacy1989Ped) instead
+## of loading nprcgenekeepr (the source's lines 209-210; plan R21). Its
+## comments name nprcgenekeepr's specification, cleanroom/spec/C/SPEC.md.
 
 ## Written from the specification cleanroom/spec/C/SPEC.md (the clean-room
 ## rewrite); "SPEC.md" below is that file.
@@ -97,6 +99,7 @@
     stop("affected must be the same length as nrow(ped) (", n, ")",
          call. = FALSE)
   }
+  .checkConditionNumbers(affected, "affected") # pedkindraw Phase G1, R104
   affected <- suppressWarnings(as.logical(affected))
   if (!is.numeric(maxBits) || length(maxBits) != 1L || is.na(maxBits)) {
     stop("maxBits must be one number", call. = FALSE)

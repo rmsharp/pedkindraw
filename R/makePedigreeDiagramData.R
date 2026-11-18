@@ -22,8 +22,11 @@
 ## an id starting __jog_, the prefix of .resolveEdgeNodeCollisions()'s routing
 ## points; its REFACTOR writes the six prefixes once, .reservedIdPrefixes and
 ## .reservedIdPattern, which drawPedigreeDiagram() also reads (a DIVERGENCE.md
-## row). Its comments name nprcgenekeepr's documents,
-## sessions and app.
+## row). Plan Phase G1 (pedkindraw S42, R102-R104): makePedigreeDiagramData()
+## and makePedigreeMatingLayout() stop on a condition column holding a number
+## other than 0 and 1 (.checkConditionNumbers(), pedkindraw's own,
+## R/conditionValues.R; DIVERGENCE.md rows). Its comments name nprcgenekeepr's
+## documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
 #'
@@ -112,8 +115,15 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   # than assume a clean logical input -- affected is not yet a
   # qcStudbook()-recognized column, so a raw CSV import could hand it a
   # character/other value; anything that doesn't parse becomes NA, matching
-  # kinship2's own NA-tolerant contract rather than erroring.
+  # kinship2's own NA-tolerant contract rather than erroring. pedkindraw
+  # Phase G1 (R102-R104): a number other than 0 and 1 stops instead.
   hasAffected <- "affected" %in% names(ped)
+  if (hasAffected) {
+    .checkConditionNumbers(
+      ped$affected,
+      "makePedigreeDiagramData(): the condition column 'affected'"
+    )
+  }
   affected <- if (hasAffected) as.logical(ped$affected) else rep(NA, nrow(ped))
   if (hasAffected) {
     titles <- paste0(titles,
@@ -1788,6 +1798,13 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     stringsAsFactors = FALSE
   )
   sectioned <- length(drawnCols) >= 2L
+  # pedkindraw Phase G1 (R102-R104): a drawn condition holding a number other
+  # than 0 and 1 stops, checked before any animal is left out.
+  for (column in drawnCols) {
+    .checkConditionNumbers(ped[[column]], sprintf(
+      "makePedigreeMatingLayout(): the condition column '%s'", column
+    ))
+  }
 
   # A fully-isolated individual (no known parent, never a parent, not
   # twinRelations-connected) is suppressed from the diagram, matching
