@@ -149,7 +149,7 @@ of their ancestors. ED5PDV and its ancestors are 16 animals in five
 generations, 8 of them founders.
 
 ```{r trim}
-small <- getProbandPedigree("ED5PDV", ped)
+small <- getProbandPedigree(ped, "ED5PDV")
 nrow(small)
 ```
 
@@ -160,7 +160,7 @@ left. Here that leaves the four animals that make ED5PDV inbred: YPHFHF, its
 offspring 81MJXH and H16XSK, and ED5PDV.
 
 ```{r core}
-core <- trimPedigree("ED5PDV", ped, removeUninformative = TRUE)
+core <- trimPedigree(ped, "ED5PDV", removeUninformative = TRUE)
 core[, c("id", "sire", "dam", "sex")]
 ```
 
@@ -299,7 +299,7 @@ stopifnot(
   nrow(small) == 16L, "ED5PDV" %in% small$id,
   sum(is.na(small$sire) & is.na(small$dam)) == 8L,
   length(unique(small$gen)) == 5L,
-  identical(trimPedigree("ED5PDV", ped), small),
+  identical(trimPedigree(ped, "ED5PDV"), small),
   setequal(core$id, c("YPHFHF", "81MJXH", "H16XSK", "ED5PDV")),
   isTRUE(all.equal(kCore, k[core$id, core$id]))
 )

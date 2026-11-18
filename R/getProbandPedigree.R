@@ -1,10 +1,13 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/getProbandPedigree.R at nprcgenekeepr commit
-## baef1e12c. Changes: help text only; the function's code is unchanged. The
-## example types its own pedigree instead of using nprcgenekeepr's datasets
-## and getPotentialSires(). (From S3 to S7 the 'ped' argument's description
-## was written out here, until trimPedigree() was copied in Phase 6b.)
+## baef1e12c. Changes to the code (plan Phase 17c3, pedkindraw S37; a
+## DIVERGENCE.md row): the pedigree is the first argument, ped then probands,
+## where nprcgenekeepr takes probands first (R89). Changes to the help text:
+## the example types its own pedigree instead of using nprcgenekeepr's
+## datasets and getPotentialSires(). (From S3 to S7 the 'ped' argument's
+## description was written out here, until trimPedigree() was copied in
+## Phase 6b.)
 
 #' Reduce a pedigree to probands and their ancestors
 #'
@@ -30,7 +33,7 @@
 #' )
 #' ## F's ancestors are its parents D and E and D's parents A and B
 #' getProbandPedigree(probands = "F", ped = ped)$id
-getProbandPedigree <- function(probands, ped) {
+getProbandPedigree <- function(ped, probands) {
   probands <- unlist(walkPedigree(probands, ped, "ancestors"))
   ped <- ped[ped$id %in% probands, ]
   ped

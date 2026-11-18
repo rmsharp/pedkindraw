@@ -5,19 +5,19 @@
 \title{Trim a pedigree to a group's ancestors}
 \usage{
 trimPedigree(
-  probands,
   ped,
+  probands,
   removeUninformative = FALSE,
   addBackParents = FALSE
 )
 }
 \arguments{
-\item{probands}{a character vector with the list of animals whose ancestors
-should be included in the final pedigree.}
-
 \item{ped}{datatable that is the \code{Pedigree}. It contains pedigree
 information. The fields \code{id}, \code{sire} and \code{dam} are
 required.}
+
+\item{probands}{a character vector with the list of animals whose ancestors
+should be included in the final pedigree.}
 
 \item{removeUninformative}{logical defaults to \code{FALSE}. If set to
 \code{TRUE}, uninformative founders are removed.
@@ -57,8 +57,8 @@ ped <- data.frame(
   stringsAsFactors = FALSE
 )
 ## F and G and their ancestors; H is not one of them
-trimmedPed <- trimPedigree(c("F", "G"), ped)
-trimmedPedInformative <- trimPedigree(c("F", "G"), ped,
+trimmedPed <- trimPedigree(ped, c("F", "G"))
+trimmedPedInformative <- trimPedigree(ped, c("F", "G"),
   removeUninformative = TRUE
 )
 nrow(ped)

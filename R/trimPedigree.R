@@ -1,9 +1,12 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/trimPedigree.R at nprcgenekeepr commit
-## baef1e12c. Changes: help text only; the function's code is unchanged. The
-## example types its own pedigree instead of using nprcgenekeepr's
-## examplePedigree, qcStudbook() and setPopulation().
+## baef1e12c. Changes to the code (plan Phase 17c3, pedkindraw S37; a
+## DIVERGENCE.md row): the pedigree is the first argument, ped then probands,
+## where nprcgenekeepr takes probands first, and the call to
+## getProbandPedigree() passes them in that order (R89). Changes to the help
+## text: the example types its own pedigree, passed first, instead of using
+## nprcgenekeepr's examplePedigree, qcStudbook() and setPopulation().
 
 #' Trim a pedigree to a group's ancestors
 #'
@@ -47,16 +50,16 @@
 #'   stringsAsFactors = FALSE
 #' )
 #' ## F and G and their ancestors; H is not one of them
-#' trimmedPed <- trimPedigree(c("F", "G"), ped)
-#' trimmedPedInformative <- trimPedigree(c("F", "G"), ped,
+#' trimmedPed <- trimPedigree(ped, c("F", "G"))
+#' trimmedPedInformative <- trimPedigree(ped, c("F", "G"),
 #'   removeUninformative = TRUE
 #' )
 #' nrow(ped)
 #' nrow(trimmedPed)
 #' nrow(trimmedPedInformative)
-trimPedigree <- function(probands, ped, removeUninformative = FALSE,
+trimPedigree <- function(ped, probands, removeUninformative = FALSE,
                          addBackParents = FALSE) {
-  ped <- getProbandPedigree(probands, ped)
+  ped <- getProbandPedigree(ped, probands)
   if (removeUninformative) {
     p <- removeUninformativeFounders(ped)
     if (addBackParents) {
