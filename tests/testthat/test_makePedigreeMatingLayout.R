@@ -10,7 +10,11 @@
 ## returns the message (the source's lines 1622-1623, 1644-1645, 1662-1663,
 ## 1678-1679, 1950-1951). Two tests handle the layout's same-row collision
 ## warning the way the source's lines 820-826 do, where nprcgenekeepr lets it
-## through (plan R33; lines 2074 and 2365). The comments below name
+## through (plan R33; lines 2074 and 2365). pedkindraw S43 (plan Phase G2,
+## R106, DIVERGENCE.md) changed 5 checks and 2 test names: an unknown affected
+## status is filled grey, #BEBEBE, not white, with one condition (the source's
+## lines 948, 2182 and 2197), and marked "?", not "0", in affectedSections with
+## two or more (lines 2214, 2222, 2291 and 2298). The comments below name
 ## nprcgenekeepr's documents, sessions and files.
 
 ## Tests for makePedigreeMatingLayout() -- Pedigree Diagram Option 2, Slice 3
@@ -953,7 +957,9 @@ test_that(
   colors <- setNames(realRows$color.background, realRows$id)
   expect_equal(colors[["P1"]], "#CC79A7")
   expect_equal(colors[["P2"]], "#FFFFFF")
-  expect_equal(colors[["C1"]], "#FFFFFF")
+  ## pedkindraw S43 (plan Phase G2, R106): text that does not parse is unknown, grey (was
+  ## "#FFFFFF").
+  expect_equal(colors[["C1"]], "#BEBEBE")
 })
 
 test_that(
@@ -2099,7 +2105,8 @@ test_that(
 ## `Affected_2` arrives as `affected2` and `Affected Diabetes` as
 ## `affecteddiabetes`). `affected` alone behaves exactly as before. With two
 ## or more conditions the layout's nodes carry `affectedSections`, one
-## character per condition ("1" affected, "0" unaffected or unknown), and the
+## character per condition ("1" affected, "0" unaffected; pedkindraw: "?"
+## unknown, plan Phase G2), and the
 ## real and repeat-appearance nodes are filled white: R/modPedigree.R paints
 ## the sections. `conditions` (column, label, color) feeds the legend and
 ## `conditionsNotDrawn` names any column past the fourth.
@@ -2189,8 +2196,9 @@ test_that(
   expect_equal(result$conditions$label, "Affected")
   expect_equal(result$conditions$color, "#CC79A7")
   expect_false("affectedSections" %in% names(result$nodes))
+  ## pedkindraw S43 (plan Phase G2, R106): C1's unknown status is grey (was "#FFFFFF").
   expect_equal(result$nodes$color.background[match(ped$id, result$nodes$id)],
-               c("#CC79A7", "#FFFFFF", "#FFFFFF", "#CC79A7", "#FFFFFF"))
+               c("#CC79A7", "#FFFFFF", "#BEBEBE", "#CC79A7", "#FFFFFF"))
 })
 
 test_that(
@@ -2204,8 +2212,9 @@ test_that(
   expect_equal(result$conditions$label, "Affected (diabetes)")
   expect_equal(result$conditions$color, "#CC79A7")
   expect_false("affectedSections" %in% names(result$nodes))
+  ## pedkindraw S43 (plan Phase G2, R106): C1's unknown status is grey (was "#FFFFFF").
   expect_equal(result$nodes$color.background[match(ped$id, result$nodes$id)],
-               c("#CC79A7", "#FFFFFF", "#FFFFFF", "#CC79A7", "#FFFFFF"))
+               c("#CC79A7", "#FFFFFF", "#BEBEBE", "#CC79A7", "#FFFFFF"))
 })
 
 test_that(
@@ -2222,7 +2231,7 @@ test_that(
 
 test_that(
   "makePedigreeMatingLayout gives each animal an affectedSections string,
-   one character per condition in file order: 1 affected, 0 unaffected or
+   one character per condition in file order: 1 affected, 0 unaffected, ?
    unknown", {
   ped <- .threeConditionFixture()
   nodes <- makePedigreeMatingLayout(ped)$nodes
@@ -2230,7 +2239,7 @@ test_that(
   expect_type(nodes$affectedSections, "character")
   expect_false(anyNA(nodes$affectedSections))
   expect_equal(nodes$affectedSections[match(ped$id, nodes$id)],
-               c("101", "001", "010", "110", "000"))
+               c("101", "001", "?10", "11?", "0?0"))
 })
 
 test_that(
@@ -2299,14 +2308,14 @@ test_that(
 test_that(
   "makePedigreeMatingLayout reads a condition column that is not logical
    with as.logical(), as it does 'affected': what does not parse is
-   unknown, drawn open, and nothing stops", {
+   unknown, marked '?', and nothing stops", {
   ped <- .conditionsFixture(
     affected = c(TRUE, FALSE, NA, TRUE, FALSE),
     affected2 = c("TRUE", "no", "maybe", "FALSE", "TRUE")
   )
   nodes <- makePedigreeMatingLayout(ped)$nodes
   expect_equal(nodes$affectedSections[match(ped$id, nodes$id)],
-               c("11", "00", "00", "10", "01"))
+               c("11", "0?", "??", "10", "01"))
 })
 
 test_that(

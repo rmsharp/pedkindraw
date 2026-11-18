@@ -10,7 +10,11 @@
 ## (.conditionLegendImage(), tested in test_conditionLegendImage.R), shape
 ## "image" and no fill, not a filled hexagon. pedkindraw S38 (plan R94,
 ## DIVERGENCE.md) added one test, after the "Select by id" one: the box leaves
-## out the __jog_ routing points (smallPed's layout). Left out
+## out the __jog_ routing points (smallPed's layout). pedkindraw S43 (plan
+## Phase G2, R106-R107, DIVERGENCE.md) changed 2 tests: .drawPed()'s D has an
+## unknown status in every condition, so the legend gains its grey "Affected
+## status unknown" hexagon before "Deceased" (the source's lines 123-136) and
+## the canvas 45 px for that row (lines 157-168). Left out
 ## (plan R35): its lines 285-365, the 4 tests of nprcgenekeepr's Shiny
 ## module, which pedkindraw does not have (three compare modPedigreeServer's
 ## Diagram widget with drawPedigreeDiagram()'s, one reads R/modPedigree.R).
@@ -135,25 +139,27 @@ test_that(
   skip_if_not_installed("visNetwork")
 
   legend <- drawPedigreeDiagram(.drawLayout(2L))$x$legend
+  ## pedkindraw S43 (G2): D's unknown status adds the grey unknown row.
   expect_identical(legend$nodes$label,
-                   c(.sexLabels, "Affected", "Affected 2", "Deceased"))
+                   c(.sexLabels, "Affected", "Affected 2",
+                     "Affected status unknown", "Deceased"))
   ## pedkindraw S28 (R81): with two or more conditions each condition row is
   ## its section picture, coloured inside the picture, with no fill of its
   ## own (was: "hexagon" and the condition's colour as its fill).
   expect_identical(legend$nodes$shape,
-                   c(.sexShapes, "image", "image", "image"))
+                   c(.sexShapes, "image", "image", "hexagon", "image"))
   expect_identical(legend$nodes[["color.background"]],
-                   .legendFill(rep(NA_character_, 2L)))
+                   .legendFill(c(rep(NA_character_, 2L), "#BEBEBE")))
   expect_null(legend$nodes[["color"]])
 
   ## Five condition columns: the first four are drawn, so four rows.
   legend <- drawPedigreeDiagram(.drawLayout(5L))$x$legend
   expect_identical(legend$nodes$label,
                    c(.sexLabels, "Affected", "Affected 2", "Affected 3",
-                     "Affected 4", "Deceased"))
+                     "Affected 4", "Affected status unknown", "Deceased"))
   ## pedkindraw S28 (R81), as above (was: .legendFill(.conditionColors)).
   expect_identical(legend$nodes[["color.background"]],
-                   .legendFill(rep(NA_character_, 4L)))
+                   .legendFill(c(rep(NA_character_, 4L), "#BEBEBE")))
   expect_null(legend$nodes[["color"]])
 })
 
@@ -175,17 +181,20 @@ test_that(
 
 test_that(
   "drawPedigreeDiagram() sizes the canvas as the app does: 500 px, 45 px more
-   for each condition row past the first, at most four conditions", {
+   for each condition row past the first, at most four conditions, and 45 px
+   for the unknown row (.drawPed()'s D)", {
   skip_if_not_installed("visNetwork")
 
   heightOf <- function(nConditions) {
     drawPedigreeDiagram(.drawLayout(nConditions))$height
   }
   expect_identical(heightOf(0L), "500px")
-  expect_identical(heightOf(1L), "500px")
-  expect_identical(heightOf(2L), "545px")
-  expect_identical(heightOf(4L), "635px")
-  expect_identical(heightOf(5L), "635px")
+  ## pedkindraw S43 (G2): one row more for D's unknown status (were 500, 545,
+  ## 635 and 635).
+  expect_identical(heightOf(1L), "545px")
+  expect_identical(heightOf(2L), "590px")
+  expect_identical(heightOf(4L), "680px")
+  expect_identical(heightOf(5L), "680px")
 })
 
 test_that(

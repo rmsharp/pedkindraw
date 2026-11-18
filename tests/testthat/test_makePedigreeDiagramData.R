@@ -3,8 +3,11 @@
 ## Copied from nprcgenekeepr tests/testthat/test_makePedigreeDiagramData.R at
 ## nprcgenekeepr commit baef1e12c. Changes: the data() calls are dropped (lines
 ## 21, 31, 37, 99). nprcgenekeepr::<dataset> reads the dataset helper-fixtures.R
-## supplies (line 89). The comments below name nprcgenekeepr's documents,
-## sessions and files.
+## supplies (line 89). pedkindraw S43 (plan Phase G2, R106-R107,
+## DIVERGENCE.md) changed 2 checks and 1 test name: an unknown affected status
+## (NA, or text that does not parse) is filled grey, #BEBEBE, not white (the
+## source's lines 210, 225 and 262). The comments below name nprcgenekeepr's
+## documents, sessions and files.
 
 ## Tests for makePedigreeDiagramData() -- issue #129 Slice 1. A pure
 ## function converting a pedigree data frame (id/sire/dam/sex/gen) into a
@@ -208,8 +211,8 @@ test_that(
 
 test_that(
   "makePedigreeDiagramData sets an explicit color.background for every row
-   when the affected column is present -- TRUE filled, FALSE/NA explicitly
-   open/unfilled (white), not visNetwork's own default fill", {
+   when the affected column is present -- TRUE filled, FALSE explicitly
+   open/unfilled (white), NA grey, not visNetwork's own default fill", {
   ped <- data.frame(
     id = c("A1", "A2", "A3"),
     sire = NA_character_, dam = NA_character_,
@@ -223,7 +226,8 @@ test_that(
   colors <- setNames(result$nodes$color.background, result$nodes$id)
   expect_equal(colors[["A1"]], "#CC79A7")
   expect_equal(colors[["A2"]], "#FFFFFF")
-  expect_equal(colors[["A3"]], "#FFFFFF")
+  ## pedkindraw S43 (plan Phase G2, R106): unknown is grey (was "#FFFFFF").
+  expect_equal(colors[["A3"]], "#BEBEBE")
 })
 
 test_that(
@@ -260,7 +264,9 @@ test_that(
   colors <- setNames(result$nodes$color.background, result$nodes$id)
   expect_equal(colors[["A1"]], "#CC79A7")
   expect_equal(colors[["A2"]], "#FFFFFF")
-  expect_equal(colors[["A3"]], "#FFFFFF")
+  ## pedkindraw S43 (plan Phase G2, R106): text that does not parse is unknown, grey (was
+  ## "#FFFFFF").
+  expect_equal(colors[["A3"]], "#BEBEBE")
 })
 
 test_that(
