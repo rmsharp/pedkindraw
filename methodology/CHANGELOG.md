@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-17 · [BL-Phase 17f] S40: Phase 17f, the gaps document (in progress)
+- **Change:** session claimed (Mark's pick "Write the gaps list (Recommended)" at the orient picker): a research document, TDD phase none; a framing picker first, D4 at the end. Phase 0 reconcile: nothing to backfill (frontier `7ed176b` is HEAD, S39's close-out 2; no merges; S39's receipt complete, its ratchet results `5ddbb5b1aeb3` matching the results file); drift tool 91 functions, 14 differ, 0 without a row; nprcgenekeepr at `acb5d6e16` (its S1186 close-out, not a copied file; its tree clean), its log on the copied files the same 4 commits. S39's last runs all `success` (CI `44240187232`, site `44240187166`, Pages `44242867297`).
+- **Commit/PR:** the claim commit · **Session:** S40 · **Verified:** pending (close-out).
+
 ### 2026-11-17 · [BL-Phase 17e] S39 push 2: `master` to GitHub at `9505d9d` (ruling R95, RED, GREEN 1-3, REFACTOR)
 - **Change:** `git push origin master` (`fe82f69..9505d9d`); a package change, so both workflows ran: CI run `44240187232` 5/5 `success` at the first attempt (39 min: ubuntu oldrel-1 spent about 32 min installing packages); site run `44240187166` `success` (23 min, most of it in package setup) and Pages `44242867297` `success`; the live website then read 48 of 48 legend line labels whole. S39's close-out 1 and 2 after it are not pushed.
 - **Commit/PR:** none (push) · **Session:** S39 · **Verified:** `gh run view --json`.

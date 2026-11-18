@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S40
+date: 2026-11-17
+status: pending
+active_task: Phase 17f, the gaps document (docs/planning/cran-submission-plan.md:496; R84; methodology/BACKLOG.md:58): a dated document under docs/research/ listing what kinship2 1.9.6.2 or Pedixplorer 1.8.0 can do that pedkindraw cannot, each gap on a typed case under a time limit (Learning 19); a framing picker first, D4 at the end; TDD phase none; Mark's pick "Write the gaps list (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S39
 date: 2026-11-17
 status: complete

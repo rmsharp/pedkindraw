@@ -107,6 +107,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S38's entries were removed in S3-S39 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 40 Did
+**Deliverable:** Phase 17f, the gaps document (`docs/planning/cran-submission-plan.md:496`; R84;
+`methodology/BACKLOG.md:58`): a dated document under `docs/research/` listing what kinship2 1.9.6.2 or Pedixplorer
+1.8.0 can do that pedkindraw cannot, each gap shown on a typed case run under a time limit (Learning 19); a framing
+picker on its outline first; Mark's D4 picker at the end. TDD phase none (a research document) (IN PROGRESS)
+**Started:** 2026-11-17 23:58 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Write the gaps list
+(Recommended)" (orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 38 Handoff Evaluation (by Session 39)
 **Score: 9/10.**
 - **What helped:** every count and citation held: the drift tool (91/14/0), nprcgenekeepr's log (the same 4
