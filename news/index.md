@@ -35,6 +35,17 @@ why.
   stops on an animal id that starts with `__jog_`, as for the other
   prefixes it keeps for its own nodes; nprcgenekeepr accepts one, and
   its drawing can then have two nodes with that id.
+- New:
+  [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  and
+  [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
+  stop when a condition column (`affected`, `affected2`, …) holds a
+  number other than 0 and 1, naming the column and the numbers. A
+  measured trait (2.5, 0.3, 9) was drawn affected wherever it was not 0,
+  with no message, as it still is in nprcgenekeepr. `TRUE`, `FALSE`,
+  `NA`, 0 and 1 (kinship2’s codes, which
+  [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
+  writes) and text read as before.
 - New: the legend’s four lines (the dashed line joining two places of
   the same animal, and the three twin lines) have no arrowheads, as the
   drawing’s own lines have none, and each line’s label sits on white.
@@ -132,6 +143,17 @@ why.
   [`findAvailNonInform()`](https://rmsharp.github.io/pedkindraw/reference/findAvailNonInform.md)
   and
   [`findAvailAffected()`](https://rmsharp.github.io/pedkindraw/reference/findAvailAffected.md).
+- New:
+  [`shrinkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md),
+  [`findAvailNonInform()`](https://rmsharp.github.io/pedkindraw/reference/findAvailNonInform.md)
+  and
+  [`findAvailAffected()`](https://rmsharp.github.io/pedkindraw/reference/findAvailAffected.md)
+  stop in the same way when `affected`, the argument or the column,
+  holds a number other than 0 and 1, which they counted as affected;
+  [`bitSize()`](https://rmsharp.github.io/pedkindraw/reference/bitSize.md)
+  and
+  [`findUnavailable()`](https://rmsharp.github.io/pedkindraw/reference/findUnavailable.md),
+  which do not use the status, do not read the column.
 
 ### Converters
 

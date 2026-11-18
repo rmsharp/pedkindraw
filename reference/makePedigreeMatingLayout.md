@@ -34,7 +34,10 @@ makePedigreeMatingLayout(
   them, the first four drawn (see `conditions` in the return value). A
   lone one fills the symbol; two or more split it into sections.
   ([`makePedigreeDiagramData`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
-  reads the column `affected` alone.)
+  reads the column `affected` alone.) A condition drawn reads as
+  [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)'s
+  `affected` does: a number other than 0 and 1 stops, before any animal
+  is left out.
 
 - edgeStyle:
 

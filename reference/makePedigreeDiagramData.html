@@ -69,7 +69,11 @@ used when present: a logical <code>affected</code> column, which adds an
 affected-status line to <code>title</code> and fills affected nodes with
 <code>color.background</code> <code>"#CC79A7"</code> (all other nodes are white,
 <code>"#FFFFFF"</code>); and a character <code>name</code> column, which is shown
-in <code>label</code> (long names are truncated) and in <code>title</code>.</p></dd>
+in <code>label</code> (long names are truncated) and in <code>title</code>. In
+<code>affected</code> the numbers 1 and 0 read as <code>TRUE</code> and
+<code>FALSE</code>, and any other number stops (compare a measured trait
+with a threshold first); text reads as <code><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical()</a></code> reads it,
+other text as unknown.</p></dd>
 
 
 <dt id="arg-twinrelations">twinRelations<a class="anchor" aria-label="anchor" href="#arg-twinrelations"></a></dt>

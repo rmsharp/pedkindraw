@@ -24,7 +24,11 @@ makePedigreeDiagramData(ped, twinRelations = NULL)
   column, which adds an affected-status line to `title` and fills
   affected nodes with `color.background` `"#CC79A7"` (all other nodes
   are white, `"#FFFFFF"`); and a character `name` column, which is shown
-  in `label` (long names are truncated) and in `title`.
+  in `label` (long names are truncated) and in `title`. In `affected`
+  the numbers 1 and 0 read as `TRUE` and `FALSE`, and any other number
+  stops (compare a measured trait with a threshold first); text reads as
+  [`as.logical()`](https://rdrr.io/r/base/logical.html) reads it, other
+  text as unknown.
 
 - twinRelations:
 

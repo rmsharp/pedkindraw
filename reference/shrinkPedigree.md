@@ -70,7 +70,8 @@ shrinkPedigree(ped, genotyped, affected = NULL, maxBits = 16L)
   When `NULL`, defaults to `ped$affected` if that column exists, or to
   all-`FALSE` (unaffected) if it does not – ensuring the
   affected-priority trim can always make progress even with no recorded
-  affected status.
+  affected status. The numbers 1 and 0 read as `TRUE` and `FALSE`; any
+  other number stops.
 
 - maxBits:
 

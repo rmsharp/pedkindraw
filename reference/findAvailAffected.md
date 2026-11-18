@@ -37,7 +37,8 @@ findAvailAffected(ped, genotyped, affected, affstatus)
 
   `NULL` or a logical vector, one value per row of `ped`. When `NULL`,
   `ped$affected` is used if it exists, and otherwise every animal counts
-  as unaffected (`FALSE`).
+  as unaffected (`FALSE`). The numbers 1 and 0 read as `TRUE` and
+  `FALSE`; any other number stops.
 
 - affstatus:
 
