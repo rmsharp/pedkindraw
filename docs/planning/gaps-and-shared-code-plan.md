@@ -351,7 +351,7 @@ submission.
 
 | Phase | Gap | Work | DONE, the phase's own (its case in `tools/gapCases.R`) | Choices at its pre-RED picker | Sessions (a guess) |
 |---|---|---|---|---|---|
-| G1 | N | A condition column that is not true-or-false is reported at both places it is read (`R/makePedigreeDiagramData.R:117`, `:1913`), naming the column | `measuredTrait`: the numbers 2.5, 0, 0.3, 9 give the message; true, false and `NA` columns draw as before (fidelity 600 of 600) | a warning or a stop; whether 0 and 1 count as true-or-false | 1 |
+| G1 | N | A condition column that is not true-or-false is reported at both places it is read (`R/makePedigreeDiagramData.R:117`, `:1913`), naming the column | `measuredTrait`: the numbers 2.5, 0, 0.3, 9 give the message; true, false and `NA` columns draw as before (fidelity 600 of 600) | a warning or a stop; whether 0 and 1 count as true-or-false. Found at close-out (S41): `asPedFrame()` passes kinship2's 0/1 `affected` values through unchanged (`R/asPedFrame.R:255-262`), so 0 and 1 must stay accepted or pedkindraw would refuse its own converter's output; and the `as.logical()` reading was chosen on purpose in nprcgenekeepr's issue #133, so that a CSV's text "TRUE" and "FALSE" read (the comment at `R/makePedigreeDiagramData.R:109`) | 1 |
 | G2 | B2 | An unknown affected status (`NA`) gets its own look, in one-condition and several-condition symbols, and a legend row when any animal has it | `unknownAffected`: B's fill differs from C's in headless Chrome and the legend has the row; the drawings with an `NA` status counted as a set-aside | grey fill (Pedixplorer) or a "?" (kinship2); the legend's words | 1-2 |
 | G3 | B6 | The 15-character limit on the notes under an id becomes an argument (`.nameLabelCharBudget`, `:240`) | `labels`: the 26-character note written whole when asked; default 15 (600 of 600) | the argument's name and which function takes it; a value for "no limit" | 1 |
 | G4 | B5 colours | A colours argument carried to the fills, the sections script and the legend, so all three agree (the gaps document's section 9, item 2) | `style`: chosen colours in fills, sections and legend, read in headless Chrome; default unchanged (600 of 600) | which function takes it; how colours are checked | 1 |
@@ -456,6 +456,11 @@ sessions a day, about 11-15 days, an estimate.
    move an L row after the release then.
 8. **A scratch substitution reads its own artifacts:** S41's first run re-wrapped `DESCRIPTION` with `write.dcf()` and
    a wording test failed; edit `DESCRIPTION` as text when repeating section 3.3.
+9. **Give the reference package the same reading of the input** (section 3.4): S41's first comparison of the
+   simulation with kinship2 gave the simulated parents rows in kinship2's pedigree, while nprcgenekeepr's `kinship()`
+   reads a parent with no row as unknown, so even the recomputed generations "differed" in 190 of 200 draws. With
+   those parents set to unknown for kinship2 too, the recomputed generations agreed in 200 of 200. Print one
+   differing cell before trusting a count (two half-siblings through a made-up dam: 0.125 against 0).
 
 ### 7.3 Out of scope
 
