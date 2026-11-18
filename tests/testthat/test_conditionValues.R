@@ -1,7 +1,7 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## pedkindraw's own tests, not copied from nprcgenekeepr (plan Phase G1,
-## docs/planning/gaps-and-shared-code-plan.md section 5.1; rulings R102-R104,
+## docs/planning/gaps-and-shared-code-plan.md section 5.1; rulings R102-R105,
 ## pedkindraw S42). A condition column read as true-or-false: TRUE, FALSE and
 ## NA, the numbers 0 and 1 (kinship2's codes, which asPedFrame() writes from
 ## kinship2 and Pedixplorer), and text as.logical() reads. Any other number
@@ -9,9 +9,11 @@
 ## (R103); at all three reads (R104): makePedigreeMatingLayout()'s drawn
 ## conditions, makePedigreeDiagramData()'s affected column, and the input
 ## check shrinkPedigree(), findAvailNonInform() and findAvailAffected()
-## share. Text as.logical() cannot read still reads as unknown with no
-## message (nprcgenekeepr issue #133; the copied tests in
-## test_makePedigreeDiagramData.R and test_makePedigreeMatingLayout.R).
+## share; bitSize() and findUnavailable(), which call that check but do not
+## use the status, do not read the column (R105). Text as.logical() cannot
+## read still reads as unknown with no message (nprcgenekeepr issue #133;
+## the copied tests in test_makePedigreeDiagramData.R and
+## test_makePedigreeMatingLayout.R).
 library(testthat)
 
 ## A and B, founders, with offspring C (male) and D (female): the gaps
@@ -121,6 +123,15 @@ test_that("shrinkPedigree(), findAvailNonInform() and findAvailAffected() stop o
   expect_error(findAvailAffected(ped, typed, affected = numbers,
                                  affstatus = TRUE),
                message, fixed = TRUE)
+})
+
+test_that("bitSize() and findUnavailable(), which do not use affected status, do not check the column", {
+  ## They share shrinkPedigree()'s input check but not the status (R105).
+  ped <- .g1Ped(c(2.5, 0.0, 0.3, 9.0))
+  plain <- .g1Ped()
+  typed <- c(TRUE, TRUE, FALSE, TRUE)
+  expect_identical(bitSize(ped), bitSize(plain))
+  expect_identical(findUnavailable(ped, typed), findUnavailable(plain, typed))
 })
 
 test_that("the numbers 0 and 1, double or integer, with NA, read as FALSE and TRUE at all three reads", {
