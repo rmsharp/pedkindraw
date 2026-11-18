@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S43
+date: 2026-11-18
+status: pending
+active_task: Phase G2, an unknown affected status (NA) gets its own look in one-condition and several-condition symbols and a legend row when any animal has it (docs/planning/gaps-and-shared-code-plan.md:355; R97; methodology/BACKLOG.md:26): measure first, a pre-RED picker (grey fill or a "?"; the legend's words; one condition and several alike), RED, GREEN, REFACTOR by the gates; strict TDD, copied code (a change: a counted set-aside in the fidelity tool), DIVERGENCE.md rows "at the switch" (R98); Mark's pick "Phase G2 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S42
 date: 2026-11-18
 status: complete

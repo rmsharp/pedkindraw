@@ -97,6 +97,14 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S41's entries were removed in S3-S42 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 43 Did
+**Deliverable:** Phase G2: an unknown affected status (`NA`) gets its own look in one-condition and several-condition
+symbols, and a legend row when any animal has it (IN PROGRESS)
+**Started:** 2026-11-18 15:58 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase G2 (Recommended)" (orient).
+**Status:** Session claimed. Work beginning: measure first (Learning 17), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 41 Handoff Evaluation (by Session 42)
 **Score: 9/10.**
 - **What helped:** the measure-first list for G1 (which cases hold a column that is not true-or-false; what
