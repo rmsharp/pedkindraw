@@ -17,8 +17,11 @@
 ## an anchor's families and sets each hinted mate's side and distance (the
 ## S666 pass and the seeding loop); makePedigreeMatingLayout() checks the
 ## hints against ped, sorts rows only for an order hint and passes hints to
-## .buildMatingUnitForest(); the help describes hints$mate. Its comments
-## name nprcgenekeepr's documents, sessions and app.
+## .buildMatingUnitForest(); the help describes hints$mate. Plan Phase 17d
+## (pedkindraw S38, R94): .buildMatingUnitForest()'s input check also refuses
+## an id starting __jog_, the prefix of .resolveEdgeNodeCollisions()'s routing
+## points (a DIVERGENCE.md row). Its comments name nprcgenekeepr's documents,
+## sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
 #'
@@ -449,11 +452,12 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   }
 
   ids <- as.character(ped$id)
-  reserved <- grepl("^__union_|^__dup_|^__drop_|^__bar_|^__proj_", ids)
+  reserved <- grepl("^__union_|^__dup_|^__drop_|^__bar_|^__proj_|^__jog_",
+                    ids)
   if (any(reserved)) {
     stop(".buildMatingUnitForest() found real id(s) using a reserved ",
-         "'__union_'/'__dup_'/'__drop_'/'__bar_'/'__proj_' prefix, which ",
-         "must be unique to package-generated nodes: ",
+         "'__union_'/'__dup_'/'__drop_'/'__bar_'/'__proj_'/'__jog_' prefix, ",
+         "which must be unique to package-generated nodes: ",
          toString(ids[reserved]))
   }
 
