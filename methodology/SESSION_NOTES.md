@@ -105,6 +105,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S36's entries were removed in S3-S37 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 38 Did
+**Deliverable:** Phase 17d, "Select by id" leaves out the routing points (`docs/planning/cran-submission-plan.md:451`;
+R84; `methodology/BACKLOG.md:26`): the filter at `R/drawPedigreeDiagram.R:292` gains `__jog_`; the drift choice D3;
+strict TDD (IN PROGRESS)
+**Started:** 2026-11-17 19:46 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17d: Select by id (Recommended)"
+(orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 36 Handoff Evaluation (by Session 37)
 **Score: 9/10.**
 - **What helped:** every count and citation held: the drift tool (91/10/0), nprcgenekeepr's log (the same 4

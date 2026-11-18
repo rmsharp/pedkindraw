@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-17 · [BL-Phase 17d] S38: Phase 17d, "Select by id" leaves out the routing points (in progress)
+- **Change:** session claimed (Mark's pick "17d: Select by id (Recommended)" at the orient picker): strict TDD. Phase 0 reconcile: nothing to backfill (frontier `3b6e37e` is HEAD, S37's close-out 2; no merges; S37's receipt complete, its ratchet results `42b564bc4c70` matching the results file); drift tool 91 functions, 14 differ, 0 without a row; nprcgenekeepr clean at `ef55e06bd`, its log on the copied files exactly the 4 commits already in the copy; dashboard 93/100; `pedkindraw.Rproj` untracked, left for Mark.
+- **Commit/PR:** the claim commit · **Session:** S38 · **Verified:** pending (close-out).
+
 ### 2026-11-17 · [BL-Phase 17c3] S37 push 2: `master` to GitHub at `2b6ef7a` (RED, GREEN 1-4)
 - **Change:** `git push origin master` (`e241cd0..2b6ef7a`); a package change, so both workflows ran: CI run `44212240619` 5/5 `success` at the first attempt (16 min); site run `44212240622` `success` (3 min). S37's close-out 1 and 2 after it are not pushed.
 - **Commit/PR:** none (push) · **Session:** S37 · **Verified:** `gh run view --json`.

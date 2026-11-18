@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S38
+date: 2026-11-17
+status: pending
+active_task: Phase 17d, "Select by id" leaves out the routing points (strict TDD; R84): R/drawPedigreeDiagram.R:292's filter gains __jog_, so the box lists animals only; the drift choice D3 at the pre-RED picker; Mark's pick "17d: Select by id (Recommended)" at the orient picker
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S37
 date: 2026-11-17
 status: complete
