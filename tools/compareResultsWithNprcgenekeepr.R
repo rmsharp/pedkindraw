@@ -713,6 +713,21 @@ ours <- runChild(here, tempfile(fileext = ".rds"))
 if (!identical(names(ours), names(theirs))) {
   stop("the two runs produced different cases", call. = FALSE)
 }
+## `x` with f() applied to every drawing (a visNetwork widget) in it: a
+## result, a list of results or one drawing, each list's attributes kept. The
+## three set-asides below each change one drawing at a time (pedkindraw S39
+## REFACTOR: they each walked the results themselves).
+eachDrawing <- function(x, f) {
+  if (inherits(x, "visNetwork")) {
+    return(f(x))
+  }
+  if (is.list(x) && !is.data.frame(x)) {
+    kept <- attributes(x)
+    x <- lapply(x, eachDrawing, f = f)
+    attributes(x) <- kept
+  }
+  x
+}
 ## pedkindraw S28 (plan R81, DIVERGENCE.md): with two or more conditions
 ## pedkindraw's legend draws each condition row as a section picture
 ## (.conditionLegendImage()) where nprcgenekeepr draws a filled hexagon. Until
@@ -727,30 +742,22 @@ legendFixedRows <- c("Female", "Male", "Hermaphrodite", "Unknown",
                      "Deceased")
 setAside <- new.env(parent = emptyenv())
 setAside$drawings <- 0L
-withoutConditionSymbols <- function(x) {
-  if (inherits(x, "visNetwork")) {
-    nodes <- x$x$legend$nodes
-    rows <- !(nodes$label %in% legendFixedRows)
-    if (sum(rows) >= 2L) {
-      for (column in c("shape", "color.background", "image")) {
-        nodes[[column]][rows] <- NA
-      }
-      x$x$legend$nodes <- nodes
-      setAside$drawings <- setAside$drawings + 1L
+withoutConditionSymbols <- function(drawing) {
+  nodes <- drawing$x$legend$nodes
+  rows <- !(nodes$label %in% legendFixedRows)
+  if (sum(rows) >= 2L) {
+    for (column in c("shape", "color.background", "image")) {
+      nodes[[column]][rows] <- NA
     }
-    return(x)
+    drawing$x$legend$nodes <- nodes
+    setAside$drawings <- setAside$drawings + 1L
   }
-  if (is.list(x) && !is.data.frame(x)) {
-    kept <- attributes(x)
-    x <- lapply(x, withoutConditionSymbols)
-    attributes(x) <- kept
-  }
-  x
+  drawing
 }
-theirs <- withoutConditionSymbols(theirs)
+theirs <- eachDrawing(theirs, withoutConditionSymbols)
 theirDrawings <- setAside$drawings
 setAside$drawings <- 0L
-ours <- withoutConditionSymbols(ours)
+ours <- eachDrawing(ours, withoutConditionSymbols)
 cat(sprintf(paste(
   "drawings with two or more condition rows: %d in nprcgenekeepr's run, %d",
   "in pedkindraw's, compared without those rows' shape, fill and picture",
@@ -767,25 +774,17 @@ cat(sprintf(paste(
 ## drawings. Remove this when nprcgenekeepr has the change.
 setAside$jogDrawings <- 0L
 setAside$jogEntries <- 0L
-withoutJogSelections <- function(x) {
-  if (inherits(x, "visNetwork")) {
-    values <- x$x$idselection$values
-    jog <- startsWith(values, "__jog_")
-    if (any(jog)) {
-      x$x$idselection$values <- values[!jog]
-      setAside$jogDrawings <- setAside$jogDrawings + 1L
-      setAside$jogEntries <- setAside$jogEntries + sum(jog)
-    }
-    return(x)
+withoutJogSelections <- function(drawing) {
+  values <- drawing$x$idselection$values
+  jog <- startsWith(values, "__jog_")
+  if (any(jog)) {
+    drawing$x$idselection$values <- values[!jog]
+    setAside$jogDrawings <- setAside$jogDrawings + 1L
+    setAside$jogEntries <- setAside$jogEntries + sum(jog)
   }
-  if (is.list(x) && !is.data.frame(x)) {
-    kept <- attributes(x)
-    x <- lapply(x, withoutJogSelections)
-    attributes(x) <- kept
-  }
-  x
+  drawing
 }
-theirs <- withoutJogSelections(theirs)
+theirs <- eachDrawing(theirs, withoutJogSelections)
 cat(sprintf(paste(
   "drawings whose box lists __jog_ routing points: %d in nprcgenekeepr's",
   "run, %d entries taken out before the comparison (DIVERGENCE.md, plan",
@@ -803,28 +802,20 @@ cat(sprintf(paste(
 ## all 600 were identical with the two columns taken out. Remove this when
 ## nprcgenekeepr has the change.
 setAside$lineStyleDrawings <- 0L
-withoutLegendLineStyle <- function(x) {
-  if (inherits(x, "visNetwork")) {
-    edges <- x$x$legend$edges
-    if (is.data.frame(edges) &&
-          identical(edges$arrows, rep("", nrow(edges))) &&
-          identical(edges[["font.background"]],
-                    rep("#FFFFFF", nrow(edges)))) {
-      edges$arrows <- NULL
-      edges[["font.background"]] <- NULL
-      x$x$legend$edges <- edges
-      setAside$lineStyleDrawings <- setAside$lineStyleDrawings + 1L
-    }
-    return(x)
+withoutLegendLineStyle <- function(drawing) {
+  edges <- drawing$x$legend$edges
+  if (is.data.frame(edges) &&
+        identical(edges$arrows, rep("", nrow(edges))) &&
+        identical(edges[["font.background"]],
+                  rep("#FFFFFF", nrow(edges)))) {
+    edges$arrows <- NULL
+    edges[["font.background"]] <- NULL
+    drawing$x$legend$edges <- edges
+    setAside$lineStyleDrawings <- setAside$lineStyleDrawings + 1L
   }
-  if (is.list(x) && !is.data.frame(x)) {
-    kept <- attributes(x)
-    x <- lapply(x, withoutLegendLineStyle)
-    attributes(x) <- kept
-  }
-  x
+  drawing
 }
-ours <- withoutLegendLineStyle(ours)
+ours <- eachDrawing(ours, withoutLegendLineStyle)
 cat(sprintf(paste(
   "drawings whose legend lines have no arrowheads and white labels: %d in",
   "pedkindraw's run, compared without those two columns (DIVERGENCE.md, plan",
