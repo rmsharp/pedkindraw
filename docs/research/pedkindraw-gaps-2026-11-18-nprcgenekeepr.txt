@@ -1,0 +1,27 @@
+# Output of tools/gapCasesNprcgenekeepr.R (docs/research/pedkindraw-gaps-2026-11-18.md, section 10), run 2026-11-18
+# from nprcgenekeepr's folder with its renv, on an archive of nprcgenekeepr commit ae3491dff
+nprcgenekeepr | commit | ae3491dff
+nprcgenekeepr | A1 drawPedigreeDiagram() class | visNetwork / htmlwidget
+nprcgenekeepr | A1 drawPedigreeDiagram() arguments | layout / edgeStyle / onClick
+nprcgenekeepr | A1 savePlotToFile() given the pedigree widget | FALSE
+nprcgenekeepr | A2 drawColonyOverview() arguments | overview / onClick
+nprcgenekeepr | A3 runGeneKeepR() arguments | port / launch.browser
+nprcgenekeepr | B1 isolatedIds with E and F unmated, no offspring | E / F
+nprcgenekeepr | B1 and C3 makePedigreeMatingLayout() arguments | ped / edgeStyle / twinRelations / kinshipMatrix
+nprcgenekeepr | B2 fills A, B (unknown), C, D | #CC79A7 / #FFFFFF / #FFFFFF / #CC79A7
+nprcgenekeepr | B3 layout identical with a carrier column | TRUE
+nprcgenekeepr | B4 fills, affected = 2.5, 0, 0.3, 9 | #CC79A7 / #FFFFFF / #CC79A7 / #CC79A7
+nprcgenekeepr | B6 label of A | A\nage 7\nMHC A01/B...
+nprcgenekeepr | C1 getPedDirectRelatives("F") ids | A / B / C / D / E / F / G / H / I
+nprcgenekeepr | C1 getPedDirectRelatives() arguments | ids / ped / unrelatedParents
+nprcgenekeepr | C2 findGeneration() arguments | id / sire / dam
+nprcgenekeepr | C4 convertSexCodes() of 1, 2, male, female, m, f | M / F / M / F / M / F
+nprcgenekeepr | C4 qcStudbook(), sex 1, 2, male, f: sex read | M / F / M / F
+nprcgenekeepr | C4 qcStudbook(), founders' parents written "0" | stops: 0 : Subject(s) listed as both sire and dam
+nprcgenekeepr | C4 qcStudbook(), founders' parents written "" | stops:  : Subject(s) listed as both sire and dam
+nprcgenekeepr | C4 getPedigree() of a CSV with blank parent cells: sire | NA,NA,A,A
+nprcgenekeepr | C5 offspringCounts(c("A", "B"), ped): columns | totalOffspring
+nprcgenekeepr | C5 offspringCounts(c("A", "B"), ped): totalOffspring | 2 / 2
+nprcgenekeepr | C3, C5 and C6 exports naming hint, mate, spouse, subset or remove | getMaternalLinePedigree / modMatePairServer / modMatePairUI / removeAutoGenIds / removeDuplicates / removeEarlyDates / removePotentialSires / removeUninformativeFounders / removeUnknownAnimals / reportMatePairs
+nprcgenekeepr | R13 getPedigree() arguments | fileName / sep
+nprcgenekeepr | R21 datasets | 25

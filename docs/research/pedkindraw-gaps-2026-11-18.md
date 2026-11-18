@@ -22,6 +22,8 @@ argument, the script starts each case in its own R process under GNU `timeout`: 
 browser case, 600 s for the 28,081-person kinship case. All 20 finished, each with exit 0, in 82 s altogether.
 The full output is beside this document, `docs/research/pedkindraw-gaps-2026-11-18-cases.txt`. To rerun:
 `Rscript tools/gapCases.R` (every case) or `Rscript tools/gapCases.R <case>` (one), from the repository's root.
+Section 10 (added after Mark asked which gaps nprcgenekeepr has) runs nprcgenekeepr's own code on the same typed
+pedigrees with `tools/gapCasesNprcgenekeepr.R`; its output is `docs/research/pedkindraw-gaps-2026-11-18-nprcgenekeepr.txt`.
 
 ---
 
@@ -55,6 +57,30 @@ built to check it.
 
 B3 is one row for seven marks Pedixplorer draws. Section 6 lists the gaps already ruled out (block kinship R3,
 file readers R13, datasets R21, object classes R7) and three things that looked like gaps and are not.
+
+### 1.1 What each gap means for someone using pedkindraw
+
+Drawn from the "pedkindraw today" lines of sections 3-5 and the measured results there.
+
+| Gap | What it means for a user | Way round it today |
+|---|---|---|
+| A1 | A drawing cannot go straight into a paper, a printed report or a PDF or Word document made with R Markdown; it shows only in HTML output, and a PNG only from the button in a browser | none in pedkindraw; draw that figure with kinship2 or Pedixplorer |
+| A2 | No one-page overview of a large pedigree with ids, on screen or on paper: the 375-animal rhesus pedigree shows no id until zoomed in 6.3 times | zoom in, or hover |
+| A3 | Users must write R; nobody can load a file and click | none in pedkindraw (nprcgenekeepr's app, section 10) |
+| B1 | A planned or unsuccessful mating cannot be shown; both animals disappear | none |
+| B2 | A reader can take missing data for "not affected"; only the hover says "Unknown" | none on the drawing |
+| B3 | Clinical-style pedigrees cannot be drawn; for a colony the likely one is a genotyped mark | an extra `affected_...` column, drawn as a coloured section |
+| B4 | The true-or-false column must be made first; numbers passed instead are drawn affected wherever they are not 0, with no message | `ped$affected <- ped$value > 5` |
+| B5 | Colours cannot match a journal's or print in black and white; colours edited by hand make the legend and the drawing disagree | none reliable |
+| B6 | Notes under the id longer than 15 characters are cut on the drawing | the full text is in the hover |
+| B7 | Which animals `shrinkPedigree()` dropped cannot be seen at a glance | a condition column from `idTrimmed` (not tried) |
+| C1 | Only ancestors are kept around the informative animals, not near relatives | write the rule |
+| C2 | Little: the layout aligns mates itself | none needed |
+| C3 | Adjusting a drawing means writing hints from nothing | kinship2's `autohint()`, converted by `asPedFrame()` |
+| C4 | Data from other tools must be recoded first; `checkPedigree()` names the problem, but generations come back `NA` and every animal is drawn as a diamond | recode in base R |
+| C5 | Minor | `length(getOffspring(ped, id))` |
+| C6 | Dropping a parent's row stops `kinship()` | `addParents()`, or set those parent entries to `NA` |
+| R3 (ruled) | 28,081 people needed about 9-10 GB and 14 s, against kinship2's 0.2 GB and 0.4 s | run family by family |
 
 ---
 
@@ -393,7 +419,7 @@ R7). The other 80, grouped (checked by script: each once):
 1. **pedkindraw reads a numeric condition column as affected wherever it is not 0, with no message** (case
    `measuredTrait`: 2.5, 0.3 and 9 drawn affected). `makePedigreeDiagramData()`'s help asks for a logical
    `affected` column and `makePedigreeMatingLayout()`'s help does not say; neither says what a number does. A
-   measured trait passed by mistake is drawn without warning.
+   measured trait passed by mistake is drawn without warning. nprcgenekeepr's copy does the same (section 10).
 2. **Colours edited in a layout reach the legend but not the animals' sections** (case `style`, two conditions).
    Editing a layout is not a documented use, but it is a trap for anyone who tries it.
 3. **Pedixplorer 1.8.0:** drawing stops when `asymptomatic` is given; `adopted` is stored and not drawn;
@@ -403,3 +429,38 @@ R7). The other 80, grouped (checked by script: each once):
 5. **A method trap:** a first scratch probe attached kinship2, Pedixplorer and pedkindraw together, and the
    `kinship()` it called was not pedkindraw's; its result (pedkindraw "computes" after a parent's row is dropped)
    was wrong. `tools/gapCases.R` calls every function through `::`, and C6 is written from its result.
+
+---
+
+## 10. The same gaps in nprcgenekeepr
+
+Measured on nprcgenekeepr commit `ae3491dff` (its S1187), with its own code and renv library, on the typed
+pedigrees of the cases above (`tools/gapCasesNprcgenekeepr.R`; output beside this document). pedkindraw's drawing
+and computing code is a copy of nprcgenekeepr's (R8), so most gaps are shared; the drift tool lists the 14 copied
+functions that differ, each with a `DIVERGENCE.md` row (hints, R94, R95 and the renames among them).
+
+| Gap | nprcgenekeepr | Measured |
+|---|---|---|
+| A1 picture files | same gap | `drawPedigreeDiagram()` returns the same widget (`layout`, `edgeStyle`, `onClick`); its `savePlotToFile()` saves its ggplot charts as PNG, PDF or SVG and returns `FALSE` given the pedigree widget |
+| A2 ids on a large pedigree | same gap | its `drawColonyOverview(overview, onClick)` draws a whole colony as one circle per maternal line, labelled by the founding dam, not each animal's id |
+| A3 an app | **has it** | `runGeneKeepR(port, launch.browser)`, its Shiny application with the Pedigree Browser |
+| B1 mates with no offspring | same gap | E and F left out (`isolatedIds`) |
+| B2 unknown affected status | same gap | A, B (unknown), C, D filled `#CC79A7`, `#FFFFFF`, `#FFFFFF`, `#CC79A7` |
+| B3 other marks | same gap | a `carrier` column leaves the layout identical |
+| B4 measured trait | same gap, and the same pitfall | 2.5, 0, 0.3, 9 filled affected, unaffected, affected, affected |
+| B5 colours and sizes | same gap | the same `drawPedigreeDiagram()` arguments and fixed colours |
+| B6 15-character labels | same gap | "A", "age 7", "MHC A01/B..." |
+| B7 shrink picture | same gap | no export draws one |
+| C1 relatives within k steps | same gap | `getPedDirectRelatives(ids, ped, unrelatedParents)` returns the whole connected family (all 9 animals of C6's pedigree, from F), with no distance |
+| C2 aligned generations | same gap | `findGeneration(id, sire, dam)` |
+| C3 the layout's own hints | wider gap | `makePedigreeMatingLayout(ped, edgeStyle, twinRelations, kinshipMatrix)` takes no hints at all (pedkindraw added them, R61) |
+| C4 other codes | **half** | sex: `convertSexCodes()` reads 1, 2, male, female, m, f as M, F, M, F, M, F, and `qcStudbook()` applies it; blank parent cells in a CSV become `NA` when `getPedigree()` reads it; parents written "0", or "" in a data frame, stop `qcStudbook()` ("Subject(s) listed as both sire and dam") |
+| C5 small lookups | **half** | `offspringCounts(probands, ped)` counts offspring (2 and 2 for A and B); no mates list |
+| C6 remove listed animals | same gap | none of its `remove...()` exports does it |
+| R3 kinship by family | same gap | the same dense `kinship()` (copied) |
+| R13 file readers | has readers | `getPedigree(fileName, sep)` (CSV or Excel), `readTwinRelations()`; none reads PLINK |
+| R21 datasets | has them | 25 datasets |
+
+So nprcgenekeepr has 13 of the 16 open gaps too and closes 3 in whole or part: A3 (its app), half of C4 (sex
+codes) and half of C5 (offspring counts). The two halves exist as small nprcgenekeepr functions,
+`convertSexCodes()` and `offspringCounts()`; the app is nprcgenekeepr's whole application.
