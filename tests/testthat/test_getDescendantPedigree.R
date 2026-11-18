@@ -2,7 +2,8 @@
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr tests/testthat/test_getDescendantPedigree.R at
 ## nprcgenekeepr commit baef1e12c. Changes: the data() call is dropped;
-## helper-fixtures.R supplies lacy1989Ped.
+## helper-fixtures.R supplies lacy1989Ped. Ruling R89 (pedkindraw S37): the
+## last test, pedkindraw's own, asks for the pedigree first.
 library(testthat)
 
 # getDescendantPedigree is the downward (descendants-only) mirror of
@@ -128,4 +129,23 @@ test_that("getDescendantPedigree asks walkPedigree() for the descendants of the 
   result <- getDescendantPedigree(probands = "A", ped)
   expectOneWalk(walker, ids = "A", ped = ped, direction = "descendants")
   expect_identical(result$id, "A")
+})
+
+## Mark's ruling R89 (docs/planning/standalone-pedigree-package-plan.md
+## section 2): the pedigree is the first argument, as in getOffspring(). A
+## call in that order gives the same pedigree as one that names both
+## arguments, and one in nprcgenekeepr's order, the probands first, stops.
+test_that("getDescendantPedigree() takes the pedigree first", {
+  expect_named(formals(getDescendantPedigree), c("ped", "probands"))
+  byPosition <- getDescendantPedigree(lacy1989Ped, c("C", "D"))
+  expect_identical(
+    byPosition,
+    getDescendantPedigree(ped = lacy1989Ped, probands = c("C", "D"))
+  )
+  expect_identical(byPosition$id, c("C", "D", "F", "G"))
+  expect_error(
+    getDescendantPedigree(c("C", "D"), lacy1989Ped),
+    "$ operator is invalid for atomic vectors",
+    fixed = TRUE
+  )
 })

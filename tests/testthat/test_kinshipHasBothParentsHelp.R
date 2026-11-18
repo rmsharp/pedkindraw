@@ -18,6 +18,8 @@
 ## edition 3, which pedkindraw uses, catches one warning per expect_warning()
 ## where nprcgenekeepr's edition 2 caught both (Mark's pick, S8: pedkindraw
 ## stays on edition 3, and nprcgenekeepr will move to it too).
+## Ruling R89 (pedkindraw S37): the four hasBothParents() calls pass the
+## pedigree first.
 ##
 ## S990 (BACKLOG.md docs-audit part 2; S986 findings 1 and 8, flags MB3 and
 ## PD12): two help sentences say something the code does not do. The owner
@@ -115,7 +117,7 @@ test_that("a vector of IDs does not give one value per ID", {
   ped <- hasBothParentsPed()
   ids <- c(ped$id[2L], ped$id[1L])
   expect_identical(length(ids), 2L)
-  expect_identical(hasBothParents(ids, ped), logical(0L))
+  expect_identical(hasBothParents(ped, ids), logical(0L))
 })
 
 test_that("a vector of IDs warns only when its length does not divide the rows", {
@@ -123,11 +125,11 @@ test_that("a vector of IDs warns only when its length does not divide the rows",
   expect_identical(nrow(ped), 8L)
   expect_warning(
     expect_warning(
-      hasBothParents(ped$id[1L:3L], ped),
+      hasBothParents(ped, ped$id[1L:3L]),
       "longer object length is not a multiple of shorter object length"
     ),
     "longer object length is not a multiple of shorter object length"
   )
-  expect_warning(hasBothParents(ped$id[1L:2L], ped), NA)
-  expect_warning(hasBothParents(ped$id[1L:4L], ped), NA)
+  expect_warning(hasBothParents(ped, ped$id[1L:2L]), NA)
+  expect_warning(hasBothParents(ped, ped$id[1L:4L]), NA)
 })
