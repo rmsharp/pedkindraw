@@ -3,8 +3,10 @@
 ## Copied from nprcgenekeepr tests/testthat/test_buildMatingUnitForest.R at
 ## nprcgenekeepr commit baef1e12c. Changes: each read of a rhesus file through
 ## system.file(..., package = "nprcgenekeepr") reads test_path("fixtures", ...)
-## instead (3; the source's lines 324-325, 446-447, 540-541). The comments below
-## name nprcgenekeepr's documents, sessions and files.
+## instead (3; the source's lines 324-325, 446-447, 540-541). pedkindraw S38
+## (plan R94, DIVERGENCE.md) added one test, after the '__proj_' one: a real
+## id starting '__jog_' is refused. The comments below name nprcgenekeepr's
+## documents, sessions and files.
 
 ## Tests for .buildMatingUnitForest() -- Pedigree Diagram Option 2, Slice 1
 ## (docs/planning/pedigree-diagram-option2-layout-design-plan.md D1/D2).
@@ -75,6 +77,28 @@ test_that(".buildMatingUnitForest fails loudly on a real id colliding with
     stringsAsFactors = FALSE
   )
   expect_error(.buildMatingUnitForest(badProj), "__proj_")
+})
+
+test_that(".buildMatingUnitForest fails loudly on a real id colliding with
+           the '__jog_' prefix of the routing points
+           .resolveEdgeNodeCollisions() adds (pedkindraw S38)", {
+  badJog <- data.frame(
+    id = c("__jog_1_a", "F1"),
+    sire = NA_character_, dam = NA_character_,
+    sex = c("F", "M"), gen = 0L,
+    stringsAsFactors = FALSE
+  )
+  expect_error(.buildMatingUnitForest(badJog), "__jog_")
+
+  ## Measured S38: without the check, smallPed with its founder B renamed
+  ## "__jog_1_a" gives a layout with two nodes of that id, the animal and
+  ## the first routing point, and no error or warning.
+  ped <- smallPed
+  ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+  for (column in c("id", "sire", "dam")) {
+    ped[[column]][ped[[column]] %in% "B"] <- "__jog_1_a"
+  }
+  expect_error(makePedigreeMatingLayout(ped), "__jog_1_a")
 })
 
 ## ---- D5 partial-parentage fallback ------------------------------------

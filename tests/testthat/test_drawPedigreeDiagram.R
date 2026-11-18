@@ -8,7 +8,9 @@
 ## the test of one legend row per condition drawn: with two and with five
 ## condition columns each condition row is a section picture
 ## (.conditionLegendImage(), tested in test_conditionLegendImage.R), shape
-## "image" and no fill, not a filled hexagon. Left out
+## "image" and no fill, not a filled hexagon. pedkindraw S38 (plan R94,
+## DIVERGENCE.md) added one test, after the "Select by id" one: the box leaves
+## out the __jog_ routing points (smallPed's layout). Left out
 ## (plan R35): its lines 285-365, the 4 tests of nprcgenekeepr's Shiny
 ## module, which pedkindraw does not have (three compare modPedigreeServer's
 ## Diagram widget with drawPedigreeDiagram()'s, one reads R/modPedigree.R).
@@ -203,6 +205,23 @@ test_that(
   expect_true(widget$x$idselection$enabled)
   expect_false(widget$x$idselection$useLabels)
   expect_identical(sort(widget$x$idselection$values), c("A", "B", "C", "D"))
+})
+
+test_that(
+  "drawPedigreeDiagram()'s 'Select by id' box leaves out the __jog_ routing
+   points a rectilinear layout adds to step a line around an animal", {
+  skip_if_not_installed("visNetwork")
+
+  ## smallPed's rectilinear layout steps one line around an animal, through
+  ## two __jog_ points (measured S38). Its stored gen is wrong in 8 of its 17
+  ## animals, so the generations are found again.
+  ped <- smallPed
+  ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+  layout <- makePedigreeMatingLayout(ped)
+  expect_true(any(startsWith(layout$nodes$id, "__jog_")))
+  values <- drawPedigreeDiagram(layout)$x$idselection$values
+  expect_false(any(startsWith(values, "__")))
+  expect_identical(sort(values), sort(ped$id))
 })
 
 test_that(
