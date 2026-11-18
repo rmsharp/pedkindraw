@@ -470,9 +470,9 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 
 ### Phase 17e. The legend's "Same animal, again" label fits (strict TDD)
 
-- **Work:** the backlog item: measure first whether a shorter label (`R/drawPedigreeDiagram.R:119`) or a wider
-  legend column fixes it at both widths (the website's 776 px widget, the vignette's 700 px column); the drift
-  choice (D3).
+- **Work:** the backlog item: measure first whether a shorter label (`R/drawPedigreeDiagram.R:121`, `:119`
+  before S38's header lines) or a wider legend column fixes it at both widths (the website's 776 px widget, the
+  vignette's 700 px column); the drift choice (D3).
 - **DONE:** the label whole at both widths in headless Chrome, by a check that fails on the cut label; the
   checks as 17c.
 - **Surface:** headless Chrome at two widths; it cannot show every reader's font.

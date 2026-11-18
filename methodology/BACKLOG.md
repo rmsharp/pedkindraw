@@ -26,8 +26,8 @@ issues).*
 - [ ] **The legend cuts its "Same animal, again" label** (READY, Effort S; before the release, Phase 17e, R84)
       -- seen S31 on the website in headless
       Chrome (window 1400 px; each widget 776 px wide, its drawing's canvas 559 px, so the legend about 217 px): the
-      row reads "Same animal; agai" in the drawings of both articles. The label is `R/drawPedigreeDiagram.R:119`,
-      an edge row of visNetwork's legend; the vignettes' 700 px column was not measured. Copied code: the drift-rule
+      row reads "Same animal; agai" in the drawings of both articles. The label is
+      `R/drawPedigreeDiagram.R:121` (S38), an edge row of visNetwork's legend; the vignettes' 700 px column was not measured. Copied code: the drift-rule
       choice at its pre-RED picker; measure first whether a shorter label or a wider legend column fixes it at
       both widths.
 

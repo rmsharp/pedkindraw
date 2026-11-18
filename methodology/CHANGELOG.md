@@ -15,9 +15,22 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
-### 2026-11-17 · [BL-Phase 17d] S38: Phase 17d, "Select by id" leaves out the routing points (in progress)
-- **Change:** session claimed (Mark's pick "17d: Select by id (Recommended)" at the orient picker): strict TDD. Phase 0 reconcile: nothing to backfill (frontier `3b6e37e` is HEAD, S37's close-out 2; no merges; S37's receipt complete, its ratchet results `42b564bc4c70` matching the results file); drift tool 91 functions, 14 differ, 0 without a row; nprcgenekeepr clean at `ef55e06bd`, its log on the copied files exactly the 4 commits already in the copy; dashboard 93/100; `pedkindraw.Rproj` untracked, left for Mark.
-- **Commit/PR:** the claim commit · **Session:** S38 · **Verified:** pending (close-out).
+### 2026-11-17 · [BL-Phase 17d] S38 push 3: `master` to GitHub at `7c9e306` (REFACTOR)
+- **Change:** `git push origin master` (`48e4c92..7c9e306`); a package change, so both workflows ran: CI run `44228850631` 5/5 `success` at the first attempt (15 min); site run `44228850623` `success`. S38's close-out 1 and 2 after it are not pushed.
+- **Commit/PR:** none (push) · **Session:** S38 · **Verified:** `gh run view --json`.
+
+### 2026-11-17 · [BL-Phase 17d] S38 push 2: `master` to GitHub at `48e4c92` (ruling R94, RED, GREEN 1-3)
+- **Change:** `git push origin master` (`09a9737..48e4c92`); both workflows ran: site run `44227398459` `success`; CI run `44227398574` 4/5 `success` (windows, macos, ubuntu release and oldrel-1) with ubuntu-devel unfinished at S38's close, still in `setup-r-dependencies` from 03:12 UTC (over 20 min; no package check had started there). Not cancelled; S39 reads its final result. The next push's run, on the same code refactored, was 5/5.
+- **Commit/PR:** none (push) · **Session:** S38 · **Verified:** `gh run view --json` (jobs and steps).
+
+### 2026-11-17 · [BL-Phase 17d] S38 push 1: `master` to GitHub at `09a9737` (S37's close-out 1 and 2, S38's claim)
+- **Change:** `git push origin master` (`2b6ef7a..09a9737`); `docs/planning/` changed, so both workflows ran: CI run `44218384987` 5/5 `success`; site run `44218384997` `success`.
+- **Commit/PR:** none (push) · **Session:** S38 · **Verified:** `gh run view --json`.
+
+### 2026-11-17 · [BL-Phase 17d] S38: Phase 17d, "Select by id" lists the animals only, and a real id starting `__jog_` is refused
+- **Change:** strict TDD (R94). Mark's picks at the first asking: "17d: Select by id (Recommended)" (orient); "Box and check (Recommended)" and "Port later (Recommended)" (pre-RED, recorded as ruling R94); the RED and GREEN gates; "Yes, proceed to REFACTOR" over Claude's recommendation to skip. Phase 0 reconcile at the claim: nothing to backfill. Measured first on scratch copies: the input check's prefix list also lacked `__jog_`, and smallPed with B renamed `__jog_1_a` gave two nodes of that id and no error; the vignette's colony box in headless Chrome 572 options (196 `__jog_`); both RED variants; the whole suite on the draft; pedkindraw's own fidelity runs on HEAD and on the draft (33 of 600 results differ, only by 3,152 `__jog_` box entries). RED: one test per file. GREEN: `R/drawPedigreeDiagram.R`'s box filter and `.buildMatingUnitForest()`'s input check gain `__jog_`; the fidelity tool's `withoutJogSelections()` (nprcgenekeepr's side only); two `DIVERGENCE.md` rows; two NEWS bullets. REFACTOR: `.reservedIdPrefixes` and `.reservedIdPattern` in `R/makePedigreeDiagramData.R`, read by the check, its message and the filter. Close-out: both plans (17d Done, R94, D3, dragons 23-24, 17e's citation now `:121`), ROADMAP, BACKLOG (17d item removed; a BLOCKED item to drop R94's records once nprcgenekeepr has the fix).
+- **Commit/PR:** `09a9737`, `2ac5308`, `88798f0`, `21a164e`, `e75171e`, `48e4c92`, `7c9e306`, `18e4e8a`, close-out 2 · **Session:** S38 · **Verified:** suite 56 files, 705 blocks, 0 failed, 0 errors, WARN 0 (RED: exactly the 2 new blocks failed); lint 0; roxygen unchanged; every changed statement reached by the tests; drift tool 91, 14 differ, 0 without a row; fidelity tool exit 0 (nprcgenekeepr at `110709b65`, `83c50c611`), 600 of 600, the allowances' counts as measured; REFACTOR's before/after record identical; `R CMD check --as-cran` R16's NOTE only on `48e4c92` and `7c9e306`; the shipped vignette's colony box in headless Chrome 376 options; quality_ratchet 4/5 pass, the suite gate unmeasured at its 300 s limit (by hand WARN 0).
+- **Model:** Claude Opus 5.5.
 
 ### 2026-11-17 · [BL-Phase 17c3] S37 push 2: `master` to GitHub at `2b6ef7a` (RED, GREEN 1-4)
 - **Change:** `git push origin master` (`e241cd0..2b6ef7a`); a package change, so both workflows ran: CI run `44212240619` 5/5 `success` at the first attempt (16 min); site run `44212240622` `success` (3 min). S37's close-out 1 and 2 after it are not pushed.
