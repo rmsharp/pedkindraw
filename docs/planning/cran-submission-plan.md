@@ -9,7 +9,9 @@ pdepth, ...)` and its `pdepth` check). Phase 17c2 DONE (S36: the pedigree argume
 Phase 17c3 DONE (S37: the pedigree first in four exports), so 17c is done. Phase 17d DONE (S38: "Select by id"
 lists the animals only, and a real id starting `__jog_` is refused; R94). Phase 17e DONE (S39: the legend's lines
 have no arrowheads and their labels sit on white; R95). Phase 17f DONE (S40: the gaps document; D4 goes to a
-planning session, R96). Next: Phase 17f2, the plan for closing the gaps in both repositories (section 6, R96).
+planning session, R96). Phase 17f2 DONE (S41: `docs/planning/gaps-and-shared-code-plan.md`; R97-R101: every gap
+closed before the release, phases G1-G17; nprcgenekeepr switches to pedkindraw after acceptance). Next: Phase G1
+(that plan's section 5.1), then G2-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -259,7 +261,8 @@ Mark's picks (R84) put the first five before the release; the rest is ruled here
 | Whether pedkindraw copies nprcgenekeepr's colony overview | after | none | DECISION NEEDED later; would need a ruling and a plan change |
 
 If 17f leads Mark to close a gap before the release, that work becomes a phase of its own by ruling, placed before
-17g so the timing runs and the coverage measure the code that ships.
+17g so the timing runs and the coverage measure the code that ships. **R97 (S41):** every gap, phases G1-G17 of
+`docs/planning/gaps-and-shared-code-plan.md`.
 
 ---
 
@@ -299,7 +302,9 @@ If 17f leads Mark to close a gap before the release, that work becomes a phase o
   overview) does not wait for pedkindraw's, nor pedkindraw's for it (R8).
 - **Two packages with the same function names on CRAN** (section 2.4): a user who loads both gets masking
   messages. The "Later, optional" step of the standalone plan (nprcgenekeepr uses pedkindraw) would end the
-  duplication; it is Mark's decision and not part of this plan.
+  duplication; it is Mark's decision and not part of this plan. **Ruled S41 (R98, R100):** after acceptance
+  nprcgenekeepr imports pedkindraw and re-exports the 22 shared functions, which ends the masking messages
+  (`docs/planning/gaps-and-shared-code-plan.md`).
 - **NEWS names the copy:** "a copy of nprcgenekeepr's at nprcgenekeepr's commit `baef1e12c`" (`NEWS.md`), and
   points to `DIVERGENCE.md`, which `.Rbuildignore` leaves out of the package: 17m words it as a file in the
   repository, as it does now.
@@ -537,6 +542,25 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **Surface:** documents only; nprcgenekeepr is read, not changed (R8, until Mark rules otherwise).
 - **Session boundary:** one planning session; the deepest reasoning setting (`methodology/SESSION_RUNNER.md`,
   Planning Sessions).
+- **Done (S41; R97-R101):** `docs/planning/gaps-and-shared-code-plan.md` (claim `f709b00`, evidence `5bebd3c`,
+  decisions and phases `da69a34`). Measured first: nprcgenekeepr at `eafd54851` calls 20 copied functions 57 times
+  from 24 files (13 pedkindraw exports, 7 internals; 4 calls in the order R89 changed); its whole suite on scratch
+  copies with pedkindraw's functions in place of its copies, 55 of its own 467 test files failing, 31 once the 4 calls
+  pass the pedigree first, each left a change pedkindraw made on purpose (R81, R88-R89, R92), a test of its own
+  source, or one perf test not traced; two faults in nprcgenekeepr found by R92's check (its kinship simulation
+  passes stale generations, wrong in 200 of 200 draws of its vignette's case, also in 3.0.0; `smallPed` stores 8 of
+  17 generations wrong); CRAN policy revision 6985 read. Mark's picks: every gap before the release (R97); nprcgenekeepr
+  names its calls now and imports pedkindraw after acceptance (R98); its two faults fixed first (R99); it re-exports
+  the 22 shared exports (R100); changes to the copied functions start in pedkindraw until then (R101).
+
+### Phases G1-G17. The gaps, closed before the release (R97)
+
+- **Work, DONE, commands and surface:** section 5.1 of `docs/planning/gaps-and-shared-code-plan.md`, one row per
+  phase: G1 N (a number in a condition column reported), G2 B2 (an unknown affected status drawn), G3-G9 the size-S
+  additions, G10-G14 the M additions, G15-G17 the L additions (B1, A1 with A2, A3), each L phase planned first.
+  Strict TDD; every addition leaves the fidelity tool's 600 cases identical; copied code gets a `DIVERGENCE.md` row
+  marked "at the switch" (R98).
+- **Sessions:** 38-53 (a guess; that plan's section 7.1).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
@@ -650,7 +674,7 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 | D1 | Who uploads to win-builder: Mark, or Claude with Mark's approval in the session | 17a | the result goes to the maintainer's email either way; nprcgenekeepr's D5 ruled the owner, and once let the agent |
 | D2 | Each name change of section 2.4: change or keep | 17b | **Decided S34** (R87-R93): section 2.4's "Decided" table; 9 `DIVERGENCE.md` rows in 17c |
 | D3 | Each drawing fix: also fixed in nprcgenekeepr (a session there, Mark starts it) or a `DIVERGENCE.md` row | 17d, 17e | nprcgenekeepr has the same filter and label. **17d decided S38** (R94): port later, `DIVERGENCE.md` rows and the fidelity tool's `withoutJogSelections()` until then. **17e decided S39** (R95): port later, the `drawPedigreeDiagram()` row and the tool's `withoutLegendLineStyle()` until then |
-| D4 | Which gaps, if any, are closed before the release | 17f | **Put to a planning session S40** (R96): decided in 17f2's plan, with nprcgenekeepr's part; each gap closed first a phase of its own, before 17g |
+| D4 | Which gaps, if any, are closed before the release | 17f | **Put to a planning session S40** (R96). **Decided S41** (R97): every gap, where possible, phases G1-G17 of `docs/planning/gaps-and-shared-code-plan.md`, before 17g |
 | D5 | The timing plan's scope | 17g | R82; the draft's nine tables |
 | D6 | How tests are kept off CRAN: `skip_on_cran()` per file or block, or a list of slow files as nprcgenekeepr's `slowTestFiles.txt` | 17k | eight files take 81% (section 2.1) |
 | D7 | `Language` and spelling; the `Depends: R` floor; a DOI reference in `Description` | 17l | British spellings under en-US; R 4.1.0 claimed, 4.5 tested |
@@ -673,7 +697,8 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 | 17e | legend label | 17b | 1 |
 | 17f | gaps document | 17c3-17e | 1 |
 | 17f2 | the plan for the gaps in both repositories (R96) | 17f | 1 |
-| 17g | timing plan | 17f2 (and any gap closed) | 1 |
+| G1-G17 | the gaps (R97; `docs/planning/gaps-and-shared-code-plan.md` section 5.1) | 17f2 | 38-53 |
+| 17g | timing plan | G17 | 1 |
 | 17h | timing runs | 17g | set by 17g |
 | 17i | speed vignette | 17h | 1 |
 | 17j | full coverage | the code final (17c-17i) | 1-2 |
@@ -791,10 +816,11 @@ pedkindraw's own:
   vacuous test are for sessions Mark starts there.
 - Copying the colony overview; `findPedigreeNumber()`'s speed; the drift tool's constants; the methodology tools'
   items (section 3).
-- New features, unless 17f2's plan adds a gap's closing by ruling (R96).
+- New features beyond the gaps of G1-G17 (R97).
 - Reverse dependencies: none (a new package).
-- nprcgenekeepr using pedkindraw (the standalone plan's "Later, optional"): discussed in 17f2's plan (R96, Mark's
-  points 2, 3 and 5), not done in Phase 17 unless that plan rules it in.
+- nprcgenekeepr using pedkindraw (the standalone plan's "Later, optional"): ruled S41 (R98, R100): nprcgenekeepr
+  names its calls now (N2) and imports pedkindraw after acceptance (N3), in sessions Mark starts there, not in Phase
+  17 (`docs/planning/gaps-and-shared-code-plan.md` section 5.2).
 
 ## 11. Sources
 

@@ -23,7 +23,8 @@ and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN sub
 argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2, the pedigree argument's name, is done
 (S36); 17c3, the pedigree first, is done (S37), so 17c is done; 17d, the "Select by id" fix, is done (S38); 17e,
 the legend's label, is done (S39); 17f, the gaps document, is done (S40); 17f2, the plan for closing the gaps in
-both repositories and coordinating them (R96), is next (Planned, below).
+both repositories and coordinating them, is done (S41, `docs/planning/gaps-and-shared-code-plan.md`, R97-R101):
+every gap closes before the release, phases G1-G17, and G1 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -47,8 +48,11 @@ session each unless marked. They follow the copy slices.
   offspring, and the shared export names stay; 17c makes the changes test-first in three sessions: 17c1
   (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) is done (S36), 17c3 (the pedigree first) is
   done (S37); 17d, the "Select by id" fix, is done (S38); 17e, the legend's label, is done (S39); 17f, the gaps
-  document, is done (S40); 17f2 is next: a planning session (R96) that decides which gaps close before the release
-  (D4) and how pedkindraw and nprcgenekeepr share work, in Mark's five points.
+  document, is done (S40); 17f2 is done (S41, R97-R101): every gap closes before the release, in phases G1-G17
+  (`docs/planning/gaps-and-shared-code-plan.md` section 5.1; 38-53 sessions, a guess), starting with G1 (a number
+  in a condition column reported, not drawn as affected in silence) and G2 (an unknown affected status drawn), then
+  the small additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG and PNG files;
+  an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
@@ -56,8 +60,11 @@ session each unless marked. They follow the copy slices.
   size-limits vignette (R82; the draft built to R79 is on the branch `draft/speed-vignette`), and tests for full
   coverage. Then the CRAN-mode test cut if needed, hygiene and noSuggests, the release text and version, the frozen
   gate, the cross-platform runs, Mark's submission, and the steps after acceptance.
-- **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8); 17f2's plan discusses it
-  (R96: nprcgenekeepr calling pedkindraw's functions, or carrying them until pedkindraw is on CRAN).
+- **nprcgenekeepr uses pedkindraw (decided S41, R98-R101):** in sessions Mark starts there, nprcgenekeepr fixes two
+  faults found in S41 (N1: its kinship simulation's stale generations, its `smallPed` dataset's generations), names
+  its calls to the four functions whose argument order pedkindraw changed (N2), and after CRAN accepts pedkindraw
+  imports it and re-exports the 22 shared functions (N3). Until then changes to the copied functions start in
+  pedkindraw (`docs/planning/gaps-and-shared-code-plan.md` sections 5.2-6).
 
 ## What's Built
 
@@ -221,6 +228,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17f2, the plan for closing the gaps in both repositories (pedkindraw S41, 2026-11-18).**
+  `docs/planning/gaps-and-shared-code-plan.md`: what closing each gap would touch, how nprcgenekeepr calls the copied
+  code (57 calls from 24 files), its whole test suite run with pedkindraw's functions in place of its copies (31 of
+  its 467 own test files failing once 4 calls pass the pedigree first, each for a change made on purpose or a test
+  of its own source, one not traced), and two faults found in nprcgenekeepr on the way. Mark's picks: every gap
+  closed before the first release (R97); nprcgenekeepr switches to pedkindraw after acceptance (R98-R100);
+  pedkindraw leads changes to the shared code until then (R101).
 - **Phase 17f, what kinship2 and Pedixplorer can do that pedkindraw cannot (pedkindraw S40, 2026-11-18).**
   `docs/research/pedkindraw-gaps-2026-11-18.md` lists 16 gaps, each shown on a small typed pedigree run with
   kinship2 1.9.6.2 and Pedixplorer 1.8.0 (`tools/gapCases.R`), with what each means for a user: chiefly no PDF,

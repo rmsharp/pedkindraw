@@ -23,57 +23,33 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **After nprcgenekeepr has the legend's section pictures, drop pedkindraw's records of the difference**
-      (BLOCKED on nprcgenekeepr, Effort S) -- R81 (S28, Mark's "Port later"): nprcgenekeepr is to get S28's
-      change in a session of its own there, which Mark starts (pedkindraw's sessions leave nprcgenekeepr unchanged,
-      R8): `.conditionLegendImage()` beside `.conditionSectionsHandler()` in its `R/affectedConditions.R`, the
-      `if (nConditions >= 2L)` block after `conditionRows` in its `R/drawPedigreeDiagram.R`, the tests of
-      pedkindraw's `test_conditionLegendImage.R` and the 3 changed checks of `test_drawPedigreeDiagram.R`
-      (pedkindraw `39bf333`, `b6a20bf`). Once it lands, a pedkindraw session deletes the two `DIVERGENCE.md` rows,
-      removes `withoutConditionSymbols()` from `tools/compareResultsWithNprcgenekeepr.R` (the tool must then read
-      600 of 600 identical with nothing set aside), moves the two copied files' headers to the new commit, and
-      re-runs the drift tool (3 differ).
+- [ ] **Phase G1: a number in a condition column is reported, not drawn as affected in silence** (READY, Effort S;
+      before the release, R97; `docs/planning/gaps-and-shared-code-plan.md` section 5.1) -- gaps document section 9
+      item 1, case `measuredTrait`: `affected = c(2.5, 0, 0.3, 9)` fills A, C and D as affected, read by
+      `as.logical()` at `R/makePedigreeDiagramData.R:117` and `:1913`. Strict TDD; pre-RED picker: a warning or a stop,
+      and whether 0 and 1 count as true-or-false. Copied code: a `DIVERGENCE.md` row marked "at the switch" (R98);
+      true, false and `NA` columns unchanged (fidelity tool 600 of 600).
 
-- [ ] **After nprcgenekeepr has the "Select by id" fix, drop pedkindraw's records of the difference**
-      (BLOCKED on nprcgenekeepr, Effort S) -- R94 (S38, Mark's "Port later"): nprcgenekeepr is to get S38's change
-      in a session of its own there, which Mark starts (R8): `__jog_` joins the reserved prefixes of its
-      `R/drawPedigreeDiagram.R:252` filter and its `R/makePedigreeDiagramData.R:417` input check (at `ae826ccb5`),
-      or both read one list as pedkindraw's `.reservedIdPrefixes` and `.reservedIdPattern` do (pedkindraw
-      `21a164e`, REFACTOR `7c9e306`), with the tests of RED `88798f0`. Once it lands, a pedkindraw session removes
-      the R94 parts of the `drawPedigreeDiagram()` and `.buildMatingUnitForest()` rows in `DIVERGENCE.md`, removes
-      `withoutJogSelections()` from `tools/compareResultsWithNprcgenekeepr.R` (the tool must then read 600 of 600
-      with no `__jog_` entry set aside), and re-runs the drift tool.
+- [ ] **Phases G2-G17: the other gaps, before the release** (READY in order, Effort L altogether, 37-52 sessions, a
+      guess; R97) -- `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case,
+      choices, DONE, commands and surface: G2 B2 (an unknown affected status drawn); G3-G9 the size-S additions (B6
+      label width, B5 colours, C4 input codes, C5 counts and mates, C6 removing animals, C2 aligned generations, B7 an
+      example); G10-G14 the M additions (C3, C1, B4 after G1, B3's marks, B5's sizes); G15-G17 the L additions (B1,
+      A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
 
-- [ ] **After nprcgenekeepr has the legend-lines fix, drop pedkindraw's records of the difference**
-      (BLOCKED on nprcgenekeepr, Effort S) -- R95 (S39, Mark's "Port later"): nprcgenekeepr is to get S39's change
-      in a session of its own there, which Mark starts (R8): after its legend line table is built
-      (`R/drawPedigreeDiagram.R:89` at `3b8bf9374`), `legendEdges$arrows <- ""` and
-      `legendEdges$font.background <- "#FFFFFF"` (pedkindraw `eb1e845`), with the tests of RED `b35911a`
-      (`test_drawPedigreeDiagramLegendLines.R`; its browser test needs chromote). Once it lands, a pedkindraw
-      session removes the R95 part of the `drawPedigreeDiagram()` row in `DIVERGENCE.md`, removes
-      `withoutLegendLineStyle()` from `tools/compareResultsWithNprcgenekeepr.R` (the tool must then read 600 of 600
-      with no drawing's line columns set aside; `eachDrawing()` goes with the last of the three set-asides), and
-      re-runs the drift tool.
+- [ ] **After nprcgenekeepr's switch to pedkindraw: retire the drift and fidelity tools (Phase P1)** (BLOCKED on
+      nprcgenekeepr's N3, after CRAN accepts pedkindraw; Effort S; R98, R101) -- the ports R81 (legend section
+      pictures), R94 (`__jog_` prefix) and R95 (legend lines) are no longer made in nprcgenekeepr: R98 keeps its copies
+      unchanged until it imports pedkindraw, so every `DIVERGENCE.md` row is marked "at the switch". Then: retire
+      `tools/compareWithNprcgenekeepr.R` and `tools/compareResultsWithNprcgenekeepr.R` (with their set-asides
+      `withoutConditionSymbols()`, `withoutJogSelections()`, `withoutLegendLineStyle()` and `eachDrawing()`), empty
+      `DIVERGENCE.md`'s open rows, say in README and NEWS that nprcgenekeepr uses pedkindraw, and put nprcgenekeepr's
+      reverse-dependency check into every later release plan (plan section 5.3).
 
-- [ ] **The plan for closing the gaps in both repositories and coordinating them** (READY, a planning session;
-      before the release, Phase 17f2, R96) -- Mark (S40): "For the next session, create a plan to eventually close
-      the gaps, where possible, in nprcgenekeepr and pedkindraw such that (1) the first version of pedkindraw for
-      submission to CRAN is as complete as we decide during the planning session; (2) we discuss refactoring
-      nprcgenekeepr to use function calls as if we were dependent on pedkindraw; (3) decide if we want pedkindraw
-      functions in nprcgenekeepr with the intent of replacing them with a dependency on pedkindraw once pedkindraw
-      is accepted by CRAN (not a certain outcome).(4) figure out how to best coordinate work between nprcgenekeepr
-      and pedkindraw repositories. (5) Acknowledging that nprcgenekeepr will not necessarily need all of the
-      functionality provided by pedkindraw." And: "Pausing development of one repository while waiting on
-      progress in the other is an acceptable option." Inputs: `docs/research/pedkindraw-gaps-2026-11-18.md`
-      (sections 1, 1.1, 10), `docs/planning/cran-submission-plan.md` Phase 17f2, R8, `DIVERGENCE.md`, the three
-      BLOCKED port items above. D4 is answered inside it.
-
-- [ ] **A numeric condition column is drawn affected wherever it is not 0, with no message** (READY, Effort S, a
-      guess; found S40; for 17f2's plan to place, since changing it after the release changes behaviour) -- gaps
-      document section 9 item 1, case `measuredTrait`: `affected = c(2.5, 0, 0.3, 9)` fills A, C and D as
-      affected. `makePedigreeDiagramData()`'s help asks for a logical column and `makePedigreeMatingLayout()`'s
-      does not say. nprcgenekeepr's copy does the same (section 10), so a fix here is a drift-rule port or a
-      `DIVERGENCE.md` row.
+- [ ] **Correct pedkindraw's `smallPed` fixture after nprcgenekeepr corrects its dataset** (BLOCKED on nprcgenekeepr's
+      N1, R99; Effort S) -- `tests/testthat/fixtures/smallPed.rds` stores the same wrong generations as nprcgenekeepr's
+      `smallPed` (8 of 17 differ from `findGeneration()`, measured S41); S35 made the one test that used them compute
+      `gen` instead. Replace the fixture from nprcgenekeepr's corrected dataset (R21's provenance) and run the suite.
 
 - [ ] **Tests for full coverage** (READY, Effort M; before the release, Phase 17j, R84)
       -- Mark's request (S13, after its close-out): add tests until
@@ -103,6 +79,27 @@ issues).*
       97.91%, 43 of 2,445, the same 43 (`R/layoutHints.R` 174 of 174 lines; `R/makePedigreeDiagramData.R`'s lines
       moved, above). S24 on `bcdc1b0`: 97.96%, 43 of 2,501, the same 43 (`R/asPedFrame.R` 158 of 158 statements,
       `R/layoutHints.R` 149 of 149; `R/makePedigreeDiagramData.R` unchanged, its lines as at `ffe042f`)). S25 changed nothing in `R/` (a planning session), and S26 only added `R/pedkindraw-package.R`, the package help page's source (no function); not re-measured.
+
+## nprcgenekeepr sessions (Mark starts them there; R8, R98-R101)
+
+*Not pedkindraw sessions: listed so they are not lost. Each runs under nprcgenekeepr's own protocol and checks;
+`docs/planning/gaps-and-shared-code-plan.md` section 5.2 gives the work, DONE and order.*
+
+- [ ] **N1: nprcgenekeepr's two faults** (READY, the next nprcgenekeepr work by R99; Effort S) -- its
+      `.simulateKinship()` (`R/simulateKinship.R:25-28` at `eafd54851`, also in 3.0.0) passes the input pedigree's
+      generations to `kinship()` after `makeSimPed()` gives animals simulated parents: on its `simulatedKValues`
+      vignette's case, 200 of 200 seeded draws differ from kinship2, up to 0.375; recomputed, 0 of 200. Its `smallPed`
+      stores 8 of 17 generations wrong (kinship 4 of 289 cells off, up to 0.25). Fix both, with a NEWS item.
+
+- [ ] **N2: nprcgenekeepr names its calls; its drift-watch item reworded** (READY after N1; Effort S; R98, R101) --
+      its calls to R89's four functions (`getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()`,
+      `hasBothParents()`) outside its copied code get named arguments, in `R/` (4 at `eafd54851`), tests, `tools/`,
+      vignettes (`a2interactive.Rmd`, 6) and articles (2); R88's renamed functions stay positional. Its backlog's
+      drift-watch item says R101's rule, and its stale S1159 line goes.
+
+- [ ] **N3: nprcgenekeepr imports pedkindraw** (BLOCKED on CRAN accepting pedkindraw; Effort M, 2 sessions, a guess;
+      R98, R100) -- `Imports: pedkindraw`; the 22 shared exports re-exported; its 82 copied definitions and 43 copied
+      test files deleted (its 7 internals and `addIdRecords()` kept); NEWS for its users. Then pedkindraw's P1.
 
 ## Waiting on Mark
 
@@ -192,4 +189,4 @@ issues).*
 
 - [ ] **`findPedigreeNumber()`'s speed** (READY, Effort M) -- 12.9 s for 100,000 animals, close to the square of the
       size (contract section 7); new work after the copy (contract section 10 item 5). A faster version here is a
-      divergence from nprcgenekeepr: mirror it there or record it in `DIVERGENCE.md` (plan section 5).
+      divergence from nprcgenekeepr: a `DIVERGENCE.md` row marked "at the switch" (R98, R101).
