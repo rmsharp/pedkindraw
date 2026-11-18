@@ -8,7 +8,8 @@ name rulings and 17c in three sessions, section 2.4; R87-R93). Phase 17c1 DONE (
 pdepth, ...)` and its `pdepth` check). Phase 17c2 DONE (S36: the pedigree argument is `ped` in four more exports).
 Phase 17c3 DONE (S37: the pedigree first in four exports), so 17c is done. Phase 17d DONE (S38: "Select by id"
 lists the animals only, and a real id starting `__jog_` is refused; R94). Phase 17e DONE (S39: the legend's lines
-have no arrowheads and their labels sit on white; R95). Next: Phase 17f, the gaps document (section 8).
+have no arrowheads and their labels sit on white; R95). Phase 17f DONE (S40: the gaps document; D4 goes to a
+planning session, R96). Next: Phase 17f2, the plan for closing the gaps in both repositories (section 6, R96).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -501,6 +502,41 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **DONE:** each gap shown on a typed case, run with kinship2 and Pedixplorer from renv, each case in
   `tryCatch()` with a time limit (Learning 19); D4 answered.
 - **Surface:** this Mac; the claims cover the cases run (Learning 19).
+- **Done (S40; R96):** `docs/research/pedkindraw-gaps-2026-11-18.md` (claim `2626c16`, document `c267ffd`,
+  sections 1.1 and 10 `210a901`): 16 open gaps, A pictures outside the browser (A1 PDF, SVG and PNG files from a
+  script; A2 every id of a large pedigree in one picture; A3 an app), B what a drawing shows (B1 mates with no
+  offspring; B2 an unknown affected status; B3 Pedixplorer's carrier, proband and other marks; B4 a measured trait;
+  B5 colours and sizes; B6 labels over 15 characters; B7 a picture of what shrinking removed), C computing and input
+  (C1 relatives within k steps; C2 aligned generations; C3 the layout's own hints; C4 parents written "0" and other
+  sex codes; C5 offspring counts and mates; C6 removing a parent in one call). Each on a typed case of
+  `tools/gapCases.R`: 20 cases, each in its own R process under GNU `timeout`, all exit 0 in 82 s; the run recorded
+  beside the document. Section 6: R3's block kinship measured (minnbreast's 28,081 people: kinship2 0.4 s and 202 MB,
+  pedkindraw 14.4 s and 8,863 MB, values identical). Section 10, at Mark's question: nprcgenekeepr at `ae3491dff`
+  has 13 of the 16 too and closes 3 in whole or part (its app, `convertSexCodes()`, `offspringCounts()`), measured on
+  its own code by `tools/gapCasesNprcgenekeepr.R`. D4: Mark asked to clarify at its picker, then directed a
+  planning session (R96), Phase 17f2.
+
+### Phase 17f2. The plan for closing the gaps in both repositories (a planning session; R96)
+
+- **Work:** a plan under `docs/planning/`, answering Mark's direction (R96), in his words: "create a plan to
+  eventually close the gaps, where possible, in nprcgenekeepr and pedkindraw such that (1) the first version of
+  pedkindraw for submission to CRAN is as complete as we decide during the planning session; (2) we discuss
+  refactoring nprcgenekeepr to use function calls as if we were dependent on pedkindraw; (3) decide if we want
+  pedkindraw functions in nprcgenekeepr with the intent of replacing them with a dependency on pedkindraw once
+  pedkindraw is accepted by CRAN (not a certain outcome).(4) figure out how to best coordinate work between
+  nprcgenekeepr and pedkindraw repositories. (5) Acknowledging that nprcgenekeepr will not necessarily need all of
+  the functionality provided by pedkindraw." And: "Pausing development of one repository while waiting on progress
+  in the other is an acceptable option." Inputs: the gaps document (sections 1, 1.1 and 10), R8 and section 4's
+  "Later, optional" of the standalone plan, `DIVERGENCE.md` (14 copied functions differ), the drift rule (its
+  section 5), the ports waiting in nprcgenekeepr (R81, R94, R95), and nprcgenekeepr's own calls to the 91 copied
+  functions (an inventory by `grep`, Learning 6: by citation as well as by name).
+- **DONE:** the plan committed with its decisions put to Mark by picker and recorded as rulings: which gaps, if any,
+  close before the first release (D4), each then a phase with its DONE, commands and surface; whether and how
+  nprcgenekeepr calls pedkindraw's functions, or carries them until pedkindraw is on CRAN; which of pedkindraw's
+  functions nprcgenekeepr needs; how work in the two repositories is ordered (pausing one is allowed). No code.
+- **Surface:** documents only; nprcgenekeepr is read, not changed (R8, until Mark rules otherwise).
+- **Session boundary:** one planning session; the deepest reasoning setting (`methodology/SESSION_RUNNER.md`,
+  Planning Sessions).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
@@ -614,7 +650,7 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 | D1 | Who uploads to win-builder: Mark, or Claude with Mark's approval in the session | 17a | the result goes to the maintainer's email either way; nprcgenekeepr's D5 ruled the owner, and once let the agent |
 | D2 | Each name change of section 2.4: change or keep | 17b | **Decided S34** (R87-R93): section 2.4's "Decided" table; 9 `DIVERGENCE.md` rows in 17c |
 | D3 | Each drawing fix: also fixed in nprcgenekeepr (a session there, Mark starts it) or a `DIVERGENCE.md` row | 17d, 17e | nprcgenekeepr has the same filter and label. **17d decided S38** (R94): port later, `DIVERGENCE.md` rows and the fidelity tool's `withoutJogSelections()` until then. **17e decided S39** (R95): port later, the `drawPedigreeDiagram()` row and the tool's `withoutLegendLineStyle()` until then |
-| D4 | Which gaps, if any, are closed before the release | 17f | each would be a phase of its own, before 17g |
+| D4 | Which gaps, if any, are closed before the release | 17f | **Put to a planning session S40** (R96): decided in 17f2's plan, with nprcgenekeepr's part; each gap closed first a phase of its own, before 17g |
 | D5 | The timing plan's scope | 17g | R82; the draft's nine tables |
 | D6 | How tests are kept off CRAN: `skip_on_cran()` per file or block, or a list of slow files as nprcgenekeepr's `slowTestFiles.txt` | 17k | eight files take 81% (section 2.1) |
 | D7 | `Language` and spelling; the `Depends: R` floor; a DOI reference in `Description` | 17l | British spellings under en-US; R 4.1.0 claimed, 4.5 tested |
@@ -636,7 +672,8 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 | 17d | "Select by id" | 17b | 1 |
 | 17e | legend label | 17b | 1 |
 | 17f | gaps document | 17c3-17e | 1 |
-| 17g | timing plan | 17f (and any gap closed) | 1 |
+| 17f2 | the plan for the gaps in both repositories (R96) | 17f | 1 |
+| 17g | timing plan | 17f2 (and any gap closed) | 1 |
 | 17h | timing runs | 17g | set by 17g |
 | 17i | speed vignette | 17h | 1 |
 | 17j | full coverage | the code final (17c-17i) | 1-2 |
@@ -737,6 +774,14 @@ pedkindraw's own:
 26. **Do not pipe a chromote script into `head`** (S39): `Rscript page.R ... | head -1` never ended (its R
     process still running after 120 s, then killed), where the same script piped into `grep -v`, which reads all
     its input, ended in each of 4 runs. Write the output to a file and read it after.
+27. **Call each package through `::` when kinship2, Pedixplorer and pedkindraw are loaded together** (S40): a probe
+    that attached all three called the `kinship()` attached last, not pedkindraw's, and read "pedkindraw computes
+    kinship after a parent's row is dropped"; through `pedkindraw::kinship()` it stops ("pdepth must not be missing
+    for any animal"), and gap C6 was written from that. A probe's "not a gap" is a prediction until the case script
+    runs it: the framing picker's outline listed removing animals as not a gap.
+28. **Pedixplorer writes `Rplots.pdf` into the working folder** (S40): `ped_to_plotdf()` measures text on the open
+    graphics device and opens R's default one, a file, when none is open. Open `grDevices::pdf(NULL)` first (the
+    same 7 by 7 inches, so the same results: S40's two runs agreed line for line).
 
 ---
 
@@ -746,9 +791,10 @@ pedkindraw's own:
   vacuous test are for sessions Mark starts there.
 - Copying the colony overview; `findPedigreeNumber()`'s speed; the drift tool's constants; the methodology tools'
   items (section 3).
-- New features, unless 17f's D4 adds a gap's closing by ruling.
+- New features, unless 17f2's plan adds a gap's closing by ruling (R96).
 - Reverse dependencies: none (a new package).
-- nprcgenekeepr using pedkindraw (the standalone plan's "Later, optional").
+- nprcgenekeepr using pedkindraw (the standalone plan's "Later, optional"): discussed in 17f2's plan (R96, Mark's
+  points 2, 3 and 5), not done in Phase 17 unless that plan rules it in.
 
 ## 11. Sources
 

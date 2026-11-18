@@ -22,7 +22,8 @@ and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN sub
 `docs/planning/cran-submission-plan.md`) and under way: 17a, the check time on win-builder, is done (S33); 17b, the
 argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2, the pedigree argument's name, is done
 (S36); 17c3, the pedigree first, is done (S37), so 17c is done; 17d, the "Select by id" fix, is done (S38); 17e,
-the legend's label, is done (S39); 17f, the gaps document, is next (Planned, below).
+the legend's label, is done (S39); 17f, the gaps document, is done (S40); 17f2, the plan for closing the gaps in
+both repositories and coordinating them (R96), is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -46,7 +47,8 @@ session each unless marked. They follow the copy slices.
   offspring, and the shared export names stay; 17c makes the changes test-first in three sessions: 17c1
   (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) is done (S36), 17c3 (the pedigree first) is
   done (S37); 17d, the "Select by id" fix, is done (S38); 17e, the legend's label, is done (S39); 17f, the gaps
-  document, is next.
+  document, is done (S40); 17f2 is next: a planning session (R96) that decides which gaps close before the release
+  (D4) and how pedkindraw and nprcgenekeepr share work, in Mark's five points.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
@@ -54,7 +56,8 @@ session each unless marked. They follow the copy slices.
   size-limits vignette (R82; the draft built to R79 is on the branch `draft/speed-vignette`), and tests for full
   coverage. Then the CRAN-mode test cut if needed, hygiene and noSuggests, the release text and version, the frozen
   gate, the cross-platform runs, Mark's submission, and the steps after acceptance.
-- **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8).
+- **Later, optional:** nprcgenekeepr uses pedkindraw, only on Mark's decision (R8); 17f2's plan discusses it
+  (R96: nprcgenekeepr calling pedkindraw's functions, or carrying them until pedkindraw is on CRAN).
 
 ## What's Built
 
@@ -218,6 +221,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17f, what kinship2 and Pedixplorer can do that pedkindraw cannot (pedkindraw S40, 2026-11-18).**
+  `docs/research/pedkindraw-gaps-2026-11-18.md` lists 16 gaps, each shown on a small typed pedigree run with
+  kinship2 1.9.6.2 and Pedixplorer 1.8.0 (`tools/gapCases.R`), with what each means for a user: chiefly no PDF,
+  SVG or PNG picture from a script, no mark for an unknown affected status, no mating without offspring, no
+  colour settings, and missing parents written "0" not read. nprcgenekeepr has 13 of the 16 too. Mark put the
+  decision on which to close before the release into a planning session (R96).
 - **Phase 17e, the legend's "Same animal, again" label reads whole (pedkindraw S39, 2026-11-17).** On the website
   the label read "Same animal; agai": the arrowhead visNetwork gives every legend line covered its last letter, and
   the dashed line through the comma made it look like a semicolon. The legend's four lines now have no arrowheads,

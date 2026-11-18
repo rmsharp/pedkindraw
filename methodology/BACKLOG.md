@@ -55,16 +55,25 @@ issues).*
       with no drawing's line columns set aside; `eachDrawing()` goes with the last of the three set-asides), and
       re-runs the drift tool.
 
-- [ ] **What kinship2 or Pedixplorer can do that pedkindraw cannot** (READY, Effort M, a guess; before the release,
-      Phase 17f, R84) -- Mark (S26): "Add
-      to backlog to document what pedkindraw does not do that kinship2 or pedixplorer can do. Later we will decide
-      if those gaps should be addressed and removed." A document under `docs/research/` listing each gap with its
-      evidence; deciding which to close is a later step, Mark's. Starting points: the gap table of kinship2's 25
-      exports (`docs/research/kinship2-feature-gap-analysis-2026-09-20.md`, written for nprcgenekeepr before
-      pedkindraw existed; re-check each row against pedkindraw's 31 exports); the comparison study's section 10
-      (`docs/research/pedigree-package-comparison-2026-11.md`: no SVG or PDF export, no fitted view of a large
-      pedigree that shows ids); Pedixplorer has no gap table yet (its exports and help, Bioconductor 1.8.0 in
-      renv). Measure each claimed gap on a typed case (Learnings 18-19).
+- [ ] **The plan for closing the gaps in both repositories and coordinating them** (READY, a planning session;
+      before the release, Phase 17f2, R96) -- Mark (S40): "For the next session, create a plan to eventually close
+      the gaps, where possible, in nprcgenekeepr and pedkindraw such that (1) the first version of pedkindraw for
+      submission to CRAN is as complete as we decide during the planning session; (2) we discuss refactoring
+      nprcgenekeepr to use function calls as if we were dependent on pedkindraw; (3) decide if we want pedkindraw
+      functions in nprcgenekeepr with the intent of replacing them with a dependency on pedkindraw once pedkindraw
+      is accepted by CRAN (not a certain outcome).(4) figure out how to best coordinate work between nprcgenekeepr
+      and pedkindraw repositories. (5) Acknowledging that nprcgenekeepr will not necessarily need all of the
+      functionality provided by pedkindraw." And: "Pausing development of one repository while waiting on
+      progress in the other is an acceptable option." Inputs: `docs/research/pedkindraw-gaps-2026-11-18.md`
+      (sections 1, 1.1, 10), `docs/planning/cran-submission-plan.md` Phase 17f2, R8, `DIVERGENCE.md`, the three
+      BLOCKED port items above. D4 is answered inside it.
+
+- [ ] **A numeric condition column is drawn affected wherever it is not 0, with no message** (READY, Effort S, a
+      guess; found S40; for 17f2's plan to place, since changing it after the release changes behaviour) -- gaps
+      document section 9 item 1, case `measuredTrait`: `affected = c(2.5, 0, 0.3, 9)` fills A, C and D as
+      affected. `makePedigreeDiagramData()`'s help asks for a logical column and `makePedigreeMatingLayout()`'s
+      does not say. nprcgenekeepr's copy does the same (section 10), so a fix here is a drift-rule port or a
+      `DIVERGENCE.md` row.
 
 - [ ] **Tests for full coverage** (READY, Effort M; before the release, Phase 17j, R84)
       -- Mark's request (S13, after its close-out): add tests until
