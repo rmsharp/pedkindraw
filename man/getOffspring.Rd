@@ -8,9 +8,7 @@ getOffspring(ped, ids)
 }
 \arguments{
 \item{ped}{dataframe with pedigree structure having at least the
-columns id, sire, and dam. The pedigree is the first argument, unlike
-\code{\link{getProbandPedigree}()} and
-\code{\link{getDescendantPedigree}()}, which take the animal ids first.}
+columns id, sire, and dam.}
 
 \item{ids}{character vector of animal IDs}
 }
