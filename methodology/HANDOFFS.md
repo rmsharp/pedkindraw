@@ -196,11 +196,26 @@ manifest existed are not re-judged.
 ```handoff
 session: S39
 date: 2026-11-17
-status: pending
-active_task: Phase 17e, the legend's "Same animal, again" label fits (strict TDD; R84): the label R/drawPedigreeDiagram.R:121, the legend's width = 0.28 at :236; measure a shorter label and a wider legend at 776 px and 700 px first; the drift choice D3 at the pre-RED picker; Mark's pick "Fix the legend label (Recommended)" at the orient picker
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 9
+predecessor_score: 9
+active_task: Phase 17e DONE (R95): the legend's four lines ("Same animal, again", MZ, DZ, ?) are drawn without arrowheads and each label on white, so the label reads whole. Next: Phase 17f, the gaps document (docs/planning/cran-submission-plan.md:496; methodology/BACKLOG.md:58), a research document under docs/research/ with each gap shown on a typed case, then Mark's D4 picker (plan :617)
+what_was_done: claim fe82f69 (pushed with S38's close-out 1 and 2: CI 44232368509 and site 44232368399 success; S38's CI run 44227398574 finished 5/5). Measured before the picks in headless Chrome: the label was not cut by the legend's width but covered by the arrowhead visLegend() gives every legend line (5.5 px at 776 px, 10.1 px at 700 px; the live site's 12 drawings all 5.5 px); no arrowheads whole at 776, 700, 600 and 500 px, a shorter label or a 35% legend covered again at 600 px; the whole suite on the chosen draft 705 blocks, 0 failed; pedkindraw's own fidelity runs, 48 of 600 results differing only by the two new columns. Mark's picks: "Fix the legend label" (orient), "No arrowheads, white label" and "Port later" (pre-RED; ruling R95 37c41cf), the RED, GREEN and REFACTOR gates (REFACTOR over Claude's "skip"). RED b35911a (a new file, 2 tests); GREEN 1 eb1e845 (arrows "" and font.background "#FFFFFF" in the legend's line table); GREEN 2 fab63a8 (the fidelity tool's withoutLegendLineStyle(); the DIVERGENCE.md row); GREEN 3 f4f5744 (NEWS); REFACTOR 9505d9d (the tool's three set-asides through one eachDrawing(), proved on one raw dump); the six pushed together; close-out 1 264742c (plans, ROADMAP, BACKLOG, dragons 25-26); close-out 2 (notes, receipt, ledger)
+next_steps: Orient; drift tool (91, 14 differ, 0 without a row); nprcgenekeepr's log on every copied file (expect exactly the 4 commits already in the copy); S39's code push finished green before its close (CI 44240187232 5/5, site 44240187166); push S39's close-out 1 and 2 (both workflows run); 17f: re-check the kinship2 gap table (docs/research/kinship2-feature-gap-analysis-2026-09-20.md, 25 exports) against pedkindraw's 31 exports, the comparison study's section 10 (docs/research/pedigree-package-comparison-2026-11.md), and Pedixplorer 1.8.0's exports and help; each gap on a typed case run with kinship2 1.9.6.2 and Pedixplorer from renv, in tryCatch() under a per-process time limit (Learning 19); a framing picker on the document's outline first, then the document, then the D4 picker
+key_files: docs/planning/cran-submission-plan.md:6 (status), :471 (17e, Done :479), :496 (17f), :616 (D3), :617 (D4), :659 (dragons; 25 :730, 26 :737); docs/planning/standalone-pedigree-package-plan.md:58 (Next), :217 (R95), :957 (Done 17e); R/drawPedigreeDiagram.R:122 (legend line table), :133 (R95's columns), :246 (legend width); tests/testthat/test_drawPedigreeDiagramLegendLines.R:42, :82; tools/compareResultsWithNprcgenekeepr.R:720 (eachDrawing), :805 (R95 set-aside); DIVERGENCE.md:17; methodology/BACKLOG.md:47 (R95 port), :58 (17f), :116 (the suite gate's time limit)
+gotchas: the suite takes 273-297 s now, and quality_ratchet --run measured all 5 gates in 297 s, 3 s under the suite gate's 300 s limit (BACKLOG :116); the fidelity tool prints three set-asides (R81 36 drawings; R94 33 drawings, 3,152 entries; R95 120 drawings in the 48 drawing-case results), any other count is a change; the drawing results are 48 of 600 (12 pedigrees by 4 cases), not 33; read browser positions from vis.js, not a chromote screenshot (about 30 px off); never pipe a chromote script into head; rm -rf with shell variables is refused by Claude Code's safety check; nprcgenekeepr moves often (4 commits during S39, none on a copied file); HANDOFFS.md 180,183 B after S39's receipt, of its 196,608 B trigger (about 3 more sessions at 5-6 KB each, an estimate)
+runtime_smoke: library change verified by its tests and checks, not an app: suite 57 files, 707 blocks, 0 failed, 0 errors, 0 skipped, WARN 0 (GREEN 1 and REFACTOR); R CMD check --as-cran 1 NOTE (R16's) on f4f5744; the shipped vignettes (from the build's tarball) in headless Chrome: 12 drawings 700 px wide, 48 of 48 legend line labels whole, on white, no arrowhead; the live website after the push, 12 drawings 776 px wide, 48 of 48 the same (before: all 12 covered 5.5 px); fidelity tool exit 0, 600 of 600 identical (nprcgenekeepr at 3b8bf9374); drift tool 91, 14 differ, 0 without a row; REFACTOR's before/after record identical; quality_ratchet: 5/5 pass · 0 fail · 0 unmeasured · results 5ddbb5b1aeb3 · manifest 01151c525b8a
+changelog_ref: CHANGELOG.md "2026-11-17 · [BL-Phase 17e] S39: Phase 17e, the legend's lines have no arrowheads and their labels sit on white", "S39 push 1" and "S39 push 2"
+commit: this receipt's commit (close-out 2)
 ```
+```
+S39 made Phase 17e: measured first, the legend's "Same animal, again" label was covered by the arrowhead visNetwork
+gives every legend line, not cut by the legend's width as S31, the plan and S38 had framed it; by Mark's picks the
+legend's lines lose their arrowheads (the diagram's lines have none) and each label sits on white. Each picker stated
+measured results, the repository's code was the measured draft, and the DONE line was checked in headless Chrome on
+the live site before and on the shipped vignettes after. Port to nprcgenekeepr later (R95): a `DIVERGENCE.md` row and
+a fidelity-tool set-aside until then; at REFACTOR, by Mark's pick over Claude's recommendation to skip, the tool's
+three set-asides share one walk. Model: Claude Opus 5.5, one tier.
 
 ```handoff
 session: S38
