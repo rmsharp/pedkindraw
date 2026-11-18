@@ -24,7 +24,10 @@
 ## differ, not the drawings. One exception (S28, plan R81): a legend with two
 ## or more condition rows is compared without those rows' shape, fill and
 ## picture, where pedkindraw now draws section pictures (see
-## withoutConditionSymbols() below).
+## withoutConditionSymbols() below). A second (S38, plan R94): the __jog_
+## entries of nprcgenekeepr's "Select by id" boxes are taken out before the
+## comparison, since pedkindraw's box leaves them out (see
+## withoutJogSelections() below).
 ##
 ## pedkindraw's getProbandPedigree(), getDescendantPedigree(), trimPedigree()
 ## and hasBothParents() take the pedigree first, nprcgenekeepr's the ids first
@@ -749,6 +752,41 @@ cat(sprintf(paste(
   "in pedkindraw's, compared without those rows' shape, fill and picture",
   "(DIVERGENCE.md, plan R81)\n"
 ), theirDrawings, setAside$drawings))
+## pedkindraw S38 (plan R94, DIVERGENCE.md): pedkindraw's "Select by id" box
+## leaves out the __jog_ routing points .resolveEdgeNodeCollisions() adds,
+## where nprcgenekeepr's box lists them. Until nprcgenekeepr has the same
+## filter, the __jog_ entries are taken out of nprcgenekeepr's boxes before
+## the comparison; everything else in each drawing, the box's other entries
+## included, is still compared, and a __jog_ entry in pedkindraw's box would
+## still differ. Measured S38 on pedkindraw's own runs before and after the
+## fix: 33 of the 600 results differed, only by 3,152 such entries in 33
+## drawings. Remove this when nprcgenekeepr has the change.
+setAside$jogDrawings <- 0L
+setAside$jogEntries <- 0L
+withoutJogSelections <- function(x) {
+  if (inherits(x, "visNetwork")) {
+    values <- x$x$idselection$values
+    jog <- startsWith(values, "__jog_")
+    if (any(jog)) {
+      x$x$idselection$values <- values[!jog]
+      setAside$jogDrawings <- setAside$jogDrawings + 1L
+      setAside$jogEntries <- setAside$jogEntries + sum(jog)
+    }
+    return(x)
+  }
+  if (is.list(x) && !is.data.frame(x)) {
+    kept <- attributes(x)
+    x <- lapply(x, withoutJogSelections)
+    attributes(x) <- kept
+  }
+  x
+}
+theirs <- withoutJogSelections(theirs)
+cat(sprintf(paste(
+  "drawings whose box lists __jog_ routing points: %d in nprcgenekeepr's",
+  "run, %d entries taken out before the comparison (DIVERGENCE.md, plan",
+  "R94)\n"
+), setAside$jogDrawings, setAside$jogEntries))
 same <- unlist(Map(identical, ours, theirs))
 withWarnings <- lengths(lapply(ours, `[[`, "warnings")) > 0L
 withMessages <- lengths(lapply(ours, `[[`, "messages")) > 0L
