@@ -22,7 +22,7 @@ and 16e, the website, is done (S31), so Phase 16 is DONE. Phase 17, the CRAN sub
 `docs/planning/cran-submission-plan.md`) and under way: 17a, the check time on win-builder, is done (S33); 17b, the
 argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2, the pedigree argument's name, is done
 (S36); 17c3, the pedigree first, is done (S37), so 17c is done; 17d, the "Select by id" fix, is done (S38); 17e,
-the legend's label, is next (Planned, below).
+the legend's label, is done (S39); 17f, the gaps document, is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -45,7 +45,8 @@ session each unless marked. They follow the copy slices.
   `ped` and comes first in every export, `kinship()` refuses generation numbers that put a parent at or after its
   offspring, and the shared export names stay; 17c makes the changes test-first in three sessions: 17c1
   (`kinship()`) is done (S35), 17c2 (the pedigree argument's name) is done (S36), 17c3 (the pedigree first) is
-  done (S37); 17d, the "Select by id" fix, is done (S38); 17e, the legend's label, is next.
+  done (S37); 17d, the "Select by id" fix, is done (S38); 17e, the legend's label, is done (S39); 17f, the gaps
+  document, is next.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
@@ -217,6 +218,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase 17e, the legend's "Same animal, again" label reads whole (pedkindraw S39, 2026-11-17).** On the website
+  the label read "Same animal; agai": the arrowhead visNetwork gives every legend line covered its last letter, and
+  the dashed line through the comma made it look like a semicolon. The legend's four lines now have no arrowheads,
+  as the drawing's own lines have none, and each label sits on white; in headless Chrome every legend line label of
+  the shipped vignettes' 12 drawings is whole. nprcgenekeepr is to get the same fix later; until then
+  `DIVERGENCE.md` and the comparison tool record the difference. NEWS says so.
 - **Phase 17d, "Select by id" lists the animals only (pedkindraw S38, 2026-11-17).** A drawing with rectilinear
   lines adds routing points (ids starting `__jog_`) to step a line around an animal, and the box listed them as if
   they were animals: 196 beside the 375 animals of the drawing vignette's colony drawing. Now it lists the animals

@@ -23,14 +23,6 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **The legend cuts its "Same animal, again" label** (READY, Effort S; before the release, Phase 17e, R84)
-      -- seen S31 on the website in headless
-      Chrome (window 1400 px; each widget 776 px wide, its drawing's canvas 559 px, so the legend about 217 px): the
-      row reads "Same animal; agai" in the drawings of both articles. The label is
-      `R/drawPedigreeDiagram.R:121` (S38), an edge row of visNetwork's legend; the vignettes' 700 px column was not measured. Copied code: the drift-rule
-      choice at its pre-RED picker; measure first whether a shorter label or a wider legend column fixes it at
-      both widths.
-
 - [ ] **After nprcgenekeepr has the legend's section pictures, drop pedkindraw's records of the difference**
       (BLOCKED on nprcgenekeepr, Effort S) -- R81 (S28, Mark's "Port later"): nprcgenekeepr is to get S28's
       change in a session of its own there, which Mark starts (pedkindraw's sessions leave nprcgenekeepr unchanged,
@@ -51,6 +43,17 @@ issues).*
       the R94 parts of the `drawPedigreeDiagram()` and `.buildMatingUnitForest()` rows in `DIVERGENCE.md`, removes
       `withoutJogSelections()` from `tools/compareResultsWithNprcgenekeepr.R` (the tool must then read 600 of 600
       with no `__jog_` entry set aside), and re-runs the drift tool.
+
+- [ ] **After nprcgenekeepr has the legend-lines fix, drop pedkindraw's records of the difference**
+      (BLOCKED on nprcgenekeepr, Effort S) -- R95 (S39, Mark's "Port later"): nprcgenekeepr is to get S39's change
+      in a session of its own there, which Mark starts (R8): after its legend line table is built
+      (`R/drawPedigreeDiagram.R:89` at `3b8bf9374`), `legendEdges$arrows <- ""` and
+      `legendEdges$font.background <- "#FFFFFF"` (pedkindraw `eb1e845`), with the tests of RED `b35911a`
+      (`test_drawPedigreeDiagramLegendLines.R`; its browser test needs chromote). Once it lands, a pedkindraw
+      session removes the R95 part of the `drawPedigreeDiagram()` row in `DIVERGENCE.md`, removes
+      `withoutLegendLineStyle()` from `tools/compareResultsWithNprcgenekeepr.R` (the tool must then read 600 of 600
+      with no drawing's line columns set aside; `eachDrawing()` goes with the last of the three set-asides), and
+      re-runs the drift tool.
 
 - [ ] **What kinship2 or Pedixplorer can do that pedkindraw cannot** (READY, Effort M, a guess; before the release,
       Phase 17f, R84) -- Mark (S26): "Add

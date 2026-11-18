@@ -7,8 +7,8 @@
 name rulings and 17c in three sessions, section 2.4; R87-R93). Phase 17c1 DONE (S35: `kinship(id, sire, dam,
 pdepth, ...)` and its `pdepth` check). Phase 17c2 DONE (S36: the pedigree argument is `ped` in four more exports).
 Phase 17c3 DONE (S37: the pedigree first in four exports), so 17c is done. Phase 17d DONE (S38: "Select by id"
-lists the animals only, and a real id starting `__jog_` is refused; R94). Next: Phase 17e, the legend's label
-(section 8).
+lists the animals only, and a real id starting `__jog_` is refused; R94). Phase 17e DONE (S39: the legend's lines
+have no arrowheads and their labels sit on white; R95). Next: Phase 17f, the gaps document (section 8).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -476,6 +476,22 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **DONE:** the label whole at both widths in headless Chrome, by a check that fails on the cut label; the
   checks as 17c.
 - **Surface:** headless Chrome at two widths; it cannot show every reader's font.
+- **Done (S39; R95):** measured first, the label was not cut by the legend's width: `visLegend()` gives every
+  legend line an arrowhead when it has no `arrows` value, and it covered the label's end (5.5 px at the website's
+  776 px widgets, all 12 live drawings; 10.1 px at 700 px), while the diagram's lines have none; the dashed line
+  through the comma read as a semicolon. Ruling `37c41cf` (Mark's pre-RED picks: "No arrowheads, white label" over
+  no arrowheads alone, a shorter label (covered again at 600 px) and a 35% legend (1.5 px clear at 700 px, covered
+  at 600 px); "Port later"); RED `b35911a` (a new file, `test_drawPedigreeDiagramLegendLines.R`: the two columns,
+  and in headless Chrome at 776 and 700 px with 0 and 4 conditions no arrowhead over a label, each on white and
+  inside the legend; 2 of 707 blocks failing); GREEN 1 `eb1e845` (`arrows` `""` and `font.background`
+  `"#FFFFFF"` in the legend's line table), GREEN 2 `fab63a8` (the fidelity tool's `withoutLegendLineStyle()`; the
+  `DIVERGENCE.md` row), GREEN 3 `f4f5744` (a NEWS bullet); REFACTOR `9505d9d` (Mark's pick over Claude's "skip":
+  the tool's three set-asides walk the results through one `eachDrawing()`; a before/after record on one saved
+  set of raw results, identical). Measured before RED on scratch copies: the whole suite on the draft, 705 blocks,
+  0 failed; pedkindraw's own fidelity runs, 48 of 600 results differing only by the two columns. After: suite 707
+  blocks, 0 failed, WARN 0; the shipped vignettes (from `R CMD build`'s tarball) in headless Chrome, 12 drawings
+  700 px wide, 48 of 48 line labels whole, on white, no arrowhead; fidelity 600 of 600 against nprcgenekeepr at
+  `3b8bf9374`; `R CMD check --as-cran` on `f4f5744` R16's NOTE only.
 
 ### Phase 17f. The gaps document
 
@@ -597,7 +613,7 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 |---|---|---|---|
 | D1 | Who uploads to win-builder: Mark, or Claude with Mark's approval in the session | 17a | the result goes to the maintainer's email either way; nprcgenekeepr's D5 ruled the owner, and once let the agent |
 | D2 | Each name change of section 2.4: change or keep | 17b | **Decided S34** (R87-R93): section 2.4's "Decided" table; 9 `DIVERGENCE.md` rows in 17c |
-| D3 | Each drawing fix: also fixed in nprcgenekeepr (a session there, Mark starts it) or a `DIVERGENCE.md` row | 17d, 17e | nprcgenekeepr has the same filter and label. **17d decided S38** (R94): port later, `DIVERGENCE.md` rows and the fidelity tool's `withoutJogSelections()` until then |
+| D3 | Each drawing fix: also fixed in nprcgenekeepr (a session there, Mark starts it) or a `DIVERGENCE.md` row | 17d, 17e | nprcgenekeepr has the same filter and label. **17d decided S38** (R94): port later, `DIVERGENCE.md` rows and the fidelity tool's `withoutJogSelections()` until then. **17e decided S39** (R95): port later, the `drawPedigreeDiagram()` row and the tool's `withoutLegendLineStyle()` until then |
 | D4 | Which gaps, if any, are closed before the release | 17f | each would be a phase of its own, before 17g |
 | D5 | The timing plan's scope | 17g | R82; the draft's nine tables |
 | D6 | How tests are kept off CRAN: `skip_on_cran()` per file or block, or a list of slow files as nprcgenekeepr's `slowTestFiles.txt` | 17k | eight files take 81% (section 2.1) |
@@ -711,12 +727,22 @@ pedkindraw's own:
     `inst/doc/drawing.html` in the tarball; extract it and read it with chromote (`select[id^=nodeSelect]`). A
     "Select by id" box has one option more than its values, the "Select by id" placeholder (visNetwork's
     `setNodeIdList()`), so the colony's 375 animals show as 376 options.
+25. **Look at the drawing before choosing what to measure** (S39): S31 read "Same animal; agai" as a label cut by
+    the legend's width, and S39's first check (the label's box inside the legend's canvas) passed on the broken
+    drawing; one screenshot showed the arrowhead over the "n". Measure from vis.js, not from a screenshot: the
+    legend's `L.body.edges[id].labelModule.size` and `L.canvasToDOM()` agreed with the canvas's own pixels, while a
+    chromote screenshot drew the same row about 30 px further left. For an edge label with `font.align` other than
+    `"horizontal"` that box stays where the horizontal label would be; only the drawn text moves (vis.js's
+    `_setAlignment()`), so a box check cannot see it.
+26. **Do not pipe a chromote script into `head`** (S39): `Rscript page.R ... | head -1` never ended (its R
+    process still running after 120 s, then killed), where the same script piped into `grep -v`, which reads all
+    its input, ended in each of 4 runs. Write the output to a file and read it after.
 
 ---
 
 ## 10. Out of scope
 
-- Any change to nprcgenekeepr (R8): the R81 and R94 ports, removing its stale S1159 line, its edition-3 conversion and the
+- Any change to nprcgenekeepr (R8): the R81, R94 and R95 ports, removing its stale S1159 line, its edition-3 conversion and the
   vacuous test are for sessions Mark starts there.
 - Copying the colony overview; `findPedigreeNumber()`'s speed; the drift tool's constants; the methodology tools'
   items (section 3).

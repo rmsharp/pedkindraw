@@ -53,9 +53,9 @@ R-devel 398 s, R86); Phase 17b DONE (pedkindraw S34: six name rulings, 17c in th
 17c1 DONE (pedkindraw S35: `kinship(id, sire, dam, pdepth, ...)` and its `pdepth` check, R87, R91, R92); Phase
 17c2 DONE (pedkindraw S36: the pedigree argument is `ped` in four more exports, R88); Phase 17c3 DONE (pedkindraw
 S37: the pedigree first in four exports, R89), so Phase 17c is DONE; Phase 17d DONE (pedkindraw S38: "Select by
-id" lists the animals only, and a real id starting `__jog_` is refused, R94).
-**Next:** Phase 17e (the legend's "Same animal, again" label fits; strict TDD;
-`docs/planning/cran-submission-plan.md` section 6).
+id" lists the animals only, and a real id starting `__jog_` is refused, R94); Phase 17e DONE (pedkindraw S39: the
+legend's lines have no arrowheads and their labels sit on white, R95).
+**Next:** Phase 17f (the gaps document; `docs/planning/cran-submission-plan.md` section 6).
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -953,6 +953,15 @@ had collided silently with a routing point). The six reserved prefixes are writt
 `.reservedIdPattern` (REFACTOR, Mark's pick). Port later (Mark's pick): two `DIVERGENCE.md` rows and the fidelity
 tool's `withoutJogSelections()` until nprcgenekeepr has it; two NEWS bullets. Fidelity tool 600 of 600 identical;
 `R CMD check --as-cran` R16's NOTE only.
+
+**Done 17e (pedkindraw S39; R95):** the legend's "Same animal, again" label was covered by the arrowhead
+`visLegend()` gives every legend line by default (5.5 px at the website's 776 px widgets, 10.1 px at 700 px), not
+cut by the legend's width. The legend's four lines now have no arrowheads, as the diagram's lines have none, and each
+label sits on white, so the dashed line no longer turns its comma into a semicolon (Mark's picks). The fidelity
+tool's three set-asides walk the results through one `eachDrawing()` (REFACTOR, Mark's pick). Port later (Mark's
+pick): the `drawPedigreeDiagram()` row and the tool's `withoutLegendLineStyle()` until nprcgenekeepr has it; a NEWS
+bullet. The shipped vignettes' 12 drawings in headless Chrome, 48 of 48 line labels whole; fidelity tool 600 of
+600 identical; `R CMD check --as-cran` R16's NOTE only.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 
