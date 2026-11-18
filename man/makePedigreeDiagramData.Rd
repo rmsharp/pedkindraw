@@ -15,7 +15,11 @@ used when present: a logical \code{affected} column, which adds an
 affected-status line to \code{title} and fills affected nodes with
 \code{color.background} \code{"#CC79A7"} (all other nodes are white,
 \code{"#FFFFFF"}); and a character \code{name} column, which is shown
-in \code{label} (long names are truncated) and in \code{title}.}
+in \code{label} (long names are truncated) and in \code{title}. In
+\code{affected} the numbers 1 and 0 read as \code{TRUE} and
+\code{FALSE}, and any other number stops (compare a measured trait
+with a threshold first); text reads as \code{as.logical()} reads it,
+other text as unknown.}
 
 \item{twinRelations}{optional data.frame with columns \code{id1},
 \code{id2}, \code{code} (see \code{\link{checkTwinRelations}}). Not

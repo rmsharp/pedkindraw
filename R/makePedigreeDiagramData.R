@@ -25,8 +25,8 @@
 ## row). Plan Phase G1 (pedkindraw S42, R102-R104): makePedigreeDiagramData()
 ## and makePedigreeMatingLayout() stop on a condition column holding a number
 ## other than 0 and 1 (.checkConditionNumbers(), pedkindraw's own,
-## R/conditionValues.R; DIVERGENCE.md rows). Its comments name nprcgenekeepr's
-## documents, sessions and app.
+## R/conditionValues.R; DIVERGENCE.md rows), and their help says so. Its
+## comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
 #'
@@ -43,7 +43,11 @@
 #'   affected-status line to \code{title} and fills affected nodes with
 #'   \code{color.background} \code{"#CC79A7"} (all other nodes are white,
 #'   \code{"#FFFFFF"}); and a character \code{name} column, which is shown
-#'   in \code{label} (long names are truncated) and in \code{title}.
+#'   in \code{label} (long names are truncated) and in \code{title}. In
+#'   \code{affected} the numbers 1 and 0 read as \code{TRUE} and
+#'   \code{FALSE}, and any other number stops (compare a measured trait
+#'   with a threshold first); text reads as \code{as.logical()} reads it,
+#'   other text as unknown.
 #' @param twinRelations optional data.frame with columns \code{id1},
 #'   \code{id2}, \code{code} (see \code{\link{checkTwinRelations}}). Not
 #'   validated here; validate with \code{\link{checkTwinRelations}} first.
@@ -1647,7 +1651,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   frame holds them, the first four drawn (see \code{conditions} in the
 #'   return value). A lone one fills the symbol; two or more split it
 #'   into sections. (\code{\link{makePedigreeDiagramData}} reads the
-#'   column \code{affected} alone.)
+#'   column \code{affected} alone.) A condition drawn reads as
+#'   \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
+#'   than 0 and 1 stops, before any animal is left out.
 #' @param edgeStyle one of \code{"rectilinear"} (default), which routes
 #'   mate-line and sibship-bar edges through invisible waypoint nodes so
 #'   they render as a strict right angle, kinship2-style, or

@@ -22,7 +22,9 @@ returned \code{nodes}. Every column whose name starts
 frame holds them, the first four drawn (see \code{conditions} in the
 return value). A lone one fills the symbol; two or more split it
 into sections. (\code{\link{makePedigreeDiagramData}} reads the
-column \code{affected} alone.)}
+column \code{affected} alone.) A condition drawn reads as
+\code{makePedigreeDiagramData()}'s \code{affected} does: a number other
+than 0 and 1 stops, before any animal is left out.}
 
 \item{edgeStyle}{one of \code{"rectilinear"} (default), which routes
 mate-line and sibship-bar edges through invisible waypoint nodes so

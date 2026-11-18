@@ -184,7 +184,8 @@
 #' length as \code{nrow(ped)}. When \code{NULL}, defaults to \code{ped$affected}
 #' if that column exists, or to all-\code{FALSE} (unaffected) if it does
 #' not -- ensuring the affected-priority trim can always make progress even
-#' with no recorded affected status.
+#' with no recorded affected status. The numbers 1 and 0 read as \code{TRUE}
+#' and \code{FALSE}; any other number stops.
 #' @param maxBits numeric, default \code{16L}. The bit-size budget the
 #' affected-priority trim reduces toward.
 #'
