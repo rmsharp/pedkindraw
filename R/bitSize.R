@@ -47,7 +47,8 @@
 #' )
 #' bitSize(ped)
 bitSize <- function(ped) {
-  .checkShrinkInput(ped, logical(NROW(ped)), logical(NROW(ped)), 16L)
+  none <- logical(NROW(ped))
+  .checkShrinkInput(ped, genotyped = none, affected = none, maxBits = 16L)
   pos <- .parentPositions(ped)
   nFounder <- sum(is.na(pos$sireIdx) & is.na(pos$damIdx))
   list(bitSize = .bitSize(pos$sireIdx, pos$damIdx,

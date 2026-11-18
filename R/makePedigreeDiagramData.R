@@ -121,15 +121,13 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   # character/other value; anything that doesn't parse becomes NA, matching
   # kinship2's own NA-tolerant contract rather than erroring. pedkindraw
   # Phase G1 (R102-R104): a number other than 0 and 1 stops instead.
-  hasAffected <- "affected" %in% names(ped)
-  if (hasAffected) {
+  affected <- rep(NA, nrow(ped))
+  if ("affected" %in% names(ped)) {
     .checkConditionNumbers(
       ped$affected,
       "makePedigreeDiagramData(): the condition column 'affected'"
     )
-  }
-  affected <- if (hasAffected) as.logical(ped$affected) else rep(NA, nrow(ped))
-  if (hasAffected) {
+    affected <- as.logical(ped$affected)
     titles <- paste0(titles,
                       sprintf("<br><b>Affected:</b> %s",
                               .affectedLabel(affected)))
