@@ -4,14 +4,14 @@
 \alias{getDescendantPedigree}
 \title{Reduce a pedigree to a group and its descendants}
 \usage{
-getDescendantPedigree(probands, ped)
+getDescendantPedigree(ped, probands)
 }
 \arguments{
-\item{probands}{a character vector with the list of animals whose
-descendants should be included in the final pedigree.}
-
 \item{ped}{datatable that is the \code{Pedigree}. It contains pedigree
 information. The fields \code{id}, \code{sire} and \code{dam} are required.}
+
+\item{probands}{a character vector with the list of animals whose
+descendants should be included in the final pedigree.}
 }
 \value{
 A reduced pedigree containing the probands and all of their

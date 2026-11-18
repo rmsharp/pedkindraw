@@ -1,10 +1,12 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/hasBothParents.R at nprcgenekeepr commit
-## baef1e12c. Changes: help text only; the function's code is unchanged. The
-## 'ped' argument's description is written out (reportGV()'s words) instead of
+## baef1e12c. Changes to the code (plan Phase 17c3, pedkindraw S37; a
+## DIVERGENCE.md row): the pedigree is the first argument, ped then id, where
+## nprcgenekeepr takes id first (R89). Changes to the help text: the 'ped'
+## argument's description is written out (reportGV()'s words) instead of
 ## inherited from nprcgenekeepr's reportGV(), and the example types its
-## pedigree instead of using nprcgenekeepr's pedOne.
+## pedigree, passed first, instead of using nprcgenekeepr's pedOne.
 
 #' Check whether an animal has both parents
 #'
@@ -25,9 +27,9 @@
 #'   dam = c(NA, NA, NA, NA, "d1", "d2", "d2", "d2"),
 #'   stringsAsFactors = FALSE
 #' )
-#' hasBothParents("o2", ped)
+#' hasBothParents(ped, "o2")
 #' ped$sire[ped$id == "o2"] <- NA
-#' hasBothParents("o2", ped)
-hasBothParents <- function(id, ped) {
+#' hasBothParents(ped, "o2")
+hasBothParents <- function(ped, id) {
   !is.na(ped$sire[ped$id == id]) & !is.na(ped$dam[ped$id == id])
 }

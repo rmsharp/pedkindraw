@@ -1,9 +1,11 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/getDescendantPedigree.R at nprcgenekeepr
-## commit baef1e12c. Changes: help text only; the function's code is
-## unchanged. The example types its own pedigree instead of loading
-## nprcgenekeepr's dataset.
+## commit baef1e12c. Changes to the code (plan Phase 17c3, pedkindraw S37; a
+## DIVERGENCE.md row): the pedigree is the first argument, ped then probands,
+## where nprcgenekeepr takes probands first (R89). Changes to the help text:
+## the example types its own pedigree instead of loading nprcgenekeepr's
+## dataset.
 
 #' Reduce a pedigree to a group and its descendants
 #'
@@ -31,7 +33,7 @@
 #' )
 #' ## D's descendants are F and G
 #' getDescendantPedigree(probands = "D", ped = ped)$id
-getDescendantPedigree <- function(probands, ped) {
+getDescendantPedigree <- function(ped, probands) {
   probands <- unlist(walkPedigree(probands, ped, "descendants"))
   ped <- ped[ped$id %in% probands, ]
   ped

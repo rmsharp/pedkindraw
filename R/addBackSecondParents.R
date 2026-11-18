@@ -3,10 +3,11 @@
 ## Copied from nprcgenekeepr R/addBackSecondParents.R at nprcgenekeepr commit
 ## baef1e12c. Changes to the code (plan Phase 17c2, pedkindraw S36; a
 ## DIVERGENCE.md row): the trimmed pedigree argument is trimmedPed, was uPed,
-## in the same position (R88); the full pedigree is ped, as before. Changes to
-## the help text: the description and the trimmedPed argument; the example
-## types its own pedigree instead of using nprcgenekeepr's examplePedigree and
-## qcStudbook().
+## in the same position (R88); the full pedigree is ped, as before. Plan Phase
+## 17c3, pedkindraw S37: the call to hasBothParents() passes the pedigree
+## first, hasBothParents(ped, id) (R89). Changes to the help text: the
+## description and the trimmedPed argument; the example types its own pedigree
+## instead of using nprcgenekeepr's examplePedigree and qcStudbook().
 
 #' Add back second parents to a trimmed pedigree
 #'
@@ -46,7 +47,7 @@ addBackSecondParents <- function(trimmedPed, ped) {
   ## Within this loop, the second parent is added to trimmedPed as the sire
   ## or dam as is found in ped.
   for (id in idsWithOneParent) {
-    if (hasBothParents(id, ped)) {
+    if (hasBothParents(ped, id)) {
       if (is.na(trimmedPed$sire[trimmedPed$id == id])) {
         addBack <- c(addBack, ped$sire[ped$id == id])
         trimmedPed[(trimmedPed$id == id), "sire"] <- ped$sire[ped$id == id]

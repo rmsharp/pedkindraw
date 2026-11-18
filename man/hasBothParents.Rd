@@ -4,15 +4,15 @@
 \alias{hasBothParents}
 \title{Check whether an animal has both parents}
 \usage{
-hasBothParents(id, ped)
+hasBothParents(ped, id)
 }
 \arguments{
+\item{ped}{The pedigree information in data.frame format}
+
 \item{id}{a single ID to examine for parents. A vector of IDs is not
 supported: the result is not one value per ID, and a recycling warning
 appears only when the number of IDs does not divide the number of rows of
 \code{ped}.}
-
-\item{ped}{The pedigree information in data.frame format}
 }
 \value{
 TRUE if ID has both sire and dam identified in \code{ped}, FALSE
@@ -29,7 +29,7 @@ ped <- data.frame(
   dam = c(NA, NA, NA, NA, "d1", "d2", "d2", "d2"),
   stringsAsFactors = FALSE
 )
-hasBothParents("o2", ped)
+hasBothParents(ped, "o2")
 ped$sire[ped$id == "o2"] <- NA
-hasBothParents("o2", ped)
+hasBothParents(ped, "o2")
 }
