@@ -17,7 +17,9 @@ column.}
 
 \item{affected}{\code{NULL} or a logical vector, one value per row of
 \code{ped}. When \code{NULL}, \code{ped$affected} is used if it exists,
-and otherwise every animal counts as unaffected (\code{FALSE}).}
+and otherwise every animal counts as unaffected (\code{FALSE}). The
+numbers 1 and 0 read as \code{TRUE} and \code{FALSE}; any other number
+stops.}
 
 \item{affstatus}{the affected status of the animals to choose from:
 \code{NA}, \code{FALSE} or \code{TRUE}.}

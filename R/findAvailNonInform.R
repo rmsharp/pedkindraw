@@ -3,9 +3,10 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase 11,
 ## rulings R40-R42, pedkindraw S14). It calls internals of
 ## R/shrinkPedigree.R, which is copied from nprcgenekeepr's clean-room
-## rewrite and stays as copied; its loop is the second trim of
-## shrinkPedigree(), which its tests check it against. Written from kinship2's
-## help page for findAvailNonInform(), not its source (R11).
+## rewrite and stays as copied but for Phase G1's check on affected (R104);
+## its loop is the second trim of shrinkPedigree(), which its tests check it
+## against. Written from kinship2's help page for findAvailNonInform(), not
+## its source (R11).
 
 #' Find genotyped animals that add no information to a pedigree
 #'
@@ -39,7 +40,8 @@
 #' \code{NA} is not allowed.
 #' @param affected \code{NULL} (default) or a logical vector, one value per
 #' row of \code{ped}. When \code{NULL}, \code{ped$affected} is used if it
-#' exists, and otherwise every animal counts as unaffected.
+#' exists, and otherwise every animal counts as unaffected. The numbers 1 and
+#' 0 read as \code{TRUE} and \code{FALSE}; any other number stops.
 #' @return A character vector of ids in the order they are removed;
 #' \code{character(0)} when none is.
 #'

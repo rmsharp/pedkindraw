@@ -17,7 +17,8 @@ column.}
 
 \item{affected}{\code{NULL} (default) or a logical vector, one value per
 row of \code{ped}. When \code{NULL}, \code{ped$affected} is used if it
-exists, and otherwise every animal counts as unaffected.}
+exists, and otherwise every animal counts as unaffected. The numbers 1 and
+0 read as \code{TRUE} and \code{FALSE}; any other number stops.}
 }
 \value{
 A character vector of ids in the order they are removed;

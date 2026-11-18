@@ -3,9 +3,10 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase 11,
 ## rulings R40-R42, pedkindraw S14). It calls internals of
 ## R/shrinkPedigree.R, which is copied from nprcgenekeepr's clean-room
-## rewrite and stays as copied; one call is one round of shrinkPedigree()'s
-## third trim, which its tests check it against. Written from kinship2's help
-## page for findAvailAffected(), not its source (R11).
+## rewrite and stays as copied but for Phase G1's check on affected (R104);
+## one call is one round of shrinkPedigree()'s third trim, which its tests
+## check it against. Written from kinship2's help page for
+## findAvailAffected(), not its source (R11).
 
 #' Remove the one animal of an affected status that shrinks a pedigree most
 #'
@@ -39,7 +40,9 @@
 #' \code{NA} is not allowed.
 #' @param affected \code{NULL} or a logical vector, one value per row of
 #' \code{ped}. When \code{NULL}, \code{ped$affected} is used if it exists,
-#' and otherwise every animal counts as unaffected (\code{FALSE}).
+#' and otherwise every animal counts as unaffected (\code{FALSE}). The
+#' numbers 1 and 0 read as \code{TRUE} and \code{FALSE}; any other number
+#' stops.
 #' @param affstatus the affected status of the animals to choose from:
 #' \code{NA}, \code{FALSE} or \code{TRUE}.
 #' @return A list, with \code{kinship2::findAvailAffected()}'s names:
