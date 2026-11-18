@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-18 · [BL-Phase 17f2] S41: Phase 17f2, the plan for closing the gaps in both repositories (in progress)
+- **Change:** session claimed (Mark's pick "Plan 17f2 (Recommended)" at the orient picker): a planning session, TDD phase none, no package code; a framing picker on the plan's outline first, then one picker per decision, each recorded as a ruling. Phase 0 reconcile: nothing to backfill (frontier `c5f8e84` is HEAD, S40's close-out 2; no merges; S40's receipt complete, its ratchet results `5ddbb5b1aeb3` and manifest `01151c525b8a` matching the results file); drift tool 91 functions, 14 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits (nprcgenekeepr at `eafd54851`, its S1188 claim); S40's push 2 runs (CI `44355913316`, site `44355913260`) in progress at Orient.
+- **Commit/PR:** the claim commit · **Session:** S41 · **Verified:** pending (close-out).
+
 ### 2026-11-18 · [BL-Phase 17f] S40 push 2: `master` to GitHub at close-out 2 (the gaps document, its additions, close-out 1 and 2)
 - **Change:** `git push origin master` (`2626c16..` close-out 2); `docs/planning/` changed, so both workflows run; no package code changed. Their results are for S41's Orient to read (S40 ends at the push).
 - **Commit/PR:** none (push) · **Session:** S40 · **Verified:** the push's output; the runs by S41.

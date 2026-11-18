@@ -194,6 +194,15 @@ manifest existed are not re-judged.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S41
+date: 2026-11-18
+status: pending
+active_task: Phase 17f2, the plan for closing the gaps in pedkindraw and nprcgenekeepr and coordinating the two repositories (docs/planning/cran-submission-plan.md:519; R96; methodology/BACKLOG.md:58): a plan under docs/planning/, Mark's decisions by picker recorded as rulings; a framing picker on its outline first; a planning session, TDD phase none, no package code; nprcgenekeepr read, not changed (R8); Mark's pick "Plan 17f2 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S40
 date: 2026-11-18
 status: complete

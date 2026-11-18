@@ -110,6 +110,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S39's entries were removed in S3-S40 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 41 Did
+**Deliverable:** Phase 17f2, the plan for closing the gaps in pedkindraw and nprcgenekeepr and coordinating the two
+repositories (`docs/planning/cran-submission-plan.md:519`; R96; `methodology/BACKLOG.md:58`): a plan under
+`docs/planning/`, each of Mark's decisions by picker recorded as a ruling; a framing picker on its outline first.
+A planning session, TDD phase none, no package code; nprcgenekeepr read, not changed (R8) (IN PROGRESS)
+**Started:** 2026-11-18 11:14 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Plan 17f2 (Recommended)"
+(orient picker)
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### Session 39 Handoff Evaluation (by Session 40)
 **Score: 9/10.**
 - **What helped:** every count and starting point held: the drift tool (91/14/0), nprcgenekeepr's log (the same 4
