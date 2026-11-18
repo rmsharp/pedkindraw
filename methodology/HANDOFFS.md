@@ -196,11 +196,24 @@ manifest existed are not re-judged.
 ```handoff
 session: S37
 date: 2026-11-17
-status: pending
-active_task: Phase 17c3, the pedigree first (strict TDD; R89): getProbandPedigree(ped, probands), getDescendantPedigree(ped, probands), trimPedigree(ped, probands, ...), hasBothParents(ped, id), and the calls that pass both arguments by position; four DIVERGENCE.md rows; Mark's pick "17c3: pedigree first (Recommended)" at the orient picker
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 9
+predecessor_score: 9
+active_task: Phase 17c3 DONE (getProbandPedigree(ped, probands), getDescendantPedigree(ped, probands), trimPedigree(ped, probands, ...), hasBothParents(ped, id); R89), so Phase 17c is DONE. Next: Phase 17d ("Select by id" leaves out the routing points, docs/planning/cran-submission-plan.md:451) or 17e (the legend's "Same animal, again" label fits, :459), either order, strict TDD, copied code (D3 at the pre-RED picker). The orient picker offers 17d (recommended) or 17e
+what_was_done: claim e241cd0 (pushed with S36's close-out 1 and 2: CI 44203608487 5/5, site success). Before RED: the parse of every call (65, 42 unchanged, 23 to rewrite, exactly R89's); both RED variants measured on HEAD; the whole suite on a scratch copy with all 23 rewrites drafted, 703 blocks 0 failed; the help examples, the vignette's code and the regenerated pages on the draft. Mark's picks, each Claude's recommendation at the first asking: 17c3; the 8 old-order test calls in RED; hasBothParents()'s tests in a new file; getParents()'s order sentence dropped; a new NEWS bullet; the RED and GREEN gates; skip REFACTOR. RED 374f970 (7 failures exactly where measured, WARN 0); GREEN 1 8f921d5, GREEN 2 6a2caf9 (code, pages, vignette), GREEN 3 4602b7c (fidelity tool, 4 DIVERGENCE.md rows), GREEN 4 2b6ef7a (help sentence, NEWS); close-out 1 758e528 (plans, contract, ROADMAP, BACKLOG; dragons 21-22; R89's citation :50); close-out 2 (notes, receipt, ledger)
+next_steps: Orient; drift tool (91, 14 differ, all with rows); nprcgenekeepr's log on every copied file (expect exactly the 4 commits already in the copy); push S37's close-out 1 and 2 (both workflows run); 17d: the D3 picker (nprcgenekeepr fixed too, in a session there, or a DIVERGENCE.md reason beside R81's) and, measured S37, the fidelity tool's rectilinear drawing cases of 11 of 12 pedigrees hold __jog_ entries, so it needs an allowance like withoutConditionSymbols() until nprcgenekeepr has the fix; draft in a scratch copy and run the whole suite there; RED reads drawPedigreeDiagram(layout)$x$idselection$values on smallPed's rectilinear layout (2 jogs); DONE includes the colony drawing in headless Chrome. 17e: measure a shorter label against a wider column at 776 px and 700 px first
+key_files: docs/planning/cran-submission-plan.md:6, :451 (17d), :459 (17e), :588 (D3), :599 (session map), :631 (dragons; 10 :656, 21 :685, 22 :689); docs/planning/standalone-pedigree-package-plan.md:56 (Next), :938 (Done 17c3); R/drawPedigreeDiagram.R:119 (label), :290, :292 (filter); tools/compareResultsWithNprcgenekeepr.R:450 (drawing case), :723 (withoutConditionSymbols); vignettes/drawing.Rmd:626 (colony drawing); DIVERGENCE.md:17; methodology/BACKLOG.md:26 (17d), :36 (17e)
+gotchas: the fidelity tool compares drawings whole, and rectilinear layouts of 11 of its 12 pedigrees have __jog_ select entries (rhesus375 190, synthetic_300 436, smallPed 2; direct none), so 17d makes them differ unless an allowance is added; the backlog's 571/196 is the vignette's drawing, the defaults give 565/190; nprcgenekeepr has the same filter (:252 at 2eb3920b0) and label (:90); code outside test_that() fails RED as one file error (dragon 21); the fidelity tool runs from the repository, not a scratch copy (dragon 22); a check's URL NOTE can be transient (dragon 10); the suite gate's 300 s limit was hit this session (backlog, Phase 17l); Rscript -e with a backslash regex fails, use a file or [.]; CLAUDE.md over budget (learnings in the plan's dragons)
+runtime_smoke: library change verified by its tests and checks, not an app: suite 56 files, 703 blocks, 0 failed, 0 errors, WARN 0; R CMD check --as-cran 1 NOTE (R16's) on the second run; fidelity tool exit 0, 600 of 600 identical, 132 kinship matrices, largest difference 0 (nprcgenekeepr at 8ebd33d39); drift tool 91, 14 differ, 0 without a row; the changed files' lines all reached by their tests; quality_ratchet: 4/5 pass · 0 fail · 1 unmeasured · results 42b564bc4c70 · manifest 01151c525b8a; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: testthat::test_local() on 2b6ef7a, the last commit to change R/ or tests/, 56 files, 703 blocks, WARN 0 (258 s); CI 44212240619 5/5 success at the first attempt (16 min)
+changelog_ref: CHANGELOG.md "2026-11-17 · [BL-Phase 17c3] S37: Phase 17c3, the pedigree first in `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()` and `hasBothParents()`", "S37 push 1" and "S37 push 2"
+commit: this receipt's commit (close-out 2)
 ```
+S37 made Phase 17c3: `getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()` and `hasBothParents()` take
+the pedigree first, and the 23 calls that passed both arguments by position changed with them; an old-order call
+now stops with an error, tested in each. Before each picker the choices were measured on scratch copies (both RED
+variants, the whole suite on the drafted change), and the repository's changes were those drafts, proved
+byte-identical. Every pick was Claude's recommendation at the first asking; REFACTOR was skipped by Mark's pick.
+Model: Claude Opus 5.5, one tier.
 
 ```handoff
 session: S36
