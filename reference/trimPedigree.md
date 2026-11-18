@@ -11,8 +11,8 @@ back only when both `removeUninformative` and `addBackParents` are
 
 ``` r
 trimPedigree(
-  probands,
   ped,
+  probands,
   removeUninformative = FALSE,
   addBackParents = FALSE
 )
@@ -20,15 +20,15 @@ trimPedigree(
 
 ## Arguments
 
-- probands:
-
-  a character vector with the list of animals whose ancestors should be
-  included in the final pedigree.
-
 - ped:
 
   datatable that is the `Pedigree`. It contains pedigree information.
   The fields `id`, `sire` and `dam` are required.
+
+- probands:
+
+  a character vector with the list of animals whose ancestors should be
+  included in the final pedigree.
 
 - removeUninformative:
 
@@ -66,8 +66,8 @@ ped <- data.frame(
   stringsAsFactors = FALSE
 )
 ## F and G and their ancestors; H is not one of them
-trimmedPed <- trimPedigree(c("F", "G"), ped)
-trimmedPedInformative <- trimPedigree(c("F", "G"), ped,
+trimmedPed <- trimPedigree(ped, c("F", "G"))
+trimmedPedInformative <- trimPedigree(ped, c("F", "G"),
   removeUninformative = TRUE
 )
 nrow(ped)

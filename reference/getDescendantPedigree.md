@@ -11,20 +11,20 @@ relatives (siblings, cousins, or mates).
 ## Usage
 
 ``` r
-getDescendantPedigree(probands, ped)
+getDescendantPedigree(ped, probands)
 ```
 
 ## Arguments
-
-- probands:
-
-  a character vector with the list of animals whose descendants should
-  be included in the final pedigree.
 
 - ped:
 
   datatable that is the `Pedigree`. It contains pedigree information.
   The fields `id`, `sire` and `dam` are required.
+
+- probands:
+
+  a character vector with the list of animals whose descendants should
+  be included in the final pedigree.
 
 ## Value
 

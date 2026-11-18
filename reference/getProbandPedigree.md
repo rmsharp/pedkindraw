@@ -9,20 +9,20 @@ ones that might be uninformative.
 ## Usage
 
 ``` r
-getProbandPedigree(probands, ped)
+getProbandPedigree(ped, probands)
 ```
 
 ## Arguments
-
-- probands:
-
-  a character vector with the list of animals whose ancestors should be
-  included in the final pedigree.
 
 - ped:
 
   datatable that is the `Pedigree`. It contains pedigree information.
   The fields `id`, `sire` and `dam` are required.
+
+- probands:
+
+  a character vector with the list of animals whose ancestors should be
+  included in the final pedigree.
 
 ## Value
 

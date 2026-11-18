@@ -202,7 +202,7 @@ founders.
 
 ``` r
 
-small <- getProbandPedigree("ED5PDV", ped)
+small <- getProbandPedigree(ped, "ED5PDV")
 nrow(small)
 #> [1] 16
 ```
@@ -216,7 +216,7 @@ its offspring 81MJXH and H16XSK, and ED5PDV.
 
 ``` r
 
-core <- trimPedigree("ED5PDV", ped, removeUninformative = TRUE)
+core <- trimPedigree(ped, "ED5PDV", removeUninformative = TRUE)
 core[, c("id", "sire", "dam", "sex")]
 #>         id   sire    dam sex
 #> 204 YPHFHF   <NA>   <NA>   M

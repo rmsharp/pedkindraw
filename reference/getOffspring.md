@@ -13,11 +13,7 @@ getOffspring(ped, ids)
 - ped:
 
   dataframe with pedigree structure having at least the columns id,
-  sire, and dam. The pedigree is the first argument, unlike
-  [`getProbandPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getProbandPedigree.md)
-  and
-  [`getDescendantPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getDescendantPedigree.md),
-  which take the animal ids first.
+  sire, and dam.
 
 - ids:
 

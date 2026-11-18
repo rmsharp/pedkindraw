@@ -5,10 +5,14 @@ Check whether an animal has both parents
 ## Usage
 
 ``` r
-hasBothParents(id, ped)
+hasBothParents(ped, id)
 ```
 
 ## Arguments
+
+- ped:
+
+  The pedigree information in data.frame format
 
 - id:
 
@@ -16,10 +20,6 @@ hasBothParents(id, ped)
   the result is not one value per ID, and a recycling warning appears
   only when the number of IDs does not divide the number of rows of
   `ped`.
-
-- ped:
-
-  The pedigree information in data.frame format
 
 ## Value
 
@@ -35,9 +35,9 @@ ped <- data.frame(
   dam = c(NA, NA, NA, NA, "d1", "d2", "d2", "d2"),
   stringsAsFactors = FALSE
 )
-hasBothParents("o2", ped)
+hasBothParents(ped, "o2")
 #> [1] TRUE
 ped$sire[ped$id == "o2"] <- NA
-hasBothParents("o2", ped)
+hasBothParents(ped, "o2")
 #> [1] FALSE
 ```

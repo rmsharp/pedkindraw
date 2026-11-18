@@ -76,6 +76,14 @@ why.
   `trimmedPed`, in the place of `uPed`. A call that passes the pedigree
   by position is unchanged; one that names the old argument stops with
   “unused argument”.
+- New: the pedigree is the first argument in
+  `getProbandPedigree(ped, probands)`,
+  `getDescendantPedigree(ped, probands)`,
+  `trimPedigree(ped, probands, ...)` and `hasBothParents(ped, id)`, as
+  in the other functions that take one; nprcgenekeepr takes the ids
+  first. A call that names both arguments is unchanged; one that passes
+  them in nprcgenekeepr’s order stops with “\$ operator is invalid for
+  atomic vectors”.
 - New:
   [`familyCheck()`](https://rmsharp.github.io/pedkindraw/reference/familyCheck.md)
   checks family ids against the family trees the sires and dams form.
