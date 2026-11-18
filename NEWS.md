@@ -19,6 +19,14 @@ code, `DIVERGENCE.md` in the repository says how and why.
   the animals' symbols, with that condition's section filled, so the legend
   says which section is which. nprcgenekeepr's legend still shows a filled
   hexagon for each condition.
+* New: the "Select by id" box lists the animals only; nprcgenekeepr's also
+  lists the routing points (ids starting `__jog_`) a drawing adds to step a
+  line around an animal: 196 of the 571 entries in the drawing vignette's
+  colony drawing.
+* New: `makePedigreeMatingLayout()` stops on an animal id that starts with
+  `__jog_`, as for the other prefixes it keeps for its own nodes;
+  nprcgenekeepr accepts one, and its drawing can then have two nodes with that
+  id.
 * New: layout hints, `makePedigreeMatingLayout(hints = )`: the left-to-right
   `order` of animals and, with `mate`, the side of a mating each mate is drawn
   on, in the form kinship2 and Pedixplorer give their hints.
