@@ -9,7 +9,7 @@ R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan)
 R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). G5 DONE (pedkindraw S46;
 R114-R116). G6 DONE (pedkindraw S47; R117-R119). G7 DONE (pedkindraw S48; R120-R122). G8 DONE (pedkindraw S49;
 R123-R124). G9 DONE (pedkindraw S50; R125-R126). G10 DONE (pedkindraw S51; R127-R128). G11 DONE (pedkindraw S52;
-R129-R130). Next: G12 in pedkindraw
+R129-R130). G12 DONE (pedkindraw S53; R131-R132). Next: G13 in pedkindraw
 (section 5.1); in nprcgenekeepr N1 and
 N2 are done (its S1189 and S1190, section
 5.2).
@@ -368,7 +368,7 @@ submission.
 | G9 | B7 | A documented example: the pedigree drawn with the animals `shrinkPedigree()` removed marked, from `idTrimmed` | `shrinkPicture`: the example runs and the removed animals are marked in the drawing. S50, R125: kinship2's `plot.pedigree.shrink()` draws only the animals kept (18 of 41), not the removed ones marked as B7 says; the help example draws all 7, the 3 removed filled, and a test runs it (R126) | a help example or a vignette section | 1 |
 | G10 | C3 | `makePedigreeMatingLayout()` returns the hints it used (`:1836`, `:2219`), in the form it takes (`R/layoutHints.R`) | `ownHints`: the returned hints, passed back, give the same positions; the new list element counted as a set-aside. S51, R127-R128: the element `hints`; `order` by row, founders only where an order hint named them, and `mate` rows except for an animal with three or more matings or one the given rows place, both measured as the only forms that pass back the same layout; on sample family 1, 29 numbers and 11 rows, passed back identical; set aside in 72 of the 600 results (the row's `:1836` and `:2219` were S41's lines: the returns are now at the end of `makePedigreeMatingLayout()`) | the element's name; order hints only, or mate hints too | 1 (S51) |
 | G11 | C1 | A function that keeps the relatives within k steps of chosen animals, its rule written from Pedixplorer's help and measured results (as R52) | `distanceSubset`: 14, 30 and 33 of 41 kept for k = 1, 2, 3, as Pedixplorer's `useful_inds()`, or a measured, stated difference; seeded random cases compared (Learnings 19-21). S52, R129-R130: `getNearRelativePedigree(ped, probands, maxDist)`; distance `log2(1 / kinship)`, and each parent of an animal within it whose own and its mates' offspring number two or more (`num_child_tot`): the same animals as `useful_inds(max_dist = )` in 1,980 of 1,980 runs, 14, 30 and 33 on the case; probands named by id | its name; what "informative" means by default (S52 also asked the rule: Pedixplorer's, over every parent kept or within distance only) | 1 (S52) |
-| G12 | B4 | A measured trait drawn by a threshold, with the rule in the legend; builds on G1 | `measuredTrait`: at threshold 5, A, B, C unaffected and D affected; the legend states the rule | threshold argument or a colour scale; above or at-and-above | 2-3 |
+| G12 | B4 | A measured trait drawn by a threshold, with the rule in the legend; builds on G1 | `measuredTrait`: at threshold 5, A, B, C unaffected and D affected; the legend states the rule. S53, R131-R132: `conditionThresholds` in both builders, each cut-off a comparison the user writes (`>`, `>=`, `<`, `<=`) and a number; A, B, C white and D pink, the legend row "Affected (> 5)" (`>=` and `<=` as the signs), the tooltip "Yes (9)"; `>` and `<` as Pedixplorer's `generate_aff_inds()` in 250 seeded comparisons | threshold argument or a colour scale; above or at-and-above (S53 also asked the legend's words and the argument's name and functions) | 1 (S53) |
 | G13 | B3 | Pedixplorer's marks: carrier, proband, consultand, evaluated, genotyped border, infertile, miscarriage; each a column read by the layout, a mark drawn, a legend row | `markings`: each mark drawn and in the legend, read in headless Chrome; no column, no change (600 of 600) | which marks first (the genotyped border is the colony's), their shapes; the phase's session count | 8-9 |
 | G14 | B5 sizes | Symbol and text sizes, and spacing, as arguments | `style`: each setting measured in headless Chrome; defaults unchanged (600 of 600) | which settings | 2-3 |
 | G15 | B1 | **A planning session first** (the layout builds every mating from shared offspring, `.buildMatingUnitForest()`, `R/makePedigreeDiagramData.R:454`), then its build sessions | its plan's; `matesNoOffspring`: E and F drawn as a mating, not isolated | its plan's | 1 + 3-5 |
@@ -606,6 +606,23 @@ sessions a day, about 11-15 days, an estimate.
 34. **Rd math gives `R CMD check --as-cran` a NOTE here** (S52, G11): `\eqn{}` in a help page makes the check try
     to render it ("Skipping checking math rendering: package 'V8' unavailable"). Write a formula as code
     (`\code{log2(1 / k)}`); found by the prototype's check before RED.
+35. **The Write and Edit tools write `\u2265` as the sign itself** (S53, G12): the prototype's `"\u2265"` reached the
+    file as the character, and `R CMD check --as-cran` gave a WARNING ("non-ASCII characters" in
+    `R/conditionThresholds.R`; the test file too). Put a `\u` escape into R code with a script (Python with a raw
+    string, or `perl -CSD -pi -e 's/\x{2265}/\\u2265/g'`), then `grep -cP "[^\x00-\x7F]"` each written file; the
+    prototype's check found it before RED (dragon 31 again).
+36. **Measure a legend label's room in a narrow drawing** (S53, G12): the legend's canvas is 0.28 of the drawing's
+    width (269 px at the saved widget's 960 px, 140 px at 500 px), and a label wider than the widest row shrinks the
+    whole legend (vis.js fits it): words for the rule shrank it 8-26% at 500 px, the signs not at all. At 500 px G2's
+    "Affected status unknown" already runs 9 px past the canvas (the backlog). Set the widget's width
+    (`w$width <- "500px"`) before `saveWidget()`; chromote's `setDeviceMetricsOverride()` left a saved widget at
+    960 px.
+37. **The fidelity tool run from a scratch copy needs renv's library given** (S53): a copy without `.Rprofile` loads
+    no renv, so its pedkindraw child stopped ("The package "quadprog" is required") after nprcgenekeepr's 100 s.
+    Run it with `env -u RENV_PROJECT R_LIBS=<renv lib> R_LIBS_USER=<renv lib>`: with `RENV_PROJECT` unset
+    `renvFreeEnv()` passes nothing, and nprcgenekeepr's child activates its own renv in its folder.
+38. **A copy of a tree taken while its suite runs holds the suite's temporary files** (S53): a copy made mid-suite
+    gained an empty `tests/testthat/_snaps`. Copy from a commit (`git archive`) or after the run.
 
 ### 7.3 Out of scope
 

@@ -32,7 +32,8 @@ each animal's offspring count and the matings, is done (S47, R117-R119), G7, rem
 offspring's links to them, is done (S48, R120-R122), G8, aligned generations in `findGeneration()`, is done (S49,
 R123-R124), G9, an example drawing the animals `shrinkPedigree()` removed, is done (S50, R125-R126), G10, the layout
 returning the hints it used, is done (S51, R127-R128), G11, the relatives within a distance of chosen animals, is
-done (S52, R129-R130), and G12 is next (Planned, below).
+done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R131-R132), and G13 is next
+(Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -65,7 +66,8 @@ session each unless marked. They follow the copy slices.
   is done (S47); G7 (removing listed animals, their offspring's links to them cleared) is done (S48); G8
   (aligned generations in `findGeneration()`) is done (S49); G9 (an example marking the animals
   `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); G11 (the
-  relatives within a distance of chosen animals) is done (S52); next G12 (a measured trait drawn by a threshold),
+  relatives within a distance of chosen animals) is done (S52); G12 (a measured trait drawn by a cut-off) is
+  done (S53); next G13 (Pedixplorer's marks),
   then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
@@ -244,6 +246,14 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G12, a measured trait drawn by a cut-off (pedkindraw S53, 2026-11-19).** Pedixplorer colours a column of
+  numbers by a threshold and writes the rule in its legend; pedkindraw stopped on such numbers (G1).
+  `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` now take `conditionThresholds`, a cut-off the user
+  writes for each measured trait, such as `c(affected_glucose = ">= 126")`: the animals passing it are drawn
+  affected, the legend reads "Affected (glucose ≥ 126)", and hovering shows the number. Mark's picks: a cut-off
+  over a colour scale, the comparison written by the user (`>`, `>=`, `<`, `<=`) over above-only (R131); the
+  signs in the legend, the argument's name, both builders (R132). `>` and `<` decide as Pedixplorer's threshold,
+  250 seeded comparisons. The fidelity cases 600 of 600, nothing set aside.
 - **Phase G11, the near relatives of chosen animals (pedkindraw S52, 2026-11-19).** Pedixplorer's
   `useful_inds(max_dist = )` keeps the animals within a distance of its informative ones; pedkindraw kept only
   ancestors (`trimPedigree()`) or descendants (`getDescendantPedigree()`), with no distance.

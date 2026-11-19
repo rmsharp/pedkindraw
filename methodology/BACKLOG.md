@@ -23,13 +23,13 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G12-G17: the other gaps, before the release** (READY in order, G12 next; Effort L altogether, 25-38
-      sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
+- [ ] **Phases G13-G17: the other gaps, before the release** (READY in order, G13 next; Effort L altogether, 23-34
+      sessions, a guess, the sum of the rows; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
       DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
-      DONE in S52, R129-R130, 1 session of the row's 2-3) --
+      DONE in S52, R129-R130, 1 session of the row's 2-3; G12 DONE in S53, R131-R132, 1 session of the row's 2-3) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
-      commands and surface: G12-G14 the M additions (B4 on G1's check, B3's marks, B5's sizes); G15-G17
+      commands and surface: G13-G14 the M additions (B3's marks, B5's sizes); G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
 
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
@@ -49,6 +49,19 @@ issues).*
       `withoutConditionSymbols()`, `withoutJogSelections()`, `withoutLegendLineStyle()` and `eachDrawing()`), empty
       `DIVERGENCE.md`'s open rows, say in README and NEWS that nprcgenekeepr uses pedkindraw, and put nprcgenekeepr's
       reverse-dependency check into every later release plan (plan section 5.3).
+
+- [ ] **The legend's labels in a narrow drawing** (READY, Effort S-M, a guess; found S53) -- `drawPedigreeDiagram()`'s
+      legend is 0.28 of the drawing's width, 140 px in a 500 px drawing (an RStudio viewer pane is about that),
+      and there G2's row "Affected status unknown" runs 9 px past its canvas (measured in headless Chrome, the
+      widget's width set before `saveWidget()`, the gaps plan's dragon 36), so its end is cut off; at the saved
+      widget's 960 px it fits (269 px). A label wider than the widest row shrinks the whole legend instead. Choose
+      by picker: a wider legend, shorter words, or a line break; measure each at 500 and 700 px.
+
+- [ ] **The drawing vignette shows a measured trait drawn by a cut-off** (READY, Effort S, documentation; G12,
+      R131-R132) -- `vignettes/drawing.Rmd`'s "Conditions" (`:181`) says how true-or-false columns are drawn but not
+      `conditionThresholds`; a paragraph and one drawing (such as `c(affected_glucose = ">= 126")`), with a hidden
+      check of the legend's label and the fills, as that section's other checks do. Mark asked in S52 whether the
+      tutorials say how conditions are drawn.
 
 - [ ] **Correct pedkindraw's `smallPed` fixture after nprcgenekeepr corrects its dataset** (READY since nprcgenekeepr's
       S1189 finished N1, R99: its `0e2bc137e` corrects `smallPed`'s generations, found at S44's Orient; Effort S) --
