@@ -114,7 +114,7 @@ nprcgenekeepr's. Each change is a `DIVERGENCE.md` row (plan section 5). All thre
 
 | Interface | Input | Output | Error | Phase |
 |---|---|---|---|---|
-| `findGeneration(id, sire, dam)` | vectors | integer generation per id, founders 0; NA plus a warning naming the ids it cannot place (cycle, parent without a row) | none of its own | 6 |
+| `findGeneration(id, sire, dam, alignMates = FALSE)` | vectors; `alignMates` `TRUE` or `FALSE` | integer generation per id, founders 0; NA plus a warning naming the ids it cannot place (cycle, parent without a row); with `alignMates = TRUE`, animals moved to later generations so that, where it can be done, an offspring's sire and dam are in the same generation (R123-R124) | `alignMates` not `TRUE` or `FALSE` | 6; `alignMates` G8 |
 | `findPedigreeNumber(id, sire, dam)` | vectors | integer family per id, from 1; NA for an id not reachable from a founder | none | 6 |
 | `getParents(ped, ids)` (was `pedSourceDf`, R88) | pedigree, ids | character parent ids | none | 6; name 17c2 |
 | `getOffspring(ped, ids)` (was `pedSourceDf`, R88) | pedigree, ids | character offspring ids, no duplicates | none | 6; name 17c2 |

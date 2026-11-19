@@ -111,6 +111,11 @@ code, `DIVERGENCE.md` in the repository says how and why.
   as sire or dam, each once), and `getMatings()` lists each sire and dam with
   an offspring recorded with both, once, with the number of offspring they
   share: the matings a drawing draws.
+* New: `findGeneration(alignMates = TRUE)` puts, where it can be done, the sire
+  and dam of each offspring in the same generation, as kinship2's
+  `kindepth(align = TRUE)` does; its help lists the steps. On the pedigrees
+  its tests compare it equals kinship2's on most, and unlike kinship2's its
+  answer does not depend on the order of the rows. The default is unchanged.
 
 ## Checking and repair
 

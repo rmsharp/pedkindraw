@@ -562,6 +562,11 @@ cases$alignedDepth <- function(case = "alignedDepth") {
         sum(pedkindraw::findGeneration(sp$id, sp$dadid, sp$momid) == plain))
   probe(case, "pedkindraw findGeneration() arguments",
         names(formals(pedkindraw::findGeneration)))
+  probe(case,
+        "pedkindraw findGeneration(alignMates = TRUE) equals kinship2's in",
+        sum(pedkindraw::findGeneration(sp$id, sp$dadid, sp$momid,
+                                       alignMates = TRUE) ==
+              kinship2::kindepth(k, align = TRUE)))
 }
 
 ## C3. The package's own layout hints, to edit.
