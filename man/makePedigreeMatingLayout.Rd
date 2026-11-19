@@ -20,8 +20,9 @@ column marks deceased animals: see the \code{deceased} column of the
 returned \code{nodes}. Every column whose name starts
 \code{affected} is an affected condition, in the order the data
 frame holds them, the first four drawn (see \code{conditions} in the
-return value). A lone one fills the symbol; two or more split it
-into sections. (\code{\link{makePedigreeDiagramData}} reads the
+return value). A lone one fills the symbol, pink where the animal is
+affected and grey where its status is unknown (\code{NA}); two or more
+split it into sections. (\code{\link{makePedigreeDiagramData}} reads the
 column \code{affected} alone.) A condition drawn reads as
 \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
 than 0 and 1 stops, before any animal is left out.}
@@ -100,8 +101,9 @@ them when \code{ped} has no \code{status} column), \code{x},
 \code{y}; \code{color.border} is added under
 \code{edgeStyle = "rectilinear"}; \code{affectedSections} is added
 when there are two or more conditions: a character string with one
-character per condition, \code{"1"} where the animal is affected
-and \code{"0"} where it is unaffected or unknown, the same for a
+character per condition, \code{"1"} where the animal is affected,
+\code{"0"} where it is unaffected and \code{"?"} where it is unknown
+(the drawing fills that section grey), the same for a
 repeat-appearance node as for its animal, \code{""} for a node that
 is not an animal, never \code{NA}; with two or more conditions the
 animals' \code{color.background} is white, the sections carrying the

@@ -28,10 +28,12 @@
 #' for a layout made by \code{\link{makePedigreeMatingLayout}}. The diagram
 #' has the sex symbols at the layout's fixed positions, the legend (the
 #' five sex symbols, one row per affected condition or a single
-#' \dQuote{Affected} row, \dQuote{Deceased}, and the dashed repeat-appearance
-#' and twin lines), each multi-condition symbol split into its colored
-#' sections, the slash through each deceased animal's symbol, a canvas that
-#' grows with the number of conditions, the \strong{Export Diagram (PNG)}
+#' \dQuote{Affected} row, a grey \dQuote{Affected status unknown} row when an
+#' animal's status is unknown, \dQuote{Deceased}, and the dashed
+#' repeat-appearance and twin lines), each multi-condition symbol split into
+#' its colored sections, the slash through each deceased animal's symbol, a
+#' canvas that grows with the number of legend rows, the
+#' \strong{Export Diagram (PNG)}
 #' button, a \dQuote{Select by id} box that lists the animals, and the
 #' highlight on hover. The sections and the slash are painted by a drawing
 #' script inside the widget, so they appear wherever the widget is shown: in the
@@ -43,6 +45,12 @@
 #' two is the left half), and each condition's legend row shows a circle cut
 #' the same way with that condition's section filled in its color, so the
 #' legend says which section is which.
+#'
+#' An animal whose affected status is unknown (\code{NA}) is filled grey,
+#' with one condition, or has that condition's section grey, with two or more,
+#' so it does not look unaffected; the legend's grey hexagon
+#' \dQuote{Affected status unknown} then says what the grey is, and the
+#' canvas is 45 pixels taller for that row.
 #'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny

@@ -44,9 +44,11 @@
 #'   parents; \code{gen} an integer generation number, 0 for founders, as
 #'   produced by \code{\link{findGeneration}}). Two optional columns are
 #'   used when present: a logical \code{affected} column, which adds an
-#'   affected-status line to \code{title} and fills affected nodes with
-#'   \code{color.background} \code{"#CC79A7"} (all other nodes are white,
-#'   \code{"#FFFFFF"}); and a character \code{name} column, which is shown
+#'   affected-status line to \code{title} and sets \code{color.background}:
+#'   \code{"#CC79A7"} (pink) for an affected node, \code{"#BEBEBE"} (grey)
+#'   for a node whose status is unknown (\code{NA}) and \code{"#FFFFFF"}
+#'   (white) for an unaffected one (every node is white without the column);
+#'   and a character \code{name} column, which is shown
 #'   in \code{label} (long names are truncated) and in \code{title}. In
 #'   \code{affected} the numbers 1 and 0 read as \code{TRUE} and
 #'   \code{FALSE}, and any other number stops (compare a measured trait
@@ -1666,8 +1668,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   returned \code{nodes}. Every column whose name starts
 #'   \code{affected} is an affected condition, in the order the data
 #'   frame holds them, the first four drawn (see \code{conditions} in the
-#'   return value). A lone one fills the symbol; two or more split it
-#'   into sections. (\code{\link{makePedigreeDiagramData}} reads the
+#'   return value). A lone one fills the symbol, pink where the animal is
+#'   affected and grey where its status is unknown (\code{NA}); two or more
+#'   split it into sections. (\code{\link{makePedigreeDiagramData}} reads the
 #'   column \code{affected} alone.) A condition drawn reads as
 #'   \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
 #'   than 0 and 1 stops, before any animal is left out.
@@ -1740,8 +1743,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   \code{y}; \code{color.border} is added under
 #'   \code{edgeStyle = "rectilinear"}; \code{affectedSections} is added
 #'   when there are two or more conditions: a character string with one
-#'   character per condition, \code{"1"} where the animal is affected
-#'   and \code{"0"} where it is unaffected or unknown, the same for a
+#'   character per condition, \code{"1"} where the animal is affected,
+#'   \code{"0"} where it is unaffected and \code{"?"} where it is unknown
+#'   (the drawing fills that section grey), the same for a
 #'   repeat-appearance node as for its animal, \code{""} for a node that
 #'   is not an animal, never \code{NA}; with two or more conditions the
 #'   animals' \code{color.background} is white, the sections carrying the

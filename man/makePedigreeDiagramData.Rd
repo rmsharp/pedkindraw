@@ -12,9 +12,11 @@ and \code{gen} columns (\code{sire}/\code{dam} \code{NA} for unknown
 parents; \code{gen} an integer generation number, 0 for founders, as
 produced by \code{\link{findGeneration}}). Two optional columns are
 used when present: a logical \code{affected} column, which adds an
-affected-status line to \code{title} and fills affected nodes with
-\code{color.background} \code{"#CC79A7"} (all other nodes are white,
-\code{"#FFFFFF"}); and a character \code{name} column, which is shown
+affected-status line to \code{title} and sets \code{color.background}:
+\code{"#CC79A7"} (pink) for an affected node, \code{"#BEBEBE"} (grey)
+for a node whose status is unknown (\code{NA}) and \code{"#FFFFFF"}
+(white) for an unaffected one (every node is white without the column);
+and a character \code{name} column, which is shown
 in \code{label} (long names are truncated) and in \code{title}. In
 \code{affected} the numbers 1 and 0 read as \code{TRUE} and
 \code{FALSE}, and any other number stops (compare a measured trait
