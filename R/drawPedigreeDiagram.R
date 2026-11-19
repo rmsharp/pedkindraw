@@ -11,8 +11,10 @@
 ## legendEdges), and S43's grey "Affected status unknown" row and the 45 px it
 ## adds (plan Phase G2, R106-R107: unknownRow, before deceasedRow), and S45's
 ## section colours read from the layout's conditions table (plan Phase G4,
-## R111: sectionColors, and the help's paragraph on the colours), each a
-## DIVERGENCE.md row until nprcgenekeepr has it; otherwise help text only.
+## R111: sectionColors, and the help's paragraph on the colours), and S54's
+## "Genotyped" row and the 45 px it adds (plan Phase G13, R133-R134:
+## genotypedRow, and the help's paragraph on it), each a DIVERGENCE.md row
+## until nprcgenekeepr has it; otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
@@ -31,7 +33,8 @@
 #' has the sex symbols at the layout's fixed positions, the legend (the
 #' five sex symbols, one row per affected condition or a single
 #' \dQuote{Affected} row, a grey \dQuote{Affected status unknown} row when an
-#' animal's status is unknown, \dQuote{Deceased}, and the dashed
+#' animal's status is unknown, a \dQuote{Genotyped} row when an animal is
+#' genotyped, \dQuote{Deceased}, and the dashed
 #' repeat-appearance and twin lines), each multi-condition symbol split into
 #' its colored sections, the slash through each deceased animal's symbol, a
 #' canvas that grows with the number of legend rows, the
@@ -60,6 +63,12 @@
 #' \dQuote{Affected status unknown} then says what the grey is, and the
 #' canvas is 45 pixels taller for that row.
 #'
+#' An animal whose \code{genotyped} column is \code{TRUE} (see
+#' \code{\link{makePedigreeMatingLayout}}) is drawn with its outline 4 pixels
+#' wide, where every other symbol's is 1; the legend's \dQuote{Genotyped} row,
+#' a square with that outline, then says what the thick outline is, and the
+#' canvas is 45 pixels taller for that row.
+#'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
 #' session, so a script leaves \code{onClick} out.
@@ -73,7 +82,9 @@
 #'   character string, that runs when the diagram is clicked. A Shiny
 #'   application can pass one that sends the clicked animal to its server.
 #' @return A \code{visNetwork} widget, 500 pixels tall, 45 more for each
-#'   affected condition past the first (at most four are drawn).
+#'   affected condition past the first (at most four are drawn), for the
+#'   \dQuote{Affected status unknown} row and for the \dQuote{Genotyped}
+#'   row.
 #' @seealso \code{\link{makePedigreeMatingLayout}}
 #' @examples
 #' ## Four animals: A and B are the parents of C and D; A has died, and C
@@ -216,8 +227,23 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
     color.background = .unknownColor, image = NA_character_,
     stringsAsFactors = FALSE
   )[hasUnknown, , drop = FALSE]
-  legendNodes <- rbind(sexRows, conditionRows, unknownRow, deceasedRow)
+  # pedkindraw Phase G13 (R133-R134): a genotyped animal's node has a thick
+  # outline, and then a "Genotyped" row, a square with that outline, comes
+  # before "Deceased". The rows get a borderWidth only then, so a drawing with
+  # no genotyped animal is as before.
+  hasGenotyped <- any(layout$nodes[["borderWidth"]] %in% .genotypedBorderWidth)
+  genotypedRow <- data.frame(
+    label = "Genotyped", shape = "square",
+    color.background = .affectedColor(FALSE), image = NA_character_,
+    stringsAsFactors = FALSE
+  )[hasGenotyped, , drop = FALSE]
+  legendNodes <- rbind(sexRows, conditionRows, unknownRow, genotypedRow,
+                       deceasedRow)
   legendNodes$size <- 14L
+  if (hasGenotyped) {
+    legendNodes$borderWidth <- ifelse(legendNodes$label == "Genotyped",
+                                      .genotypedBorderWidth, 1L)
+  }
   # Option 2 Slice 3: fixed x/y coordinates (S457's proven Case C2
   # geometry) replace visHierarchicalLayout() entirely -- confirmed
   # hands-on (Learning 446) that manual coordinates and hierarchical
@@ -225,7 +251,7 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # .diagramHeight()'s, which the Shiny application also gives its output.
   # pedkindraw Phase G2: the unknown row adds 45 px as one more condition row
   # does (with no condition column the legend still has its one row).
-  rowsForHeight <- max(nConditions, 1L) + hasUnknown
+  rowsForHeight <- max(nConditions, 1L) + hasUnknown + hasGenotyped
   visNetwork::visNetwork(layout$nodes, layout$edges,
                          height = sprintf("%dpx",
                                           .diagramHeight(rowsForHeight))) |>

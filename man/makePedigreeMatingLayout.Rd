@@ -30,7 +30,15 @@ into sections, one colour each.
 (\code{\link{makePedigreeDiagramData}} reads the column
 \code{affected} alone.) A condition drawn reads as
 \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
-than 0 and 1 stops, before any animal is left out.}
+than 0 and 1 stops, before any animal is left out. An optional
+\code{genotyped} column marks the genotyped animals (what kinship2 and
+Pedixplorer call available): \code{TRUE}, \code{FALSE} or \code{NA}
+(not recorded) for each animal, or 1 and 0, or text \code{as.logical()}
+reads (\code{"TRUE"}, \code{"false"}, \code{"T"}). A genotyped animal's
+symbol is drawn with its outline 4 pixels wide, every other symbol's 1
+(see \code{borderWidth} in the returned \code{nodes}), and its hover text
+says \dQuote{Genotyped: Yes}, \dQuote{No} or \dQuote{Unknown}; any other
+value stops, naming the column, before any animal is left out.}
 
 \item{edgeStyle}{one of \code{"rectilinear"} (default), which routes
 mate-line and sibship-bar edges through invisible waypoint nodes so
@@ -160,7 +168,10 @@ character per condition, \code{"1"} where the animal is affected,
 repeat-appearance node as for its animal, \code{""} for a node that
 is not an animal, never \code{NA}; with two or more conditions the
 animals' \code{color.background} is white, the sections carrying the
-color), \code{edges} (\code{from},
+color; \code{borderWidth} is added when \code{ped} has a
+\code{genotyped} column: 4 for the node of a genotyped animal and each of
+its repeat-appearance nodes, 1 for every other node, the width of the
+symbol's outline), \code{edges} (\code{from},
 \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
 and \code{width} columns are always present once any mating unit

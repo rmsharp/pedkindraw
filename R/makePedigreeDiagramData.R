@@ -52,7 +52,11 @@
 ## R/conditionThresholds.R); a drawn condition with a cut-off is decided by it
 ## before G1's check, its label states the rule and the tooltip gives the
 ## number; G1's message names the argument; and their help (DIVERGENCE.md
-## rows).
+## rows). Plan Phase G13 (pedkindraw S54, R133-R134): makePedigreeMatingLayout()
+## reads a column genotyped (.readGenotyped(), pedkindraw's own,
+## R/genotypedMark.R) before any animal is left out, adds a hover line for it,
+## and gives each node a borderWidth (.genotypedBorderWidths()), 4 for a
+## genotyped animal; and its help (a DIVERGENCE.md row).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -1760,7 +1764,15 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   (\code{\link{makePedigreeDiagramData}} reads the column
 #'   \code{affected} alone.) A condition drawn reads as
 #'   \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
-#'   than 0 and 1 stops, before any animal is left out.
+#'   than 0 and 1 stops, before any animal is left out. An optional
+#'   \code{genotyped} column marks the genotyped animals (what kinship2 and
+#'   Pedixplorer call available): \code{TRUE}, \code{FALSE} or \code{NA}
+#'   (not recorded) for each animal, or 1 and 0, or text \code{as.logical()}
+#'   reads (\code{"TRUE"}, \code{"false"}, \code{"T"}). A genotyped animal's
+#'   symbol is drawn with its outline 4 pixels wide, every other symbol's 1
+#'   (see \code{borderWidth} in the returned \code{nodes}), and its hover text
+#'   says \dQuote{Genotyped: Yes}, \dQuote{No} or \dQuote{Unknown}; any other
+#'   value stops, naming the column, before any animal is left out.
 #' @param edgeStyle one of \code{"rectilinear"} (default), which routes
 #'   mate-line and sibship-bar edges through invisible waypoint nodes so
 #'   they render as a strict right angle, kinship2-style, or
@@ -1881,7 +1893,10 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   repeat-appearance node as for its animal, \code{""} for a node that
 #'   is not an animal, never \code{NA}; with two or more conditions the
 #'   animals' \code{color.background} is white, the sections carrying the
-#'   color), \code{edges} (\code{from},
+#'   color; \code{borderWidth} is added when \code{ped} has a
+#'   \code{genotyped} column: 4 for the node of a genotyped animal and each of
+#'   its repeat-appearance nodes, 1 for every other node, the width of the
+#'   symbol's outline), \code{edges} (\code{from},
 #'   \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 #'   \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
 #'   and \code{width} columns are always present once any mating unit
@@ -2012,6 +2027,9 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
       "makePedigreeMatingLayout(): the condition column '%s'", column
     ), advice = .thresholdAdvice(column))
   }
+  # pedkindraw Phase G13 (R133-R134): the genotyped column, read and checked
+  # before any animal is left out; a genotyped animal's outline is thick.
+  genotyped <- .readGenotyped(ped, "makePedigreeMatingLayout")
 
   # A fully-isolated individual (no known parent, never a parent, not
   # twinRelations-connected) is suppressed from the diagram, matching
@@ -2050,6 +2068,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     emptyNodes$x <- numeric()
     emptyNodes$y <- numeric()
     if (sectioned) emptyNodes$affectedSections <- character()
+    if (!is.null(genotyped)) emptyNodes$borderWidth <- integer() # Phase G13
     emptyEdges <- data.frame(from = character(), to = character(),
                               dashes = logical(), smooth.enabled = logical(),
                               smooth.type = character(),
@@ -2209,6 +2228,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
       title <- paste0(title,
                        sprintf("<br><b>%s:</b> %s",
                                .escapeHtml(conditions$label[[i]]), shown))
+    }
+    if (!is.null(genotyped)) { # pedkindraw Phase G13
+      title <- paste0(title, sprintf("<br><b>Genotyped:</b> %s",
+                                     .affectedLabel(genotyped[ids])))
     }
     if (hasName) {
       title <- paste0(title, .nameTooltipLine(nameOf[ids]))
@@ -2448,6 +2471,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     nodes$affectedSections <- .affectedSectionsOf(
       nodes$id, conditionOf, realIds, dupIds, duplicates$realId
     )
+  }
+  if (!is.null(genotyped)) { # pedkindraw Phase G13
+    nodes$borderWidth <- .genotypedBorderWidths(nodes$id, genotyped, dupIds,
+                                                duplicates$realId)
   }
 
   list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,

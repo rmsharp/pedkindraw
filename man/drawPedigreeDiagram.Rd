@@ -24,7 +24,9 @@ application can pass one that sends the clicked animal to its server.}
 }
 \value{
 A \code{visNetwork} widget, 500 pixels tall, 45 more for each
-affected condition past the first (at most four are drawn).
+affected condition past the first (at most four are drawn), for the
+\dQuote{Affected status unknown} row and for the \dQuote{Genotyped}
+row.
 }
 \description{
 Returns an interactive pedigree diagram, as a \code{visNetwork} widget,
@@ -32,7 +34,8 @@ for a layout made by \code{\link{makePedigreeMatingLayout}}. The diagram
 has the sex symbols at the layout's fixed positions, the legend (the
 five sex symbols, one row per affected condition or a single
 \dQuote{Affected} row, a grey \dQuote{Affected status unknown} row when an
-animal's status is unknown, \dQuote{Deceased}, and the dashed
+animal's status is unknown, a \dQuote{Genotyped} row when an animal is
+genotyped, \dQuote{Deceased}, and the dashed
 repeat-appearance and twin lines), each multi-condition symbol split into
 its colored sections, the slash through each deceased animal's symbol, a
 canvas that grows with the number of legend rows, the
@@ -60,6 +63,12 @@ An animal whose affected status is unknown (\code{NA}) is filled grey,
 with one condition, or has that condition's section grey, with two or more,
 so it does not look unaffected; the legend's grey hexagon
 \dQuote{Affected status unknown} then says what the grey is, and the
+canvas is 45 pixels taller for that row.
+
+An animal whose \code{genotyped} column is \code{TRUE} (see
+\code{\link{makePedigreeMatingLayout}}) is drawn with its outline 4 pixels
+wide, where every other symbol's is 1; the legend's \dQuote{Genotyped} row,
+a square with that outline, then says what the thick outline is, and the
 canvas is 45 pixels taller for that row.
 
 A click does nothing unless \code{onClick} is given: a Shiny application
