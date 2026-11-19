@@ -10,7 +10,11 @@
 ## families follow its mates, mates hinted to one side in the order of the
 ## hint's rows); the element named 'mate', not kinship2's 'spouse'. Every
 ## expected value was computed with a scratch prototype before this file was
-## written (Learning 18). Helpers: helper-layoutHints.R.
+## written (Learning 18). Helpers: helper-layoutHints.R. Plan Phase G10
+## (pedkindraw S51, R127-R128): the layout returns the hints it used, which
+## record the rows a caller gave, so the three checks that a hint asking for
+## the drawing as it is gives the plain layout compare the layouts without
+## their hints (layoutHintsDrawn()).
 library(testthat)
 
 layoutHintsQuiet <- function(ped, ...) {
@@ -18,6 +22,10 @@ layoutHintsQuiet <- function(ped, ...) {
 }
 layoutHintsMated <- function(ped, hintMate, ...) {
   layoutHintsQuiet(ped, hints = list(mate = hintMate), ...)
+}
+## A layout without its hints: what it draws.
+layoutHintsDrawn <- function(layout) {
+  layout[names(layout) != "hints"]
 }
 
 ## A x B have C, D, E; D x F have G, H (the design's M1).
@@ -95,10 +103,15 @@ test_that("no hint, mate = NULL, a mate hint with no rows and a hint that
     layoutHintsQuiet(pedM1, hints = list(order = NULL, mate = NULL)),
     plain
   )
-  expect_identical(layoutHintsMated(pedM1, layoutHintsMate("A", "B")), plain)
   expect_identical(
-    layoutHintsMated(pedM1, layoutHintsMate(c("A", "D"), c("B", "F"))),
-    plain
+    layoutHintsDrawn(layoutHintsMated(pedM1, layoutHintsMate("A", "B"))),
+    layoutHintsDrawn(plain)
+  )
+  expect_identical(
+    layoutHintsDrawn(
+      layoutHintsMated(pedM1, layoutHintsMate(c("A", "D"), c("B", "F")))
+    ),
+    layoutHintsDrawn(plain)
   )
 })
 
@@ -109,8 +122,10 @@ test_that("an anchor hangs the offspring under the hinted partner, the other
                    "P Q R S / A C' B C D / K1 K2")
   expect_identical(unname(plain$duplicateToReal), "C")
   expect_identical(
-    layoutHintsMated(pedAnchor, layoutHintsMate("A", "C", "left")),
-    plain
+    layoutHintsDrawn(
+      layoutHintsMated(pedAnchor, layoutHintsMate("A", "C", "left"))
+    ),
+    layoutHintsDrawn(plain)
   )
   dam <- layoutHintsMated(pedAnchor, layoutHintsMate("A", "C", "right"))
   expect_identical(layoutHintsRowTextAll(dam), "P Q R S / A B A' C D / K1 K2")
