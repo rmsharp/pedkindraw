@@ -33,7 +33,8 @@
 ## Phase G3 (pedkindraw S44, R108-R110): makePedigreeDiagramData() and
 ## makePedigreeMatingLayout() gain the argument maxNameChars = 15, checked by
 ## .checkMaxNameChars() (pedkindraw's own, R/maxNameChars.R) and passed to
-## .nameLabel() in place of its fixed 15, and its help (DIVERGENCE.md rows).
+## .nameLabel() in place of its fixed 15, and its help (DIVERGENCE.md rows);
+## its REFACTOR updates the comments of .nameLabelCharBudget and .nameLabel().
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -282,6 +283,15 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #' unspoiled (max 8 characters) while bounding a pathological outlier to
 #' roughly the same overlap footprint the existing id-only label already
 #' has at the fixture's 25th-percentile adjacent-node gap.
+#'
+#' pedkindraw S44 (plan Phase G3, R108-R110): 15 is now the default of
+#' \code{makePedigreeDiagramData()}'s and \code{makePedigreeMatingLayout()}'s
+#' argument \code{maxNameChars}, which they pass to \code{.nameLabel()}, so
+#' this constant is only \code{.nameLabel()}'s own default. S44 measured in
+#' headless Chrome: animals on one row are at least 120 px apart in every
+#' fixture laid out, and vis.js draws ordinary text at about 7 px a
+#' character, so a cut name (15 characters and "...") overlaps a neighbour's
+#' label by about 5 px there.
 #' @noRd
 .nameLabelCharBudget <- 15L
 
@@ -293,8 +303,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #' bundled vis.js renders an embedded newline as two lines). Falls back to
 #' the bare \code{id} when \code{name} is \code{NA} or empty (D4 -- not
 #' every center records a name, and synthesized rows, e.g. \code{U####}
-#' placeholders, never have one). A name longer than
-#' \code{\link{.nameLabelCharBudget}} is truncated with a trailing
+#' placeholders, never have one). A name longer than \code{budget} (the
+#' builders pass their \code{maxNameChars}, pedkindraw S44, plan Phase G3) is
+#' truncated with a trailing
 #' \code{"..."} (D10); the full name is never dropped, only shortened on
 #' the canvas label -- \code{\link{.nameTooltipLine}} carries it in full.
 #' Shared by both \code{\link{makePedigreeDiagramData}} and
@@ -306,7 +317,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #' @param id character vector.
 #' @param name character vector, same length as \code{id}; \code{NA}
 #'   allowed.
-#' @param budget integer scalar, the truncation budget (D10).
+#' @param budget the truncation budget (D10): one whole number of 1 or more,
+#'   or \code{Inf}, which never truncates (the cut branch of the
+#'   \code{ifelse()} is then not evaluated).
 #' @return character vector, same length as \code{id}.
 #' @noRd
 .nameLabel <- function(id, name, budget = .nameLabelCharBudget) {
