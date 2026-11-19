@@ -72,6 +72,15 @@ code, `DIVERGENCE.md` in the repository says how and why.
   Pedixplorer's `threshold` does. Without a cut-off a number other than 0 and
   1 still stops, and the message now names `conditionThresholds`.
   nprcgenekeepr has no cut-off.
+* New: `makePedigreeMatingLayout()` reads a column `genotyped` (`TRUE`,
+  `FALSE`, `NA`, 1, 0, or text such as "TRUE"): each genotyped animal's symbol
+  is drawn with its outline 4 pixels wide, where every other symbol's is 1,
+  and its hover text says "Genotyped: Yes", "No" or "Unknown"; any other
+  value stops, naming the column. `drawPedigreeDiagram()`'s legend then has a
+  row "Genotyped", a square with the thick outline, and the drawing is 45 px
+  taller. Pedixplorer marks an available animal with a green border;
+  nprcgenekeepr has no such mark. Without the column every drawing is as
+  before.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's

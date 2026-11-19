@@ -369,6 +369,18 @@ cases$markings <- function(case = "markings") {
       identical(pedkindraw::makePedigreeMatingLayout(withGen(p)), lay0)
     })
   }
+  ## Phase G13 (pedkindraw S54, R133-R134): the genotyped mark, a column
+  ## genotyped (Pedixplorer's avail), drawn as a 4 px outline.
+  typed <- ped
+  typed$genotyped <- fields$avail
+  layTyped <- pedkindraw::makePedigreeMatingLayout(withGen(typed))
+  probe(case, "pedkindraw genotyped : outline widths of A, B, C, D",
+        layTyped$nodes$borderWidth[match(ped$id, layTyped$nodes$id)])
+  probe(case, "pedkindraw genotyped : legend row and its outline width", {
+    rows <- pedkindraw::drawPedigreeDiagram(layTyped)$x$legend$nodes
+    at <- match("Genotyped", rows$label)
+    paste(rows$label[[at]], rows$shape[[at]], rows$borderWidth[[at]])
+  })
   probe(case, "kinship2 pedigree() arguments",
         names(formals(kinship2::pedigree)))
 }
