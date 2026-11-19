@@ -14,8 +14,9 @@ closed before the release, phases G1-G17; nprcgenekeepr switches to pedkindraw a
 (S42: a number other than 0 and 1 in a condition column stops; R102-R105). Phase G2 DONE (S43: an unknown
 affected status drawn grey, with a legend row; R106-R107). Phase G3 DONE (S44: `maxNameChars`, the most characters
 of a name under an id, `Inf` for whole; R108-R110). Phase G4 DONE (S45: `conditionColors`, the colours of the
-conditions in the fills, sections and legend; R111-R113). Next: Phase G5 (that plan's section 5.1), then G6-G17
-before 17g.
+conditions in the fills, sections and legend; R111-R113). Phase G5 DONE (S46: `recodePedigree()`, other ways of
+writing an unknown parent and a sex rewritten into pedkindraw's; R114-R116). Next: Phase G6 (that plan's section
+5.1), then G7-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -578,6 +579,10 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   (the four colours as before by default; any colour R knows, written as its code); the drawing paints its sections
   and legend from the layout's colours. `grDevices` joins Imports. Commits `b978aeb` (RED) to `cc4189f` (REFACTOR,
   tests only); fidelity 600 of 600 with no set-aside.
+- **Done G5 (S46; R114-R116):** the new export `recodePedigree()` rewrites other ways of writing an unknown parent
+  (`"0"`, `"NA"` and blanks by default) and a sex (the words, their first letters, 1-4) into pedkindraw's codes.
+  Commits `aaac3af` (RED) to `973a345` (REFACTOR, one shared rule for the codes); fidelity 600 of 600 with no
+  set-aside.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

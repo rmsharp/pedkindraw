@@ -6,8 +6,9 @@ commit in a scratch folder and run there with its own renv library; its folder w
 **Answers:** ruling R96 (Mark's direction, S40); Phase 17f2 of `docs/planning/cran-submission-plan.md`.
 **Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
 R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
-R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). Next: G5 in pedkindraw
-(section 5.1); in nprcgenekeepr N1 and N2 are done (its S1189 and S1190, section 5.2).
+R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). G5 DONE (pedkindraw S46;
+R114-R116). Next: G6 in pedkindraw (section 5.1); in nprcgenekeepr N1 and N2 are done (its S1189 and S1190, section
+5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -504,6 +505,18 @@ sessions a day, about 11-15 days, an estimate.
     `0.5 * size * 22 / 25` from its centre. Two traps met in the drafts: a drawing with fewer than two conditions has
     no section painter, so a helper reading its colour list must return none rather than index an empty match; and
     `unlist()` of an empty list is `NULL`, not `character(0)`.
+18. **A pedigree's sex is often a factor** (S46, G5): 5 of the 6 fixture pedigrees with a `sex` column (`qcPed`,
+    `pedWithGenotype`, `rhesusPedigree`, `examplePedigree`, `qcdRhesusPed()`; not `smallPed`) hold it as a factor,
+    some with an empty level `H`. A function that rewrites a column and returns the pedigree keeps a factor a factor
+    by rewriting its levels (`levels(x) <- f(levels(x))` merges levels that become one value and drops one set to
+    `NA`), or "a pedigree already in pedkindraw's codes comes back as it was" fails for most of them. Read each
+    fixture's column classes before a help page states what comes back.
+19. **Render the README from a scratch copy** (S46, G5): `rmarkdown::render("README.Rmd")` run in the repository's
+    root starts through its `.Rprofile`, which activates renv and puts renv's library first, so the render loaded
+    renv's installed pedkindraw (without the new export) although `R_LIBS` named a scratch library holding the
+    current tree. Install the tree into a scratch library, render a copy of `README.Rmd` in a scratch copy without
+    `.Rprofile` with `R_LIBS` set, check `exists("<new export>", asNamespace("pedkindraw"))` in the same call, and
+    copy `README.md` back. S46's two renders agreed only because the README's chunks call no new function.
 
 ### 7.3 Out of scope
 

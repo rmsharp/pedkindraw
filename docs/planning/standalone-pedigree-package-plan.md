@@ -61,11 +61,13 @@ G1-G17; nprcgenekeepr names its calls now and switches to pedkindraw after CRAN 
 (pedkindraw S42: a number other than 0 and 1 in a condition column stops, R102-R105); Phase G2 DONE (pedkindraw
 S43: an unknown affected status is drawn grey, with a legend row "Affected status unknown", R106-R107); Phase G3
 DONE (pedkindraw S44: `maxNameChars`, 15 by default, `Inf` writing names whole, R108-R110); Phase G4 DONE (pedkindraw
-S45: `conditionColors`, the colours of the conditions, carried to the fills, the sections and the legend, R111-R113).
-**Next:** Phase G5 (a function that rewrites other ways of writing missing parents and sex into pedkindraw's, gap C4;
-`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G6-G17, then 17g. In nprcgenekeepr: N1 (its two
+S45: `conditionColors`, the colours of the conditions, carried to the fills, the sections and the legend, R111-R113);
+Phase G5 DONE (pedkindraw S46: `recodePedigree()`, other ways of writing an unknown parent and a sex rewritten into
+pedkindraw's, R114-R116).
+**Next:** Phase G6 (each animal's offspring count and its mates, gap C5;
+`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G7-G17, then 17g. In nprcgenekeepr: N1 (its two
 faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) done in its S1190
-(closed at `faf6823c3`); its S1191 was at its RED (`b43f81c55`) when pedkindraw's S45 closed.
+(closed at `faf6823c3`); its S1191 (a standard error for simulated kinship, no copied file) closed at `3e06730c5`.
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -243,6 +245,9 @@ Since then:
 | R111 | Phase G4 (gap B5, colours): the colours of the affected conditions become the argument `conditionColors` of both builders, `makePedigreeDiagramData()` and `makePedigreeMatingLayout()`, by default the four drawn before (`"#CC79A7"`, `"#E69F00"`, `"#56B4E9"`, `"#009E73"`). The layout fills the one-condition symbols with them and writes them into its `conditions` table; `drawPedigreeDiagram()` takes no new argument and paints the sections (its section painter, which kept its own copy of the four) and the legend from that table, the defaults after the conditions drawn, so the fills, sections and legend agree and a drawing with the default colours is unchanged (the fidelity cases 600 of 600 identical, no set-aside). Colours edited in the table by hand now reach the sections too (the gaps document's section 9, item 2). `makePedigreeDiagramData()` draws `affected` alone, so it fills with the first colour. With no condition column nothing is coloured, and the legend's one "Affected" row keeps the default pink. Mark's picks "conditionColors (Recommended)" over `colors` and `affectedColors`, and "Both builders (Recommended)" over the layout only and the drawing | pedkindraw S45 | Mark |
 | R112 | Phase G4: each colour may be any colour R knows, a name (`"orange"`, `"steelblue3"`) or a code (`"#E69F00"`, `"#123"`), and is written as its `"#RRGGBB"` code before the drawing sees it (`grDevices::col2rgb()`; `grDevices` joins Imports, part of R). Measured in headless Chrome: a browser reads 516 of R's 657 colour names as no colour, and 5 (gray, grey, green, maroon, purple) as other colours (grey as `#808080`, not R's `#BEBEBE`). Mark's pick "Any R colour (Recommended)" over codes only | pedkindraw S45 | Mark |
 | R113 | Phase G4: besides a wrong type, `NA`, none or more than 4 colours, `conditionColors` stops on a colour R does not know, a number (it picks from R's palette, which can be changed), a transparent colour, white and the unknown grey `#BEBEBE` (an affected animal would look unaffected or unknown), two conditions given the same colour, and, in the layout, fewer colours than conditions drawn (naming the columns); each message names the colours (`.checkConditionColors()`, `R/conditionColors.R`). Mark's pick "Clashes and gaps stop (Recommended)" over the rest filled from the defaults and malformed input only | pedkindraw S45 | Mark |
+| R114 | Phase G5 (gap C4): a new export, `recodePedigree(ped, missingParentCodes = c("0", "NA", ""))`, takes a pedigree data frame and returns it with only `sire`, `dam` and `sex` rewritten into pedkindraw's codes; each parent column keeps its type, and `sex` comes back as text, or as a factor with its levels rewritten (levels that become one code merged) when it is one, so the fixture pedigrees come back identical (5 of the 6 with a `sex` column hold it as a factor). It is listed under "Checking and repair" in `_pkgdown.yml` and `?pedkindraw`, and `checkPedigree()`'s help names it. Mark's picks "recodePedigree() (Recommended)" over `standardizePedigree()` and `convertPedigreeCodes()`, and "Checking and repair (Recommended)" over beside `asPedFrame()` | pedkindraw S46 | Mark |
+| R115 | Phase G5: by default a `sire` or `dam` written `"0"`, `"NA"` or blank (empty or spaces only) becomes `NA` unless it is the id of a row: the codes and the rule `checkPedigree()` reports as `missingParentCodes`, so an animal named "0" with its own row keeps its offspring; `missingParentCodes` names others (`character(0)` none). Since the REFACTOR both functions call one rule, `.isParentCode()`. Measured: kinship2's 3 datasets and Pedixplorer's `minnbreast` write an unknown parent as 0, and none of the 12 datasets of nprcgenekeepr (7), kinship2 (3) and Pedixplorer (2) has an animal named "0"; with blanks only by default, kinship2's `sample.ped`, `testped1` and `minnbreast` would keep all their animals (55, 79, 28,081) without a generation. Mark's pick '"0", "NA", blanks (Recommended)' over blanks only, "0" when asked | pedkindraw S46 | Mark |
+| R116 | Phase G5: sex is read by new code that keeps pedkindraw's own codes: `M`, `F`, `H`, `U` and the words male, female, hermaphrodite, unknown, in any case with spaces around ignored, become their code; 1, 2, 3, 4 (numbers or text) become `M`, `F`, `U`, `U`; a blank becomes `NA`; `NA` and any other value stay as written, for `checkPedigree()` to report. It agrees with nprcgenekeepr's `convertSexCodes()` (its default `ignoreHerm = TRUE`) except on `H`, `NA`, blanks and values neither knows, which `convertSexCodes()` makes `"U"` (it would draw `minnbreast`'s 1,761 animals of unrecorded sex as "Unknown" triangles, not diamonds, and hide a typo). Measured beside it: kinship2 reads text "1" and "2" as unknown and reads any unambiguous prefix ("fem"), Pedixplorer reads "man" and "woman", and all three make a value they do not know unknown. New code, so no drift-tool function and no `DIVERGENCE.md` row. Mark's pick "New code, keep own codes (Recommended)" over copying `convertSexCodes()` | pedkindraw S46 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -1041,6 +1046,17 @@ functions, 20 differ); the fidelity cases 600 of 600 identical with no set-aside
 case `style` reads the chosen colours in the fills, the legend and the section painter; NEWS and the contract's
 sections 4 and 5. The REFACTOR moved the browser colour tests' shared pixel reader into
 `tests/testthat/helper-legendPictures.R` (`.pixelReaderJs()`).
+
+**Done G5 (pedkindraw S46; R114-R116):** the new export `recodePedigree(ped, missingParentCodes = c("0", "NA", ""))`
+(`R/recodePedigree.R`, pedkindraw's own code) rewrites other ways of writing an unknown parent (by default `"0"`,
+`"NA"` and blanks that are no row's id) and a sex (the words, their first letters, 1-4) into pedkindraw's codes,
+keeping each column's type (a factor sex by its levels) and leaving a sex it does not know for `checkPedigree()`. 16
+tests (`tests/testthat/test_recodePedigree.R`): the gap case, the 7 fixture pedigrees unchanged, kinship2's
+`sample.ped` and `testped1` then giving kinship2's kinship (difference 0), `minnbreast`, Pedixplorer's `sampleped`;
+no copied code changed (the drift tool 91 functions, 20 differ, no new row); the fidelity cases 600 of 600 identical
+with no set-aside; its help page, `checkPedigree()`'s help, `?pedkindraw`, `_pkgdown.yml`, the README, NEWS and the
+contract's section 4.4; the gap case `inputCodes` reads the fix. The REFACTOR gave `checkPedigree()` and
+`recodePedigree()` one rule for the codes (`.isParentCode()`, `R/checkPedigree.R:151`).
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

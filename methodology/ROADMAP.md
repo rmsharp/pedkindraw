@@ -27,7 +27,8 @@ both repositories and coordinating them, is done (S41, `docs/planning/gaps-and-s
 every gap closes before the release, phases G1-G17; G1, a number in a condition column, is done (S42, R102-R105),
 G2, an unknown affected status drawn grey, is done (S43, R106-R107), G3, the 15-character limit on a name made an
 argument, is done (S44, R108-R110), G4, the colours of the conditions made an argument, is done (S45, R111-R113),
-and G5 is next (Planned, below).
+G5, other ways of writing an unknown parent and a sex rewritten into pedkindraw's, is done (S46, R114-R116), and G6
+is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -55,8 +56,9 @@ session each unless marked. They follow the copy slices.
   (`docs/planning/gaps-and-shared-code-plan.md` section 5.1; 38-53 sessions, a guess): G1 (a number in a
   condition column stops, not drawn as affected in silence) is done (S42); G2 (an unknown affected status drawn
   grey) is done (S43); G3 (the note under an id, its 15-character limit an argument) is done (S44); G4 (a colours
-  argument carried to the fills, the sections and the legend) is done (S45); next G5 (other ways of writing
-  missing parents and sex rewritten into pedkindraw's), then the other small
+  argument carried to the fills, the sections and the legend) is done (S45); G5 (other ways of writing missing
+  parents and sex rewritten into pedkindraw's) is done (S46); next G6 (each animal's offspring count and its
+  mates), then the other small
   additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
@@ -234,6 +236,14 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G5, other ways of writing an unknown parent and a sex (pedkindraw S46, 2026-11-18).** Data from other
+  tools write an unknown parent as 0 or leave it empty, and sex as 1 and 2 or as words; `checkPedigree()` reported
+  them, but nothing rewrote them, so generations came back `NA` and every animal was drawn as a diamond. The new
+  export `recodePedigree()` rewrites them into pedkindraw's codes (`NA`; "M", "F", "H", "U"). Mark's picks: the
+  name and its place under "Checking and repair" (R114); "0", "NA" and blanks by default, a row's id kept as a
+  parent (R115); new code that keeps pedkindraw's own codes and leaves a sex it does not know for `checkPedigree()`
+  (R116). 16 new tests; kinship2's `sample.ped` and `testped1` then give kinship2's own kinship; the fidelity cases
+  600 of 600 identical.
 - **Phase G4, the colours of the conditions (pedkindraw S45, 2026-11-18).** The four condition colours were fixed,
   and the drawing's section painter kept its own copy of them, so colours edited in a layout reached the legend but
   not the sections; now `makePedigreeDiagramData()` and `makePedigreeMatingLayout()` take `conditionColors`, the four
