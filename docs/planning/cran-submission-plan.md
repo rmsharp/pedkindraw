@@ -11,8 +11,9 @@ lists the animals only, and a real id starting `__jog_` is refused; R94). Phase 
 have no arrowheads and their labels sit on white; R95). Phase 17f DONE (S40: the gaps document; D4 goes to a
 planning session, R96). Phase 17f2 DONE (S41: `docs/planning/gaps-and-shared-code-plan.md`; R97-R101: every gap
 closed before the release, phases G1-G17; nprcgenekeepr switches to pedkindraw after acceptance). Phase G1 DONE
-(S42: a number other than 0 and 1 in a condition column stops; R102-R105). Next: Phase G2 (that plan's section
-5.1), then G3-G17 before 17g.
+(S42: a number other than 0 and 1 in a condition column stops; R102-R105). Phase G2 DONE (S43: an unknown
+affected status drawn grey, with a legend row; R106-R107). Next: Phase G3 (that plan's section 5.1), then G4-G17
+before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -565,6 +566,9 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **Done G1 (S42; R102-R105):** a condition column holding a number other than 0 and 1 stops, naming the column and
   the numbers, at the layout's, the diagram data's and the shrink functions' reads; `bitSize()` and
   `findUnavailable()` do not read the column. Commits `17da874` (RED) to `ba01a0c` (REFACTOR); fidelity 600 of 600.
+- **Done G2 (S43; R106-R107):** an unknown affected status is filled grey (`#BEBEBE`) with one condition, or its
+  section is grey with two to four, and the legend has a grey row "Affected status unknown" (45 px more). Commits
+  `b11d1d9` (RED) to `638b394` (REFACTOR); fidelity 600 of 600 with a counted set-aside of 66.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

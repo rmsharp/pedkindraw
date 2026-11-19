@@ -5,8 +5,9 @@
 commit in a scratch folder and run there with its own renv library; its folder was not changed (R8).
 **Answers:** ruling R96 (Mark's direction, S40); Phase 17f2 of `docs/planning/cran-submission-plan.md`.
 **Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
-R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). Next: G2 in pedkindraw (section
-5.1); N1 and N2 are nprcgenekeepr sessions Mark starts (section 5.2).
+R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
+R106-R107). Next: G3 in pedkindraw (section 5.1); in nprcgenekeepr N1 is done (its S1189) and N2 claimed (its S1190)
+(section 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -471,6 +472,16 @@ sessions a day, about 11-15 days, an estimate.
     column" for all 600 cases and 707 tests in one run (about 6 minutes), and showed samplePed's text "0"/"1",
     which `as.logical()` reads as unknown; delete the scratch copy's `.Rprofile` first, or renv starts there with
     an empty library.
+12. **An all-`NA` status is also "no column" and "several conditions"** (S43, G2): `makePedigreeDiagramData()` and the
+    layout fill from an `affected` vector that is all `NA` when the column is absent, and the layout's is all `NA`
+    with two or more conditions too, so changing how `NA` is drawn in `.affectedColor()` alone would have greyed every
+    animal of every pedigree without a condition. Pass the look for `NA` from the caller, which knows whether a
+    column is drawn (`unknown =`), and test "no column" and "several conditions" beside the change.
+13. **A set-aside that changes a drawing's height changes it twice** (S43, G2): visNetwork keeps the height in the
+    widget (`$height`) and in its data (`$x$height`); a first `withoutUnknownStatus()` lowered only the first and left
+    26 drawings differing. Diff one small pedigree's results field by field (`--child` on a folder holding only
+    `synthetic_300.csv`, about 13 s a run) before rerunning the whole tool; and run a set-aside that adds a legend row
+    before R81's, which counts the condition rows.
 
 ### 7.3 Out of scope
 

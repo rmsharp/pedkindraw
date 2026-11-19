@@ -58,9 +58,11 @@ legend's lines have no arrowheads and their labels sit on white, R95); Phase 17f
 document, 16 open gaps, 13 of them in nprcgenekeepr too; D4 goes to a planning session, R96); Phase 17f2 DONE
 (pedkindraw S41: `docs/planning/gaps-and-shared-code-plan.md`, R97-R101: every gap closed before the release, phases
 G1-G17; nprcgenekeepr names its calls now and switches to pedkindraw after CRAN accepts it); Phase G1 DONE
-(pedkindraw S42: a number other than 0 and 1 in a condition column stops, R102-R105).
-**Next:** Phase G2 (an unknown affected status drawn; `docs/planning/gaps-and-shared-code-plan.md` section 5.1),
-then G3-G17, then 17g. In nprcgenekeepr, sessions Mark starts: N1 (its two faults, R99), N2 (named calls, R98).
+(pedkindraw S42: a number other than 0 and 1 in a condition column stops, R102-R105); Phase G2 DONE (pedkindraw
+S43: an unknown affected status is drawn grey, with a legend row "Affected status unknown", R106-R107).
+**Next:** Phase G3 (the 15-character limit on the notes under an id becomes an argument;
+`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G4-G17, then 17g. In nprcgenekeepr: N1 (its two
+faults, R99) done in its S1189; N2 (named calls, R98) claimed in its S1190.
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -230,6 +232,8 @@ Since then:
 | R103 | Phase G1: only numbers are reported. TRUE, FALSE and NA, the numbers 0 and 1 (kinship2's codes, which `asPedFrame()` writes from kinship2 and Pedixplorer) and NaN (unknown) are accepted; text as `as.logical()` reads it, other text as unknown with no message, as nprcgenekeepr's issue #133 chose (samplePed's text "0"/"1" stays unknown in 8 fidelity cases). Mark's pick "Report numbers only (Recommended)" over reporting unreadable text (3 copied tests and 8 fidelity cases changed) and reading text "0"/"1" | pedkindraw S42 | Mark |
 | R104 | Phase G1: the check is made at all three reads: `makePedigreeMatingLayout()`'s drawn conditions (checked right after they are chosen, before any animal is left out; a fifth column, not drawn, is not checked), `makePedigreeDiagramData()`'s `affected`, and `.checkShrinkInput()`, the input check of `shrinkPedigree()`, `findAvailNonInform()` and `findAvailAffected()` (the `affected` argument, or the column when it is `NULL`). Mark's pick "All three reads (Recommended)" over the two drawing reads only | pedkindraw S42 | Mark |
 | R105 | Phase G1: `bitSize()` and `findUnavailable()`, which call `.checkShrinkInput()` but do not use affected status, pass it none, so they never read the `affected` column and do not stop on it. Found in GREEN: R104's picker had named three of the check's five callers, and GREEN 1 made these two stop. Mark's pick "Ignore the column (Recommended)" over "Stop there too" | pedkindraw S42 | Mark |
+| R106 | Phase G2 (gap B2): an animal whose affected status is unknown (`NA`, or text `as.logical()` cannot read) is filled `#BEBEBE` (R's "grey", as Pedixplorer fills it): the whole symbol with one drawn condition (`makePedigreeMatingLayout()`, and `makePedigreeDiagramData()` when its `affected` column is there), the condition's section with two to four (`"?"` in `affectedSections`, painted grey); with no condition column every animal stays white. Before G2 an unknown status was white, like an unaffected one. Measured on prototypes of both looks in headless Chrome: the grey stays apart from white and the four condition colours in normal vision, three simulated colour blindnesses and greyscale (closest, grey and pink under deuteranopia, CIE76 16); Okabe-Ito's `#999999` was 2 from the pink in greyscale; kinship2's "?" could not show in `makePedigreeDiagramData()`, which has no drawing step. nprcgenekeepr still draws it white (DIVERGENCE.md rows "at the switch"). Mark's pick "Grey fill (Recommended)" over "'?' mark" | pedkindraw S43 | Mark |
+| R107 | Phase G2: when a drawn animal's status is unknown, `drawPedigreeDiagram()`'s legend has a grey hexagon "Affected status unknown" after the condition rows, and the canvas is 45 px taller for it, as for each condition row past the first; no row for an unknown only in an undrawn fifth column or on an animal the layout leaves out. A bare "Unknown" is the sex legend's triangle. Mark's pick "Affected status unknown (Recommended)" over "Not known if affected" and "Status unknown" (`status` is also the alive/deceased column) | pedkindraw S43 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -1001,6 +1005,14 @@ column and the numbers, in `makePedigreeMatingLayout()`, `makePedigreeDiagramDat
 input check (`.checkConditionNumbers()`, `R/conditionValues.R`); `bitSize()` and `findUnavailable()` do not read
 the column. 12 tests (`tests/testthat/test_conditionValues.R`); three `DIVERGENCE.md` rows "at the switch"; the
 fidelity cases 600 of 600 identical; NEWS and the contract's section 4.
+
+**Done G2 (pedkindraw S43; R106-R107):** an animal whose affected status is unknown is filled grey (`#BEBEBE`,
+`.unknownColor`, `R/affectedConditions.R`) with one condition, in the layout and in `makePedigreeDiagramData()`, or
+has its section grey (`"?"` in `affectedSections`) with two to four; `drawPedigreeDiagram()`'s legend then has a
+grey hexagon "Affected status unknown" and the canvas 45 px more. 10 tests (`tests/testthat/test_unknownAffected.R`,
+a headless-Chrome test among them) and 9 copied tests changed; six `DIVERGENCE.md` rows "at the switch"; the
+fidelity cases 600 of 600 identical with a counted set-aside of 66 (`withoutUnknownStatus()`); the drawing vignette,
+NEWS and the contract's section 4.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

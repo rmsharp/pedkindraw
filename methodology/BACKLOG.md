@@ -23,17 +23,18 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G2-G17: the other gaps, before the release** (READY in order, G2 next; Effort L altogether, 37-52
-      sessions, a guess; R97; G1 DONE in S42, R102-R105) -- `docs/planning/gaps-and-shared-code-plan.md` section
-      5.1, one row per phase with its case, choices, DONE, commands and surface: G2 B2 (an unknown affected status
-      drawn); G3-G9 the size-S additions (B6 label width, B5 colours, C4 input codes, C5 counts and mates, C6
+- [ ] **Phases G3-G17: the other gaps, before the release** (READY in order, G3 next; Effort L altogether, 36-51
+      sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107) --
+      `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
+      commands and surface: G3-G9 the size-S additions (B6 label width, B5 colours, C4 input codes, C5 counts and mates, C6
       removing animals, C2 aligned generations, B7 an example); G10-G14 the M additions (C3, C1, B4 on G1's check,
       B3's marks, B5's sizes); G15-G17 the L additions (B1, A1 with A2, A3), each starting with a planning session
       of its own. 17g follows G17.
 
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
       -- measured S42: of its 16 rows, only G1's say "At the switch (R98)" (`makePedigreeDiagramData()`,
-      `.checkShrinkInput()`, and the G1 sentence of `makePedigreeMatingLayout()`'s row); the 14 written before R98
+      `.checkShrinkInput()`, and the G1 sentence of `makePedigreeMatingLayout()`'s row; S43 added three G2 rows and
+      G2 sentences in three more, all "at the switch", 19 rows now); the 14 written before R98
       each say "Port later", "Not yet made in nprcgenekeepr: a session there makes the same change" or "Not
       mirrored", which R98 and R101 replaced (nprcgenekeepr keeps its copies unported and takes pedkindraw's at
       N3). The P1 item below already describes every row as so marked. One commit; the drift tool reads only the

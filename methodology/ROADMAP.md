@@ -25,7 +25,7 @@ argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2, the
 the legend's label, is done (S39); 17f, the gaps document, is done (S40); 17f2, the plan for closing the gaps in
 both repositories and coordinating them, is done (S41, `docs/planning/gaps-and-shared-code-plan.md`, R97-R101):
 every gap closes before the release, phases G1-G17; G1, a number in a condition column, is done (S42, R102-R105),
-and G2 is next (Planned, below).
+G2, an unknown affected status drawn grey, is done (S43, R106-R107), and G3 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -51,8 +51,9 @@ session each unless marked. They follow the copy slices.
   done (S37); 17d, the "Select by id" fix, is done (S38); 17e, the legend's label, is done (S39); 17f, the gaps
   document, is done (S40); 17f2 is done (S41, R97-R101): every gap closes before the release, in phases G1-G17
   (`docs/planning/gaps-and-shared-code-plan.md` section 5.1; 38-53 sessions, a guess): G1 (a number in a
-  condition column stops, not drawn as affected in silence) is done (S42); next G2 (an unknown affected status
-  drawn), then the small additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG
+  condition column stops, not drawn as affected in silence) is done (S42); G2 (an unknown affected status drawn
+  grey) is done (S43); next G3 (the note under an id, its 15-character limit an argument), then the other small
+  additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
@@ -229,6 +230,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G2, an unknown affected status drawn (pedkindraw S43, 2026-11-18).** An animal whose affected status is
+  unknown (`NA`) was filled white, like an unaffected one; it is now grey (`#BEBEBE`, as Pedixplorer fills it), the
+  whole symbol with one condition or its section with two to four, in `makePedigreeMatingLayout()`,
+  `drawPedigreeDiagram()` and `makePedigreeDiagramData()`, and the legend has a grey row "Affected status unknown"
+  (the drawing 45 px taller for it). Mark's picks: grey fill over kinship2's "?" (R106); the legend's words
+  (R107). 10 new tests and 9 copied ones changed; the fidelity cases 600 of 600 identical with a counted set-aside.
 - **Phase G1, a number in a condition column (pedkindraw S42, 2026-11-18).** A condition column holding a number
   other than 0 and 1 (a measured trait, 2.5, 0.3, 9) stops `makePedigreeMatingLayout()`,
   `makePedigreeDiagramData()`, `shrinkPedigree()`, `findAvailNonInform()` and `findAvailAffected()`, naming the
