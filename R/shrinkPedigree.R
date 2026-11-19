@@ -6,8 +6,12 @@
 ## value that is a number other than 0 and 1 (.checkConditionNumbers(),
 ## pedkindraw's own, R/conditionValues.R; a DIVERGENCE.md row). The example
 ## types its own pedigree (the values of nprcgenekeepr's lacy1989Ped) instead
-## of loading nprcgenekeepr (the source's lines 209-210; plan R21). Its
-## comments name nprcgenekeepr's specification, cleanroom/spec/C/SPEC.md.
+## of loading nprcgenekeepr (the source's lines 209-210; plan R21). Plan
+## Phase G9 (pedkindraw S50, gap B7): the example also shrinks that pedigree
+## with only F and G genotyped and draws it whole, the animals removed filled
+## through a condition column, and the description points to it (help text
+## only, which DIVERGENCE.md does not compare). Its comments name
+## nprcgenekeepr's specification, cleanroom/spec/C/SPEC.md.
 
 ## Written from the specification cleanroom/spec/C/SPEC.md (the clean-room
 ## rewrite); "SPEC.md" below is that file.
@@ -164,6 +168,8 @@
 #' }
 #'
 #' A fully genotyped pedigree can shrink to zero rows (see the example).
+#' To see what shrinking removed, draw the whole pedigree with a condition
+#' column made from \code{idTrimmed}, as the example does.
 #'
 #' It stops with a plain message when \code{ped} is not a data frame, when
 #' an \code{id} is missing, empty or repeated, when a \code{sire} or
@@ -229,6 +235,24 @@
 #' nrow(ped)
 #' ## With every individual genotyped, the whole pedigree can be trimmed away.
 #' nrow(result$ped)
+#'
+#' ## Only F and G genotyped: C, not genotyped and with no offspring, is
+#' ## removed, and then A and B, founders left with one offspring, D, who
+#' ## becomes a founder.
+#' result <- shrinkPedigree(ped, genotyped = ped$id %in% c("F", "G"))
+#' result$ped$id
+#' result$idTrimmed
+#'
+#' ## To see what shrinking removed, draw the whole pedigree with the removed
+#' ## animals filled. A column whose name starts with "affected" is drawn as a
+#' ## condition; the legend and the hover text call this one
+#' ## "Affected (removed)".
+#' ped$sex <- c("M", "F", "F", "M", "F", "M", "F")
+#' ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+#' ped$affected_removed <- ped$id %in% result$idTrimmed
+#' layout <- makePedigreeMatingLayout(ped)
+#' diagram <- drawPedigreeDiagram(layout)
+#' ## Print `diagram` in an interactive session to see it.
 ## The pedigree trimmed to the animals that keep it informative, with the
 ## ids removed by each trim, the bit sizes and the pedigree sizes (SPEC.md).
 shrinkPedigree <- function(ped, genotyped, affected = NULL, maxBits = 16L) {
