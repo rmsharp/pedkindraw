@@ -6,8 +6,8 @@ commit in a scratch folder and run there with its own renv library; its folder w
 **Answers:** ruling R96 (Mark's direction, S40); Phase 17f2 of `docs/planning/cran-submission-plan.md`.
 **Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
 R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
-R106-R107). G3 DONE (pedkindraw S44; R108-R110). Next: G4 in pedkindraw (section 5.1); in nprcgenekeepr N1 is done
-(its S1189) and N2 at its GREEN (its S1190, `1cdae181c`) when pedkindraw's S44 closed (section 5.2).
+R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). Next: G5 in pedkindraw
+(section 5.1); in nprcgenekeepr N1 and N2 are done (its S1189 and S1190, section 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -492,6 +492,18 @@ sessions a day, about 11-15 days, an estimate.
     `15.0` (the same double, so `formals()` and a test comparing with `15` still agree, and the help's usage still
     reads `15`) or `15L` (an integer: change the tests to match). The fidelity cases' names have no line break, so
     a change to how a label counts lines is seen only by the tests, not by the tool's 600 cases.
+16. **R's colour names are not a browser's** (S45, G4): in headless Chrome a canvas reads 516 of R's 657 colour names
+    (`grDevices::colors()`) as no colour and 5 as other colours (`gray` and `grey` as `#808080`, R's `#BEBEBE`;
+    `green`, `maroon`, `purple`), and an SVG fill reads them the same way. Any colour a user gives that reaches
+    vis.js, an SVG legend picture or the section painter is turned into its `"#RRGGBB"` code in R first
+    (`.checkConditionColors()`, `R/conditionColors.R`); G13's marks and G14's sizes and colours meet this again.
+17. **Read a drawn colour with the shared reader** (S45, G4): the three browser colour tests had three copies of the
+    same widget lookup and one-pixel read; S45's REFACTOR made it `.pixelReaderJs(body)` in
+    `tests/testthat/helper-legendPictures.R`. Write the next browser colour test with it (and
+    `.waitForLegendPictures()`); a legend section picture is read halfway out along the section's middle, at
+    `0.5 * size * 22 / 25` from its centre. Two traps met in the drafts: a drawing with fewer than two conditions has
+    no section painter, so a helper reading its colour list must return none rather than index an empty match; and
+    `unlist()` of an empty list is `NULL`, not `character(0)`.
 
 ### 7.3 Out of scope
 

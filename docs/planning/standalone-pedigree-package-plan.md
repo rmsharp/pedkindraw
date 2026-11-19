@@ -60,11 +60,12 @@ document, 16 open gaps, 13 of them in nprcgenekeepr too; D4 goes to a planning s
 G1-G17; nprcgenekeepr names its calls now and switches to pedkindraw after CRAN accepts it); Phase G1 DONE
 (pedkindraw S42: a number other than 0 and 1 in a condition column stops, R102-R105); Phase G2 DONE (pedkindraw
 S43: an unknown affected status is drawn grey, with a legend row "Affected status unknown", R106-R107); Phase G3
-DONE (pedkindraw S44: `maxNameChars`, 15 by default, `Inf` writing names whole, R108-R110).
-**Next:** Phase G4 (a colours argument carried to the fills, the sections script and the legend;
-`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G5-G17, then 17g. In nprcgenekeepr: N1 (its two
-faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) in its S1190, at its
-GREEN (`1cdae181c`) when pedkindraw's S44 closed.
+DONE (pedkindraw S44: `maxNameChars`, 15 by default, `Inf` writing names whole, R108-R110); Phase G4 DONE (pedkindraw
+S45: `conditionColors`, the colours of the conditions, carried to the fills, the sections and the legend, R111-R113).
+**Next:** Phase G5 (a function that rewrites other ways of writing missing parents and sex into pedkindraw's, gap C4;
+`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G6-G17, then 17g. In nprcgenekeepr: N1 (its two
+faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) done in its S1190
+(closed at `faf6823c3`); its S1191 was at its RED (`b43f81c55`) when pedkindraw's S45 closed.
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -239,6 +240,9 @@ Since then:
 | R108 | Phase G3 (gap B6): the limit of 15 characters on the `name` written under an id (nprcgenekeepr's issue #136, D10) becomes the argument `maxNameChars = 15` of both builders, `makePedigreeDiagramData()` and `makePedigreeMatingLayout()` (an animal's node and its repeat nodes alike); `drawPedigreeDiagram()` takes none, since it receives the labels already cut and the whole name only inside the hover text's HTML. Measured in headless Chrome: animals on one row are at least 120 px apart in every fixture laid out (most pairs exactly that), and vis.js draws ordinary 14 px text at about 7 px a character, so a line of more than about 17 characters overlaps its neighbour's label (the default's 15 and "..." by about 5 px). Mark's picks "maxNameChars (Recommended)" over `nameChars` and `labelChars`, and "Both builders (Recommended)" over the layout only | pedkindraw S44 | Mark |
 | R109 | Phase G3: `maxNameChars = Inf` writes every name whole, as kinship2 and Pedixplorer write their labels (the existing cut never runs: its `ifelse()` branch is not evaluated); any other value must be one whole number of 1 or more, and anything else (0, a negative or fractional number, `-Inf`, `NaN`, `NA`, two numbers, none, text, `TRUE`, `NULL`) stops, naming the function. Mark's pick "Inf (Recommended)" over `NULL` and both | pedkindraw S44 | Mark |
 | R110 | Phase G3: the limit counts the whole name, a line break as one character, as before G3, so at the default every label is unchanged (the fidelity cases 600 of 600 identical, no set-aside) and G3 only adds. Counting each line alone would follow the width more closely (the gap case's two-line note is cut at "MHC A01/B" though its line is 21 characters) but changes labels at the default. Mark's pick "Whole name, as today (Recommended)" over "Each line separately" | pedkindraw S44 | Mark |
+| R111 | Phase G4 (gap B5, colours): the colours of the affected conditions become the argument `conditionColors` of both builders, `makePedigreeDiagramData()` and `makePedigreeMatingLayout()`, by default the four drawn before (`"#CC79A7"`, `"#E69F00"`, `"#56B4E9"`, `"#009E73"`). The layout fills the one-condition symbols with them and writes them into its `conditions` table; `drawPedigreeDiagram()` takes no new argument and paints the sections (its section painter, which kept its own copy of the four) and the legend from that table, the defaults after the conditions drawn, so the fills, sections and legend agree and a drawing with the default colours is unchanged (the fidelity cases 600 of 600 identical, no set-aside). Colours edited in the table by hand now reach the sections too (the gaps document's section 9, item 2). `makePedigreeDiagramData()` draws `affected` alone, so it fills with the first colour. With no condition column nothing is coloured, and the legend's one "Affected" row keeps the default pink. Mark's picks "conditionColors (Recommended)" over `colors` and `affectedColors`, and "Both builders (Recommended)" over the layout only and the drawing | pedkindraw S45 | Mark |
+| R112 | Phase G4: each colour may be any colour R knows, a name (`"orange"`, `"steelblue3"`) or a code (`"#E69F00"`, `"#123"`), and is written as its `"#RRGGBB"` code before the drawing sees it (`grDevices::col2rgb()`; `grDevices` joins Imports, part of R). Measured in headless Chrome: a browser reads 516 of R's 657 colour names as no colour, and 5 (gray, grey, green, maroon, purple) as other colours (grey as `#808080`, not R's `#BEBEBE`). Mark's pick "Any R colour (Recommended)" over codes only | pedkindraw S45 | Mark |
+| R113 | Phase G4: besides a wrong type, `NA`, none or more than 4 colours, `conditionColors` stops on a colour R does not know, a number (it picks from R's palette, which can be changed), a transparent colour, white and the unknown grey `#BEBEBE` (an affected animal would look unaffected or unknown), two conditions given the same colour, and, in the layout, fewer colours than conditions drawn (naming the columns); each message names the colours (`.checkConditionColors()`, `R/conditionColors.R`). Mark's pick "Clashes and gaps stop (Recommended)" over the rest filled from the defaults and malformed input only | pedkindraw S45 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -1026,6 +1030,17 @@ every name whole, as kinship2 and Pedixplorer write labels; anything but one who
 among them), no copied test changed; two `DIVERGENCE.md` rows gain G3 "at the switch"; the fidelity cases 600 of 600
 identical with no set-aside; the gap case `labels` writes the 26-character note whole with `Inf`; NEWS and the
 contract's section 4.
+
+**Done G4 (pedkindraw S45; R111-R113):** `makePedigreeDiagramData()` and `makePedigreeMatingLayout()` take
+`conditionColors`, the colours of the affected conditions (the four drawn before by default; any colour R knows,
+written as its `"#RRGGBB"` code; `.checkConditionColors()`, `R/conditionColors.R`); the layout's fills and `conditions`
+table take them, and `drawPedigreeDiagram()` paints the sections and the legend from that table. 12 tests
+(`tests/testthat/test_conditionColors.R`, a headless-Chrome test reading 40 colours among them), no copied test
+changed; four `DIVERGENCE.md` rows gain G4 and `.diagramAfterDrawing()` gets one, "at the switch" (the drift tool 91
+functions, 20 differ); the fidelity cases 600 of 600 identical with no set-aside; `grDevices` in Imports; the gap
+case `style` reads the chosen colours in the fills, the legend and the section painter; NEWS and the contract's
+sections 4 and 5. The REFACTOR moved the browser colour tests' shared pixel reader into
+`tests/testthat/helper-legendPictures.R` (`.pixelReaderJs()`).
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

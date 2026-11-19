@@ -23,10 +23,10 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G4-G17: the other gaps, before the release** (READY in order, G4 next; Effort L altogether, 35-50
-      sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110) --
-      `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
-      commands and surface: G4-G9 the size-S additions (B5 colours, C4 input codes, C5 counts and mates, C6
+- [ ] **Phases G5-G17: the other gaps, before the release** (READY in order, G5 next; Effort L altogether, 34-49
+      sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
+      DONE in S45, R111-R113) -- `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its
+      case, choices, DONE, commands and surface: G5-G9 the size-S additions (C4 input codes, C5 counts and mates, C6
       removing animals, C2 aligned generations, B7 an example); G10-G14 the M additions (C3, C1, B4 on G1's check,
       B3's marks, B5's sizes); G15-G17 the L additions (B1, A1 with A2, A3), each starting with a planning session
       of its own. 17g follows G17.
@@ -88,13 +88,6 @@ issues).*
 
 *Not pedkindraw sessions: listed so they are not lost. Each runs under nprcgenekeepr's own protocol and checks;
 `docs/planning/gaps-and-shared-code-plan.md` section 5.2 gives the work, DONE and order.*
-
-- [ ] **N2: nprcgenekeepr names its calls; its drift-watch item reworded** (IN PROGRESS in its S1190, at its GREEN
-      `1cdae181c` when pedkindraw's S44 closed; N1 done in its S1189, `8e706e818`; Effort S; R98, R101) --
-      its calls to R89's four functions (`getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()`,
-      `hasBothParents()`) outside its copied code get named arguments, in `R/` (4 at `eafd54851`), tests, `tools/`,
-      vignettes (`a2interactive.Rmd`, 6) and articles (2); R88's renamed functions stay positional. Its backlog's
-      drift-watch item says R101's rule, and its stale S1159 line goes.
 
 - [ ] **N3: nprcgenekeepr imports pedkindraw** (BLOCKED on CRAN accepting pedkindraw; Effort M, 2 sessions, a guess;
       R98, R100) -- `Imports: pedkindraw`; the 22 shared exports re-exported; its 82 copied definitions and 43 copied

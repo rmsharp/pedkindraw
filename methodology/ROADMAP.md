@@ -26,7 +26,8 @@ the legend's label, is done (S39); 17f, the gaps document, is done (S40); 17f2, 
 both repositories and coordinating them, is done (S41, `docs/planning/gaps-and-shared-code-plan.md`, R97-R101):
 every gap closes before the release, phases G1-G17; G1, a number in a condition column, is done (S42, R102-R105),
 G2, an unknown affected status drawn grey, is done (S43, R106-R107), G3, the 15-character limit on a name made an
-argument, is done (S44, R108-R110), and G4 is next (Planned, below).
+argument, is done (S44, R108-R110), G4, the colours of the conditions made an argument, is done (S45, R111-R113),
+and G5 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -53,8 +54,9 @@ session each unless marked. They follow the copy slices.
   document, is done (S40); 17f2 is done (S41, R97-R101): every gap closes before the release, in phases G1-G17
   (`docs/planning/gaps-and-shared-code-plan.md` section 5.1; 38-53 sessions, a guess): G1 (a number in a
   condition column stops, not drawn as affected in silence) is done (S42); G2 (an unknown affected status drawn
-  grey) is done (S43); G3 (the note under an id, its 15-character limit an argument) is done (S44); next G4 (a
-  colours argument carried to the fills, the sections and the legend), then the other small
+  grey) is done (S43); G3 (the note under an id, its 15-character limit an argument) is done (S44); G4 (a colours
+  argument carried to the fills, the sections and the legend) is done (S45); next G5 (other ways of writing
+  missing parents and sex rewritten into pedkindraw's), then the other small
   additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
@@ -232,6 +234,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G4, the colours of the conditions (pedkindraw S45, 2026-11-18).** The four condition colours were fixed,
+  and the drawing's section painter kept its own copy of them, so colours edited in a layout reached the legend but
+  not the sections; now `makePedigreeDiagramData()` and `makePedigreeMatingLayout()` take `conditionColors`, the four
+  colours as before by default, and `drawPedigreeDiagram()` paints the sections and the legend from the layout's
+  colours, so the fills, sections and legend agree. Mark's picks: the name `conditionColors` and both builders
+  (R111); any colour R knows, written as its code (R112); a clash or a missing colour stops (R113). 12 new tests, no
+  copied test changed; the fidelity cases 600 of 600 identical with no set-aside.
 - **Phase G3, the length of a name under an id (pedkindraw S44, 2026-11-18).** The `name` column was always cut
   after 15 characters on the drawing, where kinship2 and Pedixplorer write any label whole; now
   `makePedigreeDiagramData()` and `makePedigreeMatingLayout()` take `maxNameChars`, 15 by default as before, and
