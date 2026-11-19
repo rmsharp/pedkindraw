@@ -32,6 +32,8 @@ reference:
   - familyCheck
   - getParents
   - getOffspring
+  - countOffspring
+  - getMatings
   - getFounders
   - isFounder
   - hasBothParents

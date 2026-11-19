@@ -19,7 +19,9 @@
 #' [findGeneration()], [findPedigreeNumber()] and [familyCheck()] number and
 #' check each animal's generation and family tree; [getParents()],
 #' [getOffspring()], [getFounders()], [isFounder()], [hasBothParents()] and
-#' [getIdsWithOneParent()] find sires and dams, offspring and founders.
+#' [getIdsWithOneParent()] find sires and dams, offspring and founders;
+#' [countOffspring()] counts each animal's offspring and [getMatings()] lists
+#' the matings, each sire and dam with an offspring together.
 #'
 #' @section Checking and repair:
 #' [checkPedigree()] lists each problem in a pedigree and
