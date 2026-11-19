@@ -32,7 +32,8 @@ each animal's offspring count and the matings, is done (S47, R117-R119), G7, rem
 offspring's links to them, is done (S48, R120-R122), G8, aligned generations in `findGeneration()`, is done (S49,
 R123-R124), G9, an example drawing the animals `shrinkPedigree()` removed, is done (S50, R125-R126), G10, the layout
 returning the hints it used, is done (S51, R127-R128), G11, the relatives within a distance of chosen animals, is
-done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R131-R132), and G13 is next
+done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R131-R132), and G13, Pedixplorer's
+marks, is under way: its first of six, the genotyped mark, is done (S54, R133-R134) and the carrier mark is next
 (Planned, below).
 
 | Phase | Slice | State |
@@ -67,7 +68,7 @@ session each unless marked. They follow the copy slices.
   (aligned generations in `findGeneration()`) is done (S49); G9 (an example marking the animals
   `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); G11 (the
   relatives within a distance of chosen animals) is done (S52); G12 (a measured trait drawn by a cut-off) is
-  done (S53); next G13 (Pedixplorer's marks),
+  done (S53); G13 (Pedixplorer's marks) is under way, the genotyped mark done (S54), the carrier next,
   then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
@@ -246,6 +247,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G13, mark 1 of 6: the genotyped mark (pedkindraw S54, 2026-11-19).** Pedixplorer marks an available
+  animal by its border; pedkindraw ignored any such column. `makePedigreeMatingLayout()` now reads a column
+  `genotyped`: a genotyped animal's symbol is drawn with its outline 4 pixels wide, hovering says "Genotyped: Yes",
+  "No" or "Unknown", and the legend gains a row "Genotyped". Mark's picks: all seven marks, the genotyped one
+  first, then one kind a session (R133); the column `genotyped` over Pedixplorer's `avail`, a thick outline over a
+  ring or Pedixplorer's colours (which vanish in greyscale), `NA` drawn unmarked (R134). The fidelity cases 600 of
+  600, nothing set aside.
 - **Phase G12, a measured trait drawn by a cut-off (pedkindraw S53, 2026-11-19).** Pedixplorer colours a column of
   numbers by a threshold and writes the rule in its legend; pedkindraw stopped on such numbers (G1).
   `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` now take `conditionThresholds`, a cut-off the user
