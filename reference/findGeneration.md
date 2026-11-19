@@ -13,7 +13,7 @@ are given the incremented generation number.
 ## Usage
 
 ``` r
-findGeneration(id, sire, dam)
+findGeneration(id, sire, dam, alignMates = FALSE)
 ```
 
 ## Arguments
@@ -32,13 +32,21 @@ findGeneration(id, sire, dam)
   character vector with unique identifier for an individual's mother
   (`NA` if unknown).
 
+- alignMates:
+
+  `TRUE` or `FALSE`, the default. When `TRUE`, the generations are
+  aligned so that, where it can be done, an offspring's sire and dam are
+  in the same generation (see "Aligned generations").
+
 ## Value
 
 An integer vector indication the generation numbers for each id,
 starting at 0 for individuals lacking IDs for both parents. Any id that
 cannot be placed — e.g. when the pedigree contains a cycle or references
 a parent ID that is not itself present as an ego ID — is returned as
-`NA` and triggers a `warning` naming the affected ids.
+`NA` and triggers a `warning` naming the affected ids. With
+`alignMates = TRUE`, an individual lacking IDs for both parents may be
+in a later generation than 0.
 
 ## Details
 
@@ -47,6 +55,42 @@ through until no further animals can be added to the `nextGen` vector.
 
 This does not work if the pedigree does not have all parent IDs as ego
 IDs.
+
+## Aligned generations
+
+With `alignMates = TRUE`, animals are moved to later generations so
+that, where it can be done, the sire and dam of each offspring are in
+the same generation, as kinship2's `kindepth(align = TRUE)` does for
+drawing. A mating is a sire and dam with an offspring that records both.
+Starting from the generations above:
+
+1.  The matings whose sire and dam are in different generations are
+    visited in the order of their offspring's generation, then of the
+    sire's id and the dam's id, each mating at most once.
+
+2.  At a visit, if the two still differ, the parent in the earlier
+    generation moves to the generation of its nearest later mate, unless
+    it has moved this way before or is related to one of its later mates
+    other than through their own offspring. Its ancestors, and those of
+    their mates who have no parents, move with it by the same number of
+    generations.
+
+3.  The descendants of the animals moved are put one generation after
+    their later parent, and a mating of a descendant moved this way
+    joins the end of the list, if it has not been visited.
+
+4.  Last, every animal with a known parent is put one generation after
+    its later parent.
+
+kinship2's help describes the method in one sentence ("try to make both
+parents of each child have the same depth"); these steps were measured
+from its results. On the pedigrees the tests compare, the aligned
+generations equal kinship2's on both families of its `sample.ped`, and
+on most others, and differ on a few animals of larger pedigrees. Unlike
+kinship2's, they do not depend on the order of the rows, and they place
+every offspring after each of its known parents. A perfect alignment
+does not always exist: an animal related to a later mate stays where it
+is. Animals that cannot be placed stay `NA`.
 
 ## Examples
 
@@ -58,13 +102,15 @@ ped <- data.frame(
   stringsAsFactors = FALSE
 )
 ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+## E, with no parents, mates D, of generation 1, and joins it.
+ped$aligned <- findGeneration(ped$id, ped$sire, ped$dam, alignMates = TRUE)
 ped
-#>   id sire  dam gen
-#> 1  A <NA> <NA>   0
-#> 2  B <NA> <NA>   0
-#> 3  C    A    B   1
-#> 4  D    A    B   1
-#> 5  E <NA> <NA>   0
-#> 6  F    D    E   2
-#> 7  G    D    E   2
+#>   id sire  dam gen aligned
+#> 1  A <NA> <NA>   0       0
+#> 2  B <NA> <NA>   0       0
+#> 3  C    A    B   1       1
+#> 4  D    A    B   1       1
+#> 5  E <NA> <NA>   0       1
+#> 6  F    D    E   2       2
+#> 7  G    D    E   2       2
 ```

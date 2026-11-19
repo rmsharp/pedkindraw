@@ -71,7 +71,7 @@ are given the incremented generation number.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">findGeneration</span><span class="op">(</span><span class="va">id</span>, <span class="va">sire</span>, <span class="va">dam</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">findGeneration</span><span class="op">(</span><span class="va">id</span>, <span class="va">sire</span>, <span class="va">dam</span>, alignMates <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -91,6 +91,13 @@ individual's father (<code>NA</code> if unknown).</p></dd>
 <dd><p>character vector with unique identifier for an
 individual's mother (<code>NA</code> if unknown).</p></dd>
 
+
+<dt id="arg-alignmates">alignMates<a class="anchor" aria-label="anchor" href="#arg-alignmates"></a></dt>
+<dd><p><code>TRUE</code> or <code>FALSE</code>, the default. When
+<code>TRUE</code>, the generations are aligned so that, where it can be done,
+an offspring's sire and dam are in the same generation (see "Aligned
+generations").</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -98,7 +105,9 @@ individual's mother (<code>NA</code> if unknown).</p></dd>
 starting at 0 for individuals lacking IDs for both parents. Any id that
 cannot be placed — e.g. when the pedigree contains a cycle or references
 a parent ID that is not itself present as an ego ID — is returned as
-<code>NA</code> and triggers a <code>warning</code> naming the affected ids.</p>
+<code>NA</code> and triggers a <code>warning</code> naming the affected ids. With
+<code>alignMates = TRUE</code>, an individual lacking IDs for both parents may
+be in a later generation than 0.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -106,6 +115,38 @@ a parent ID that is not itself present as an ego ID — is returned as
 through until no further animals can be added to the <code>nextGen</code>
 vector.</p>
 <p>This does not work if the pedigree does not have all parent IDs as ego IDs.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="aligned-generations">Aligned generations<a class="anchor" aria-label="anchor" href="#aligned-generations"></a></h2>
+
+
+<p>With <code>alignMates = TRUE</code>, animals are moved to later generations so
+that, where it can be done, the sire and dam of each offspring are in the
+same generation, as kinship2's <code>kindepth(align = TRUE)</code> does for
+drawing. A mating is a sire and dam with an offspring that records both.
+Starting from the generations above:</p><ol><li><p>The matings whose sire and dam are in different generations are
+visited in the order of their offspring's generation, then of the
+sire's id and the dam's id, each mating at most once.</p></li>
+<li><p>At a visit, if the two still differ, the parent in the earlier
+generation moves to the generation of its nearest later mate, unless it
+has moved this way before or is related to one of its later mates other
+than through their own offspring. Its ancestors, and those of their
+mates who have no parents, move with it by the same number of
+generations.</p></li>
+<li><p>The descendants of the animals moved are put one generation after
+their later parent, and a mating of a descendant moved this way joins
+the end of the list, if it has not been visited.</p></li>
+<li><p>Last, every animal with a known parent is put one generation after
+its later parent.</p></li>
+</ol><p>kinship2's help describes the method in one sentence ("try to make both
+parents of each child have the same depth"); these steps were measured
+from its results. On the pedigrees the tests compare, the aligned
+generations equal kinship2's on both families of its <code>sample.ped</code>,
+and on most others, and differ on a few animals of larger pedigrees.
+Unlike kinship2's, they do not depend on the order of the rows, and they
+place every offspring after each of its known parents. A perfect
+alignment does not always exist: an animal related to a later mate stays
+where it is. Animals that cannot be placed stay <code>NA</code>.</p>
     </div>
 
     <div class="section level2">
@@ -117,15 +158,17 @@ vector.</p>
 <span class="r-in"><span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ped</span><span class="op">$</span><span class="va">gen</span> <span class="op">&lt;-</span> <span class="fu">findGeneration</span><span class="op">(</span><span class="va">ped</span><span class="op">$</span><span class="va">id</span>, <span class="va">ped</span><span class="op">$</span><span class="va">sire</span>, <span class="va">ped</span><span class="op">$</span><span class="va">dam</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## E, with no parents, mates D, of generation 1, and joins it.</span></span></span>
+<span class="r-in"><span><span class="va">ped</span><span class="op">$</span><span class="va">aligned</span> <span class="op">&lt;-</span> <span class="fu">findGeneration</span><span class="op">(</span><span class="va">ped</span><span class="op">$</span><span class="va">id</span>, <span class="va">ped</span><span class="op">$</span><span class="va">sire</span>, <span class="va">ped</span><span class="op">$</span><span class="va">dam</span>, alignMates <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ped</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   id sire  dam gen</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A &lt;NA&gt; &lt;NA&gt;   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  B &lt;NA&gt; &lt;NA&gt;   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  C    A    B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  D    A    B   1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  E &lt;NA&gt; &lt;NA&gt;   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  F    D    E   2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  G    D    E   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   id sire  dam gen aligned</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  A &lt;NA&gt; &lt;NA&gt;   0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  B &lt;NA&gt; &lt;NA&gt;   0       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  C    A    B   1       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  D    A    B   1       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  E &lt;NA&gt; &lt;NA&gt;   0       1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  F    D    E   2       2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  G    D    E   2       2</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

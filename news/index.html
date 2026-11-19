@@ -69,6 +69,7 @@
 <li>New: the pedigree is the first argument in <code>getProbandPedigree(ped, probands)</code>, <code>getDescendantPedigree(ped, probands)</code>, <code>trimPedigree(ped, probands, ...)</code> and <code>hasBothParents(ped, id)</code>, as in the other functions that take one; nprcgenekeepr takes the ids first. A call that names both arguments is unchanged; one that passes them in nprcgenekeepr’s order stops with “$ operator is invalid for atomic vectors”.</li>
 <li>New: <code><a href="../reference/familyCheck.html">familyCheck()</a></code> checks family ids against the family trees the sires and dams form.</li>
 <li>New: <code><a href="../reference/countOffspring.html">countOffspring()</a></code> counts each animal’s offspring (the animals naming it as sire or dam, each once), and <code><a href="../reference/getMatings.html">getMatings()</a></code> lists each sire and dam with an offspring recorded with both, once, with the number of offspring they share: the matings a drawing draws.</li>
+<li>New: <code>findGeneration(alignMates = TRUE)</code> puts, where it can be done, the sire and dam of each offspring in the same generation, as kinship2’s <code>kindepth(align = TRUE)</code> does; its help lists the steps. On the pedigrees its tests compare it equals kinship2’s on most, and unlike kinship2’s its answer does not depend on the order of the rows. The default is unchanged.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="checking-and-repair-0-0-1">Checking and repair<a class="anchor" aria-label="anchor" href="#checking-and-repair-0-0-1"></a></h3>
