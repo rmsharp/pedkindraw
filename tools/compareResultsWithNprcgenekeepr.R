@@ -31,7 +31,12 @@
 ## draws its lines without arrowheads and their labels on white, two columns
 ## of its line table that nprcgenekeepr's leaves out; they are taken out of
 ## pedkindraw's legends before the comparison when they hold exactly those
-## values (see withoutLegendLineStyle() below).
+## values (see withoutLegendLineStyle() below). A fourth (S43, plan Phase G2,
+## R106-R107): pedkindraw draws an unknown affected status grey where
+## nprcgenekeepr draws it white; its grey fills, "?" sections, legend row, the
+## 45 px for that row and the section painter's lines for it are turned back
+## into nprcgenekeepr's form in pedkindraw's results before the comparison
+## (see withoutUnknownStatus() below).
 ##
 ## pedkindraw's getProbandPedigree(), getDescendantPedigree(), trimPedigree()
 ## and hasBothParents() take the pedigree first, nprcgenekeepr's the ids first
@@ -728,6 +733,91 @@ eachDrawing <- function(x, f) {
   }
   x
 }
+## pedkindraw S43 (plan Phase G2, R106-R107, DIVERGENCE.md): pedkindraw draws
+## an unknown affected status grey (.unknownColor, "#BEBEBE") where
+## nprcgenekeepr draws it white: with one condition it is the node's fill
+## (makePedigreeDiagramData() and the layout), with two to four a "?" in the
+## node's affectedSections where nprcgenekeepr writes "0"; a drawing with such
+## an animal has a grey "Affected status unknown" legend row and is 45 px
+## taller; and the section painter's text has the lines that fill a "?"
+## section. Until nprcgenekeepr has the change (at the switch, R98), each of
+## these is turned back into nprcgenekeepr's form in pedkindraw's results
+## before the comparison, everything else in them still compared, and the
+## changes are counted. It runs before R81's set-aside, which counts a
+## drawing's condition rows. samplePed's affected column, read as text "0" and
+## "1", is unknown throughout, so its drawings are all grey. Measured S43: 66
+## of the 600 results differed, every one with an unknown status drawn (the 54
+## a grey prototype changed in the layout and drawing cases, and 12 of
+## makePedigreeDiagramData()); with them turned back, 600 of 600 identical.
+## visNetwork keeps a drawing's height twice, so both are lowered. Remove this
+## when nprcgenekeepr has the change.
+unknownLabel <- "Affected status unknown"
+unknownHandlerLines <- c(
+  "  var unknown = '#BEBEBE';\n" = "",
+  "      var mark = n.affectedSections.charAt(i);\n" = "",
+  "      if (mark === '1' || mark === '?') {\n" =
+    "      if (n.affectedSections.charAt(i) === '1') {\n",
+  "        ctx.fillStyle = mark === '1' ? colors[i] : unknown;\n" =
+    "        ctx.fillStyle = colors[i];\n"
+)
+unknownSetAside <- new.env(parent = emptyenv())
+unknownSetAside$n <- c(fills = 0L, sections = 0L, rows = 0L, handlers = 0L)
+withoutUnknownStatus <- function(x) {
+  if (inherits(x, "visNetwork")) {
+    legend <- x$x$legend$nodes
+    if (is.data.frame(legend) && unknownLabel %in% legend$label) {
+      legend <- legend[legend$label != unknownLabel, , drop = FALSE]
+      rownames(legend) <- NULL
+      x$x$legend$nodes <- legend
+      ## visNetwork keeps the height twice: the widget's and its x's.
+      lower <- function(h) sprintf("%dpx", as.integer(sub("px$", "", h)) - 45L)
+      x$height <- lower(x$height)
+      if (!is.null(x$x$height)) x$x$height <- lower(x$x$height)
+      unknownSetAside$n[["rows"]] <- unknownSetAside$n[["rows"]] + 1L
+    }
+  }
+  if (is.data.frame(x)) {
+    if ("color.background" %in% names(x)) {
+      fill <- x[["color.background"]]
+      grey <- !is.na(fill) & fill == "#BEBEBE"
+      x[["color.background"]][grey] <- "#FFFFFF"
+      unknownSetAside$n[["fills"]] <- unknownSetAside$n[["fills"]] + sum(grey)
+    }
+    if ("affectedSections" %in% names(x)) {
+      marked <- grepl("?", x$affectedSections, fixed = TRUE)
+      x$affectedSections <- gsub("?", "0", x$affectedSections, fixed = TRUE)
+      unknownSetAside$n[["sections"]] <- unknownSetAside$n[["sections"]] +
+        sum(marked)
+    }
+    return(x)
+  }
+  if (is.character(x)) {
+    before <- x
+    for (line in names(unknownHandlerLines)) {
+      x[] <- gsub(line, unknownHandlerLines[[line]], x, fixed = TRUE)
+    }
+    unknownSetAside$n[["handlers"]] <- unknownSetAside$n[["handlers"]] +
+      sum(x != before)
+    return(x)
+  }
+  if (is.list(x)) {
+    kept <- attributes(x)
+    x <- lapply(x, withoutUnknownStatus)
+    attributes(x) <- kept
+  }
+  x
+}
+withUnknown <- ours
+ours[] <- lapply(ours, withoutUnknownStatus)
+cat(sprintf(paste(
+  "results with an unknown affected status drawn grey: %d, compared as",
+  "nprcgenekeepr draws them (%d grey fills, %d nodes with a \"?\" section,",
+  "%d legend rows and their 45 px, %d section painters; DIVERGENCE.md, plan",
+  "Phase G2)\n"
+), sum(!unlist(Map(identical, withUnknown, ours))),
+unknownSetAside$n[["fills"]], unknownSetAside$n[["sections"]],
+unknownSetAside$n[["rows"]], unknownSetAside$n[["handlers"]]))
+rm(withUnknown)
 ## pedkindraw S28 (plan R81, DIVERGENCE.md): with two or more conditions
 ## pedkindraw's legend draws each condition row as a section picture
 ## (.conditionLegendImage()) where nprcgenekeepr draws a filled hexagon. Until
