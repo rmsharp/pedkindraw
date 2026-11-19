@@ -459,6 +459,25 @@ cases$style <- function(case = "style") {
             pedkindraw::drawPedigreeDiagram(lay)$x))
           regmatches(json, regexpr("var colors = \\[[^]]*\\]", json))
         })
+  ## Plan Phase G4 (pedkindraw S45, R111-R113): the colours chosen.
+  lay <- pedkindraw::makePedigreeMatingLayout(withGen(one),
+                                              conditionColors = "orange")
+  probe(case, "pedkindraw, 1 condition, conditionColors = orange: fills",
+        unique(lay$nodes$color.background[match(one$id[one$affected],
+                                                lay$nodes$id)]))
+  probe(case, "pedkindraw, 1 condition, conditionColors = orange: legend", {
+    legend <- pedkindraw::drawPedigreeDiagram(lay)$x$legend$nodes
+    legend$color.background[legend$label == "Affected"]
+  })
+  lay <- pedkindraw::makePedigreeMatingLayout(
+    withGen(two), conditionColors = c("#111111", "#222222")
+  )
+  probe(case, "pedkindraw, 2 conditions, conditionColors: sections script",
+        {
+          json <- as.character(htmlwidgets:::toJSON(
+            pedkindraw::drawPedigreeDiagram(lay)$x))
+          regmatches(json, regexpr("var colors = \\[[^]]*\\]", json))
+        })
 }
 
 ## B6. Longer or several-line labels.

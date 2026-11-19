@@ -48,6 +48,19 @@ code, `DIVERGENCE.md` in the repository says how and why.
   character. `maxNameChars = Inf` writes every name whole, as kinship2 and
   Pedixplorer write their labels; a long name can then run into the labels of
   the animals beside it. nprcgenekeepr cuts every name after 15 characters.
+* New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` take
+  `conditionColors`, the colours of the affected conditions, by default the
+  four drawn before (pink, orange, sky blue and bluish green). Each is a name
+  R knows, such as "orange", or a code, such as "#E69F00", and is written as
+  its "#RRGGBB" code, the colour R means by it: a browser reads most of R's
+  colour names as no colour, and "grey" as a darker grey. The layout fills the
+  symbols with them and keeps them in its `conditions` table, from which
+  `drawPedigreeDiagram()` now paints the sections and the legend, so all three
+  agree; before, colours edited in that table reached the legend but not the
+  sections. A colour R does not know, a number, a transparent colour, white,
+  the grey of an unknown status, a colour given twice, or fewer colours than
+  conditions drawn stops, with a message naming them. nprcgenekeepr's colours
+  are fixed.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's
