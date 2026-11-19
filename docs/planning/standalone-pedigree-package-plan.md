@@ -64,9 +64,10 @@ DONE (pedkindraw S44: `maxNameChars`, 15 by default, `Inf` writing names whole, 
 S45: `conditionColors`, the colours of the conditions, carried to the fills, the sections and the legend, R111-R113);
 Phase G5 DONE (pedkindraw S46: `recodePedigree()`, other ways of writing an unknown parent and a sex rewritten into
 pedkindraw's, R114-R116); Phase G6 DONE (pedkindraw S47: `countOffspring()`, each animal's offspring, and
-`getMatings()`, each sire and dam with an offspring together, R117-R119).
-**Next:** Phase G7 (a function that removes listed animals and clears their offspring's links to them, gap C6;
-`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G8-G17, then 17g. In nprcgenekeepr: N1 (its two
+`getMatings()`, each sire and dam with an offspring together, R117-R119); Phase G7 DONE (pedkindraw S48:
+`removeAnimals()`, listed animals removed and their offspring's links to them cleared, R120-R122).
+**Next:** Phase G8 (`findGeneration()` gains aligned generations, gap C2;
+`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G9-G17, then 17g. In nprcgenekeepr: N1 (its two
 faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) done in its S1190
 (closed at `faf6823c3`); its S1191 (a standard error for simulated kinship, no copied file) closed at `3e06730c5`.
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
@@ -252,6 +253,9 @@ Since then:
 | R117 | Phase G6 (gap C5): two new exports, `countOffspring(ped, ids = ped$id)` and `getMatings(ped)`, pedkindraw's own code, listed under "Pedigree structure" in `_pkgdown.yml` and `?pedkindraw` after `getOffspring()`. Mark's pick "countOffspring()+getMatings() (Recommended)" over `getMates(ped, ids)` (the mates of named animals combined, like `getOffspring()`), one function with one row per animal (its mates as text), and copying nprcgenekeepr's `offspringCounts()` (with `findOffspring()`, `isLivingAnimal()` and `idsAsText()`, four functions under the drift rule and nprcgenekeepr's ids-first order); and "Pedigree structure (Recommended)" over a section of their own | pedkindraw S47 | Mark |
 | R118 | Phase G6: an animal's count is its own offspring, the animals naming it as sire or dam, each once: the length of `getOffspring(ped, id)`, an integer vector named by `ids` as text, 0 for an id with none (`NA` among them, and a parent with no row counted when asked). Measured: Pedixplorer 1.8.0's `num_child_dir` on 109 of 109 pedigrees with a mating (7 fixture, 100 seeded random, 2 typed); it gives every animal 0 in a pedigree with no mating (4 of 300 random). An animal recorded as both sire and dam counts both kinds (2 where `num_child_dir` and nprcgenekeepr's `findOffspring()` give 1). Mark's pick "Its own offspring (Recommended)" over adding Pedixplorer's `num_child_tot` (the animal's and its mates' offspring together, which it gives as 0 for an animal with offspring but no mate, a negative `num_child_ind` in 286 of 300 random pedigrees) | pedkindraw S47 | Mark |
 | R119 | Phase G6: a mating is a sire and dam with at least one offspring recorded with both; `getMatings()` gives one row per mating (`sire`, `dam`, `offspring`, the number of animals with that sire and dam, each once) in the order of its first offspring, zero rows with the three columns when there is none. These are the matings the drawing's layout builds (`.buildMatingUnitForest()`), in its order, on 107 of 107 pedigrees; an offspring with one known parent makes none, and mates with no offspring wait for G15 (gap B1). An animal's mates are the rows it is in. The shape was in R117's picked option; the order and the zero rows in the test list Mark approved at the PRE-RED->RED gate | pedkindraw S47 | Mark |
+| R120 | Phase G7 (gap C6): a new export, `removeAnimals(ped, ids)`, pedkindraw's own code, listed under "Trimming and shrinking" in `_pkgdown.yml` and `?pedkindraw` after `removeUninformativeFounders()`, beside the other functions that remove animals. It returns `ped` without the rows whose id is listed and with each listed `sire` or `dam` set to `NA`; the other rows (their order and row names), columns and column types are kept: number ids stay numbers, a factor keeps its levels, a data.table stays one. `ids` are compared with `id`, `sire` and `dam` as text, so a listed parent with no row is cleared from its offspring too. Mark's picks "removeAnimals(ped, ids) (Recommended)" over `dropAnimals()` and `removeIds()`, and "Trimming and shrinking (Recommended)" over "Checking and repair". nprcgenekeepr has no such function (the gaps document's line 459). The REFACTOR moved its ids check and `countOffspring()`'s into one, `.checkIds()` (`R/checkPedigree.R`) | S48 | Mark |
+| R121 | Phase G7: an offspring of a removed animal keeps its other parent; only the entry naming the removed animal becomes `NA` (one known parent being legal here), the rule `removeUninformativeFounders()` and nprcgenekeepr's `removeAutoGenIds()` already follow. Mark's pick "Clear that parent only (Recommended)" over clearing both parents and an argument for either. Measured (S48) on 307 pedigrees (the gap case, 7 fixture, 300 seeded random): a slow row-by-row version agreed with both candidate rules on 307 of 307, and the two rules differed on 297; with one parent cleared, no sire or dam names a removed animal and no new parent without a row appears (307 of 307), and `kinship()` computes on 306 of 306. Gap case: removing C leaves F and G with dam E, kinship 0.125 (both cleared: 0, and E left with no offspring). kinship2 1.9.6.2's `pedigree.trim()` stops whenever an offspring would keep only one parent (151 of the 156 pedigrees it builds) and equals both rules where it returns; Pedixplorer 1.8.0's `subset(del_parents = "one")` clears both parents of any animal missing either, equal to the both-cleared rule on 157 of 157, and with `NULL` or `"both"` puts the removed parent back as a founder | S48 | Mark |
+| R122 | Phase G7: a listed id found nowhere in `ped` (no row, no animal's sire or dam) is ignored, so removing twice equals removing once, as in Pedixplorer; `NA` among `ids` removes the rows whose id is `NA`. Mark's pick "Ignore it quietly (Recommended)" over a warning naming the ids and an error. Measured (S48): kinship2's `pedigree.trim("Z")` on the gap case returns a one-animal pedigree whose id is `NA` and which is its own parent, and with `c("I", "Z")` stops ("only 0's may be mixed with negative subscripts") | S48 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -1072,6 +1076,17 @@ random ones; no copied code changed (the drift tool 91 functions, 20 differ, no 
 600 identical with no set-aside; their help pages, `?pedkindraw`, `_pkgdown.yml`, the README, NEWS and the
 contract's section 4.4; the gap case `lookups` reads 2, 2, 0, 0. The REFACTOR built the tests' 107 pedigrees in
 one helper, `matingCheckPeds()`.
+
+**Done G7 (pedkindraw S48; R120-R122):** a new export, pedkindraw's own code: `removeAnimals(ped, ids)`
+(`R/removeAnimals.R`) removes the listed animals' rows and sets to `NA` each sire or dam entry naming one of them,
+the offspring keeping its other parent. 13 tests (`tests/testthat/test_removeAnimals.R`, helper
+`helper-removeAnimals.R`): the gap case, typed edge cases, a slow version written from the definition on the 7
+fixture pedigrees and 100 seeded random ones, `kinship()` afterwards, kinship2's `pedigree.trim()` where it
+returns (105 compared) and Pedixplorer's `subset(del_parents = "one")` but for the parent kept (106 compared); no
+copied code changed (the drift tool 91 functions, 20 differ, no new row); the fidelity cases 600 of 600 identical
+with no set-aside; its help page, `?pedkindraw`, `_pkgdown.yml`, the README, NEWS and the contract's section 4.4;
+the gap case `removeAnimals` reads ABDEFGHI kept, F's dam E, kinship 0.125. The REFACTOR gave `countOffspring()`
+and `removeAnimals()` one ids check, `.checkIds()`.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

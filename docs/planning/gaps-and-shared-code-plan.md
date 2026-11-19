@@ -7,8 +7,8 @@ commit in a scratch folder and run there with its own renv library; its folder w
 **Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
 R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
 R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). G5 DONE (pedkindraw S46;
-R114-R116). G6 DONE (pedkindraw S47; R117-R119). Next: G7 in pedkindraw (section 5.1); in nprcgenekeepr N1 and N2
-are done (its S1189 and S1190, section 5.2).
+R114-R116). G6 DONE (pedkindraw S47; R117-R119). G7 DONE (pedkindraw S48; R120-R122). Next: G8 in pedkindraw
+(section 5.1); in nprcgenekeepr N1 and N2 are done (its S1189 and S1190, section 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -533,6 +533,22 @@ sessions a day, about 11-15 days, an estimate.
 22. **`$` partially matches a list's names in a scratch tally** (S47): `r$px`, unset, read `r$pxIndNonZero`, and
     the tally said Pedixplorer "failed in 300 of 300" while the counts beside it showed it had run. Use `[[ ]]` for
     a name that may be absent, and read each tally against the others before a picker quotes it.
+23. **kinship2's `pedigree.trim()` refuses most removals and mishandles an absent id** (S48, G7; kinship2 1.9.6.2).
+    It stops ("A subpedigree cannot choose only one parent of a subject") whenever a kept animal would keep one
+    parent: 151 of the 156 pedigrees it built (fixture and seeded random), a tenth of their animals and one parent
+    removed. Compare with it only on removals closed under mates (`withMates()` in
+    `tests/testthat/helper-removeAnimals.R`: each removed animal's mates removed too), where it returned on 105 of
+    107 (the other two it would not build). Given an id it lacks, `pedigree.trim("Z", ped)` returns a
+    one-animal pedigree whose id is `NA` and which is its own parent (`findex` and `mindex` 1); `c("I", "Z")` stops
+    ("only 0's may be mixed with negative subscripts"). Its `pedigree()` takes a sex vector one per animal; a
+    single 3 for a pedigree without `sex` stops ("Mismatched lengths").
+24. **Pedixplorer's `Pedigree()` returns a data frame, not an object, when it finds a problem** (S48, G7;
+    Pedixplorer 1.8.0): the input with an `error` column ("one-parent-missing" for all 150 seeded pedigrees with an
+    animal of one known parent), with the warning "The Pedigree informations are not valid"; read `is.data.frame()`
+    before using it. `subset()` runs `fix_parents()` again, which warns "More than 25% of the gender values are
+    'unknown'" on a pedigree without `sex`; muffle only those two messages (`quietPedixplorer()`), never all
+    warnings. `subset(del_parents = "one")` clears both parents of any animal missing either; `NULL` and `"both"`
+    put a removed parent back as a founder (`fix_parents()` adds a row for every parent named without one).
 
 ### 7.3 Out of scope
 

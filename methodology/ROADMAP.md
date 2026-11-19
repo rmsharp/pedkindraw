@@ -28,7 +28,8 @@ every gap closes before the release, phases G1-G17; G1, a number in a condition 
 G2, an unknown affected status drawn grey, is done (S43, R106-R107), G3, the 15-character limit on a name made an
 argument, is done (S44, R108-R110), G4, the colours of the conditions made an argument, is done (S45, R111-R113),
 G5, other ways of writing an unknown parent and a sex rewritten into pedkindraw's, is done (S46, R114-R116), G6,
-each animal's offspring count and the matings, is done (S47, R117-R119), and G7 is next (Planned, below).
+each animal's offspring count and the matings, is done (S47, R117-R119), G7, removing listed animals with their
+offspring's links to them, is done (S48, R120-R122), and G8 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -58,7 +59,8 @@ session each unless marked. They follow the copy slices.
   grey) is done (S43); G3 (the note under an id, its 15-character limit an argument) is done (S44); G4 (a colours
   argument carried to the fills, the sections and the legend) is done (S45); G5 (other ways of writing missing
   parents and sex rewritten into pedkindraw's) is done (S46); G6 (each animal's offspring count and its mates)
-  is done (S47); next G7 (removing listed animals, their offspring's links to them cleared), then the other small
+  is done (S47); G7 (removing listed animals, their offspring's links to them cleared) is done (S48); next G8
+  (aligned generations in `findGeneration()`), then the other small
   additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
@@ -236,6 +238,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G7, removing listed animals (pedkindraw S48, 2026-11-19).** Dropping a parent's row left its offspring
+  naming a sire or dam with no row, which `findGeneration()` cannot place and `kinship()` cannot take; kinship2's
+  `pedigree.trim()` refuses such a removal and Pedixplorer's `subset()` clears both parents. The new export
+  `removeAnimals()` removes the listed animals and clears each sire or dam entry naming one of them, the offspring
+  keeping its other parent. Mark's picks: `removeAnimals(ped, ids)` under "Trimming and shrinking" (R120); clear
+  that parent only (R121); an id found nowhere ignored (R122). 13 new tests, checked against a slow version, kinship2
+  and Pedixplorer on 107 pedigrees each; the fidelity cases 600 of 600 identical.
 - **Phase G6, each animal's offspring count and the matings (pedkindraw S47, 2026-11-19).** pedkindraw listed an
   animal's offspring but neither counted them nor listed its mates, which Pedixplorer stores. The new export
   `countOffspring()` counts each animal's offspring, each once (Pedixplorer's `num_child_dir` where a pedigree has

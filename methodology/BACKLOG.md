@@ -23,12 +23,12 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G7-G17: the other gaps, before the release** (READY in order, G7 next; Effort L altogether, 32-47
+- [ ] **Phases G8-G17: the other gaps, before the release** (READY in order, G8 next; Effort L altogether, 31-46
       sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
-      DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119) --
+      DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
-      commands and surface: G7-G9 the size-S additions (C6 removing animals, C2 aligned generations, B7 an
-      example); G10-G14 the M additions (C3, C1, B4 on G1's check,
+      commands and surface: G8-G9 the size-S additions (C2 aligned generations, B7 an example); G10-G14 the M
+      additions (C3, C1, B4 on G1's check,
       B3's marks, B5's sizes); G15-G17 the L additions (B1, A1 with A2, A3), each starting with a planning session
       of its own. 17g follows G17.
 
