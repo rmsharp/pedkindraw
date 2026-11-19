@@ -111,6 +111,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S48's entries were removed in S3-S49 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 50 Did
+**Deliverable:** Phase G9, a documented example marking the animals `shrinkPedigree()` removed (gap B7;
+`docs/planning/gaps-and-shared-code-plan.md:365`) (IN PROGRESS)
+**Started:** 2026-11-19 09:50 CST · **Model:** Claude Opus 5.5 · Mark's pick "Phase G9 (Recommended)" at the orient picker.
+**Status:** Session claimed. Work beginning: measure first (Learning 17), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 48 Handoff Evaluation (by Session 49)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(d) for G8 was the session's opening plan; every prediction held

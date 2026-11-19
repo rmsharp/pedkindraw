@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-19 · [BL-Phase G9] S50: Phase G9, a documented example marking the animals `shrinkPedigree()` removed (in progress)
+- **Change:** session claimed (Mark's pick "Phase G9 (Recommended)" at the orient picker): gap B7 (`docs/planning/gaps-and-shared-code-plan.md:365`), strict TDD; measure first (Learning 17: `tools/gapCases.R shrinkPicture`, what `shrinkPedigree()` returns, how a drawing marks animals, where the example lives and what checks it, each timed), then a pre-RED picker (help example or vignette section, and its test), RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `f985e8e` is HEAD, S49's close-out 2; no merges; S49's receipt complete, its ratchet results `5ddbb5b1aeb3` matching the results file); drift tool 91 functions, 21 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits; nprcgenekeepr at `3e06730c5`, tree clean; S49's push runs (CI `44557579212`, site `44557579272`) in progress at Orient.
+- **Commit/PR:** the claim commit · **Session:** S50 · **Verified:** pending (close-out).
+
 ### 2026-11-19 · [BL-Phase G8] S49 push 1: `master` to GitHub at close-out 2 (S49's claim, G8, close-out 1-2)
 - **Change:** `git push origin master` (`fb3c80a..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S48's push runs, at S49's Orient: site `44481480804` `success`; CI `44481480808` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors 0.50.3, Pedixplorer's import, does not build on R-devel r90935 of 2026-11-18; installing dependencies, before pedkindraw was checked), the other four jobs `success`.
 - **Commit/PR:** none (push) · **Session:** S49 · **Verified:** the push's output; S48's runs by `gh run view`.

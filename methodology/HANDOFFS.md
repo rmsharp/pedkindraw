@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S50
+date: 2026-11-19
+status: pending
+active_task: Phase G9, a documented example: the pedigree drawn with the animals shrinkPedigree() removed marked, from idTrimmed (gap B7; docs/planning/gaps-and-shared-code-plan.md:365; R97; methodology/BACKLOG.md:26): measure first, a pre-RED picker (help example or vignette section, and the test it gets), RED, GREEN, REFACTOR by the gates; strict TDD; Mark's pick "Phase G9 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S49
 date: 2026-11-19
 status: complete
