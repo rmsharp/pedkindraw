@@ -505,12 +505,14 @@
     as.integer(matings[units$anchor]) <= 2L
   units <- units[own, , drop = FALSE]
   x <- stats::setNames(pos$x, pos$id)
+  ## The mate's node at each mating: its repeat node there (an animal has at
+  ## most one per mating), else its own node.
   repeats <- forest$duplicates
-  mateNode <- vapply(seq_len(nrow(units)), function(i) {
-    node <- repeats$id[repeats$realId == units$nonAnchor[[i]] &
-                         repeats$matingUnitId == units$id[[i]]]
-    if (length(node) == 1L) node else units$nonAnchor[[i]]
-  }, character(1L))
+  repeatNode <- repeats$id[match(
+    paste(units$nonAnchor, units$id, sep = "\u0001"),
+    paste(repeats$realId, repeats$matingUnitId, sep = "\u0001")
+  )]
+  mateNode <- ifelse(is.na(repeatNode), units$nonAnchor, repeatNode)
   anchorLeft <- unname(x[units$anchor] < x[mateNode])
   rows <- data.frame(
     left = ifelse(anchorLeft, units$anchor, units$nonAnchor),
