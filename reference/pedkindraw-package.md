@@ -46,6 +46,9 @@ find sires and dams, offspring and founders.
 lists each problem in a pedigree and
 [`checkTwinRelations()`](https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.md)
 checks a twins table;
+[`recodePedigree()`](https://rmsharp.github.io/pedkindraw/reference/recodePedigree.md)
+rewrites other ways of writing an unknown parent or a sex into this
+package's codes;
 [`addParents()`](https://rmsharp.github.io/pedkindraw/reference/addParents.md),
 [`correctParentSex()`](https://rmsharp.github.io/pedkindraw/reference/correctParentSex.md)
 and

@@ -3,9 +3,12 @@
 Lists each problem found in a pedigree, one row per problem id, and
 changes nothing. Repairing a problem is left to the user:
 [`addParents`](https://rmsharp.github.io/pedkindraw/reference/addParents.md)
-adds a row for each parent that has none, and
+adds a row for each parent that has none,
 [`correctParentSex`](https://rmsharp.github.io/pedkindraw/reference/correctParentSex.md)
-sets the sex of a male dam or a female sire.
+sets the sex of a male dam or a female sire, and
+[`recodePedigree`](https://rmsharp.github.io/pedkindraw/reference/recodePedigree.md)
+rewrites other ways of writing an unknown parent or a sex into this
+package's codes.
 
 ## Usage
 
@@ -106,7 +109,8 @@ refused one known parent and a hermaphrodite parent, which are not.
 ## See also
 
 [`addParents`](https://rmsharp.github.io/pedkindraw/reference/addParents.md),
-[`correctParentSex`](https://rmsharp.github.io/pedkindraw/reference/correctParentSex.md)
+[`correctParentSex`](https://rmsharp.github.io/pedkindraw/reference/correctParentSex.md),
+[`recodePedigree`](https://rmsharp.github.io/pedkindraw/reference/recodePedigree.md)
 
 ## Examples
 

@@ -166,6 +166,19 @@ why.
   [`checkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/checkPedigree.md)
   lists each problem in a pedigree, one row per problem, and changes
   nothing.
+- New:
+  [`recodePedigree()`](https://rmsharp.github.io/pedkindraw/reference/recodePedigree.md)
+  rewrites other ways of writing an unknown parent and a sex into
+  pedkindraw’s codes. By default a parent written `"0"` or `"NA"`, or
+  left empty, becomes `NA`, unless it is the id of a row. A sex written
+  as a word (`"male"`, `"female"`, `"hermaphrodite"`, `"unknown"`) or
+  its first letter, in any case, becomes `"M"`, `"F"`, `"H"` or `"U"`,
+  as do the numbers 1 and 2 (male and female) and 3 and 4 (unknown); a
+  sex it does not know is left for
+  [`checkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/checkPedigree.md)
+  to report. kinship2’s `sample.ped` and `testped1`, which write an
+  unknown parent as 0 and sex as 1 and 2, then give kinship2’s own
+  kinship.
 
 ### Trimming and shrinking
 

@@ -51,6 +51,8 @@
   : Check a pedigree for problems
 - [`checkTwinRelations()`](https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.md)
   : Validate a twin/zygosity relations table
+- [`recodePedigree()`](https://rmsharp.github.io/pedkindraw/reference/recodePedigree.md)
+  : Rewrite other codes for unknown parents and sex into pedkindraw's
 - [`addParents()`](https://rmsharp.github.io/pedkindraw/reference/addParents.md)
   : Add parents
 - [`correctParentSex()`](https://rmsharp.github.io/pedkindraw/reference/correctParentSex.md)

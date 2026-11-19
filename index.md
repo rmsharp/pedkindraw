@@ -181,6 +181,9 @@ pick an animal in the “Select by id” box, and save the picture with the
   lists each problem in a pedigree and changes nothing;
   [`checkTwinRelations()`](https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.md)
   checks a twins table.
+- [`recodePedigree()`](https://rmsharp.github.io/pedkindraw/reference/recodePedigree.md)
+  rewrites other ways of writing an unknown parent (`0`, empty) or a sex
+  (`1` and `2`, `male` and `female`) into pedkindraw’s codes.
 - [`addParents()`](https://rmsharp.github.io/pedkindraw/reference/addParents.md)
   adds a row for each sire or dam that has none;
   [`correctParentSex()`](https://rmsharp.github.io/pedkindraw/reference/correctParentSex.md)
