@@ -127,8 +127,12 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   # character/other value; anything that doesn't parse becomes NA, matching
   # kinship2's own NA-tolerant contract rather than erroring. pedkindraw
   # Phase G1 (R102-R104): a number other than 0 and 1 stops instead.
+  # pedkindraw Phase G2 (R106): an unknown status is grey when the column is
+  # there; with no column every animal stays white.
   affected <- rep(NA, nrow(ped))
+  unknownFill <- "#FFFFFF"
   if ("affected" %in% names(ped)) {
+    unknownFill <- .unknownColor
     .checkConditionNumbers(
       ped$affected,
       "makePedigreeDiagramData(): the condition column 'affected'"
@@ -174,12 +178,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   # found S569): unconditional now -- an absent affected column defaults
   # every node to the same explicit white fill instead of vis.js's own
   # default (`affected` above is already an all-NA vector in that case).
-  # pedkindraw Phase G2 (R106): an unknown status is grey when the column is
-  # there; with no column every animal stays white.
-  nodes$color.background <- .affectedColor(
-    affected,
-    unknown = if ("affected" %in% names(ped)) .unknownColor else "#FFFFFF"
-  )
+  nodes$color.background <- .affectedColor(affected, unknown = unknownFill)
 
   hasSire <- !is.na(ped$sire)
   hasDam <- !is.na(ped$dam)
@@ -1961,19 +1960,16 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # `.affectedColorForVec()` goes uncalled -- affectedOf is an all-NA named
   # vector instead of NULL so .affectedColor() below still returns an
   # explicit white fill for every real/duplicate node.
-  affectedOf <- if (length(drawnCols) == 1L) {
-    conditionOf[[1L]]
-  } else {
-    stats::setNames(rep(NA, length(realIds)), realIds)
-  }
   # pedkindraw Phase G2 (R106): with one drawn condition an unknown status is
   # grey; with none or several (affectedOf all NA) every fill stays white.
+  affectedOf <- stats::setNames(rep(NA, length(realIds)), realIds)
+  unknownFill <- "#FFFFFF"
+  if (length(drawnCols) == 1L) {
+    affectedOf <- conditionOf[[1L]]
+    unknownFill <- .unknownColor
+  }
   .affectedColorForVec <- function(ids) {
-    .affectedColor(affectedOf[ids], unknown = if (length(drawnCols) == 1L) {
-      .unknownColor
-    } else {
-      "#FFFFFF"
-    })
+    .affectedColor(affectedOf[ids], unknown = unknownFill)
   }
 
   # S1028 deceased marker: an animal is deceased when its status reads

@@ -249,31 +249,6 @@ test_that(
   expect_identical(heightOf(4L, FALSE), "635px")
 })
 
-## Waits until vis.js has loaded every picture of the legend, then redraws both
-## networks (as test_conditionLegendImage.R's helper). TRUE when loaded within
-## `seconds`.
-.unknownWaitForLegend <- function(session, seconds = 10) {
-  js <- paste0(
-    "(() => { const el = document.querySelector('.visNetwork'); ",
-    "const w = el && HTMLWidgets.find('#' + el.id); ",
-    "if (!w || !w.legend || !w.network) { return false; } ",
-    "const L = w.legend; const ready = L.body.nodeIndices.every(id => { ",
-    "const n = L.body.nodes[id]; return n.options.shape !== 'image' || ",
-    "(!!n.shape.imageObj && n.shape.imageObj.width > 0); }); ",
-    "if (ready) { L.redraw(); w.network.redraw(); } return ready; })()"
-  )
-  deadline <- Sys.time() + seconds
-  repeat {
-    if (isTRUE(session$Runtime$evaluate(js)$result$value)) {
-      return(TRUE)
-    }
-    if (Sys.time() > deadline) {
-      return(FALSE)
-    }
-    Sys.sleep(0.2)
-  }
-}
-
 ## The colour, as "r,g,b", vis.js drew at the middle of each section j of k of
 ## each animal in `ids` (halfway out from the centre; with one condition, the
 ## centre), and at the centre of the legend row labelled `label`. Returns one
@@ -354,7 +329,7 @@ test_that(
     htmlwidgets::saveWidget(drawPedigreeDiagram(layout), html,
                             selfcontained = TRUE)
     session$go_to(paste0("file://", html), timeout_ = 30, delay = 0.5)
-    expect_true(.unknownWaitForLegend(session),
+    expect_true(.waitForLegendPictures(session),
                 label = paste(k, "conditions: the legend's pictures loaded"))
     cells <- strsplit(strsplit(session$Runtime$evaluate(
       .unknownPixelsJs(ped$id, k, .unknownLabel)
