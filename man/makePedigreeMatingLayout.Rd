@@ -9,7 +9,8 @@ makePedigreeMatingLayout(
   edgeStyle = c("rectilinear", "direct"),
   twinRelations = NULL,
   kinshipMatrix = NULL,
-  hints = NULL
+  hints = NULL,
+  maxNameChars = 15
 )
 }
 \arguments{
@@ -90,6 +91,15 @@ its own), a pair with no offspring together or named twice, an
 \code{anchor} other than those three, and an anchor on the partner of
 an earlier generation than its mate (the layout draws a mating on the
 row of its later partner).}
+
+\item{maxNameChars}{the most characters of an animal's \code{name}
+written in \code{label} under its id, on its node and on each of its
+repeat nodes, 15 by default: a longer name is cut there and ends in
+\code{"..."}, while \code{title} keeps it whole. A line break counts as
+one character. \code{Inf} writes every name whole, as kinship2 and
+Pedixplorer write their labels; a long name can then run into the
+labels of the animals beside it. It changes nothing but the labels.
+Stops unless it is one whole number of 1 or more, or \code{Inf}.}
 }
 \value{
 A list with \code{nodes} (\code{id}, \code{label}, \code{shape},

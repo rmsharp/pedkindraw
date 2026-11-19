@@ -4,7 +4,7 @@
 \alias{makePedigreeDiagramData}
 \title{Convert a pedigree data frame into visNetwork-ready diagram data}
 \usage{
-makePedigreeDiagramData(ped, twinRelations = NULL)
+makePedigreeDiagramData(ped, twinRelations = NULL, maxNameChars = 15)
 }
 \arguments{
 \item{ped}{data frame with \code{id}, \code{sire}, \code{dam}, \code{sex},
@@ -17,7 +17,8 @@ affected-status line to \code{title} and sets \code{color.background}:
 for a node whose status is unknown (\code{NA}) and \code{"#FFFFFF"}
 (white) for an unaffected one (every node is white without the column);
 and a character \code{name} column, which is shown
-in \code{label} (long names are truncated) and in \code{title}. In
+in \code{label} (cut after \code{maxNameChars} characters) and in
+\code{title}. In
 \code{affected} the numbers 1 and 0 read as \code{TRUE} and
 \code{FALSE}, and any other number stops (compare a measured trait
 with a threshold first); text reads as \code{as.logical()} reads it,
@@ -28,6 +29,14 @@ other text as unknown.}
 validated here; validate with \code{\link{checkTwinRelations}} first.
 \code{NULL} (default) adds no connector edges, so \code{edges} has
 only \code{from} and \code{to}.}
+
+\item{maxNameChars}{the most characters of an animal's \code{name}
+written in \code{label} under its id, 15 by default: a longer name is
+cut there and ends in \code{"..."}, while \code{title} keeps it whole.
+A line break counts as one character. \code{Inf} writes every name
+whole, as kinship2 and Pedixplorer write their labels; a long name can
+then run into the labels of the animals beside it. Stops unless it is
+one whole number of 1 or more, or \code{Inf}.}
 }
 \value{
 A list with two data frames: \code{nodes} (\code{id}, \code{label},

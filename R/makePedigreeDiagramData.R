@@ -29,8 +29,12 @@
 ## Phase G2 (pedkindraw S43, R106): .affectedColor() takes the fill of an
 ## unknown status, and makePedigreeDiagramData() (when the column is there) and
 ## makePedigreeMatingLayout() (with one drawn condition) pass .unknownColor,
-## grey, where both filled an unknown status white (DIVERGENCE.md rows). Its
-## comments name nprcgenekeepr's documents, sessions and app.
+## grey, where both filled an unknown status white (DIVERGENCE.md rows). Plan
+## Phase G3 (pedkindraw S44, R108-R110): makePedigreeDiagramData() and
+## makePedigreeMatingLayout() gain the argument maxNameChars = 15, checked by
+## .checkMaxNameChars() (pedkindraw's own, R/maxNameChars.R) and passed to
+## .nameLabel() in place of its fixed 15, and its help (DIVERGENCE.md rows).
+## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
 #'
@@ -49,7 +53,8 @@
 #'   for a node whose status is unknown (\code{NA}) and \code{"#FFFFFF"}
 #'   (white) for an unaffected one (every node is white without the column);
 #'   and a character \code{name} column, which is shown
-#'   in \code{label} (long names are truncated) and in \code{title}. In
+#'   in \code{label} (cut after \code{maxNameChars} characters) and in
+#'   \code{title}. In
 #'   \code{affected} the numbers 1 and 0 read as \code{TRUE} and
 #'   \code{FALSE}, and any other number stops (compare a measured trait
 #'   with a threshold first); text reads as \code{as.logical()} reads it,
@@ -59,6 +64,13 @@
 #'   validated here; validate with \code{\link{checkTwinRelations}} first.
 #'   \code{NULL} (default) adds no connector edges, so \code{edges} has
 #'   only \code{from} and \code{to}.
+#' @param maxNameChars the most characters of an animal's \code{name}
+#'   written in \code{label} under its id, 15 by default: a longer name is
+#'   cut there and ends in \code{"..."}, while \code{title} keeps it whole.
+#'   A line break counts as one character. \code{Inf} writes every name
+#'   whole, as kinship2 and Pedixplorer write their labels; a long name can
+#'   then run into the labels of the animals beside it. Stops unless it is
+#'   one whole number of 1 or more, or \code{Inf}.
 #' @return A list with two data frames: \code{nodes} (\code{id}, \code{label},
 #'   \code{shape}, \code{level}, \code{title}, \code{color.background})
 #'   and \code{edges} (\code{from}, \code{to}, plus
@@ -84,7 +96,8 @@
 #' nrow(diagramData$edges)
 #'
 #' @export
-makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
+makePedigreeDiagramData <- function(ped, twinRelations = NULL,
+                                    maxNameChars = 15.0) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeDiagramData() requires 'ped' to be a data frame.")
   }
@@ -95,6 +108,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
          toString(required), ". Missing: ",
          toString(missingCols))
   }
+  .checkMaxNameChars(maxNameChars, "makePedigreeDiagramData")
 
   shapeMap <- c(F = "dot", M = "square", H = "star", U = "triangle")
   shapes <- unname(shapeMap[as.character(ped$sex)])
@@ -153,7 +167,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   label <- ped$id
   if (hasName) {
     name <- as.character(ped$name)
-    label <- .nameLabel(ped$id, name)
+    label <- .nameLabel(ped$id, name, maxNameChars)
     titles <- paste0(titles, .nameTooltipLine(name))
   }
 
@@ -1733,6 +1747,14 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #'   \code{anchor} other than those three, and an anchor on the partner of
 #'   an earlier generation than its mate (the layout draws a mating on the
 #'   row of its later partner).
+#' @param maxNameChars the most characters of an animal's \code{name}
+#'   written in \code{label} under its id, on its node and on each of its
+#'   repeat nodes, 15 by default: a longer name is cut there and ends in
+#'   \code{"..."}, while \code{title} keeps it whole. A line break counts as
+#'   one character. \code{Inf} writes every name whole, as kinship2 and
+#'   Pedixplorer write their labels; a long name can then run into the
+#'   labels of the animals beside it. It changes nothing but the labels.
+#'   Stops unless it is one whole number of 1 or more, or \code{Inf}.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -1792,7 +1814,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                                           "direct"),
                                       twinRelations = NULL,
-                                      kinshipMatrix = NULL, hints = NULL) {
+                                      kinshipMatrix = NULL, hints = NULL,
+                                      maxNameChars = 15.0) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -1802,6 +1825,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     stop("makePedigreeMatingLayout() requires 'ped' to have columns: ",
          toString(required), ". Missing: ", toString(missingCols))
   }
+  .checkMaxNameChars(maxNameChars, "makePedigreeMatingLayout")
   edgeStyle <- match.arg(edgeStyle)
   if (!is.null(kinshipMatrix) &&
         (!(is.matrix(kinshipMatrix) || inherits(kinshipMatrix, "Matrix")) ||
@@ -1996,7 +2020,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     NULL
   }
   .nameLabelForVec <- function(ids) {
-    .nameLabel(ids, nameOf[ids])
+    .nameLabel(ids, nameOf[ids], maxNameChars)
   }
 
   .shapeForVec <- function(sexCodes) {
