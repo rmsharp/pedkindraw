@@ -157,6 +157,9 @@ pick an animal in the “Select by id” box, and save the picture with the
 
 - `checkPedigree()` lists each problem in a pedigree and changes
   nothing; `checkTwinRelations()` checks a twins table.
+- `recodePedigree()` rewrites other ways of writing an unknown parent
+  (`0`, empty) or a sex (`1` and `2`, `male` and `female`) into
+  pedkindraw’s codes.
 - `addParents()` adds a row for each sire or dam that has none;
   `correctParentSex()` sets the sex of an animal listed as a sire or
   dam; `addBackSecondParents()` adds back to a trimmed pedigree the

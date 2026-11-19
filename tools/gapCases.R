@@ -607,6 +607,11 @@ cases$inputCodes <- function(case = "inputCodes") {
               pedkindraw::checkPedigree(zero)$id))
   probe(case, "pedkindraw findGeneration() with \"0\" parents",
         pedkindraw::findGeneration(zero$id, zero$sire, zero$dam))
+  recoded <- pedkindraw::recodePedigree(zero)
+  probe(case, "pedkindraw recodePedigree() of \"0\" parents: checkPedigree()",
+        nrow(pedkindraw::checkPedigree(recoded)))
+  probe(case, "pedkindraw recodePedigree() of \"0\" parents: findGeneration()",
+        pedkindraw::findGeneration(recoded$id, recoded$sire, recoded$dam))
   blank <- ped
   blank$sire[is.na(blank$sire)] <- ""
   blank$dam[is.na(blank$dam)] <- ""
@@ -627,6 +632,12 @@ cases$inputCodes <- function(case = "inputCodes") {
     probe(case, paste("pedkindraw sex as", written, ": shapes drawn"), {
       lay <- pedkindraw::makePedigreeMatingLayout(withGen(p))
       lay$nodes$shape[match(p$id, lay$nodes$id)]
+    })
+    probe(case, paste("pedkindraw recodePedigree() of sex as", written,
+                      ": sex, shapes drawn"), {
+      r <- pedkindraw::recodePedigree(p)
+      lay <- pedkindraw::makePedigreeMatingLayout(withGen(r))
+      c(r$sex, lay$nodes$shape[match(r$id, lay$nodes$id)])
     })
   }
 }
