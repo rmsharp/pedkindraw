@@ -23,10 +23,10 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G3-G17: the other gaps, before the release** (READY in order, G3 next; Effort L altogether, 36-51
-      sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107) --
+- [ ] **Phases G4-G17: the other gaps, before the release** (READY in order, G4 next; Effort L altogether, 35-50
+      sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
-      commands and surface: G3-G9 the size-S additions (B6 label width, B5 colours, C4 input codes, C5 counts and mates, C6
+      commands and surface: G4-G9 the size-S additions (B5 colours, C4 input codes, C5 counts and mates, C6
       removing animals, C2 aligned generations, B7 an example); G10-G14 the M additions (C3, C1, B4 on G1's check,
       B3's marks, B5's sizes); G15-G17 the L additions (B1, A1 with A2, A3), each starting with a planning session
       of its own. 17g follows G17.
@@ -49,8 +49,9 @@ issues).*
       `DIVERGENCE.md`'s open rows, say in README and NEWS that nprcgenekeepr uses pedkindraw, and put nprcgenekeepr's
       reverse-dependency check into every later release plan (plan section 5.3).
 
-- [ ] **Correct pedkindraw's `smallPed` fixture after nprcgenekeepr corrects its dataset** (BLOCKED on nprcgenekeepr's
-      N1, R99; Effort S) -- `tests/testthat/fixtures/smallPed.rds` stores the same wrong generations as nprcgenekeepr's
+- [ ] **Correct pedkindraw's `smallPed` fixture after nprcgenekeepr corrects its dataset** (READY since nprcgenekeepr's
+      S1189 finished N1, R99: its `0e2bc137e` corrects `smallPed`'s generations, found at S44's Orient; Effort S) --
+      `tests/testthat/fixtures/smallPed.rds` stores the same wrong generations as nprcgenekeepr's
       `smallPed` (8 of 17 differ from `findGeneration()`, measured S41); S35 made the one test that used them compute
       `gen` instead. Replace the fixture from nprcgenekeepr's corrected dataset (R21's provenance) and run the suite.
 
@@ -88,13 +89,8 @@ issues).*
 *Not pedkindraw sessions: listed so they are not lost. Each runs under nprcgenekeepr's own protocol and checks;
 `docs/planning/gaps-and-shared-code-plan.md` section 5.2 gives the work, DONE and order.*
 
-- [ ] **N1: nprcgenekeepr's two faults** (READY, the next nprcgenekeepr work by R99; Effort S) -- its
-      `.simulateKinship()` (`R/simulateKinship.R:25-28` at `eafd54851`, also in 3.0.0) passes the input pedigree's
-      generations to `kinship()` after `makeSimPed()` gives animals simulated parents: on its `simulatedKValues`
-      vignette's case, 200 of 200 seeded draws differ from kinship2, up to 0.375; recomputed, 0 of 200. Its `smallPed`
-      stores 8 of 17 generations wrong (kinship 4 of 289 cells off, up to 0.25). Fix both, with a NEWS item.
-
-- [ ] **N2: nprcgenekeepr names its calls; its drift-watch item reworded** (READY after N1; Effort S; R98, R101) --
+- [ ] **N2: nprcgenekeepr names its calls; its drift-watch item reworded** (IN PROGRESS in its S1190, at its GREEN
+      `1cdae181c` when pedkindraw's S44 closed; N1 done in its S1189, `8e706e818`; Effort S; R98, R101) --
       its calls to R89's four functions (`getProbandPedigree()`, `getDescendantPedigree()`, `trimPedigree()`,
       `hasBothParents()`) outside its copied code get named arguments, in `R/` (4 at `eafd54851`), tests, `tools/`,
       vignettes (`a2interactive.Rmd`, 6) and articles (2); R88's renamed functions stay positional. Its backlog's

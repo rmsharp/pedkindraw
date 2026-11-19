@@ -25,7 +25,8 @@ argument-name review, is done (S34); 17c1, `kinship()`, is done (S35); 17c2, the
 the legend's label, is done (S39); 17f, the gaps document, is done (S40); 17f2, the plan for closing the gaps in
 both repositories and coordinating them, is done (S41, `docs/planning/gaps-and-shared-code-plan.md`, R97-R101):
 every gap closes before the release, phases G1-G17; G1, a number in a condition column, is done (S42, R102-R105),
-G2, an unknown affected status drawn grey, is done (S43, R106-R107), and G3 is next (Planned, below).
+G2, an unknown affected status drawn grey, is done (S43, R106-R107), G3, the 15-character limit on a name made an
+argument, is done (S44, R108-R110), and G4 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -52,7 +53,8 @@ session each unless marked. They follow the copy slices.
   document, is done (S40); 17f2 is done (S41, R97-R101): every gap closes before the release, in phases G1-G17
   (`docs/planning/gaps-and-shared-code-plan.md` section 5.1; 38-53 sessions, a guess): G1 (a number in a
   condition column stops, not drawn as affected in silence) is done (S42); G2 (an unknown affected status drawn
-  grey) is done (S43); next G3 (the note under an id, its 15-character limit an argument), then the other small
+  grey) is done (S43); G3 (the note under an id, its 15-character limit an argument) is done (S44); next G4 (a
+  colours argument carried to the fills, the sections and the legend), then the other small
   additions, the medium ones and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
@@ -230,6 +232,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G3, the length of a name under an id (pedkindraw S44, 2026-11-18).** The `name` column was always cut
+  after 15 characters on the drawing, where kinship2 and Pedixplorer write any label whole; now
+  `makePedigreeDiagramData()` and `makePedigreeMatingLayout()` take `maxNameChars`, 15 by default as before, and
+  `Inf` writes every name whole. Mark's picks: the name `maxNameChars` and both builders (R108); `Inf` for no limit
+  (R109); the whole name counted, a line break included, as before (R110). 10 new tests, no copied test changed; the
+  fidelity cases 600 of 600 identical with no set-aside.
 - **Phase G2, an unknown affected status drawn (pedkindraw S43, 2026-11-18).** An animal whose affected status is
   unknown (`NA`) was filled white, like an unaffected one; it is now grey (`#BEBEBE`, as Pedixplorer fills it), the
   whole symbol with one condition or its section with two to four, in `makePedigreeMatingLayout()`,

@@ -6,8 +6,8 @@ commit in a scratch folder and run there with its own renv library; its folder w
 **Answers:** ruling R96 (Mark's direction, S40); Phase 17f2 of `docs/planning/cran-submission-plan.md`.
 **Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
 R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
-R106-R107). Next: G3 in pedkindraw (section 5.1); in nprcgenekeepr N1 is done (its S1189) and N2 claimed (its S1190)
-(section 5.2).
+R106-R107). G3 DONE (pedkindraw S44; R108-R110). Next: G4 in pedkindraw (section 5.1); in nprcgenekeepr N1 is done
+(its S1189) and N2 at its GREEN (its S1190, `1cdae181c`) when pedkindraw's S44 closed (section 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -482,6 +482,16 @@ sessions a day, about 11-15 days, an estimate.
     26 drawings differing. Diff one small pedigree's results field by field (`--child` on a folder holding only
     `synthetic_300.csv`, about 13 s a run) before rerunning the whole tool; and run a set-aside that adds a legend row
     before R81's, which counts the condition rows.
+14. **An edit placed by matching text lands at the first match** (S44, G3): the prototype's `perl` insert "after the
+    column check" matched `.buildMatingUnitForest()`'s identical lines (now `R/makePedigreeDiagramData.R:521`; the
+    same text is in `.positionMatingUnitForest()` at `:972` and in `makePedigreeMatingLayout()` at `:1839`), not the
+    layout's, and only `diff` against `HEAD` showed it. Anchor a scripted edit on text that names its function (the
+    `stop()` message does), count the anchor's matches first (`grep -c`), and diff every scratch edit before
+    measuring with it.
+15. **A new argument's default is linted** (S44, G3): `implicit_integer_linter` refuses `maxNameChars = 15`; write
+    `15.0` (the same double, so `formals()` and a test comparing with `15` still agree, and the help's usage still
+    reads `15`) or `15L` (an integer: change the tests to match). The fidelity cases' names have no line break, so
+    a change to how a label counts lines is seen only by the tests, not by the tool's 600 cases.
 
 ### 7.3 Out of scope
 

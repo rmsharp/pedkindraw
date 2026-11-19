@@ -59,10 +59,12 @@ document, 16 open gaps, 13 of them in nprcgenekeepr too; D4 goes to a planning s
 (pedkindraw S41: `docs/planning/gaps-and-shared-code-plan.md`, R97-R101: every gap closed before the release, phases
 G1-G17; nprcgenekeepr names its calls now and switches to pedkindraw after CRAN accepts it); Phase G1 DONE
 (pedkindraw S42: a number other than 0 and 1 in a condition column stops, R102-R105); Phase G2 DONE (pedkindraw
-S43: an unknown affected status is drawn grey, with a legend row "Affected status unknown", R106-R107).
-**Next:** Phase G3 (the 15-character limit on the notes under an id becomes an argument;
-`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G4-G17, then 17g. In nprcgenekeepr: N1 (its two
-faults, R99) done in its S1189; N2 (named calls, R98) claimed in its S1190.
+S43: an unknown affected status is drawn grey, with a legend row "Affected status unknown", R106-R107); Phase G3
+DONE (pedkindraw S44: `maxNameChars`, 15 by default, `Inf` writing names whole, R108-R110).
+**Next:** Phase G4 (a colours argument carried to the fills, the sections script and the legend;
+`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G5-G17, then 17g. In nprcgenekeepr: N1 (its two
+faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) in its S1190, at its
+GREEN (`1cdae181c`) when pedkindraw's S44 closed.
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
 5's last line.
 **Measured at:** `03591fa1d` (the S1121 claim; `R/` and `tests/` identical to `8c2926388`).
@@ -234,6 +236,9 @@ Since then:
 | R105 | Phase G1: `bitSize()` and `findUnavailable()`, which call `.checkShrinkInput()` but do not use affected status, pass it none, so they never read the `affected` column and do not stop on it. Found in GREEN: R104's picker had named three of the check's five callers, and GREEN 1 made these two stop. Mark's pick "Ignore the column (Recommended)" over "Stop there too" | pedkindraw S42 | Mark |
 | R106 | Phase G2 (gap B2): an animal whose affected status is unknown (`NA`, or text `as.logical()` cannot read) is filled `#BEBEBE` (R's "grey", as Pedixplorer fills it): the whole symbol with one drawn condition (`makePedigreeMatingLayout()`, and `makePedigreeDiagramData()` when its `affected` column is there), the condition's section with two to four (`"?"` in `affectedSections`, painted grey); with no condition column every animal stays white. Before G2 an unknown status was white, like an unaffected one. Measured on prototypes of both looks in headless Chrome: the grey stays apart from white and the four condition colours in normal vision, three simulated colour blindnesses and greyscale (closest, grey and pink under deuteranopia, CIE76 16); Okabe-Ito's `#999999` was 2 from the pink in greyscale; kinship2's "?" could not show in `makePedigreeDiagramData()`, which has no drawing step. nprcgenekeepr still draws it white (DIVERGENCE.md rows "at the switch"). Mark's pick "Grey fill (Recommended)" over "'?' mark" | pedkindraw S43 | Mark |
 | R107 | Phase G2: when a drawn animal's status is unknown, `drawPedigreeDiagram()`'s legend has a grey hexagon "Affected status unknown" after the condition rows, and the canvas is 45 px taller for it, as for each condition row past the first; no row for an unknown only in an undrawn fifth column or on an animal the layout leaves out. A bare "Unknown" is the sex legend's triangle. Mark's pick "Affected status unknown (Recommended)" over "Not known if affected" and "Status unknown" (`status` is also the alive/deceased column) | pedkindraw S43 | Mark |
+| R108 | Phase G3 (gap B6): the limit of 15 characters on the `name` written under an id (nprcgenekeepr's issue #136, D10) becomes the argument `maxNameChars = 15` of both builders, `makePedigreeDiagramData()` and `makePedigreeMatingLayout()` (an animal's node and its repeat nodes alike); `drawPedigreeDiagram()` takes none, since it receives the labels already cut and the whole name only inside the hover text's HTML. Measured in headless Chrome: animals on one row are at least 120 px apart in every fixture laid out (most pairs exactly that), and vis.js draws ordinary 14 px text at about 7 px a character, so a line of more than about 17 characters overlaps its neighbour's label (the default's 15 and "..." by about 5 px). Mark's picks "maxNameChars (Recommended)" over `nameChars` and `labelChars`, and "Both builders (Recommended)" over the layout only | pedkindraw S44 | Mark |
+| R109 | Phase G3: `maxNameChars = Inf` writes every name whole, as kinship2 and Pedixplorer write their labels (the existing cut never runs: its `ifelse()` branch is not evaluated); any other value must be one whole number of 1 or more, and anything else (0, a negative or fractional number, `-Inf`, `NaN`, `NA`, two numbers, none, text, `TRUE`, `NULL`) stops, naming the function. Mark's pick "Inf (Recommended)" over `NULL` and both | pedkindraw S44 | Mark |
+| R110 | Phase G3: the limit counts the whole name, a line break as one character, as before G3, so at the default every label is unchanged (the fidelity cases 600 of 600 identical, no set-aside) and G3 only adds. Counting each line alone would follow the width more closely (the gap case's two-line note is cut at "MHC A01/B" though its line is 21 characters) but changes labels at the default. Mark's pick "Whole name, as today (Recommended)" over "Each line separately" | pedkindraw S44 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -1013,6 +1018,14 @@ grey hexagon "Affected status unknown" and the canvas 45 px more. 10 tests (`tes
 a headless-Chrome test among them) and 9 copied tests changed; six `DIVERGENCE.md` rows "at the switch"; the
 fidelity cases 600 of 600 identical with a counted set-aside of 66 (`withoutUnknownStatus()`); the drawing vignette,
 NEWS and the contract's section 4.
+
+**Done G3 (pedkindraw S44; R108-R110):** `makePedigreeDiagramData()` and `makePedigreeMatingLayout()` take
+`maxNameChars = 15`, the most characters of the `name` column written under an id (a line break counts; `Inf` writes
+every name whole, as kinship2 and Pedixplorer write labels; anything but one whole number of 1 or more stops,
+`.checkMaxNameChars()`, `R/maxNameChars.R`). 10 tests (`tests/testthat/test_maxNameChars.R`, a headless-Chrome test
+among them), no copied test changed; two `DIVERGENCE.md` rows gain G3 "at the switch"; the fidelity cases 600 of 600
+identical with no set-aside; the gap case `labels` writes the 26-character note whole with `Inf`; NEWS and the
+contract's section 4.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 
