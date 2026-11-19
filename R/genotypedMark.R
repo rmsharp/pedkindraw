@@ -25,7 +25,8 @@
 #' \code{FALSE} and \code{NA}, the numbers 1 and 0, and the text
 #' \code{as.logical()} reads (\code{"TRUE"}, \code{"false"}, \code{"T"} and
 #' the like, as a CSV file gives them), as text or a factor. Anything else
-#' stops, naming the caller, the column and up to five of the values.
+#' stops, naming the caller, the column and what
+#' \code{.genotypedOddValues()} finds.
 #' @param ped data frame with an \code{id} column.
 #' @param caller the caller's name, without parentheses, for the message.
 #' @return \code{NULL}, or a logical vector named by \code{ped$id}.
@@ -35,36 +36,44 @@
     return(NULL)
   }
   x <- ped[["genotyped"]]
-  if (is.logical(x)) {
-    read <- x
-    bad <- logical(length(x))
-  } else if (is.numeric(x)) {
-    read <- as.logical(x)
-    bad <- !is.na(x) & !(x %in% c(0.0, 1.0))
-  } else if (is.character(x) || is.factor(x)) {
-    x <- as.character(x)
-    read <- as.logical(x)
-    bad <- !is.na(x) & is.na(read)
-  } else {
-    stop(caller, "(): the column 'genotyped' holds values other than TRUE, ",
-         "FALSE and NA (a column of class ", class(x)[[1L]], "). Give TRUE ",
-         "or FALSE (or 1 or 0) for each animal, NA where it is not recorded.",
-         call. = FALSE)
-  }
-  if (any(bad)) {
-    values <- unique(x[bad])
-    shown <- if (is.numeric(values)) {
-      utils::head(values, 5L)
-    } else {
-      sprintf("'%s'", utils::head(values, 5L))
-    }
-    shown <- toString(shown)
-    if (length(values) > 5L) shown <- paste0(shown, ", ...")
+  if (is.factor(x)) x <- as.character(x)
+  shown <- .genotypedOddValues(x)
+  if (!is.null(shown)) {
     stop(caller, "(): the column 'genotyped' holds values other than TRUE, ",
          "FALSE and NA (", shown, "). Give TRUE or FALSE (or 1 or 0) for ",
          "each animal, NA where it is not recorded.", call. = FALSE)
   }
-  stats::setNames(read, as.character(ped$id))
+  stats::setNames(as.logical(x), as.character(ped$id))
+}
+
+#' What a genotyped column holds besides TRUE, FALSE and NA
+#'
+#' Phase G13 (R134), for \code{.readGenotyped()}'s message. \code{NULL} when
+#' the column holds nothing else. A column that is not logical, numeric or
+#' text is named by its class (\dQuote{a column of class Date}); otherwise
+#' up to five of its other values, a number other than 0 and 1 as it is and
+#' text \code{as.logical()} cannot read in single quotes, then \dQuote{...}
+#' when there are more.
+#' @param x the column, a factor already turned into text.
+#' @return \code{NULL}, or a character string.
+#' @noRd
+.genotypedOddValues <- function(x) {
+  if (!is.logical(x) && !is.numeric(x) && !is.character(x)) {
+    return(paste("a column of class", class(x)[[1L]]))
+  }
+  odd <- if (is.numeric(x)) {
+    !is.na(x) & !(x %in% c(0.0, 1.0))
+  } else {
+    !is.na(x) & is.na(as.logical(x))
+  }
+  values <- unique(x[odd])
+  if (length(values) == 0L) {
+    return(NULL)
+  }
+  if (is.character(values)) values <- sprintf("'%s'", values)
+  shown <- toString(utils::head(values, 5L))
+  if (length(values) > 5L) shown <- paste0(shown, ", ...")
+  shown
 }
 
 #' The outline width of each node of a layout

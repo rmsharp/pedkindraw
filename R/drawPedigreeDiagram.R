@@ -241,7 +241,7 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
                        deceasedRow)
   legendNodes$size <- 14L
   if (hasGenotyped) {
-    legendNodes$borderWidth <- ifelse(legendNodes$label == "Genotyped",
+    legendNodes$borderWidth <- ifelse(legendNodes$label %in% genotypedRow$label,
                                       .genotypedBorderWidth, 1L)
   }
   # Option 2 Slice 3: fixed x/y coordinates (S457's proven Case C2
