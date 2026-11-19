@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S53
+date: 2026-11-19
+status: pending
+active_task: Phase G12, gap B4: a measured trait drawn by a threshold with the rule in the legend, on G1's check (docs/planning/gaps-and-shared-code-plan.md:371; R97; methodology/BACKLOG.md:26): measure first (tools/gapCases.R measuredTrait; Pedixplorer's help for generate_colors() and what it names; .checkConditionNumbers() and R102-R105; the conditions' colours, legend, tooltip and the drawing vignette), a pre-RED picker (threshold or colour scale; above or at-and-above), RED, GREEN, REFACTOR by the gates, closing at a clean phase boundary (2-3 sessions, a guess); strict TDD; Mark's pick "Phase G12 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S52
 date: 2026-11-19
 status: complete
