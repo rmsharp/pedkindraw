@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S48
+date: 2026-11-19
+status: pending
+active_task: Phase G7, a function that removes listed animals and clears their offspring's links to them (gap C6; docs/planning/gaps-and-shared-code-plan.md:362; R97; methodology/BACKLOG.md:26), a new export: measure first, a pre-RED picker (clear the one link or both as Pedixplorer does, the name, what it returns, the _pkgdown.yml and ?pedkindraw section), RED, GREEN, REFACTOR by the gates; strict TDD; Mark's pick "Phase G7 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S47
 date: 2026-11-18
 status: complete

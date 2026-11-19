@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-19 · [BL-Phase G7] S48: Phase G7, removing listed animals and clearing their offspring's links to them (in progress)
+- **Change:** session claimed (Mark's pick "Phase G7 (Recommended)" at the orient picker): strict TDD, a new export; measure first (`tools/gapCases.R removeAnimals`; what `removeUnknownAnimals()`, `trimPedigree()`, `addParents()` and `checkPedigree()` already do; Pedixplorer's `subset()` and kinship2's `pedigree.trim()`, each under a time limit, tallied against a slow version), then a pre-RED picker (clear the one link or both, the name, what it returns, the section), RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `2ab6f0f` is HEAD, S47's close-out 2; no merges; S47's receipt complete, its ratchet results `5ddbb5b1aeb3` matching the results file); drift tool 91 functions, 20 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits; nprcgenekeepr at `3e06730c5`, tree clean; S47's push: CI `44475076550` and site `44475076514` in progress at Orient.
+- **Commit/PR:** the claim commit · **Session:** S48 · **Verified:** pending (close-out).
+
 ### 2026-11-19 · [BL-Phase G6] S47 push 1: `master` to GitHub at close-out 2 (S47's claim, G6, close-out 1-2)
 - **Change:** `git push origin master` (`0eda5c1..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md`, `README.md`, `_pkgdown.yml` and `tools/` changed, so both workflows run. S46's push runs had finished `success` before S47's Orient: CI `44466105164` and site `44466105192`.
 - **Commit/PR:** none (push) · **Session:** S47 · **Verified:** the push's output.
