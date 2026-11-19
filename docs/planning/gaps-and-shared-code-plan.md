@@ -7,8 +7,8 @@ commit in a scratch folder and run there with its own renv library; its folder w
 **Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
 R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
 R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). G5 DONE (pedkindraw S46;
-R114-R116). Next: G6 in pedkindraw (section 5.1); in nprcgenekeepr N1 and N2 are done (its S1189 and S1190, section
-5.2).
+R114-R116). G6 DONE (pedkindraw S47; R117-R119). Next: G7 in pedkindraw (section 5.1); in nprcgenekeepr N1 and N2
+are done (its S1189 and S1190, section 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -517,6 +517,22 @@ sessions a day, about 11-15 days, an estimate.
     current tree. Install the tree into a scratch library, render a copy of `README.Rmd` in a scratch copy without
     `.Rprofile` with `R_LIBS` set, check `exists("<new export>", asNamespace("pedkindraw"))` in the same call, and
     copy `README.md` back. S46's two renders agreed only because the README's chunks call no new function.
+20. **Pedixplorer's `num_child()` has two faults; its `spouse()` is not a mates list** (S47, G6). Measured on 311
+    pedigrees (Pedixplorer 1.8.0): `num_child_dir` is each animal's own offspring except in a pedigree where no
+    sire and dam share an offspring, where it is 0 for every animal (4 of 300 random); `num_child_tot` is the
+    distinct offspring of the animal and of its mates, 0 for an animal with offspring but no mate, so
+    `num_child_ind` (`tot - dir`) is negative in 286 of 300 random pedigrees. Its counts are doubles, so compare
+    with `as.integer()`. `spouse()` reads the drawing hints' pairs (`Hints@spouse`), not the matings. Compare a
+    count with `num_child_dir` only on a pedigree with a mating (`expect_gte()` on the number compared).
+21. **Source the test helpers with `TESTTHAT` set** (S47): outside a test run, `test_path()` looks for
+    `tests/testthat` below the working folder unless `Sys.getenv("TESTTHAT")` is `"true"`, so
+    `withr::with_dir("tests/testthat", testthat::source_test_helpers("."))` stops with "Can't find
+    tests/testthat" (`helper-fixtures.R` calls `test_path()` as it loads). `Sys.setenv(TESTTHAT = "true")`,
+    `setwd("tests/testthat")`, then `testthat::source_test_helpers(".", env = globalenv())`; call
+    `qcdRhesusPed()` and the like from there.
+22. **`$` partially matches a list's names in a scratch tally** (S47): `r$px`, unset, read `r$pxIndNonZero`, and
+    the tally said Pedixplorer "failed in 300 of 300" while the counts beside it showed it had run. Use `[[ ]]` for
+    a name that may be absent, and read each tally against the others before a picker quotes it.
 
 ### 7.3 Out of scope
 

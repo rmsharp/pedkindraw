@@ -63,9 +63,10 @@ S43: an unknown affected status is drawn grey, with a legend row "Affected statu
 DONE (pedkindraw S44: `maxNameChars`, 15 by default, `Inf` writing names whole, R108-R110); Phase G4 DONE (pedkindraw
 S45: `conditionColors`, the colours of the conditions, carried to the fills, the sections and the legend, R111-R113);
 Phase G5 DONE (pedkindraw S46: `recodePedigree()`, other ways of writing an unknown parent and a sex rewritten into
-pedkindraw's, R114-R116).
-**Next:** Phase G6 (each animal's offspring count and its mates, gap C5;
-`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G7-G17, then 17g. In nprcgenekeepr: N1 (its two
+pedkindraw's, R114-R116); Phase G6 DONE (pedkindraw S47: `countOffspring()`, each animal's offspring, and
+`getMatings()`, each sire and dam with an offspring together, R117-R119).
+**Next:** Phase G7 (a function that removes listed animals and clears their offspring's links to them, gap C6;
+`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then G8-G17, then 17g. In nprcgenekeepr: N1 (its two
 faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) done in its S1190
 (closed at `faf6823c3`); its S1191 (a standard error for simulated kinship, no copied file) closed at `3e06730c5`.
 This copy is the live one; nprcgenekeepr's is frozen at its `3d262d628`, and its one standing duty there is section
@@ -248,6 +249,9 @@ Since then:
 | R114 | Phase G5 (gap C4): a new export, `recodePedigree(ped, missingParentCodes = c("0", "NA", ""))`, takes a pedigree data frame and returns it with only `sire`, `dam` and `sex` rewritten into pedkindraw's codes; each parent column keeps its type, and `sex` comes back as text, or as a factor with its levels rewritten (levels that become one code merged) when it is one, so the fixture pedigrees come back identical (5 of the 6 with a `sex` column hold it as a factor). It is listed under "Checking and repair" in `_pkgdown.yml` and `?pedkindraw`, and `checkPedigree()`'s help names it. Mark's picks "recodePedigree() (Recommended)" over `standardizePedigree()` and `convertPedigreeCodes()`, and "Checking and repair (Recommended)" over beside `asPedFrame()` | pedkindraw S46 | Mark |
 | R115 | Phase G5: by default a `sire` or `dam` written `"0"`, `"NA"` or blank (empty or spaces only) becomes `NA` unless it is the id of a row: the codes and the rule `checkPedigree()` reports as `missingParentCodes`, so an animal named "0" with its own row keeps its offspring; `missingParentCodes` names others (`character(0)` none). Since the REFACTOR both functions call one rule, `.isParentCode()`. Measured: kinship2's 3 datasets and Pedixplorer's `minnbreast` write an unknown parent as 0, and none of the 12 datasets of nprcgenekeepr (7), kinship2 (3) and Pedixplorer (2) has an animal named "0"; with blanks only by default, kinship2's `sample.ped`, `testped1` and `minnbreast` would keep all their animals (55, 79, 28,081) without a generation. Mark's pick '"0", "NA", blanks (Recommended)' over blanks only, "0" when asked | pedkindraw S46 | Mark |
 | R116 | Phase G5: sex is read by new code that keeps pedkindraw's own codes: `M`, `F`, `H`, `U` and the words male, female, hermaphrodite, unknown, in any case with spaces around ignored, become their code; 1, 2, 3, 4 (numbers or text) become `M`, `F`, `U`, `U`; a blank becomes `NA`; `NA` and any other value stay as written, for `checkPedigree()` to report. It agrees with nprcgenekeepr's `convertSexCodes()` (its default `ignoreHerm = TRUE`) except on `H`, `NA`, blanks and values neither knows, which `convertSexCodes()` makes `"U"` (it would draw `minnbreast`'s 1,761 animals of unrecorded sex as "Unknown" triangles, not diamonds, and hide a typo). Measured beside it: kinship2 reads text "1" and "2" as unknown and reads any unambiguous prefix ("fem"), Pedixplorer reads "man" and "woman", and all three make a value they do not know unknown. New code, so no drift-tool function and no `DIVERGENCE.md` row. Mark's pick "New code, keep own codes (Recommended)" over copying `convertSexCodes()` | pedkindraw S46 | Mark |
+| R117 | Phase G6 (gap C5): two new exports, `countOffspring(ped, ids = ped$id)` and `getMatings(ped)`, pedkindraw's own code, listed under "Pedigree structure" in `_pkgdown.yml` and `?pedkindraw` after `getOffspring()`. Mark's pick "countOffspring()+getMatings() (Recommended)" over `getMates(ped, ids)` (the mates of named animals combined, like `getOffspring()`), one function with one row per animal (its mates as text), and copying nprcgenekeepr's `offspringCounts()` (with `findOffspring()`, `isLivingAnimal()` and `idsAsText()`, four functions under the drift rule and nprcgenekeepr's ids-first order); and "Pedigree structure (Recommended)" over a section of their own | pedkindraw S47 | Mark |
+| R118 | Phase G6: an animal's count is its own offspring, the animals naming it as sire or dam, each once: the length of `getOffspring(ped, id)`, an integer vector named by `ids` as text, 0 for an id with none (`NA` among them, and a parent with no row counted when asked). Measured: Pedixplorer 1.8.0's `num_child_dir` on 109 of 109 pedigrees with a mating (7 fixture, 100 seeded random, 2 typed); it gives every animal 0 in a pedigree with no mating (4 of 300 random). An animal recorded as both sire and dam counts both kinds (2 where `num_child_dir` and nprcgenekeepr's `findOffspring()` give 1). Mark's pick "Its own offspring (Recommended)" over adding Pedixplorer's `num_child_tot` (the animal's and its mates' offspring together, which it gives as 0 for an animal with offspring but no mate, a negative `num_child_ind` in 286 of 300 random pedigrees) | pedkindraw S47 | Mark |
+| R119 | Phase G6: a mating is a sire and dam with at least one offspring recorded with both; `getMatings()` gives one row per mating (`sire`, `dam`, `offspring`, the number of animals with that sire and dam, each once) in the order of its first offspring, zero rows with the three columns when there is none. These are the matings the drawing's layout builds (`.buildMatingUnitForest()`), in its order, on 107 of 107 pedigrees; an offspring with one known parent makes none, and mates with no offspring wait for G15 (gap B1). An animal's mates are the rows it is in. The shape was in R117's picked option; the order and the zero rows in the test list Mark approved at the PRE-RED->RED gate | pedkindraw S47 | Mark |
 
 The license, open under R11 until the rewrite existed, is ruled: R14 (S1149); `docs/planning/pedkindraw-api-contract.md`
 section 10 item 1 records it.
@@ -1057,6 +1061,17 @@ no copied code changed (the drift tool 91 functions, 20 differ, no new row); the
 with no set-aside; its help page, `checkPedigree()`'s help, `?pedkindraw`, `_pkgdown.yml`, the README, NEWS and the
 contract's section 4.4; the gap case `inputCodes` reads the fix. The REFACTOR gave `checkPedigree()` and
 `recodePedigree()` one rule for the codes (`.isParentCode()`, `R/checkPedigree.R:151`).
+
+**Done G6 (pedkindraw S47; R117-R119):** two new exports, pedkindraw's own code: `countOffspring(ped, ids =
+ped$id)` (`R/countOffspring.R`) counts each animal's offspring, each once, as Pedixplorer's `num_child_dir` counts
+them where a pedigree has a mating; `getMatings(ped)` (`R/getMatings.R`) lists each sire and dam with an offspring
+recorded with both, once, with the number they share, the drawing's own matings. 20 tests
+(`tests/testthat/test_countOffspring.R`, `test_getMatings.R`, helper `helper-offspringAndMatings.R`): the gap
+case, typed edge cases, and slow versions written from each definition on the 7 fixture pedigrees and 100 seeded
+random ones; no copied code changed (the drift tool 91 functions, 20 differ, no new row); the fidelity cases 600 of
+600 identical with no set-aside; their help pages, `?pedkindraw`, `_pkgdown.yml`, the README, NEWS and the
+contract's section 4.4; the gap case `lookups` reads 2, 2, 0, 0. The REFACTOR built the tests' 107 pedigrees in
+one helper, `matingCheckPeds()`.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

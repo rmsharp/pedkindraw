@@ -15,8 +15,9 @@ closed before the release, phases G1-G17; nprcgenekeepr switches to pedkindraw a
 affected status drawn grey, with a legend row; R106-R107). Phase G3 DONE (S44: `maxNameChars`, the most characters
 of a name under an id, `Inf` for whole; R108-R110). Phase G4 DONE (S45: `conditionColors`, the colours of the
 conditions in the fills, sections and legend; R111-R113). Phase G5 DONE (S46: `recodePedigree()`, other ways of
-writing an unknown parent and a sex rewritten into pedkindraw's; R114-R116). Next: Phase G6 (that plan's section
-5.1), then G7-G17 before 17g.
+writing an unknown parent and a sex rewritten into pedkindraw's; R114-R116). Phase G6 DONE (S47: `countOffspring()`
+and `getMatings()`, each animal's offspring and the matings; R117-R119). Next: Phase G7 (that plan's section 5.1),
+then G8-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -583,6 +584,9 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   (`"0"`, `"NA"` and blanks by default) and a sex (the words, their first letters, 1-4) into pedkindraw's codes.
   Commits `aaac3af` (RED) to `973a345` (REFACTOR, one shared rule for the codes); fidelity 600 of 600 with no
   set-aside.
+- **Done G6 (S47; R117-R119):** the new exports `countOffspring()` (each animal's offspring, each once) and
+  `getMatings()` (each sire and dam with an offspring together, with the number they share). Commits `8db2330`
+  (RED) to `c42c9ae` (REFACTOR, tests only); fidelity 600 of 600 with no set-aside.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
