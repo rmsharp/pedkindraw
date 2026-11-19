@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S46
+date: 2026-11-18
+status: pending
+active_task: Phase G5, a function that rewrites other ways of writing missing parents ("0", "") and sex (1/2, male/female, m/f) into pedkindraw's (NA, "M", "F") (gap C4; docs/planning/gaps-and-shared-code-plan.md:359; R97; methodology/BACKLOG.md:26), a new export: measure first, a pre-RED picker (its name, which codes by default, "0" as missing only when asked, copy convertSexCodes() or write new, the _pkgdown.yml section), RED, GREEN, REFACTOR by the gates; strict TDD; Mark's pick "Phase G5 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S45
 date: 2026-11-18
 status: complete

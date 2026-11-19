@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-18 · [BL-Phase G5] S46: Phase G5, a function that rewrites other missing-parent and sex codes into pedkindraw's (in progress)
+- **Change:** session claimed (Mark's pick "Phase G5 (Recommended)" at the orient picker): strict TDD, a new export; measure first (`tools/gapCases.R inputCodes`; what `checkPedigree()`, `findUnrelated()` and `sexCodes` already say about these codes; nprcgenekeepr's `convertSexCodes()`; kinship2's `pedigree(missid =)` and Pedixplorer on the same codes, each under a time limit), then a pre-RED picker (the name, which codes by default, "0" as missing only when asked, copy or write new, the `_pkgdown.yml` section), RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `cd06e57` is HEAD, S45's close-out 2; no merges; S45's receipt complete, its ratchet results `5ddbb5b1aeb3` and manifest `01151c525b8a` matching the results file); drift tool 91 functions, 20 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits; nprcgenekeepr at `071b0f568` (its S1191 GREEN 1-3, `f70f07298`, `e071410ea`, `071b0f568`: no copied file); S45's push: site `44459502577` success, CI `44459502529` in progress at Orient.
+- **Commit/PR:** the claim commit · **Session:** S46 · **Verified:** pending (close-out).
+
 ### 2026-11-18 · [BL-Phase G4] S45 push 1: `master` to GitHub at close-out 2 (S45's claim, G4, close-out 1-2)
 - **Change:** `git push origin master` (`142ec79..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md`, `DESCRIPTION` and `tools/` changed, so both workflows run. S44's push runs, in progress at S45's Orient, finished `success`: CI `44452670105` (13 min) and site `44452670091`.
 - **Commit/PR:** none (push) · **Session:** S45 · **Verified:** the push's output; S44's runs by `gh run list`.
