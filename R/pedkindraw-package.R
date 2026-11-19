@@ -23,8 +23,10 @@
 #'
 #' @section Checking and repair:
 #' [checkPedigree()] lists each problem in a pedigree and
-#' [checkTwinRelations()] checks a twins table; [addParents()],
-#' [correctParentSex()] and [addBackSecondParents()] repair a pedigree.
+#' [checkTwinRelations()] checks a twins table; [recodePedigree()] rewrites
+#' other ways of writing an unknown parent or a sex into this package's codes;
+#' [addParents()], [correctParentSex()] and [addBackSecondParents()] repair a
+#' pedigree.
 #'
 #' @section Trimming and shrinking:
 #' [trimPedigree()], [getProbandPedigree()] and [getDescendantPedigree()]

@@ -8,8 +8,10 @@
 #'
 #' Lists each problem found in a pedigree, one row per problem id, and changes
 #' nothing. Repairing a problem is left to the user: \code{\link{addParents}}
-#' adds a row for each parent that has none, and \code{\link{correctParentSex}}
-#' sets the sex of a male dam or a female sire.
+#' adds a row for each parent that has none, \code{\link{correctParentSex}}
+#' sets the sex of a male dam or a female sire, and
+#' \code{\link{recodePedigree}} rewrites other ways of writing an unknown
+#' parent or a sex into this package's codes.
 #'
 #' The checks, in the order their rows come:
 #' \describe{
@@ -62,7 +64,8 @@
 #' and \code{detail} (what was found), one row per problem id; zero rows when
 #' no problem is found.
 #'
-#' @seealso \code{\link{addParents}}, \code{\link{correctParentSex}}
+#' @seealso \code{\link{addParents}}, \code{\link{correctParentSex}},
+#' \code{\link{recodePedigree}}
 #'
 #' @export
 #' @examples

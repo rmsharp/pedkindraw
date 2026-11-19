@@ -21,8 +21,10 @@ no problem is found.
 \description{
 Lists each problem found in a pedigree, one row per problem id, and changes
 nothing. Repairing a problem is left to the user: \code{\link{addParents}}
-adds a row for each parent that has none, and \code{\link{correctParentSex}}
-sets the sex of a male dam or a female sire.
+adds a row for each parent that has none, \code{\link{correctParentSex}}
+sets the sex of a male dam or a female sire, and
+\code{\link{recodePedigree}} rewrites other ways of writing an unknown
+parent or a sex into this package's codes.
 }
 \details{
 The checks, in the order their rows come:
@@ -80,5 +82,6 @@ checkPedigree(data.frame(id = c("s", "d", "o"), sire = c(NA, NA, "s"),
                          dam = c(NA, NA, "d")))
 }
 \seealso{
-\code{\link{addParents}}, \code{\link{correctParentSex}}
+\code{\link{addParents}}, \code{\link{correctParentSex}},
+\code{\link{recodePedigree}}
 }

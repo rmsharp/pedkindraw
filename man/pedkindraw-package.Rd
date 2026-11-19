@@ -34,8 +34,10 @@ check each animal's generation and family tree; \code{\link[=getParents]{getPare
 \section{Checking and repair}{
 
 \code{\link[=checkPedigree]{checkPedigree()}} lists each problem in a pedigree and
-\code{\link[=checkTwinRelations]{checkTwinRelations()}} checks a twins table; \code{\link[=addParents]{addParents()}},
-\code{\link[=correctParentSex]{correctParentSex()}} and \code{\link[=addBackSecondParents]{addBackSecondParents()}} repair a pedigree.
+\code{\link[=checkTwinRelations]{checkTwinRelations()}} checks a twins table; \code{\link[=recodePedigree]{recodePedigree()}} rewrites
+other ways of writing an unknown parent or a sex into this package's codes;
+\code{\link[=addParents]{addParents()}}, \code{\link[=correctParentSex]{correctParentSex()}} and \code{\link[=addBackSecondParents]{addBackSecondParents()}} repair a
+pedigree.
 }
 
 \section{Trimming and shrinking}{

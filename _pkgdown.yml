@@ -40,6 +40,7 @@ reference:
   contents:
   - checkPedigree
   - checkTwinRelations
+  - recodePedigree
   - addParents
   - correctParentSex
   - addBackSecondParents
