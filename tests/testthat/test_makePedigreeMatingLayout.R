@@ -14,8 +14,10 @@
 ## R106, DIVERGENCE.md) changed 5 checks and 2 test names: an unknown affected
 ## status is filled grey, #BEBEBE, not white, with one condition (the source's
 ## lines 948, 2182 and 2197), and marked "?", not "0", in affectedSections with
-## two or more (lines 2214, 2222, 2291 and 2298). The comments below name
-## nprcgenekeepr's documents, sessions and files.
+## two or more (lines 2214, 2222, 2291 and 2298). pedkindraw S51 (plan Phase
+## G10, R127-R128, DIVERGENCE.md) adds "hints", the hints the layout used, to
+## the names the trio's layout is checked for (the source's lines 51-53). The
+## comments below name nprcgenekeepr's documents, sessions and files.
 
 ## Tests for makePedigreeMatingLayout() -- Pedigree Diagram Option 2, Slice 3
 ## (docs/planning/pedigree-diagram-option2-layout-design-plan.md, Migration
@@ -63,10 +65,11 @@ test_that(
   ## isolatedIds added issue #164 / P5-suppression plan (Phase 1, S644):
   ## always present, character(0) when nothing was suppressed (this trio
   ## has no isolated individual). conditions and conditionsNotDrawn added
-  ## S1029 (more than one affected condition), also always present.
+  ## S1029 (more than one affected condition), also always present. hints
+  ## added pedkindraw S51 (plan Phase G10), always present.
   expect_setequal(names(result),
                    c("nodes", "edges", "duplicateToReal", "isolatedIds",
-                     "conditions", "conditionsNotDrawn"))
+                     "conditions", "conditionsNotDrawn", "hints"))
   expect_equal(result$isolatedIds, character(0))
 })
 
