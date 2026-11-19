@@ -31,7 +31,8 @@ G5, other ways of writing an unknown parent and a sex rewritten into pedkindraw'
 each animal's offspring count and the matings, is done (S47, R117-R119), G7, removing listed animals with their
 offspring's links to them, is done (S48, R120-R122), G8, aligned generations in `findGeneration()`, is done (S49,
 R123-R124), G9, an example drawing the animals `shrinkPedigree()` removed, is done (S50, R125-R126), G10, the layout
-returning the hints it used, is done (S51, R127-R128), and G11 is next (Planned, below).
+returning the hints it used, is done (S51, R127-R128), G11, the relatives within a distance of chosen animals, is
+done (S52, R129-R130), and G12 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -63,8 +64,9 @@ session each unless marked. They follow the copy slices.
   parents and sex rewritten into pedkindraw's) is done (S46); G6 (each animal's offspring count and its mates)
   is done (S47); G7 (removing listed animals, their offspring's links to them cleared) is done (S48); G8
   (aligned generations in `findGeneration()`) is done (S49); G9 (an example marking the animals
-  `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); next
-  G11 (the relatives within k steps of chosen animals), then
+  `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); G11 (the
+  relatives within a distance of chosen animals) is done (S52); next G12 (a measured trait drawn by a threshold),
+  then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
@@ -242,6 +244,14 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G11, the near relatives of chosen animals (pedkindraw S52, 2026-11-19).** Pedixplorer's
+  `useful_inds(max_dist = )` keeps the animals within a distance of its informative ones; pedkindraw kept only
+  ancestors (`trimPedigree()`) or descendants (`getDescendantPedigree()`), with no distance.
+  `getNearRelativePedigree(ped, probands, maxDist)` now keeps each animal within `maxDist`, read from kinship (1 the
+  proband, 2 a parent, offspring or full sibling, 3 a grandparent, half sibling, uncle or aunt), and each parent
+  that joins their families. Mark's picks: Pedixplorer's rule (R129), found from its help and results and the
+  same animals in 1,980 of 1,980 runs; the name and the probands named by id (R130). Faster than Pedixplorer (0.5 s
+  to 2.0 s on 3,694 animals). The fidelity cases 600 of 600, nothing set aside.
 - **Phase G10, the layout's own hints returned (pedkindraw S51, 2026-11-19).** kinship2's `autohint()` and
   Pedixplorer's `auto_hint()` return the hints their layouts use, for a user to edit; pedkindraw's layout took
   hints but returned none. `makePedigreeMatingLayout()` now returns the hints it used as `hints`, so

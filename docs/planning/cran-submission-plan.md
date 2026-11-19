@@ -20,8 +20,10 @@ and `getMatings()`, each animal's offspring and the matings; R117-R119). Phase G
 listed animals removed and their offspring's links to them cleared; R120-R122). Phase G8 DONE (S49:
 `findGeneration(alignMates = TRUE)`, aligned generations; R123-R124). Phase G9 DONE (S50: `?shrinkPedigree`'s
 example draws the whole pedigree with the animals removed filled; R125-R126). Phase G10 DONE (S51:
-`makePedigreeMatingLayout()` returns the hints it used, passed back the same layout; R127-R128). Next: Phase G11
-(that plan's section 5.1), then G12-G17 before 17g.
+`makePedigreeMatingLayout()` returns the hints it used, passed back the same layout; R127-R128). Phase G11 DONE
+(S52: `getNearRelativePedigree()`, the relatives within a distance of chosen animals, as Pedixplorer's
+`useful_inds(max_dist = )` keeps them; R129-R130). Next: Phase G12 (that plan's section 5.1), then G13-G17 before
+17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -607,6 +609,11 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   copied code changed at its two returns, with a `DIVERGENCE.md` sentence; the drawing vignette describes them.
   Commits `932db0c` (RED) to `aef7f7b` (REFACTOR, one `match()` for each mate's node); fidelity 600 of 600 with one
   counted set-aside (72 results, 156 layouts).
+- **Done G11 (S52; R129-R130):** `getNearRelativePedigree(ped, probands, maxDist)`, a new export, keeps the animals
+  within a distance of the probands read from kinship, and each parent that joins their families, as Pedixplorer's
+  `useful_inds(max_dist = )` does (1,980 of 1,980 runs measured); listed in `_pkgdown.yml`, `?pedkindraw` and the
+  README. Commits `a762ffb` (RED) to `ebe04e5` (REFACTOR, two shared helpers given an argument); fidelity 600 of 600
+  with no new set-aside.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

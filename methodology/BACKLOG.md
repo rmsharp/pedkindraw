@@ -23,12 +23,13 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G11-G17: the other gaps, before the release** (READY in order, G11 next; Effort L altogether, 27-41
+- [ ] **Phases G12-G17: the other gaps, before the release** (READY in order, G12 next; Effort L altogether, 25-38
       sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
-      DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128) --
+      DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
+      DONE in S52, R129-R130, 1 session of the row's 2-3) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
-      commands and surface: G11-G14 the M additions (C1, B4 on G1's check, B3's marks, B5's sizes); G15-G17
+      commands and surface: G12-G14 the M additions (B4 on G1's check, B3's marks, B5's sizes); G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
 
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
