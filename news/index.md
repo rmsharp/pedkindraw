@@ -228,6 +228,12 @@ why.
   row; an offspring keeps its other parent. kinship2’s `pedigree.trim()`
   stops when an offspring would keep only one parent, and Pedixplorer’s
   `subset(del_parents = "one")` clears that parent too.
+- New:
+  [`?shrinkPedigree`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md)’s
+  example draws the whole pedigree with the animals shrinking removed
+  filled, from `idTrimmed`, as a condition column (`affected_removed`,
+  which the legend calls “Affected (removed)”). kinship2’s
+  `plot.pedigree.shrink()` draws only the animals kept.
 
 ### Converters
 

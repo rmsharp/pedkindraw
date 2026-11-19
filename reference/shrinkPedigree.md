@@ -112,7 +112,9 @@ A list:
 
 ## Details
 
-A fully genotyped pedigree can shrink to zero rows (see the example).
+A fully genotyped pedigree can shrink to zero rows (see the example). To
+see what shrinking removed, draw the whole pedigree with a condition
+column made from `idTrimmed`, as the example does.
 
 It stops with a plain message when `ped` is not a data frame, when an
 `id` is missing, empty or repeated, when a `sire` or `dam` is not an
@@ -149,4 +151,24 @@ nrow(ped)
 ## With every individual genotyped, the whole pedigree can be trimmed away.
 nrow(result$ped)
 #> [1] 0
+
+## Only F and G genotyped: C, not genotyped and with no offspring, is
+## removed, and then A and B, founders left with one offspring, D, who
+## becomes a founder.
+result <- shrinkPedigree(ped, genotyped = ped$id %in% c("F", "G"))
+result$ped$id
+#> [1] "D" "E" "F" "G"
+result$idTrimmed
+#> [1] "C" "A" "B"
+
+## To see what shrinking removed, draw the whole pedigree with the removed
+## animals filled. A column whose name starts with "affected" is drawn as a
+## condition; the legend and the hover text call this one
+## "Affected (removed)".
+ped$sex <- c("M", "F", "F", "M", "F", "M", "F")
+ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+ped$affected_removed <- ped$id %in% result$idTrimmed
+layout <- makePedigreeMatingLayout(ped)
+diagram <- drawPedigreeDiagram(layout)
+## Print `diagram` in an interactive session to see it.
 ```
