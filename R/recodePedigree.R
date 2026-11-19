@@ -1,0 +1,114 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase G5, gap
+## C4, rulings R114-R116, pedkindraw S46). New code, derived from no other
+## package.
+
+#' Rewrite other codes for unknown parents and sex into pedkindraw's
+#'
+#' Pedigrees written by other tools often give an unknown parent as \code{0}
+#' or leave it empty, and a sex as \code{1} and \code{2} or as a word.
+#' \code{recodePedigree()} rewrites these into the codes the rest of the
+#' package reads: \code{NA} for an unknown parent, and \code{"M"},
+#' \code{"F"}, \code{"H"} and \code{"U"} for male, female, hermaphrodite and
+#' unknown sex. It changes nothing else, and a pedigree already written in
+#' these codes comes back as it was.
+#'
+#' \describe{
+#'   \item{Parents}{In \code{sire} and \code{dam}, each value named in
+#'   \code{missingParentCodes} becomes \code{NA}; \code{""} there stands for
+#'   an empty or spaces-only value. A value that is also the id of a row is
+#'   a real parent and is kept, as \code{\link{checkPedigree}} reads it. Each
+#'   column keeps its type, so number ids stay numbers.}
+#'   \item{Sex}{When \code{ped} has a \code{sex} column, it is returned as
+#'   text, or as a factor when it is one (its levels rewritten, and levels
+#'   that become one code merged). Case and spaces around a value are
+#'   ignored: \code{"M"},
+#'   \code{"male"} and \code{1} become \code{"M"}; \code{"F"},
+#'   \code{"female"} and \code{2} become \code{"F"}; \code{"H"} and
+#'   \code{"hermaphrodite"} become \code{"H"}; \code{"U"}, \code{"unknown"},
+#'   \code{3} and \code{4} become \code{"U"}. An empty or spaces-only value
+#'   becomes \code{NA}, an unrecorded sex, and \code{NA} stays \code{NA}. Any
+#'   other value, such as \code{"mael"}, is left as written, so
+#'   \code{\link{checkPedigree}} still reports it.}
+#' }
+#'
+#' The numbers 1 and 2 are read as nprcgenekeepr's \code{convertSexCodes()},
+#' kinship2's \code{pedigree()} and Pedixplorer read them, and 3 and 4 as
+#' \code{convertSexCodes()} reads them by default (kinship2 reads 4 as a
+#' terminated pregnancy, which \code{\link{asPedFrame}} also writes as
+#' \code{"U"}). Unlike \code{convertSexCodes()}, \code{recodePedigree()}
+#' keeps \code{"H"}, \code{NA} and any value it does not know.
+#'
+#' @param ped a data frame with the columns \code{id}, \code{sire} and
+#' \code{dam}, and optionally \code{sex}. Factor columns are read by their
+#' labels and numbers as text.
+#' @param missingParentCodes a character vector of the values that mean an
+#' unknown parent, compared with \code{sire} and \code{dam} as text; by
+#' default \code{"0"}, \code{"NA"} and \code{""} (empty or spaces only), the
+#' codes \code{\link{checkPedigree}} reports. \code{character(0)} leaves the
+#' parents as they are.
+#' @return \code{ped}, with each unknown parent written \code{NA} and each sex
+#' written \code{"M"}, \code{"F"}, \code{"H"} or \code{"U"} where it was
+#' written another way; its other columns, rows and ids unchanged.
+#'
+#' @seealso \code{\link{checkPedigree}}, \code{\link{asPedFrame}}
+#'
+#' @export
+#' @examples
+#' ## A pedigree written as kinship2's sample data write theirs.
+#' ped <- data.frame(
+#'   id = c("A", "B", "C", "D"),
+#'   sire = c("0", "0", "A", "A"),
+#'   dam = c("0", "0", "B", "B"),
+#'   sex = c("male", "female", "1", "2")
+#' )
+#' checkPedigree(ped)
+#' recoded <- recodePedigree(ped)
+#' recoded
+#' checkPedigree(recoded)
+#' findGeneration(recoded$id, recoded$sire, recoded$dam)
+recodePedigree <- function(ped, missingParentCodes = c("0", "NA", "")) {
+  .checkPedFrame(ped, "recodePedigree")
+  if (!is.character(missingParentCodes) || anyNA(missingParentCodes)) {
+    stop("recodePedigree: missingParentCodes must be a character vector ",
+         "without NA", call. = FALSE)
+  }
+  id <- as.character(ped[["id"]])
+  ids <- id[!is.na(id) & nzchar(trimws(id))]
+  blankIsCode <- "" %in% missingParentCodes
+  for (column in c("sire", "dam")) {
+    value <- as.character(ped[[column]])
+    blank <- blankIsCode & !nzchar(trimws(value))
+    isCode <- !is.na(value) & !(value %in% ids) &
+      (value %in% missingParentCodes | blank)
+    ped[[column]][isCode] <- NA
+  }
+  if ("sex" %in% names(ped)) {
+    ped[["sex"]] <- .recodeSex(ped[["sex"]])
+  }
+  ped
+}
+
+## The numbers recodePedigree() reads as each sex, besides the sex's code and
+## its word, the names of sexCodes (plan R116).
+.sexNumbers <- list(male = "1", female = "2", hermaphrodite = character(0L),
+                    unknown = c("3", "4"))
+
+## sex with each value recodePedigree() knows written as its code, an empty
+## or spaces-only value NA, and every other value as it was: a factor by its
+## levels (levels that become one code are merged), anything else as text.
+.recodeSex <- function(sex) {
+  if (is.factor(sex)) {
+    levels(sex) <- .recodeSex(levels(sex))
+    return(sex)
+  }
+  written <- as.character(sex)
+  key <- toupper(trimws(written))
+  for (word in names(sexCodes)) {
+    code <- sexCodes[[word]]
+    written[key %in% c(code, toupper(word), .sexNumbers[[word]])] <- code
+  }
+  written[!is.na(key) & !nzchar(key)] <- NA_character_
+  written
+}
