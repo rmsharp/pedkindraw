@@ -4,7 +4,12 @@
 \alias{makePedigreeDiagramData}
 \title{Convert a pedigree data frame into visNetwork-ready diagram data}
 \usage{
-makePedigreeDiagramData(ped, twinRelations = NULL, maxNameChars = 15)
+makePedigreeDiagramData(
+  ped,
+  twinRelations = NULL,
+  maxNameChars = 15,
+  conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
+)
 }
 \arguments{
 \item{ped}{data frame with \code{id}, \code{sire}, \code{dam}, \code{sex},
@@ -13,7 +18,8 @@ parents; \code{gen} an integer generation number, 0 for founders, as
 produced by \code{\link{findGeneration}}). Two optional columns are
 used when present: a logical \code{affected} column, which adds an
 affected-status line to \code{title} and sets \code{color.background}:
-\code{"#CC79A7"} (pink) for an affected node, \code{"#BEBEBE"} (grey)
+the first of \code{conditionColors} (\code{"#CC79A7"}, pink, by
+default) for an affected node, \code{"#BEBEBE"} (grey)
 for a node whose status is unknown (\code{NA}) and \code{"#FFFFFF"}
 (white) for an unaffected one (every node is white without the column);
 and a character \code{name} column, which is shown
@@ -37,6 +43,13 @@ A line break counts as one character. \code{Inf} writes every name
 whole, as kinship2 and Pedixplorer write their labels; a long name can
 then run into the labels of the animals beside it. Stops unless it is
 one whole number of 1 or more, or \code{Inf}.}
+
+\item{conditionColors}{the colours of the affected conditions, as
+\code{\link{makePedigreeMatingLayout}} takes them: this function draws
+the column \code{affected} alone, so it fills an affected animal with
+the first colour, written as its \code{"#RRGGBB"} code. It stops as
+\code{makePedigreeMatingLayout()} does, except that one colour is always
+enough.}
 }
 \value{
 A list with two data frames: \code{nodes} (\code{id}, \code{label},

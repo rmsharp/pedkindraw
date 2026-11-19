@@ -10,7 +10,8 @@ makePedigreeMatingLayout(
   twinRelations = NULL,
   kinshipMatrix = NULL,
   hints = NULL,
-  maxNameChars = 15
+  maxNameChars = 15,
+  conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
 )
 }
 \arguments{
@@ -21,10 +22,12 @@ column marks deceased animals: see the \code{deceased} column of the
 returned \code{nodes}. Every column whose name starts
 \code{affected} is an affected condition, in the order the data
 frame holds them, the first four drawn (see \code{conditions} in the
-return value). A lone one fills the symbol, pink where the animal is
-affected and grey where its status is unknown (\code{NA}); two or more
-split it into sections. (\code{\link{makePedigreeDiagramData}} reads the
-column \code{affected} alone.) A condition drawn reads as
+return value). A lone one fills the symbol, in the first of
+\code{conditionColors} (pink by default) where the animal is affected
+and grey where its status is unknown (\code{NA}); two or more split it
+into sections, one colour each.
+(\code{\link{makePedigreeDiagramData}} reads the column
+\code{affected} alone.) A condition drawn reads as
 \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
 than 0 and 1 stops, before any animal is left out.}
 
@@ -100,6 +103,27 @@ one character. \code{Inf} writes every name whole, as kinship2 and
 Pedixplorer write their labels; a long name can then run into the
 labels of the animals beside it. It changes nothing but the labels.
 Stops unless it is one whole number of 1 or more, or \code{Inf}.}
+
+\item{conditionColors}{the colours of the affected conditions, in the
+order they are drawn: 1 to 4 colours, at least one for each condition
+drawn, each a name R knows (such as \code{"orange"} or
+\code{"steelblue3"}) or a code (such as \code{"#E69F00"}). Each is
+written as its \code{"#RRGGBB"} code, the colour R means by it: a
+browser reads most of R's names as no colour, and \code{"grey"},
+\code{"gray"}, \code{"green"}, \code{"maroon"} and
+\code{"purple"} as other colours. The default is the four colours
+drawn before this argument: pink, orange, sky blue and bluish green,
+the last three Okabe and Ito's colour-blind-safe ones. They fill the
+symbols here and go into the returned \code{conditions} table, from
+which \code{\link{drawPedigreeDiagram}} paints the sections and the
+legend, so all three agree. With no condition column nothing is
+coloured, and the drawing's one \dQuote{Affected} legend row keeps the
+default pink. Stops on anything but 1 to 4 colours as text, on
+\code{NA}, on a colour R does not know, on a number (it picks from R's
+palette, which can be changed), on a transparent colour, on white and
+on the grey \code{"#BEBEBE"} (they mark an unaffected animal and an
+unknown status), on a colour given twice, and on fewer colours than
+conditions drawn.}
 }
 \value{
 A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
@@ -140,7 +164,8 @@ isolated, \code{nodes}/\code{edges} are both 0-row and
 \code{duplicateToReal} is empty. Also \code{conditions}, a data
 frame with one row per drawn condition (\code{column}, \code{label}
 such as \dQuote{Affected} or \dQuote{Affected (diabetes)}, and its
-\code{color}), 0-row when \code{ped} has no such column, and
+\code{color}, from \code{conditionColors} as a \code{"#RRGGBB"}
+code), 0-row when \code{ped} has no such column, and
 \code{conditionsNotDrawn}, the names of any such columns past the
 fourth.
 }
