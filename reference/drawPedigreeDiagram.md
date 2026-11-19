@@ -5,12 +5,13 @@ layout made by
 [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md).
 The diagram has the sex symbols at the layout's fixed positions, the
 legend (the five sex symbols, one row per affected condition or a single
-“Affected” row, “Deceased”, and the dashed repeat-appearance and twin
+“Affected” row, a grey “Affected status unknown” row when an animal's
+status is unknown, “Deceased”, and the dashed repeat-appearance and twin
 lines), each multi-condition symbol split into its colored sections, the
 slash through each deceased animal's symbol, a canvas that grows with
-the number of conditions, the **Export Diagram (PNG)** button, a “Select
-by id” box that lists the animals, and the highlight on hover. The
-sections and the slash are painted by a drawing script inside the
+the number of legend rows, the **Export Diagram (PNG)** button, a
+“Select by id” box that lists the animals, and the highlight on hover.
+The sections and the slash are painted by a drawing script inside the
 widget, so they appear wherever the widget is shown: in the RStudio
 viewer, in an R Markdown or Quarto document, or in a web page saved with
 [`htmlwidgets::saveWidget()`](https://rdrr.io/pkg/htmlwidgets/man/saveWidget.html).
@@ -57,6 +58,12 @@ sections, one per condition, counter-clockwise from the top (the first
 of two is the left half), and each condition's legend row shows a circle
 cut the same way with that condition's section filled in its color, so
 the legend says which section is which.
+
+An animal whose affected status is unknown (`NA`) is filled grey, with
+one condition, or has that condition's section grey, with two or more,
+so it does not look unaffected; the legend's grey hexagon “Affected
+status unknown” then says what the grey is, and the canvas is 45 pixels
+taller for that row.
 
 A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,

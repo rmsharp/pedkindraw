@@ -21,12 +21,14 @@ makePedigreeDiagramData(ped, twinRelations = NULL)
   number, 0 for founders, as produced by
   [`findGeneration`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md)).
   Two optional columns are used when present: a logical `affected`
-  column, which adds an affected-status line to `title` and fills
-  affected nodes with `color.background` `"#CC79A7"` (all other nodes
-  are white, `"#FFFFFF"`); and a character `name` column, which is shown
-  in `label` (long names are truncated) and in `title`. In `affected`
-  the numbers 1 and 0 read as `TRUE` and `FALSE`, and any other number
-  stops (compare a measured trait with a threshold first); text reads as
+  column, which adds an affected-status line to `title` and sets
+  `color.background`: `"#CC79A7"` (pink) for an affected node,
+  `"#BEBEBE"` (grey) for a node whose status is unknown (`NA`) and
+  `"#FFFFFF"` (white) for an unaffected one (every node is white without
+  the column); and a character `name` column, which is shown in `label`
+  (long names are truncated) and in `title`. In `affected` the numbers 1
+  and 0 read as `TRUE` and `FALSE`, and any other number stops (compare
+  a measured trait with a threshold first); text reads as
   [`as.logical()`](https://rdrr.io/r/base/logical.html) reads it, other
   text as unknown.
 

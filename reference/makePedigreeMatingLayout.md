@@ -32,7 +32,9 @@ makePedigreeMatingLayout(
   column of the returned `nodes`. Every column whose name starts
   `affected` is an affected condition, in the order the data frame holds
   them, the first four drawn (see `conditions` in the return value). A
-  lone one fills the symbol; two or more split it into sections.
+  lone one fills the symbol, pink where the animal is affected and grey
+  where its status is unknown (`NA`); two or more split it into
+  sections.
   ([`makePedigreeDiagramData`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
   reads the column `affected` alone.) A condition drawn reads as
   [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)'s
@@ -119,14 +121,15 @@ repeat-appearance nodes, `FALSE` for every other node and for all of
 them when `ped` has no `status` column), `x`, `y`; `color.border` is
 added under `edgeStyle = "rectilinear"`; `affectedSections` is added
 when there are two or more conditions: a character string with one
-character per condition, `"1"` where the animal is affected and `"0"`
-where it is unaffected or unknown, the same for a repeat-appearance node
-as for its animal, `""` for a node that is not an animal, never `NA`;
-with two or more conditions the animals' `color.background` is white,
-the sections carrying the color), `edges` (`from`, `to`, `dashes`,
-`smooth.enabled`, `smooth.type`, `smooth.roundness`, `color`, `width`;
-the `color` and `width` columns are always present once any mating unit
-exists: a consanguineous mating unit's (`kinship(sire, dam) > 0`) 2
+character per condition, `"1"` where the animal is affected, `"0"` where
+it is unaffected and `"?"` where it is unknown (the drawing fills that
+section grey), the same for a repeat-appearance node as for its animal,
+`""` for a node that is not an animal, never `NA`; with two or more
+conditions the animals' `color.background` is white, the sections
+carrying the color), `edges` (`from`, `to`, `dashes`, `smooth.enabled`,
+`smooth.type`, `smooth.roundness`, `color`, `width`; the `color` and
+`width` columns are always present once any mating unit exists: a
+consanguineous mating unit's (`kinship(sire, dam) > 0`) 2
 spouse-to-union edges get `"#D55E00"`/`4`, an Okabe-Ito colorblind-safe
 vermillion in kinship2's doubled/thickened mate-line convention, and
 every other edge gets `NA`; `label` is added when `twinRelations` is

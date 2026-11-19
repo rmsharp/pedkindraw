@@ -83,8 +83,9 @@ column marks deceased animals: see the <code>deceased</code> column of the
 returned <code>nodes</code>. Every column whose name starts
 <code>affected</code> is an affected condition, in the order the data
 frame holds them, the first four drawn (see <code>conditions</code> in the
-return value). A lone one fills the symbol; two or more split it
-into sections. (<code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData</a></code> reads the
+return value). A lone one fills the symbol, pink where the animal is
+affected and grey where its status is unknown (<code>NA</code>); two or more
+split it into sections. (<code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData</a></code> reads the
 column <code>affected</code> alone.) A condition drawn reads as
 <code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData()</a></code>'s <code>affected</code> does: a number other
 than 0 and 1 stops, before any animal is left out.</p></dd>
@@ -173,8 +174,9 @@ them when <code>ped</code> has no <code>status</code> column), <code>x</code>,
 <code>y</code>; <code>color.border</code> is added under
 <code>edgeStyle = "rectilinear"</code>; <code>affectedSections</code> is added
 when there are two or more conditions: a character string with one
-character per condition, <code>"1"</code> where the animal is affected
-and <code>"0"</code> where it is unaffected or unknown, the same for a
+character per condition, <code>"1"</code> where the animal is affected,
+<code>"0"</code> where it is unaffected and <code>"?"</code> where it is unknown
+(the drawing fills that section grey), the same for a
 repeat-appearance node as for its animal, <code>""</code> for a node that
 is not an animal, never <code>NA</code>; with two or more conditions the
 animals' <code>color.background</code> is white, the sections carrying the

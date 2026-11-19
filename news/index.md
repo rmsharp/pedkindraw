@@ -46,6 +46,18 @@ why.
   `NA`, 0 and 1 (kinship2’s codes, which
   [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
   writes) and text read as before.
+- New: an animal whose affected status is unknown (`NA`) is filled grey
+  (`#BEBEBE`, R’s “grey”, as Pedixplorer fills it), with one condition,
+  or has that condition’s section grey, with two to four, so it no
+  longer looks unaffected;
+  [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
+  fills it grey too. The legend then has a grey row “Affected status
+  unknown” after the condition rows, and the drawing is 45 px taller for
+  it. nprcgenekeepr still fills an unknown status white. Text in a
+  condition column that
+  [`as.logical()`](https://rdrr.io/r/base/logical.html) cannot read
+  (such as “yes”, or “1” read as text) is unknown, so it is now drawn
+  grey.
 - New: the legend’s four lines (the dashed line joining two places of
   the same animal, and the three twin lines) have no arrowheads, as the
   drawing’s own lines have none, and each line’s label sits on white.

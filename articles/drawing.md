@@ -106,8 +106,10 @@ near the one under the pointer turn grey.
 ## Conditions
 
 A column whose name starts with `affected` is a condition. With one such
-column, an animal whose value is `TRUE` (or 1) is filled pink; `FALSE`,
-0 and `NA` leave it white, and hovering over the animal says Yes, No or
+column, an animal whose value is `TRUE` (or 1) is filled pink, `FALSE`
+(or 0) leaves it white, and `NA` fills it grey, so that an animal whose
+status is not known does not look unaffected; the legend then has a grey
+row “Affected status unknown”. Hovering over an animal says Yes, No or
 Unknown. Here D and G are affected, and whether H is affected is not
 known.
 
@@ -122,12 +124,14 @@ drawPedigreeDiagram(layout1)
 With two to four condition columns, each symbol is cut into one section
 per condition, filled in that condition’s colour where the animal is
 affected, and each condition’s row in the legend shows the sections with
-its own filled. The sections go counter-clockwise from the top, in the
-order of the columns. The column’s name gives the label:
-`affected_diabetes` becomes “Affected (diabetes)”. The drawing grows 45
-pixels taller for each condition past the first, to make room in the
-legend. Here C has diabetes, B and E are obese, and A has arthritis; G
-has diabetes and is obese, and whether H is obese is not known.
+its own filled; a section whose status is not known is grey. The
+sections go counter-clockwise from the top, in the order of the columns.
+The column’s name gives the label: `affected_diabetes` becomes “Affected
+(diabetes)”. The drawing grows 45 pixels taller for each condition past
+the first, and for the “Affected status unknown” row, to make room in
+the legend. Here C has diabetes, B and E are obese, and A has arthritis;
+G has diabetes and is obese, and whether H is obese is not known, so H’s
+obesity section is grey.
 
 ``` r
 
