@@ -13,7 +13,9 @@
 ## use the status, do not read the column (R105). Text as.logical() cannot
 ## read still reads as unknown with no message (nprcgenekeepr issue #133;
 ## the copied tests in test_makePedigreeDiagramData.R and
-## test_makePedigreeMatingLayout.R).
+## test_makePedigreeMatingLayout.R). S53 (Phase G12, R132): the builders'
+## message ends naming their argument conditionThresholds, shrinkPedigree()'s
+## as before.
 library(testthat)
 
 ## A and B, founders, with offspring C (male) and D (female): the gaps
@@ -31,12 +33,17 @@ library(testthat)
   "Give TRUE or FALSE (or 1 or 0) for each animal; for a measured trait,",
   "compare it with a threshold first."
 )
+.g1BuilderAdvice <- paste(
+  "Give TRUE or FALSE (or 1 or 0) for each animal; for a measured trait,",
+  "give its cut-off in conditionThresholds, such as c(affected = \"> 5\")."
+)
 
 test_that("makePedigreeMatingLayout() stops on a condition column holding numbers other than 0 and 1 (case measuredTrait)", {
   expect_error(
     makePedigreeMatingLayout(.g1Ped(c(2.5, 0.0, 0.3, 9.0))),
     paste0("makePedigreeMatingLayout(): the condition column 'affected' ",
-           "holds numbers other than 0 and 1 (2.5, 0.3, 9). ", .g1Advice),
+           "holds numbers other than 0 and 1 (2.5, 0.3, 9). ",
+           .g1BuilderAdvice),
     fixed = TRUE
   )
 })
@@ -80,7 +87,8 @@ test_that("makePedigreeDiagramData() stops on an affected column holding numbers
   expect_error(
     makePedigreeDiagramData(.g1Ped(c(2.5, 0.0, 0.3, 9.0))),
     paste0("makePedigreeDiagramData(): the condition column 'affected' ",
-           "holds numbers other than 0 and 1 (2.5, 0.3, 9). ", .g1Advice),
+           "holds numbers other than 0 and 1 (2.5, 0.3, 9). ",
+           .g1BuilderAdvice),
     fixed = TRUE
   )
 })
