@@ -10,98 +10,121 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17f2 DONE (S33-S41); the gap
-phases G1-G17 run before 17g (R97, `docs/planning/gaps-and-shared-code-plan.md` section 5.1). G1-G9 DONE (S42-S50).
-**G10 DONE (S51)**: `makePedigreeMatingLayout()` returns the hints it used as its last element, `hints`: `order` by
-row (a founder only where an order hint named it), `mate` the given rows, then the layout's own row for each other
-mating of an animal with one or two matings the given rows do not place; passed back, the same layout (R127-R128).
-One session, not the plan's 2-3.
-**Next: Phase G11**, gap C1: a new function that keeps the relatives within k steps of chosen animals, its rule
-written from Pedixplorer's help and measured results, as `findUnrelated()`'s was (R52)
-(`docs/planning/gaps-and-shared-code-plan.md:369`; gaps document `docs/research/pedkindraw-gaps-2026-11-18.md:262`;
-`methodology/BACKLOG.md:26`). Its DONE: case `distanceSubset` keeps 14, 30 and 33 of 41 for k = 1, 2, 3, as
-Pedixplorer's `useful_inds()`, or a measured, stated difference; seeded random cases compared (Learnings 19-21).
-Pre-RED choices (the row): its name; what "informative" means by default. New code, pedkindraw's own (Pedixplorer's
-source not read, R11/R14): no `DIVERGENCE.md` row, the fidelity tool 600 of 600 with no set-aside (an addition), and
-the contract's section 4 gains the export. The plan says 2-3 sessions (a guess; G10 took 1).
+phases G1-G17 run before 17g (R97, `docs/planning/gaps-and-shared-code-plan.md` section 5.1). G1-G10 DONE (S42-S51).
+**G11 DONE (S52)**: `getNearRelativePedigree(ped, probands, maxDist)`, a new export, keeps each animal within
+`maxDist` of the probands (distance `log2(1 / k)`, `k` its largest kinship with one) and each parent of those whose
+own and its mates' offspring number two or more, the other parents set to `NA`: the animals Pedixplorer's
+`useful_inds(max_dist = )` keeps, 1,980 of 1,980 runs measured (R129-R130). One session, not the plan's 2-3.
+**Next: Phase G12**, gap B4: a measured trait drawn by a threshold, with the rule in the legend, built on G1's check
+(R102-R105) (`docs/planning/gaps-and-shared-code-plan.md:371`; gaps document
+`docs/research/pedkindraw-gaps-2026-11-18.md:208`; `methodology/BACKLOG.md:26`). Its DONE: case `measuredTrait`
+(`tools/gapCases.R:377`): at threshold 5, A, B, C unaffected and D affected; the legend states the rule. Pre-RED
+choices (the row): a threshold argument or a colour scale; above, or at-and-above. Today (run S52) the case prints
+Pedixplorer filling white, white, white, red with the legend "Healthy <= to 5" / "Affected > to 5", and pedkindraw
+stopping by G1's check ("the condition column 'affected' holds numbers other than 0 and 1 (2.5, 0.3, 9)"). A guess,
+not measured: G1's check is called in copied code (`R/makePedigreeDiagramData.R:173`, `:1954`), so G12 probably
+changes copied code, which needs a `DIVERGENCE.md` sentence "at the switch" (R98) and the drift tool exit 0; with the
+default unchanged the fidelity tool stays 600 of 600. The plan says 2-3 sessions (a guess; G10 and G11 took 1 each).
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker:** G11 (recommended: R97's order). Also READY: the `smallPed` fixture (`methodology/BACKLOG.md:52`),
-rewording `DIVERGENCE.md`'s older rows to "at the switch" (`methodology/BACKLOG.md:34`, documentation only) and the
-"Ready, small" items (`methodology/BACKLOG.md:112`; name all seven in the picker's fourth option, as S48-S51 did).
-**Session boundary:** one session of G11 (it may take 2-3). Close out at a clean phase boundary (after RED, or after
+**The orient picker:** G12 (recommended: R97's order). Also READY: the `smallPed` fixture (`methodology/BACKLOG.md:53`),
+rewording `DIVERGENCE.md`'s older rows to "at the switch" (`methodology/BACKLOG.md:35`, documentation only) and the
+"Ready, small" items (`methodology/BACKLOG.md:113`; name all seven in the picker's fourth option, as S48-S52 did).
+**Mark's question in S52 (answered, nothing filed):** whether a tutorial says which trait is which section of a
+symbol and how a trait's name shows. Yes: the drawing vignette's "Conditions" (`vignettes/drawing.Rmd:197`: sections
+counter-clockwise from the top in column order, each legend row the key; `:202`: `affected_diabetes` labelled
+"Affected (diabetes)"; `:140`: hovering lists each condition). Two gaps were named to him: no picture of which
+position each section takes for 2, 3 and 4 conditions, and the multi-condition tooltip shown only in a hidden
+check (`:257`). He did not ask for an item; it would be documentation of its own, and B3/B5 (G13-G14) also touch
+the drawing's marks.
+**Session boundary:** one session of G12 (it may take 2-3). Close out at a clean phase boundary (after RED, or after
 GREEN and its checks), never mid-phase.
-**Priority:** HIGH (G12-G17 and 17g follow it).
+**Priority:** HIGH (G13-G17 and 17g follow it).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 21 differ, 0 without a row**: G10's helpers are pedkindraw's own);
+1. Orient; drift tool (expect **91 functions, 21 differ, 0 without a row**: G11 is pedkindraw's own code);
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l
    'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
    (`4283e3502`, `a85311021`, `392dd347e`, `471589138`). nprcgenekeepr was at `3e06730c5`, tree clean, through all of
-   S51; a new commit there to a copied file departs from R101: report it to Mark.
-2. Check S51's push: both workflows run (`R/`, `man/`, `tests/`, `vignettes/`, `NEWS.md` and `tools/` changed).
-   Expect the Ubuntu R-devel job to fail again installing Bioconductor's S4Vectors 0.50.3 (S50's run `44565557027`
-   did, as S49's: `conformMethod` error, "lazy loading failed"; `methodology/BACKLOG.md:152`): not pedkindraw's code.
-   Any other failure is real.
-3. **G11, measure before the pre-RED picker (Learnings 17, 19-21):** (a) `Rscript tools/gapCases.R distanceSubset`
-   (`tools/gapCases.R:549`; today: 41 animals, 7 informative (available and affected), `useful_inds()` keeps 14, 30
-   and 33 for `max_dist` 1-3; `trimPedigree()` keeps 18, 13 with `removeUninformative = TRUE`); (b) Pedixplorer's help
-   pages for `useful_inds()`, `is_informative()` and `min_dist_inf()` (help and results only, not its source); (c)
-   `useful_inds()` on typed, fixture and seeded random pedigrees, one process per case under `timeout`, each in
-   `tryCatch()`, tallying where it returns, stops or hangs (Learning 19); shrink a case where a prototype differs
-   until it is hand-sized (Learning 21); (d) the neighbours a new function sits beside: `trimPedigree()`
-   (`R/trimPedigree.R:60`), `getProbandPedigree()`, `getDescendantPedigree()`, and `findUnrelated()`, R52's rule
-   written from measurements (`docs/planning/standalone-pedigree-package-plan.md:192`); (e) the picker: the name and
-   what "informative" means by default, each option with measured counts.
-4. RED, GREEN, REFACTOR by the gates. DONE (plan section 5.1, "Every G phase", `:336`): suite 0 failed, WARN 0; lint
+   S52; a new commit there to a copied file departs from R101: report it to Mark.
+2. Check S52's push: both workflows run (`R/`, `man/`, `tests/`, `NEWS.md`, the README, `_pkgdown.yml` and `tools/`
+   changed). Expect the Ubuntu R-devel job to fail again installing Bioconductor's S4Vectors 0.50.3 (S51's run
+   `44588760229` did, its other four jobs `success`; `methodology/BACKLOG.md:166`): not pedkindraw's code. Any other
+   failure is real. The site build must succeed: `_pkgdown.yml` lists the new topic (`pkgdown::check_pkgdown()` "No
+   problems found" on S52's tree).
+3. **G12, measure before the pre-RED picker (Learnings 17-21; dragons 31-34):** (a) `Rscript tools/gapCases.R
+   measuredTrait` (`tools/gapCases.R:377`); (b) Pedixplorer's help for `generate_colors()` (`threshold`,
+   `sup_thres_aff`, `keep_full_scale`, `breaks`) and for whatever it names (dragon 32), and how its legend words the
+   rule, help and results only, not its source; (c) G1's check, `.checkConditionNumbers()` (`R/conditionValues.R:20`;
+   called at `R/makePedigreeDiagramData.R:173`, `:1954` and `R/shrinkPedigree.R:106`) and its rulings R102-R105
+   (`docs/planning/standalone-pedigree-package-plan.md:243`-`:246`): a number other than 0 and 1 stops today, so a
+   threshold decides where those numbers become affected; (d) how conditions are drawn and named: `conditionColors`
+   (G4, R111-R113), the legend rows, the tooltip, and the drawing vignette's "Conditions" (`vignettes/drawing.Rmd:181`,
+   whose hidden checks compare labels: dragon 31); (e) the picker: threshold or colour scale, above or at-and-above,
+   each option tried on a scratch prototype with its counts. Anything drawn is measured in headless Chrome from
+   vis.js (the plan's "Surface", `docs/planning/gaps-and-shared-code-plan.md:337` and below).
+4. RED, GREEN, REFACTOR by the gates. DONE (plan section 5.1, "Every G phase", `:337`): suite 0 failed, WARN 0; lint
    0; roxygen stable; covr on every new statement; `R CMD check --as-cran` R16's NOTE only; a NEWS bullet; the
-   contract's section 4 row for the new export; fidelity 600 of 600 (an addition, no set-aside).
+   contract's section 4 for a new argument; in copied code a `DIVERGENCE.md` row or sentence and the drift tool exit
+   0; fidelity 600 of 600 for an addition.
 
 ### Gotchas
-- **Run the prototype through `R CMD build`, not only the suite, before the RED-to-GREEN gate** (dragon 31, new):
-  vignettes check their own words as they are built (`stopifnot()` in hidden chunks); S51 found 4 such checks in
-  `vignettes/drawing.Rmd` only at GREEN's `R CMD check`, and needed a picker and a GREEN 3. A scratch copy's
-  `R CMD build` takes 15 s. Also run the whole suite on the prototype (it found 3 checks in
-  `tests/testthat/test_layoutHintsMate.R`, made RED 2), and grep `vignettes/` as well as `tests/` for the object you
-  change.
-- **A round trip passes in silence when the thing passed back is missing** (dragon 30, new): assert it first.
-- **A floor in a draft test is a guess until run** (S51 wrote 600; the measures were 429 and 447): run the drafts on
-  the prototype and on a copy of HEAD before RED, and read RED's errors and warnings too (S51's first HEAD run had
-  one of each, from the test's own `seq_len(nrow(NULL))`).
-- **zsh stops a script on a glob that matches nothing** (S51): `rm -rf dir/*` on an empty folder ended a launch with
-  "no matches found" before anything ran; use `rm -rf dir; mkdir -p dir`.
-- **Pedixplorer may need packages renv's library lacks** (`best_hint()` stops for R.utils): run each call in
-  `tryCatch()`, and say "stops" in the picker rather than drop it.
-- **Carried:** helpers load alphabetically, a later one wins (dragon 26; grep `'^<name> <- '`); time slow versions
-  first (dragon 27); wait on a run's own end (dragon 29: `grep -q "cpu .* total$"`); pass an environment variable to
-  Rscript before it (dragon 21); integers and doubles; a test of a help example reads it where the help is (dragon
-  28). Scratch copies: `git archive HEAD | tar -x -C <dir>`, `rm -f "${S:?}/<dir>/.Rprofile"`, run with
-  `env -u RENV_PROJECT R_LIBS=<renv lib> R_LIBS_USER=<renv lib>`; from `tests/testthat` in the repo too (no
-  `.Rprofile` there). Do not edit a tree while its suite or check runs (FM #29); docs may be edited once
-  `R CMD build` has made the tarball.
-- **Times** (S51's measures): the suite 5.0-5.2 min; the fidelity tool 3.5 min; `R CMD build` and `check --as-cran`
-  3.7 min; covr (`type = "tests"`) 3.3 min; `quality_ratchet.py --run` 5.4 min; all four at once about 5.5 min; the
-  drift tool 1 s; a gap case 3-5 s.
-- **The ratchet's suite gate times out** (300 s; the suite 300-317 s): `--run` reads 4/5 with it unmeasured. Name it
+- **Time the draft test file before RED** (dragon 33, new): a comparison with the reference package is the slowest
+  part. S52's Pedixplorer comparison took 29 s for 500 calls until its object was built once per case (8 s per 100
+  cases); 50 seeded cases kept the file at about 10 s, the measure's 1,980 runs going in the ruling.
+- **Read the help of every quantity the reference's help names** (dragon 32, new): "a parent with two or more
+  offspring" fitted the gap case at every distance and 76 of 396 random pedigrees; `num_child()`'s help (own plus
+  mates' offspring) gave 1,980 of 1,980. Hold every candidate rule against every saved case.
+- **Rd math gives `R CMD check --as-cran` a NOTE here** (dragon 34, new: "V8 unavailable"): write formulas as code.
+  The prototype's check found it before RED; dragon 31's prototype run through the suite, `R CMD build` and the check
+  paid for itself again.
+- **A new export is listed in four places**: `_pkgdown.yml` (pkgdown refuses the site otherwise),
+  `R/pedkindraw-package.R` (`?pedkindraw`), and `README.Rmd` with `README.md` rendered as G7's was (a scratch copy
+  without `.Rprofile`, the tree installed in a scratch library, two renders identical; the README names all 36
+  exports). pkgdown is not in renv's library: run `pkgdown::check_pkgdown("<repo>")` from a scratch folder with
+  `env -u RENV_PROJECT R_LIBS=<renv lib> R_LIBS_USER=<renv lib>`.
+- **zsh**: it does not split an unquoted variable (S52: `for c in "example 2"; Rscript x.R $c` passed one argument
+  and six runs halted; use `${=c}`), and it stops a script on a glob that matches nothing (S51).
+- **`identical()` on a `vapply()` result compares its names too** (S52: a right rule first read 0 of 1,980): `unname()`
+  first, or build the vector with `USE.NAMES = FALSE`.
+- **One writer, one copy** (FM #29): S52 edited a comment in the prototype copy while that copy's suite ran
+  (harmless, the package was loaded first, but the slip it warns of). Keep one scratch copy for the suite and another
+  for `R CMD build` and check.
+- **A help-example test at RED** reads the stale pedkindraw 0.0.1's installed help ("installed help of package
+  'pedkindraw' is corrupt") until `man/<topic>.Rd` exists: RED failing for the right reason
+  (`methodology/BACKLOG.md:127`).
+- **Carried:** run the prototype through `R CMD build` before the RED-to-GREEN gate (dragon 31); a round trip passes
+  in silence when the thing passed back is missing (dragon 30); a floor in a draft test is a guess until run (S52
+  guessed 480 and measured 245); Pedixplorer may need packages renv's library lacks (run each call in `tryCatch()`);
+  helpers load alphabetically, a later one wins (dragon 26); time slow versions first (dragon 27); wait on a run's own
+  end (dragon 29); pass an environment variable to Rscript before it (dragon 21); a test of a help example reads it
+  where the help is (dragon 28). Scratch copies: `git archive HEAD | tar -x -C <dir>` (or `git ls-files -z | xargs -0
+  tar -cf - | tar -x -C <dir>` for the working tree), `rm -f "${S:?}/<dir>/.Rprofile"`, run with
+  `env -u RENV_PROJECT R_LIBS=<renv lib> R_LIBS_USER=<renv lib>`.
+- **Times** (S52's measures): the suite 5.1-5.3 min (69 files, 853 tests); the fidelity tool 3.5 min; `R CMD build`
+  and `check --as-cran` 3.8 min; covr (`type = "tests"`) 6.8 min beside three other runs; `quality_ratchet.py --run`
+  5.3 min; all four checks at once about 7 min; the new test file about 10 s; the drift tool 1 s; a gap case 3 s.
+- **The ratchet's suite gate times out** (300 s; the suite 303-315 s): `--run` reads 4/5 with it unmeasured. Name it
   in the receipt as `unmeasured: test-suite-warnings-zero -- by hand: <your suite run>`; raising the limit is the
-  backlog's "Ready, small" item (`methodology/BACKLOG.md:114`), a commit of its own.
+  backlog's "Ready, small" item (`methodology/BACKLOG.md:115`), a commit of its own.
 - **Carried:** `CLAUDE.md` is over its 28,000 B budget (learnings go to the plans' dragons and these notes); never
-  pipe chromote or an R script that saves a file into `head`; the shell is zsh (`pipestatus`), and the harness
-  blocks `sleep N; cmd`; `pedkindraw.Rproj` untracked, Mark's.
+  pipe chromote or an R script that saves a file into `head`; the harness blocks `sleep N; cmd` (wait with a
+  background `until` loop); `pedkindraw.Rproj` untracked, Mark's.
 
 ### Key files
-- `docs/planning/gaps-and-shared-code-plan.md`: `:369` (G11's row), `:368` (G10's, with S51's measure), `:336`
-  ("Every G phase"), `:586`, `:590` (dragons 30-31, new in S51).
-- `docs/research/pedkindraw-gaps-2026-11-18.md:262` (C1); `tools/gapCases.R:549` (case `distanceSubset`), `:592`
-  (`ownHints`, G10's probes).
-- `R/trimPedigree.R:60` (`trimPedigree()`); `docs/planning/standalone-pedigree-package-plan.md:192` (R52).
-- `docs/planning/standalone-pedigree-package-plan.md:73` (Next), `:267`-`:268` (R127-R128), `:1120` (Done G10);
-  `docs/planning/cran-submission-plan.md:605` (Done G10); `docs/planning/pedkindraw-api-contract.md` section 4.
-- G10's work: `R/layoutHints.R:450` (`.layoutHintsUsed()`), `:466` (`.layoutHintsUsedOrder()`), `:489`
-  (`.layoutHintsUsedMate()`); `R/makePedigreeDiagramData.R` (the two returns, `hints = .layoutHintsUsed(`; the help's
-  return value and example); `tests/testthat/test_layoutHintsReturned.R`; `vignettes/drawing.Rmd` (section "Layout
-  hints", chunk `ownHints`); `tools/compareResultsWithNprcgenekeepr.R` (`withoutLayoutHints()`); `NEWS.md:73`;
-  `DIVERGENCE.md:14` (the layout's row, G10's sentence).
-- `methodology/BACKLOG.md:26` (G11-G17), `:34` (rewording `DIVERGENCE.md`), `:52` (smallPed fixture), `:112`
-  ("Ready, small"), `:114` (the suite gate's time limit), `:152` (CI).
+- `docs/planning/gaps-and-shared-code-plan.md`: `:371` (G12's row), `:360` (G1's row), `:370` (G11's, with S52's
+  measure), `:337` ("Every G phase"), `:596`, `:602`, `:606` (dragons 32-34, new in S52).
+- `docs/research/pedkindraw-gaps-2026-11-18.md:208` (B4); `tools/gapCases.R:377` (case `measuredTrait`), `:549`
+  (`distanceSubset`, G11's probes from `:571`).
+- G1's check: `R/conditionValues.R:20`; `R/makePedigreeDiagramData.R:173`, `:1954`; `R/shrinkPedigree.R:106`;
+  `docs/planning/standalone-pedigree-package-plan.md:243`-`:246` (R102-R105).
+- `docs/planning/standalone-pedigree-package-plan.md:74` (Next), `:270`-`:271` (R129-R130), `:1134` (Done G11);
+  `docs/planning/cran-submission-plan.md:612` (Done G11); `docs/planning/pedkindraw-api-contract.md:188` (G11's row).
+- G11's work: `R/getNearRelativePedigree.R:81` (the function; its help and example above, `:58`);
+  `tests/testthat/test_getNearRelativePedigree.R` and `helper-getNearRelativePedigree.R` (`nearRelativesSlow()`,
+  `pedixplorerNear()`); `R/findUnrelated.R` (`.unrelatedStopMessage(problems, caller)`); `R/checkPedigree.R`
+  (`.checkIds(ids, caller, argument)`); `NEWS.md:161`; `README.Rmd:186`; `_pkgdown.yml:54`.
+- `methodology/BACKLOG.md:26` (G12-G17), `:35` (rewording `DIVERGENCE.md`), `:53` (smallPed fixture), `:113`
+  ("Ready, small"), `:115` (the suite gate's time limit), `:127` (the stale pedkindraw 0.0.1), `:166` (CI).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -115,62 +138,55 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S50's entries were removed in S3-S51 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S51's entries were removed in S3-S52 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 52 Did
-**Deliverable:** Phase G11, a new function keeping the relatives within k steps of chosen animals (gap C1;
-`docs/planning/gaps-and-shared-code-plan.md:369`) (IN PROGRESS)
-**Started:** 2026-11-19 13:12 CST · **Model:** Claude Opus 5.5 · Mark's pick "Phase G11 (Recommended)" at the orient picker.
-**Status:** Session claimed. Work beginning: measure first (Learnings 17, 19-21), then the pre-RED picker.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
-
-### Session 50 Handoff Evaluation (by Session 51)
+### Session 51 Handoff Evaluation (by Session 52)
 **Score: 9/10.**
-- **What helped:** the measure-first list (a)-(f) for G10 was the session's plan, item for item: the gap case, where
-  the layout settles its order (`:1904`, `:1941`, `:1980`-`:1981` and the returned list at `:2363` all held at
-  `84818f5`), the round trip measured on the fixtures and seeded random pedigrees, each timed, and the set-aside
-  pattern (`:835`, `:867`, `:895`). Every prediction held: drift 91/21/0, the same 4 nprcgenekeepr commits, the
-  R-devel job failing on S4Vectors, the suite's 5 min and the ratchet's unmeasured suite gate. The scratch-copy
-  recipe and "run the drafts on the prototype before RED" were used as written.
-- **What was missing:** that existing tests and the drawing vignette compare whole layouts with `identical()` (3
-  checks in `test_layoutHintsMate.R`, 4 in `vignettes/drawing.Rmd`), which any new list element breaks; a grep for
-  `identical(.*[Ll]ayout` finds both.
-- **What was wrong:** "A new element in the layout's list changes every drawing case the fidelity tool compares (600
-  results)": a drawing holds no layout list; the element changed 72 of the 600 results, every one a layout result.
-  Harmless, since the measure found it.
+- **What helped:** the measure-first list (a)-(e) for G11 was the session's plan, item for item: the gap case's
+  numbers held exactly (41 animals, 7 informative, 14, 30, 33; `trimPedigree()` 18 and 13), Pedixplorer's three help
+  pages, `useful_inds()` one process per case under `timeout`, the neighbours and R52. Dragon 31 (the prototype through
+  the suite and `R CMD build` before the gate) was used as written and found two things before RED (the help's
+  math NOTE, pkgdown's index). Every prediction held: drift 91/21/0, the same 4 nprcgenekeepr commits, S51's CI
+  failing only on R-devel's S4Vectors, the suite's 5 min, the ratchet's unmeasured suite gate. The scratch-copy
+  recipe and "a floor is a guess until run" (S52's 480 was) applied.
+- **What was missing:** that a new export must be listed in `_pkgdown.yml`, `?pedkindraw` and the README (G7's
+  commits showed it; found by grep); that pkgdown is outside renv's library; that the rule itself, not only the name
+  and the default, would be a pre-RED choice.
+- **What was wrong:** nothing found. "2-3 sessions (a guess; G10 took 1)": G11 took 1.
 - **ROI:** high.
 
-### What Session 51 Did
-**Deliverable:** Phase G10 DONE: `makePedigreeMatingLayout()` returns the hints it used as `hints`, in the form its
-`hints` argument takes; passed back, the same layout (R127-R128).
-**Started:** 2026-11-19 10:27 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each Claude's recommendation):**
-"Phase G10 (Recommended)" (orient); "hints (Recommended)", "Order and mate rows (Recommended)" (pre-RED); "Yes,
-proceed to RED"; "Yes, proceed to GREEN"; "Fix and describe (Recommended)" (the vignette, mid-GREEN); "Yes, REFACTOR
-(Recommended)". No corrections.
-**Commits:** claim `532fcf8`; RED `932db0c`; RED 2 `4cea006` (3 mate-hint checks compare drawings); GREEN 1
-`8cf7429` (code, help, `DIVERGENCE.md`); GREEN 2 `7e7905c` (NEWS, contract, gap case, fidelity set-aside); GREEN 3
-`ab09d71` (the drawing vignette); REFACTOR `aef7f7b` (one `match()`); close-out 1 `5d5de21`; close-out 2 (these
-notes, the receipt, the ledger). All pushed at close.
-**Measured:** on a prototype in a scratch copy, passed back, the same layout (identical to the last digit) for the
-order by row with founders left out and mate rows for animals with one or two matings: 10 fixture pedigrees, the
-twins pedigree in both line styles, 200 + 3 x 100 seeded random family pedigrees (no hints, a random order, half of
-one, some mate rows) and 15 colony cases with given mate rows. Not so: numbers from where animals are drawn (35 of
-200), every animal by row (20 of 200), founders by where drawn (34 of 60), a row for every mating (6 of 12 fixture
-runs). Cause found by shrinking: re-sorting rows changes which of an animal's matings gets its own node (seed 3's
-I17); naming a founder skips `.orderRootSubtrees()`; hinting an animal's 3+ matings changes `.layoutHintSides()`'s
-distances. RED: the new file 12 of 12 failing, the copied names check 1; GREEN's suite on the prototype found 3 more
-checks (RED 2), and its `R CMD check` the vignette's 4 (GREEN 3). Final, on `aef7f7b`: suite 68 files, 832 tests, 0
-failed, 0 skipped, 0 warnings (5.0 min); lint 0; roxygen stable; covr 26 of 26 new statements; drift 91/21/0;
-fidelity 600 of 600, 72 results (156 layouts) set aside, kinship difference 0; `R CMD check --as-cran` 1 NOTE
-(R16's); the REFACTOR's hints identical on 110 cases (6,214 mate rows); `quality_ratchet.py --run` 4/5 pass,
-`test-suite-warnings-zero` unmeasured (its 300 s limit), results `42b564bc4c70`.
+### What Session 52 Did
+**Deliverable:** Phase G11 DONE: `getNearRelativePedigree(ped, probands, maxDist)`, the relatives within a distance
+of chosen animals, as Pedixplorer's `useful_inds(max_dist = )` keeps them (R129-R130).
+**Started:** 2026-11-19 13:12 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time):** "Phase G11
+(Recommended)" (orient); "Pedixplorer's rule (Recommended)", "getNearRelativePedigree", "Animals you name
+(Recommended)" (pre-RED); "Yes, proceed to RED"; "Yes, proceed to GREEN"; "Yes, REFACTOR (Recommended)". No
+corrections. Mark asked mid-session about the condition sections in the tutorials (answered above, nothing filed).
+**Commits:** claim `f40a795`; RED `a762ffb`; GREEN 1a `caf41e2` (code, help); GREEN 1b `ceb0eea` (`_pkgdown.yml`,
+`?pedkindraw`); GREEN 2 `45381cb` (NEWS, README, contract, gap case); REFACTOR `ebe04e5` (two shared helpers given an
+argument); close-out 1 `b8ccc55`; close-out 2 (these notes, the receipt, the ledger). All pushed at close.
+**Measured:** on 396 pedigrees (380 seeded random, Pedixplorer's 2 sample families, 6 fixtures), one process each
+under `timeout`, no hang: Pedixplorer's kept set at `max_dist` 1-5 is the animals within distance (`log2(1 / k)`)
+plus each parent of them whose own and its mates' offspring number two or more, 1,980 of 1,980; pedkindraw's
+`kinship()` gave its distances 396 of 396; it stopped on 14. Candidates that failed: within only 219, every parent
+1,224, parents with two own offspring 76 of 396 at k = 1 (it fitted the gap case). The prototype in a scratch copy:
+the typed cases each equal to Pedixplorer; the drafts 21 of 21 failing at HEAD and passing on it; its whole suite,
+`R CMD build` and check before RED. Time: 0.48 s on 3,694 animals (Pedixplorer 2.0 s), 3.7 s on 10,000 (6.3 s).
+Final, on `ebe04e5`: suite 69 files, 853 tests, 0 failed, 0 skipped, 0 warnings (5.1 min); lint 0; roxygen stable;
+covr 24 of 24 new statements (88 of 88 and 87 of 87 in the helpers' files); drift 91/21/0; on `45381cb` fidelity 600
+of 600 with no new set-aside, `R CMD check --as-cran` 1 NOTE (R16's), pkgdown no problems; the REFACTOR's 38
+messages, 20 typed results and 300 random ones identical before and after (its commit says 23 typed: an `unlist()`
+count split the empty result's 4 columns); `quality_ratchet.py --run` 4/5 pass, `test-suite-warnings-zero`
+unmeasured (its 300 s limit), results `42b564bc4c70`.
 **Self-assessment: 8/10.**
-+ Every pick and gate came first time with no correction; each picker option carried measured counts, and the
-  measure turned up the cause of every failing form before Mark chose; RED was made unable to pass in silence; the
-  prototype's whole suite found the 3 other checks before GREEN; the REFACTOR was proved on 110 cases.
-- The vignette's build-time checks were found only at GREEN's `R CMD check`, so GREEN gained a file the gate had not
-  named and needed a mid-phase picker (dragon 31); the first parallel launch was lost to a zsh glob; two draft floors
-  were guesses (600) until run, and the first HEAD run of the draft had an error and a warning from the test itself.
-**Learnings:** the gaps plan's dragons 30-31; no `CLAUDE.md` row (over budget).
-**Ledger:** `CHANGELOG.md` S51 entries (the session, the rulings, push 1).
++ The rule was found exactly from help and results (1,980 of 1,980), with every candidate held against every saved
+  case; each picker option carried counts; every pick and gate came first time; the prototype's suite, build and check
+  ran before RED and caught the math NOTE and the pkgdown index; the REFACTOR was proved on 358 saved values; one
+  session.
+- A first rule fitted the gap case by coincidence and cost two rounds of tallies; the draft Pedixplorer test ran at
+  29 s before it was timed; the floor was a guess (480) until measured (245); one edit in a copy while its suite
+  ran (FM #29); scripting slips (names in `identical()`, zsh word splitting, a regex escape in `Rscript -e`) and
+  the REFACTOR commit's count of its typed results (23 for 20, an `unlist()` miscount).
+**Learnings:** the gaps plan's dragons 32-34; no `CLAUDE.md` row (over budget).
+**Ledger:** `CHANGELOG.md` S52 entries (the session, the rulings, push 1).
