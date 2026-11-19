@@ -72,13 +72,15 @@
 #'
 #' Phase G12. \code{NA} (and \code{NaN}) stays unknown.
 #' @param values the column's numbers.
-#' @param op one of \code{">"}, \code{">="}, \code{"<"}, \code{"<="}.
-#' @param value the cut-off.
+#' @param thresholds the cut-offs, from \code{.checkConditionThresholds()}.
+#' @param column the condition column, one of \code{thresholds$column}.
 #' @return logical vector, as long as \code{values}.
 #' @noRd
-.thresholdAffected <- function(values, op, value) {
+.thresholdAffected <- function(values, thresholds, column) {
+  cut <- match(column, thresholds$column)
   values <- as.numeric(values)
-  switch(op,
+  value <- thresholds$value[[cut]]
+  switch(thresholds$op[[cut]],
          ">" = values > value,
          ">=" = values >= value,
          "<" = values < value,
@@ -92,14 +94,15 @@
 #' and the number as written: \dQuote{Affected (> 5)}, \dQuote{Affected
 #' (glucose >= 126)} with the sign, \dQuote{Affected 2 (< 13)}.
 #' @param label the label \code{.conditionLabels()} gives the column.
-#' @param op the comparison.
-#' @param text the number as written.
+#' @param thresholds the cut-offs, from \code{.checkConditionThresholds()}.
+#' @param column the condition column, one of \code{thresholds$column}.
 #' @return character, the label.
 #' @noRd
-.thresholdLabel <- function(label, op, text) {
-  symbol <- switch(op, ">" = ">", ">=" = "\u2265", "<" = "<",
+.thresholdLabel <- function(label, thresholds, column) {
+  cut <- match(column, thresholds$column)
+  symbol <- switch(thresholds$op[[cut]], ">" = ">", ">=" = "\u2265", "<" = "<",
                    "<=" = "\u2264")
-  rule <- paste(symbol, text)
+  rule <- paste(symbol, thresholds$text[[cut]])
   if (endsWith(label, ")")) {
     sub("\\)$", paste0(" ", rule, ")"), label)
   } else {

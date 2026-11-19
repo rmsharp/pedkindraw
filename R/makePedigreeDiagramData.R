@@ -190,16 +190,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
     unknownFill <- .unknownColor
     # pedkindraw Phase G12: with a cut-off the numbers are a measured trait,
     # affected where they pass it; the tooltip gives the rule and the number.
-    cut <- match("affected", thresholds$column)
-    if (!is.na(cut)) {
-      affected <- .thresholdAffected(ped$affected, thresholds$op[[cut]],
-                                     thresholds$value[[cut]])
-      titles <- paste0(titles, sprintf(
-        "<br><b>%s:</b> %s",
-        .escapeHtml(.thresholdLabel("Affected", thresholds$op[[cut]],
-                                    thresholds$text[[cut]])),
-        .thresholdShown(affected, ped$affected)
-      ))
+    label <- "Affected"
+    if ("affected" %in% thresholds$column) {
+      affected <- .thresholdAffected(ped$affected, thresholds, "affected")
+      label <- .thresholdLabel(label, thresholds, "affected")
+      shown <- .thresholdShown(affected, ped$affected)
     } else {
       .checkConditionNumbers(
         ped$affected,
@@ -207,10 +202,10 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
         advice = .thresholdAdvice("affected")
       )
       affected <- as.logical(ped$affected)
-      titles <- paste0(titles,
-                        sprintf("<br><b>Affected:</b> %s",
-                                .affectedLabel(affected)))
+      shown <- .affectedLabel(affected)
     }
+    titles <- paste0(titles, sprintf("<br><b>%s:</b> %s",
+                                     .escapeHtml(label), shown))
   }
 
   # Issue #136 (D1-D5, D10): name is an OPTIONAL character column. Absent
@@ -2003,15 +1998,12 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   thresholds <- .checkConditionThresholds(conditionThresholds, ped,
                                           "makePedigreeMatingLayout")
   measured <- list()
-  for (i in which(drawnCols %in% thresholds$column)) {
-    column <- drawnCols[[i]]
-    cut <- match(column, thresholds$column)
-    conditions$label[[i]] <- .thresholdLabel(
-      conditions$label[[i]], thresholds$op[[cut]], thresholds$text[[cut]]
-    )
+  for (column in intersect(drawnCols, thresholds$column)) {
+    i <- match(column, drawnCols)
+    conditions$label[[i]] <- .thresholdLabel(conditions$label[[i]],
+                                             thresholds, column)
     measured[[column]] <- stats::setNames(ped[[column]], ped$id)
-    ped[[column]] <- .thresholdAffected(ped[[column]], thresholds$op[[cut]],
-                                        thresholds$value[[cut]])
+    ped[[column]] <- .thresholdAffected(ped[[column]], thresholds, column)
   }
   # pedkindraw Phase G1 (R102-R104): a drawn condition holding a number other
   # than 0 and 1 stops, checked before any animal is left out.
