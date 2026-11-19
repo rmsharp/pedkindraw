@@ -8,7 +8,8 @@ commit in a scratch folder and run there with its own renv library; its folder w
 R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
 R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). G5 DONE (pedkindraw S46;
 R114-R116). G6 DONE (pedkindraw S47; R117-R119). G7 DONE (pedkindraw S48; R120-R122). G8 DONE (pedkindraw S49;
-R123-R124). G9 DONE (pedkindraw S50; R125-R126). Next: G10 in pedkindraw (section 5.1); in nprcgenekeepr N1 and
+R123-R124). G9 DONE (pedkindraw S50; R125-R126). G10 DONE (pedkindraw S51; R127-R128). Next: G11 in pedkindraw
+(section 5.1); in nprcgenekeepr N1 and
 N2 are done (its S1189 and S1190, section
 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
@@ -364,7 +365,7 @@ submission.
 | G7 | C6 | A function that removes listed animals and clears their offspring's links to them | `removeAnimals`: C removed, F's and G's sire cleared, `kinship()` then computes (F with G 0.125); compared with Pedixplorer's `subset(del_parents = "one")`, which also clears the other parent | clear the one link, or both as Pedixplorer does | 1 |
 | G8 | C2 | `findGeneration()` gains aligned generations, written from the method kinship2 describes (R11) | `alignedDepth`: equal to kinship2's `kindepth(align = TRUE)` on sample family 1 (6 of 41 differ from plain) and on every fixture pedigree where kinship2 returns; default unchanged (600 of 600). S49, R123: "on every fixture" became the measured counts (equal on 2 of the 7 fixtures and 73 of 100 random; at most 93 of 5,004 animals different on the other 5), kinship2's own answer depending on the order of the rows | the argument's name | 1 |
 | G9 | B7 | A documented example: the pedigree drawn with the animals `shrinkPedigree()` removed marked, from `idTrimmed` | `shrinkPicture`: the example runs and the removed animals are marked in the drawing. S50, R125: kinship2's `plot.pedigree.shrink()` draws only the animals kept (18 of 41), not the removed ones marked as B7 says; the help example draws all 7, the 3 removed filled, and a test runs it (R126) | a help example or a vignette section | 1 |
-| G10 | C3 | `makePedigreeMatingLayout()` returns the hints it used (`:1836`, `:2219`), in the form it takes (`R/layoutHints.R`) | `ownHints`: the returned hints, passed back, give the same positions; the new list element counted as a set-aside | the element's name; order hints only, or mate hints too | 2-3 |
+| G10 | C3 | `makePedigreeMatingLayout()` returns the hints it used (`:1836`, `:2219`), in the form it takes (`R/layoutHints.R`) | `ownHints`: the returned hints, passed back, give the same positions; the new list element counted as a set-aside. S51, R127-R128: the element `hints`; `order` by row, founders only where an order hint named them, and `mate` rows except for an animal with three or more matings or one the given rows place, both measured as the only forms that pass back the same layout; on sample family 1, 29 numbers and 11 rows, passed back identical; set aside in 72 of the 600 results (the row's `:1836` and `:2219` were S41's lines: the returns are now at the end of `makePedigreeMatingLayout()`) | the element's name; order hints only, or mate hints too | 1 (S51) |
 | G11 | C1 | A function that keeps the relatives within k steps of chosen animals, its rule written from Pedixplorer's help and measured results (as R52) | `distanceSubset`: 14, 30 and 33 of 41 kept for k = 1, 2, 3, as Pedixplorer's `useful_inds()`, or a measured, stated difference; seeded random cases compared (Learnings 19-21) | its name; what "informative" means by default | 2-3 |
 | G12 | B4 | A measured trait drawn by a threshold, with the rule in the legend; builds on G1 | `measuredTrait`: at threshold 5, A, B, C unaffected and D affected; the legend states the rule | threshold argument or a colour scale; above or at-and-above | 2-3 |
 | G13 | B3 | Pedixplorer's marks: carrier, proband, consultand, evaluated, genotyped border, infertile, miscarriage; each a column read by the layout, a mark drawn, a legend row | `markings`: each mark drawn and in the legend, read in headless Chrome; no column, no change (600 of 600) | which marks first (the genotyped border is the colony's), their shapes; the phase's session count | 8-9 |
@@ -582,6 +583,15 @@ sessions a day, about 11-15 days, an estimate.
     while the suite still ran, because two tests print "on the real fixture", and `roxygenise()` then ran beside
     the suite (FM #29; it changed nothing). Wait for the background task's notice, or on a line only the shell's
     `time` writes (`grep -q "cpu .* total$"`).
+30. **A round trip passes in silence when the thing passed back is missing** (S51, G10): on the old code
+    `layout$hints` is `NULL`, and `makePedigreeMatingLayout(ped, hints = NULL)` gives the same layout, so every
+    "passed back, the same layout" check passed in RED. The round-trip helper first expects `hints` to hold `order`
+    and `mate` (`returnedAgain()`, `tests/testthat/test_layoutHintsReturned.R`). Read RED's passing checks too.
+31. **Before the RED-to-GREEN gate, run the prototype through `R CMD build`, not only the suite** (S51, G10): a
+    vignette checks its own words as it is built (`stopifnot()` in hidden chunks), and four such checks in
+    `vignettes/drawing.Rmd` compared whole layouts; the suite on the prototype found three test checks of the same
+    kind (RED 2), the build found the vignette's only at GREEN's `R CMD check` (GREEN 3, a picker). A scratch copy's
+    `R CMD build` takes 15 s. grep `vignettes/` for the changed object's comparisons as well as `tests/`.
 
 ### 7.3 Out of scope
 

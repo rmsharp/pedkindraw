@@ -19,8 +19,9 @@ writing an unknown parent and a sex rewritten into pedkindraw's; R114-R116). Pha
 and `getMatings()`, each animal's offspring and the matings; R117-R119). Phase G7 DONE (S48: `removeAnimals()`,
 listed animals removed and their offspring's links to them cleared; R120-R122). Phase G8 DONE (S49:
 `findGeneration(alignMates = TRUE)`, aligned generations; R123-R124). Phase G9 DONE (S50: `?shrinkPedigree`'s
-example draws the whole pedigree with the animals removed filled; R125-R126). Next: Phase G10 (that plan's section
-5.1), then G11-G17 before 17g.
+example draws the whole pedigree with the animals removed filled; R125-R126). Phase G10 DONE (S51:
+`makePedigreeMatingLayout()` returns the hints it used, passed back the same layout; R127-R128). Next: Phase G11
+(that plan's section 5.1), then G12-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -601,6 +602,11 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   removed filled through a condition column made from `idTrimmed`; help text only, no `DIVERGENCE.md` row; a test
   runs the help page's own example. Commits `f541656` (RED) to `f489d7e` (REFACTOR, one `shrinkPedigree()` call in
   the gap case); fidelity 600 of 600 with no set-aside.
+- **Done G10 (S51; R127-R128):** `makePedigreeMatingLayout()` returns the hints it used as `hints`, in the form its
+  argument takes, so that passing them back gives the same layout and an edit can start from the layout's own;
+  copied code changed at its two returns, with a `DIVERGENCE.md` sentence; the drawing vignette describes them.
+  Commits `932db0c` (RED) to `aef7f7b` (REFACTOR, one `match()` for each mate's node); fidelity 600 of 600 with one
+  counted set-aside (72 results, 156 layouts).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

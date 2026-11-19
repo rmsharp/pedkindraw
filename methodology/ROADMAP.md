@@ -30,8 +30,8 @@ argument, is done (S44, R108-R110), G4, the colours of the conditions made an ar
 G5, other ways of writing an unknown parent and a sex rewritten into pedkindraw's, is done (S46, R114-R116), G6,
 each animal's offspring count and the matings, is done (S47, R117-R119), G7, removing listed animals with their
 offspring's links to them, is done (S48, R120-R122), G8, aligned generations in `findGeneration()`, is done (S49,
-R123-R124), G9, an example drawing the animals `shrinkPedigree()` removed, is done (S50, R125-R126), and G10 is next
-(Planned, below).
+R123-R124), G9, an example drawing the animals `shrinkPedigree()` removed, is done (S50, R125-R126), G10, the layout
+returning the hints it used, is done (S51, R127-R128), and G11 is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -63,7 +63,8 @@ session each unless marked. They follow the copy slices.
   parents and sex rewritten into pedkindraw's) is done (S46); G6 (each animal's offspring count and its mates)
   is done (S47); G7 (removing listed animals, their offspring's links to them cleared) is done (S48); G8
   (aligned generations in `findGeneration()`) is done (S49); G9 (an example marking the animals
-  `shrinkPedigree()` removed) is done (S50); next G10 (the layout returns the hints it used), then
+  `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); next
+  G11 (the relatives within k steps of chosen animals), then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
@@ -241,6 +242,15 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G10, the layout's own hints returned (pedkindraw S51, 2026-11-19).** kinship2's `autohint()` and
+  Pedixplorer's `auto_hint()` return the hints their layouts use, for a user to edit; pedkindraw's layout took
+  hints but returned none. `makePedigreeMatingLayout()` now returns the hints it used as `hints`, so
+  `makePedigreeMatingLayout(ped, hints = layout$hints)` gives the same layout and an edit starts from the
+  layout's own. Mark's picks: the name `hints` (R127), and both the order and mate rows (R128), each part in the
+  only form measured to pass back the same layout: the order by row with founders left out (naming one turns off
+  the layout's own founder order), no mate row for an animal with three or more matings. Measured on 10 fixture
+  pedigrees, the twins pedigree, 400 random pedigrees and 15 colony cases. The fidelity cases 600 of 600, the new
+  element set aside in 72.
 - **Phase G9, a picture of what shrinking removed (pedkindraw S50, 2026-11-19).** kinship2's
   `plot.pedigree.shrink()` draws the animals a shrink keeps; pedkindraw had no picture of a shrink at all.
   `?shrinkPedigree`'s example now shrinks a 7-animal pedigree and draws all of it with the 3 animals removed
