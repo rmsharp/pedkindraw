@@ -70,6 +70,14 @@ code, `DIVERGENCE.md` in the repository says how and why.
 * New: layout hints, `makePedigreeMatingLayout(hints = )`: the left-to-right
   `order` of animals and, with `mate`, the side of a mating each mate is drawn
   on, in the form kinship2 and Pedixplorer give their hints.
+* New: `makePedigreeMatingLayout()` returns the hints it used as `hints`, in
+  the form its `hints` argument takes, so that
+  `makePedigreeMatingLayout(ped, hints = layout$hints)` gives the same layout
+  and an edit can start from the layout's own: `order` numbers each animal
+  with a parent by the row the layout drew it from (a founder only where your
+  order named it); `mate` holds your rows, then the layout's own row for each
+  other mating (none for an animal with three or more matings, where a row
+  can move its mates).
 
 ## Kinship and relatedness
 

@@ -601,8 +601,15 @@ cases$ownHints <- function(case = "ownHints") {
   ped <- withGen(data.frame(id = sp$id, sire = sp$dadid, dam = sp$momid,
                             sex = c("M", "F")[sp$sex],
                             stringsAsFactors = FALSE))
-  probe(case, "pedkindraw makePedigreeMatingLayout() returns",
-        names(pedkindraw::makePedigreeMatingLayout(ped)))
+  layout <- suppressMessages(pedkindraw::makePedigreeMatingLayout(ped))
+  probe(case, "pedkindraw makePedigreeMatingLayout() returns", names(layout))
+  ## Phase G10 (pedkindraw S51, R127-R128): the hints the layout used.
+  probe(case, "pedkindraw layout$hints: order numbers, mate rows",
+        c(length(layout$hints$order), NROW(layout$hints$mate)))
+  probe(case, "pedkindraw layout$hints passed back: the same layout",
+        identical(pedkindraw::makePedigreeMatingLayout(
+          ped, hints = layout$hints
+        ), layout))
   probe(case, "pedkindraw asPedFrame() of kinship2's autohint: order, mates",
         {
           k$hints <- kinship2::autohint(k)

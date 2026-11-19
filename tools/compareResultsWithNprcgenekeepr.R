@@ -36,7 +36,10 @@
 ## nprcgenekeepr draws it white; its grey fills, "?" sections, legend row, the
 ## 45 px for that row and the section painter's lines for it are turned back
 ## into nprcgenekeepr's form in pedkindraw's results before the comparison
-## (see withoutUnknownStatus() below).
+## (see withoutUnknownStatus() below). A fifth (S51, plan Phase G10,
+## R127-R128): pedkindraw's layout returns the hints it used, an element
+## nprcgenekeepr's layout does not have; it is taken out of pedkindraw's
+## layouts before the comparison (see withoutLayoutHints() below).
 ##
 ## pedkindraw's getProbandPedigree(), getDescendantPedigree(), trimPedigree()
 ## and hasBothParents() take the pedigree first, nprcgenekeepr's the ids first
@@ -911,6 +914,36 @@ cat(sprintf(paste(
   "pedkindraw's run, compared without those two columns (DIVERGENCE.md, plan",
   "R95)\n"
 ), setAside$lineStyleDrawings))
+## pedkindraw S51 (plan Phase G10, R127-R128, DIVERGENCE.md): pedkindraw's
+## makePedigreeMatingLayout() returns the hints it used as its last element,
+## hints, which nprcgenekeepr's layout does not have. Until nprcgenekeepr
+## takes pedkindraw's layout (at the switch, R98), hints is taken out of each
+## layout in pedkindraw's results before the comparison, everything else in
+## them still compared, and the results and layouts are counted; a hints
+## element in nprcgenekeepr's results would still differ. A drawing holds no
+## layout list, so none is changed. Remove this at the switch.
+setAside$hintLayouts <- 0L
+withoutLayoutHints <- function(x) {
+  if (!is.list(x) || is.data.frame(x) || inherits(x, "visNetwork")) {
+    return(x)
+  }
+  if (all(c("nodes", "edges", "hints") %in% names(x))) {
+    x$hints <- NULL
+    setAside$hintLayouts <- setAside$hintLayouts + 1L
+    return(x)
+  }
+  kept <- attributes(x)
+  x <- lapply(x, withoutLayoutHints)
+  attributes(x) <- kept
+  x
+}
+withHints <- ours
+ours[] <- lapply(ours, withoutLayoutHints)
+cat(sprintf(paste(
+  "results with pedkindraw's layout hints: %d (%d layouts), compared without",
+  "them (DIVERGENCE.md, plan Phase G10)\n"
+), sum(!unlist(Map(identical, withHints, ours))), setAside$hintLayouts))
+rm(withHints)
 same <- unlist(Map(identical, ours, theirs))
 withWarnings <- lengths(lapply(ours, `[[`, "warnings")) > 0L
 withMessages <- lengths(lapply(ours, `[[`, "messages")) > 0L
