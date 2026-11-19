@@ -98,6 +98,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S42's entries were removed in S3-S43 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 44 Did
+**Deliverable:** Phase G3, the 15-character limit on the notes under an id becomes an argument (gap B6;
+`docs/planning/gaps-and-shared-code-plan.md:357`) (IN PROGRESS)
+**Started:** 2026-11-18 19:59 CST · **Model:** Claude Opus 5.5 · Mark's pick "Phase G3 (Recommended)" at the orient picker.
+**Status:** Session claimed. Work beginning: measure first (Learning 17), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 42 Handoff Evaluation (by Session 43)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(d) for G2 was the session's plan: the gap case, every place `NA`

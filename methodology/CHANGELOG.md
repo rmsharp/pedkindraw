@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-18 · [BL-Phase G3] S44: Phase G3, the label limit becomes an argument (in progress)
+- **Change:** session claimed (Mark's pick "Phase G3 (Recommended)" at the orient picker): strict TDD on copied code; measure first (`tools/gapCases.R labels`; `.nameLabelCharBudget` and its callers grepped; how a longer label overlaps its neighbours in headless Chrome; the fidelity cases at the default), then a pre-RED picker (the argument's name, which functions take it, the value for "no limit"), RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `c9e6a45` is HEAD, S43's close-out 4; no merges; S43's receipt complete, its ratchet results `5ddbb5b1aeb3` and manifest `01151c525b8a` matching the results file); drift tool 91 functions, 19 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits (nprcgenekeepr at `f09a028f5`, its S1190 RED; 3 uncommitted files there, none copied here); its S1189 finished N1 (`0e2bc137e` corrects `smallPed`), so the fixture item is no longer blocked; S43's push: site `44439982227` success, CI `44439982250` in progress at Orient.
+- **Commit/PR:** the claim commit · **Session:** S44 · **Verified:** pending (close-out).
+
 ## 2026-11
 
 ### 2026-11-18 · [ad hoc] Ledger trim: `methodology/HANDOFFS.md` → `methodology/archive/HANDOFFS-through-2026-11-15.md` (27 record(s), 202,671 B → 94,892 B)
