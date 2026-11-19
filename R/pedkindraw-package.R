@@ -34,9 +34,10 @@
 #' [trimPedigree()], [getProbandPedigree()] and [getDescendantPedigree()]
 #' reduce a pedigree to the animals of interest and their relatives;
 #' [removeUnknownAnimals()] and [removeUninformativeFounders()] remove
-#' animals that add nothing; [shrinkPedigree()] shrinks a pedigree to a
-#' bit-size budget, in steps also exported: [bitSize()], [findUnavailable()],
-#' [findAvailNonInform()] and [findAvailAffected()].
+#' animals that add nothing, and [removeAnimals()] removes the animals listed,
+#' clearing their offspring's links to them; [shrinkPedigree()] shrinks a
+#' pedigree to a bit-size budget, in steps also exported: [bitSize()],
+#' [findUnavailable()], [findAvailNonInform()] and [findAvailAffected()].
 #'
 #' @section Converting kinship2 and Pedixplorer objects:
 #' [asPedFrame()] converts a kinship2 `pedigree` or `pedigreeList` and a

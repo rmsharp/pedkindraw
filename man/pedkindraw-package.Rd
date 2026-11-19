@@ -47,9 +47,10 @@ pedigree.
 \code{\link[=trimPedigree]{trimPedigree()}}, \code{\link[=getProbandPedigree]{getProbandPedigree()}} and \code{\link[=getDescendantPedigree]{getDescendantPedigree()}}
 reduce a pedigree to the animals of interest and their relatives;
 \code{\link[=removeUnknownAnimals]{removeUnknownAnimals()}} and \code{\link[=removeUninformativeFounders]{removeUninformativeFounders()}} remove
-animals that add nothing; \code{\link[=shrinkPedigree]{shrinkPedigree()}} shrinks a pedigree to a
-bit-size budget, in steps also exported: \code{\link[=bitSize]{bitSize()}}, \code{\link[=findUnavailable]{findUnavailable()}},
-\code{\link[=findAvailNonInform]{findAvailNonInform()}} and \code{\link[=findAvailAffected]{findAvailAffected()}}.
+animals that add nothing, and \code{\link[=removeAnimals]{removeAnimals()}} removes the animals listed,
+clearing their offspring's links to them; \code{\link[=shrinkPedigree]{shrinkPedigree()}} shrinks a
+pedigree to a bit-size budget, in steps also exported: \code{\link[=bitSize]{bitSize()}},
+\code{\link[=findUnavailable]{findUnavailable()}}, \code{\link[=findAvailNonInform]{findAvailNonInform()}} and \code{\link[=findAvailAffected]{findAvailAffected()}}.
 }
 
 \section{Converting kinship2 and Pedixplorer objects}{

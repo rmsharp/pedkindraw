@@ -53,6 +53,7 @@ reference:
   - getDescendantPedigree
   - removeUnknownAnimals
   - removeUninformativeFounders
+  - removeAnimals
   - shrinkPedigree
   - bitSize
   - findUnavailable
