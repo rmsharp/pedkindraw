@@ -57,7 +57,8 @@ per known dam, pointing from parent to child.</p>
 <span>  <span class="va">ped</span>,</span>
 <span>  twinRelations <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  maxNameChars <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>  conditionColors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span><span class="op">)</span></span>
+<span>  conditionColors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span><span class="op">)</span>,</span>
+<span>  conditionThresholds <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -110,6 +111,16 @@ the column <code>affected</code> alone, so it fills an affected animal with
 the first colour, written as its <code>"#RRGGBB"</code> code. It stops as
 <code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout()</a></code> does, except that one colour is always
 enough.</p></dd>
+
+
+<dt id="arg-conditionthresholds">conditionThresholds<a class="anchor" aria-label="anchor" href="#arg-conditionthresholds"></a></dt>
+<dd><p><code>NULL</code> (the default), or the cut-off of a
+measured trait in the column <code>affected</code>, as
+<code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code> takes it: such as
+<code>c(affected = "&gt; 5")</code>. An animal whose number passes the cut-off is
+affected, and <code>title</code> gives the rule and the number:
+“Affected (&gt; 5): Yes (9)”. It stops as
+<code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout()</a></code> does.</p></dd>
 
 </dl></div>
     <div class="section level2">

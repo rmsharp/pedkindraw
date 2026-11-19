@@ -13,7 +13,8 @@ makePedigreeDiagramData(
   ped,
   twinRelations = NULL,
   maxNameChars = 15,
-  conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
+  conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73"),
+  conditionThresholds = NULL
 )
 ```
 
@@ -65,6 +66,17 @@ makePedigreeDiagramData(
   `"#RRGGBB"` code. It stops as
   [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
   does, except that one colour is always enough.
+
+- conditionThresholds:
+
+  `NULL` (the default), or the cut-off of a measured trait in the column
+  `affected`, as
+  [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  takes it: such as `c(affected = "> 5")`. An animal whose number passes
+  the cut-off is affected, and `title` gives the rule and the number:
+  “Affected (\> 5): Yes (9)”. It stops as
+  [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  does.
 
 ## Value
 

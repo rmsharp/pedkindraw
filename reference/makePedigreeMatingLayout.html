@@ -69,7 +69,8 @@ separate function.</p>
 <span>  kinshipMatrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hints <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  maxNameChars <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>  conditionColors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span><span class="op">)</span></span>
+<span>  conditionColors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span><span class="op">)</span>,</span>
+<span>  conditionThresholds <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -201,6 +202,24 @@ palette, which can be changed), on a transparent colour, on white and
 on the grey <code>"#BEBEBE"</code> (they mark an unaffected animal and an
 unknown status), on a colour given twice, and on fewer colours than
 conditions drawn.</p></dd>
+
+
+<dt id="arg-conditionthresholds">conditionThresholds<a class="anchor" aria-label="anchor" href="#arg-conditionthresholds"></a></dt>
+<dd><p><code>NULL</code> (the default), or the cut-offs of
+measured traits: a character vector named by condition columns, each a
+comparison, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code> or <code>&lt;=</code>, and a number,
+such as <code>c(affected_glucose = "&gt;= 126", affected_hb = "&lt; 13")</code>.
+An animal whose number passes its column's cut-off is drawn affected,
+one whose number does not is drawn unaffected, and one with no number
+(<code>NA</code>) is drawn as unknown. The rule goes into the condition's
+label, so the legend and the tooltip state it, <code>&gt;=</code> and <code>&lt;=</code>
+written as the signs for at least and at most: “Affected
+(glucose &gt;= 126)” with the sign; the tooltip also gives the animal's
+number, “Yes (140)”. A column without a cut-off is read as
+before, and a number in it other than 0 and 1 stops. Stops on anything
+but a named character vector, on a cut-off it cannot read, on a name
+that is not a condition column of <code>ped</code>, and on a column with a
+cut-off that does not hold numbers.</p></dd>
 
 </dl></div>
     <div class="section level2">
