@@ -205,6 +205,10 @@ pick an animal in the “Select by id” box, and save the picture with the
   reduces it to probands and their ancestors, and
   [`getDescendantPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getDescendantPedigree.md)
   to a group and its descendants.
+- [`getNearRelativePedigree()`](https://rmsharp.github.io/pedkindraw/reference/getNearRelativePedigree.md)
+  keeps the relatives within a distance of the animals you name, read
+  from kinship, and the parents that join their families, as
+  Pedixplorer’s `useful_inds(max_dist = )` does.
 - [`removeUnknownAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeUnknownAnimals.md)
   removes the placeholder animals added for unknown parents;
   [`removeUninformativeFounders()`](https://rmsharp.github.io/pedkindraw/reference/removeUninformativeFounders.md)

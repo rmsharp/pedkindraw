@@ -72,6 +72,8 @@
   : Reduce a pedigree to probands and their ancestors
 - [`getDescendantPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getDescendantPedigree.md)
   : Reduce a pedigree to a group and its descendants
+- [`getNearRelativePedigree()`](https://rmsharp.github.io/pedkindraw/reference/getNearRelativePedigree.md)
+  : Reduce a pedigree to the near relatives of a group
 - [`removeUnknownAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeUnknownAnimals.md)
   : Remove placeholder animals added for unknown parents
 - [`removeUninformativeFounders()`](https://rmsharp.github.io/pedkindraw/reference/removeUninformativeFounders.md)

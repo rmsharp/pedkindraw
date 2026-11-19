@@ -62,9 +62,10 @@ repair a pedigree.
 ## Trimming and shrinking
 
 [`trimPedigree()`](https://rmsharp.github.io/pedkindraw/reference/trimPedigree.md),
-[`getProbandPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getProbandPedigree.md)
-and
+[`getProbandPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getProbandPedigree.md),
 [`getDescendantPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getDescendantPedigree.md)
+and
+[`getNearRelativePedigree()`](https://rmsharp.github.io/pedkindraw/reference/getNearRelativePedigree.md)
 reduce a pedigree to the animals of interest and their relatives;
 [`removeUnknownAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeUnknownAnimals.md)
 and

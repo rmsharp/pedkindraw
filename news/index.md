@@ -237,6 +237,12 @@ why.
   row; an offspring keeps its other parent. kinship2’s `pedigree.trim()`
   stops when an offspring would keep only one parent, and Pedixplorer’s
   `subset(del_parents = "one")` clears that parent too.
+- New: `getNearRelativePedigree(ped, probands, maxDist)` keeps the
+  animals within a distance of the probands, read from kinship (1 the
+  proband, 2 a parent, offspring or full sibling, 3 a grandparent, half
+  sibling, uncle or aunt, 4 a first cousin), and each parent that joins
+  their families, as Pedixplorer’s `useful_inds(max_dist = )` does; a
+  parent left out becomes `NA` in its offspring’s row.
 - New:
   [`?shrinkPedigree`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md)’s
   example draws the whole pedigree with the animals shrinking removed
