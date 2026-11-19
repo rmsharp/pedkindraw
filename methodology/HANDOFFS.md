@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S51
+date: 2026-11-19
+status: pending
+active_task: Phase G10, makePedigreeMatingLayout() returns the layout hints it used, in the form it takes, so passing them back gives the same positions (gap C3; docs/planning/gaps-and-shared-code-plan.md:367; R97; methodology/BACKLOG.md:26): measure first, a pre-RED picker (the new element's name; order hints only or mate hints too), RED, GREEN, REFACTOR by the gates, closing at a clean phase boundary (2-3 sessions); strict TDD; Mark's pick "Phase G10 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S50
 date: 2026-11-19
 status: complete

@@ -127,6 +127,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S49's entries were removed in S3-S50 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 51 Did
+**Deliverable:** Phase G10, `makePedigreeMatingLayout()` returns the layout hints it used, in the form it takes (gap C3;
+`docs/planning/gaps-and-shared-code-plan.md:367`) (IN PROGRESS)
+**Started:** 2026-11-19 10:27 CST · **Model:** Claude Opus 5.5 · Mark's pick "Phase G10 (Recommended)" at the orient picker.
+**Status:** Session claimed. Work beginning: measure first (Learning 17), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 49 Handoff Evaluation (by Session 50)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(e) for G9 was the session's plan, item for item: the gap case, what

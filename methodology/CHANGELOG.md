@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-19 · [BL-Phase G10] S51: Phase G10, `makePedigreeMatingLayout()` returns the layout hints it used (in progress)
+- **Change:** session claimed (Mark's pick "Phase G10 (Recommended)" at the orient picker): gap C3 (`docs/planning/gaps-and-shared-code-plan.md:367`), strict TDD; measure first (Learning 17: `tools/gapCases.R ownHints`, where the layout settles its order, whether the returned hints passed back give the same positions on the fixtures and seeded random pedigrees, each timed, the hint forms kinship2 and Pedixplorer return, the fidelity tool's set-asides as the pattern for the new element's), then a pre-RED picker (the element's name; order hints only or mate hints too), RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `84818f5` is HEAD, S50's close-out 2; no merges; S50's receipt complete, its ratchet citation matching the results file, `42b564bc4c70`); drift tool 91 functions, 21 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits (nprcgenekeepr at `3e06730c5`, tree clean); S50's push runs in progress at Orient.
+- **Commit/PR:** the claim commit · **Session:** S51 · **Verified:** pending (close-out).
+
 ### 2026-11-19 · [BL-Phase G9] S50 push 1: `master` to GitHub at close-out 2 (S50's claim, G9, close-out 1-2)
 - **Change:** `git push origin master` (`f985e8e..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S49's push runs, in progress at S50's Orient: site `44557579272` `success`; CI `44557579212` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors 0.50.3 again fails to build on R-devel: `conformMethod` error, "lazy loading failed", while installing dependencies, before pedkindraw was checked), the other four jobs `success`.
 - **Commit/PR:** none (push) · **Session:** S50 · **Verified:** the push's output; S49's runs by `gh run view`.
