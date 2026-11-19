@@ -74,12 +74,7 @@ test_that("getMatings() reads factor and number columns as their text", {
 
 test_that("getMatings() lists the drawing's matings, in its order, on every
   fixture pedigree and 100 seeded random ones", {
-  peds <- matingFixturePeds()
-  withr::with_seed(47L, {
-    for (k in seq_len(100L)) {
-      peds[[paste0("random", k)]] <- randomMatingPed(sample(3:150, 1L))
-    }
-  })
+  peds <- matingCheckPeds()
   for (name in names(peds)) {
     expect_identical(getMatings(peds[[name]])[c("sire", "dam")],
                      layoutMatings(peds[[name]]), info = name)
@@ -88,12 +83,7 @@ test_that("getMatings() lists the drawing's matings, in its order, on every
 
 test_that("each animal's mates and each mating's offspring agree with the
   slow versions on every fixture pedigree and 100 seeded random ones", {
-  peds <- matingFixturePeds()
-  withr::with_seed(47L, {
-    for (k in seq_len(100L)) {
-      peds[[paste0("random", k)]] <- randomMatingPed(sample(3:150, 1L))
-    }
-  })
+  peds <- matingCheckPeds()
   for (name in names(peds)) {
     ped <- peds[[name]]
     m <- getMatings(ped)

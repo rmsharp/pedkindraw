@@ -58,6 +58,18 @@ matingFixturePeds <- function() {
        qcPed = qcPed, rhesusPedigree = rhesusPedigree, smallPed = smallPed)
 }
 
+## The pedigrees the agreement tests run on: the fixture pedigrees, then 100
+## seeded random ones named random1 to random100.
+matingCheckPeds <- function() {
+  peds <- matingFixturePeds()
+  withr::with_seed(47L, {
+    for (k in seq_len(100L)) {
+      peds[[paste0("random", k)]] <- randomMatingPed(sample(3:150, 1L))
+    }
+  })
+  peds
+}
+
 ## Slow count: the number of distinct animals getOffspring() lists.
 countOffspringSlow <- function(ped, ids) {
   vapply(as.character(ids), function(i) length(unique(getOffspring(ped, i))),

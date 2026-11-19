@@ -78,29 +78,18 @@ test_that("countOffspring() gives an empty count for a pedigree with no rows", {
 
 test_that("each count is the number of animals getOffspring() lists, on every
   fixture pedigree and 100 seeded random ones", {
-  for (name in names(matingFixturePeds())) {
-    ped <- matingFixturePeds()[[name]]
+  peds <- matingCheckPeds()
+  for (name in names(peds)) {
+    ped <- peds[[name]]
     expect_identical(countOffspring(ped),
                      countOffspringSlow(ped, ped$id), info = name)
   }
-  withr::with_seed(47L, {
-    for (k in seq_len(100L)) {
-      ped <- randomMatingPed(sample(3:150, 1L))
-      expect_identical(countOffspring(ped), countOffspringSlow(ped, ped$id),
-                       info = k)
-    }
-  })
 })
 
 test_that("countOffspring() equals Pedixplorer's num_child_dir on every
   pedigree compared that has a mating", {
   skip_if_not_installed("Pedixplorer")
-  peds <- matingFixturePeds()
-  withr::with_seed(47L, {
-    for (k in seq_len(100L)) {
-      peds[[paste0("random", k)]] <- randomMatingPed(sample(3:150, 1L))
-    }
-  })
+  peds <- matingCheckPeds()
   peds$lookups <- lookupsPed()
   peds$halfSibs <- halfSibsPed()
   compared <- 0L
