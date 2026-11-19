@@ -150,6 +150,10 @@ code, `DIVERGENCE.md` in the repository says how and why.
   has no row; an offspring keeps its other parent. kinship2's
   `pedigree.trim()` stops when an offspring would keep only one parent, and
   Pedixplorer's `subset(del_parents = "one")` clears that parent too.
+* New: `?shrinkPedigree`'s example draws the whole pedigree with the animals
+  shrinking removed filled, from `idTrimmed`, as a condition column
+  (`affected_removed`, which the legend calls "Affected (removed)").
+  kinship2's `plot.pedigree.shrink()` draws only the animals kept.
 
 ## Converters
 
