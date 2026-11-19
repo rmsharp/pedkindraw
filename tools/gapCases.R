@@ -750,6 +750,16 @@ cases$removeAnimals <- function(case = "removeAnimals") {
                                      hand$id, hand$sire, hand$dam))
           k["F", "G"]
         })
+  probe(case, paste("pedkindraw removeAnimals(ped, \"C\") (G7): ids kept;",
+                    "F's sire and dam; checkPedigree() rows; K(F, G)"), {
+    kept <- pedkindraw::removeAnimals(ped, "C")
+    k <- pedkindraw::kinship(kept$id, kept$sire, kept$dam,
+                             pedkindraw::findGeneration(
+                               kept$id, kept$sire, kept$dam))
+    f <- kept$id == "F"
+    c(paste(kept$id, collapse = ""), kept$sire[f], kept$dam[f],
+      nrow(pedkindraw::checkPedigree(kept)), k["F", "G"])
+  })
   p <- Pedixplorer::Pedigree(pxFrame(ped))
   for (dp in list(NULL, "one", "both")) {
     probe(case, paste0("Pedixplorer subset(all but C, del_parents = ",

@@ -140,6 +140,11 @@ code, `DIVERGENCE.md` in the repository says how and why.
   stop in the same way when `affected`, the argument or the column, holds a
   number other than 0 and 1, which they counted as affected; `bitSize()` and
   `findUnavailable()`, which do not use the status, do not read the column.
+* New: `removeAnimals()` removes the listed animals and sets to `NA` each sire
+  or dam entry that names one of them, so no animal is left with a parent that
+  has no row; an offspring keeps its other parent. kinship2's
+  `pedigree.trim()` stops when an offspring would keep only one parent, and
+  Pedixplorer's `subset(del_parents = "one")` clears that parent too.
 
 ## Converters
 

@@ -176,6 +176,9 @@ pick an animal in the “Select by id” box, and save the picture with the
 - `removeUnknownAnimals()` removes the placeholder animals added for
   unknown parents; `removeUninformativeFounders()` removes founders that
   appear only once, which add no information.
+- `removeAnimals()` removes the animals you list and clears each sire or
+  dam entry that named one of them; their offspring keep their other
+  parent.
 - `shrinkPedigree()` shrinks a pedigree to fit a bit-size budget. Its
   steps are exported too: `bitSize()` measures a pedigree,
   `findUnavailable()` finds the animals it can lose because they are
