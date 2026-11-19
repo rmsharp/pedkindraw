@@ -8,6 +8,9 @@
 ## from a few lines each (DIVERGENCE.md). Phase 15c (pedkindraw S24): the
 ## mate check's pair, key and generation rules are helpers that asPedFrame()
 ## shares, so a converted mate hint is fixed by the rules the check applies.
+## Plan Phase G10 (pedkindraw S51, R127-R128): .layoutHintsUsed() and its two
+## helpers give the hints a layout used, which makePedigreeMatingLayout()
+## returns, so that passing them back gives the same layout.
 
 #' Check the hints given to makePedigreeMatingLayout()
 #'
@@ -426,4 +429,96 @@
   named <- !is.na(found$row)
   side <- ifelse(named, found$side, 0.0)
   unitIds[order(side, ifelse(named, found$row, 0L), seq_along(unitIds))]
+}
+
+#' The hints a layout used, in the form makePedigreeMatingLayout() takes
+#'
+#' Passed back as \code{hints}, they give the same layout (plan Phase G10,
+#' R127-R128).
+#'
+#' @param ped the rows the layout drew from: the animals with no relative
+#'   left out, an order hint applied.
+#' @param hints the checked hints (\code{NULL} or
+#'   \code{list(order = , mate = )}).
+#' @param forest the layout's mating-unit forest, \code{NULL} when it drew
+#'   no animal.
+#' @param pos the layout's positions (\code{id}, \code{x}), \code{NULL} when
+#'   it drew no animal.
+#' @return \code{list(order = , mate = )}, from
+#'   \code{.layoutHintsUsedOrder()} and \code{.layoutHintsUsedMate()}.
+#' @noRd
+.layoutHintsUsed <- function(ped, hints, forest = NULL, pos = NULL) {
+  list(order = .layoutHintsUsedOrder(ped, hints$order),
+       mate = .layoutHintsUsedMate(ped, hints$mate, forest, pos))
+}
+
+#' The order a layout used
+#'
+#' Each animal with a parent is numbered by its row, so the rows keep their
+#' places when the order is passed back. A founder is numbered only where
+#' the order hint named it: naming a founder turns off the layout's own
+#' ordering of founder lines (\code{.layoutHintKeepsRoots()}).
+#'
+#' @param ped the rows the layout drew from.
+#' @param hintOrder the checked order hint (or \code{NULL}).
+#' @return A numeric vector named by id, in row order.
+#' @noRd
+.layoutHintsUsedOrder <- function(ped, hintOrder) {
+  ids <- as.character(ped$id)
+  founder <- is.na(ped$sire) & is.na(ped$dam)
+  numbered <- !founder | ids %in% names(hintOrder)
+  stats::setNames(as.numeric(which(numbered)), ids[numbered])
+}
+
+#' The mate rows a layout used
+#'
+#' The mate hint's rows as given, then a row for each other mating whose
+#' partners both have rows: \code{left} and \code{right} as drawn,
+#' \code{anchor} the partner the offspring hang under. An animal that
+#' anchors three or more matings, or that the hint's rows place, gets no row
+#' for its matings: a row there can change how far its mates are drawn
+#' (\code{.layoutHintSides()}).
+#'
+#' @param ped the rows the layout drew from.
+#' @param hintMate the checked mate hint (or \code{NULL}).
+#' @param forest the layout's mating-unit forest, or \code{NULL}.
+#' @param pos the layout's positions (\code{id}, \code{x}), or \code{NULL}.
+#' @return A data frame with the character columns \code{left},
+#'   \code{right} and \code{anchor}.
+#' @noRd
+.layoutHintsUsedMate <- function(ped, hintMate, forest, pos) {
+  given <- hintMate
+  if (is.null(given)) {
+    given <- data.frame(left = character(), right = character(),
+                        anchor = character(), stringsAsFactors = FALSE)
+  }
+  if (is.null(forest)) {
+    return(given)
+  }
+  units <- forest$matingUnits
+  units <- units[!is.na(units$anchor), , drop = FALSE]
+  unitKey <- .layoutHintPairKey(units$sire, units$dam)
+  hinted <- unitKey %in% .layoutHintPairKey(given$left, given$right)
+  matings <- table(units$anchor)
+  own <- units$nonAnchor %in% as.character(ped$id) &
+    !units$anchor %in% units$anchor[hinted] &
+    as.integer(matings[units$anchor]) <= 2L
+  units <- units[own, , drop = FALSE]
+  x <- stats::setNames(pos$x, pos$id)
+  repeats <- forest$duplicates
+  mateNode <- vapply(seq_len(nrow(units)), function(i) {
+    node <- repeats$id[repeats$realId == units$nonAnchor[[i]] &
+                         repeats$matingUnitId == units$id[[i]]]
+    if (length(node) == 1L) node else units$nonAnchor[[i]]
+  }, character(1L))
+  anchorLeft <- unname(x[units$anchor] < x[mateNode])
+  rows <- data.frame(
+    left = ifelse(anchorLeft, units$anchor, units$nonAnchor),
+    right = ifelse(anchorLeft, units$nonAnchor, units$anchor),
+    anchor = ifelse(anchorLeft, "left", "right"),
+    stringsAsFactors = FALSE
+  )
+  used <- rbind(given, rows)
+  rownames(used) <- NULL
+  used
 }

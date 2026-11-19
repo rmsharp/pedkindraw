@@ -40,7 +40,12 @@
 ## written as "#RRGGBB" codes by .checkConditionColors() (pedkindraw's own,
 ## R/conditionColors.R); the layout's conditions table takes its colours from
 ## it, and .affectedColor() gains affectedFill, which both pass the first
-## colour; and their help (DIVERGENCE.md rows).
+## colour; and their help (DIVERGENCE.md rows). Plan Phase G10 (pedkindraw
+## S51, R127-R128): both of makePedigreeMatingLayout()'s returns gain hints,
+## the hints the layout used (.layoutHintsUsed(), pedkindraw's own,
+## R/layoutHints.R), and its help describes them (the return value, a
+## sentence under hints, and the example passes them back and edits them;
+## a DIVERGENCE.md row).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -1787,7 +1792,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   its own), a pair with no offspring together or named twice, an
 #'   \code{anchor} other than those three, and an anchor on the partner of
 #'   an earlier generation than its mate (the layout draws a mating on the
-#'   row of its later partner).
+#'   row of its later partner). The returned \code{hints} are the hints the
+#'   layout used, in this form: passed back, they give the same layout, so
+#'   an edit can start from the layout's own order (see the example).
 #' @param maxNameChars the most characters of an animal's \code{name}
 #'   written in \code{label} under its id, on its node and on each of its
 #'   repeat nodes, 15 by default: a longer name is cut there and ends in
@@ -1857,7 +1864,19 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   \code{color}, from \code{conditionColors} as a \code{"#RRGGBB"}
 #'   code), 0-row when \code{ped} has no such column, and
 #'   \code{conditionsNotDrawn}, the names of any such columns past the
-#'   fourth.
+#'   fourth. Last, \code{hints}, the hints the layout used, in the form the
+#'   argument \code{hints} takes, so that passing them back gives the same
+#'   layout: \code{order} numbers each animal drawn that has a parent by its
+#'   row in the rows the layout drew from (an order hint applied, the
+#'   animals left out not counted), and a founder only where an order hint
+#'   named it, since naming a founder turns off the layout's own ordering of
+#'   founder lines; \code{mate} holds the rows of a mate hint as given, then
+#'   a row for each other mating whose sire and dam both have rows in
+#'   \code{ped}, \code{left} and \code{right} as drawn and \code{anchor} the
+#'   partner the offspring hang under, except the matings of an animal that
+#'   anchors three or more matings or that the given rows place, where a row
+#'   can change how far its mates are drawn. With every animal left out,
+#'   \code{order} has no numbers and \code{mate} no rows.
 #'
 #' @examples
 #' ## Seven animals: C and D are full siblings, and so are F and G, D's
@@ -1871,6 +1890,15 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #' )
 #' ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
 #' layout <- makePedigreeMatingLayout(ped)
+#'
+#' ## The hints the layout used: passed back, the same layout
+#' layout$hints
+#' identical(makePedigreeMatingLayout(ped, hints = layout$hints), layout)
+#'
+#' ## Edited: G drawn left of F
+#' hints <- layout$hints
+#' hints$order[c("F", "G")] <- hints$order[c("G", "F")]
+#' swapped <- makePedigreeMatingLayout(ped, hints = hints)
 #'
 #' @export
 makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
@@ -1974,7 +2002,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     return(list(nodes = emptyNodes, edges = emptyEdges,
                 duplicateToReal = stats::setNames(character(), character()),
                 isolatedIds = isolatedIds, conditions = conditions,
-                conditionsNotDrawn = conditionsNotDrawn))
+                conditionsNotDrawn = conditionsNotDrawn,
+                hints = .layoutHintsUsed(ped, hints)))
   }
 
   forest <- .buildMatingUnitForest(ped, hints)
@@ -2362,7 +2391,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
 
   list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,
        isolatedIds = isolatedIds, conditions = conditions,
-       conditionsNotDrawn = conditionsNotDrawn)
+       conditionsNotDrawn = conditionsNotDrawn,
+       hints = .layoutHintsUsed(ped, hints, forest, pos))
 }
 
 #' Insert rectilinear mate-line/sibship-bar waypoint nodes and edges
