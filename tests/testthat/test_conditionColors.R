@@ -300,7 +300,8 @@ test_that(
                 "from grey #BEBEBE, which marks an unknown status: \"white\", ",
                 "\"gray\", \"#bebebe\", \"#FFF\".")),
     list(c("red", "gold", "#FF0000"),
-         "to give each condition its own colour: \"red\", \"#FF0000\" are the same.")
+         paste0("to give each condition its own colour: \"red\", ",
+                "\"#FF0000\" are the same."))
   )
   for (fn in .bothBuilders) {
     for (case in cases) {
@@ -338,17 +339,11 @@ test_that(
 ## in each legend row of `labels`: a hexagon's centre with one condition, the
 ## middle of the filled section of each picture with two or more. Returns one
 ## "id;j;r,g,b" line per section and one "legend;j;r,g,b" line per row
-## ("legend;j;none" when the legend has no such row).
+## ("legend;j;none" when the legend has no such row). .pixelReaderJs()
+## (helper-legendPictures.R) finds the drawing and reads.
 .colourPixelsJs <- function(ids, k, labels) {
-  paste0(
-    "(() => { const el = document.querySelector('.visNetwork'); ",
-    "const w = HTMLWidgets.find('#' + el.id); const net = w.network; ",
-    "const L = w.legend; const k = ", k, "; ",
-    "const read = (nw, x, y) => { const cv = nw.canvas.frame.canvas; ",
-    "const r = cv.width / cv.clientWidth; ",
-    "const p = nw.canvasToDOM({x: x, y: y}); ",
-    "const d = cv.getContext('2d').getImageData(Math.round(p.x * r), ",
-    "Math.round(p.y * r), 1, 1).data; return [d[0], d[1], d[2]].join(','); }; ",
+  .pixelReaderJs(paste0(
+    "const k = ", k, "; ",
     "const at = (j, f) => { ",
     "const a = -Math.PI / 2 - (j - 0.5) * 2 * Math.PI / k; ",
     "return [f * Math.cos(a), f * Math.sin(a)]; }; ",
@@ -364,8 +359,8 @@ test_that(
     "return; } const n = L.body.nodes[lid]; ",
     "const o = at(i + 1, k === 1 ? 0 : 0.5 * n.options.size * 22 / 25); ",
     "out.push(['legend', i + 1, read(L, n.x + o[0], n.y + o[1])].join(';')); ",
-    "}); return out.join('|'); })()"
-  )
+    "}); return out.join('|');"
+  ))
 }
 
 test_that(

@@ -245,17 +245,11 @@ test_that(
 ## along the middle of the section. The legend draws a picture 2 * size wide,
 ## so its circle's radius is size * 2 * 22 / 50; the diagram's circle has the
 ## node's size as its radius. Returns one "i;j;legend;diagram" line each.
+## .pixelReaderJs() (helper-legendPictures.R) finds the drawing and reads.
 .sectionPixelsJs <- function(k, labels) {
-  paste0(
-    "(() => { const el = document.querySelector('.visNetwork'); ",
-    "const w = HTMLWidgets.find('#' + el.id); const L = w.legend; ",
-    "const net = w.network; const k = ", k, "; const labels = [",
+  .pixelReaderJs(paste0(
+    "const k = ", k, "; const labels = [",
     paste0("'", labels, "'", collapse = ", "), "]; ",
-    "const read = (nw, x, y) => { const cv = nw.canvas.frame.canvas; ",
-    "const r = cv.width / cv.clientWidth; ",
-    "const p = nw.canvasToDOM({x: x, y: y}); ",
-    "const d = cv.getContext('2d').getImageData(Math.round(p.x * r), ",
-    "Math.round(p.y * r), 1, 1).data; return [d[0], d[1], d[2]].join(','); }; ",
     "const out = []; for (let i = 1; i <= k; i++) { ",
     "const lid = L.body.nodeIndices.find(id => ",
     "L.body.nodes[id].options.label === labels[i - 1]); ",
@@ -268,8 +262,8 @@ test_that(
     "out.push([i, j, read(L, ln.x + 0.5 * lr * Math.cos(a), ",
     "ln.y + 0.5 * lr * Math.sin(a)), read(net, p.x + 0.5 * dr * Math.cos(a), ",
     "p.y + 0.5 * dr * Math.sin(a))].join(';')); } } ",
-    "return out.join('|'); })()"
-  )
+    "return out.join('|');"
+  ))
 }
 
 test_that(

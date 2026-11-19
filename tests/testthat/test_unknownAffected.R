@@ -253,17 +253,11 @@ test_that(
 ## each animal in `ids` (halfway out from the centre; with one condition, the
 ## centre), and at the centre of the legend row labelled `label`. Returns one
 ## "id;j;r,g,b" line per section and one "legend;0;r,g,b" line ("legend;0;none"
-## when the legend has no such row).
+## when the legend has no such row). .pixelReaderJs() (helper-legendPictures.R)
+## finds the drawing and reads.
 .unknownPixelsJs <- function(ids, k, label) {
-  paste0(
-    "(() => { const el = document.querySelector('.visNetwork'); ",
-    "const w = HTMLWidgets.find('#' + el.id); const net = w.network; ",
-    "const L = w.legend; const k = ", k, "; ",
-    "const read = (nw, x, y) => { const cv = nw.canvas.frame.canvas; ",
-    "const r = cv.width / cv.clientWidth; ",
-    "const p = nw.canvasToDOM({x: x, y: y}); ",
-    "const d = cv.getContext('2d').getImageData(Math.round(p.x * r), ",
-    "Math.round(p.y * r), 1, 1).data; return [d[0], d[1], d[2]].join(','); }; ",
+  .pixelReaderJs(paste0(
+    "const k = ", k, "; ",
     "const out = []; [", paste0("'", ids, "'", collapse = ", "), "].forEach(",
     "id => { const p = net.getPosition(id); ",
     "const s = net.body.nodes[id].options.size; ",
@@ -276,8 +270,8 @@ test_that(
     "L.body.nodes[id].options.label === '", label, "'); ",
     "const ln = lid === undefined ? null : L.body.nodes[lid]; ",
     "out.push(['legend', 0, ln ? read(L, ln.x, ln.y) : 'none'].join(';')); ",
-    "return out.join('|'); })()"
-  )
+    "return out.join('|');"
+  ))
 }
 
 test_that(
