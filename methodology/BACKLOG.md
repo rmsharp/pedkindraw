@@ -119,7 +119,9 @@ issues).*
       hand (WARN 0). The manifest's own note says to set the limit above the slowest honest run; the tool's default
       is 600 s. Raising it is not a loosening (the threshold stays 0); the ratchet prints a changed
       `timeout_seconds` as a warning and the dashboard notes a changed gate, so make the change in a commit of its
-      own with the reason in the ledger, then run the gates again.
+      own with the reason in the ledger, then run the gates again. S50: the suite took 304-317 s (67 files, 820
+      tests), so the gate timed out again (4/5, results `42b564bc4c70`) and S50's receipt names it with the suite
+      run by hand (WARN 0); S49's run had just passed. Every later session will meet this until the limit moves.
 
 - [ ] **A stale pedkindraw 0.0.1 in renv's library** (READY, Effort S; Phase 17l) -- renv's library
       (`Rscript -e 'cat(renv::paths$library())'`) holds a pedkindraw 0.0.1 built 2026-11-12, before `asPedFrame()`
