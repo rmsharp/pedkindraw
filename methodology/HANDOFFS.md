@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S54
+date: 2026-11-19
+status: pending
+active_task: Phase G13, gap B3: Pedixplorer's marks (carrier, proband, consultand, evaluated, genotyped border, infertile, miscarriage), each a column the layout reads, a mark drawn and a legend row (docs/planning/gaps-and-shared-code-plan.md:372; R97; methodology/BACKLOG.md:26): measure first (tools/gapCases.R markings; Pedixplorer's help for each mark; how pedkindraw draws on a symbol: the deceased slash, the section painter, the legend pictures, the height per row; the legend's room), a pre-RED picker (which marks first, their looks, the phase's session count), RED, GREEN, REFACTOR by the gates, closing at a clean phase boundary (8-9 sessions for the phase, a guess); strict TDD; Mark's pick "Phase G13: marks (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S53
 date: 2026-11-19
 status: complete

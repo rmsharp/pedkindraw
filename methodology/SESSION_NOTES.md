@@ -125,6 +125,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S52's entries were removed in S3-S53 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 54 Did
+**Deliverable:** Phase G13, gap B3: Pedixplorer's marks drawn on a symbol, first session (IN PROGRESS)
+**Started:** 2026-11-19 16:51 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase G13: marks (Recommended)"
+(orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (which marks first, their looks, the phase's
+session count).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 52 Handoff Evaluation (by Session 53)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(e) was the session's plan item for item: the gap case's output was
