@@ -64,6 +64,9 @@
   visited <- logical(nPairs)
   movedOnce <- logical(n)
 
+  ## One generation after x's later parent, at the depths as they stand.
+  afterParents <- function(x) 1L + max(depth[parents[[x]]])
+
   ## TRUE when a path leads from p to m other than through their offspring.
   related <- function(p, m, joint) {
     seen <- logical(n)
@@ -107,11 +110,10 @@
     inBlock[p] <- TRUE
     front <- p
     while (length(front) > 0L) {
-      ups <- unlist(parents[front], use.names = FALSE)
-      ups <- unique(ups[!inBlock[ups]])
+      allUps <- unique(unlist(parents[front], use.names = FALSE))
+      ups <- allUps[!inBlock[allUps]]
       inBlock[ups] <- TRUE
-      upPairs <- unlist(pairsOf[unique(c(ups,
-        unlist(parents[front], use.names = FALSE)))], use.names = FALSE)
+      upPairs <- unlist(pairsOf[allUps], use.names = FALSE)
       matesUp <- unique(c(pairS[upPairs], pairD[upPairs]))
       matesUp <- matesUp[!inBlock[matesUp] & !hasS[matesUp] & !hasD[matesUp]]
       inBlock[matesUp] <- TRUE
@@ -133,12 +135,12 @@
       front <- nxt
     }
     pushed <- integer(0L)
-    for (c in below[order(gen[below])]) {
-      new <- 1L + max(depth[parents[[c]]])
-      if (new > depth[c]) {
-        pushed <- c(pushed, c)
+    for (x in below[order(gen[below])]) {
+      new <- afterParents(x)
+      if (new > depth[x]) {
+        pushed <- c(pushed, x)
       }
-      depth[c] <- new
+      depth[x] <- new
     }
     if (length(pushed) > 0L) {
       more <- unique(unlist(pairsOf[pushed], use.names = FALSE))
@@ -149,8 +151,9 @@
     }
   }
 
-  for (c in rows[placed & (hasS | hasD)][order(gen[placed & (hasS | hasD)])]) {
-    depth[c] <- 1L + max(depth[parents[[c]]])
+  withParent <- rows[placed & (hasS | hasD)]
+  for (x in withParent[order(gen[withParent])]) {
+    depth[x] <- afterParents(x)
   }
   depth
 }
