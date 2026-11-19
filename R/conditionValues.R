@@ -4,6 +4,8 @@
 ## docs/planning/gaps-and-shared-code-plan.md section 5.1; rulings
 ## R102-R104, pedkindraw S42). The copied functions that read a condition
 ## column call this check before their as.logical() read (DIVERGENCE.md).
+## Phase G12 (rulings R131-R132, pedkindraw S53): the check takes the end of
+## its message, and the builders' names their argument conditionThresholds.
 
 #' Stop on a condition column holding numbers other than 0 and 1
 #'
@@ -15,9 +17,13 @@
 #' not checked (nprcgenekeepr issue #133).
 #' @param x the column, or the \code{affected} argument.
 #' @param what the start of the message: what holds the numbers.
+#' @param advice the end of the message: what to do with a measured trait.
+#'   Phase G12: the builders name their argument \code{conditionThresholds}.
 #' @return \code{NULL}, invisibly; stops naming up to five of the numbers.
 #' @noRd
-.checkConditionNumbers <- function(x, what) {
+.checkConditionNumbers <- function(x, what,
+                                   advice = paste("compare it with a",
+                                                  "threshold first.")) {
   if (is.numeric(x)) {
     numbers <- unique(x[!is.na(x) & x != 0.0 & x != 1.0])
     if (length(numbers) > 0L) {
@@ -25,7 +31,7 @@
       if (length(numbers) > 5L) shown <- paste0(shown, ", ...")
       stop(what, " holds numbers other than 0 and 1 (", shown, "). ",
            "Give TRUE or FALSE (or 1 or 0) for each animal; for a measured ",
-           "trait, compare it with a threshold first.", call. = FALSE)
+           "trait, ", advice, call. = FALSE)
     }
   }
   invisible(NULL)

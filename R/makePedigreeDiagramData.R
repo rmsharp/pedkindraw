@@ -45,7 +45,14 @@
 ## the hints the layout used (.layoutHintsUsed(), pedkindraw's own,
 ## R/layoutHints.R), and its help describes them (the return value, a
 ## sentence under hints, and the example passes them back and edits them;
-## a DIVERGENCE.md row).
+## a DIVERGENCE.md row). Plan Phase G12 (pedkindraw S53, R131-R132):
+## makePedigreeDiagramData() and makePedigreeMatingLayout() gain the argument
+## conditionThresholds = NULL, the cut-offs of measured traits, read and
+## checked by .checkConditionThresholds() (pedkindraw's own,
+## R/conditionThresholds.R); a drawn condition with a cut-off is decided by it
+## before G1's check, its label states the rule and the tooltip gives the
+## number; G1's message names the argument; and their help (DIVERGENCE.md
+## rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -90,6 +97,13 @@
 #'   the first colour, written as its \code{"#RRGGBB"} code. It stops as
 #'   \code{makePedigreeMatingLayout()} does, except that one colour is always
 #'   enough.
+#' @param conditionThresholds \code{NULL} (the default), or the cut-off of a
+#'   measured trait in the column \code{affected}, as
+#'   \code{\link{makePedigreeMatingLayout}} takes it: such as
+#'   \code{c(affected = "> 5")}. An animal whose number passes the cut-off is
+#'   affected, and \code{title} gives the rule and the number:
+#'   \dQuote{Affected (> 5): Yes (9)}. It stops as
+#'   \code{makePedigreeMatingLayout()} does.
 #' @return A list with two data frames: \code{nodes} (\code{id}, \code{label},
 #'   \code{shape}, \code{level}, \code{title}, \code{color.background})
 #'   and \code{edges} (\code{from}, \code{to}, plus
@@ -118,7 +132,8 @@
 makePedigreeDiagramData <- function(ped, twinRelations = NULL,
                                     maxNameChars = 15.0,
                                     conditionColors = c("#CC79A7", "#E69F00",
-                                                        "#56B4E9", "#009E73")) {
+                                                        "#56B4E9", "#009E73"),
+                                    conditionThresholds = NULL) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeDiagramData() requires 'ped' to be a data frame.")
   }
@@ -132,6 +147,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   .checkMaxNameChars(maxNameChars, "makePedigreeDiagramData")
   conditionColors <- .checkConditionColors(conditionColors,
                                            "makePedigreeDiagramData")
+  # pedkindraw Phase G12: the cut-offs of measured traits, read and checked.
+  thresholds <- .checkConditionThresholds(conditionThresholds, ped,
+                                          "makePedigreeDiagramData")
 
   shapeMap <- c(F = "dot", M = "square", H = "star", U = "triangle")
   shapes <- unname(shapeMap[as.character(ped$sex)])
@@ -170,14 +188,29 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   unknownFill <- "#FFFFFF"
   if ("affected" %in% names(ped)) {
     unknownFill <- .unknownColor
-    .checkConditionNumbers(
-      ped$affected,
-      "makePedigreeDiagramData(): the condition column 'affected'"
-    )
-    affected <- as.logical(ped$affected)
-    titles <- paste0(titles,
-                      sprintf("<br><b>Affected:</b> %s",
-                              .affectedLabel(affected)))
+    # pedkindraw Phase G12: with a cut-off the numbers are a measured trait,
+    # affected where they pass it; the tooltip gives the rule and the number.
+    cut <- match("affected", thresholds$column)
+    if (!is.na(cut)) {
+      affected <- .thresholdAffected(ped$affected, thresholds$op[[cut]],
+                                     thresholds$value[[cut]])
+      titles <- paste0(titles, sprintf(
+        "<br><b>%s:</b> %s",
+        .escapeHtml(.thresholdLabel("Affected", thresholds$op[[cut]],
+                                    thresholds$text[[cut]])),
+        .thresholdShown(affected, ped$affected)
+      ))
+    } else {
+      .checkConditionNumbers(
+        ped$affected,
+        "makePedigreeDiagramData(): the condition column 'affected'",
+        advice = .thresholdAdvice("affected")
+      )
+      affected <- as.logical(ped$affected)
+      titles <- paste0(titles,
+                        sprintf("<br><b>Affected:</b> %s",
+                                .affectedLabel(affected)))
+    }
   }
 
   # Issue #136 (D1-D5, D10): name is an OPTIONAL character column. Absent
@@ -1823,6 +1856,21 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   on the grey \code{"#BEBEBE"} (they mark an unaffected animal and an
 #'   unknown status), on a colour given twice, and on fewer colours than
 #'   conditions drawn.
+#' @param conditionThresholds \code{NULL} (the default), or the cut-offs of
+#'   measured traits: a character vector named by condition columns, each a
+#'   comparison, \code{>}, \code{>=}, \code{<} or \code{<=}, and a number,
+#'   such as \code{c(affected_glucose = ">= 126", affected_hb = "< 13")}.
+#'   An animal whose number passes its column's cut-off is drawn affected,
+#'   one whose number does not is drawn unaffected, and one with no number
+#'   (\code{NA}) is drawn as unknown. The rule goes into the condition's
+#'   label, so the legend and the tooltip state it, \code{>=} and \code{<=}
+#'   written as the signs for at least and at most: \dQuote{Affected
+#'   (glucose >= 126)} with the sign; the tooltip also gives the animal's
+#'   number, \dQuote{Yes (140)}. A column without a cut-off is read as
+#'   before, and a number in it other than 0 and 1 stops. Stops on anything
+#'   but a named character vector, on a cut-off it cannot read, on a name
+#'   that is not a condition column of \code{ped}, and on a column with a
+#'   cut-off that does not hold numbers.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -1909,7 +1957,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                       conditionColors = c("#CC79A7",
                                                           "#E69F00",
                                                           "#56B4E9",
-                                                          "#009E73")) {
+                                                          "#009E73"),
+                                      conditionThresholds = NULL) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -1948,12 +1997,28 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     stringsAsFactors = FALSE
   )
   sectioned <- length(drawnCols) >= 2L
+  # pedkindraw Phase G12: a drawn condition with a cut-off is a measured
+  # trait. Its numbers are kept for the tooltip and the column becomes
+  # true-or-false by the cut-off, and its label states the rule.
+  thresholds <- .checkConditionThresholds(conditionThresholds, ped,
+                                          "makePedigreeMatingLayout")
+  measured <- list()
+  for (i in which(drawnCols %in% thresholds$column)) {
+    column <- drawnCols[[i]]
+    cut <- match(column, thresholds$column)
+    conditions$label[[i]] <- .thresholdLabel(
+      conditions$label[[i]], thresholds$op[[cut]], thresholds$text[[cut]]
+    )
+    measured[[column]] <- stats::setNames(ped[[column]], ped$id)
+    ped[[column]] <- .thresholdAffected(ped[[column]], thresholds$op[[cut]],
+                                        thresholds$value[[cut]])
+  }
   # pedkindraw Phase G1 (R102-R104): a drawn condition holding a number other
   # than 0 and 1 stops, checked before any animal is left out.
   for (column in drawnCols) {
     .checkConditionNumbers(ped[[column]], sprintf(
       "makePedigreeMatingLayout(): the condition column '%s'", column
-    ))
+    ), advice = .thresholdAdvice(column))
   }
 
   # A fully-isolated individual (no known parent, never a parent, not
@@ -2144,10 +2209,14 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
       .escapeHtml(ids), sexLabel, genOf[ids], sireLabel, damLabel
     )
     for (i in seq_along(drawnCols)) {
+      shown <- .affectedLabel(conditionOf[[i]][ids])
+      if (drawnCols[[i]] %in% names(measured)) { # pedkindraw Phase G12
+        shown <- .thresholdShown(conditionOf[[i]][ids],
+                                 measured[[drawnCols[[i]]]][ids])
+      }
       title <- paste0(title,
                        sprintf("<br><b>%s:</b> %s",
-                               .escapeHtml(conditions$label[[i]]),
-                               .affectedLabel(conditionOf[[i]][ids])))
+                               .escapeHtml(conditions$label[[i]]), shown))
     }
     if (hasName) {
       title <- paste0(title, .nameTooltipLine(nameOf[ids]))

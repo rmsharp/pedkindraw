@@ -11,7 +11,8 @@ makePedigreeMatingLayout(
   kinshipMatrix = NULL,
   hints = NULL,
   maxNameChars = 15,
-  conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
+  conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73"),
+  conditionThresholds = NULL
 )
 }
 \arguments{
@@ -126,6 +127,22 @@ palette, which can be changed), on a transparent colour, on white and
 on the grey \code{"#BEBEBE"} (they mark an unaffected animal and an
 unknown status), on a colour given twice, and on fewer colours than
 conditions drawn.}
+
+\item{conditionThresholds}{\code{NULL} (the default), or the cut-offs of
+measured traits: a character vector named by condition columns, each a
+comparison, \code{>}, \code{>=}, \code{<} or \code{<=}, and a number,
+such as \code{c(affected_glucose = ">= 126", affected_hb = "< 13")}.
+An animal whose number passes its column's cut-off is drawn affected,
+one whose number does not is drawn unaffected, and one with no number
+(\code{NA}) is drawn as unknown. The rule goes into the condition's
+label, so the legend and the tooltip state it, \code{>=} and \code{<=}
+written as the signs for at least and at most: \dQuote{Affected
+(glucose >= 126)} with the sign; the tooltip also gives the animal's
+number, \dQuote{Yes (140)}. A column without a cut-off is read as
+before, and a number in it other than 0 and 1 stops. Stops on anything
+but a named character vector, on a cut-off it cannot read, on a name
+that is not a condition column of \code{ped}, and on a column with a
+cut-off that does not hold numbers.}
 }
 \value{
 A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
