@@ -80,19 +80,16 @@
 #' near3$id
 getNearRelativePedigree <- function(ped, probands, maxDist) {
   .checkPedFrame(ped, "getNearRelativePedigree")
-  if (is.list(probands) || !(is.vector(probands) || is.factor(probands))) {
-    stop("getNearRelativePedigree: probands must be a vector of animal ids",
-         call. = FALSE)
-  }
+  .checkIds(probands, "getNearRelativePedigree", "probands")
   if (!is.numeric(maxDist) || length(maxDist) != 1L ||
         !is.finite(maxDist) || maxDist < 1.0) {
     stop("getNearRelativePedigree: maxDist must be one finite number, ",
          "1 or more", call. = FALSE)
   }
-  refusal <- .unrelatedStopMessage(checkPedigree(ped[c("id", "sire", "dam")]))
+  refusal <- .unrelatedStopMessage(checkPedigree(ped[c("id", "sire", "dam")]),
+                                   "getNearRelativePedigree")
   if (!is.null(refusal)) {
-    stop(sub("^findUnrelated:", "getNearRelativePedigree:", refusal),
-         call. = FALSE)
+    stop(refusal, call. = FALSE)
   }
   id <- as.character(ped[["id"]])
   sire <- as.character(ped[["sire"]])

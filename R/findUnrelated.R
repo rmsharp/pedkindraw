@@ -82,7 +82,7 @@ findUnrelated <- function(ped, genotyped) {
          .checkListed(which(is.na(genotyped))), call. = FALSE)
   }
   ped <- ped[c("id", "sire", "dam")]
-  refusal <- .unrelatedStopMessage(checkPedigree(ped))
+  refusal <- .unrelatedStopMessage(checkPedigree(ped), "findUnrelated")
   if (!is.null(refusal)) {
     stop(refusal, call. = FALSE)
   }
@@ -108,10 +108,11 @@ findUnrelated <- function(ped, genotyped) {
   "missingParentCodes"
 )
 
-## The message findUnrelated() stops with, given checkPedigree()'s rows, or
-## NULL when none of them leaves relatedness undefined: the animals under each
-## such check (rows for missing ids, codes quoted), ten at most per check.
-.unrelatedStopMessage <- function(problems) {
+## The message findUnrelated() and getNearRelativePedigree() stop with, given
+## checkPedigree()'s rows and the caller's name, or NULL when none of them
+## leaves relatedness undefined: the animals under each such check (rows for
+## missing ids, codes quoted), ten at most per check.
+.unrelatedStopMessage <- function(problems, caller) {
   problems <- problems[problems$check %in% .unrelatedStops, ]
   if (nrow(problems) == 0L) {
     return(NULL)
@@ -131,7 +132,7 @@ findUnrelated <- function(ped, genotyped) {
   } else {
     ""
   }
-  paste0("findUnrelated: relatedness cannot be read from ped, ",
+  paste0(caller, ": relatedness cannot be read from ped, ",
          "checkPedigree() reports ", listed, hint)
 }
 
