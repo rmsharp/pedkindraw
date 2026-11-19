@@ -520,19 +520,16 @@ cases$shrinkPicture <- function(case = "shrinkPicture") {
   })
   ped <- data.frame(id = sp$id, sire = sp$dadid, dam = sp$momid,
                     sex = c("M", "F")[sp$sex], stringsAsFactors = FALSE)
-  probe(case, "pedkindraw shrinkPedigree() returns",
-        names(pedkindraw::shrinkPedigree(
-          ped, genotyped = sp$avail == 1L,
-          affected = !is.na(sp$affection) & sp$affection == 1L)))
+  shrunk <- pedkindraw::shrinkPedigree(
+    ped, genotyped = sp$avail == 1L,
+    affected = !is.na(sp$affection) & sp$affection == 1L)
+  probe(case, "pedkindraw shrinkPedigree() returns", names(shrunk))
   ## Plan Phase G9 (pedkindraw S50, R125): kinship2's plot.pedigree.shrink()
   ## draws the shrunk pedigree, the animals kept (its help: "the trimmed
   ## pedigree.shrink object"); ?shrinkPedigree's example draws the whole
   ## pedigree with the animals removed filled, from idTrimmed.
   probe(case, "kinship2 animals kept, the ones plot.pedigree.shrink() draws",
         length(s$pedObj$id))
-  shrunk <- pedkindraw::shrinkPedigree(
-    ped, genotyped = sp$avail == 1L,
-    affected = !is.na(sp$affection) & sp$affection == 1L)
   ped$affected_removed <- ped$id %in% shrunk$idTrimmed
   ## An animal with no parent, mate or offspring is not drawn (the layout's
   ## isolatedIds): 113 here, one of the animals removed.
