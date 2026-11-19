@@ -51,6 +51,7 @@ reference:
   - trimPedigree
   - getProbandPedigree
   - getDescendantPedigree
+  - getNearRelativePedigree
   - removeUnknownAnimals
   - removeUninformativeFounders
   - removeAnimals
