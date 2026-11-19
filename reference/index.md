@@ -36,6 +36,10 @@
   : Get parents to corresponding animal IDs provided
 - [`getOffspring()`](https://rmsharp.github.io/pedkindraw/reference/getOffspring.md)
   : Get offspring to corresponding animal IDs provided
+- [`countOffspring()`](https://rmsharp.github.io/pedkindraw/reference/countOffspring.md)
+  : Count each animal's offspring
+- [`getMatings()`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md)
+  : List the matings of a pedigree
 - [`getFounders()`](https://rmsharp.github.io/pedkindraw/reference/getFounders.md)
   : Get the founder ids from a pedigree
 - [`isFounder()`](https://rmsharp.github.io/pedkindraw/reference/isFounder.md)

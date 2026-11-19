@@ -14,6 +14,7 @@
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/checkPedigree.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/correctParentSex.html</loc></url>
+<url><loc>https://rmsharp.github.io/pedkindraw/reference/countOffspring.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/familyCheck.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/findAvailAffected.html</loc></url>
@@ -25,6 +26,7 @@
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/getDescendantPedigree.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/getFounders.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/getIdsWithOneParent.html</loc></url>
+<url><loc>https://rmsharp.github.io/pedkindraw/reference/getMatings.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/getOffspring.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/getParents.html</loc></url>
 <url><loc>https://rmsharp.github.io/pedkindraw/reference/getProbandPedigree.html</loc></url>

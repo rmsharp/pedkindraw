@@ -174,6 +174,11 @@ pick an animal in the “Select by id” box, and save the picture with the
   tells whether an animal has both, and
   [`getIdsWithOneParent()`](https://rmsharp.github.io/pedkindraw/reference/getIdsWithOneParent.md)
   finds the animals with one.
+- [`countOffspring()`](https://rmsharp.github.io/pedkindraw/reference/countOffspring.md)
+  counts each animal’s offspring;
+  [`getMatings()`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md)
+  lists the matings, each sire and dam with their number of offspring
+  together.
 
 **Checking and repair**
 

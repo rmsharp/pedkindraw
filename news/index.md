@@ -154,6 +154,13 @@ why.
 - New:
   [`familyCheck()`](https://rmsharp.github.io/pedkindraw/reference/familyCheck.md)
   checks family ids against the family trees the sires and dams form.
+- New:
+  [`countOffspring()`](https://rmsharp.github.io/pedkindraw/reference/countOffspring.md)
+  counts each animal’s offspring (the animals naming it as sire or dam,
+  each once), and
+  [`getMatings()`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md)
+  lists each sire and dam with an offspring recorded with both, once,
+  with the number of offspring they share: the matings a drawing draws.
 
 ### Checking and repair
 

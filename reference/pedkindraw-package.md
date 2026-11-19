@@ -38,7 +38,11 @@ number and check each animal's generation and family tree;
 [`hasBothParents()`](https://rmsharp.github.io/pedkindraw/reference/hasBothParents.md)
 and
 [`getIdsWithOneParent()`](https://rmsharp.github.io/pedkindraw/reference/getIdsWithOneParent.md)
-find sires and dams, offspring and founders.
+find sires and dams, offspring and founders;
+[`countOffspring()`](https://rmsharp.github.io/pedkindraw/reference/countOffspring.md)
+counts each animal's offspring and
+[`getMatings()`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md)
+lists the matings, each sire and dam with an offspring together.
 
 ## Checking and repair
 
