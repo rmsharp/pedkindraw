@@ -401,6 +401,20 @@ cases$measuredTrait <- function(case = "measuredTrait") {
     lay <- pedkindraw::makePedigreeMatingLayout(withGen(ped))
     lay$nodes$color.background[match(ped$id, lay$nodes$id)]
   })
+  ## Phase G12 (pedkindraw S53, R131-R132): the cut-off conditionThresholds.
+  probe(case, "pedkindraw fills, conditionThresholds affected > 5", {
+    lay <- pedkindraw::makePedigreeMatingLayout(
+      withGen(ped), conditionThresholds = c(affected = "> 5")
+    )
+    lay$nodes$color.background[match(ped$id, lay$nodes$id)]
+  })
+  probe(case, "pedkindraw legend label, conditionThresholds affected > 5", {
+    lay <- pedkindraw::makePedigreeMatingLayout(
+      withGen(ped), conditionThresholds = c(affected = "> 5")
+    )
+    labels <- pedkindraw::drawPedigreeDiagram(lay)$x$legend$nodes$label
+    labels[startsWith(labels, "Affected")]
+  })
 }
 
 ## B5. Colours, hatching, sizes and spacing.

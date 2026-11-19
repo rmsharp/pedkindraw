@@ -61,6 +61,17 @@ code, `DIVERGENCE.md` in the repository says how and why.
   the grey of an unknown status, a colour given twice, or fewer colours than
   conditions drawn stops, with a message naming them. nprcgenekeepr's colours
   are fixed.
+* New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` take
+  `conditionThresholds`, cut-offs for measured traits. A condition column of
+  numbers is drawn by its cut-off, a comparison and a number, such as
+  `conditionThresholds = c(affected_glucose = ">= 126", affected_hb = "< 13")`:
+  an animal whose number passes is affected, one whose number does not is
+  unaffected, and one with no number is unknown (grey). The rule goes into the
+  condition's name, so the legend reads "Affected (glucose ≥ 126)" and the
+  hover text "Affected (glucose ≥ 126): Yes (140)". `>` and `<` decide as
+  Pedixplorer's `threshold` does. Without a cut-off a number other than 0 and
+  1 still stops, and the message now names `conditionThresholds`.
+  nprcgenekeepr has no cut-off.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's
