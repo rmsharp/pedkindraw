@@ -23,11 +23,12 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G8-G17: the other gaps, before the release** (READY in order, G8 next; Effort L altogether, 31-46
+- [ ] **Phases G9-G17: the other gaps, before the release** (READY in order, G9 next; Effort L altogether, 30-45
       sessions, a guess; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
-      DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122) --
+      DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
+      DONE in S49, R123-R124) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
-      commands and surface: G8-G9 the size-S additions (C2 aligned generations, B7 an example); G10-G14 the M
+      commands and surface: G9 the last size-S addition (B7 an example); G10-G14 the M
       additions (C3, C1, B4 on G1's check,
       B3's marks, B5's sizes); G15-G17 the L additions (B1, A1 with A2, A3), each starting with a planning session
       of its own. 17g follows G17.
@@ -159,7 +160,11 @@ issues).*
       run `43260600901` likewise (the same two, and a third: macOS arm64 queues may be longer). S11: run
       `43278560876` likewise, plus a warning from the Chrome step S11 copied: `browser-actions/setup-chrome`'s
       `install-dependencies` is for Linux only, so the Windows job notes it (`.github/workflows/R-CMD-check.yaml:78`;
-      nprcgenekeepr's workflow has the same line). Harmless; an `if:` per runner would silence it.
+      nprcgenekeepr's workflow has the same line). Harmless; an `if:` per runner would silence it. S49: run
+      `44481480808` (S48's push) failed on its Ubuntu R-devel job only, installing dependencies before pedkindraw
+      was checked: Bioconductor's S4Vectors 0.50.3, which Pedixplorer (Suggests) imports, does not build on R-devel
+      r90935 of 2026-11-18 (a `transform` method's formals); S47's run passed that job a day earlier. Not
+      pedkindraw's code; watch whether it clears before acting.
 
 - [ ] **Report a vacuous test to nprcgenekeepr** (READY, Effort S) -- the first expectation of
       `test_findPedigreeNumber.R` checks the ids containing "1", and the Lacy pedigree's ids are letters, so it

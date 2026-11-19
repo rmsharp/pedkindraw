@@ -17,8 +17,9 @@ of a name under an id, `Inf` for whole; R108-R110). Phase G4 DONE (S45: `conditi
 conditions in the fills, sections and legend; R111-R113). Phase G5 DONE (S46: `recodePedigree()`, other ways of
 writing an unknown parent and a sex rewritten into pedkindraw's; R114-R116). Phase G6 DONE (S47: `countOffspring()`
 and `getMatings()`, each animal's offspring and the matings; R117-R119). Phase G7 DONE (S48: `removeAnimals()`,
-listed animals removed and their offspring's links to them cleared; R120-R122). Next: Phase G8 (that plan's section
-5.1), then G9-G17 before 17g.
+listed animals removed and their offspring's links to them cleared; R120-R122). Phase G8 DONE (S49:
+`findGeneration(alignMates = TRUE)`, aligned generations; R123-R124). Next: Phase G9 (that plan's section 5.1), then
+G10-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -591,6 +592,10 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **Done G7 (S48; R120-R122):** the new export `removeAnimals()` removes the listed animals and clears each sire or
   dam entry naming one of them, the offspring keeping its other parent. Commits `36c5b4a` (RED) to `c223f09`
   (REFACTOR, one ids check with `countOffspring()`); fidelity 600 of 600 with no set-aside.
+- **Done G8 (S49; R123-R124):** `findGeneration()`'s new argument `alignMates = FALSE` aligns the generations when
+  `TRUE`, by a rule measured from kinship2's `kindepth(align = TRUE)` that does not depend on the order of the rows;
+  copied code changed, with a `DIVERGENCE.md` row. Commits `2f8751f` (RED) to `a0b6956` (REFACTOR, tidy-ups in
+  `.alignGenerations()`); fidelity 600 of 600 with no set-aside.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

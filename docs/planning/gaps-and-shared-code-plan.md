@@ -7,8 +7,9 @@ commit in a scratch folder and run there with its own renv library; its folder w
 **Status:** complete. Mark decided D4, D11, D12 and D13 and the two nprcgenekeepr faults by picker (S41), rulings
 R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
 R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). G5 DONE (pedkindraw S46;
-R114-R116). G6 DONE (pedkindraw S47; R117-R119). G7 DONE (pedkindraw S48; R120-R122). Next: G8 in pedkindraw
-(section 5.1); in nprcgenekeepr N1 and N2 are done (its S1189 and S1190, section 5.2).
+R114-R116). G6 DONE (pedkindraw S47; R117-R119). G7 DONE (pedkindraw S48; R120-R122). G8 DONE (pedkindraw S49;
+R123-R124). Next: G9 in pedkindraw (section 5.1); in nprcgenekeepr N1 and N2 are done (its S1189 and S1190, section
+5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
 library; R 4.6.2 on this Mac (Apple M2 Max). The scratch scripts are named where their results are quoted; they are
@@ -360,7 +361,7 @@ submission.
 | G5 | C4 | A function that rewrites missing-parent codes ("0", "") and sex codes (1/2, male/female, m/f) into pedkindraw's (`NA`, "M", "F") | `inputCodes`: afterwards `checkPedigree()` reports no such code, `findGeneration()` places all 4 animals, no diamond is drawn; sex codes read as nprcgenekeepr's `convertSexCodes()` reads them | its name; which codes by default; "0" read as missing only when asked (an animal may be named "0") | 1 |
 | G6 | C5 | Each animal's offspring count, and its mates | `lookups`: counts 2, 2, 0, 0, as Pedixplorer's; mates checked against the fixture pedigrees | names; one function or two | 1 |
 | G7 | C6 | A function that removes listed animals and clears their offspring's links to them | `removeAnimals`: C removed, F's and G's sire cleared, `kinship()` then computes (F with G 0.125); compared with Pedixplorer's `subset(del_parents = "one")`, which also clears the other parent | clear the one link, or both as Pedixplorer does | 1 |
-| G8 | C2 | `findGeneration()` gains aligned generations, written from the method kinship2 describes (R11) | `alignedDepth`: equal to kinship2's `kindepth(align = TRUE)` on sample family 1 (6 of 41 differ from plain) and on every fixture pedigree where kinship2 returns; default unchanged (600 of 600) | the argument's name | 1 |
+| G8 | C2 | `findGeneration()` gains aligned generations, written from the method kinship2 describes (R11) | `alignedDepth`: equal to kinship2's `kindepth(align = TRUE)` on sample family 1 (6 of 41 differ from plain) and on every fixture pedigree where kinship2 returns; default unchanged (600 of 600). S49, R123: "on every fixture" became the measured counts (equal on 2 of the 7 fixtures and 73 of 100 random; at most 93 of 5,004 animals different on the other 5), kinship2's own answer depending on the order of the rows | the argument's name | 1 |
 | G9 | B7 | A documented example: the pedigree drawn with the animals `shrinkPedigree()` removed marked, from `idTrimmed` | `shrinkPicture`: the example runs and the removed animals are marked in the drawing | a help example or a vignette section | 1 |
 | G10 | C3 | `makePedigreeMatingLayout()` returns the hints it used (`:1836`, `:2219`), in the form it takes (`R/layoutHints.R`) | `ownHints`: the returned hints, passed back, give the same positions; the new list element counted as a set-aside | the element's name; order hints only, or mate hints too | 2-3 |
 | G11 | C1 | A function that keeps the relatives within k steps of chosen animals, its rule written from Pedixplorer's help and measured results (as R52) | `distanceSubset`: 14, 30 and 33 of 41 kept for k = 1, 2, 3, as Pedixplorer's `useful_inds()`, or a measured, stated difference; seeded random cases compared (Learnings 19-21) | its name; what "informative" means by default | 2-3 |
@@ -549,6 +550,26 @@ sessions a day, about 11-15 days, an estimate.
     'unknown'" on a pedigree without `sex`; muffle only those two messages (`quietPedixplorer()`), never all
     warnings. `subset(del_parents = "one")` clears both parents of any animal missing either; `NULL` and `"both"`
     put a removed parent back as a founder (`fix_parents()` adds a row for every parent named without one).
+25. **kinship2's `kindepth(align = TRUE)` depends on the order of the rows and misplaces one-parent offspring** (S49,
+    G8; kinship2 1.9.6.2). Reversing the rows changed its answer on 4 of the 8 fixture pedigrees (sample family 1
+    and the 7) and on 54 of 96 seeded random ones where an animal may have one parent; on those 96 it put an
+    offspring level with or above a parent 443 times, and on 4 more it stopped ("You found a bug in kindepth's
+    alignment code!"). Called on `id`, `dad.id` and `mom.id` vectors it returns on one-parent pedigrees and on
+    lacy1989Ped, which its `pedigree()` refuses (dragon 23). To find a rule from its results, shrink a differing
+    pedigree mechanically (`tests/testthat/helper-findGenerationAligned.R`'s typed pedigrees came from that), but
+    keep both parents or neither when removing an animal (removing one parent makes the one-parent case above),
+    and shrink while one named animal still differs: "any difference" can land on another discrepancy than the
+    full pedigree's, as it did twice.
+26. **Helpers load alphabetically and a later one with the same name wins** (S49): a new
+    `kinship2SampleFamily()` in `helper-findGenerationAligned.R` was replaced by `helper-findUnrelated.R`'s, which
+    returns a list, so the draft tests read an empty pedigree (caught on the prototype before RED); had the order
+    been reversed, `test_findUnrelated.R` would have broken. Before naming a helper, `grep -n '^<name> <- '
+    tests/testthat/*.R`.
+27. **A slow version written by name can be too slow for examplePedigree** (S49): `alignedGenerationsSlow()` took
+    397 s on its 3,694 animals (0.6 s on 375), so its comparison leaves that pedigree out; the first draft run hit
+    a 10-minute limit before that was found. Time the slow version on each fixture before RED. Sort text with
+    `order(..., method = "radix")`, as `.alignGenerations()` does: the default order follows the locale, which a
+    CRAN machine may not share.
 
 ### 7.3 Out of scope
 
