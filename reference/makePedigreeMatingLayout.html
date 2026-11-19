@@ -67,7 +67,8 @@ separate function.</p>
 <span>  edgeStyle <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"rectilinear"</span>, <span class="st">"direct"</span><span class="op">)</span>,</span>
 <span>  twinRelations <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  kinshipMatrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  hints <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  hints <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxNameChars <span class="op">=</span> <span class="fl">15</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -161,6 +162,17 @@ its own), a pair with no offspring together or named twice, an
 <code>anchor</code> other than those three, and an anchor on the partner of
 an earlier generation than its mate (the layout draws a mating on the
 row of its later partner).</p></dd>
+
+
+<dt id="arg-maxnamechars">maxNameChars<a class="anchor" aria-label="anchor" href="#arg-maxnamechars"></a></dt>
+<dd><p>the most characters of an animal's <code>name</code>
+written in <code>label</code> under its id, on its node and on each of its
+repeat nodes, 15 by default: a longer name is cut there and ends in
+<code>"..."</code>, while <code>title</code> keeps it whole. A line break counts as
+one character. <code>Inf</code> writes every name whole, as kinship2 and
+Pedixplorer write their labels; a long name can then run into the
+labels of the animals beside it. It changes nothing but the labels.
+Stops unless it is one whole number of 1 or more, or <code>Inf</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

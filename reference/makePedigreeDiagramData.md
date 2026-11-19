@@ -9,7 +9,7 @@ one per known dam, pointing from parent to child.
 ## Usage
 
 ``` r
-makePedigreeDiagramData(ped, twinRelations = NULL)
+makePedigreeDiagramData(ped, twinRelations = NULL, maxNameChars = 15)
 ```
 
 ## Arguments
@@ -26,9 +26,9 @@ makePedigreeDiagramData(ped, twinRelations = NULL)
   `"#BEBEBE"` (grey) for a node whose status is unknown (`NA`) and
   `"#FFFFFF"` (white) for an unaffected one (every node is white without
   the column); and a character `name` column, which is shown in `label`
-  (long names are truncated) and in `title`. In `affected` the numbers 1
-  and 0 read as `TRUE` and `FALSE`, and any other number stops (compare
-  a measured trait with a threshold first); text reads as
+  (cut after `maxNameChars` characters) and in `title`. In `affected`
+  the numbers 1 and 0 read as `TRUE` and `FALSE`, and any other number
+  stops (compare a measured trait with a threshold first); text reads as
   [`as.logical()`](https://rdrr.io/r/base/logical.html) reads it, other
   text as unknown.
 
@@ -40,6 +40,15 @@ makePedigreeDiagramData(ped, twinRelations = NULL)
   [`checkTwinRelations`](https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.md)
   first. `NULL` (default) adds no connector edges, so `edges` has only
   `from` and `to`.
+
+- maxNameChars:
+
+  the most characters of an animal's `name` written in `label` under its
+  id, 15 by default: a longer name is cut there and ends in `"..."`,
+  while `title` keeps it whole. A line break counts as one character.
+  `Inf` writes every name whole, as kinship2 and Pedixplorer write their
+  labels; a long name can then run into the labels of the animals beside
+  it. Stops unless it is one whole number of 1 or more, or `Inf`.
 
 ## Value
 

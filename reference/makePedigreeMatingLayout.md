@@ -17,7 +17,8 @@ makePedigreeMatingLayout(
   edgeStyle = c("rectilinear", "direct"),
   twinRelations = NULL,
   kinshipMatrix = NULL,
-  hints = NULL
+  hints = NULL,
+  maxNameChars = 15
 )
 ```
 
@@ -111,6 +112,17 @@ makePedigreeMatingLayout(
   `anchor` other than those three, and an anchor on the partner of an
   earlier generation than its mate (the layout draws a mating on the row
   of its later partner).
+
+- maxNameChars:
+
+  the most characters of an animal's `name` written in `label` under its
+  id, on its node and on each of its repeat nodes, 15 by default: a
+  longer name is cut there and ends in `"..."`, while `title` keeps it
+  whole. A line break counts as one character. `Inf` writes every name
+  whole, as kinship2 and Pedixplorer write their labels; a long name can
+  then run into the labels of the animals beside it. It changes nothing
+  but the labels. Stops unless it is one whole number of 1 or more, or
+  `Inf`.
 
 ## Value
 
