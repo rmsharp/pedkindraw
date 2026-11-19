@@ -479,6 +479,10 @@ cases$labels <- function(case = "labels") {
   lay <- pedkindraw::makePedigreeMatingLayout(withGen(ped))
   probe(case, "pedkindraw labels with a name column",
         lay$nodes$label[match(ped$id, lay$nodes$id)])
+  ## Plan Phase G3 (pedkindraw S44, R108-R110): the limit lifted.
+  lay <- pedkindraw::makePedigreeMatingLayout(withGen(ped), maxNameChars = Inf)
+  probe(case, "pedkindraw labels with maxNameChars = Inf",
+        lay$nodes$label[match(ped$id, lay$nodes$id)])
 }
 
 ## B7. A picture of what shrinking removed.

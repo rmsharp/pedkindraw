@@ -41,6 +41,13 @@ code, `DIVERGENCE.md` in the repository says how and why.
   drawing is 45 px taller for it. nprcgenekeepr still fills an unknown status
   white. Text in a condition column that `as.logical()` cannot read (such as
   "yes", or "1" read as text) is unknown, so it is now drawn grey.
+* New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` take
+  `maxNameChars`, the most characters of the `name` column written under an
+  animal's id, 15 by default as before: a longer name is cut and ends in
+  "...", and the hover text keeps it whole. A line break counts as one
+  character. `maxNameChars = Inf` writes every name whole, as kinship2 and
+  Pedixplorer write their labels; a long name can then run into the labels of
+  the animals beside it. nprcgenekeepr cuts every name after 15 characters.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's
