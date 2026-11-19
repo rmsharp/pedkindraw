@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S45
+date: 2026-11-18
+status: pending
+active_task: Phase G4, a colours argument carried to the fills, the sections script and the legend so all three agree (gap B5 colours; docs/planning/gaps-and-shared-code-plan.md:358; R97; methodology/BACKLOG.md:26): measure first, a pre-RED picker (which function takes it, how colours are checked), RED, GREEN, REFACTOR by the gates; strict TDD, copied code, its default leaving the 600 fidelity cases identical with no new set-aside; DIVERGENCE.md rows "at the switch" (R98); Mark's pick "Phase G4 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S44
 date: 2026-11-18
 status: complete

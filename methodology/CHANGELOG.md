@@ -15,6 +15,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 <!-- Entries go below, newest on top. Delete the seed-sentinel line near the top when you add the first one. -->
 
+### 2026-11-18 · [BL-Phase G4] S45: Phase G4, one colours argument for the fills, the sections and the legend (in progress)
+- **Change:** session claimed (Mark's pick "Phase G4 (Recommended)" at the orient picker): strict TDD on copied code; measure first (`tools/gapCases.R style`; every place a condition colour is chosen, with its callers; a scratch prototype read in headless Chrome; the fidelity cases at the default), then a pre-RED picker (which function takes the argument, how colours are checked), RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `142ec79` is HEAD, S44's close-out 2; no merges; S44's receipt complete, its ratchet results `5ddbb5b1aeb3` and manifest `01151c525b8a` matching the results file); drift tool 91 functions, 19 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits; nprcgenekeepr at `f85444b7e` (its S1190 RED 2 `ffdd8b819` and GREEN 2 `f85444b7e` change its `helper-perfCampaign.R:107`, outside the lines 132-150 and 189-231 pedkindraw copied, and its own `test_pedkindrawNamedCalls.R`: no copied line changed); S44's push: site `44452670091` success, CI `44452670105` in progress at Orient.
+- **Commit/PR:** the claim commit · **Session:** S45 · **Verified:** pending (close-out).
+
 ## 2026-11
 
 ### 2026-11-18 · [BL-Phase G3] S44 push 1: `master` to GitHub at close-out 2 (S44's claim, G3, close-out 1-2)

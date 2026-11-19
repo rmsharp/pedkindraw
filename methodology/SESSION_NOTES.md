@@ -94,6 +94,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S43's entries were removed in S3-S44 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 45 Did
+**Deliverable:** Phase G4, a colours argument carried to the fills, the sections script and the legend so all three
+agree (gap B5 colours; `docs/planning/gaps-and-shared-code-plan.md:358`) (IN PROGRESS)
+**Started:** 2026-11-18 21:41 CST · **Model:** Claude Opus 5.5 · Mark's pick "Phase G4 (Recommended)" at the orient picker.
+**Status:** Session claimed. Work beginning: measure first (Learning 17), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 43 Handoff Evaluation (by Session 44)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(d) for G3 was the session's plan, and its three picker questions (the
