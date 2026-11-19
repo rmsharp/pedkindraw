@@ -181,9 +181,11 @@ stopifnot(
 ## Conditions
 
 A column whose name starts with `affected` is a condition. With one such
-column, an animal whose value is `TRUE` (or 1) is filled pink; `FALSE`, 0 and
-`NA` leave it white, and hovering over the animal says Yes, No or Unknown.
-Here D and G are affected, and whether H is affected is not known.
+column, an animal whose value is `TRUE` (or 1) is filled pink, `FALSE` (or 0)
+leaves it white, and `NA` fills it grey, so that an animal whose status is not
+known does not look unaffected; the legend then has a grey row "Affected status
+unknown". Hovering over an animal says Yes, No or Unknown. Here D and G are
+affected, and whether H is affected is not known.
 
 ```{r oneCondition}
 fam1 <- fam
@@ -195,12 +197,13 @@ drawPedigreeDiagram(layout1)
 With two to four condition columns, each symbol is cut into one section per
 condition, filled in that condition's colour where the animal is affected,
 and each condition's row in the legend shows the sections with its own
-filled. The sections go counter-clockwise from the top, in the order of the
-columns. The column's name gives the label: `affected_diabetes` becomes
-"Affected (diabetes)". The drawing grows 45 pixels taller for each condition
-past the first, to make room in the legend. Here C has diabetes, B and E are
-obese, and A has arthritis; G has diabetes and is obese, and whether H is
-obese is not known.
+filled; a section whose status is not known is grey. The sections go
+counter-clockwise from the top, in the order of the columns. The column's name
+gives the label: `affected_diabetes` becomes "Affected (diabetes)". The drawing
+grows 45 pixels taller for each condition past the first, and for the "Affected
+status unknown" row, to make room in the legend. Here C has diabetes, B and E
+are obese, and A has arthritis; G has diabetes and is obese, and whether H is
+obese is not known, so H's obesity section is grey.
 
 ```{r threeConditions}
 fam3 <- fam
@@ -237,26 +240,30 @@ legend3 <- drawPedigreeDiagram(layout3)$x$legend$nodes
 stopifnot(
   identical(fill1 == "#CC79A7", c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE,
                                   TRUE, FALSE)),
-  all(fill1[fill1 != "#CC79A7"] == "#FFFFFF"),
+  identical(fill1[fill1 != "#CC79A7"], c(rep("#FFFFFF", 5L), "#BEBEBE")),
+  identical(fam1$id[fill1 == "#BEBEBE"], "H"),
   identical(makePedigreeMatingLayout(fam01)$nodes, layout1$nodes),
   endsWith(title1[1L], "<b>Affected:</b> Yes"),
   endsWith(title1[2L], "<b>Affected:</b> No"),
   endsWith(title1[3L], "<b>Affected:</b> Unknown"),
-  identical(drawPedigreeDiagram(layout1)$x$legend$nodes$label[6L],
-            "Affected"),
+  identical(drawPedigreeDiagram(layout1)$x$legend$nodes$label[6:7],
+            c("Affected", "Affected status unknown")),
   identical(layout3$conditions$label,
             c("Affected (diabetes)", "Affected (obesity)",
               "Affected (arthritis)")),
   identical(unname(sections[c("A", "B", "C", "E", "G", "H")]),
-            c("001", "010", "100", "010", "110", "000")),
+            c("001", "010", "100", "010", "110", "0?0")),
   all(sections[c("D", "F")] == "000"),
   all(animalsOf(layout3)$color.background == "#FFFFFF"),
   grepl("<b>Affected \\(obesity\\):</b> Unknown",
         layout3$nodes$title[layout3$nodes$id == "H"]),
   identical(legend3$label[6:8], layout3$conditions$label),
   identical(legend3$shape[6:8], rep("image", 3L)),
+  identical(legend3$label[9L], "Affected status unknown"),
+  identical(legend3[["color.background"]][9L], "#BEBEBE"),
   identical(drawPedigreeDiagram(layout)$height, "500px"),
-  identical(drawPedigreeDiagram(layout3)$height, "590px"),
+  identical(drawPedigreeDiagram(layout1)$height, "545px"),
+  identical(drawPedigreeDiagram(layout3)$height, "635px"),
   nrow(layout5$conditions) == 4L,
   identical(layout5$conditionsNotDrawn, "affected_hypertension")
 )
