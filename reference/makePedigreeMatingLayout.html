@@ -68,7 +68,8 @@ separate function.</p>
 <span>  twinRelations <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  kinshipMatrix <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  hints <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  maxNameChars <span class="op">=</span> <span class="fl">15</span></span>
+<span>  maxNameChars <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  conditionColors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -84,10 +85,12 @@ column marks deceased animals: see the <code>deceased</code> column of the
 returned <code>nodes</code>. Every column whose name starts
 <code>affected</code> is an affected condition, in the order the data
 frame holds them, the first four drawn (see <code>conditions</code> in the
-return value). A lone one fills the symbol, pink where the animal is
-affected and grey where its status is unknown (<code>NA</code>); two or more
-split it into sections. (<code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData</a></code> reads the
-column <code>affected</code> alone.) A condition drawn reads as
+return value). A lone one fills the symbol, in the first of
+<code>conditionColors</code> (pink by default) where the animal is affected
+and grey where its status is unknown (<code>NA</code>); two or more split it
+into sections, one colour each.
+(<code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData</a></code> reads the column
+<code>affected</code> alone.) A condition drawn reads as
 <code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData()</a></code>'s <code>affected</code> does: a number other
 than 0 and 1 stops, before any animal is left out.</p></dd>
 
@@ -174,6 +177,29 @@ Pedixplorer write their labels; a long name can then run into the
 labels of the animals beside it. It changes nothing but the labels.
 Stops unless it is one whole number of 1 or more, or <code>Inf</code>.</p></dd>
 
+
+<dt id="arg-conditioncolors">conditionColors<a class="anchor" aria-label="anchor" href="#arg-conditioncolors"></a></dt>
+<dd><p>the colours of the affected conditions, in the
+order they are drawn: 1 to 4 colours, at least one for each condition
+drawn, each a name R knows (such as <code>"orange"</code> or
+<code>"steelblue3"</code>) or a code (such as <code>"#E69F00"</code>). Each is
+written as its <code>"#RRGGBB"</code> code, the colour R means by it: a
+browser reads most of R's names as no colour, and <code>"grey"</code>,
+<code>"gray"</code>, <code>"green"</code>, <code>"maroon"</code> and
+<code>"purple"</code> as other colours. The default is the four colours
+drawn before this argument: pink, orange, sky blue and bluish green,
+the last three Okabe and Ito's colour-blind-safe ones. They fill the
+symbols here and go into the returned <code>conditions</code> table, from
+which <code><a href="drawPedigreeDiagram.html">drawPedigreeDiagram</a></code> paints the sections and the
+legend, so all three agree. With no condition column nothing is
+coloured, and the drawing's one “Affected” legend row keeps the
+default pink. Stops on anything but 1 to 4 colours as text, on
+<code>NA</code>, on a colour R does not know, on a number (it picks from R's
+palette, which can be changed), on a transparent colour, on white and
+on the grey <code>"#BEBEBE"</code> (they mark an unaffected animal and an
+unknown status), on a colour given twice, and on fewer colours than
+conditions drawn.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -215,7 +241,8 @@ isolated, <code>nodes</code>/<code>edges</code> are both 0-row and
 <code>duplicateToReal</code> is empty. Also <code>conditions</code>, a data
 frame with one row per drawn condition (<code>column</code>, <code>label</code>
 such as “Affected” or “Affected (diabetes)”, and its
-<code>color</code>), 0-row when <code>ped</code> has no such column, and
+<code>color</code>, from <code>conditionColors</code> as a <code>"#RRGGBB"</code>
+code), 0-row when <code>ped</code> has no such column, and
 <code>conditionsNotDrawn</code>, the names of any such columns past the
 fourth.</p>
     </div>

@@ -53,7 +53,12 @@ per known dam, pointing from parent to child.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">makePedigreeDiagramData</span><span class="op">(</span><span class="va">ped</span>, twinRelations <span class="op">=</span> <span class="cn">NULL</span>, maxNameChars <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">makePedigreeDiagramData</span><span class="op">(</span></span>
+<span>  <span class="va">ped</span>,</span>
+<span>  twinRelations <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maxNameChars <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  conditionColors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,7 +72,8 @@ parents; <code>gen</code> an integer generation number, 0 for founders, as
 produced by <code><a href="findGeneration.html">findGeneration</a></code>). Two optional columns are
 used when present: a logical <code>affected</code> column, which adds an
 affected-status line to <code>title</code> and sets <code>color.background</code>:
-<code>"#CC79A7"</code> (pink) for an affected node, <code>"#BEBEBE"</code> (grey)
+the first of <code>conditionColors</code> (<code>"#CC79A7"</code>, pink, by
+default) for an affected node, <code>"#BEBEBE"</code> (grey)
 for a node whose status is unknown (<code>NA</code>) and <code>"#FFFFFF"</code>
 (white) for an unaffected one (every node is white without the column);
 and a character <code>name</code> column, which is shown
@@ -95,6 +101,15 @@ A line break counts as one character. <code>Inf</code> writes every name
 whole, as kinship2 and Pedixplorer write their labels; a long name can
 then run into the labels of the animals beside it. Stops unless it is
 one whole number of 1 or more, or <code>Inf</code>.</p></dd>
+
+
+<dt id="arg-conditioncolors">conditionColors<a class="anchor" aria-label="anchor" href="#arg-conditioncolors"></a></dt>
+<dd><p>the colours of the affected conditions, as
+<code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code> takes them: this function draws
+the column <code>affected</code> alone, so it fills an affected animal with
+the first colour, written as its <code>"#RRGGBB"</code> code. It stops as
+<code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout()</a></code> does, except that one colour is always
+enough.</p></dd>
 
 </dl></div>
     <div class="section level2">

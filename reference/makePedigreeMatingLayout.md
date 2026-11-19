@@ -18,7 +18,8 @@ makePedigreeMatingLayout(
   twinRelations = NULL,
   kinshipMatrix = NULL,
   hints = NULL,
-  maxNameChars = 15
+  maxNameChars = 15,
+  conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
 )
 ```
 
@@ -33,9 +34,9 @@ makePedigreeMatingLayout(
   column of the returned `nodes`. Every column whose name starts
   `affected` is an affected condition, in the order the data frame holds
   them, the first four drawn (see `conditions` in the return value). A
-  lone one fills the symbol, pink where the animal is affected and grey
-  where its status is unknown (`NA`); two or more split it into
-  sections.
+  lone one fills the symbol, in the first of `conditionColors` (pink by
+  default) where the animal is affected and grey where its status is
+  unknown (`NA`); two or more split it into sections, one colour each.
   ([`makePedigreeDiagramData`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
   reads the column `affected` alone.) A condition drawn reads as
   [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)'s
@@ -124,6 +125,28 @@ makePedigreeMatingLayout(
   but the labels. Stops unless it is one whole number of 1 or more, or
   `Inf`.
 
+- conditionColors:
+
+  the colours of the affected conditions, in the order they are drawn: 1
+  to 4 colours, at least one for each condition drawn, each a name R
+  knows (such as `"orange"` or `"steelblue3"`) or a code (such as
+  `"#E69F00"`). Each is written as its `"#RRGGBB"` code, the colour R
+  means by it: a browser reads most of R's names as no colour, and
+  `"grey"`, `"gray"`, `"green"`, `"maroon"` and `"purple"` as other
+  colours. The default is the four colours drawn before this argument:
+  pink, orange, sky blue and bluish green, the last three Okabe and
+  Ito's colour-blind-safe ones. They fill the symbols here and go into
+  the returned `conditions` table, from which
+  [`drawPedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
+  paints the sections and the legend, so all three agree. With no
+  condition column nothing is coloured, and the drawing's one “Affected”
+  legend row keeps the default pink. Stops on anything but 1 to 4
+  colours as text, on `NA`, on a colour R does not know, on a number (it
+  picks from R's palette, which can be changed), on a transparent
+  colour, on white and on the grey `"#BEBEBE"` (they mark an unaffected
+  animal and an unknown status), on a colour given twice, and on fewer
+  colours than conditions drawn.
+
 ## Value
 
 A list with `nodes` (`id`, `label`, `shape`, `title`, `size`,
@@ -157,8 +180,9 @@ is `character(0)` when nothing was suppressed. When every individual in
 `ped` is isolated, `nodes`/`edges` are both 0-row and `duplicateToReal`
 is empty. Also `conditions`, a data frame with one row per drawn
 condition (`column`, `label` such as “Affected” or “Affected
-(diabetes)”, and its `color`), 0-row when `ped` has no such column, and
-`conditionsNotDrawn`, the names of any such columns past the fourth.
+(diabetes)”, and its `color`, from `conditionColors` as a `"#RRGGBB"`
+code), 0-row when `ped` has no such column, and `conditionsNotDrawn`,
+the names of any such columns past the fourth.
 
 ## Details
 

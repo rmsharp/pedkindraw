@@ -9,7 +9,12 @@ one per known dam, pointing from parent to child.
 ## Usage
 
 ``` r
-makePedigreeDiagramData(ped, twinRelations = NULL, maxNameChars = 15)
+makePedigreeDiagramData(
+  ped,
+  twinRelations = NULL,
+  maxNameChars = 15,
+  conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
+)
 ```
 
 ## Arguments
@@ -22,13 +27,14 @@ makePedigreeDiagramData(ped, twinRelations = NULL, maxNameChars = 15)
   [`findGeneration`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md)).
   Two optional columns are used when present: a logical `affected`
   column, which adds an affected-status line to `title` and sets
-  `color.background`: `"#CC79A7"` (pink) for an affected node,
-  `"#BEBEBE"` (grey) for a node whose status is unknown (`NA`) and
-  `"#FFFFFF"` (white) for an unaffected one (every node is white without
-  the column); and a character `name` column, which is shown in `label`
-  (cut after `maxNameChars` characters) and in `title`. In `affected`
-  the numbers 1 and 0 read as `TRUE` and `FALSE`, and any other number
-  stops (compare a measured trait with a threshold first); text reads as
+  `color.background`: the first of `conditionColors` (`"#CC79A7"`, pink,
+  by default) for an affected node, `"#BEBEBE"` (grey) for a node whose
+  status is unknown (`NA`) and `"#FFFFFF"` (white) for an unaffected one
+  (every node is white without the column); and a character `name`
+  column, which is shown in `label` (cut after `maxNameChars`
+  characters) and in `title`. In `affected` the numbers 1 and 0 read as
+  `TRUE` and `FALSE`, and any other number stops (compare a measured
+  trait with a threshold first); text reads as
   [`as.logical()`](https://rdrr.io/r/base/logical.html) reads it, other
   text as unknown.
 
@@ -49,6 +55,16 @@ makePedigreeDiagramData(ped, twinRelations = NULL, maxNameChars = 15)
   `Inf` writes every name whole, as kinship2 and Pedixplorer write their
   labels; a long name can then run into the labels of the animals beside
   it. Stops unless it is one whole number of 1 or more, or `Inf`.
+
+- conditionColors:
+
+  the colours of the affected conditions, as
+  [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  takes them: this function draws the column `affected` alone, so it
+  fills an affected animal with the first colour, written as its
+  `"#RRGGBB"` code. It stops as
+  [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  does, except that one colour is always enough.
 
 ## Value
 

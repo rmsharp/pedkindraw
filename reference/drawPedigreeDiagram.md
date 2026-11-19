@@ -59,6 +59,12 @@ of two is the left half), and each condition's legend row shows a circle
 cut the same way with that condition's section filled in its color, so
 the legend says which section is which.
 
+The colours of the conditions are set by
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)'s
+`conditionColors`: the layout fills the symbols with them, and the
+drawing paints the sections and the legend's rows from the layout's
+`conditions` table, so all three agree.
+
 An animal whose affected status is unknown (`NA`) is filled grey, with
 one condition, or has that condition's section grey, with two or more,
 so it does not look unaffected; the legend's grey hexagon “Affected
