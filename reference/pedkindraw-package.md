@@ -69,7 +69,9 @@ reduce a pedigree to the animals of interest and their relatives;
 [`removeUnknownAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeUnknownAnimals.md)
 and
 [`removeUninformativeFounders()`](https://rmsharp.github.io/pedkindraw/reference/removeUninformativeFounders.md)
-remove animals that add nothing;
+remove animals that add nothing, and
+[`removeAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeAnimals.md)
+removes the animals listed, clearing their offspring's links to them;
 [`shrinkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md)
 shrinks a pedigree to a bit-size budget, in steps also exported:
 [`bitSize()`](https://rmsharp.github.io/pedkindraw/reference/bitSize.md),

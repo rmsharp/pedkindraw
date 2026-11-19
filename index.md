@@ -209,6 +209,9 @@ pick an animal in the “Select by id” box, and save the picture with the
   removes the placeholder animals added for unknown parents;
   [`removeUninformativeFounders()`](https://rmsharp.github.io/pedkindraw/reference/removeUninformativeFounders.md)
   removes founders that appear only once, which add no information.
+- [`removeAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeAnimals.md)
+  removes the animals you list and clears each sire or dam entry that
+  named one of them; their offspring keep their other parent.
 - [`shrinkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md)
   shrinks a pedigree to fit a bit-size budget. Its steps are exported
   too:

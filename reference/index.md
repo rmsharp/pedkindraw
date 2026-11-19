@@ -76,6 +76,8 @@
   : Remove placeholder animals added for unknown parents
 - [`removeUninformativeFounders()`](https://rmsharp.github.io/pedkindraw/reference/removeUninformativeFounders.md)
   : Remove uninformative founders
+- [`removeAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeAnimals.md)
+  : Remove listed animals from a pedigree
 - [`shrinkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md)
   : Shrink a pedigree to fit within a bit-size budget
 - [`bitSize()`](https://rmsharp.github.io/pedkindraw/reference/bitSize.md)

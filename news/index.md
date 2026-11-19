@@ -215,6 +215,13 @@ why.
   and
   [`findUnavailable()`](https://rmsharp.github.io/pedkindraw/reference/findUnavailable.md),
   which do not use the status, do not read the column.
+- New:
+  [`removeAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeAnimals.md)
+  removes the listed animals and sets to `NA` each sire or dam entry
+  that names one of them, so no animal is left with a parent that has no
+  row; an offspring keeps its other parent. kinship2’s `pedigree.trim()`
+  stops when an offspring would keep only one parent, and Pedixplorer’s
+  `subset(del_parents = "one")` clears that parent too.
 
 ### Converters
 
