@@ -56,6 +56,7 @@ frame has a row for each line.
 names(layout)
 #> [1] "nodes"              "edges"              "duplicateToReal"   
 #> [4] "isolatedIds"        "conditions"         "conditionsNotDrawn"
+#> [7] "hints"
 animals <- layout$nodes[!startsWith(layout$nodes$id, "__"), ]
 data.frame(id = animals$id, shape = animals$shape,
            x = round(animals$x), y = animals$y)
@@ -313,6 +314,29 @@ mateLayout <- makePedigreeMatingLayout(
 drawPedigreeDiagram(mateLayout)
 ```
 
+The layout returns the hints it used as `hints`, in the same form, so an
+edit can start from the layout’s own choices; passed back, they give the
+same layout. `order` numbers each animal that has a parent by its row (a
+founder gets a number only where an order named it, since naming one
+turns off the layout’s own order of founder lines). `mate` has the rows
+given, then a row for each other mating as drawn, except the matings of
+an animal with three or more of them, where a row can move its mates.
+
+``` r
+
+layout$hints
+#> $order
+#> C D E G H 
+#> 3 4 5 7 8 
+#> 
+#> $mate
+#>   left right anchor
+#> 1    A     B   left
+#> 2    C     F   left
+identical(makePedigreeMatingLayout(fam, hints = layout$hints), layout)
+#> [1] TRUE
+```
+
 ## kinship2 and Pedixplorer objects
 
 [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
@@ -345,7 +369,7 @@ x$hints
 #> 1    C     R  right
 x$ped$gen <- findGeneration(x$ped$id, x$ped$sire, x$ped$dam)
 k2Layout <- makePedigreeMatingLayout(x$ped, hints = x$hints)
-identical(k2Layout, mateLayout)
+identical(k2Layout$nodes, mateLayout$nodes)
 #> [1] TRUE
 ```
 

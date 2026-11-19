@@ -164,7 +164,9 @@ data frame or lacks a column, <code>NA</code>, the same id as <code>left</code> 
 its own), a pair with no offspring together or named twice, an
 <code>anchor</code> other than those three, and an anchor on the partner of
 an earlier generation than its mate (the layout draws a mating on the
-row of its later partner).</p></dd>
+row of its later partner). The returned <code>hints</code> are the hints the
+layout used, in this form: passed back, they give the same layout, so
+an edit can start from the layout's own order (see the example).</p></dd>
 
 
 <dt id="arg-maxnamechars">maxNameChars<a class="anchor" aria-label="anchor" href="#arg-maxnamechars"></a></dt>
@@ -244,7 +246,19 @@ such as “Affected” or “Affected (diabetes)”, and its
 <code>color</code>, from <code>conditionColors</code> as a <code>"#RRGGBB"</code>
 code), 0-row when <code>ped</code> has no such column, and
 <code>conditionsNotDrawn</code>, the names of any such columns past the
-fourth.</p>
+fourth. Last, <code>hints</code>, the hints the layout used, in the form the
+argument <code>hints</code> takes, so that passing them back gives the same
+layout: <code>order</code> numbers each animal drawn that has a parent by its
+row in the rows the layout drew from (an order hint applied, the
+animals left out not counted), and a founder only where an order hint
+named it, since naming a founder turns off the layout's own ordering of
+founder lines; <code>mate</code> holds the rows of a mate hint as given, then
+a row for each other mating whose sire and dam both have rows in
+<code>ped</code>, <code>left</code> and <code>right</code> as drawn and <code>anchor</code> the
+partner the offspring hang under, except the matings of an animal that
+anchors three or more matings or that the given rows place, where a row
+can change how far its mates are drawn. With every animal left out,
+<code>order</code> has no numbers and <code>mate</code> no rows.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -281,6 +295,25 @@ otherwise (see <code>hints</code>).</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ped</span><span class="op">$</span><span class="va">gen</span> <span class="op">&lt;-</span> <span class="fu"><a href="findGeneration.html">findGeneration</a></span><span class="op">(</span><span class="va">ped</span><span class="op">$</span><span class="va">id</span>, <span class="va">ped</span><span class="op">$</span><span class="va">sire</span>, <span class="va">ped</span><span class="op">$</span><span class="va">dam</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">layout</span> <span class="op">&lt;-</span> <span class="fu">makePedigreeMatingLayout</span><span class="op">(</span><span class="va">ped</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## The hints the layout used: passed back, the same layout</span></span></span>
+<span class="r-in"><span><span class="va">layout</span><span class="op">$</span><span class="va">hints</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $order</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C D F G </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 4 6 7 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $mate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   left right anchor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    A     B   left</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    D     E   left</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu">makePedigreeMatingLayout</span><span class="op">(</span><span class="va">ped</span>, hints <span class="op">=</span> <span class="va">layout</span><span class="op">$</span><span class="va">hints</span><span class="op">)</span>, <span class="va">layout</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Edited: G drawn left of F</span></span></span>
+<span class="r-in"><span><span class="va">hints</span> <span class="op">&lt;-</span> <span class="va">layout</span><span class="op">$</span><span class="va">hints</span></span></span>
+<span class="r-in"><span><span class="va">hints</span><span class="op">$</span><span class="va">order</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"F"</span>, <span class="st">"G"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">hints</span><span class="op">$</span><span class="va">order</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"G"</span>, <span class="st">"F"</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">swapped</span> <span class="op">&lt;-</span> <span class="fu">makePedigreeMatingLayout</span><span class="op">(</span><span class="va">ped</span>, hints <span class="op">=</span> <span class="va">hints</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

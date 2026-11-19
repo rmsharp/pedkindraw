@@ -112,7 +112,9 @@ makePedigreeMatingLayout(
   of its own), a pair with no offspring together or named twice, an
   `anchor` other than those three, and an anchor on the partner of an
   earlier generation than its mate (the layout draws a mating on the row
-  of its later partner).
+  of its later partner). The returned `hints` are the hints the layout
+  used, in this form: passed back, they give the same layout, so an edit
+  can start from the layout's own order (see the example).
 
 - maxNameChars:
 
@@ -182,7 +184,19 @@ is empty. Also `conditions`, a data frame with one row per drawn
 condition (`column`, `label` such as “Affected” or “Affected
 (diabetes)”, and its `color`, from `conditionColors` as a `"#RRGGBB"`
 code), 0-row when `ped` has no such column, and `conditionsNotDrawn`,
-the names of any such columns past the fourth.
+the names of any such columns past the fourth. Last, `hints`, the hints
+the layout used, in the form the argument `hints` takes, so that passing
+them back gives the same layout: `order` numbers each animal drawn that
+has a parent by its row in the rows the layout drew from (an order hint
+applied, the animals left out not counted), and a founder only where an
+order hint named it, since naming a founder turns off the layout's own
+ordering of founder lines; `mate` holds the rows of a mate hint as
+given, then a row for each other mating whose sire and dam both have
+rows in `ped`, `left` and `right` as drawn and `anchor` the partner the
+offspring hang under, except the matings of an animal that anchors three
+or more matings or that the given rows place, where a row can change how
+far its mates are drawn. With every animal left out, `order` has no
+numbers and `mate` no rows.
 
 ## Details
 
@@ -221,4 +235,23 @@ ped <- data.frame(
 )
 ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
 layout <- makePedigreeMatingLayout(ped)
+
+## The hints the layout used: passed back, the same layout
+layout$hints
+#> $order
+#> C D F G 
+#> 3 4 6 7 
+#> 
+#> $mate
+#>   left right anchor
+#> 1    A     B   left
+#> 2    D     E   left
+#> 
+identical(makePedigreeMatingLayout(ped, hints = layout$hints), layout)
+#> [1] TRUE
+
+## Edited: G drawn left of F
+hints <- layout$hints
+hints$order[c("F", "G")] <- hints$order[c("G", "F")]
+swapped <- makePedigreeMatingLayout(ped, hints = hints)
 ```
