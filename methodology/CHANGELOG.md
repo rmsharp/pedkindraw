@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-19 · [BL-Phase G8] S49: Phase G8, aligned generations in `findGeneration()` (in progress)
+- **Change:** session claimed (Mark's pick "Phase G8 (Recommended)" at the orient picker): strict TDD, a change to copied code (`R/findGeneration.R`; a `DIVERGENCE.md` row "at the switch", R98); measure first (`tools/gapCases.R alignedDepth`; kinship2's `kindepth(align = TRUE)` and Pedixplorer's `kindepth(align_parents =)`, each under a time limit, against a prototype written from the described method, R11), then a pre-RED picker, RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `fb3c80a` is HEAD, S48's close-out 2; no merges; S48's receipt complete, its ratchet results `5ddbb5b1aeb3` matching the results file); drift tool 91 functions, 20 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits; nprcgenekeepr at `3e06730c5`, tree clean; S48's push: site `44481480804` success; CI `44481480808` macOS, Windows and Ubuntu release success, Ubuntu oldrel in progress, Ubuntu devel failed installing dependencies (Bioconductor's S4Vectors 0.50.3, Pedixplorer's import, does not build on R-devel r90935 of 2026-11-18: a `transform` method's formals; S47's run passed that job), before pedkindraw was checked.
+- **Commit/PR:** the claim commit · **Session:** S49 · **Verified:** pending (close-out).
+
 ### 2026-11-19 · [BL-Phase G7] S48 push 1: `master` to GitHub at close-out 2 (S48's claim, G7, close-out 1-2)
 - **Change:** `git push origin master` (`2ab6f0f..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md`, `README.md`, `_pkgdown.yml` and `tools/` changed, so both workflows run. S47's push runs, in progress at S48's Orient, finished `success`: CI `44475076550` and site `44475076514`.
 - **Commit/PR:** none (push) · **Session:** S48 · **Verified:** the push's output; S47's runs by `gh run list`.

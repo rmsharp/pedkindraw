@@ -115,6 +115,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S47's entries were removed in S3-S48 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 49 Did
+**Deliverable:** Phase G8, aligned generations in `findGeneration()` (gap C2;
+`docs/planning/gaps-and-shared-code-plan.md:363`), a change to copied code (IN PROGRESS)
+**Started:** 2026-11-19 02:07 CST · **Model:** Claude Opus 5.5 · Mark's pick "Phase G8 (Recommended)" at the orient picker.
+**Status:** Session claimed. Work beginning: measure first (Learning 17), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 47 Handoff Evaluation (by Session 48)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(d) for G7 was the session's plan, and its picker items (one link or

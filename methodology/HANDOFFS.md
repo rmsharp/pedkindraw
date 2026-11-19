@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S49
+date: 2026-11-19
+status: pending
+active_task: Phase G8, aligned generations in findGeneration() (gap C2; docs/planning/gaps-and-shared-code-plan.md:363; R97; methodology/BACKLOG.md:26), a change to copied code (a DIVERGENCE.md row "at the switch", R98): measure first against kinship2's kindepth(align = TRUE), a pre-RED picker (the argument's name, what the described method leaves open), RED, GREEN, REFACTOR by the gates; strict TDD; Mark's pick "Phase G8 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S48
 date: 2026-11-19
 status: complete
