@@ -152,6 +152,9 @@ pick an animal in the “Select by id” box, and save the picture with the
   find sires and dams, offspring and founders; `hasBothParents()` tells
   whether an animal has both, and `getIdsWithOneParent()` finds the
   animals with one.
+- `countOffspring()` counts each animal’s offspring; `getMatings()`
+  lists the matings, each sire and dam with their number of offspring
+  together.
 
 **Checking and repair**
 

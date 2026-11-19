@@ -107,6 +107,10 @@ code, `DIVERGENCE.md` in the repository says how and why.
   nprcgenekeepr's order stops with "$ operator is invalid for atomic vectors".
 * New: `familyCheck()` checks family ids against the family trees the sires
   and dams form.
+* New: `countOffspring()` counts each animal's offspring (the animals naming it
+  as sire or dam, each once), and `getMatings()` lists each sire and dam with
+  an offspring recorded with both, once, with the number of offspring they
+  share: the matings a drawing draws.
 
 ## Checking and repair
 

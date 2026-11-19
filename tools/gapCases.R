@@ -658,6 +658,16 @@ cases$lookups <- function(case = "lookups") {
                   value = TRUE)))
   probe(case, "pedkindraw getOffspring(ped, \"A\")",
         pedkindraw::getOffspring(ped, "A"))
+  ## Phase G6 (pedkindraw S47, R117-R119): the count is Pedixplorer's
+  ## num_child_dir, each animal's own offspring.
+  probe(case, "Pedixplorer num_child() num_child_dir A, B, C, D",
+        Pedixplorer::num_child(ped$id, ped$sire, ped$dam)$num_child_dir)
+  probe(case, "pedkindraw countOffspring(ped)",
+        pedkindraw::countOffspring(ped))
+  probe(case, "pedkindraw getMatings(ped): sire, dam, offspring", {
+    m <- pedkindraw::getMatings(ped)
+    paste(m$sire, m$dam, m$offspring)
+  })
 }
 
 ## Ruled R3: block-sparse kinship over many families.
