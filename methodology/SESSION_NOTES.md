@@ -118,6 +118,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S50's entries were removed in S3-S51 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 52 Did
+**Deliverable:** Phase G11, a new function keeping the relatives within k steps of chosen animals (gap C1;
+`docs/planning/gaps-and-shared-code-plan.md:369`) (IN PROGRESS)
+**Started:** 2026-11-19 13:12 CST · **Model:** Claude Opus 5.5 · Mark's pick "Phase G11 (Recommended)" at the orient picker.
+**Status:** Session claimed. Work beginning: measure first (Learnings 17, 19-21), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 50 Handoff Evaluation (by Session 51)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(f) for G10 was the session's plan, item for item: the gap case, where

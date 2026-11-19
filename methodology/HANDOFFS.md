@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S52
+date: 2026-11-19
+status: pending
+active_task: Phase G11, a new function keeping the relatives within k steps of chosen animals (gap C1; docs/planning/gaps-and-shared-code-plan.md:369; R97; methodology/BACKLOG.md:26): measure first (tools/gapCases.R distanceSubset; Pedixplorer's help for useful_inds(), is_informative(), min_dist_inf(); useful_inds() on typed, fixture and seeded random pedigrees under a time limit), a pre-RED picker (its name; what "informative" means by default), RED, GREEN, REFACTOR by the gates, closing at a clean phase boundary (2-3 sessions, a guess); strict TDD; Mark's pick "Phase G11 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S51
 date: 2026-11-19
 status: complete

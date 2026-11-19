@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-19 · [BL-Phase G11] S52: Phase G11, a new function keeping the relatives within k steps of chosen animals (in progress)
+- **Change:** session claimed (Mark's pick "Phase G11 (Recommended)" at the orient picker): gap C1 (`docs/planning/gaps-and-shared-code-plan.md:369`), strict TDD; measure first (Learnings 17, 19-21: `tools/gapCases.R distanceSubset`, Pedixplorer's help for `useful_inds()`, `is_informative()` and `min_dist_inf()` (help and results only, not its source), `useful_inds()` on typed, fixture and seeded random pedigrees one process per case under a time limit, the neighbours `trimPedigree()` and `findUnrelated()`'s R52), then a pre-RED picker (its name; what "informative" means by default), RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `7efbf2e` is HEAD, S51's close-out 2; no merges; S51's receipt complete, its ratchet citation matching the results file, `42b564bc4c70`); drift tool 91 functions, 21 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits (nprcgenekeepr at `3e06730c5`, tree clean); S51's push runs in progress at Orient (Ubuntu oldrel-1 `success`).
+- **Commit/PR:** the claim commit · **Session:** S52 · **Verified:** pending (close-out).
+
 ### 2026-11-19 · [BL-Phase G10] S51 push 1: `master` to GitHub at close-out 2 (S51's claim, G10, close-out 1-2)
 - **Change:** `git push origin master` (`84818f5..` close-out 2); `R/`, `man/`, `tests/`, `vignettes/`, `NEWS.md` and `tools/` changed, so both workflows run. S50's push runs, in progress at S51's Orient: site `44565557156` `success`; CI `44565557027` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors 0.50.3 again fails to build on R-devel: `conformMethod` error, "lazy loading failed", while installing dependencies, before pedkindraw is checked); macOS, Windows and Ubuntu release and oldrel-1 `success`.
 - **Commit/PR:** none (push) · **Session:** S51 · **Verified:** the push's output; S50's runs by `gh run view`.
