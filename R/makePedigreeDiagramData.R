@@ -25,7 +25,11 @@
 ## row). Plan Phase G1 (pedkindraw S42, R102-R104): makePedigreeDiagramData()
 ## and makePedigreeMatingLayout() stop on a condition column holding a number
 ## other than 0 and 1 (.checkConditionNumbers(), pedkindraw's own,
-## R/conditionValues.R; DIVERGENCE.md rows), and their help says so. Its
+## R/conditionValues.R; DIVERGENCE.md rows), and their help says so. Plan
+## Phase G2 (pedkindraw S43, R106): .affectedColor() takes the fill of an
+## unknown status, and makePedigreeDiagramData() (when the column is there) and
+## makePedigreeMatingLayout() (with one drawn condition) pass .unknownColor,
+## grey, where both filled an unknown status white (DIVERGENCE.md rows). Its
 ## comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -168,7 +172,12 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
   # found S569): unconditional now -- an absent affected column defaults
   # every node to the same explicit white fill instead of vis.js's own
   # default (`affected` above is already an all-NA vector in that case).
-  nodes$color.background <- .affectedColor(affected)
+  # pedkindraw Phase G2 (R106): an unknown status is grey when the column is
+  # there; with no column every animal stays white.
+  nodes$color.background <- .affectedColor(
+    affected,
+    unknown = if ("affected" %in% names(ped)) .unknownColor else "#FFFFFF"
+  )
 
   hasSire <- !is.na(ped$sire)
   hasDam <- !is.na(ped$dam)
@@ -220,12 +229,22 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL) {
 #' the two functions' own deliberately-duplicated node-building logic --
 #' same sharing precedent as \code{.escapeHtml()} above).
 #'
+#' pedkindraw S43 (plan Phase G2, R106): \code{NA} gets \code{unknown}, white
+#' unless the caller passes \code{.unknownColor}, grey, so that an unknown
+#' status no longer looks like an unaffected one.
+#'
 #' @param affected logical vector, \code{NA} allowed.
+#' @param unknown the fill where \code{affected} is \code{NA} (pedkindraw S43,
+#'   plan Phase G2: its callers pass \code{.unknownColor} where a condition
+#'   column is drawn).
 #' @return character vector: \code{"#CC79A7"} where \code{affected} is
-#'   \code{TRUE}, \code{"#FFFFFF"} otherwise (\code{FALSE} or \code{NA}).
+#'   \code{TRUE}, \code{"#FFFFFF"} where it is \code{FALSE}, \code{unknown}
+#'   where it is \code{NA}.
 #' @noRd
-.affectedColor <- function(affected) {
-  ifelse(!is.na(affected) & affected, "#CC79A7", "#FFFFFF")
+.affectedColor <- function(affected, unknown = "#FFFFFF") {
+  fill <- ifelse(affected, "#CC79A7", "#FFFFFF")
+  fill[is.na(affected)] <- unknown
+  fill
 }
 
 #' Map an affected-status vector to a human-readable Yes/No/Unknown label
@@ -1943,8 +1962,14 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   } else {
     stats::setNames(rep(NA, length(realIds)), realIds)
   }
+  # pedkindraw Phase G2 (R106): with one drawn condition an unknown status is
+  # grey; with none or several (affectedOf all NA) every fill stays white.
   .affectedColorForVec <- function(ids) {
-    .affectedColor(affectedOf[ids])
+    .affectedColor(affectedOf[ids], unknown = if (length(drawnCols) == 1L) {
+      .unknownColor
+    } else {
+      "#FFFFFF"
+    })
   }
 
   # S1028 deceased marker: an animal is deceased when its status reads

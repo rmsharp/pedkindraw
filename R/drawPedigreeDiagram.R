@@ -8,8 +8,9 @@
 ## "Select by id" filter, which also leaves out __jog_ ids and reads the
 ## prefixes from .reservedIdPattern (plan R94), and S39's legend lines drawn
 ## without arrowheads, their labels on white (plan R95: the two columns after
-## legendEdges), each a DIVERGENCE.md row until nprcgenekeepr has it;
-## otherwise help text only.
+## legendEdges), and S43's grey "Affected status unknown" row and the 45 px it
+## adds (plan Phase G2, R106-R107: unknownRow, before deceasedRow), each a
+## DIVERGENCE.md row until nprcgenekeepr has it; otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
@@ -181,16 +182,29 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
     label = "Deceased", shape = "image", color.background = NA_character_,
     image = .deceasedLegendImage(), stringsAsFactors = FALSE
   )
-  legendNodes <- rbind(sexRows, conditionRows, deceasedRow)
+  # pedkindraw Phase G2 (R106-R107): an animal whose status is unknown is
+  # filled .unknownColor (one condition) or has a "?" section (two to four),
+  # and then a grey hexagon after the condition rows says what the grey is.
+  hasUnknown <- any(layout$nodes[["color.background"]] %in% .unknownColor) ||
+    any(grepl("?", layout$nodes[["affectedSections"]], fixed = TRUE))
+  unknownRow <- data.frame(
+    label = "Affected status unknown", shape = "hexagon",
+    color.background = .unknownColor, image = NA_character_,
+    stringsAsFactors = FALSE
+  )[hasUnknown, , drop = FALSE]
+  legendNodes <- rbind(sexRows, conditionRows, unknownRow, deceasedRow)
   legendNodes$size <- 14L
   # Option 2 Slice 3: fixed x/y coordinates (S457's proven Case C2
   # geometry) replace visHierarchicalLayout() entirely -- confirmed
   # hands-on (Learning 446) that manual coordinates and hierarchical
   # layout are mutually exclusive in vis.js. S1028/S1029: the height is
   # .diagramHeight()'s, which the Shiny application also gives its output.
+  # pedkindraw Phase G2: the unknown row adds 45 px as one more condition row
+  # does (with no condition column the legend still has its one row).
+  rowsForHeight <- max(nConditions, 1L) + hasUnknown
   visNetwork::visNetwork(layout$nodes, layout$edges,
                          height = sprintf("%dpx",
-                                          .diagramHeight(nConditions))) |>
+                                          .diagramHeight(rowsForHeight))) |>
     visNetwork::visPhysics(enabled = FALSE) |>
     visNetwork::visNodes(physics = FALSE) |>
     visNetwork::visEdges(smooth = FALSE) |>

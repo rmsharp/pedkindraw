@@ -3,8 +3,11 @@
 ## Copied from nprcgenekeepr R/affectedConditions.R at nprcgenekeepr commit
 ## baef1e12c (unchanged to 4375e2715), whole. Changes: pedkindraw S28 added
 ## .conditionLegendImage() after .conditionSectionsHandler() (plan R81; a
-## DIVERGENCE.md row until nprcgenekeepr has it); the copied code is
-## unchanged. Phase 8 copied
+## DIVERGENCE.md row until nprcgenekeepr has it). pedkindraw S43 (plan Phase
+## G2, R106; DIVERGENCE.md rows "at the switch") added .unknownColor after
+## .conditionColors, and changed .affectedSectionsOf() (an unknown condition
+## is "?", not "0") and .conditionSectionsHandler() (a "?" section is filled
+## .unknownColor). Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
 ## 9 its lines 76-201, the three the drawing uses
@@ -21,6 +24,16 @@
 #' conditions, so the length of this vector is the most the Diagram draws.
 #' @noRd
 .conditionColors <- c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
+
+#' The fill of an unknown affected status
+#'
+#' pedkindraw S43 (plan Phase G2, R106). R's \dQuote{grey}, as Pedixplorer
+#' fills an animal whose affected status is \code{NA}: the whole symbol with
+#' one condition, the condition's section with two to four. Measured apart from
+#' white and from the four \code{.conditionColors}, in greyscale and under
+#' three simulated colour blindnesses.
+#' @noRd
+.unknownColor <- "#BEBEBE"
 
 #' The pedigree columns that are affected conditions
 #'
@@ -61,7 +74,8 @@
 #' The affectedSections string of each node
 #'
 #' S1029. One character per condition for an animal: \code{"1"} where it is
-#' affected, \code{"0"} where it is unaffected or unknown. A repeat-appearance
+#' affected, \code{"0"} where it is unaffected, \code{"?"} where it is unknown
+#' (pedkindraw S43, plan Phase G2; was \code{"0"}). A repeat-appearance
 #' node reads as its real animal; a mating-union, drop, bar or waypoint node is
 #' not an animal and gets \code{""}, never \code{NA}.
 #' @param nodeIds ids of the layout's nodes.
@@ -75,7 +89,9 @@
 .affectedSectionsOf <- function(nodeIds, conditionOf, realIds, dupIds,
                                 dupRealIds) {
   flags <- do.call(cbind, lapply(conditionOf, function(v) {
-    ifelse(!is.na(v) & v, "1", "0")
+    flag <- ifelse(v, "1", "0")
+    flag[is.na(v)] <- "?"
+    flag
   }))
   sectionsOf <- stats::setNames(apply(flags, 1L, paste, collapse = ""),
                                 realIds)
@@ -88,7 +104,9 @@
 #'
 #' S1029. With two or more conditions the layout gives each animal's node an
 #' \code{affectedSections} string, one character per condition: \code{"1"}
-#' where the animal is affected. visNetwork has no sectioned shape, so after
+#' where the animal is affected, \code{"?"} where its status is unknown
+#' (pedkindraw S43, plan Phase G2: filled \code{.unknownColor}). visNetwork has
+#' no sectioned shape, so after
 #' each draw this clips to the node's own outline (the same paths vis.js
 #' draws: a circle, a square, a diamond, a triangle, a star) and fills the
 #' affected sections, equal pie sections counter-clockwise from the top (the
@@ -104,6 +122,7 @@
     "  var net = this;\n",
     "  var colors = [",
     paste0("'", colors, "'", collapse = ", "), "];\n",
+    "  var unknown = '", .unknownColor, "';\n",
     "  var animals = net.body.data.nodes.get({filter: function(n) {",
     " return typeof n.affectedSections === 'string' &&",
     " n.affectedSections.length > 1; }});\n",
@@ -143,12 +162,13 @@
     "    ctx.clip();\n",
     "    for (var i = 0; i < k; i++) {\n",
     "      var from = -Math.PI / 2 - (i + 1) * d, to = -Math.PI / 2 - i * d;\n",
-    "      if (n.affectedSections.charAt(i) === '1') {\n",
+    "      var mark = n.affectedSections.charAt(i);\n",
+    "      if (mark === '1' || mark === '?') {\n",
     "        ctx.beginPath();\n",
     "        ctx.moveTo(p.x, p.y);\n",
     "        ctx.arc(p.x, p.y, 3 * s, from, to, false);\n",
     "        ctx.closePath();\n",
-    "        ctx.fillStyle = colors[i];\n",
+    "        ctx.fillStyle = mark === '1' ? colors[i] : unknown;\n",
     "        ctx.fill();\n",
     "      }\n",
     "    }\n",
