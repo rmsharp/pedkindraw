@@ -9,7 +9,9 @@
 ## prefixes from .reservedIdPattern (plan R94), and S39's legend lines drawn
 ## without arrowheads, their labels on white (plan R95: the two columns after
 ## legendEdges), and S43's grey "Affected status unknown" row and the 45 px it
-## adds (plan Phase G2, R106-R107: unknownRow, before deceasedRow), each a
+## adds (plan Phase G2, R106-R107: unknownRow, before deceasedRow), and S45's
+## section colours read from the layout's conditions table (plan Phase G4,
+## R111: sectionColors, and the help's paragraph on the colours), each a
 ## DIVERGENCE.md row until nprcgenekeepr has it; otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
@@ -45,6 +47,12 @@
 #' two is the left half), and each condition's legend row shows a circle cut
 #' the same way with that condition's section filled in its color, so the
 #' legend says which section is which.
+#'
+#' The colours of the conditions are set by
+#' \code{\link{makePedigreeMatingLayout}}'s \code{conditionColors}: the layout
+#' fills the symbols with them, and the drawing paints the sections and the
+#' legend's rows from the layout's \code{conditions} table, so all three
+#' agree.
 #'
 #' An animal whose affected status is unknown (\code{NA}) is filled grey,
 #' with one condition, or has that condition's section grey, with two or more,
@@ -110,6 +118,14 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # S1029: one legend row per condition, in place of the single
   # "Affected" row; the one row stays when the pedigree has no
   # condition column, as before.
+  # pedkindraw Phase G4 (R111): the section painter fills each condition's
+  # sections with the layout's colour for it, as the legend's rows below
+  # take theirs; the defaults stay after them, so a drawing with the
+  # default colours is unchanged.
+  sectionColors <- .conditionColors
+  if (nConditions > 0L) {
+    sectionColors[seq_len(nConditions)] <- conditions$color
+  }
   legendConditions <- if (nConditions > 0L) {
     conditions
   } else {
@@ -223,7 +239,7 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
       click = onClick,
       # S1029: the sections of each multi-condition symbol, then
       # S1028's slash through each deceased animal's symbol on top.
-      afterDrawing = .diagramAfterDrawing(nConditions >= 2L)
+      afterDrawing = .diagramAfterDrawing(nConditions >= 2L, sectionColors)
     ) |>
     # Image export (issue #131): visExport() bundles its own JS deps
     # (FileSaver/Blob/canvas-toBlob/html2canvas/jsPDF) as htmlwidget

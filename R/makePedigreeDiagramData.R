@@ -35,6 +35,12 @@
 ## .checkMaxNameChars() (pedkindraw's own, R/maxNameChars.R) and passed to
 ## .nameLabel() in place of its fixed 15, and its help (DIVERGENCE.md rows);
 ## its REFACTOR updates the comments of .nameLabelCharBudget and .nameLabel().
+## Plan Phase G4 (pedkindraw S45, R111-R113): makePedigreeDiagramData() and
+## makePedigreeMatingLayout() gain the argument conditionColors, checked and
+## written as "#RRGGBB" codes by .checkConditionColors() (pedkindraw's own,
+## R/conditionColors.R); the layout's conditions table takes its colours from
+## it, and .affectedColor() gains affectedFill, which both pass the first
+## colour; and their help (DIVERGENCE.md rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -50,7 +56,8 @@
 #'   produced by \code{\link{findGeneration}}). Two optional columns are
 #'   used when present: a logical \code{affected} column, which adds an
 #'   affected-status line to \code{title} and sets \code{color.background}:
-#'   \code{"#CC79A7"} (pink) for an affected node, \code{"#BEBEBE"} (grey)
+#'   the first of \code{conditionColors} (\code{"#CC79A7"}, pink, by
+#'   default) for an affected node, \code{"#BEBEBE"} (grey)
 #'   for a node whose status is unknown (\code{NA}) and \code{"#FFFFFF"}
 #'   (white) for an unaffected one (every node is white without the column);
 #'   and a character \code{name} column, which is shown
@@ -72,6 +79,12 @@
 #'   whole, as kinship2 and Pedixplorer write their labels; a long name can
 #'   then run into the labels of the animals beside it. Stops unless it is
 #'   one whole number of 1 or more, or \code{Inf}.
+#' @param conditionColors the colours of the affected conditions, as
+#'   \code{\link{makePedigreeMatingLayout}} takes them: this function draws
+#'   the column \code{affected} alone, so it fills an affected animal with
+#'   the first colour, written as its \code{"#RRGGBB"} code. It stops as
+#'   \code{makePedigreeMatingLayout()} does, except that one colour is always
+#'   enough.
 #' @return A list with two data frames: \code{nodes} (\code{id}, \code{label},
 #'   \code{shape}, \code{level}, \code{title}, \code{color.background})
 #'   and \code{edges} (\code{from}, \code{to}, plus
@@ -98,7 +111,9 @@
 #'
 #' @export
 makePedigreeDiagramData <- function(ped, twinRelations = NULL,
-                                    maxNameChars = 15.0) {
+                                    maxNameChars = 15.0,
+                                    conditionColors = c("#CC79A7", "#E69F00",
+                                                        "#56B4E9", "#009E73")) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeDiagramData() requires 'ped' to be a data frame.")
   }
@@ -110,6 +125,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
          toString(missingCols))
   }
   .checkMaxNameChars(maxNameChars, "makePedigreeDiagramData")
+  conditionColors <- .checkConditionColors(conditionColors,
+                                           "makePedigreeDiagramData")
 
   shapeMap <- c(F = "dot", M = "square", H = "star", U = "triangle")
   shapes <- unname(shapeMap[as.character(ped$sex)])
@@ -193,7 +210,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   # found S569): unconditional now -- an absent affected column defaults
   # every node to the same explicit white fill instead of vis.js's own
   # default (`affected` above is already an all-NA vector in that case).
-  nodes$color.background <- .affectedColor(affected, unknown = unknownFill)
+  # pedkindraw Phase G4 (R111): an affected node takes the first of
+  # conditionColors, pink by default.
+  nodes$color.background <- .affectedColor(
+    affected, unknown = unknownFill, affectedFill = conditionColors[[1L]]
+  )
 
   hasSire <- !is.na(ped$sire)
   hasDam <- !is.na(ped$dam)
@@ -247,18 +268,23 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'
 #' pedkindraw S43 (plan Phase G2, R106): \code{NA} gets \code{unknown}, white
 #' unless the caller passes \code{.unknownColor}, grey, so that an unknown
-#' status no longer looks like an unaffected one.
+#' status no longer looks like an unaffected one. pedkindraw S45 (plan Phase
+#' G4, R111): \code{TRUE} gets \code{affectedFill}, which both callers pass
+#' the first of their \code{conditionColors}.
 #'
 #' @param affected logical vector, \code{NA} allowed.
 #' @param unknown the fill where \code{affected} is \code{NA} (pedkindraw S43,
 #'   plan Phase G2: its callers pass \code{.unknownColor} where a condition
 #'   column is drawn).
-#' @return character vector: \code{"#CC79A7"} where \code{affected} is
+#' @param affectedFill the fill where \code{affected} is \code{TRUE},
+#'   \code{"#CC79A7"} (pink) unless the caller passes another.
+#' @return character vector: \code{affectedFill} where \code{affected} is
 #'   \code{TRUE}, \code{"#FFFFFF"} where it is \code{FALSE}, \code{unknown}
 #'   where it is \code{NA}.
 #' @noRd
-.affectedColor <- function(affected, unknown = "#FFFFFF") {
-  fill <- ifelse(affected, "#CC79A7", "#FFFFFF")
+.affectedColor <- function(affected, unknown = "#FFFFFF",
+                           affectedFill = "#CC79A7") {
+  fill <- ifelse(affected, affectedFill, "#FFFFFF")
   fill[is.na(affected)] <- unknown
   fill
 }
@@ -1694,10 +1720,12 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   returned \code{nodes}. Every column whose name starts
 #'   \code{affected} is an affected condition, in the order the data
 #'   frame holds them, the first four drawn (see \code{conditions} in the
-#'   return value). A lone one fills the symbol, pink where the animal is
-#'   affected and grey where its status is unknown (\code{NA}); two or more
-#'   split it into sections. (\code{\link{makePedigreeDiagramData}} reads the
-#'   column \code{affected} alone.) A condition drawn reads as
+#'   return value). A lone one fills the symbol, in the first of
+#'   \code{conditionColors} (pink by default) where the animal is affected
+#'   and grey where its status is unknown (\code{NA}); two or more split it
+#'   into sections, one colour each.
+#'   (\code{\link{makePedigreeDiagramData}} reads the column
+#'   \code{affected} alone.) A condition drawn reads as
 #'   \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
 #'   than 0 and 1 stops, before any animal is left out.
 #' @param edgeStyle one of \code{"rectilinear"} (default), which routes
@@ -1768,6 +1796,26 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   Pedixplorer write their labels; a long name can then run into the
 #'   labels of the animals beside it. It changes nothing but the labels.
 #'   Stops unless it is one whole number of 1 or more, or \code{Inf}.
+#' @param conditionColors the colours of the affected conditions, in the
+#'   order they are drawn: 1 to 4 colours, at least one for each condition
+#'   drawn, each a name R knows (such as \code{"orange"} or
+#'   \code{"steelblue3"}) or a code (such as \code{"#E69F00"}). Each is
+#'   written as its \code{"#RRGGBB"} code, the colour R means by it: a
+#'   browser reads most of R's names as no colour, and \code{"grey"},
+#'   \code{"gray"}, \code{"green"}, \code{"maroon"} and
+#'   \code{"purple"} as other colours. The default is the four colours
+#'   drawn before this argument: pink, orange, sky blue and bluish green,
+#'   the last three Okabe and Ito's colour-blind-safe ones. They fill the
+#'   symbols here and go into the returned \code{conditions} table, from
+#'   which \code{\link{drawPedigreeDiagram}} paints the sections and the
+#'   legend, so all three agree. With no condition column nothing is
+#'   coloured, and the drawing's one \dQuote{Affected} legend row keeps the
+#'   default pink. Stops on anything but 1 to 4 colours as text, on
+#'   \code{NA}, on a colour R does not know, on a number (it picks from R's
+#'   palette, which can be changed), on a transparent colour, on white and
+#'   on the grey \code{"#BEBEBE"} (they mark an unaffected animal and an
+#'   unknown status), on a colour given twice, and on fewer colours than
+#'   conditions drawn.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -1806,7 +1854,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   \code{duplicateToReal} is empty. Also \code{conditions}, a data
 #'   frame with one row per drawn condition (\code{column}, \code{label}
 #'   such as \dQuote{Affected} or \dQuote{Affected (diabetes)}, and its
-#'   \code{color}), 0-row when \code{ped} has no such column, and
+#'   \code{color}, from \code{conditionColors} as a \code{"#RRGGBB"}
+#'   code), 0-row when \code{ped} has no such column, and
 #'   \code{conditionsNotDrawn}, the names of any such columns past the
 #'   fourth.
 #'
@@ -1828,7 +1877,11 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                                           "direct"),
                                       twinRelations = NULL,
                                       kinshipMatrix = NULL, hints = NULL,
-                                      maxNameChars = 15.0) {
+                                      maxNameChars = 15.0,
+                                      conditionColors = c("#CC79A7",
+                                                          "#E69F00",
+                                                          "#56B4E9",
+                                                          "#009E73")) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -1855,9 +1908,15 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   conditionCols <- .conditionColumns(ped)
   drawnCols <- utils::head(conditionCols, length(.conditionColors))
   conditionsNotDrawn <- setdiff(conditionCols, drawnCols)
+  # pedkindraw Phase G4 (R111-R113): the colours, as "#RRGGBB" codes, one at
+  # least for each condition drawn; the conditions table carries them to
+  # drawPedigreeDiagram()'s sections and legend.
+  conditionColors <- .checkConditionColors(
+    conditionColors, "makePedigreeMatingLayout", drawn = drawnCols
+  )
   conditions <- data.frame(
     column = drawnCols, label = .conditionLabels(drawnCols),
-    color = .conditionColors[seq_along(drawnCols)],
+    color = conditionColors[seq_along(drawnCols)],
     stringsAsFactors = FALSE
   )
   sectioned <- length(drawnCols) >= 2L
@@ -1987,7 +2046,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # (R/modPedigree.R). Coerce defensively via as.logical() (see that
   # function's own comment for why).
   # S1029: each drawn condition column, read as logical by real id. A lone
-  # condition fills the symbol pink as `affected` always has; two or more
+  # condition fills the symbol in the first of conditionColors (pedkindraw
+  # Phase G4, R111; pink by default, as `affected` always was); two or more
   # are painted in sections by R/modPedigree.R, so the fill stays white.
   conditionOf <- lapply(drawnCols, function(column) {
     stats::setNames(as.logical(ped[[column]]), realIds)
@@ -2006,7 +2066,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     unknownFill <- .unknownColor
   }
   .affectedColorForVec <- function(ids) {
-    .affectedColor(affectedOf[ids], unknown = unknownFill)
+    .affectedColor(affectedOf[ids], unknown = unknownFill,
+                   affectedFill = conditionColors[[1L]])
   }
 
   # S1028 deceased marker: an animal is deceased when its status reads

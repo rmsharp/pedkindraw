@@ -7,7 +7,9 @@
 ## G2, R106; DIVERGENCE.md rows "at the switch") added .unknownColor after
 ## .conditionColors, and changed .affectedSectionsOf() (an unknown condition
 ## is "?", not "0") and .conditionSectionsHandler() (a "?" section is filled
-## .unknownColor). Phase 8 copied
+## .unknownColor). pedkindraw S45 (plan Phase G4, R111; a DIVERGENCE.md row "at
+## the switch") changed .diagramAfterDrawing(), which takes the colours it
+## passes to .conditionSectionsHandler(). Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
 ## 9 its lines 76-201, the three the drawing uses
@@ -22,6 +24,9 @@
 #' had (\code{.affectedColor()}); the other three are the colour-blind-safe
 #' Okabe-Ito orange, sky blue and bluish green. kinship2 allows four
 #' conditions, so the length of this vector is the most the Diagram draws.
+#' pedkindraw S45 (plan Phase G4, R111): the default of the builders'
+#' \code{conditionColors}, and the colours of the section painter after the
+#' conditions a layout draws.
 #' @noRd
 .conditionColors <- c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
 
@@ -241,15 +246,20 @@
 #' @param sections \code{TRUE} when the pedigree has two or more conditions,
 #'   so some node carries \code{affectedSections}; the section painter is left
 #'   out otherwise.
+#' @param colors the fill of each condition's sections, passed to
+#'   \code{.conditionSectionsHandler()} (pedkindraw S45, plan Phase G4:
+#'   \code{drawPedigreeDiagram()} passes the layout's colours, the defaults
+#'   after them).
 #' @return A JavaScript function, as a character string.
 #' @noRd
-.diagramAfterDrawing <- function(sections = FALSE) {
+.diagramAfterDrawing <- function(sections = FALSE,
+                                 colors = .conditionColors) {
   if (!sections) {
     return(.deceasedSlashHandler())
   }
   paste0(
     "function(ctx) {\n",
-    "  (", .conditionSectionsHandler(), ").call(this, ctx);\n",
+    "  (", .conditionSectionsHandler(colors), ").call(this, ctx);\n",
     "  (", .deceasedSlashHandler(), ").call(this, ctx);\n",
     "}"
   )
