@@ -131,8 +131,8 @@ checkPedigree <- function(ped) {
 }
 
 ## Stops, the message starting with the caller's name, unless ped is a data
-## frame with the columns id, sire and dam (checkPedigree() and
-## findUnrelated()).
+## frame with the columns id, sire and dam (checkPedigree(), findUnrelated(),
+## recodePedigree(), countOffspring(), getMatings() and removeAnimals()).
 .checkPedFrame <- function(ped, caller) {
   if (!is.data.frame(ped)) {
     stop(caller, ": ped must be a data frame", call. = FALSE)
@@ -141,6 +141,14 @@ checkPedigree <- function(ped) {
   if (length(lacking) > 0L) {
     stop(caller, ": ped lacks the column(s) ", toString(lacking),
          call. = FALSE)
+  }
+}
+
+## Stops, the message starting with the caller's name, unless ids is a vector
+## or a factor and not a list (countOffspring() and removeAnimals()).
+.checkIds <- function(ids, caller) {
+  if (is.list(ids) || !(is.vector(ids) || is.factor(ids))) {
+    stop(caller, ": ids must be a vector of animal ids", call. = FALSE)
   }
 }
 

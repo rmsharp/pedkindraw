@@ -131,9 +131,13 @@ pedixplorerTrio <- function(q, ids) {
   data.frame(id = ids, sire = sire, dam = dam, stringsAsFactors = FALSE)
 }
 
-## Sex as kinship2 and Pedixplorer number it: 1 male, 2 female, 3 unknown.
-sexNumbers <- function(sex) {
-  sex <- as.character(sex)
+## Each row's sex as kinship2 and Pedixplorer number it: 1 male, 2 female, 3
+## unknown, which is every row's when ped has no sex column.
+sexNumbers <- function(ped) {
+  if (!("sex" %in% names(ped))) {
+    return(rep(3L, nrow(ped)))
+  }
+  sex <- as.character(ped$sex)
   ifelse(sex %in% "M", 1L, ifelse(sex %in% "F", 2L, 3L))
 }
 

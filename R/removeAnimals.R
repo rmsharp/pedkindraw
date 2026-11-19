@@ -56,9 +56,7 @@
 #' kinship(kept$id, kept$sire, kept$dam, gen)["F", "G"]
 removeAnimals <- function(ped, ids) {
   .checkPedFrame(ped, "removeAnimals")
-  if (is.list(ids) || !(is.vector(ids) || is.factor(ids))) {
-    stop("removeAnimals: ids must be a vector of animal ids", call. = FALSE)
-  }
+  .checkIds(ids, "removeAnimals")
   ids <- as.character(ids)
   ped <- ped[!(as.character(ped[["id"]]) %in% ids), , drop = FALSE]
   for (column in c("sire", "dam")) {

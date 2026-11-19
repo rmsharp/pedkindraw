@@ -41,9 +41,7 @@
 #' countOffspring(ped, c("A", "E"))
 countOffspring <- function(ped, ids = ped[["id"]]) {
   .checkPedFrame(ped, "countOffspring")
-  if (is.list(ids) || !(is.vector(ids) || is.factor(ids))) {
-    stop("countOffspring: ids must be a vector of animal ids", call. = FALSE)
-  }
+  .checkIds(ids, "countOffspring")
   child <- as.character(ped[["id"]])
   parent <- c(as.character(ped[["sire"]]), as.character(ped[["dam"]]))
   known <- !is.na(parent)

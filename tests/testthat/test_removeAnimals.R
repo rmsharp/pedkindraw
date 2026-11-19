@@ -34,7 +34,7 @@ test_that("removeAnimals() keeps the parent not removed, where Pedixplorer's
   ped <- removeAnimalsPed()
   p <- Pedixplorer::Pedigree(data.frame(id = ped$id, dadid = ped$sire,
                                         momid = ped$dam,
-                                        sex = sexNumbers(ped$sex)))
+                                        sex = sexNumbers(ped)))
   q <- Pedixplorer::ped(Pedixplorer::subset(p, setdiff(ped$id, "C"),
                                             del_parents = "one"))
   expect_identical(pedixplorerTrio(q, c("F", "G"))$dam,
@@ -162,8 +162,7 @@ test_that("removeAnimals() equals kinship2's pedigree.trim() wherever kinship2
   for (name in names(peds)) {
     ped <- peds[[name]]
     ids <- withMates(ped, lists[[name]])
-    sex <- if ("sex" %in% names(ped)) sexNumbers(ped$sex) else
-      rep(3L, nrow(ped))
+    sex <- sexNumbers(ped)
     built <- tryCatch(kinship2::pedigree(as.character(ped$id),
                                          as.character(ped$sire),
                                          as.character(ped$dam),
@@ -193,8 +192,7 @@ test_that("removeAnimals() equals Pedixplorer's subset(del_parents = \"one\")
   for (name in names(peds)) {
     ped <- peds[[name]]
     ids <- lists[[name]]
-    sex <- if ("sex" %in% names(ped)) sexNumbers(ped$sex) else
-      rep(3L, nrow(ped))
+    sex <- sexNumbers(ped)
     p <- quietPedixplorer(Pedixplorer::Pedigree(data.frame(
       id = as.character(ped$id), dadid = as.character(ped$sire),
       momid = as.character(ped$dam), sex = sex, stringsAsFactors = FALSE
