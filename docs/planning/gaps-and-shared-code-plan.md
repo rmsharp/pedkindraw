@@ -8,7 +8,8 @@ commit in a scratch folder and run there with its own renv library; its folder w
 R97-R101 (section 4). G1 DONE (pedkindraw S42; R102-R105 in the standalone plan). G2 DONE (pedkindraw S43;
 R106-R107). G3 DONE (pedkindraw S44; R108-R110). G4 DONE (pedkindraw S45; R111-R113). G5 DONE (pedkindraw S46;
 R114-R116). G6 DONE (pedkindraw S47; R117-R119). G7 DONE (pedkindraw S48; R120-R122). G8 DONE (pedkindraw S49;
-R123-R124). Next: G9 in pedkindraw (section 5.1); in nprcgenekeepr N1 and N2 are done (its S1189 and S1190, section
+R123-R124). G9 DONE (pedkindraw S50; R125-R126). Next: G10 in pedkindraw (section 5.1); in nprcgenekeepr N1 and
+N2 are done (its S1189 and S1190, section
 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
 `eafd54851` (its S1188 claim; its `R/` and tests as at that commit); kinship2 1.9.6.2 from nprcgenekeepr's renv
@@ -362,7 +363,7 @@ submission.
 | G6 | C5 | Each animal's offspring count, and its mates | `lookups`: counts 2, 2, 0, 0, as Pedixplorer's; mates checked against the fixture pedigrees | names; one function or two | 1 |
 | G7 | C6 | A function that removes listed animals and clears their offspring's links to them | `removeAnimals`: C removed, F's and G's sire cleared, `kinship()` then computes (F with G 0.125); compared with Pedixplorer's `subset(del_parents = "one")`, which also clears the other parent | clear the one link, or both as Pedixplorer does | 1 |
 | G8 | C2 | `findGeneration()` gains aligned generations, written from the method kinship2 describes (R11) | `alignedDepth`: equal to kinship2's `kindepth(align = TRUE)` on sample family 1 (6 of 41 differ from plain) and on every fixture pedigree where kinship2 returns; default unchanged (600 of 600). S49, R123: "on every fixture" became the measured counts (equal on 2 of the 7 fixtures and 73 of 100 random; at most 93 of 5,004 animals different on the other 5), kinship2's own answer depending on the order of the rows | the argument's name | 1 |
-| G9 | B7 | A documented example: the pedigree drawn with the animals `shrinkPedigree()` removed marked, from `idTrimmed` | `shrinkPicture`: the example runs and the removed animals are marked in the drawing | a help example or a vignette section | 1 |
+| G9 | B7 | A documented example: the pedigree drawn with the animals `shrinkPedigree()` removed marked, from `idTrimmed` | `shrinkPicture`: the example runs and the removed animals are marked in the drawing. S50, R125: kinship2's `plot.pedigree.shrink()` draws only the animals kept (18 of 41), not the removed ones marked as B7 says; the help example draws all 7, the 3 removed filled, and a test runs it (R126) | a help example or a vignette section | 1 |
 | G10 | C3 | `makePedigreeMatingLayout()` returns the hints it used (`:1836`, `:2219`), in the form it takes (`R/layoutHints.R`) | `ownHints`: the returned hints, passed back, give the same positions; the new list element counted as a set-aside | the element's name; order hints only, or mate hints too | 2-3 |
 | G11 | C1 | A function that keeps the relatives within k steps of chosen animals, its rule written from Pedixplorer's help and measured results (as R52) | `distanceSubset`: 14, 30 and 33 of 41 kept for k = 1, 2, 3, as Pedixplorer's `useful_inds()`, or a measured, stated difference; seeded random cases compared (Learnings 19-21) | its name; what "informative" means by default | 2-3 |
 | G12 | B4 | A measured trait drawn by a threshold, with the rule in the legend; builds on G1 | `measuredTrait`: at threshold 5, A, B, C unaffected and D affected; the legend states the rule | threshold argument or a colour scale; above or at-and-above | 2-3 |
@@ -570,6 +571,17 @@ sessions a day, about 11-15 days, an estimate.
     a 10-minute limit before that was found. Time the slow version on each fixture before RED. Sort text with
     `order(..., method = "radix")`, as `.alignGenerations()` does: the default order follows the locale, which a
     CRAN machine may not share.
+28. **A test of a help example reads the example itself, from where the help is** (S50, G9): `R CMD check` runs the
+    tests in `pedkindraw.Rcheck/tests/testthat`, where there is no `man/`, so a reader of the source Rd alone (as
+    nprcgenekeepr's help tests are) skips there. `helpExampleCode()` (`tests/testthat/helper-helpExample.R`) falls
+    back to the installed help (`tools::Rd_db()`), and the 4 G9 tests ran inside the check. Evaluate the code in
+    `new.env(parent = globalenv())`, as `example()` does, so it sees only what a user sees. The layout draws no
+    animal without a parent, mate or offspring (`isolatedIds`), so a fill looked up per id can be `NA`: sample
+    family 1's 113 (removed by shrinking) is not drawn; compare with `!is.na(fill) & fill == ...`.
+29. **Wait on a run's own end, not on a word it may print** (S50): a loop `until grep -q "real\|total" <log>` ended
+    while the suite still ran, because two tests print "on the real fixture", and `roxygenise()` then ran beside
+    the suite (FM #29; it changed nothing). Wait for the background task's notice, or on a line only the shell's
+    `time` writes (`grep -q "cpu .* total$"`).
 
 ### 7.3 Out of scope
 
