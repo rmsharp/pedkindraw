@@ -568,6 +568,16 @@ cases$distanceSubset <- function(case = "distanceSubset") {
         nrow(pedkindraw::trimPedigree(ped, inf, removeUninformative = TRUE)))
   probe(case, "pedkindraw trimPedigree() arguments",
         names(formals(pedkindraw::trimPedigree)))
+  ## G11 (pedkindraw S52, R129-R130): the same animals as useful_inds().
+  for (d in 1L:3L) {
+    kept <- pedkindraw::getNearRelativePedigree(ped, inf, d)$id
+    useful <- Pedixplorer::ped(Pedixplorer::useful_inds(p, max_dist = d))
+    theirs <- sub("^1_", "",
+                  Pedixplorer::id(useful)[Pedixplorer::useful(useful)])
+    probe(case, paste("pedkindraw getNearRelativePedigree(ped, informative,",
+                      d, ") keeps; the same animals as useful_inds()"),
+          c(length(kept), setequal(kept, theirs)))
+  }
 }
 
 ## C2. Generation numbers aligned for drawing.

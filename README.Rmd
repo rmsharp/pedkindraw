@@ -183,6 +183,9 @@ picture with the "Export Diagram (PNG)" button.
 - `trimPedigree()` trims a pedigree to a group's ancestors;
   `getProbandPedigree()` reduces it to probands and their ancestors, and
   `getDescendantPedigree()` to a group and its descendants.
+- `getNearRelativePedigree()` keeps the relatives within a distance of the
+  animals you name, read from kinship, and the parents that join their
+  families, as Pedixplorer's `useful_inds(max_dist = )` does.
 - `removeUnknownAnimals()` removes the placeholder animals added for unknown
   parents; `removeUninformativeFounders()` removes founders that appear only
   once, which add no information.
