@@ -76,12 +76,9 @@ recodePedigree <- function(ped, missingParentCodes = c("0", "NA", "")) {
   }
   id <- as.character(ped[["id"]])
   ids <- id[!is.na(id) & nzchar(trimws(id))]
-  blankIsCode <- "" %in% missingParentCodes
   for (column in c("sire", "dam")) {
-    value <- as.character(ped[[column]])
-    blank <- blankIsCode & !nzchar(trimws(value))
-    isCode <- !is.na(value) & !(value %in% ids) &
-      (value %in% missingParentCodes | blank)
+    isCode <- .isParentCode(as.character(ped[[column]]), ids,
+                            missingParentCodes)
     ped[[column]][isCode] <- NA
   }
   if ("sex" %in% names(ped)) {

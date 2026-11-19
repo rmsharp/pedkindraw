@@ -87,8 +87,7 @@ checkPedigree <- function(ped) {
   missingId <- is.na(id) | !nzchar(trimws(id))
   ids <- unique(id[!missingId])
   parentValues <- c(sire, dam)
-  isCode <- !is.na(parentValues) & !(parentValues %in% ids) &
-    (parentValues %in% c("0", "NA") | !nzchar(trimws(parentValues)))
+  isCode <- .isParentCode(parentValues, ids)
   codes <- .checkSorted(parentValues[isCode])
   parents <- unique(parentValues[!is.na(parentValues) & !isCode])
   offspring <- function(x) .checkOffspring(x, id, sire, dam)
@@ -143,6 +142,15 @@ checkPedigree <- function(ped) {
     stop(caller, ": ped lacks the column(s) ", toString(lacking),
          call. = FALSE)
   }
+}
+
+## TRUE where a sire or dam value is an unknown-parent code: one of codes
+## ("" standing for an empty or spaces-only value) that is not the id of a row
+## (ids, those not missing). checkPedigree() reports these, with the default
+## codes, as missingParentCodes; recodePedigree() makes them NA (plan R115).
+.isParentCode <- function(value, ids, codes = c("0", "NA", "")) {
+  !is.na(value) & !(value %in% ids) &
+    (value %in% codes | ("" %in% codes & !nzchar(trimws(value))))
 }
 
 ## The checks, in the order their rows come (plan R50).
