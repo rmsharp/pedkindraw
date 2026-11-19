@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S47
+date: 2026-11-18
+status: pending
+active_task: Phase G6, each animal's offspring count and its mates (gap C5; docs/planning/gaps-and-shared-code-plan.md:361; R97; methodology/BACKLOG.md:26), new exports: measure first, a pre-RED picker (the names, one function or two, what a count counts, the mates answer's shape, the _pkgdown.yml and ?pedkindraw section), RED, GREEN, REFACTOR by the gates; strict TDD; Mark's pick "Phase G6 (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S46
 date: 2026-11-18
 status: complete

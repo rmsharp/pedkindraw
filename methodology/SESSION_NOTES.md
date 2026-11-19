@@ -94,6 +94,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S45's entries were removed in S3-S46 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 47 Did
+**Deliverable:** Phase G6, each animal's offspring count and its mates (gap C5;
+`docs/planning/gaps-and-shared-code-plan.md:361`), new exports (IN PROGRESS)
+**Started:** 2026-11-18 23:59 CST · **Model:** Claude Opus 5.5 · Mark's pick "Phase G6 (Recommended)" at the orient picker.
+**Status:** Session claimed. Work beginning: measure first (Learning 17), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### Session 45 Handoff Evaluation (by Session 46)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(d) for G5 was the session's plan, and its picker choices (the name,

@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-18 · [BL-Phase G6] S47: Phase G6, each animal's offspring count and its mates (in progress)
+- **Change:** session claimed (Mark's pick "Phase G6 (Recommended)" at the orient picker): strict TDD, new exports; measure first (`tools/gapCases.R lookups`; what `getOffspring()`, `getParents()` and the layout's matings already give; Pedixplorer's `num_child` columns, `spouse()`, `parent_of()`, `is_parent()` and kinship2's equivalents, each under a time limit), then a pre-RED picker (the names, one function or two, what a count counts, the mates answer's shape, the section), RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `0eda5c1` is HEAD, S46's close-out 2; no merges; S46's receipt complete, its ratchet results `5ddbb5b1aeb3` matching the results file); drift tool 91 functions, 20 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits; nprcgenekeepr at `3e06730c5`, tree clean; S46's push: CI `44466105164` and site `44466105192` success.
+- **Commit/PR:** the claim commit · **Session:** S47 · **Verified:** pending (close-out).
+
 ### 2026-11-18 · [BL-Phase G5] S46 push 1: `master` to GitHub at close-out 2 (S46's claim, G5, close-out 1-2)
 - **Change:** `git push origin master` (`cd06e57..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md`, `README.md`, `_pkgdown.yml` and `tools/` changed, so both workflows run. S45's push runs, in progress at S46's Orient, finished `success`: CI `44459502529` (29 min) and site `44459502577`.
 - **Commit/PR:** none (push) · **Session:** S46 · **Verified:** the push's output; S45's runs by `gh run list`.
