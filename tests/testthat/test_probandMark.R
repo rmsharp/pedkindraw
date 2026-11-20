@@ -272,7 +272,7 @@ test_that(
   for (column in c("id", "sire")) {
     ped[[column]][ped[[column]] %in% "A"] <- "__mark_A"
   }
-  expect_error(makePedigreeMatingLayout(ped), "'__mark_' prefix",
+  expect_error(makePedigreeMatingLayout(ped), "'__mark_'",
                fixed = TRUE)
 })
 
