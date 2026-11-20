@@ -11,7 +11,9 @@
 ## the switch") changed .diagramAfterDrawing(), which takes the colours it
 ## passes to .conditionSectionsHandler(). pedkindraw S55 (plan Phase G13,
 ## R133 and R135; the same row) gave it an argument carrier, which runs
-## .carrierDotHandler() (pedkindraw's own, R/carrierMark.R) after the slash.
+## .carrierDotHandler() (pedkindraw's own, R/carrierMark.R) after the slash;
+## pedkindraw S56 (R136; the same row) an argument arrows, which runs
+## .probandArrowHandler() (pedkindraw's own, R/probandMark.R) after the dot.
 ## Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
@@ -256,12 +258,15 @@
 #' @param carrier \code{TRUE} when some node is a carrier's (pedkindraw S55,
 #'   plan Phase G13, R135): \code{.carrierDotHandler()} then runs after the
 #'   slash, so the dot is on top; it is left out otherwise.
+#' @param arrows \code{TRUE} when some node is a proband's or a consultand's
+#'   (pedkindraw S56, plan Phase G13, R136): \code{.probandArrowHandler()}
+#'   then runs last; it is left out otherwise.
 #' @return A JavaScript function, as a character string.
 #' @noRd
 .diagramAfterDrawing <- function(sections = FALSE,
                                  colors = .conditionColors,
-                                 carrier = FALSE) {
-  if (!sections && !carrier) {
+                                 carrier = FALSE, arrows = FALSE) {
+  if (!sections && !carrier && !arrows) {
     return(.deceasedSlashHandler())
   }
   paste0(
@@ -272,6 +277,9 @@
     "  (", .deceasedSlashHandler(), ").call(this, ctx);\n",
     if (carrier) {
       paste0("  (", .carrierDotHandler(), ").call(this, ctx);\n")
+    },
+    if (arrows) {
+      paste0("  (", .probandArrowHandler(), ").call(this, ctx);\n")
     },
     "}"
   )

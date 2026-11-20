@@ -15,8 +15,12 @@
 ## "Genotyped" row and the 45 px it adds (plan Phase G13, R133-R134:
 ## genotypedRow, and the help's paragraph on it), and S55's "Carrier" row,
 ## the 45 px it adds and the dot's handler (plan Phase G13, R135: carrierRow,
-## hasCarrier, and the help's paragraph on it), each a DIVERGENCE.md row
-## until nprcgenekeepr has it; otherwise help text only.
+## hasCarrier, and the help's paragraph on it), and S56's "Proband" and
+## "Consultand" rows, the 45 px each adds, the arrows' handler and the
+## points that keep the arrows inside the drawing (plan Phase G13, R136:
+## probandRow, consultandRow, hasArrow, nodes, and the help's paragraph on
+## them), each a DIVERGENCE.md row until nprcgenekeepr has it; otherwise
+## help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
@@ -37,6 +41,7 @@
 #' \dQuote{Affected} row, a grey \dQuote{Affected status unknown} row when an
 #' animal's status is unknown, a \dQuote{Genotyped} row when an animal is
 #' genotyped, a \dQuote{Carrier} row when an animal is a carrier,
+#' \dQuote{Proband} and \dQuote{Consultand} rows when an animal is one,
 #' \dQuote{Deceased}, and the dashed
 #' repeat-appearance and twin lines), each multi-condition symbol split into
 #' its colored sections, the slash through each deceased animal's symbol, a
@@ -78,6 +83,14 @@
 #' legend's \dQuote{Carrier} row, a circle with the dot, then says what the
 #' dot is, and the canvas is 45 pixels taller for that row.
 #'
+#' An animal whose \code{proband} or \code{consultand} column is \code{TRUE}
+#' (see \code{\link{makePedigreeMatingLayout}}) has a black arrow pointing at
+#' its symbol from the lower left, a proband's with \dQuote{P} beside its
+#' tail; the legend's \dQuote{Proband} and \dQuote{Consultand} rows, each
+#' the arrow, then say what they are, and the canvas is 45 pixels taller for
+#' each. The drawing takes in each arrow, so one at its left edge is not cut
+#' off.
+#'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
 #' session, so a script leaves \code{onClick} out.
@@ -92,8 +105,9 @@
 #'   application can pass one that sends the clicked animal to its server.
 #' @return A \code{visNetwork} widget, 500 pixels tall, 45 more for each
 #'   affected condition past the first (at most four are drawn), for the
-#'   \dQuote{Affected status unknown} row, for the \dQuote{Genotyped} row
-#'   and for the \dQuote{Carrier} row.
+#'   \dQuote{Affected status unknown} row, for the \dQuote{Genotyped} row,
+#'   for the \dQuote{Carrier} row, and for each of the \dQuote{Proband} and
+#'   \dQuote{Consultand} rows.
 #' @seealso \code{\link{makePedigreeMatingLayout}}
 #' @examples
 #' ## Four animals: A and B are the parents of C and D; A has died, and C
@@ -254,8 +268,25 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
     label = "Carrier", shape = "image", color.background = NA_character_,
     image = .carrierLegendImage(), stringsAsFactors = FALSE
   )[hasCarrier, , drop = FALSE]
+  # pedkindraw Phase G13 (R133, R136): a proband's and a consultand's symbol
+  # has an arrow at its lower left (.probandArrowHandler()), and then a
+  # "Proband" and a "Consultand" row, each a picture of the arrow, come
+  # before "Deceased"; invisible points keep each arrow inside the drawing
+  # (.probandArrowRoom()).
+  hasProband <- isTRUE(any(layout$nodes[["proband"]]))
+  probandRow <- data.frame(
+    label = "Proband", shape = "image", color.background = NA_character_,
+    image = .probandLegendImage(TRUE), stringsAsFactors = FALSE
+  )[hasProband, , drop = FALSE]
+  hasConsultand <- isTRUE(any(layout$nodes[["consultand"]]))
+  consultandRow <- data.frame(
+    label = "Consultand", shape = "image", color.background = NA_character_,
+    image = .probandLegendImage(FALSE), stringsAsFactors = FALSE
+  )[hasConsultand, , drop = FALSE]
+  hasArrow <- hasProband || hasConsultand
+  nodes <- if (hasArrow) .probandArrowRoom(layout$nodes) else layout$nodes
   legendNodes <- rbind(sexRows, conditionRows, unknownRow, genotypedRow,
-                       carrierRow, deceasedRow)
+                       carrierRow, probandRow, consultandRow, deceasedRow)
   legendNodes$size <- 14L
   if (hasGenotyped) {
     legendNodes$borderWidth <- ifelse(legendNodes$label %in% genotypedRow$label,
@@ -269,8 +300,8 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # pedkindraw Phase G2: the unknown row adds 45 px as one more condition row
   # does (with no condition column the legend still has its one row).
   rowsForHeight <- max(nConditions, 1L) + hasUnknown + hasGenotyped +
-    hasCarrier
-  visNetwork::visNetwork(layout$nodes, layout$edges,
+    hasCarrier + hasProband + hasConsultand
+  visNetwork::visNetwork(nodes, layout$edges,
                          height = sprintf("%dpx",
                                           .diagramHeight(rowsForHeight))) |>
     visNetwork::visPhysics(enabled = FALSE) |>
@@ -284,7 +315,7 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
       # S1029: the sections of each multi-condition symbol, then
       # S1028's slash through each deceased animal's symbol on top.
       afterDrawing = .diagramAfterDrawing(nConditions >= 2L, sectionColors,
-                                          hasCarrier)
+                                          hasCarrier, hasArrow)
     ) |>
     # Image export (issue #131): visExport() bundles its own JS deps
     # (FileSaver/Blob/canvas-toBlob/html2canvas/jsPDF) as htmlwidget

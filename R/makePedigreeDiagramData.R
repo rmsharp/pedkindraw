@@ -61,7 +61,13 @@
 ## R135): it reads a column carrier the same way, adds a hover line for it,
 ## and gives each node a carrier field
 ## (.markedNodes(), pedkindraw's own, R/markColumns.R); and its help (the
-## same row).
+## same row). Plan Phase G13's proband and consultand (pedkindraw S56, R133
+## and R136): it reads the columns proband and consultand the same way,
+## stops on an animal marked both (.checkProbandConsultand(), pedkindraw's
+## own, R/probandMark.R), adds a hover line for each and gives each node a
+## proband and a consultand field; .reservedIdPrefixes gains __mark_, the
+## prefix of the points drawPedigreeDiagram() adds; and its help (the same
+## rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -512,9 +518,12 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 ## nodes, written once. .buildMatingUnitForest() refuses a real id that starts
 ## with one, and drawPedigreeDiagram()'s "Select by id" box leaves those nodes
 ## out; __jog_, the prefix of .resolveEdgeNodeCollisions()'s routing points,
-## had been missing from both lists.
+## had been missing from both lists. pedkindraw S56 (plan Phase G13, R136):
+## __mark_, the prefix of the invisible points drawPedigreeDiagram() adds to
+## keep a proband's or a consultand's arrow inside the drawing
+## (.probandArrowRoom()).
 .reservedIdPrefixes <- c("__union_", "__dup_", "__drop_", "__bar_", "__proj_",
-                         "__jog_")
+                         "__jog_", "__mark_")
 .reservedIdPattern <- paste0("^", .reservedIdPrefixes, collapse = "|")
 
 #' Transform a pedigree into a mating-unit forest (Option 2 layout, D1/D2)
@@ -1783,7 +1792,16 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   values: a carrier's symbol is drawn with a black dot at its centre (see
 #'   \code{carrier} in the returned \code{nodes}), and its hover text says
 #'   \dQuote{Carrier: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
-#'   genotyped line.
+#'   genotyped line. Optional \code{proband} and \code{consultand} columns,
+#'   in the same values, mark the proband (an affected animal through whom
+#'   the family came to attention) and the consultand (an animal for whom
+#'   counselling or testing is sought): each is drawn with a black arrow
+#'   pointing at its symbol from the lower left, a proband's with
+#'   \dQuote{P} beside it (see \code{proband} and \code{consultand} in the
+#'   returned \code{nodes}), and the hover text says \dQuote{Proband:} and
+#'   \dQuote{Consultand:} \dQuote{Yes}, \dQuote{No} or \dQuote{Unknown},
+#'   one line for each column, after the carrier line. An animal marked both
+#'   stops, naming it, before any animal is left out.
 #' @param edgeStyle one of \code{"rectilinear"} (default), which routes
 #'   mate-line and sibship-bar edges through invisible waypoint nodes so
 #'   they render as a strict right angle, kinship2-style, or
@@ -1910,7 +1928,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   symbol's outline; \code{carrier} is added when \code{ped} has a
 #'   \code{carrier} column: \code{TRUE} for the node of a carrier and each
 #'   of its repeat-appearance nodes, \code{FALSE} for every other node, never
-#'   \code{NA}), \code{edges} (\code{from},
+#'   \code{NA}; \code{proband} and \code{consultand} likewise, each added
+#'   when \code{ped} has that column), \code{edges} (\code{from},
 #'   \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 #'   \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
 #'   and \code{width} columns are always present once any mating unit
@@ -2047,6 +2066,11 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # pedkindraw Phase G13 (R133, R135): the carrier column, read and checked
   # the same way; a carrier's symbol has a black dot at its centre.
   carrier <- .readMarkColumn(ped, "carrier", "makePedigreeMatingLayout")
+  # pedkindraw Phase G13 (R133, R136): the proband and consultand columns,
+  # read the same way; an animal is one or the other, not both.
+  proband <- .readMarkColumn(ped, "proband", "makePedigreeMatingLayout")
+  consultand <- .readMarkColumn(ped, "consultand", "makePedigreeMatingLayout")
+  .checkProbandConsultand(proband, consultand, "makePedigreeMatingLayout")
 
   # A fully-isolated individual (no known parent, never a parent, not
   # twinRelations-connected) is suppressed from the diagram, matching
@@ -2087,6 +2111,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     if (sectioned) emptyNodes$affectedSections <- character()
     if (!is.null(genotyped)) emptyNodes$borderWidth <- integer() # Phase G13
     if (!is.null(carrier)) emptyNodes$carrier <- logical() # Phase G13
+    if (!is.null(proband)) emptyNodes$proband <- logical() # Phase G13
+    if (!is.null(consultand)) emptyNodes$consultand <- logical() # Phase G13
     emptyEdges <- data.frame(from = character(), to = character(),
                               dashes = logical(), smooth.enabled = logical(),
                               smooth.type = character(),
@@ -2254,6 +2280,14 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     if (!is.null(carrier)) { # pedkindraw Phase G13
       title <- paste0(title, sprintf("<br><b>Carrier:</b> %s",
                                      .affectedLabel(carrier[ids])))
+    }
+    if (!is.null(proband)) { # pedkindraw Phase G13
+      title <- paste0(title, sprintf("<br><b>Proband:</b> %s",
+                                     .affectedLabel(proband[ids])))
+    }
+    if (!is.null(consultand)) { # pedkindraw Phase G13
+      title <- paste0(title, sprintf("<br><b>Consultand:</b> %s",
+                                     .affectedLabel(consultand[ids])))
     }
     if (hasName) {
       title <- paste0(title, .nameTooltipLine(nameOf[ids]))
@@ -2501,6 +2535,14 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   if (!is.null(carrier)) { # pedkindraw Phase G13
     nodes$carrier <- .markedNodes(nodes$id, carrier, dupIds,
                                   duplicates$realId)
+  }
+  if (!is.null(proband)) { # pedkindraw Phase G13
+    nodes$proband <- .markedNodes(nodes$id, proband, dupIds,
+                                  duplicates$realId)
+  }
+  if (!is.null(consultand)) { # pedkindraw Phase G13
+    nodes$consultand <- .markedNodes(nodes$id, consultand, dupIds,
+                                     duplicates$realId)
   }
 
   list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,
