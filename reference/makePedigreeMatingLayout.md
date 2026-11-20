@@ -20,7 +20,8 @@ makePedigreeMatingLayout(
   hints = NULL,
   maxNameChars = 15,
   conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73"),
-  conditionThresholds = NULL
+  conditionThresholds = NULL,
+  symbolSize = 1
 )
 ```
 
@@ -221,6 +222,23 @@ makePedigreeMatingLayout(
   and 1 stops. Stops on anything but a named character vector, on a
   cut-off it cannot read, on a name that is not a condition column of
   `ped`, and on a column with a cut-off that does not hold numbers.
+
+- symbolSize:
+
+  the size of the animals' symbols, as a multiple of the size drawn
+  before this argument (1, the default), as kinship2's and Pedixplorer's
+  `symbolsize` is: each animal's node and each of its repeat nodes gets
+  25 times it in `size`, rounded to a whole unit and at least 1, and the
+  mating points keep 6. The layout works out the lines' detours around
+  the symbols from it, and
+  [`drawPedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
+  moves an infertile animal's and a miscarriage's id down in proportion.
+  The drawing zooms to fit, so a larger symbol leaves less room between
+  the symbols rather than making a larger drawing: measured at 500
+  pixels, from 2 the symbols reach the lines and the mating points and
+  long ids reach the marks beside them, and at 3 the rectilinear layout
+  warns that it could not clear every symbol. Stops unless it is one
+  positive number.
 
 ## Value
 
