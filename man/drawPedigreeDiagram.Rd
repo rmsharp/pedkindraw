@@ -122,6 +122,12 @@ legend's \dQuote{Miscarriage}, \dQuote{Termination} and
 the canvas is 45 pixels taller for each. The drawing keeps the room a
 full-size symbol would have, so a long id at its edge is not cut off.
 
+Each animal is drawn at the size \code{\link{makePedigreeMatingLayout}}'s
+\code{symbolSize} gives it; an infertile animal's and a miscarriage's id
+moves down in proportion, and with symbols smaller than full size the
+drawing keeps the room a full-size symbol would have, so a long id at its
+edge is not cut off.
+
 A click does nothing unless \code{onClick} is given: a Shiny application
 can pass one to act on the clicked animal, which needs a live Shiny
 session, so a script leaves \code{onClick} out.
