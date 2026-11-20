@@ -114,6 +114,21 @@ why.
   and the drawing is 45 px taller. Pedixplorer marks an available animal
   with a green border; nprcgenekeepr has no such mark. Without the
   column every drawing is as before.
+- New:
+  [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  reads a column `carrier` (`TRUE`, `FALSE`, `NA`, 1, 0, or text such as
+  “TRUE”), for animals that have the genetic trait but are not expected
+  to show the disease: each carrier’s symbol is drawn with a black dot
+  at its centre, on top of its fill, its sections and the deceased
+  slash, and its hover text says “Carrier: Yes”, “No” or “Unknown”; any
+  other value stops, naming the column.
+  [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)’s
+  legend then has a row “Carrier”, a circle with the dot, and the
+  drawing is 45 px taller. A Pedixplorer object converted by
+  [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
+  keeps its carriers in that column. Pedixplorer draws a smaller dot;
+  nprcgenekeepr has no such mark. Without the column every drawing is as
+  before.
 - New: the legend’s four lines (the dashed line joining two places of
   the same animal, and the three twin lines) have no arrowheads, as the
   drawing’s own lines have none, and each line’s label sits on white.
