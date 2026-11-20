@@ -381,6 +381,20 @@ cases$markings <- function(case = "markings") {
     at <- match("Genotyped", rows$label)
     paste(rows$label[[at]], rows$shape[[at]], rows$borderWidth[[at]])
   })
+  ## Phase G13 (pedkindraw S55, R133 and R135): the carrier mark, a column
+  ## carrier (Pedixplorer's name), drawn as a black dot at the symbol's centre.
+  carried <- ped
+  carried$carrier <- fields$carrier
+  layCarried <- pedkindraw::makePedigreeMatingLayout(withGen(carried))
+  probe(case, "pedkindraw carrier : carrier field of A, B, C, D",
+        layCarried$nodes$carrier[match(ped$id, layCarried$nodes$id)])
+  probe(case, "pedkindraw carrier : legend row and the dot's handler", {
+    w <- pedkindraw::drawPedigreeDiagram(layCarried)
+    rows <- w$x$legend$nodes
+    at <- match("Carrier", rows$label)
+    paste(rows$label[[at]], rows$shape[[at]],
+          grepl("n.carrier === true", w$x$events$afterDrawing, fixed = TRUE))
+  })
   probe(case, "kinship2 pedigree() arguments",
         names(formals(kinship2::pedigree)))
 }
