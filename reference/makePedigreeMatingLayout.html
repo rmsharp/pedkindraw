@@ -71,7 +71,8 @@ separate function.</p>
 <span>  maxNameChars <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>  conditionColors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span>, <span class="st">"#56B4E9"</span>, <span class="st">"#009E73"</span><span class="op">)</span>,</span>
 <span>  conditionThresholds <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  symbolSize <span class="op">=</span> <span class="fl">1</span></span>
+<span>  symbolSize <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  textSize <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -299,6 +300,24 @@ lines and the mating points and long ids reach the marks beside them,
 and at 3 the rectilinear layout warns that it could not clear every
 symbol. Stops unless it is one positive number.</p></dd>
 
+
+<dt id="arg-textsize">textSize<a class="anchor" aria-label="anchor" href="#arg-textsize"></a></dt>
+<dd><p>the size of the animals' ids and names, as a multiple of
+the 14 pixels written before this argument (1, the default), as
+kinship2's and Pedixplorer's <code>cex</code> is: every node gets 14 times
+it in <code>font.size</code>, rounded to a whole pixel and at least 1, unless
+that is 14. The marks' own words (a proband's “P”, an ectopic
+pregnancy's “ECT”) and the twins' labels keep their sizes, and
+so do the symbols (<code>symbolSize</code> sets theirs; kinship2's and
+Pedixplorer's grow with <code>cex</code>). The layout's places and lines are
+the same at every text size, and <code><a href="drawPedigreeDiagram.html">drawPedigreeDiagram</a></code>
+keeps larger labels inside the drawing and an infertile animal's and a
+miscarriage's moved id clear of the drawing's bottom edge. The drawing
+zooms to fit, so larger text leaves less room between the ids: an id
+of 10 characters is 118 units wide at 1.4 and 165 at 2, and the
+animals in a row are 120 apart. Stops unless it is one positive
+number.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -332,7 +351,8 @@ other node, never <code>NA</code>; <code>miscarriage</code> is added when <code>
 has a <code>miscarriage</code> column: <code>"SAB"</code>, <code>"TOP"</code> or
 <code>"ECT"</code> for the node of such an animal and each of its
 repeat-appearance nodes, <code>""</code> for every other node, never
-<code>NA</code>), <code>edges</code>
+<code>NA</code>; <code>font.size</code> is added when <code>textSize</code> gives other
+than 14 pixels: that size, for every node), <code>edges</code>
 (<code>from</code>,
 <code>to</code>, <code>dashes</code>, <code>smooth.enabled</code>, <code>smooth.type</code>,
 <code>smooth.roundness</code>, <code>color</code>, <code>width</code>; the <code>color</code>

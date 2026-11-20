@@ -136,6 +136,13 @@ moves down in proportion, and with symbols smaller than full size the
 drawing keeps the room a full-size symbol would have, so a long id at
 its edge is not cut off.
 
+The ids and names are written at the size
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)'s
+`textSize` gives them; with text larger than before, the drawing keeps
+room for the outermost labels, so a long id at its edge is not cut off,
+and an infertile animal's and a miscarriage's moved id keep their room
+below their marks.
+
 A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,
 so a script leaves `onClick` out.

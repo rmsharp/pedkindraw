@@ -21,7 +21,8 @@ makePedigreeMatingLayout(
   maxNameChars = 15,
   conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73"),
   conditionThresholds = NULL,
-  symbolSize = 1
+  symbolSize = 1,
+  textSize = 1
 )
 ```
 
@@ -240,6 +241,24 @@ makePedigreeMatingLayout(
   warns that it could not clear every symbol. Stops unless it is one
   positive number.
 
+- textSize:
+
+  the size of the animals' ids and names, as a multiple of the 14 pixels
+  written before this argument (1, the default), as kinship2's and
+  Pedixplorer's `cex` is: every node gets 14 times it in `font.size`,
+  rounded to a whole pixel and at least 1, unless that is 14. The marks'
+  own words (a proband's “P”, an ectopic pregnancy's “ECT”) and the
+  twins' labels keep their sizes, and so do the symbols (`symbolSize`
+  sets theirs; kinship2's and Pedixplorer's grow with `cex`). The
+  layout's places and lines are the same at every text size, and
+  [`drawPedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
+  keeps larger labels inside the drawing and an infertile animal's and a
+  miscarriage's moved id clear of the drawing's bottom edge. The drawing
+  zooms to fit, so larger text leaves less room between the ids: an id
+  of 10 characters is 118 units wide at 1.4 and 165 at 2, and the
+  animals in a row are 120 apart. Stops unless it is one positive
+  number.
+
 ## Value
 
 A list with `nodes` (`id`, `label`, `shape`, `title`, `size`,
@@ -266,23 +285,24 @@ or `"infertile_choice_na"` for the node of such an animal and each of
 its repeat-appearance nodes, `""` for every other node, never `NA`;
 `miscarriage` is added when `ped` has a `miscarriage` column: `"SAB"`,
 `"TOP"` or `"ECT"` for the node of such an animal and each of its
-repeat-appearance nodes, `""` for every other node, never `NA`), `edges`
-(`from`, `to`, `dashes`, `smooth.enabled`, `smooth.type`,
-`smooth.roundness`, `color`, `width`; the `color` and `width` columns
-are always present once any mating unit exists: a consanguineous mating
-unit's (`kinship(sire, dam) > 0`) 2 spouse-to-union edges get
-`"#D55E00"`/`4`, an Okabe-Ito colorblind-safe vermillion in kinship2's
-doubled/thickened mate-line convention, and every other edge gets `NA`;
-`label` is added when `twinRelations` is supplied), and
-`duplicateToReal` (a named character vector, duplicate node id -\> real
-individual id). Under `edgeStyle = "rectilinear"`, an already-set edge
-`color` (e.g. the twin connector's or the consanguinity marker's) is
-preserved when the edge is kept as-is; a marked mate edge that gets
-replaced by a right-angle projection currently falls back to the generic
-routing color and width. Also `isolatedIds`, a character vector of ids
-suppressed from `nodes`/`edges` because they have no known parent, are
-never a parent, and are not connected by `twinRelations`; it is
-`character(0)` when nothing was suppressed. When every individual in
+repeat-appearance nodes, `""` for every other node, never `NA`;
+`font.size` is added when `textSize` gives other than 14 pixels: that
+size, for every node), `edges` (`from`, `to`, `dashes`,
+`smooth.enabled`, `smooth.type`, `smooth.roundness`, `color`, `width`;
+the `color` and `width` columns are always present once any mating unit
+exists: a consanguineous mating unit's (`kinship(sire, dam) > 0`) 2
+spouse-to-union edges get `"#D55E00"`/`4`, an Okabe-Ito colorblind-safe
+vermillion in kinship2's doubled/thickened mate-line convention, and
+every other edge gets `NA`; `label` is added when `twinRelations` is
+supplied), and `duplicateToReal` (a named character vector, duplicate
+node id -\> real individual id). Under `edgeStyle = "rectilinear"`, an
+already-set edge `color` (e.g. the twin connector's or the consanguinity
+marker's) is preserved when the edge is kept as-is; a marked mate edge
+that gets replaced by a right-angle projection currently falls back to
+the generic routing color and width. Also `isolatedIds`, a character
+vector of ids suppressed from `nodes`/`edges` because they have no known
+parent, are never a parent, and are not connected by `twinRelations`; it
+is `character(0)` when nothing was suppressed. When every individual in
 `ped` is isolated, `nodes`/`edges` are both 0-row and `duplicateToReal`
 is empty. Also `conditions`, a data frame with one row per drawn
 condition (`column`, `label` such as “Affected” or “Affected
