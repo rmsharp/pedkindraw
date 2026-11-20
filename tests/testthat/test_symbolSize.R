@@ -280,10 +280,10 @@ test_that(
   for (column in c("id", "sire", "dam")) {
     ped[[column]][ped[[column]] %in% "A"] <- "__size_l_A"
   }
-  expect_error(makePedigreeMatingLayout(ped), "'__misc_'/'__size_' prefix",
+  ## S61: __text_ (the drawing's text points) follows __size_ in the list.
+  expect_error(makePedigreeMatingLayout(ped), "'__misc_'/'__size_'",
                fixed = TRUE)
-  expect_identical(.reservedIdPrefixes[[length(.reservedIdPrefixes)]],
-                   "__size_")
+  expect_true("__size_" %in% .reservedIdPrefixes)
 })
 
 test_that(
