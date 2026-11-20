@@ -133,6 +133,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S57's entries were removed in S3-S58 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 59 Did
+**Deliverable:** Phase G13, mark 6 of 6: miscarriage (IN PROGRESS)
+**Started:** 2026-11-20 10:28 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G13: miscarriage mark (Recommended)"
+(orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (the column's name and values against the compared
+CSVs and `asPedFrame()`; Pedixplorer's elements for "SAB", "TOP" and "ECT", with a parent; looks that do not clash
+with the Unknown sex's triangle, the mark drawn in a colour of its own in both edge styles; room to the widget's
+box; legend rows; the hover line; `.markRoom()` and a text field).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 57 Handoff Evaluation (by Session 58)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(g) was the session's plan item for item, and its pointer that

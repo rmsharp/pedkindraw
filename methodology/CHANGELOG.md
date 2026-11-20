@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-20 · [BL-Phase G13] S59: Phase G13, mark 6 of 6, miscarriage (in progress)
+- **Change:** session claimed (Mark's pick "G13: miscarriage mark (Recommended)" at the orient picker): R133's order, the last of G13 (`docs/planning/gaps-and-shared-code-plan.md:374`), strict TDD; measure first (Learnings 17-21), a pre-RED picker, RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier 95d5b3b is HEAD; no merges; S58's receipt complete, its ratchet citation matching the results file); drift 91/21/0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S58's runs: site 44770828110 success, R-CMD-check 44770828371 in progress with its Ubuntu R-devel job failed installing dependencies (S4Vectors "lazy loading failed", before pedkindraw is checked).
+- **Commit/PR:** the claim commit · **Session:** S59 · **Verified:** pending (close-out).
+
 ### 2026-11-20 · [BL-Phase G13] S58 push 1: `master` to GitHub at close-out 2 (S58's claim, G13 mark 5, close-out 1-2)
 - **Change:** `git push origin master` (`587948b..` close-out 2), Mark's pick "Push at close (Recommended)" (asked in S58, as no written rule existed; now a memory); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S57's push runs, finished before S58's Orient: site `44690103005` `success` (pages `44690413038` `success`); CI `44690103020` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors 0.50.3 "lazy loading failed" while installing dependencies, before pedkindraw is checked), the other four jobs `success`.
 - **Commit/PR:** none (push) · **Session:** S58 · **Verified:** the push's output; S57's runs by `gh run view`.
