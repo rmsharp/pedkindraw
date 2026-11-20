@@ -23,7 +23,11 @@
 ## pedkindraw's own, R/markColumns.R), and S57's "Evaluated" row, the 45 px
 ## it adds, the star's handler and the points that keep the stars inside the
 ## drawing (plan Phase G13, R137: evaluatedRow, hasEvaluated, and the help's
-## paragraph on it), each a DIVERGENCE.md row until nprcgenekeepr has it;
+## paragraph on it), and S58's "Infertile" and "No offspring" rows, the 45 px
+## each adds, the bars' handler, the ids moved below the bars and the points
+## that keep them inside the drawing (plan Phase G13, R138: infertileRow,
+## noOffspringRow, hasInfertile, hasNoOffspring, and the help's paragraph on
+## them), each a DIVERGENCE.md row until nprcgenekeepr has it;
 ## otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
@@ -47,6 +51,7 @@
 #' genotyped, a \dQuote{Carrier} row when an animal is a carrier,
 #' \dQuote{Proband} and \dQuote{Consultand} rows when an animal is one,
 #' an \dQuote{Evaluated} row when an animal is evaluated,
+#' \dQuote{Infertile} and \dQuote{No offspring} rows when an animal is one,
 #' \dQuote{Deceased}, and the dashed
 #' repeat-appearance and twin lines), each multi-condition symbol split into
 #' its colored sections, the slash through each deceased animal's symbol, a
@@ -103,6 +108,15 @@
 #' canvas is 45 pixels taller for that row. The drawing takes in each
 #' `*`, so one at its right edge is not cut off.
 #'
+#' An animal whose \code{fertility} column says it is infertile (see
+#' \code{\link{makePedigreeMatingLayout}}) has a black line down from the
+#' bottom of its symbol and two bars across it, and one with no offspring by
+#' choice or for an unknown reason a line and one bar, as in Pedixplorer; its
+#' id moves down below them. The legend's \dQuote{Infertile} and
+#' \dQuote{No offspring} rows, each its mark, then say what they are, and
+#' the canvas is 45 pixels taller for each. The drawing takes in each moved
+#' id, so one in its bottom row is not cut off.
+#'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
 #' session, so a script leaves \code{onClick} out.
@@ -119,7 +133,8 @@
 #'   affected condition past the first (at most four are drawn), for the
 #'   \dQuote{Affected status unknown} row, for the \dQuote{Genotyped} row,
 #'   for the \dQuote{Carrier} row, for each of the \dQuote{Proband} and
-#'   \dQuote{Consultand} rows, and for the \dQuote{Evaluated} row.
+#'   \dQuote{Consultand} rows, for the \dQuote{Evaluated} row, and for
+#'   each of the \dQuote{Infertile} and \dQuote{No offspring} rows.
 #' @seealso \code{\link{makePedigreeMatingLayout}}
 #' @examples
 #' ## Four animals: A and B are the parents of C and D; A has died, and C
@@ -295,12 +310,28 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   hasEvaluated <- isTRUE(any(layout$nodes[["evaluated"]]))
   evaluatedRow <- .markLegendRow("Evaluated", .evaluatedLegendImage(),
                                  hasEvaluated)
+  # pedkindraw Phase G13 (R133, R138): an infertile animal's symbol has a
+  # line and two bars under it, one with no offspring by choice or for an
+  # unknown reason a line and one bar (.infertileBarsHandler()), its id moved
+  # below them; then an "Infertile" and a "No offspring" row, each a picture
+  # of its mark, come before "Deceased"; invisible points keep each moved id
+  # inside the drawing (.infertileRoom()).
+  hasInfertile <- isTRUE(any(layout$nodes[["fertility"]] == "infertile"))
+  infertileRow <- .markLegendRow("Infertile", .infertileLegendImage(TRUE),
+                                 hasInfertile)
+  hasNoOffspring <- isTRUE(any(layout$nodes[["fertility"]] ==
+                                 "infertile_choice_na"))
+  noOffspringRow <- .markLegendRow("No offspring",
+                                   .infertileLegendImage(FALSE),
+                                   hasNoOffspring)
   hasArrow <- hasProband || hasConsultand
   nodes <- if (hasArrow) .probandArrowRoom(layout$nodes) else layout$nodes
   if (hasEvaluated) nodes <- .evaluatedStarRoom(nodes)
+  hasBars <- hasInfertile || hasNoOffspring
+  if (hasBars) nodes <- .infertileRoom(nodes)
   legendNodes <- rbind(sexRows, conditionRows, unknownRow, genotypedRow,
                        carrierRow, probandRow, consultandRow, evaluatedRow,
-                       deceasedRow)
+                       infertileRow, noOffspringRow, deceasedRow)
   legendNodes$size <- 14L
   if (hasGenotyped) {
     legendNodes$borderWidth <- ifelse(legendNodes$label %in% genotypedRow$label,
@@ -314,7 +345,8 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # pedkindraw Phase G2: the unknown row adds 45 px as one more condition row
   # does (with no condition column the legend still has its one row).
   rowsForHeight <- max(nConditions, 1L) + hasUnknown + hasGenotyped +
-    hasCarrier + hasProband + hasConsultand + hasEvaluated
+    hasCarrier + hasProband + hasConsultand + hasEvaluated + hasInfertile +
+    hasNoOffspring
   visNetwork::visNetwork(nodes, layout$edges,
                          height = sprintf("%dpx",
                                           .diagramHeight(rowsForHeight))) |>
@@ -329,7 +361,8 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
       # S1029: the sections of each multi-condition symbol, then
       # S1028's slash through each deceased animal's symbol on top.
       afterDrawing = .diagramAfterDrawing(nConditions >= 2L, sectionColors,
-                                          hasCarrier, hasArrow, hasEvaluated)
+                                          hasCarrier, hasArrow, hasEvaluated,
+                                          hasBars)
     ) |>
     # Image export (issue #131): visExport() bundles its own JS deps
     # (FileSaver/Blob/canvas-toBlob/html2canvas/jsPDF) as htmlwidget

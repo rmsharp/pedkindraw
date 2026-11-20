@@ -15,7 +15,9 @@
 ## pedkindraw S56 (R136; the same row) an argument arrows, which runs
 ## .probandArrowHandler() (pedkindraw's own, R/probandMark.R) after the dot;
 ## pedkindraw S57 (R137; the same row) an argument evaluated, which runs
-## .evaluatedStarHandler() (pedkindraw's own, R/evaluatedMark.R) last.
+## .evaluatedStarHandler() (pedkindraw's own, R/evaluatedMark.R) after the
+## arrows; pedkindraw S58 (R138; the same row) an argument infertile, which
+## runs .infertileBarsHandler() (pedkindraw's own, R/infertileMark.R) last.
 ## Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
@@ -265,14 +267,18 @@
 #'   then runs after the dot; it is left out otherwise.
 #' @param evaluated \code{TRUE} when some node is an evaluated animal's
 #'   (pedkindraw S57, plan Phase G13, R137): \code{.evaluatedStarHandler()}
-#'   then runs last; it is left out otherwise.
+#'   then runs after the arrows; it is left out otherwise.
+#' @param infertile \code{TRUE} when some node is an infertile animal's or
+#'   one with no offspring by choice or for an unknown reason (pedkindraw
+#'   S58, plan Phase G13, R138): \code{.infertileBarsHandler()} then runs
+#'   last; it is left out otherwise.
 #' @return A JavaScript function, as a character string.
 #' @noRd
 .diagramAfterDrawing <- function(sections = FALSE,
                                  colors = .conditionColors,
                                  carrier = FALSE, arrows = FALSE,
-                                 evaluated = FALSE) {
-  if (!sections && !carrier && !arrows && !evaluated) {
+                                 evaluated = FALSE, infertile = FALSE) {
+  if (!sections && !carrier && !arrows && !evaluated && !infertile) {
     return(.deceasedSlashHandler())
   }
   paste0(
@@ -289,6 +295,9 @@
     },
     if (evaluated) {
       paste0("  (", .evaluatedStarHandler(), ").call(this, ctx);\n")
+    },
+    if (infertile) {
+      paste0("  (", .infertileBarsHandler(), ").call(this, ctx);\n")
     },
     "}"
   )

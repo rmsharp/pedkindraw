@@ -13,7 +13,9 @@
 ## carrier, the proband and the consultand. S57's REFACTOR added .markField()
 ## and .markRoom(), the invisible points that keep a mark drawn outside a
 ## symbol inside the drawing, which .probandArrowRoom() (R/probandMark.R) and
-## .evaluatedStarRoom() (R/evaluatedMark.R) had each written out.
+## .evaluatedStarRoom() (R/evaluatedMark.R) had each written out. S58 (R138):
+## .markRoom() empties a point's fertility field, the infertile mark's, which
+## is text, not TRUE or FALSE.
 
 #' Read a mark's column of a pedigree
 #'
@@ -137,7 +139,8 @@
 #' could fall outside the canvas at the drawing's edge. This adds one point
 #' per marked node, invisible as the layout's routing points are (size 0, a
 #' transparent fill and outline, no label, every logical field
-#' \code{FALSE}), so vis.js's fit takes the marks in. S57's REFACTOR:
+#' \code{FALSE} and a \code{fertility} field \code{""}, so no mark is
+#' drawn there), so vis.js's fit takes the marks in. S57's REFACTOR:
 #' \code{.probandArrowRoom()} and \code{.evaluatedStarRoom()} had the same
 #' lines.
 #' @param nodes the nodes to draw.
@@ -173,6 +176,7 @@
   room$color.border <- "rgba(0,0,0,0)"
   if ("affectedSections" %in% names(room)) room$affectedSections <- ""
   if ("borderWidth" %in% names(room)) room$borderWidth <- 1L
+  if ("fertility" %in% names(room)) room$fertility <- ""
   out <- rbind(nodes, room)
   rownames(out) <- NULL
   out

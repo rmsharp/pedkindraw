@@ -71,7 +71,12 @@
 ## reads a column evaluated the same way, adds a hover line for it and gives
 ## each node an evaluated field; .reservedIdPrefixes gains __eval_, the
 ## prefix of the points drawPedigreeDiagram() adds for it; and its help (the
-## same rows).
+## same rows). Plan Phase G13's infertile (pedkindraw S58, R133 and R138): it
+## reads a column fertility, Pedixplorer's three values
+## (.readFertility(), pedkindraw's own, R/infertileMark.R), adds a hover line
+## for it and gives each node a fertility field (.fertilityNodes());
+## .reservedIdPrefixes gains __fert_, the prefix of the points
+## drawPedigreeDiagram() adds for it; and its help (the same rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -527,9 +532,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 ## keep a proband's or a consultand's arrow inside the drawing
 ## (.probandArrowRoom()). pedkindraw S57 (plan Phase G13, R137): __eval_, the
 ## prefix of the points that keep an evaluated animal's star inside it
-## (.evaluatedStarRoom()).
+## (.evaluatedStarRoom()). pedkindraw S58 (plan Phase G13, R138): __fert_, the
+## prefix of the points that keep an infertile animal's moved id inside it
+## (.infertileRoom()).
 .reservedIdPrefixes <- c("__union_", "__dup_", "__drop_", "__bar_", "__proj_",
-                         "__jog_", "__mark_", "__eval_")
+                         "__jog_", "__mark_", "__eval_", "__fert_")
 .reservedIdPattern <- paste0("^", .reservedIdPrefixes, collapse = "|")
 
 #' Transform a pedigree into a mating-unit forest (Option 2 layout, D1/D2)
@@ -1813,7 +1820,21 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   right of the upper-right corner of its symbol (see \code{evaluated} in
 #'   the returned \code{nodes}), and its hover text says
 #'   \dQuote{Evaluated: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
-#'   consultand line.
+#'   consultand line. An optional \code{fertility} column, in Pedixplorer's
+#'   words and values, marks the animals that are infertile
+#'   (\code{"infertile"}, also \code{"steril"}, \code{FALSE} or 0) and those
+#'   with no offspring by choice or for an unknown reason
+#'   (\code{"infertile_choice_na"}, also \code{"infertile_choice"} or
+#'   \code{"infertile_na"}); \code{"fertile"}, \code{TRUE} or 1 marks
+#'   nothing, \code{NA} is not recorded, text is read in any case, and any
+#'   other value stops, naming the column, before any animal is left out. An
+#'   infertile animal is drawn with a line down from its symbol and two bars,
+#'   one with no offspring by choice or for an unknown reason with a line and
+#'   one bar, its id moved below them (see \code{fertility} in the returned
+#'   \code{nodes}); an animal with offspring is marked as recorded. The hover
+#'   text says \dQuote{Fertility: Fertile}, \dQuote{Infertile},
+#'   \dQuote{No offspring by choice or for an unknown reason} or
+#'   \dQuote{Unknown}, after the evaluated line.
 #' @param edgeStyle one of \code{"rectilinear"} (default), which routes
 #'   mate-line and sibship-bar edges through invisible waypoint nodes so
 #'   they render as a strict right angle, kinship2-style, or
@@ -1941,7 +1962,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   \code{carrier} column: \code{TRUE} for the node of a carrier and each
 #'   of its repeat-appearance nodes, \code{FALSE} for every other node, never
 #'   \code{NA}; \code{proband}, \code{consultand} and \code{evaluated}
-#'   likewise, each added when \code{ped} has that column), \code{edges}
+#'   likewise, each added when \code{ped} has that column; \code{fertility}
+#'   is added when \code{ped} has a \code{fertility} column:
+#'   \code{"infertile"} or \code{"infertile_choice_na"} for the node of such
+#'   an animal and each of its repeat-appearance nodes, \code{""} for every
+#'   other node, never \code{NA}), \code{edges}
 #'   (\code{from},
 #'   \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 #'   \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
@@ -2087,6 +2112,9 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # pedkindraw Phase G13 (R133, R137): the evaluated column, read the same
   # way; an evaluated animal's symbol has a star at its upper right.
   evaluated <- .readMarkColumn(ped, "evaluated", "makePedigreeMatingLayout")
+  # pedkindraw Phase G13 (R133, R138): the fertility column, Pedixplorer's
+  # three values; an infertile animal has a line and bars under its symbol.
+  fertility <- .readFertility(ped, "makePedigreeMatingLayout")
 
   # A fully-isolated individual (no known parent, never a parent, not
   # twinRelations-connected) is suppressed from the diagram, matching
@@ -2130,6 +2158,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     if (!is.null(proband)) emptyNodes$proband <- logical() # Phase G13
     if (!is.null(consultand)) emptyNodes$consultand <- logical() # Phase G13
     if (!is.null(evaluated)) emptyNodes$evaluated <- logical() # Phase G13
+    if (!is.null(fertility)) emptyNodes$fertility <- character() # Phase G13
     emptyEdges <- data.frame(from = character(), to = character(),
                               dashes = logical(), smooth.enabled = logical(),
                               smooth.type = character(),
@@ -2309,6 +2338,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     if (!is.null(evaluated)) { # pedkindraw Phase G13
       title <- paste0(title, sprintf("<br><b>Evaluated:</b> %s",
                                      .affectedLabel(evaluated[ids])))
+    }
+    if (!is.null(fertility)) { # pedkindraw Phase G13
+      title <- paste0(title, sprintf("<br><b>Fertility:</b> %s",
+                                     .fertilityLabel(fertility[ids])))
     }
     if (hasName) {
       title <- paste0(title, .nameTooltipLine(nameOf[ids]))
@@ -2568,6 +2601,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   if (!is.null(evaluated)) { # pedkindraw Phase G13
     nodes$evaluated <- .markedNodes(nodes$id, evaluated, dupIds,
                                     duplicates$realId)
+  }
+  if (!is.null(fertility)) { # pedkindraw Phase G13
+    nodes$fertility <- .fertilityNodes(nodes$id, fertility, dupIds,
+                                       duplicates$realId)
   }
 
   list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,
