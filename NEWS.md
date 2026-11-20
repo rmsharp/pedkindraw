@@ -122,6 +122,26 @@ code, `DIVERGENCE.md` in the repository says how and why.
   "\*" just outside the corner, where it meets a deceased animal's slash,
   reads `NA` as `FALSE` and has no legend row; nprcgenekeepr has no such
   mark. Without the column every drawing is as before.
+* New: `makePedigreeMatingLayout()` reads a column `fertility` in
+  Pedixplorer's words and values: "infertile" (also "steril", `FALSE` or 0),
+  "infertile_choice_na" for an animal with no offspring by choice or for an
+  unknown reason (also "infertile_choice" or "infertile_na"), and "fertile"
+  (also `TRUE` or 1), in any case, `NA` where it is not recorded. An
+  infertile animal is drawn with a black line down from its symbol and two
+  bars, as in Pedixplorer, and one with no offspring by choice or for an
+  unknown reason with a line and one bar; the animal's id moves down below
+  the bars. Its hover text says "Fertility: Fertile", "Infertile", "No
+  offspring by choice or for an unknown reason" or "Unknown"; any other value
+  stops, naming the column (Pedixplorer reads such a value as fertile). An
+  animal with offspring is marked as recorded, since a colony animal can be
+  sterilised after it has bred (Pedixplorer refuses it).
+  `drawPedigreeDiagram()`'s legend then has a row "Infertile" and a row "No
+  offspring", each its mark, 45 px each; the view takes in each moved id, so
+  one at the bottom edge is not cut off. An id starting `__fert_` is now
+  refused, as the other reserved prefixes are. A Pedixplorer object converted
+  by `asPedFrame()` keeps the column and is drawn with its marks.
+  nprcgenekeepr has no such mark. Without the column every drawing is as
+  before.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's

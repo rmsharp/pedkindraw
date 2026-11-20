@@ -432,6 +432,24 @@ cases$markings <- function(case = "markings") {
           paste(w$x$nodes$id[startsWith(w$x$nodes$id, "__eval_")],
                 collapse = " "))
   })
+  ## Phase G13 (pedkindraw S58, R133 and R138): the infertile mark, a column
+  ## fertility (Pedixplorer's name and values), drawn as a line down from the
+  ## symbol and two bars (one for no offspring by choice), the id moved below.
+  barred <- ped
+  barred$fertility <- fields$fertility
+  layBarred <- pedkindraw::makePedigreeMatingLayout(withGen(barred))
+  probe(case, "pedkindraw fertility : fertility field of A, B, C, D",
+        layBarred$nodes$fertility[match(ped$id, layBarred$nodes$id)])
+  probe(case, "pedkindraw fertility : legend row, the bars' handler, points", {
+    w <- pedkindraw::drawPedigreeDiagram(layBarred)
+    rows <- w$x$legend$nodes
+    at <- match("Infertile", rows$label)
+    paste(rows$label[[at]], rows$shape[[at]],
+          grepl("n.fertility === 'infertile'", w$x$events$afterDrawing,
+                fixed = TRUE),
+          paste(w$x$nodes$id[startsWith(w$x$nodes$id, "__fert_")],
+                collapse = " "))
+  })
   probe(case, "kinship2 pedigree() arguments",
         names(formals(kinship2::pedigree)))
 }
