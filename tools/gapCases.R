@@ -415,6 +415,23 @@ cases$markings <- function(case = "markings") {
           paste(w$x$nodes$id[startsWith(w$x$nodes$id, "__mark_")],
                 collapse = " "))
   })
+  ## Phase G13 (pedkindraw S57, R133 and R137): the evaluated mark, a column
+  ## evaluated (Pedixplorer's name), drawn as a black star to the right of
+  ## the upper-right corner of the symbol.
+  seen <- ped
+  seen$evaluated <- fields$evaluated
+  laySeen <- pedkindraw::makePedigreeMatingLayout(withGen(seen))
+  probe(case, "pedkindraw evaluated : evaluated field of A, B, C, D",
+        laySeen$nodes$evaluated[match(ped$id, laySeen$nodes$id)])
+  probe(case, "pedkindraw evaluated : legend row, the star's handler, points", {
+    w <- pedkindraw::drawPedigreeDiagram(laySeen)
+    rows <- w$x$legend$nodes
+    at <- match("Evaluated", rows$label)
+    paste(rows$label[[at]], rows$shape[[at]],
+          grepl("n.evaluated === true", w$x$events$afterDrawing, fixed = TRUE),
+          paste(w$x$nodes$id[startsWith(w$x$nodes$id, "__eval_")],
+                collapse = " "))
+  })
   probe(case, "kinship2 pedigree() arguments",
         names(formals(kinship2::pedigree)))
 }

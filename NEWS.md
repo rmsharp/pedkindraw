@@ -109,6 +109,19 @@ code, `DIVERGENCE.md` in the repository says how and why.
   warns of a proband who is not affected, which pedkindraw does not check;
   nprcgenekeepr has no such mark. Without the columns every drawing is as
   before.
+* New: `makePedigreeMatingLayout()` reads a column `evaluated` (`TRUE`,
+  `FALSE`, `NA`, 1, 0, or text such as "TRUE"), for animals with a documented
+  evaluation: each is drawn with a black "\*" to the right of the upper-right
+  corner of its symbol, clear of the deceased slash and the lines, and its
+  hover text says "Evaluated: Yes", "No" or "Unknown"; any other value stops,
+  naming the column. `drawPedigreeDiagram()`'s legend then has a row
+  "Evaluated", the "\*", and the drawing is 45 px taller; the view takes in
+  each "\*", so one at the right edge is not cut off. An id starting
+  `__eval_` is now refused, as the other reserved prefixes are. A Pedixplorer
+  object converted by `asPedFrame()` keeps the column. Pedixplorer draws its
+  "\*" just outside the corner, where it meets a deceased animal's slash,
+  reads `NA` as `FALSE` and has no legend row; nprcgenekeepr has no such
+  mark. Without the column every drawing is as before.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's
