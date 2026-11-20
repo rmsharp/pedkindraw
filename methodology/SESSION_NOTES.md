@@ -12,27 +12,29 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17f2 DONE (S33-S41); the gap
 phases G1-G17 run before 17g (R97, `docs/planning/gaps-and-shared-code-plan.md` section 5.1). G1-G12 DONE (S42-S53).
 **G13 under way**: Pedixplorer's marks, one kind a session (R133: genotyped; carrier; proband with consultand;
-evaluated; infertile; miscarriage). **Marks 1-3 of 6 DONE**: genotyped (S54, R134: a 4 px outline), carrier (S55,
-R135: a black dot) and **proband with consultand (S56, R136)**: `makePedigreeMatingLayout()` reads the columns
-`proband` and `consultand` with R134's values and stop, and stops on an animal marked both (as Pedixplorer does);
-the nodes get `proband` and `consultand` fields (each only with its column); the drawing draws a black arrow rising
-at 30 degrees to just outside the lower-left corner of each such symbol, "P" left of a proband's tail
-(`.probandArrowHandler()`, passed in only when some node is marked, `arrows = TRUE`), adds an invisible size-0
-point `__mark_<id>` per marked node so vis.js's fit takes the arrows in (`.probandArrowRoom()`; `__mark_` is now a
-reserved prefix), and the legend gains rows "Proband" and "Consultand" (the arrow pictures), 45 px each. The hover
-text says "Proband:" and "Consultand:" "Yes/No/Unknown"; `NA` is unmarked. The REFACTOR added `.markLegendRow()`
-(`R/markColumns.R`), the legend's picture row for any mark a script draws.
-**Next: G13's mark 4, evaluated** (`docs/planning/gaps-and-shared-code-plan.md:374`, the G13 row; R133 at
-`docs/planning/standalone-pedigree-package-plan.md:279`, R136 at `:282`). Measured S54 from Pedixplorer 1.8.0's
-`ped_to_plotdf()` results: evaluated is "*" at the upper right of the symbol. pedkindraw has nothing for it: a "*"
-is a script, as the slash, the dot and the arrow are, added only when some node has the mark (dragon 44).
+evaluated; infertile; miscarriage). **Marks 1-4 of 6 DONE**: genotyped (S54, R134: a 4 px outline), carrier (S55,
+R135: a black dot), proband with consultand (S56, R136: an arrow at the lower left) and **evaluated (S57, R137)**:
+`makePedigreeMatingLayout()` reads a column `evaluated` with R134's values and stop; the nodes get an `evaluated`
+field only with the column; the drawing strokes a black star (three strokes through one centre) to the right of the
+upper-right corner of each such symbol (`.evaluatedStarHandler()`, passed in only when some node is evaluated,
+`evaluated = TRUE`, run last), adds an invisible size-0 point `__eval_<id>` per evaluated node so vis.js's fit takes
+the stars in (`__eval_` is now a reserved prefix), and the legend gains a row "Evaluated" (the star alone), 45 px.
+The hover text says "Evaluated:" "Yes/No/Unknown"; `NA` is unmarked. The REFACTOR built the invisible points of the
+arrows and the star with `.markRoom()` and `.markField()` (`R/markColumns.R`).
+**Next: G13's mark 5, infertile** (`docs/planning/gaps-and-shared-code-plan.md:374`, the G13 row; R133 at
+`docs/planning/standalone-pedigree-package-plan.md:280`, R137 at `:284`). R133: Pedixplorer draws an infertile animal
+with a line down from the symbol and bars, "where pedkindraw writes the id, so they need another place". **The column
+is not true/false**: Pedixplorer's `fertility` is a factor of three levels (`fertility_to_factor()`'s help, read
+S57): "fertile" (also `TRUE`, 1, `NA`), "infertile" (also `FALSE`, 0, "steril"), "infertile_choice_na" (also
+"infertile_choice", "infertile_na"). Its name, its values and whether the two kinds look different are picker
+questions.
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker:** G13's evaluated mark (recommended: R133's order). Also READY: the narrow legend
+**The orient picker:** G13's infertile mark (recommended: R133's order). Also READY: the narrow legend
 (`methodology/BACKLOG.md:55`), the drawing vignette's measured trait (`:62`), the `smallPed` fixture (`:76`),
 rewording `DIVERGENCE.md`'s older rows (`:37`), tests for full coverage (`:82`), and the "Ready, small" items (name
-all seven in the last option, as S48-S56 did). NEEDS DECISION: a converted Pedixplorer object's `avail` (`:68`).
-**Session boundary:** one kind of mark (evaluated). Close out at a clean phase boundary.
-**Priority:** HIGH (G13's last three marks, G14-G17 and 17g follow).
+all seven in the last option, as S48-S57 did). NEEDS DECISION: a converted Pedixplorer object's `avail` (`:68`).
+**Session boundary:** one kind of mark (infertile). Close out at a clean phase boundary.
+**Priority:** HIGH (G13's last two marks, G14-G17 and 17g follow).
 
 ### What You Must Do
 1. Orient; drift tool (expect **91 functions, 21 differ, 0 without a row**: G13 changes only functions that
@@ -40,89 +42,92 @@ all seven in the last option, as S48-S56 did). NEEDS DECISION: a converted Pedix
    on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from
    nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
    (`4283e3502`, `a85311021`, `392dd347e`, `471589138`). nprcgenekeepr was at `3e06730c5`, tree clean, through all
-   of S56.
-2. Check S56's push: both workflows run (`R/`, `man/`, `tests/`, `NEWS.md`, `tools/` changed). S55's run
-   `44657424903` failed on Ubuntu R-devel only (Bioconductor's S4Vectors 0.50.3 not building, before pedkindraw
-   was checked), the other four jobs `success`; expect the same. Any other failure is real. The site build must
-   succeed.
-3. **Evaluated, measure before the pre-RED picker (Learnings 17-21):** (a) the column: Pedixplorer's name is
-   `evaluated` ("documented evaluation available", `Ped-class`); read the 13 compared CSVs' first lines (dragon 40;
-   S56 found neither proband nor consultand); `asPedFrame()` keeps it when it holds anything besides `FALSE`
-   (`R/asPedFrame.R:315`, `.asPedFramePxFields`). (b) Pedixplorer's help and `ped_to_plotdf()` results: the "*"'s
-   place against the box (S56's `px_proband.R` prints every element a column adds; its box is 0.1565 wide and
-   0.0616 tall, x0/y0 the top centre), its size (`cex`), `NA`, 1/0 and "TRUE" (Pedixplorer warned "NAs introduced
-   by coercion" for text proband), with proband/consultand on the same animal. (c) Looks in headless Chrome at
-   500 px (S56's `looks.R`, with the picture wait): **the upper right is where the deceased slash overhangs** (its
-   top end at 0.86 of the size per axis times the shape's outline factor, `R/deceasedSlash.R:32`), and where a
-   mating line from the right side and a sibship drop meet some symbols; count pixels drawn over ink with the
-   alpha (dragon 45) and locate any (dragon 47); 1- and 10-character ids; a triangle and a star. (d) **The canvas
-   edge**: a "*" outside the node's box at the top row or the rightmost animal can be cut off (dragon 46); measure
-   it as S56's `clip.R` did, and reuse or generalize `.probandArrowRoom()` (`R/probandMark.R:113`) for another
-   corner. (e) The legend row via `.markLegendRow()` (`R/markColumns.R:109`) and its 45 px. (f) The hover line.
-   (g) `.diagramAfterDrawing()` (`R/affectedConditions.R:266`) would gain a third mark argument; with three, a
-   REFACTOR to a list of handlers is the candidate (dragon 44's suggestion), but tests call `carrier = TRUE` and
-   `arrows = TRUE` by name.
+   of S57.
+2. Check S57's push: both workflows run (`R/`, `man/`, `tests/`, `NEWS.md`, `tools/` changed). S56's run
+   `44668565648` failed on Ubuntu R-devel only (Bioconductor's S4Vectors 0.50.3 "lazy loading failed", before
+   pedkindraw was checked), the other four jobs `success`; expect the same. Any other failure is real. The site
+   build must succeed.
+3. **Infertile, measure before the pre-RED picker (Learnings 17-21):** (a) the column: Pedixplorer's name is
+   `fertility` (its `Pedigree()` also takes "sterilisation" and "steril", `Pedigree-class`'s help); the 13 compared
+   CSVs' first lines (dragon 40; none held S54-S57's columns); `asPedFrame()` keeps `fertility` when it holds
+   anything besides "fertile" (`R/asPedFrame.R:315`); `.readMarkColumn()` (`R/markColumns.R:34`) reads only
+   true/false, so a three-level column needs a reader of its own, or a logical column `infertile` (a picker
+   option, with counts: what each reading does with `NA`, 0, "steril"). (b) Pedixplorer's help and
+   `ped_to_plotdf()` results for "infertile" and "infertile_choice_na" (S54 saw "three segments under the
+   symbol"): each element's place against the box (S57's `px_evaluated.R` prints every element a column adds), on
+   an animal with and without offspring (does Pedixplorer warn on an infertile parent?), with the other marks.
+   (c) **The id label is below the symbol**, so the bars need another place: measure candidates (beside the
+   symbol, the label moved down, above) in headless Chrome at 500 px with S57's red-mark counter
+   (`looks2.R`: the mark drawn red, red pixels over ink and the gap to the nearest ink, dragon 49), in both edge
+   styles (dragon 50: the direct style's lines arrive from above), with 1- and 10-character ids, deceased and
+   twins, and the sibship drop and bar of a child below. (d) The canvas edge (dragon 46): a mark below the label
+   at the bottom row can be cut; `.markRoom()` (`R/markColumns.R:154`) builds the points, under a new reserved
+   prefix (dragon 51). (e) The legend row via `.markLegendRow()` (`R/markColumns.R:112`) and its 45 px; two kinds
+   may need two rows. (f) The hover line. (g) `.diagramAfterDrawing()` (`R/affectedConditions.R:271`) would gain a
+   fifth argument; a list of handlers is the REFACTOR candidate (dragon 44), but tests call `carrier = TRUE`,
+   `arrows = TRUE` and `evaluated = TRUE` by name.
 4. RED, GREEN, REFACTOR by the gates. DONE (plan section 5.1, "Every G phase", `:339`): suite 0 failed, WARN 0; lint
    0; roxygen stable; covr on every new statement; `R CMD check --as-cran` R16's NOTE only; a NEWS bullet; the
    contract's section 4; `DIVERGENCE.md` sentences in copied code and the drift tool exit 0; fidelity 600 of 600.
 
 ### Gotchas
-- **The shared pixel reader cannot tell black from nothing** (dragon 45, new): `read()` drops the alpha and an empty
-  canvas spot reads `0,0,0`, the same as a black mark. S56's draft passed "no arrow" by accident. Count near-black
-  pixels with the alpha in a small box (`tests/testthat/test_probandMark.R:521`, the `dark()` helper in its JS).
-- **vis.js fits its view to the nodes only** (dragon 46, new): a mark drawn outside a node's box is cut off at the
-  edge of a small drawing (the proband's "P" 10 px outside a six-animal drawing); `.probandArrowRoom()` adds an
-  invisible size-0 node at the mark's far end. An evaluated "*" at the upper right may need the same at the top or
-  right edge.
-- **Locate a changed pixel before calling it an overlap** (dragon 47, new): 6-14 "overlap" pixels on deceased
-  animals were the slash's anti-aliasing changing between page loads, not the arrow.
-- **Mutation-check a browser test**: S56's `mutate.R` replaced `.probandArrowRoom()` and `.probandArrowHandler()`
-  in the namespace (`assignInNamespace()`) and the browser test failed 2 and 8 expectations; do the same for the
-  next mark's reading.
-- **RED needs every test failing**: S56's "as before without the mark" test passed at HEAD until it also required
-  the new fields to be all `FALSE`; run the draft at HEAD before the gate.
-- **Lint on new code**: `scalar_in_linter` flags `x %in% TRUE` (write `!is.na(x) & x`), `implicit_integer_linter`
-  flags `30` and `180` (write `30.0`); a test of `rbind()`-ed nodes meets new row names and the direct style's
-  integer `y` turned double (`expect_equal()` after `rownames(x) <- NULL`).
-- **`methodology/CHANGELOG.md` is at 196,371 B of its 196,608 B budget** after S56's entries: S57's will cross it.
-  Run `python3 methodology/methodology_trim.py --file methodology/CHANGELOG.md --check` at close-out and archive as
-  it says, in a commit of its own (`HANDOFFS.md` is at 175,386 B).
-- **The NSGC nomenclature paper** (Bennett et al. 1995, PMC1801187) sits behind a bot check for the web-fetch
-  agent; S56 stated only what Pedixplorer was measured to do.
+- **roxygen's markdown reads two asterisks in one paragraph as emphasis** (dragon 48, new): S57's
+  `\dQuote{*}` became `\dQuote{\emph{}` in the Rd, which no check reads; write a symbol as a code span, and after
+  every roxygen run that adds one, `grep -n '\\emph{' man/<page>.Rd` and read the page with `R CMD Rd2txt`. In
+  `NEWS.md` write `\*`. Read the prototype's Rd before RED, not only its check.
+- **Measure overlap with the mark drawn red** (dragon 49, new): a whole-box difference between page loads counted
+  the deceased slash's anti-aliasing as overlap; S57's `looks2.R` draws the mark `#FF0000` and counts red pixels
+  over the unmarked drawing's ink, with the gap to the nearest ink.
+- **The direct style's lines come from above** (dragon 50, new) and a mark's invisible points need a **reserved
+  prefix of their own** (dragon 51, new): `__mark_` (arrows) and `__eval_` (star) are taken.
+- **`methodology_trim.py` refuses to archive while commits since the ledger's frontier are unrecorded**: write the
+  session's `CHANGELOG.md` entries in a commit first, then trim in a commit of its own (`--cut <day>` for a clean
+  day seam). S57 archived 69 records; `CHANGELOG.md` is 114,810 B before S57's close-out 2 entry, `HANDOFFS.md`
+  181,225 B after S57's receipt (its archive threshold is near 196,608 B: a few sessions' room).
+- **The shared pixel reader cannot tell black from nothing** (dragon 45); **vis.js fits its view to the nodes
+  only** (dragon 46); **locate a changed pixel before calling it an overlap** (dragon 47).
+- **Mutation-check a browser test** (S57's `mutate.R` replaced `.evaluatedStarRoom()` and
+  `.evaluatedStarHandler()` with `assignInNamespace()`: 1 and 4 expectations failed); **RED needs every test
+  failing** (run the draft at HEAD; S57's 15 of 15 failed); **lint on new code** (`0L:2L`, `2.0`; S57's
+  prototype read 0 first time).
+- **`rm` with a bare shell variable is refused** by Claude Code's safety check: write `rm -rf "${G:?}/${d:?}"`.
 - **Carried:** a mark drawn by a script is passed in only when some node has it (dragon 44); hold the canvas height
   when counting a mark's pixels (dragon 43); delete a scratch copy's `.Rprofile` for the fidelity tool, not
-  `--no-init-file` (dragon 42); `Rscript -e '...'` loses backslashes (put such R code in a script); lint after
-  every header reflow; the 5-file cap splits GREEN (code; man/; records); read a legend outline from inside
-  (dragon 39); check a new column's name against the compared CSVs (dragon 40); Pedixplorer's plotting writes
-  `Rplots.pdf` (dragon 41); run a single test file from the repository's root; `rm -rf "${S:?}/${d:?}"`; the
-  ratchet's suite gate times out (300 s; name it unmeasured with the suite by hand); the Write and Edit tools write
-  U+2265 as itself (dragon 35); a legend label measured at 500 px with the widget's width set (dragon 36); copies
-  from a commit, one per running check (dragon 38, FM #29); compute every expected value on a prototype before RED
-  (Learning 18); run the prototype through suite, check, lint and fidelity before the RED gate (dragon 31);
-  `CLAUDE.md` is over its budget (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's.
-- **Scratch scripts** (`/private/tmp/claude-501/-Users-rmsharp-Development-pedkindraw/118e43e7-9ef6-490a-9ab2-0528264dad42/scratchpad/g13p/`,
-  may be gone): `px_proband.R` (Pedixplorer's elements), `looks.R` (looks and overlap counts), `clip.R` (the canvas
-  edge), `legend.R` (legend pictures), `apply_green.py` (the prototype as one edit script), `run_one.R`,
-  `run_checks.sh` (suite, check, fidelity side by side; `run_g.sh` adds covr), `covr_new.R`, `refactor_save.R`.
-- **Times** (S56's measures, runs side by side): the suite about 5 min (73 files, 906 tests); fidelity 3.4 min;
-  `R CMD build` and `check --as-cran` about 5 min; covr (`type = "tests"`) about 8 min; `test_probandMark.R` 5 s;
-  the gap case 3.9 s; the look harness about 30 s; the drift tool 1 s.
+  `--no-init-file` (dragon 42); give a look harness an absolute output path (`normalizePath()`; a relative
+  `file://` page has no HTMLWidgets); `Rscript -e '...'` loses backslashes (put such R code in a script); the
+  5-file cap splits GREEN (code; man/; records); read a legend outline from inside (dragon 39); check a new
+  column's name against the compared CSVs (dragon 40); Pedixplorer's plotting writes `Rplots.pdf` (dragon 41); run
+  a single test file from the repository's root; the ratchet's suite gate times out (300 s; name it unmeasured with
+  the suite by hand); the Write and Edit tools write U+2265 as itself (dragon 35); a legend label measured at 500 px
+  with the widget's width set (dragon 36); copies from a commit, one per running check (dragon 38, FM #29); compute
+  every expected value on a prototype before RED (Learning 18); run the prototype through suite, check, lint and
+  fidelity before the RED gate (dragon 31); `CLAUDE.md` is over its budget (learnings go to the plans' dragons);
+  `pedkindraw.Rproj` untracked, Mark's.
+- **Scratch scripts** (`/private/tmp/claude-501/-Users-rmsharp-Development-pedkindraw/f3ff742b-72a4-4ca4-8502-1bc15875807f/scratchpad/g13e/`,
+  may be gone): `px_evaluated.R` (Pedixplorer's elements a column adds), `looks2.R` (looks, red-mark overlap,
+  gaps and canvas room), `clip.R` (the canvas edge with and without points), `legend.R` (legend pictures),
+  `mutate.R`, `run_one.R`, `run_fail.R` (a file's failing count), `run_checks.sh` and `run_g.sh` (suite, check,
+  fidelity and covr side by side on copies `<prefix>_suite` etc.), `covr_new.R`, `refactor_save.R`,
+  `apply_green.py` (the prototype as one edit script), `apply_green2.py`, `closeout1.py`.
+- **Times** (S57's measures, runs side by side): the suite about 5 min (74 files, 921 tests); fidelity 3.5 min;
+  `R CMD build` and `check --as-cran` about 5 min; covr (`type = "tests"`) about 7 min; `test_evaluatedMark.R`
+  5.6 s; the look harness about 2 min; the drift tool 1 s.
 
 ### Key files
-- `docs/planning/gaps-and-shared-code-plan.md`: `:374` (G13's row, S54-S56's measures), `:339` ("Every G phase"),
-  `:657`-`:673` (dragons 45-47, new).
-- `docs/planning/standalone-pedigree-package-plan.md`: `:74`-`:80` (status, Next), `:279`-`:282` (R133-R136),
-  `:1183` (G13 mark 3); `docs/planning/cran-submission-plan.md:633` (Done G13 mark 3).
-- S56's work: `R/probandMark.R` (`.probandArrow` `:27`, `.probandArrowTail()` `:37`, `.probandArrowHandler()` `:54`,
-  `.probandArrowRoom()` `:113`, `.probandLegendImage()` `:160`, `.checkProbandConsultand()` `:200`);
-  `R/markColumns.R:109` (`.markLegendRow()`); the layout in `R/makePedigreeDiagramData.R` (`:526` the reserved
-  prefixes, `:2071` the reads and the both-stop, `:2114` the empty layout, `:2285` the hover lines, `:2540` the node
-  fields); `R/drawPedigreeDiagram.R:274` (`hasProband`, the rows, `hasArrow`, the points at `:281`);
-  `R/affectedConditions.R:266` (`.diagramAfterDrawing()`'s `arrows`); `tests/testthat/test_probandMark.R` (16 tests;
-  the points `:368`, the browser test `:521`); `tools/gapCases.R:398` (the proband probes in `markings`).
-- How pedkindraw draws on a symbol: `R/deceasedSlash.R` (the slash handler `:46`, its legend picture `:84`);
-  `R/carrierMark.R` (the dot `:35`); `R/affectedConditions.R` (the section painter `:129`).
-- `methodology/BACKLOG.md:26` (G13-G17), `:37`, `:55`, `:62`, `:68`, `:76`, `:82`, `:136`-`:209` (Ready, small).
+- `docs/planning/gaps-and-shared-code-plan.md`: `:374` (G13's row, S54-S57's measures), `:339` ("Every G phase"),
+  `:674`-`:694` (dragons 48-51, new).
+- `docs/planning/standalone-pedigree-package-plan.md`: `:74`-`:81` (status, Next), `:280`-`:284` (R133-R137),
+  `:1196` (G13 mark 4); `docs/planning/cran-submission-plan.md:640` (Done G13 mark 4).
+- S57's work: `R/evaluatedMark.R` (`.evaluatedStar` `:27`, `.evaluatedStarHandler()` `:39`,
+  `.evaluatedStarRoom()` `:86`, `.evaluatedLegendImage()` `:101`); `R/markColumns.R` (`.markLegendRow()` `:112`,
+  `.markField()` `:127`, `.markRoom()` `:154`); `R/probandMark.R:116` (`.probandArrowRoom()`, now two lines); the
+  layout in `R/makePedigreeDiagramData.R` (`:532` the reserved prefixes, `:2089` the read, `:2310` the hover line);
+  `R/drawPedigreeDiagram.R:295` (`hasEvaluated`, the points at `:300`); `R/affectedConditions.R:271`
+  (`.diagramAfterDrawing()`'s `evaluated`); `tests/testthat/test_evaluatedMark.R` (15 tests; the browser test
+  `:431`); `tools/gapCases.R:424` (the evaluated probes in `markings`).
+- How pedkindraw draws on a symbol: `R/deceasedSlash.R` (the slash handler `:46`); `R/carrierMark.R` (the dot
+  `:35`); `R/probandMark.R` (the arrow `:56`); `R/affectedConditions.R` (the section painter `:131`).
+- `methodology/BACKLOG.md:26` (G13-G17), `:37`, `:55`, `:62`, `:68`, `:76`, `:82`, `:136`-`:208` (Ready, small).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -136,70 +141,64 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S55's entries were removed in S3-S56 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S56's entries were removed in S3-S57 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 57 Did
-**Deliverable:** Phase G13, mark 4 of 6: evaluated (IN PROGRESS)
-**Started:** 2026-11-19 21:46 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G13: evaluated mark (Recommended)"
-(orient)
-**Status:** Session claimed. Measuring before the pre-RED picker (the column's name against the compared CSVs and
-`asPedFrame()`, Pedixplorer's "*" place and size, NA and text, the looks in headless Chrome against the deceased
-slash, a mating line and a sibship drop, the canvas edge, the legend row, the hover line).
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest.
-
-### Session 55 Handoff Evaluation (by Session 56)
+### Session 56 Handoff Evaluation (by Session 57)
 **Score: 9/10.**
-- **What helped:** the measure-first list (a)-(e) was the session's plan item for item: the 13 compared CSVs held
-  neither column, `asPedFrame()` kept both as stated, Pedixplorer's arrow, the "P", `NA`, both marks on one animal
-  and several probands were each measured, and the legend question became a picker option. Dragon 44 (a script
-  only when some node has the mark) shaped `arrows = FALSE`; dragon 42 (delete the `.Rprofile`) and the 5-file cap
-  split were followed and held. S55's scratch scripts (`px_carrier.R`, `proto_carrier.R`, `apply_green.py`,
-  `covr_new.R`, `refactor_save.R`, `run_one.R`) were still there and were adapted for this session. Every location
-  was right, as was the CI prediction (R-devel's S4Vectors only), drift 91/21/0 and the 4 nprcgenekeepr commits.
-- **What was missing:** that a mark drawn outside the symbol can be cut off at the canvas edge (vis.js fits to the
-  nodes only); that the shared pixel reader reads an empty spot as black (dragon 39 warned only of blurred
-  outlines); that the deceased slash's overhang is exactly where a 45-degree arrow would lie.
+- **What helped:** the measure-first list (a)-(g) was the session's plan item for item: the 13 compared CSVs held
+  no `evaluated`, `asPedFrame()` kept it as stated, Pedixplorer's "*" place was measured from `ped_to_plotdf()`,
+  and the warning that the upper right is where the deceased slash overhangs was exactly what the looks found
+  (Pedixplorer's place 4-7 px on every deceased square's slash end). Dragon 46's prediction held (the rightmost
+  star 2 px outside the canvas) and `.probandArrowRoom()` was the model for the points; dragon 45 (count with the
+  alpha) and 47 (locate a changed pixel) were both needed again. The scratch scripts (`px_proband.R`, `looks.R`,
+  `clip.R`, `legend.R`, `mutate.R`, `covr_new.R`, `refactor_save.R`, `run_one.R`, `run_checks.sh`) were still
+  there and were adapted. The CI prediction (R-devel's S4Vectors only), drift 91/21/0, the 4 nprcgenekeepr commits,
+  every cited line and the CHANGELOG budget warning all held.
+- **What was missing:** that `methodology_trim.py` refuses to archive until the session's ledger entries are
+  committed (the order cost a commit); that roxygen's markdown turns paired asterisks into emphasis (no earlier
+  mark put a symbol in the help); that the direct edge style's lines reach a child from the upper right.
 - **What was wrong:** nothing.
 - **ROI:** high.
 
-### What Session 56 Did
-**Deliverable:** Phase G13's third mark DONE: columns `proband` and `consultand`, a black arrow at the lower left of
-each such symbol with "P" beside a proband's, invisible points that keep the arrows in the view, the hover lines,
-two legend rows and the stop on an animal marked both (R136); the legend's picture row shared as `.markLegendRow()`.
-**Started:** 2026-11-19 20:02 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time):** "G13: proband
-mark (Recommended)" (orient); "Flatter arrow (Recommended)", "Widen the view (Recommended)", "Stop, as Pedixplorer
-(Recommended)", "Two rows, arrow pictures (Recommended)" (pre-RED); "Yes, proceed to RED"; "Yes, proceed to GREEN";
-"Yes, REFACTOR (Recommended)". No corrections.
-**Commits:** claim `da7e079`; RED `31faecd`; GREEN 1 `646255e` (code, help); GREEN 1b `1100d4e` (man/); GREEN 2
-`3931583` (NEWS, DIVERGENCE.md, contract, gap case); REFACTOR `ff7913f` (`.markLegendRow()`); close-out 1 `3b223bd`
-(plans, roadmap, backlog, R136, dragons 45-47); close-out 2 (these notes, the receipt, the ledger). All pushed at
-close.
-**Measured:** Pedixplorer 1.8.0 (help and `ped_to_plotdf()` results): an arrow to the box's lower-left corner from
-0.8 of its width left and 0.4 of its height below, "P" (cex 0.8) left of the tail, `NA` read as `FALSE`, an animal
-both proband and consultand refused, an unaffected proband warned, four probands drawn, no legend row, 2 read as
-`FALSE`, text warned. Looks in headless Chrome at 500 px on six animals (ids of 1 and 10 characters): the 30-degree
-arrow 46-92 pixels per animal and 0 over ink; Pedixplorer's 45 degrees 47-82, 4-5 px over a slash end and 2-12 px
-over 10-character labels on 5 of 6; the leftmost "P" 10 px outside the canvas, 19 px inside with the points (zoom
-0.800 to 0.734; a three-animal drawing keeps 1.0 and moves 13-18 px); legend pictures 23 and 16 dark pixels, a
-small circle with the arrow 3 and 4. `asPedFrame()` keeps both columns (C and D; all `FALSE` leaves none). The
-prototype: the draft 392 of 392 passing, 16 of 16 failing at HEAD; its suite (73 files, 906 tests), check (R16's
-NOTE), lint (0 after a fix of 7) and fidelity (600 of 600) clean before RED; the browser test failing without the
-points (2) and without the arrow script (8). Final: suite on `ff7913f` 73 files, 906 tests, 0 failed, 0 skipped,
-0 warnings; lint 0; roxygen stable; covr 82 of 82 new statements at GREEN, 84 of 84 new and moved after the
-REFACTOR (`R/markColumns.R` 27 of 27), the package 98.33%; `R CMD check --as-cran` on `1100d4e` and `ff7913f` 1
-NOTE (R16's); fidelity on both 600 of 600, no new set-aside; drift 91/21/0; the REFACTOR's 88 saved results
-byte-identical.
+### What Session 57 Did
+**Deliverable:** Phase G13's fourth mark DONE: a column `evaluated`, a black star of three strokes to the right of
+the upper-right corner of each such symbol, invisible points that keep it in the view, the hover line and an
+"Evaluated" legend row (R137); the invisible points of the arrows and the star built by one helper, `.markRoom()`.
+**Started:** 2026-11-19 21:46 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time):** "G13: evaluated
+mark (Recommended)" (orient); "Right of the corner (Recommended)", "Widen the view (Recommended)", "A row with the
+'*' (Recommended)" (pre-RED); "Yes, proceed to RED"; "Yes, proceed to GREEN"; "Yes, REFACTOR (Recommended)". No
+corrections.
+**Commits:** claim `f2de655`; RED `dd498cc`; GREEN 1 `6b23b04` (code, help); GREEN 1b `90b7b52` (man/); GREEN 1c
+`565256e` (the help's star as a code span); GREEN 2 `e17e41f` (NEWS, DIVERGENCE.md, contract, gap case); REFACTOR
+`66584e0` (`.markRoom()`); close-out 1 `0cf5459` (plans, roadmap, backlog, R137, dragons 48-51); ledger `239f679`
+(the session's entries before the archive); archive `3c12aac` (69 records into
+`methodology/archive/CHANGELOG-through-2026-11-15.md`); close-out 2 (these notes, the receipt, the push entry). All
+pushed at close.
+**Measured:** Pedixplorer 1.8.0 (help and `ped_to_plotdf()` results): a text "*" (cex 1.5) at the box centre's
+x + 0.11, 0.0062 above its top, just right of its own slash's end; `NA` and 2 read `FALSE`, unreadable text warned;
+no legend row. Looks in headless Chrome at 500 px on 8 pedigrees in both edge styles, the star drawn red (red pixels
+over ink, gap to the nearest ink): the chosen place (1.6, -0.8; radius 0.28) 0 over ink in the rectilinear style, 2
+on a direct-style line to a far-left twin; Pedixplorer's (1.41, -1.2) 4-7 on every deceased square's slash end, 10 on
+a direct-style line; a higher place (1.55, -1.0) 1-8. The canvas edge: the six-animal drawing's rightmost star 2 px
+outside, 17 px inside with the points (zoom 0.800 to 0.756). Legend pictures: the star alone 32 dark pixels, a small
+circle with it 11. `asPedFrame()` keeps the column (C). The prototype: the draft 310 of 310 passing, 15 of 15
+failing at HEAD; its suite (74 files, 921 tests), check (R16's NOTE), lint (0) and fidelity (600 of 600) clean
+before RED; the browser test failing without the points (1) and without the star script (4). Final: suite on
+`66584e0` 74 files, 921 tests, 0 failed, 0 skipped, 0 warnings; lint 0; roxygen stable; covr 50 of 50 new
+statements at GREEN, 55 of 55 new and moved after the REFACTOR, the package 98.36%; `R CMD check --as-cran` on
+`90b7b52` and `66584e0` 1 NOTE (R16's); fidelity on both 600 of 600, no new set-aside; drift 91/21/0; the
+REFACTOR's 12 saved parts byte-identical.
 **Self-assessment: 8/10.**
-+ Every pick and gate first time, each option with measured counts (two looks with overlap counts, the canvas edge
-  with and without the points, two legend pictures); the prototype through suite, check, lint and fidelity before
-  RED, applied to the repository by one script and proved identical by `cmp`; the browser test mutation-checked;
-  the REFACTOR proved on 88 saved results; the whole mark, records and REFACTOR in one session.
-- Slips that cost reruns: the first prototype had 7 lints, found after the background checks had started (stopped
-  and restarted, about 2 min); two draft-test bugs found on the prototype (row names and the reader's missing
-  alpha); one draft test passed at HEAD until strengthened before RED; 6-14 "overlap" pixels took a debug run to
-  show they were the slash's anti-aliasing; the NSGC paper could not be read (a bot check), so no claim about the
-  human nomenclature was made.
-**Learnings:** the gaps plan's dragons 45-47; no `CLAUDE.md` row (over budget).
-**Ledger:** `CHANGELOG.md` S56 entries (the session, the ruling, push 1).
++ Every pick and gate first time, each option with measured counts (three places with red-mark overlap counts in
+  both edge styles, the canvas edge with and without the points, two legend pictures); the prototype through suite,
+  check, lint and fidelity before RED, applied to the repository by one script and proved identical by `cmp`; the
+  browser test mutation-checked; the REFACTOR proved on 12 saved parts; the ledger archived losslessly (its verify
+  script OK).
+- The help's paired-asterisk emphasis reached GREEN 1 and 1b (the prototype had it; its Rd was not read) and took a
+  third GREEN commit; the first look harness used a relative path (a rerun), and its whole-box overlap counts read
+  the slash's anti-aliasing until the star was redrawn red (a second harness); one `rm` with bare variables was
+  refused; one nonsense expectation in the draft drawing test was caught before it ran; the trim's order cost a
+  ledger commit of its own.
+**Learnings:** the gaps plan's dragons 48-51; no `CLAUDE.md` row (over budget).
+**Ledger:** `CHANGELOG.md` S57 entries (the session, the ruling, the trim, push 1).

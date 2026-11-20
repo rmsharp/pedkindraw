@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-20 · [BL-Phase G13] S57 push 1: `master` to GitHub at close-out 2 (S57's claim, G13 mark 4, close-out 1-2, the ledger archive)
+- **Change:** `git push origin master` (`d78023e..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S56's push runs, finished during S57: site `44668565643` `success` (pages `44668941051` `success`); CI `44668565648` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors 0.50.3 "lazy loading failed" while installing dependencies, before pedkindraw is checked), the other four jobs `success`.
+- **Commit/PR:** none (push) · **Session:** S57 · **Verified:** the push's output; S56's runs by `gh run view`.
+
 ### 2026-11-20 · [ad hoc] Ledger trim: `methodology/CHANGELOG.md` → `methodology/archive/CHANGELOG-through-2026-11-15.md` (69 record(s), 199,659 B → 114,810 B)
 
 **Written by:** `methodology_trim.py` v1.8.1 — a tool action, not a session's judgment.
