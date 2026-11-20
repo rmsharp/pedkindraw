@@ -15,7 +15,10 @@
 ## symbol inside the drawing, which .probandArrowRoom() (R/probandMark.R) and
 ## .evaluatedStarRoom() (R/evaluatedMark.R) had each written out. S58 (R138):
 ## .markRoom() empties a point's fertility field, the infertile mark's, which
-## is text, not TRUE or FALSE.
+## is text, not TRUE or FALSE. S58's REFACTOR added .oddValuesShown() and
+## .nodeAnimals(), which .markOddValues() and .markedNodes() share with the
+## fertility column's .readFertility() and .fertilityNodes()
+## (R/infertileMark.R), each of which had the same lines.
 
 #' Read a mark's column of a pedigree
 #'
@@ -68,7 +71,20 @@
   } else {
     !is.na(x) & is.na(as.logical(x))
   }
-  values <- unique(x[odd])
+  .oddValuesShown(x[odd])
+}
+
+#' Up to five values a column cannot read, as a message shows them
+#'
+#' Phase G13 (R134, R138): a number as it is, text in single quotes, then
+#' \dQuote{...} when there are more than five. S58's REFACTOR:
+#' \code{.markOddValues()} and the fertility column's reader
+#' (\code{.readFertility()}, R/infertileMark.R) had the same lines.
+#' @param odd the values that cannot be read.
+#' @return \code{NULL} when there is none, or a character string.
+#' @noRd
+.oddValuesShown <- function(odd) {
+  values <- unique(odd)
   if (length(values) == 0L) {
     return(NULL)
   }
@@ -91,10 +107,23 @@
 #' @return logical vector, as long as \code{nodeIds}, never \code{NA}.
 #' @noRd
 .markedNodes <- function(nodeIds, marks, dupIds, dupRealIds) {
-  animalOf <- ifelse(nodeIds %in% dupIds, dupRealIds[match(nodeIds, dupIds)],
-                     nodeIds)
-  marked <- unname(marks[animalOf])
+  marked <- unname(marks[.nodeAnimals(nodeIds, dupIds, dupRealIds)])
   !is.na(marked) & marked
+}
+
+#' The animal each node of a layout stands for
+#'
+#' Phase G13 (R134, R138): a repeat-appearance node's real id, every other
+#' node's own id (a mating union's or a routing point's matches no animal).
+#' S58's REFACTOR: \code{.markedNodes()} and the fertility column's
+#' \code{.fertilityNodes()} (R/infertileMark.R) had the same line.
+#' @param nodeIds ids of the layout's nodes.
+#' @param dupIds ids of the repeat-appearance nodes.
+#' @param dupRealIds the real id of each repeat-appearance node.
+#' @return character vector, as long as \code{nodeIds}.
+#' @noRd
+.nodeAnimals <- function(nodeIds, dupIds, dupRealIds) {
+  ifelse(nodeIds %in% dupIds, dupRealIds[match(nodeIds, dupIds)], nodeIds)
 }
 
 #' The legend's row for a mark drawn by a script

@@ -8,7 +8,9 @@
 ## .infertileBarsHandler() last, and the copied drawPedigreeDiagram() moves
 ## each marked animal's id down and adds the points of .infertileRoom(), and
 ## an "Infertile" and a "No offspring" legend row (.infertileLegendImage()),
-## when an animal is marked (DIVERGENCE.md).
+## when an animal is marked (DIVERGENCE.md). S58's REFACTOR: the reader's
+## message and the node lookup use .oddValuesShown() and .nodeAnimals()
+## (R/markColumns.R), as the true/false mark columns do.
 
 #' The fertility values read, and what each means
 #'
@@ -52,7 +54,7 @@
     shown <- paste("a column of class", class(x)[[1L]])
   } else {
     kind <- unname(.fertilityWords[tolower(as.character(x))])
-    shown <- .fertilityOddValues(x[!is.na(x) & is.na(kind)])
+    shown <- .oddValuesShown(x[!is.na(x) & is.na(kind)])
   }
   if (!is.null(shown)) {
     stop(caller, "(): the column 'fertility' holds values it cannot read (",
@@ -62,25 +64,6 @@
          "is not recorded.", call. = FALSE)
   }
   stats::setNames(kind, as.character(ped$id))
-}
-
-#' Up to five of the fertility values that cannot be read
-#'
-#' Phase G13 (R138), for \code{.readFertility()}'s message, as
-#' \code{.markOddValues()} shows a mark's: a number as it is, text in single
-#' quotes, then \dQuote{...} when there are more than five.
-#' @param odd the values that cannot be read.
-#' @return \code{NULL} when there is none, or a character string.
-#' @noRd
-.fertilityOddValues <- function(odd) {
-  values <- unique(odd)
-  if (length(values) == 0L) {
-    return(NULL)
-  }
-  if (is.character(values)) values <- sprintf("'%s'", values)
-  shown <- toString(utils::head(values, 5L))
-  if (length(values) > 5L) shown <- paste0(shown, ", ...")
-  shown
 }
 
 #' Each node's fertility mark
@@ -96,9 +79,7 @@
 #' @return character vector, as long as \code{nodeIds}, never \code{NA}.
 #' @noRd
 .fertilityNodes <- function(nodeIds, fertility, dupIds, dupRealIds) {
-  animalOf <- ifelse(nodeIds %in% dupIds, dupRealIds[match(nodeIds, dupIds)],
-                     nodeIds)
-  kind <- unname(fertility[animalOf])
+  kind <- unname(fertility[.nodeAnimals(nodeIds, dupIds, dupRealIds)])
   ifelse(kind %in% c("infertile", "infertile_choice_na"), kind, "")
 }
 
