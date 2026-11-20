@@ -130,6 +130,18 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S59's entries were removed in S3-S60 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 61 Did
+**Deliverable:** Phase G14 session 2 of 3, the text size (IN PROGRESS; R140's order, closing at a clean phase
+boundary)
+**Started:** 2026-11-20 14:55 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G14: text size (Recommended)"
+(orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (where the size goes; vis.js's label box at
+several sizes, to replace the 25-unit id allowance with one rule; room for each label's ends; whether the "P" and
+"ECT" follow; long ids meeting neighbours; kinship2's and Pedixplorer's cex, results only; each candidate at
+symbolSize 0.6 and 1.6 too).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 59 Handoff Evaluation (by Session 60)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(f) was the session's plan item for item: the gap case `style`, every

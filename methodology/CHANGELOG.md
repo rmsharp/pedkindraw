@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-20 · [BL-Phase G14] S61: Phase G14 session 2 of 3, the text size (in progress)
+- **Change:** session claimed (Mark's pick "G14: text size (Recommended)" at the orient picker): R140's order, the second of four settings (`docs/planning/standalone-pedigree-package-plan.md:292`; `docs/planning/gaps-and-shared-code-plan.md:376`), strict TDD; measure first (Learnings 17-21; dragons 57, 61, 63: where the size goes, vis.js's label box at several sizes to replace the 25-unit id allowance, room for each label's ends, whether the "P" and "ECT" follow, long ids meeting neighbours, kinship2's and Pedixplorer's cex, results only), a pre-RED picker, RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier 1d571a4 is HEAD; no merges; S60's receipt complete); drift 91/21/0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S60's runs (R-CMD-check 44815278598, site 44815278483) in progress at Orient.
+- **Commit/PR:** the claim commit · **Session:** S61 · **Verified:** pending (close-out).
+
 ### 2026-11-20 · [ad hoc] Ledger trim: `methodology/HANDOFFS.md` → `methodology/archive/HANDOFFS-through-2026-11-18.md` (19 record(s), 198,951 B → 92,002 B)
 
 **Written by:** `methodology_trim.py` v1.8.1 — a tool action, not a session's judgment.
