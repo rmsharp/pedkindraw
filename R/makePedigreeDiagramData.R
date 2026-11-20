@@ -83,7 +83,13 @@
 ## fertility mark (.checkMiscarriage()), adds a hover line for it and gives
 ## each node a miscarriage field (.miscarriageNodes()); .reservedIdPrefixes
 ## gains __misc_, the prefix of the points drawPedigreeDiagram() adds for
-## it; and its help (the same rows).
+## it; and its help (the same rows). Plan Phase G14's symbol size (pedkindraw
+## S60, R140): the argument symbolSize = 1, checked after maxNameChars
+## (.checkSymbolSize(), pedkindraw's own, R/symbolSize.R), each animal's
+## node and repeat node .symbolUnits() of it where they were 25;
+## .reservedIdPrefixes gains __size_, the prefix of the points
+## drawPedigreeDiagram() adds for symbols smaller than full size; and its
+## help (the same rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -541,10 +547,14 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 ## prefix of the points that keep an evaluated animal's star inside it
 ## (.evaluatedStarRoom()). pedkindraw S58 (plan Phase G13, R138): __fert_, the
 ## prefix of the points that keep an infertile animal's moved id inside it
-## (.infertileRoom()).
+## (.infertileRoom()). pedkindraw S59 (plan Phase G13, R139): __misc_, the
+## prefix of the points that keep a miscarriage's room (.miscarriageRoom()).
+## pedkindraw S60 (plan Phase G14, R140): __size_, the prefix of the points
+## that keep a full-size symbol's room for smaller symbols
+## (.symbolSizeRoom()).
 .reservedIdPrefixes <- c("__union_", "__dup_", "__drop_", "__bar_", "__proj_",
                          "__jog_", "__mark_", "__eval_", "__fert_",
-                         "__misc_")
+                         "__misc_", "__size_")
 .reservedIdPattern <- paste0("^", .reservedIdPrefixes, collapse = "|")
 
 #' Transform a pedigree into a mating-unit forest (Option 2 layout, D1/D2)
@@ -1966,6 +1976,19 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   but a named character vector, on a cut-off it cannot read, on a name
 #'   that is not a condition column of \code{ped}, and on a column with a
 #'   cut-off that does not hold numbers.
+#' @param symbolSize the size of the animals' symbols, as a multiple of the
+#'   size drawn before this argument (1, the default), as kinship2's and
+#'   Pedixplorer's \code{symbolsize} is: each animal's node and each of its
+#'   repeat nodes gets 25 times it in \code{size}, rounded to a whole unit
+#'   and at least 1, and the mating points keep 6. The layout works out the
+#'   lines' detours around the symbols from it, and
+#'   \code{\link{drawPedigreeDiagram}} moves an infertile animal's and a
+#'   miscarriage's id down in proportion. The drawing zooms to fit, so a
+#'   larger symbol leaves less room between the symbols rather than making a
+#'   larger drawing: measured at 500 pixels, from 2 the symbols reach the
+#'   lines and the mating points and long ids reach the marks beside them,
+#'   and at 3 the rectilinear layout warns that it could not clear every
+#'   symbol. Stops unless it is one positive number.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -2069,7 +2092,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                                           "#E69F00",
                                                           "#56B4E9",
                                                           "#009E73"),
-                                      conditionThresholds = NULL) {
+                                      conditionThresholds = NULL,
+                                      symbolSize = 1.0) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -2080,6 +2104,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
          toString(required), ". Missing: ", toString(missingCols))
   }
   .checkMaxNameChars(maxNameChars, "makePedigreeMatingLayout")
+  .checkSymbolSize(symbolSize, "makePedigreeMatingLayout") # Phase G14
   edgeStyle <- match.arg(edgeStyle)
   if (!is.null(kinshipMatrix) &&
         (!(is.matrix(kinshipMatrix) || inherits(kinshipMatrix, "Matrix")) ||
@@ -2396,7 +2421,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     label = if (hasName) .nameLabelForVec(realIds) else realIds,
     shape = .shapeForVec(sexOf[realIds]),
     title = .titleForIds(realIds),
-    size = 25L, stringsAsFactors = FALSE
+    size = .symbolUnits(symbolSize), stringsAsFactors = FALSE
   )
   # Track 1: unconditional now -- .affectedColorForVec() already returns an
   # explicit white fill for every id when affectedOf is all-NA (no affected
@@ -2415,7 +2440,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
       shape = .shapeForVec(sexOf[duplicates$realId]),
       title = paste0(.titleForIds(duplicates$realId),
                       "<br><i>(duplicate occurrence)</i>"),
-      size = 25L, stringsAsFactors = FALSE
+      size = .symbolUnits(symbolSize), stringsAsFactors = FALSE
     )
     df$color.background <- .affectedColorForVec(duplicates$realId)
     df$deceased <- unname(deceasedOf[duplicates$realId])

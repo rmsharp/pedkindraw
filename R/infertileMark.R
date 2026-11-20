@@ -12,7 +12,8 @@
 ## message and the node lookup use .oddValuesShown() and .nodeAnimals()
 ## (R/markColumns.R), as the true/false mark columns do. S59's REFACTOR:
 ## .readFertility() reads the column with .readWordColumn()
-## (R/markColumns.R), as .readMiscarriage() does.
+## (R/markColumns.R), as .readMiscarriage() does. S60 (plan Phase G14,
+## R140): .infertileRoom() moves the id in proportion to the node's size.
 
 #' The fertility values read, and what each means
 #'
@@ -98,10 +99,11 @@
 #' units of the node's \code{size}: the line's length (\code{line}), the
 #' half-width of each bar (\code{bar1}, \code{bar2}) and the second bar's
 #' distance below the first (\code{gap}); and how far the animal's id moves
-#' down, in units (\code{idDown}), so it sits below the bars. Measured in
-#' headless Chrome in a 500-pixel drawing (S58): in 7 pedigrees, in both
-#' edge styles, the mark lies on nothing else for an animal without
-#' offspring, 2 to 6 pixels from its own id.
+#' down, in units at a full-size symbol (\code{idDown}, in proportion to
+#' the node's size otherwise, Phase G14), so it sits below the bars.
+#' Measured in headless Chrome in a 500-pixel drawing (S58): in 7
+#' pedigrees, in both edge styles, the mark lies on nothing else for an
+#' animal without offspring, 2 to 6 pixels from its own id.
 #' @noRd
 .infertileMark <- list(line = 0.58, bar1 = 0.8, bar2 = 1.0, gap = 0.2,
                        idDown = 14L)
@@ -157,6 +159,9 @@
 #' Phase G13 (R138). The id is written under the symbol, where the mark
 #' goes, so each node whose \code{fertility} field is \code{"infertile"} or
 #' \code{"infertile_choice_na"} has its label moved down \code{idDown} units
+#' at a full-size symbol and in proportion to its size otherwise, rounded to
+#' a whole unit (Phase G14, R140; measured S60: at symbolSize 1.6 the fixed
+#' 14 units left the id 0.3 units below its bar)
 #' (vis.js's \code{font.vadjust}; every other node's 0). vis.js fits its view
 #' to the nodes without the move, so a moved id in the bottom row was cut
 #' off (S58: 0.6 pixels to spare in a four-generation drawing at 500
@@ -174,9 +179,12 @@
 #' @noRd
 .infertileRoom <- function(nodes, mark = .infertileMark) {
   marked <- nodes[["fertility"]] %in% c("infertile", "infertile_choice_na")
-  nodes$font.vadjust <- ifelse(marked, mark$idDown, 0L)
-  .markRoom(nodes, marked, "__fert_", c(0.0, 1.0),
-            c(0.0, 25.0 + mark$idDown + 2.0))
+  idDown <- as.integer(round(mark$idDown * nodes$size / .fullSymbolSize))
+  nodes$font.vadjust <- ifelse(marked, idDown, 0L)
+  out <- .markRoom(nodes, marked, "__fert_", c(0.0, 1.0), c(0.0, 25.0 + 2.0))
+  added <- nrow(nodes) + seq_len(sum(marked))
+  out$y[added] <- out$y[added] + idDown[marked]
+  out
 }
 
 #' The legend's picture of an infertile mark

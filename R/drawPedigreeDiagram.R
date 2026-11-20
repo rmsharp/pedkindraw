@@ -31,7 +31,9 @@
 ## px each adds, a miscarriage's small triangle and moved id, the points
 ## that keep the drawing's fit as for a full-size symbol, and the lines'
 ## handler (plan Phase G13, R139: sabRow, topRow, ectRow, hasMiscarriage, and
-## the help's paragraph on them), each a DIVERGENCE.md row until
+## the help's paragraph on them), and S60's points that keep a full-size
+## symbol's room for smaller symbols (plan Phase G14, R140: nodes, and the
+## help's paragraph on the symbols' size), each a DIVERGENCE.md row until
 ## nprcgenekeepr has it;
 ## otherwise help text only.
 ## The help describes the
@@ -134,6 +136,12 @@
 #' \dQuote{Ectopic} rows, each its triangle, then say what they are, and
 #' the canvas is 45 pixels taller for each. The drawing keeps the room a
 #' full-size symbol would have, so a long id at its edge is not cut off.
+#'
+#' Each animal is drawn at the size \code{\link{makePedigreeMatingLayout}}'s
+#' \code{symbolSize} gives it; an infertile animal's and a miscarriage's id
+#' moves down in proportion, and with symbols smaller than full size the
+#' drawing keeps the room a full-size symbol would have, so a long id at its
+#' edge is not cut off.
 #'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
@@ -362,7 +370,10 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   ectRow <- .markLegendRow("Ectopic", .miscarriageLegendImage("ECT"),
                            hasEct)
   hasArrow <- hasProband || hasConsultand
-  nodes <- if (hasArrow) .probandArrowRoom(layout$nodes) else layout$nodes
+  # pedkindraw Phase G14 (R140): animals smaller than full size keep a
+  # full-size symbol's room (.symbolSizeRoom()).
+  nodes <- .symbolSizeRoom(layout$nodes)
+  if (hasArrow) nodes <- .probandArrowRoom(nodes)
   if (hasEvaluated) nodes <- .evaluatedStarRoom(nodes)
   hasBars <- hasInfertile || hasNoOffspring
   if (hasBars) nodes <- .infertileRoom(nodes)

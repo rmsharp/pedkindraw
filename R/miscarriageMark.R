@@ -13,6 +13,8 @@
 ## .miscarriageHandler() last (DIVERGENCE.md). S59's REFACTOR:
 ## .readMiscarriage() reads the column with .readWordColumn() and
 ## .checkMiscarriage() names the animals with .idsShown() (R/markColumns.R).
+## S60 (plan Phase G14, R140): .miscarriageRoom() moves the id in proportion
+## to the node's size.
 
 #' The miscarriage values read, and what each means
 #'
@@ -141,9 +143,10 @@
 #' Phase G13 (R139). A miscarriage is drawn as a triangle \code{scale} the
 #' size of the symbol it replaces (a triangle is also the Unknown sex's
 #' symbol; this one is 0.6 of it), its id moved \code{idDown} units down
-#' into its row, and \dQuote{ECT} written \code{textSize} units high under
-#' an ectopic pregnancy's triangle. Measured in headless Chrome in a
-#' 500-pixel drawing (S59): 29 by 25 pixels against the Unknown sex's 48 by
+#' into its row at a full-size symbol (in proportion to the node's size
+#' otherwise, Phase G14), and \dQuote{ECT} written \code{textSize} units
+#' high under an ectopic pregnancy's triangle. Measured in headless Chrome
+#' in a 500-pixel drawing (S59): 29 by 25 pixels against the Unknown sex's 48 by
 #' 41; in 7 pedigrees, in both edge styles, the line and \dQuote{ECT} lie on
 #' nothing else, 6 to 12 pixels from the animal's own id.
 #' @noRd
@@ -203,8 +206,10 @@
 #' \code{"SAB"}, \code{"TOP"} or \code{"ECT"} becomes a triangle
 #' \code{mark$scale} of its size, with no deceased slash (on the small
 #' triangle it would lie along a termination's line), and its id moves
-#' \code{mark$idDown} units down (vis.js's \code{font.vadjust}; the other
-#' nodes keep theirs, 0 when they have none). vis.js fits its view to the
+#' \code{mark$idDown} units down at a full-size symbol and in proportion to
+#' its size otherwise, rounded to a whole unit (Phase G14, R140) (vis.js's
+#' \code{font.vadjust}; the other nodes keep theirs, 0 when they have none).
+#' vis.js fits its view to the
 #' nodes' boxes without their labels' overhang or the move, so a long id at
 #' an edge of the drawing, or a moved one in its bottom row, would be cut
 #' off; two invisible points per marked node (built by \code{.markRoom()},
@@ -220,11 +225,14 @@
 .miscarriageRoom <- function(nodes, mark = .miscarriageMark) {
   marked <- nodes[["miscarriage"]] %in% c("SAB", "TOP", "ECT")
   if (!"font.vadjust" %in% names(nodes)) nodes$font.vadjust <- 0L
-  nodes$font.vadjust[marked] <- mark$idDown
-  shift <- c(0.0, 25.0 + mark$idDown + 2.0)
+  idDown <- as.integer(round(mark$idDown * nodes$size / .fullSymbolSize))
+  nodes$font.vadjust[marked] <- idDown[marked]
+  shift <- c(0.0, 25.0 + 2.0)
   out <- .markRoom(nodes, marked, "__misc_l_", c(-1.15, mark$scale), shift)
   out <- .markRoom(out, c(marked, logical(nrow(out) - nrow(nodes))),
                    "__misc_r_", c(1.15, mark$scale), shift)
+  added <- nrow(nodes) + seq_len(2L * sum(marked))
+  out$y[added] <- out$y[added] + rep(idDown[marked], 2L)
   at <- which(marked)
   out$shape[at] <- "triangle"
   out$size[at] <- as.integer(round(out$size[at] * mark$scale))
