@@ -249,6 +249,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G13, mark 4 of 6: the evaluated mark (pedkindraw S57, 2026-11-20).** Pedixplorer marks an animal with a
+  documented evaluation with a "\*" beside its symbol; pedkindraw ignored such a column.
+  `makePedigreeMatingLayout()` now reads a column `evaluated`: each evaluated animal's symbol has a black star to
+  the right of its upper-right corner, hovering says "Evaluated: Yes", "No" or "Unknown", and the legend gains a
+  row "Evaluated". The drawing takes each star into its view, so one at the right edge is not cut off. Mark's
+  picks: the star a little lower and farther right than Pedixplorer's, which lies on the deceased slash's end; the
+  view widened; a legend row of the star alone (R137). The fidelity cases 600 of 600, nothing set aside.
 - **Phase G13, mark 3 of 6: the proband and consultand marks (pedkindraw S56, 2026-11-19).** Pedixplorer marks the
   proband, the affected animal through whom the family came to attention, with an arrow and "P", and the
   consultand, for whom counselling or testing is sought, with the arrow alone; pedkindraw ignored such columns.

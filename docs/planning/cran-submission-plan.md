@@ -26,8 +26,9 @@ example draws the whole pedigree with the animals removed filled; R125-R126). Ph
 drawn by a cut-off with the rule in the legend; R131-R132). Phase G13 begun (S54: its first mark of six, a genotyped
 animal's outline drawn 4 px wide from a column `genotyped`; R133-R134; S55: its second, a black dot at the centre
 of a carrier's symbol from a column `carrier`; R135; S56: its third, an arrow at the lower left of a proband's and
-a consultand's symbol, "P" beside a proband's; R136). Next: G13's next mark, evaluated (that plan's section 5.1;
-R133), then G14-G17 before 17g.
+a consultand's symbol, "P" beside a proband's; R136; S57: its fourth, a black star to the right of the upper-right
+corner of an evaluated animal's symbol; R137). Next: G13's next mark, infertile (that plan's section 5.1; R133),
+then G14-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -636,6 +637,11 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   `drawPedigreeDiagram()`; copied code changed, with `DIVERGENCE.md` sentences. Commits `31faecd` (RED) to
   `ff7913f` (REFACTOR, the legend's picture row shared as `.markLegendRow()`); fidelity 600 of 600 with no
   set-aside. Three marks left (R133).
+- **G13, mark 4 of 6 (S57; R137):** a column `evaluated` read by `makePedigreeMatingLayout()`: a black star to the
+  right of the upper-right corner of each evaluated animal's symbol, its hover line, invisible points so the view
+  takes the stars in, and an "Evaluated" legend row in `drawPedigreeDiagram()`; copied code changed, with
+  `DIVERGENCE.md` sentences. Commits `dd498cc` (RED) to `66584e0` (REFACTOR, the invisible points of the arrows
+  and the star built by `.markRoom()`); fidelity 600 of 600 with no set-aside. Two marks left (R133).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
