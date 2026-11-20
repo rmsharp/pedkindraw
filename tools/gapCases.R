@@ -395,6 +395,26 @@ cases$markings <- function(case = "markings") {
     paste(rows$label[[at]], rows$shape[[at]],
           grepl("n.carrier === true", w$x$events$afterDrawing, fixed = TRUE))
   })
+  ## Phase G13 (pedkindraw S56, R133 and R136): the proband and consultand
+  ## marks, columns proband and consultand (Pedixplorer's names), drawn as a
+  ## black arrow at the lower left of the symbol, "P" beside a proband's.
+  pointed <- ped
+  pointed$proband <- fields$proband
+  pointed$consultand <- fields$consultand
+  layPointed <- pedkindraw::makePedigreeMatingLayout(withGen(pointed))
+  probe(case, "pedkindraw proband : proband field of A, B, C, D",
+        layPointed$nodes$proband[match(ped$id, layPointed$nodes$id)])
+  probe(case, "pedkindraw consultand : consultand field of A, B, C, D",
+        layPointed$nodes$consultand[match(ped$id, layPointed$nodes$id)])
+  probe(case, "pedkindraw proband : legend rows, the arrows' handler, points", {
+    w <- pedkindraw::drawPedigreeDiagram(layPointed)
+    rows <- w$x$legend$nodes
+    paste(paste(intersect(c("Proband", "Consultand"), rows$label),
+                collapse = " "),
+          grepl("n.proband === true", w$x$events$afterDrawing, fixed = TRUE),
+          paste(w$x$nodes$id[startsWith(w$x$nodes$id, "__mark_")],
+                collapse = " "))
+  })
   probe(case, "kinship2 pedigree() arguments",
         names(formals(kinship2::pedigree)))
 }
