@@ -23,13 +23,13 @@ example draws the whole pedigree with the animals removed filled; R125-R126). Ph
 `makePedigreeMatingLayout()` returns the hints it used, passed back the same layout; R127-R128). Phase G11 DONE
 (S52: `getNearRelativePedigree()`, the relatives within a distance of chosen animals, as Pedixplorer's
 `useful_inds(max_dist = )` keeps them; R129-R130). Phase G12 DONE (S53: `conditionThresholds`, a measured trait
-drawn by a cut-off with the rule in the legend; R131-R132). Phase G13 begun (S54: its first mark of six, a genotyped
+drawn by a cut-off with the rule in the legend; R131-R132). Phase G13 DONE (S54: its first mark of six, a genotyped
 animal's outline drawn 4 px wide from a column `genotyped`; R133-R134; S55: its second, a black dot at the centre
 of a carrier's symbol from a column `carrier`; R135; S56: its third, an arrow at the lower left of a proband's and
 a consultand's symbol, "P" beside a proband's; R136; S57: its fourth, a black star to the right of the upper-right
 corner of an evaluated animal's symbol; R137; S58: its fifth, a line and bars under an infertile animal's symbol,
-its id moved below them; R138). Next: G13's last mark, miscarriage (that plan's section 5.1; R133), then G14-G17
-before 17g.
+its id moved below them; R138; S59: its sixth and last, a miscarriage drawn as a small triangle; R139). Next: G14,
+symbol and text sizes and spacing as arguments (that plan's section 5.1), then G15-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -649,6 +649,14 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   in, and "Infertile" and "No offspring" legend rows in `drawPedigreeDiagram()`; copied code changed, with
   `DIVERGENCE.md` sentences. Commits `2574518` (RED) to `036d148` (REFACTOR, the bad-values text and the
   node-to-animal lookup shared); fidelity 600 of 600 with no set-aside. One mark left (R133).
+- **G13, mark 6 of 6 (S59; R139):** a column `miscarriage` read by `makePedigreeMatingLayout()` in Pedixplorer's
+  words and values: a miscarriage drawn as a triangle 0.6 the size of its symbol, a termination's and an ectopic
+  pregnancy's with a line across it and an ectopic pregnancy's with "ECT" under it, the id moved into its row, no
+  deceased slash, its hover line, invisible points that keep the view's room as for a full-size symbol, a stop on a
+  miscarriage that is a parent or has a fertility mark, and "Miscarriage", "Termination" and "Ectopic" legend rows
+  in `drawPedigreeDiagram()`; copied code changed, with `DIVERGENCE.md` sentences. Commits `035f011` (RED) to
+  `328f865` (REFACTOR, the reader of a column of words and the naming of up to five animals shared); fidelity 600
+  of 600 with no set-aside. Phase G13 DONE (R133: six sessions).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

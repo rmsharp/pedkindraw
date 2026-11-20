@@ -33,10 +33,9 @@ offspring's links to them, is done (S48, R120-R122), G8, aligned generations in 
 R123-R124), G9, an example drawing the animals `shrinkPedigree()` removed, is done (S50, R125-R126), G10, the layout
 returning the hints it used, is done (S51, R127-R128), G11, the relatives within a distance of chosen animals, is
 done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R131-R132), and G13, Pedixplorer's
-marks, is under way: its first of six, the genotyped mark, is done (S54, R133-R134), its second, the carrier mark,
-is done (S55, R135), its third, the proband and consultand marks, is done (S56, R136), its fourth, the evaluated
-mark, is done (S57, R137), its fifth, the infertile mark, is done (S58, R138), and the miscarriage mark is next
-(Planned, below).
+marks, is done: the genotyped mark (S54, R133-R134), the carrier mark (S55, R135), the proband and consultand marks
+(S56, R136), the evaluated mark (S57, R137), the infertile mark (S58, R138) and the miscarriage mark (S59, R139);
+G14, symbol and text sizes and spacing as arguments, is next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -70,8 +69,8 @@ session each unless marked. They follow the copy slices.
   (aligned generations in `findGeneration()`) is done (S49); G9 (an example marking the animals
   `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); G11 (the
   relatives within a distance of chosen animals) is done (S52); G12 (a measured trait drawn by a cut-off) is
-  done (S53); G13 (Pedixplorer's marks) is under way, the genotyped mark done (S54), the carrier mark done
-  (S55), proband with consultand done (S56), evaluated done (S57), infertile done (S58), miscarriage next,
+  done (S53); G13 (Pedixplorer's marks) is done, the genotyped mark (S54), the carrier mark (S55), proband with
+  consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes and spacing) next,
   then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
@@ -250,6 +249,16 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G13, mark 6 of 6: the miscarriage mark (pedkindraw S59, 2026-11-20).** Pedixplorer draws a miscarriage
+  as a triangle in place of its symbol, with a line across a termination's and an ectopic pregnancy's and "ECT"
+  under the latter's; pedkindraw ignored such a column, and its full-size triangle means the Unknown sex.
+  `makePedigreeMatingLayout()` now reads a column `miscarriage` in Pedixplorer's words and values: each miscarriage
+  is drawn as a triangle 0.6 the size, so it is not the Unknown sex's, with Pedixplorer's line and "ECT", its id in
+  the row of the others and no deceased slash; hovering says "Miscarriage:" and the kind, and the legend gains
+  rows "Miscarriage", "Termination" and "Ectopic". A miscarriage that is a parent or has a fertility mark stops.
+  Mark's picks: Pedixplorer's column and values; the small triangle with the id in its row; the stop, as
+  Pedixplorer refuses both; three legend rows of short words (R139). The fidelity cases 600 of 600, nothing set
+  aside. Phase G13, Pedixplorer's seven marks, is DONE in six sessions.
 - **Phase G13, mark 5 of 6: the infertile mark (pedkindraw S58, 2026-11-20).** Pedixplorer marks an infertile animal
   with a line down from its symbol and two bars, and one with no offspring by choice or for an unknown reason with
   a line and one bar; pedkindraw ignored such a column. `makePedigreeMatingLayout()` now reads a column `fertility`

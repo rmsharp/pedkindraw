@@ -23,16 +23,16 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G13-G17: the other gaps, before the release** (READY in order, G13 under way; Effort L altogether, 16-26
-      sessions, a guess, the sum of the rows with G13's 1 left by R133; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
+- [ ] **Phases G14-G17: the other gaps, before the release** (READY in order, G14 next; Effort L altogether, 15-25
+      sessions, a guess, the sum of the rows; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
       DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
       DONE in S52, R129-R130, 1 session of the row's 2-3; G12 DONE in S53, R131-R132, 1 session of the row's 2-3; G13's first mark of six, genotyped, DONE in S54, R133-R134;
       its second, carrier, DONE in S55, R135; its third, proband with consultand, DONE in S56, R136; its fourth,
-      evaluated, DONE in S57, R137; its fifth, infertile, DONE in S58, R138; next its miscarriage mark, the last,
-      R133) --
+      evaluated, DONE in S57, R137; its fifth, infertile, DONE in S58, R138; its sixth and last, miscarriage,
+      DONE in S59, R139, so G13 DONE in six sessions, R133; next G14, sizes and spacing) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
-      commands and surface: G13-G14 the M additions (B3's marks, B5's sizes); G15-G17
+      commands and surface: G14 the last M addition (B5's sizes; G13, B3's marks, DONE); G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
 
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
