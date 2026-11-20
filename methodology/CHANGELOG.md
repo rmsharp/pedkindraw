@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-20 · [BL-Phase G14] S60: Phase G14, B5's sizes and spacing, session 1 of 2-3 (in progress)
+- **Change:** session claimed (Mark's pick "G14: sizes and spacing (Recommended)" at the orient picker): R97's order, the next gap phase (`docs/planning/gaps-and-shared-code-plan.md:375`), strict TDD; measure first (Learnings 17-21), a pre-RED picker choosing the settings, whether hatching is in and the split, RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier dc1831e is HEAD; no merges; S59's receipt complete, its ratchet citation matching the results file); drift 91/21/0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S59's runs: site 44789023890 success (pages 44789498313 success), R-CMD-check 44789024082 in progress, four jobs success, Ubuntu R-devel still running.
+- **Commit/PR:** the claim commit · **Session:** S60 · **Verified:** pending (close-out).
+
 ### 2026-11-20 · [BL-Phase G13] S59 push 1: `master` to GitHub at close-out 2 (S59's claim, G13 mark 6, close-out 1-2)
 - **Change:** `git push origin master` (`95d5b3b..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S58's push runs, finished during S59: site `44770828110` `success` (pages `44771470634` `success`); CI `44770828371` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors "lazy loading failed" while installing dependencies, before pedkindraw is checked), the other four jobs `success`.
 - **Commit/PR:** none (push) · **Session:** S59 · **Verified:** the push's output; S58's runs by `gh run view`.

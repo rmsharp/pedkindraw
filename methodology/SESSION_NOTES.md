@@ -135,6 +135,18 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S58's entries were removed in S3-S59 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 60 Did
+**Deliverable:** Phase G14, B5's symbol and text sizes and spacing as arguments (IN PROGRESS; 2-3 sessions, this
+the first, closing at a clean phase boundary)
+**Started:** 2026-11-20 12:25 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G14: sizes and spacing
+(Recommended)" (orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (the gap case `style` for kinship2's and
+Pedixplorer's arguments; what is fixed in pedkindraw today; which function would take each setting, each default
+leaving 600 of 600; each setting drawn in headless Chrome at 500 px in both edge styles with all seven marks on;
+room to the widget's box; what kinship2 and Pedixplorer do at each value; hatching; the session split).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 58 Handoff Evaluation (by Session 59)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(f) was the session's plan item for item: Pedixplorer's four levels,

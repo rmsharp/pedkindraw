@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S60
+date: 2026-11-20
+status: pending
+active_task: Phase G14 (B5), symbol and text sizes and spacing as arguments to the drawing, 2-3 sessions, this the first (docs/planning/gaps-and-shared-code-plan.md:375; R97; methodology/BACKLOG.md:26): measure first, a pre-RED picker choosing the settings, hatching and the split, then RED, GREEN, REFACTOR by the gates
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S59
 date: 2026-11-20
 status: complete
