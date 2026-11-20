@@ -30,7 +30,9 @@ issues).*
       DONE in S52, R129-R130, 1 session of the row's 2-3; G12 DONE in S53, R131-R132, 1 session of the row's 2-3; G13's first mark of six, genotyped, DONE in S54, R133-R134;
       its second, carrier, DONE in S55, R135; its third, proband with consultand, DONE in S56, R136; its fourth,
       evaluated, DONE in S57, R137; its fifth, infertile, DONE in S58, R138; its sixth and last, miscarriage,
-      DONE in S59, R139, so G13 DONE in six sessions, R133; next G14, sizes and spacing) --
+      DONE in S59, R139, so G13 DONE in six sessions, R133; G14's first session, the symbol size, DONE in S60,
+      R140, the four settings and their order picked there; next G14's text size, then its spacing and line
+      width) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14 the last M addition (B5's sizes; G13, B3's marks, DONE); G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.

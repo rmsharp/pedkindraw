@@ -35,7 +35,8 @@ returning the hints it used, is done (S51, R127-R128), G11, the relatives within
 done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R131-R132), and G13, Pedixplorer's
 marks, is done: the genotyped mark (S54, R133-R134), the carrier mark (S55, R135), the proband and consultand marks
 (S56, R136), the evaluated mark (S57, R137), the infertile mark (S58, R138) and the miscarriage mark (S59, R139);
-G14, symbol and text sizes and spacing as arguments, is next (Planned, below).
+G14, symbol and text sizes, spacing and line width as arguments, is under way: the symbol size is done (S60, R140),
+the text size is next, then the spacing and the line width (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -70,7 +71,8 @@ session each unless marked. They follow the copy slices.
   `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); G11 (the
   relatives within a distance of chosen animals) is done (S52); G12 (a measured trait drawn by a cut-off) is
   done (S53); G13 (Pedixplorer's marks) is done, the genotyped mark (S54), the carrier mark (S55), proband with
-  consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes and spacing) next,
+  consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes, spacing and line
+  width) under way, the symbol size done (S60), the text size next, then the spacing and the line width,
   then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
@@ -249,6 +251,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G14, session 1 of 3: the symbol size (pedkindraw S60, 2026-11-20).** kinship2 and Pedixplorer take a
+  symbol size; pedkindraw drew every animal 25 units across. `makePedigreeMatingLayout(symbolSize = )` now sets it
+  as a multiple of that size, as their `symbolsize` does: the layout works its line detours out from it, and the
+  drawing moves the infertile and miscarriage ids in proportion and keeps a full-size symbol's room for smaller
+  symbols, so long ids at the edges are not cut. Mark's picks: four settings (symbol size, text size, spacing,
+  line width) as multiples in the layout, none of B5's others, one a session, the symbol size first (R140). The
+  fidelity cases 600 of 600, nothing set aside.
 - **Phase G13, mark 6 of 6: the miscarriage mark (pedkindraw S59, 2026-11-20).** Pedixplorer draws a miscarriage
   as a triangle in place of its symbol, with a line across a termination's and an ectopic pregnancy's and "ECT"
   under the latter's; pedkindraw ignored such a column, and its full-size triangle means the Unknown sex.
