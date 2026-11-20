@@ -198,6 +198,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S55
+date: 2026-11-19
+status: pending
+active_task: Phase G13, mark 2 of 6 (R133): the carrier, a column the layout reads, a mark drawn at the symbol's centre (Pedixplorer: a black point) and a legend row (docs/planning/gaps-and-shared-code-plan.md:373; R97; methodology/BACKLOG.md:26): measure first (the compared CSVs' columns; Pedixplorer's NA and help; looks in headless Chrome at 500 px with pixel counts, colour and greyscale, on a filled symbol, on the section lines' meeting point, under the deceased slash; NA and the hover line; the legend picture and its height; the column reader), a pre-RED picker, RED, GREEN, REFACTOR by the gates; strict TDD; Mark's pick "G13: carrier mark (Recommended)"
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S54
 date: 2026-11-19
 status: complete

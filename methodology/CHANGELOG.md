@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-19 · [BL-Phase G13] S55: Phase G13, mark 2 of 6, the carrier mark (in progress)
+- **Change:** session claimed (Mark's pick "G13: carrier mark (Recommended)" at the orient picker): R133's order (`docs/planning/gaps-and-shared-code-plan.md:373`), strict TDD; measure first (Learnings 17-21: the compared CSVs' columns, dragon 40; Pedixplorer's carrier with NA and its help, results only; looks in headless Chrome at 500 px with pixel counts, colour and greyscale, on a pink fill, on the section lines' meeting point, under the deceased slash; NA and the hover line; the legend picture and its height; the column reader), then a pre-RED picker, RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier `b35a20f` is HEAD, S54's close-out 2; no merges; S54's receipt complete, its ratchet citation matching the results file, `42b564bc4c70`); drift tool 91 functions, 21 differ, 0 without a row; nprcgenekeepr's log on the copied files the same 4 commits (nprcgenekeepr at `3e06730c5`, tree clean); S54's push runs in progress at Orient (CI `44642239812`, site `44642239787`).
+- **Commit/PR:** the claim commit · **Session:** S55 · **Verified:** pending (close-out).
+
 ### 2026-11-19 · [BL-Phase G13] S54 push 1: `master` to GitHub at close-out 2 (S54's claim, G13 mark 1, close-out 1-2)
 - **Change:** `git push origin master` (`47d0bbd..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S53's push runs, finished during S54: site `44632050743` `success`; CI `44632050838` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors 0.50.3 again fails to build on R-devel, "lazy loading failed", while installing dependencies, before pedkindraw is checked), the other four jobs `success`.
 - **Commit/PR:** none (push) · **Session:** S54 · **Verified:** the push's output; S53's runs by `gh run view`.

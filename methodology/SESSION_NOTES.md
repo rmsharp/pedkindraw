@@ -115,6 +115,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S53's entries were removed in S3-S54 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 55 Did
+**Deliverable:** Phase G13, mark 2 of 6: the carrier mark (IN PROGRESS)
+**Started:** 2026-11-19 18:26 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G13: carrier mark (Recommended)"
+(orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (the carrier's look, its NA, its legend row, the
+column's name).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 53 Handoff Evaluation (by Session 54)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(e) was the session's plan: the gap case printed exactly what it said
