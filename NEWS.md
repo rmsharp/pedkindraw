@@ -182,6 +182,23 @@ code, `DIVERGENCE.md` in the repository says how and why.
   id starting `__size_` is now refused, as the other reserved prefixes are.
   Anything but one positive number stops. nprcgenekeepr has no such
   argument. At 1 every layout and drawing is as before.
+* New: `makePedigreeMatingLayout(textSize = )` sets the size of the
+  animals' ids and names as a multiple of the 14 px written before (1, the
+  default), as kinship2's and Pedixplorer's `cex` does: every node gets 14
+  times it as its `font.size`, rounded to a whole pixel. The marks' own words
+  (a proband's "P", an ectopic pregnancy's "ECT"), the twins' labels and the
+  symbols keep their sizes, and the layout's places and lines are the same at
+  every text size. With text larger than before, `drawPedigreeDiagram()`
+  keeps room for the outermost labels, so a long id at the edge is not cut
+  off (measured at 500 px: without that room the 10-character ids at the
+  edges lost 8-10 px at 1.4 and 27-29 px at 2), and an infertile animal's
+  and a miscarriage's moved id keeps its room below its mark. Since the
+  drawing zooms to fit, larger text leaves less room between the ids: an id
+  of 10 characters is 118 units wide at 1.4 and 165 at 2, and the animals in
+  a row are 120 apart. An id starting `__text_` is now refused, as the other
+  reserved prefixes are. Anything but one positive number stops.
+  nprcgenekeepr has no such argument. At 1 every layout and drawing is as
+  before.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's

@@ -608,6 +608,27 @@ cases$style <- function(case = "style") {
                                                       symbolSize = s)
           unique(lay$nodes$size[match(ped$id, lay$nodes$id)])
         }, integer(1L)))
+  ## Plan Phase G14 (pedkindraw S61, R140): the ids' size, a multiple of each
+  ## package's own: kinship2's widest id as a fraction of the distance
+  ## between two neighbours at cex 0.7, 1 and 1.4 (its symbol grows with cex
+  ## too), and pedkindraw's ids' size in pixels at textSize 0.7, 1 and 1.4
+  ## (no font.size column at 1: vis.js's own 14).
+  probe(case, "kinship2 widest id per neighbour distance at cex 0.7, 1, 1.4", {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    vapply(c(0.7, 1.0, 1.4), function(cx) {
+      drawn <- kinship2::plot.pedigree(k2Pedigree(ped), cex = cx)
+      xs <- sort(unique(round(drawn$x[!is.na(drawn$x)], 6L)))
+      round(max(graphics::strwidth(ped$id, cex = cx)) / min(diff(xs)), 3L)
+    }, numeric(1L))
+  })
+  probe(case, "pedkindraw id text px at textSize 0.7, 1, 1.4",
+        vapply(c(0.7, 1.0, 1.4), function(s) {
+          lay <- pedkindraw::makePedigreeMatingLayout(withGen(ped),
+                                                      textSize = s)
+          px <- lay$nodes$font.size
+          if (is.null(px)) 14L else unique(px[match(ped$id, lay$nodes$id)])
+        }, integer(1L)))
 }
 
 ## B6. Longer or several-line labels.
