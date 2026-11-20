@@ -21,6 +21,14 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-20 · [ad hoc] Ledger trim: `methodology/HANDOFFS.md` → `methodology/archive/HANDOFFS-through-2026-11-18.md` (19 record(s), 198,951 B → 92,002 B)
+
+**Written by:** `methodology_trim.py` v1.8.1 — a tool action, not a session's judgment.
+Moved the oldest **19** record(s) (2026-11-16 → 2026-11-18) out of [`methodology/HANDOFFS.md`](HANDOFFS.md) into
+[`methodology/archive/HANDOFFS-through-2026-11-18.md`](archive/HANDOFFS-through-2026-11-18.md). Losslessness is asserted by L1 (records-zone concatenation), L2 (zone
+pinning) and L3 (record partition), and is **re-derivable** — run [`methodology/archive/HANDOFFS-through-2026-11-18.md.verify.sh`](archive/HANDOFFS-through-2026-11-18.md.verify.sh)
+rather than trusting a digest printed here. Live file 198,951 B → 92,002 B (−53.8%).
+
 ### 2026-11-20 · [BL-Phase G14] S60 push 1: `master` to GitHub at close-out 2 (S60's claim, G14 session 1, close-out 1-2, the HANDOFFS.md archive)
 - **Change:** `git push origin master` (`dc1831e..` the archive commit), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S59's push runs, finished during S60: site `44789023890` `success` (pages `44789498313` `success`); CI `44789024082` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors "unable to load R code in package" while installing dependencies, before pedkindraw is checked), the other four jobs `success`.
 - **Commit/PR:** none (push) · **Session:** S60 · **Verified:** the push's output; S59's runs by `gh run view`.
