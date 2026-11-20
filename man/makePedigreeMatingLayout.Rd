@@ -38,7 +38,13 @@ reads (\code{"TRUE"}, \code{"false"}, \code{"T"}). A genotyped animal's
 symbol is drawn with its outline 4 pixels wide, every other symbol's 1
 (see \code{borderWidth} in the returned \code{nodes}), and its hover text
 says \dQuote{Genotyped: Yes}, \dQuote{No} or \dQuote{Unknown}; any other
-value stops, naming the column, before any animal is left out.}
+value stops, naming the column, before any animal is left out. An
+optional \code{carrier} column marks the carriers, animals that have
+the genetic trait but are not expected to show the disease, in the same
+values: a carrier's symbol is drawn with a black dot at its centre (see
+\code{carrier} in the returned \code{nodes}), and its hover text says
+\dQuote{Carrier: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
+genotyped line.}
 
 \item{edgeStyle}{one of \code{"rectilinear"} (default), which routes
 mate-line and sibship-bar edges through invisible waypoint nodes so
@@ -171,7 +177,10 @@ animals' \code{color.background} is white, the sections carrying the
 color; \code{borderWidth} is added when \code{ped} has a
 \code{genotyped} column: 4 for the node of a genotyped animal and each of
 its repeat-appearance nodes, 1 for every other node, the width of the
-symbol's outline), \code{edges} (\code{from},
+symbol's outline; \code{carrier} is added when \code{ped} has a
+\code{carrier} column: \code{TRUE} for the node of a carrier and each
+of its repeat-appearance nodes, \code{FALSE} for every other node, never
+\code{NA}), \code{edges} (\code{from},
 \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
 and \code{width} columns are always present once any mating unit
