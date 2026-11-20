@@ -25,8 +25,9 @@ example draws the whole pedigree with the animals removed filled; R125-R126). Ph
 `useful_inds(max_dist = )` keeps them; R129-R130). Phase G12 DONE (S53: `conditionThresholds`, a measured trait
 drawn by a cut-off with the rule in the legend; R131-R132). Phase G13 begun (S54: its first mark of six, a genotyped
 animal's outline drawn 4 px wide from a column `genotyped`; R133-R134; S55: its second, a black dot at the centre
-of a carrier's symbol from a column `carrier`; R135). Next: G13's next mark, proband with consultand (that plan's
-section 5.1; R133), then G14-G17 before 17g.
+of a carrier's symbol from a column `carrier`; R135; S56: its third, an arrow at the lower left of a proband's and
+a consultand's symbol, "P" beside a proband's; R136). Next: G13's next mark, evaluated (that plan's section 5.1;
+R133), then G14-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -629,6 +630,12 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   centre of a carrier's symbol, its hover line, and a "Carrier" legend row in `drawPedigreeDiagram()`; copied code
   changed, with `DIVERGENCE.md` sentences. Commits `307d328` (RED) to `2726c82` (REFACTOR, the column reader and
   the node lookup shared in `R/markColumns.R`); fidelity 600 of 600 with no set-aside. Four marks left (R133).
+- **G13, mark 3 of 6 (S56; R136):** columns `proband` and `consultand` read by `makePedigreeMatingLayout()`: a black
+  arrow at the lower left of each such animal's symbol, "P" beside a proband's, an animal marked both stopping, the
+  hover lines, invisible points so the view takes the arrows in, and "Proband" and "Consultand" legend rows in
+  `drawPedigreeDiagram()`; copied code changed, with `DIVERGENCE.md` sentences. Commits `31faecd` (RED) to
+  `ff7913f` (REFACTOR, the legend's picture row shared as `.markLegendRow()`); fidelity 600 of 600 with no
+  set-aside. Three marks left (R133).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

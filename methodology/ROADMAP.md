@@ -34,7 +34,8 @@ R123-R124), G9, an example drawing the animals `shrinkPedigree()` removed, is do
 returning the hints it used, is done (S51, R127-R128), G11, the relatives within a distance of chosen animals, is
 done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R131-R132), and G13, Pedixplorer's
 marks, is under way: its first of six, the genotyped mark, is done (S54, R133-R134), its second, the carrier mark,
-is done (S55, R135), and the proband and consultand marks are next (Planned, below).
+is done (S55, R135), its third, the proband and consultand marks, is done (S56, R136), and the evaluated mark is
+next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -69,7 +70,7 @@ session each unless marked. They follow the copy slices.
   `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); G11 (the
   relatives within a distance of chosen animals) is done (S52); G12 (a measured trait drawn by a cut-off) is
   done (S53); G13 (Pedixplorer's marks) is under way, the genotyped mark done (S54), the carrier mark done
-  (S55), proband with consultand next,
+  (S55), proband with consultand done (S56), evaluated next,
   then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
@@ -248,6 +249,15 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G13, mark 3 of 6: the proband and consultand marks (pedkindraw S56, 2026-11-19).** Pedixplorer marks the
+  proband, the affected animal through whom the family came to attention, with an arrow and "P", and the
+  consultand, for whom counselling or testing is sought, with the arrow alone; pedkindraw ignored such columns.
+  `makePedigreeMatingLayout()` now reads the columns `proband` and `consultand`: each such animal's symbol has a
+  black arrow pointing at it from the lower left, a proband's with "P", hovering says "Proband:" and "Consultand:"
+  "Yes", "No" or "Unknown", an animal marked both stops, and the legend gains rows "Proband" and "Consultand". The
+  drawing takes each arrow into its view, so one at the left edge is not cut off. Mark's picks: an arrow flatter
+  than Pedixplorer's, which would run along the deceased slash; the view widened; both marks on one animal
+  refused, as in Pedixplorer; two legend rows of the arrow (R136). The fidelity cases 600 of 600, nothing set aside.
 - **Phase G13, mark 2 of 6: the carrier mark (pedkindraw S55, 2026-11-19).** Pedixplorer marks a carrier, an
   animal that has the genetic trait but is not expected to show the disease, with a black point in its symbol;
   pedkindraw ignored any such column. `makePedigreeMatingLayout()` now reads a column `carrier`: a carrier's symbol

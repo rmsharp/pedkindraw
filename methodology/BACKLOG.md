@@ -23,13 +23,13 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G13-G17: the other gaps, before the release** (READY in order, G13 under way; Effort L altogether, 19-29
-      sessions, a guess, the sum of the rows with G13's 4 left by R133; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
+- [ ] **Phases G13-G17: the other gaps, before the release** (READY in order, G13 under way; Effort L altogether, 18-28
+      sessions, a guess, the sum of the rows with G13's 3 left by R133; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
       DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
       DONE in S52, R129-R130, 1 session of the row's 2-3; G12 DONE in S53, R131-R132, 1 session of the row's 2-3; G13's first mark of six, genotyped, DONE in S54, R133-R134;
-      its second, carrier, DONE in S55, R135; next its proband with consultand mark, then evaluated, infertile,
-      miscarriage, one kind a session, R133) --
+      its second, carrier, DONE in S55, R135; its third, proband with consultand, DONE in S56, R136; next its
+      evaluated mark, then infertile, miscarriage, one kind a session, R133) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G13-G14 the M additions (B3's marks, B5's sizes); G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
