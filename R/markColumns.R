@@ -10,7 +10,10 @@
 ## R/carrierMark.R (.carrierNodes()), unchanged but for their names. S56's
 ## REFACTOR added .markLegendRow(), the legend row of a mark drawn by a
 ## script, which the copied drawPedigreeDiagram() had written out for the
-## carrier, the proband and the consultand.
+## carrier, the proband and the consultand. S57's REFACTOR added .markField()
+## and .markRoom(), the invisible points that keep a mark drawn outside a
+## symbol inside the drawing, which .probandArrowRoom() (R/probandMark.R) and
+## .evaluatedStarRoom() (R/evaluatedMark.R) had each written out.
 
 #' Read a mark's column of a pedigree
 #'
@@ -111,4 +114,66 @@
     label = label, shape = "image", color.background = NA_character_,
     image = image, stringsAsFactors = FALSE
   )[shown, , drop = FALSE]
+}
+
+#' Which nodes have a mark's field TRUE
+#'
+#' Phase G13 (R136, R137). S57's REFACTOR, from \code{.probandArrowRoom()}.
+#' @param nodes the nodes to draw.
+#' @param column the field's name, such as \code{"proband"}.
+#' @return logical vector, one per node, never \code{NA}; all \code{FALSE}
+#'   when the nodes have no such field.
+#' @noRd
+.markField <- function(nodes, column) {
+  x <- nodes[[column]]
+  if (is.null(x)) logical(nrow(nodes)) else !is.na(x) & x
+}
+
+#' Invisible points beside the marked nodes
+#'
+#' Phase G13 (R136, R137). vis.js fits its view to the nodes with a twentieth
+#' of the range to spare on each side, so a mark a script draws outside a
+#' node's box (the proband's and the consultand's arrow, the evaluated star)
+#' could fall outside the canvas at the drawing's edge. This adds one point
+#' per marked node, invisible as the layout's routing points are (size 0, a
+#' transparent fill and outline, no label, every logical field
+#' \code{FALSE}), so vis.js's fit takes the marks in. S57's REFACTOR:
+#' \code{.probandArrowRoom()} and \code{.evaluatedStarRoom()} had the same
+#' lines.
+#' @param nodes the nodes to draw.
+#' @param marked logical vector, one per node: the nodes that get a point.
+#' @param prefix the start of each point's id, which its node's id follows; a
+#'   prefix the layout reserves (\code{.reservedIdPrefixes}).
+#' @param at where each point goes, \code{x} and \code{y} (y down), in units
+#'   of its node's \code{size} from the node's centre.
+#' @param shift a further shift of each point, \code{x} and \code{y}, in
+#'   units.
+#' @return \code{nodes} with one more row per marked node; \code{nodes}
+#'   itself when none is marked.
+#' @noRd
+.markRoom <- function(nodes, marked, prefix, at, shift) {
+  if (!any(marked)) {
+    return(nodes)
+  }
+  if (!"color.border" %in% names(nodes)) {
+    nodes$color.border <- NA_character_
+  }
+  room <- nodes[marked, , drop = FALSE]
+  for (column in names(room)) {
+    if (is.logical(room[[column]])) room[[column]] <- FALSE
+  }
+  room$id <- paste0(prefix, room$id)
+  room$label <- ""
+  room$shape <- "dot"
+  room$title <- NA_character_
+  room$x <- room$x + room$size * at[[1L]] + shift[[1L]]
+  room$y <- room$y + room$size * at[[2L]] + shift[[2L]]
+  room$size <- 0L
+  room$color.background <- "rgba(0,0,0,0)"
+  room$color.border <- "rgba(0,0,0,0)"
+  if ("affectedSections" %in% names(room)) room$affectedSections <- ""
+  if ("borderWidth" %in% names(room)) room$borderWidth <- 1L
+  out <- rbind(nodes, room)
+  rownames(out) <- NULL
+  out
 }

@@ -9,7 +9,9 @@
 ## .probandArrowHandler() after the carrier's dot, and the copied
 ## drawPedigreeDiagram() adds the points of .probandArrowRoom() and a
 ## "Proband" and a "Consultand" legend row (.probandLegendImage()) when an
-## animal is marked (DIVERGENCE.md).
+## animal is marked (DIVERGENCE.md). S57's REFACTOR: .probandArrowRoom()
+## builds its points with .markRoom() (R/markColumns.R), as
+## .evaluatedStarRoom() does.
 
 #' Where the arrow of a proband or a consultand is drawn
 #'
@@ -103,7 +105,8 @@
 #' level with it, invisible as the layout's routing points are (size 0, a
 #' transparent fill and outline, no label), so vis.js's fit takes the
 #' arrows in. Each point's id is \code{"__mark_"} and its node's id, a prefix
-#' the layout reserves (\code{.reservedIdPrefixes}).
+#' the layout reserves (\code{.reservedIdPrefixes}). The points are built by
+#' \code{.markRoom()} (S57's REFACTOR).
 #' @param nodes the layout's nodes.
 #' @param arrow see \code{.probandArrow}.
 #' @return \code{nodes} with one more row per node whose \code{proband} or
@@ -111,36 +114,8 @@
 #'   is none.
 #' @noRd
 .probandArrowRoom <- function(nodes, arrow = .probandArrow) {
-  flag <- function(column) {
-    x <- nodes[[column]]
-    if (is.null(x)) logical(nrow(nodes)) else !is.na(x) & x
-  }
-  marked <- flag("proband") | flag("consultand")
-  if (!any(marked)) {
-    return(nodes)
-  }
-  if (!"color.border" %in% names(nodes)) {
-    nodes$color.border <- NA_character_
-  }
-  tail <- .probandArrowTail(arrow)
-  room <- nodes[marked, , drop = FALSE]
-  for (column in names(room)) {
-    if (is.logical(room[[column]])) room[[column]] <- FALSE
-  }
-  room$id <- paste0("__mark_", room$id)
-  room$label <- ""
-  room$shape <- "dot"
-  room$title <- NA_character_
-  room$x <- room$x + room$size * tail[["x"]] - 12.0
-  room$y <- room$y + room$size * tail[["y"]]
-  room$size <- 0L
-  room$color.background <- "rgba(0,0,0,0)"
-  room$color.border <- "rgba(0,0,0,0)"
-  if ("affectedSections" %in% names(room)) room$affectedSections <- ""
-  if ("borderWidth" %in% names(room)) room$borderWidth <- 1L
-  out <- rbind(nodes, room)
-  rownames(out) <- NULL
-  out
+  marked <- .markField(nodes, "proband") | .markField(nodes, "consultand")
+  .markRoom(nodes, marked, "__mark_", .probandArrowTail(arrow), c(-12.0, 0.0))
 }
 
 #' The legend's picture of a proband or a consultand: the arrow

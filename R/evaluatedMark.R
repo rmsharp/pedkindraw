@@ -8,6 +8,8 @@
 ## .evaluatedStarHandler() last, and the copied drawPedigreeDiagram() adds
 ## the points of .evaluatedStarRoom() and an "Evaluated" legend row
 ## (.evaluatedLegendImage()) when an animal is evaluated (DIVERGENCE.md).
+## S57's REFACTOR: .evaluatedStarRoom() builds its points with .markRoom()
+## (R/markColumns.R), as .probandArrowRoom() does.
 
 #' Where the evaluated star is drawn
 #'
@@ -74,39 +76,16 @@
 #' \dQuote{*}, invisible as the layout's routing points are (size 0, a
 #' transparent fill and outline, no label), so vis.js's fit takes the stars
 #' in. Each point's id is \code{"__eval_"} and its node's id, a prefix the
-#' layout reserves (\code{.reservedIdPrefixes}).
+#' layout reserves (\code{.reservedIdPrefixes}). The points are built by
+#' \code{.markRoom()} (S57's REFACTOR).
 #' @param nodes the nodes to draw.
 #' @param star see \code{.evaluatedStar}.
 #' @return \code{nodes} with one more row per node whose \code{evaluated}
 #'   field is \code{TRUE}; \code{nodes} itself when there is none.
 #' @noRd
 .evaluatedStarRoom <- function(nodes, star = .evaluatedStar) {
-  x <- nodes[["evaluated"]]
-  marked <- if (is.null(x)) logical(nrow(nodes)) else !is.na(x) & x
-  if (!any(marked)) {
-    return(nodes)
-  }
-  if (!"color.border" %in% names(nodes)) {
-    nodes$color.border <- NA_character_
-  }
-  room <- nodes[marked, , drop = FALSE]
-  for (column in names(room)) {
-    if (is.logical(room[[column]])) room[[column]] <- FALSE
-  }
-  room$id <- paste0("__eval_", room$id)
-  room$label <- ""
-  room$shape <- "dot"
-  room$title <- NA_character_
-  room$x <- room$x + room$size * (star$x + star$r) + 2.0
-  room$y <- room$y + room$size * (star$y - star$r) - 2.0
-  room$size <- 0L
-  room$color.background <- "rgba(0,0,0,0)"
-  room$color.border <- "rgba(0,0,0,0)"
-  if ("affectedSections" %in% names(room)) room$affectedSections <- ""
-  if ("borderWidth" %in% names(room)) room$borderWidth <- 1L
-  out <- rbind(nodes, room)
-  rownames(out) <- NULL
-  out
+  .markRoom(nodes, .markField(nodes, "evaluated"), "__eval_",
+            c(star$x + star$r, star$y - star$r), c(2.0, -2.0))
 }
 
 #' The legend's picture of an evaluated animal: the star
