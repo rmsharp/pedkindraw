@@ -53,7 +53,13 @@ pointing at its symbol from the lower left, a proband's with
 returned \code{nodes}), and the hover text says \dQuote{Proband:} and
 \dQuote{Consultand:} \dQuote{Yes}, \dQuote{No} or \dQuote{Unknown},
 one line for each column, after the carrier line. An animal marked both
-stops, naming it, before any animal is left out.}
+stops, naming it, before any animal is left out. An optional
+\code{evaluated} column, in the same values, marks the animals with a
+documented evaluation: each is drawn with a black \dQuote{*} to the
+right of the upper-right corner of its symbol (see \code{evaluated} in
+the returned \code{nodes}), and its hover text says
+\dQuote{Evaluated: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
+consultand line.}
 
 \item{edgeStyle}{one of \code{"rectilinear"} (default), which routes
 mate-line and sibship-bar edges through invisible waypoint nodes so
@@ -189,8 +195,9 @@ its repeat-appearance nodes, 1 for every other node, the width of the
 symbol's outline; \code{carrier} is added when \code{ped} has a
 \code{carrier} column: \code{TRUE} for the node of a carrier and each
 of its repeat-appearance nodes, \code{FALSE} for every other node, never
-\code{NA}; \code{proband} and \code{consultand} likewise, each added
-when \code{ped} has that column), \code{edges} (\code{from},
+\code{NA}; \code{proband}, \code{consultand} and \code{evaluated}
+likewise, each added when \code{ped} has that column), \code{edges}
+(\code{from},
 \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
 and \code{width} columns are always present once any mating unit
