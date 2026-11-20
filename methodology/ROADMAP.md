@@ -34,8 +34,9 @@ R123-R124), G9, an example drawing the animals `shrinkPedigree()` removed, is do
 returning the hints it used, is done (S51, R127-R128), G11, the relatives within a distance of chosen animals, is
 done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R131-R132), and G13, Pedixplorer's
 marks, is under way: its first of six, the genotyped mark, is done (S54, R133-R134), its second, the carrier mark,
-is done (S55, R135), its third, the proband and consultand marks, is done (S56, R136), and the evaluated mark is
-next (Planned, below).
+is done (S55, R135), its third, the proband and consultand marks, is done (S56, R136), its fourth, the evaluated
+mark, is done (S57, R137), its fifth, the infertile mark, is done (S58, R138), and the miscarriage mark is next
+(Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -70,7 +71,7 @@ session each unless marked. They follow the copy slices.
   `shrinkPedigree()` removed) is done (S50); G10 (the layout returns the hints it used) is done (S51); G11 (the
   relatives within a distance of chosen animals) is done (S52); G12 (a measured trait drawn by a cut-off) is
   done (S53); G13 (Pedixplorer's marks) is under way, the genotyped mark done (S54), the carrier mark done
-  (S55), proband with consultand done (S56), evaluated next,
+  (S55), proband with consultand done (S56), evaluated done (S57), infertile done (S58), miscarriage next,
   then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
@@ -249,6 +250,15 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G13, mark 5 of 6: the infertile mark (pedkindraw S58, 2026-11-20).** Pedixplorer marks an infertile animal
+  with a line down from its symbol and two bars, and one with no offspring by choice or for an unknown reason with
+  a line and one bar; pedkindraw ignored such a column. `makePedigreeMatingLayout()` now reads a column `fertility`
+  in Pedixplorer's words and values: each such animal's symbol has its mark, the animal's id moves down below it,
+  hovering says "Fertility:" and the kind, and the legend gains rows "Infertile" and "No offspring". The drawing
+  takes each moved id into its view, so one at the bottom edge is not cut off. Mark's picks: Pedixplorer's column
+  and values; the mark under the symbol with the id moved, Pedixplorer's picture; an infertile parent drawn as
+  recorded (Pedixplorer refuses it; a colony animal can be sterilised after it has bred); legend rows of the mark
+  alone (R138). The fidelity cases 600 of 600, nothing set aside.
 - **Phase G13, mark 4 of 6: the evaluated mark (pedkindraw S57, 2026-11-20).** Pedixplorer marks an animal with a
   documented evaluation with a "\*" beside its symbol; pedkindraw ignored such a column.
   `makePedigreeMatingLayout()` now reads a column `evaluated`: each evaluated animal's symbol has a black star to
