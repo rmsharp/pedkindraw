@@ -31,8 +31,8 @@ issues).*
       its second, carrier, DONE in S55, R135; its third, proband with consultand, DONE in S56, R136; its fourth,
       evaluated, DONE in S57, R137; its fifth, infertile, DONE in S58, R138; its sixth and last, miscarriage,
       DONE in S59, R139, so G13 DONE in six sessions, R133; G14's first session, the symbol size, DONE in S60,
-      R140, the four settings and their order picked there; next G14's text size, then its spacing and line
-      width) --
+      R140, the four settings and their order picked there; its second, the text size, DONE in S61, R140; next
+      G14's spacing and line width) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14 the last M addition (B5's sizes; G13, B3's marks, DONE); G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
@@ -75,6 +75,15 @@ issues).*
       renames the column. Choose by picker: `asPedFrame()` also writes `genotyped` from `avail`, or says so in its
       help and the drawing vignette, or nothing. Also measured: text "1" and "0" (a CSV read with every column as
       text) stops, as R134 says; numbers 1 and 0 read.
+
+- [ ] **Long names at the drawing's edges are cut at the default text size** (NEEDS DECISION, Effort S; found S61,
+      G14, R140) -- vis.js's fit leaves out a label's overhang past its symbol (the gaps plan's dragons 57 and 63),
+      and at `textSize = 1` nothing keeps room for it: measured S61 in headless Chrome at 500 px, a sibship's
+      15-character names (`maxNameChars`' default) at both edges were cut by 4.1 and 6.3 px in both edge styles
+      (3-letter names had 26-30 px to spare). `.textSizeRoom()` (`R/textSize.R`) keeps labels inside only above
+      14 px (the same names at 1.4: 16.8 and 16.3 px inside), so that every drawing at 1 stays as before. Choose
+      by picker: the same points at 14 px when a label reaches past its symbol (count first the comparison cases
+      with names, whose drawings would change), or say so in the help, or nothing.
 
 - [ ] **Correct pedkindraw's `smallPed` fixture after nprcgenekeepr corrects its dataset** (READY since nprcgenekeepr's
       S1189 finished N1, R99: its `0e2bc137e` corrects `smallPed`'s generations, found at S44's Orient; Effort S) --

@@ -36,7 +36,7 @@ done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R
 marks, is done: the genotyped mark (S54, R133-R134), the carrier mark (S55, R135), the proband and consultand marks
 (S56, R136), the evaluated mark (S57, R137), the infertile mark (S58, R138) and the miscarriage mark (S59, R139);
 G14, symbol and text sizes, spacing and line width as arguments, is under way: the symbol size is done (S60, R140),
-the text size is next, then the spacing and the line width (Planned, below).
+the text size is done (S61, R140), and the spacing and the line width are next (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -72,8 +72,8 @@ session each unless marked. They follow the copy slices.
   relatives within a distance of chosen animals) is done (S52); G12 (a measured trait drawn by a cut-off) is
   done (S53); G13 (Pedixplorer's marks) is done, the genotyped mark (S54), the carrier mark (S55), proband with
   consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes, spacing and line
-  width) under way, the symbol size done (S60), the text size next, then the spacing and the line width,
-  then
+  width) under way, the symbol size done (S60), the text size done (S61), the spacing and the line width
+  next, then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
@@ -251,6 +251,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G14, session 2 of 3: the text size (pedkindraw S61, 2026-11-20).** kinship2 and Pedixplorer take a
+  text size; pedkindraw wrote every id and name at vis.js's 14 pixels. `makePedigreeMatingLayout(textSize = )`
+  now sets it as a multiple of that size, as their `cex` does, the layout's places and lines unchanged; with
+  larger text the drawing keeps room for the outermost labels, so long ids at the edges are not cut, and the
+  infertile and miscarriage ids keep their room below their marks. Mark's picks: invisible points at the outermost
+  labels' ends; the marks' words and the twins' labels keep their sizes (R140). The fidelity cases 600 of 600,
+  nothing set aside.
 - **Phase G14, session 1 of 3: the symbol size (pedkindraw S60, 2026-11-20).** kinship2 and Pedixplorer take a
   symbol size; pedkindraw drew every animal 25 units across. `makePedigreeMatingLayout(symbolSize = )` now sets it
   as a multiple of that size, as their `symbolsize` does: the layout works its line detours out from it, and the

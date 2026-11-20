@@ -29,8 +29,9 @@ of a carrier's symbol from a column `carrier`; R135; S56: its third, an arrow at
 a consultand's symbol, "P" beside a proband's; R136; S57: its fourth, a black star to the right of the upper-right
 corner of an evaluated animal's symbol; R137; S58: its fifth, a line and bars under an infertile animal's symbol,
 its id moved below them; R138; S59: its sixth and last, a miscarriage drawn as a small triangle; R139). Phase G14
-under way (S60: the symbol size, `makePedigreeMatingLayout(symbolSize = )`, the first of its three sessions; R140).
-Next: G14's text size, then its spacing and line width (that plan's section 5.1), then G15-G17 before 17g.
+under way (S60: the symbol size, `makePedigreeMatingLayout(symbolSize = )`, the first of its three sessions; R140;
+S61: the text size, `textSize`, the second). Next: G14's spacing and line width (that plan's section 5.1), then
+G15-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -664,6 +665,12 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   and keeps a full-size symbol's room below full size; copied code changed, with `DIVERGENCE.md` sentences.
   Commits `0c1c72e` (RED) to `5a88e6b` (REFACTOR, the scaled id move shared); fidelity 600 of 600 with no
   set-aside. The text size, then the spacing and the line width, follow (R140).
+- **G14, session 2 of 3, the text size (S61; R140):** `makePedigreeMatingLayout(textSize = 1)`, the ids' and
+  names' size as a multiple of vis.js's 14 px (`font.size` on every node when not 14), a stop on anything but one
+  positive number; `drawPedigreeDiagram()` keeps room for the outermost labels above 14 px and the moved ids' room
+  by vis.js's label depth; the marks' words and the twins' labels keep their sizes; copied code changed, with
+  `DIVERGENCE.md` sentences. Commits `4026c5f` (RED) to `68b7bc1` (REFACTOR, one check for each size setting);
+  fidelity 600 of 600 with no set-aside. The spacing and the line width follow (R140).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
