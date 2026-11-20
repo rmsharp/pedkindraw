@@ -13,7 +13,8 @@ makePedigreeMatingLayout(
   maxNameChars = 15,
   conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73"),
   conditionThresholds = NULL,
-  symbolSize = 1
+  symbolSize = 1,
+  textSize = 1
 )
 }
 \arguments{
@@ -219,6 +220,22 @@ larger drawing: measured at 500 pixels, from 2 the symbols reach the
 lines and the mating points and long ids reach the marks beside them,
 and at 3 the rectilinear layout warns that it could not clear every
 symbol. Stops unless it is one positive number.}
+
+\item{textSize}{the size of the animals' ids and names, as a multiple of
+the 14 pixels written before this argument (1, the default), as
+kinship2's and Pedixplorer's \code{cex} is: every node gets 14 times
+it in \code{font.size}, rounded to a whole pixel and at least 1, unless
+that is 14. The marks' own words (a proband's \dQuote{P}, an ectopic
+pregnancy's \dQuote{ECT}) and the twins' labels keep their sizes, and
+so do the symbols (\code{symbolSize} sets theirs; kinship2's and
+Pedixplorer's grow with \code{cex}). The layout's places and lines are
+the same at every text size, and \code{\link{drawPedigreeDiagram}}
+keeps larger labels inside the drawing and an infertile animal's and a
+miscarriage's moved id clear of the drawing's bottom edge. The drawing
+zooms to fit, so larger text leaves less room between the ids: an id
+of 10 characters is 118 units wide at 1.4 and 165 at 2, and the
+animals in a row are 120 apart. Stops unless it is one positive
+number.}
 }
 \value{
 A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
@@ -251,7 +268,8 @@ other node, never \code{NA}; \code{miscarriage} is added when \code{ped}
 has a \code{miscarriage} column: \code{"SAB"}, \code{"TOP"} or
 \code{"ECT"} for the node of such an animal and each of its
 repeat-appearance nodes, \code{""} for every other node, never
-\code{NA}), \code{edges}
+\code{NA}; \code{font.size} is added when \code{textSize} gives other
+than 14 pixels: that size, for every node), \code{edges}
 (\code{from},
 \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
