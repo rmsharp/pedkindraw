@@ -14,6 +14,8 @@
 ## .readFertility() reads the column with .readWordColumn()
 ## (R/markColumns.R), as .readMiscarriage() does. S60 (plan Phase G14,
 ## R140): .infertileRoom() moves the id in proportion to the node's size.
+## S60's REFACTOR: the move by .sizedIdDown() (R/symbolSize.R), the point
+## moved with it by .markRoom()'s down.
 
 #' The fertility values read, and what each means
 #'
@@ -179,12 +181,10 @@
 #' @noRd
 .infertileRoom <- function(nodes, mark = .infertileMark) {
   marked <- nodes[["fertility"]] %in% c("infertile", "infertile_choice_na")
-  idDown <- as.integer(round(mark$idDown * nodes$size / .fullSymbolSize))
+  idDown <- .sizedIdDown(mark$idDown, nodes$size)
   nodes$font.vadjust <- ifelse(marked, idDown, 0L)
-  out <- .markRoom(nodes, marked, "__fert_", c(0.0, 1.0), c(0.0, 25.0 + 2.0))
-  added <- nrow(nodes) + seq_len(sum(marked))
-  out$y[added] <- out$y[added] + idDown[marked]
-  out
+  .markRoom(nodes, marked, "__fert_", c(0.0, 1.0), c(0.0, 25.0 + 2.0),
+            idDown)
 }
 
 #' The legend's picture of an infertile mark

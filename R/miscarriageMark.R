@@ -14,7 +14,8 @@
 ## .readMiscarriage() reads the column with .readWordColumn() and
 ## .checkMiscarriage() names the animals with .idsShown() (R/markColumns.R).
 ## S60 (plan Phase G14, R140): .miscarriageRoom() moves the id in proportion
-## to the node's size.
+## to the node's size. S60's REFACTOR: the move by .sizedIdDown()
+## (R/symbolSize.R), the points moved with it by .markRoom()'s down.
 
 #' The miscarriage values read, and what each means
 #'
@@ -225,14 +226,14 @@
 .miscarriageRoom <- function(nodes, mark = .miscarriageMark) {
   marked <- nodes[["miscarriage"]] %in% c("SAB", "TOP", "ECT")
   if (!"font.vadjust" %in% names(nodes)) nodes$font.vadjust <- 0L
-  idDown <- as.integer(round(mark$idDown * nodes$size / .fullSymbolSize))
+  idDown <- .sizedIdDown(mark$idDown, nodes$size)
   nodes$font.vadjust[marked] <- idDown[marked]
   shift <- c(0.0, 25.0 + 2.0)
-  out <- .markRoom(nodes, marked, "__misc_l_", c(-1.15, mark$scale), shift)
-  out <- .markRoom(out, c(marked, logical(nrow(out) - nrow(nodes))),
-                   "__misc_r_", c(1.15, mark$scale), shift)
-  added <- nrow(nodes) + seq_len(2L * sum(marked))
-  out$y[added] <- out$y[added] + rep(idDown[marked], 2L)
+  out <- .markRoom(nodes, marked, "__misc_l_", c(-1.15, mark$scale), shift,
+                   idDown)
+  added <- logical(nrow(out) - nrow(nodes))
+  out <- .markRoom(out, c(marked, added), "__misc_r_",
+                   c(1.15, mark$scale), shift, c(idDown, added))
   at <- which(marked)
   out$shape[at] <- "triangle"
   out$size[at] <- as.integer(round(out$size[at] * mark$scale))

@@ -6,7 +6,9 @@
 ## symbolSize argument with .checkSymbolSize() and gives each animal's node
 ## .symbolUnits() of it; the copied drawPedigreeDiagram() adds the points of
 ## .symbolSizeRoom() when an animal's symbol is smaller than full size
-## (DIVERGENCE.md).
+## (DIVERGENCE.md). S60's REFACTOR added .sizedIdDown(), the move of an
+## id below a mark, which .infertileRoom() (R/infertileMark.R) and
+## .miscarriageRoom() (R/miscarriageMark.R) had each written out.
 
 #' The size, in units, of an animal's symbol at symbolSize 1
 #'
@@ -44,6 +46,21 @@
 #' @noRd
 .symbolUnits <- function(symbolSize) {
   max(1L, as.integer(round(.fullSymbolSize * symbolSize)))
+}
+
+#' How far an id moves down at its node's size
+#'
+#' Phase G14 (R140). A mark's id move, measured at a full-size symbol
+#' (\code{.infertileMark$idDown}, \code{.miscarriageMark$idDown}), is taken
+#' in proportion to each node's size and rounded to a whole unit, so the id
+#' clears a mark drawn in units of that size. S60's REFACTOR:
+#' \code{.infertileRoom()} and \code{.miscarriageRoom()} had the same line.
+#' @param idDown the move at a full-size symbol, in units.
+#' @param size the nodes' sizes.
+#' @return An integer vector, one per size.
+#' @noRd
+.sizedIdDown <- function(idDown, size) {
+  as.integer(round(idDown * size / .fullSymbolSize))
 }
 
 #' Invisible points that keep a full-size symbol's room

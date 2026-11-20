@@ -25,7 +25,10 @@
 ## R/infertileMark.R; .readMiscarriage(), R/miscarriageMark.R) had each
 ## written out, and .idsShown(), which .checkProbandConsultand()
 ## (R/probandMark.R) and .checkMiscarriage() (R/miscarriageMark.R) had each
-## written out.
+## written out. S60's REFACTOR (plan Phase G14, R140): .markRoom() takes
+## down, each point's further move below its node, which .infertileRoom()
+## and .miscarriageRoom() had each made after it, for an id moved in
+## proportion to its node's size.
 
 #' Read a mark's column of a pedigree
 #'
@@ -241,10 +244,13 @@
 #'   of its node's \code{size} from the node's centre.
 #' @param shift a further shift of each point, \code{x} and \code{y}, in
 #'   units.
+#' @param down a further move of each point below its node, in units: one
+#'   per node, or one for all (0, the default). Phase G14 (R140): an id moved
+#'   in proportion to its node's size (S60's REFACTOR).
 #' @return \code{nodes} with one more row per marked node; \code{nodes}
 #'   itself when none is marked.
 #' @noRd
-.markRoom <- function(nodes, marked, prefix, at, shift) {
+.markRoom <- function(nodes, marked, prefix, at, shift, down = 0.0) {
   if (!any(marked)) {
     return(nodes)
   }
@@ -260,7 +266,8 @@
   room$shape <- "dot"
   room$title <- NA_character_
   room$x <- room$x + room$size * at[[1L]] + shift[[1L]]
-  room$y <- room$y + room$size * at[[2L]] + shift[[2L]]
+  room$y <- room$y + room$size * at[[2L]] + shift[[2L]] +
+    rep_len(down, nrow(nodes))[marked]
   room$size <- 0L
   room$color.background <- "rgba(0,0,0,0)"
   room$color.border <- "rgba(0,0,0,0)"
