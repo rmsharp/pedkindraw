@@ -199,10 +199,10 @@ test_that(
   for (column in c("id", "sire")) {
     ped[[column]][ped[[column]] %in% "A"] <- "__eval_A"
   }
-  expect_error(makePedigreeMatingLayout(ped), "'__mark_'/'__eval_' prefix",
+  ## S58: __fert_ (the infertile mark's points) follows __eval_ in the list.
+  expect_error(makePedigreeMatingLayout(ped), "'__mark_'/'__eval_'",
                fixed = TRUE)
-  expect_identical(.reservedIdPrefixes[[length(.reservedIdPrefixes)]],
-                   "__eval_")
+  expect_true("__eval_" %in% .reservedIdPrefixes)
 })
 
 test_that(
