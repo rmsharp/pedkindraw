@@ -27,8 +27,10 @@ A \code{visNetwork} widget, 500 pixels tall, 45 more for each
 affected condition past the first (at most four are drawn), for the
 \dQuote{Affected status unknown} row, for the \dQuote{Genotyped} row,
 for the \dQuote{Carrier} row, for each of the \dQuote{Proband} and
-\dQuote{Consultand} rows, for the \dQuote{Evaluated} row, and for
-each of the \dQuote{Infertile} and \dQuote{No offspring} rows.
+\dQuote{Consultand} rows, for the \dQuote{Evaluated} row, for
+each of the \dQuote{Infertile} and \dQuote{No offspring} rows, and
+for each of the \dQuote{Miscarriage}, \dQuote{Termination} and
+\dQuote{Ectopic} rows.
 }
 \description{
 Returns an interactive pedigree diagram, as a \code{visNetwork} widget,
@@ -106,6 +108,19 @@ id moves down below them. The legend's \dQuote{Infertile} and
 \dQuote{No offspring} rows, each its mark, then say what they are, and
 the canvas is 45 pixels taller for each. The drawing takes in each moved
 id, so one in its bottom row is not cut off.
+
+An animal whose \code{miscarriage} column says it is one (see
+\code{\link{makePedigreeMatingLayout}}) is drawn as a triangle 0.6 the
+size of the other symbols, so smaller than the \dQuote{Unknown} sex's,
+with no deceased slash. The triangle of a termination of pregnancy or of
+an ectopic pregnancy has a black line across it from its lower-left to
+its upper-right corner, and an ectopic pregnancy's has \dQuote{ECT}
+under it, as in Pedixplorer. Its id moves down into the row of the other
+ids. The
+legend's \dQuote{Miscarriage}, \dQuote{Termination} and
+\dQuote{Ectopic} rows, each its triangle, then say what they are, and
+the canvas is 45 pixels taller for each. The drawing keeps the room a
+full-size symbol would have, so a long id at its edge is not cut off.
 
 A click does nothing unless \code{onClick} is given: a Shiny application
 can pass one to act on the clicked animal, which needs a live Shiny

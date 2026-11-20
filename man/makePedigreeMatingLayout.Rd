@@ -73,7 +73,25 @@ one bar, its id moved below them (see \code{fertility} in the returned
 \code{nodes}); an animal with offspring is marked as recorded. The hover
 text says \dQuote{Fertility: Fertile}, \dQuote{Infertile},
 \dQuote{No offspring by choice or for an unknown reason} or
-\dQuote{Unknown}, after the evaluated line.}
+\dQuote{Unknown}, after the evaluated line. An optional
+\code{miscarriage} column, in Pedixplorer's words and values, marks the
+miscarriages: \code{"SAB"}, a spontaneous abortion (also
+\code{"spontaneous"} or \code{"spontaneous abortion"}),
+\code{"TOP"}, a termination of pregnancy (also \code{"termination"},
+\code{"terminated"} or \code{"termination of pregnancy"}), and
+\code{"ECT"}, an ectopic pregnancy (also \code{"ectopic"} or
+\code{"ectopic pregnancy"}); \code{FALSE}, 0 or \code{"no"} marks
+nothing, \code{NA} is not recorded, text is read without its spaces and
+in any case, and any other value stops, naming the column, before any
+animal is left out. A miscarriage is drawn as a small triangle in place
+of its symbol, a termination's or an ectopic pregnancy's with a line
+across it, an ectopic pregnancy's also with \dQuote{ECT} under it
+(see \code{miscarriage} in the returned \code{nodes}). A miscarriage
+that is a sire or dam, or that the \code{fertility} column marks
+infertile or with no offspring, stops, naming it. The hover text says
+\dQuote{Miscarriage: Spontaneous abortion (SAB)}, \dQuote{Termination
+of pregnancy (TOP)}, \dQuote{Ectopic pregnancy (ECT)}, \dQuote{No} or
+\dQuote{Unknown}, after the fertility line.}
 
 \item{edgeStyle}{one of \code{"rectilinear"} (default), which routes
 mate-line and sibship-bar edges through invisible waypoint nodes so
@@ -214,7 +232,11 @@ likewise, each added when \code{ped} has that column; \code{fertility}
 is added when \code{ped} has a \code{fertility} column:
 \code{"infertile"} or \code{"infertile_choice_na"} for the node of such
 an animal and each of its repeat-appearance nodes, \code{""} for every
-other node, never \code{NA}), \code{edges}
+other node, never \code{NA}; \code{miscarriage} is added when \code{ped}
+has a \code{miscarriage} column: \code{"SAB"}, \code{"TOP"} or
+\code{"ECT"} for the node of such an animal and each of its
+repeat-appearance nodes, \code{""} for every other node, never
+\code{NA}), \code{edges}
 (\code{from},
 \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
