@@ -1,13 +1,16 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase G13, gap
-## B3 of docs/research/pedkindraw-gaps-2026-11-18.md; rulings R133-R135). The
+## B3 of docs/research/pedkindraw-gaps-2026-11-18.md; rulings R133-R136). The
 ## pieces every mark drawn on a symbol shares: the copied
 ## makePedigreeMatingLayout() reads each mark's column with .readMarkColumn()
-## (genotyped, R134; carrier, R135) and finds the nodes it marks with
-## .markedNodes(). S55's REFACTOR moved them here from R/genotypedMark.R
-## (.readGenotyped(), .genotypedOddValues()) and R/carrierMark.R
-## (.carrierNodes()), unchanged but for their names.
+## (genotyped, R134; carrier, R135; proband and consultand, R136) and finds
+## the nodes it marks with .markedNodes(). S55's REFACTOR moved them here from
+## R/genotypedMark.R (.readGenotyped(), .genotypedOddValues()) and
+## R/carrierMark.R (.carrierNodes()), unchanged but for their names. S56's
+## REFACTOR added .markLegendRow(), the legend row of a mark drawn by a
+## script, which the copied drawPedigreeDiagram() had written out for the
+## carrier, the proband and the consultand.
 
 #' Read a mark's column of a pedigree
 #'
@@ -87,4 +90,25 @@
                      nodeIds)
   marked <- unname(marks[animalOf])
   !is.na(marked) & marked
+}
+
+#' The legend's row for a mark drawn by a script
+#'
+#' Phase G13 (R135, R136). The legend is its own vis.Network and cannot run
+#' the diagram's afterDrawing scripts, so the row of a mark one of them paints
+#' (the carrier's dot, the proband's and the consultand's arrow) is a
+#' picture, as the \dQuote{Deceased} row is; it is there only when some
+#' animal has the mark. S56's REFACTOR: \code{drawPedigreeDiagram()} had the
+#' same data frame written out three times.
+#' @param label the row's label.
+#' @param image the picture, a \code{data:} URI.
+#' @param shown \code{TRUE} when some node has the mark.
+#' @return A data frame of one row, or of none when \code{shown} is
+#'   \code{FALSE}.
+#' @noRd
+.markLegendRow <- function(label, image, shown) {
+  data.frame(
+    label = label, shape = "image", color.background = NA_character_,
+    image = image, stringsAsFactors = FALSE
+  )[shown, , drop = FALSE]
 }

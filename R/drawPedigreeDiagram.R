@@ -19,8 +19,9 @@
 ## "Consultand" rows, the 45 px each adds, the arrows' handler and the
 ## points that keep the arrows inside the drawing (plan Phase G13, R136:
 ## probandRow, consultandRow, hasArrow, nodes, and the help's paragraph on
-## them), each a DIVERGENCE.md row until nprcgenekeepr has it; otherwise
-## help text only.
+## them; S56's REFACTOR builds the three picture rows with .markLegendRow(),
+## pedkindraw's own, R/markColumns.R), each a DIVERGENCE.md row until
+## nprcgenekeepr has it; otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
 ## paragraph on clicking and the onClick argument named nprcgenekeepr's
@@ -264,25 +265,18 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # its centre (.carrierDotHandler()), and then a "Carrier" row, a picture of
   # a circle with the dot, comes before "Deceased".
   hasCarrier <- isTRUE(any(layout$nodes[["carrier"]]))
-  carrierRow <- data.frame(
-    label = "Carrier", shape = "image", color.background = NA_character_,
-    image = .carrierLegendImage(), stringsAsFactors = FALSE
-  )[hasCarrier, , drop = FALSE]
+  carrierRow <- .markLegendRow("Carrier", .carrierLegendImage(), hasCarrier)
   # pedkindraw Phase G13 (R133, R136): a proband's and a consultand's symbol
   # has an arrow at its lower left (.probandArrowHandler()), and then a
   # "Proband" and a "Consultand" row, each a picture of the arrow, come
   # before "Deceased"; invisible points keep each arrow inside the drawing
   # (.probandArrowRoom()).
   hasProband <- isTRUE(any(layout$nodes[["proband"]]))
-  probandRow <- data.frame(
-    label = "Proband", shape = "image", color.background = NA_character_,
-    image = .probandLegendImage(TRUE), stringsAsFactors = FALSE
-  )[hasProband, , drop = FALSE]
+  probandRow <- .markLegendRow("Proband", .probandLegendImage(TRUE),
+                               hasProband)
   hasConsultand <- isTRUE(any(layout$nodes[["consultand"]]))
-  consultandRow <- data.frame(
-    label = "Consultand", shape = "image", color.background = NA_character_,
-    image = .probandLegendImage(FALSE), stringsAsFactors = FALSE
-  )[hasConsultand, , drop = FALSE]
+  consultandRow <- .markLegendRow("Consultand", .probandLegendImage(FALSE),
+                                  hasConsultand)
   hasArrow <- hasProband || hasConsultand
   nodes <- if (hasArrow) .probandArrowRoom(layout$nodes) else layout$nodes
   legendNodes <- rbind(sexRows, conditionRows, unknownRow, genotypedRow,
