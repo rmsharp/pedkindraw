@@ -13,7 +13,9 @@
 ## R133 and R135; the same row) gave it an argument carrier, which runs
 ## .carrierDotHandler() (pedkindraw's own, R/carrierMark.R) after the slash;
 ## pedkindraw S56 (R136; the same row) an argument arrows, which runs
-## .probandArrowHandler() (pedkindraw's own, R/probandMark.R) after the dot.
+## .probandArrowHandler() (pedkindraw's own, R/probandMark.R) after the dot;
+## pedkindraw S57 (R137; the same row) an argument evaluated, which runs
+## .evaluatedStarHandler() (pedkindraw's own, R/evaluatedMark.R) last.
 ## Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
@@ -260,13 +262,17 @@
 #'   slash, so the dot is on top; it is left out otherwise.
 #' @param arrows \code{TRUE} when some node is a proband's or a consultand's
 #'   (pedkindraw S56, plan Phase G13, R136): \code{.probandArrowHandler()}
+#'   then runs after the dot; it is left out otherwise.
+#' @param evaluated \code{TRUE} when some node is an evaluated animal's
+#'   (pedkindraw S57, plan Phase G13, R137): \code{.evaluatedStarHandler()}
 #'   then runs last; it is left out otherwise.
 #' @return A JavaScript function, as a character string.
 #' @noRd
 .diagramAfterDrawing <- function(sections = FALSE,
                                  colors = .conditionColors,
-                                 carrier = FALSE, arrows = FALSE) {
-  if (!sections && !carrier && !arrows) {
+                                 carrier = FALSE, arrows = FALSE,
+                                 evaluated = FALSE) {
+  if (!sections && !carrier && !arrows && !evaluated) {
     return(.deceasedSlashHandler())
   }
   paste0(
@@ -280,6 +286,9 @@
     },
     if (arrows) {
       paste0("  (", .probandArrowHandler(), ").call(this, ctx);\n")
+    },
+    if (evaluated) {
+      paste0("  (", .evaluatedStarHandler(), ").call(this, ctx);\n")
     },
     "}"
   )
