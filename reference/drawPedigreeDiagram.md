@@ -9,8 +9,9 @@ legend (the five sex symbols, one row per affected condition or a single
 status is unknown, a “Genotyped” row when an animal is genotyped, a
 “Carrier” row when an animal is a carrier, “Proband” and “Consultand”
 rows when an animal is one, an “Evaluated” row when an animal is
-evaluated, “Deceased”, and the dashed repeat-appearance and twin lines),
-each multi-condition symbol split into its colored sections, the slash
+evaluated, “Infertile” and “No offspring” rows when an animal is one,
+“Deceased”, and the dashed repeat-appearance and twin lines), each
+multi-condition symbol split into its colored sections, the slash
 through each deceased animal's symbol, a canvas that grows with the
 number of legend rows, the **Export Diagram (PNG)** button, a “Select by
 id” box that lists the animals, and the highlight on hover. The sections
@@ -54,8 +55,8 @@ drawPedigreeDiagram(
 A `visNetwork` widget, 500 pixels tall, 45 more for each affected
 condition past the first (at most four are drawn), for the “Affected
 status unknown” row, for the “Genotyped” row, for the “Carrier” row, for
-each of the “Proband” and “Consultand” rows, and for the “Evaluated”
-row.
+each of the “Proband” and “Consultand” rows, for the “Evaluated” row,
+and for each of the “Infertile” and “No offspring” rows.
 
 ## Details
 
@@ -105,6 +106,15 @@ has a black `*` to the right of the upper-right corner of its symbol;
 the legend's “Evaluated” row, the `*`, then says what it is, and the
 canvas is 45 pixels taller for that row. The drawing takes in each `*`,
 so one at its right edge is not cut off.
+
+An animal whose `fertility` column says it is infertile (see
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md))
+has a black line down from the bottom of its symbol and two bars across
+it, and one with no offspring by choice or for an unknown reason a line
+and one bar, as in Pedixplorer; its id moves down below them. The
+legend's “Infertile” and “No offspring” rows, each its mark, then say
+what they are, and the canvas is 45 pixels taller for each. The drawing
+takes in each moved id, so one in its bottom row is not cut off.
 
 A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,

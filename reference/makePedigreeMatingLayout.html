@@ -122,7 +122,21 @@ documented evaluation: each is drawn with a black <code>*</code> to the
 right of the upper-right corner of its symbol (see <code>evaluated</code> in
 the returned <code>nodes</code>), and its hover text says
 “Evaluated: Yes”, “No” or “Unknown”, after the
-consultand line.</p></dd>
+consultand line. An optional <code>fertility</code> column, in Pedixplorer's
+words and values, marks the animals that are infertile
+(<code>"infertile"</code>, also <code>"steril"</code>, <code>FALSE</code> or 0) and those
+with no offspring by choice or for an unknown reason
+(<code>"infertile_choice_na"</code>, also <code>"infertile_choice"</code> or
+<code>"infertile_na"</code>); <code>"fertile"</code>, <code>TRUE</code> or 1 marks
+nothing, <code>NA</code> is not recorded, text is read in any case, and any
+other value stops, naming the column, before any animal is left out. An
+infertile animal is drawn with a line down from its symbol and two bars,
+one with no offspring by choice or for an unknown reason with a line and
+one bar, its id moved below them (see <code>fertility</code> in the returned
+<code>nodes</code>); an animal with offspring is marked as recorded. The hover
+text says “Fertility: Fertile”, “Infertile”,
+“No offspring by choice or for an unknown reason” or
+“Unknown”, after the evaluated line.</p></dd>
 
 
 <dt id="arg-edgestyle">edgeStyle<a class="anchor" aria-label="anchor" href="#arg-edgestyle"></a></dt>
@@ -275,7 +289,11 @@ symbol's outline; <code>carrier</code> is added when <code>ped</code> has a
 <code>carrier</code> column: <code>TRUE</code> for the node of a carrier and each
 of its repeat-appearance nodes, <code>FALSE</code> for every other node, never
 <code>NA</code>; <code>proband</code>, <code>consultand</code> and <code>evaluated</code>
-likewise, each added when <code>ped</code> has that column), <code>edges</code>
+likewise, each added when <code>ped</code> has that column; <code>fertility</code>
+is added when <code>ped</code> has a <code>fertility</code> column:
+<code>"infertile"</code> or <code>"infertile_choice_na"</code> for the node of such
+an animal and each of its repeat-appearance nodes, <code>""</code> for every
+other node, never <code>NA</code>), <code>edges</code>
 (<code>from</code>,
 <code>to</code>, <code>dashes</code>, <code>smooth.enabled</code>, <code>smooth.type</code>,
 <code>smooth.roundness</code>, <code>color</code>, <code>width</code>; the <code>color</code>

@@ -68,7 +68,20 @@ makePedigreeMatingLayout(
   documented evaluation: each is drawn with a black `*` to the right of
   the upper-right corner of its symbol (see `evaluated` in the returned
   `nodes`), and its hover text says “Evaluated: Yes”, “No” or “Unknown”,
-  after the consultand line.
+  after the consultand line. An optional `fertility` column, in
+  Pedixplorer's words and values, marks the animals that are infertile
+  (`"infertile"`, also `"steril"`, `FALSE` or 0) and those with no
+  offspring by choice or for an unknown reason (`"infertile_choice_na"`,
+  also `"infertile_choice"` or `"infertile_na"`); `"fertile"`, `TRUE` or
+  1 marks nothing, `NA` is not recorded, text is read in any case, and
+  any other value stops, naming the column, before any animal is left
+  out. An infertile animal is drawn with a line down from its symbol and
+  two bars, one with no offspring by choice or for an unknown reason
+  with a line and one bar, its id moved below them (see `fertility` in
+  the returned `nodes`); an animal with offspring is marked as recorded.
+  The hover text says “Fertility: Fertile”, “Infertile”, “No offspring
+  by choice or for an unknown reason” or “Unknown”, after the evaluated
+  line.
 
 - edgeStyle:
 
@@ -213,7 +226,10 @@ repeat-appearance nodes, 1 for every other node, the width of the
 symbol's outline; `carrier` is added when `ped` has a `carrier` column:
 `TRUE` for the node of a carrier and each of its repeat-appearance
 nodes, `FALSE` for every other node, never `NA`; `proband`, `consultand`
-and `evaluated` likewise, each added when `ped` has that column),
+and `evaluated` likewise, each added when `ped` has that column;
+`fertility` is added when `ped` has a `fertility` column: `"infertile"`
+or `"infertile_choice_na"` for the node of such an animal and each of
+its repeat-appearance nodes, `""` for every other node, never `NA`),
 `edges` (`from`, `to`, `dashes`, `smooth.enabled`, `smooth.type`,
 `smooth.roundness`, `color`, `width`; the `color` and `width` columns
 are always present once any mating unit exists: a consanguineous mating
