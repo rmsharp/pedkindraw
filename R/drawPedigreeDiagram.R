@@ -33,7 +33,9 @@
 ## handler (plan Phase G13, R139: sabRow, topRow, ectRow, hasMiscarriage, and
 ## the help's paragraph on them), and S60's points that keep a full-size
 ## symbol's room for smaller symbols (plan Phase G14, R140: nodes, and the
-## help's paragraph on the symbols' size), each a DIVERGENCE.md row until
+## help's paragraph on the symbols' size), and S61's points that keep
+## larger text's room (plan Phase G14, R140: nodes, and the help's
+## paragraph on the text's size), each a DIVERGENCE.md row until
 ## nprcgenekeepr has it;
 ## otherwise help text only.
 ## The help describes the
@@ -142,6 +144,12 @@
 #' moves down in proportion, and with symbols smaller than full size the
 #' drawing keeps the room a full-size symbol would have, so a long id at its
 #' edge is not cut off.
+#'
+#' The ids and names are written at the size
+#' \code{\link{makePedigreeMatingLayout}}'s \code{textSize} gives them; with
+#' text larger than before, the drawing keeps room for the outermost labels,
+#' so a long id at its edge is not cut off, and an infertile animal's and a
+#' miscarriage's moved id keep their room below their marks.
 #'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
@@ -373,6 +381,9 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # pedkindraw Phase G14 (R140): animals smaller than full size keep a
   # full-size symbol's room (.symbolSizeRoom()).
   nodes <- .symbolSizeRoom(layout$nodes)
+  # pedkindraw Phase G14 (R140): text larger than vis.js's 14 pixels keeps
+  # room for the outermost labels (.textSizeRoom()).
+  nodes <- .textSizeRoom(nodes)
   if (hasArrow) nodes <- .probandArrowRoom(nodes)
   if (hasEvaluated) nodes <- .evaluatedStarRoom(nodes)
   hasBars <- hasInfertile || hasNoOffspring

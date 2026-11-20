@@ -89,6 +89,11 @@
 ## node and repeat node .symbolUnits() of it where they were 25;
 ## .reservedIdPrefixes gains __size_, the prefix of the points
 ## drawPedigreeDiagram() adds for symbols smaller than full size; and its
+## help (the same rows). Plan Phase G14's text size (pedkindraw S61, R140):
+## the argument textSize = 1, checked after symbolSize (.checkTextSize(),
+## pedkindraw's own, R/textSize.R), every node's font.size .textPixels() of
+## it when that is not vis.js's 14; .reservedIdPrefixes gains __text_, the
+## prefix of the points drawPedigreeDiagram() adds for larger text; and its
 ## help (the same rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
@@ -551,10 +556,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 ## prefix of the points that keep a miscarriage's room (.miscarriageRoom()).
 ## pedkindraw S60 (plan Phase G14, R140): __size_, the prefix of the points
 ## that keep a full-size symbol's room for smaller symbols
-## (.symbolSizeRoom()).
+## (.symbolSizeRoom()). pedkindraw S61 (plan Phase G14, R140): __text_, the
+## prefix of the points that keep larger text's room (.textSizeRoom()).
 .reservedIdPrefixes <- c("__union_", "__dup_", "__drop_", "__bar_", "__proj_",
                          "__jog_", "__mark_", "__eval_", "__fert_",
-                         "__misc_", "__size_")
+                         "__misc_", "__size_", "__text_")
 .reservedIdPattern <- paste0("^", .reservedIdPrefixes, collapse = "|")
 
 #' Transform a pedigree into a mating-unit forest (Option 2 layout, D1/D2)
@@ -1989,6 +1995,21 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   lines and the mating points and long ids reach the marks beside them,
 #'   and at 3 the rectilinear layout warns that it could not clear every
 #'   symbol. Stops unless it is one positive number.
+#' @param textSize the size of the animals' ids and names, as a multiple of
+#'   the 14 pixels written before this argument (1, the default), as
+#'   kinship2's and Pedixplorer's \code{cex} is: every node gets 14 times
+#'   it in \code{font.size}, rounded to a whole pixel and at least 1, unless
+#'   that is 14. The marks' own words (a proband's \dQuote{P}, an ectopic
+#'   pregnancy's \dQuote{ECT}) and the twins' labels keep their sizes, and
+#'   so do the symbols (\code{symbolSize} sets theirs; kinship2's and
+#'   Pedixplorer's grow with \code{cex}). The layout's places and lines are
+#'   the same at every text size, and \code{\link{drawPedigreeDiagram}}
+#'   keeps larger labels inside the drawing and an infertile animal's and a
+#'   miscarriage's moved id clear of the drawing's bottom edge. The drawing
+#'   zooms to fit, so larger text leaves less room between the ids: an id
+#'   of 10 characters is 118 units wide at 1.4 and 165 at 2, and the
+#'   animals in a row are 120 apart. Stops unless it is one positive
+#'   number.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -2019,7 +2040,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   has a \code{miscarriage} column: \code{"SAB"}, \code{"TOP"} or
 #'   \code{"ECT"} for the node of such an animal and each of its
 #'   repeat-appearance nodes, \code{""} for every other node, never
-#'   \code{NA}), \code{edges}
+#'   \code{NA}; \code{font.size} is added when \code{textSize} gives other
+#'   than 14 pixels: that size, for every node), \code{edges}
 #'   (\code{from},
 #'   \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 #'   \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
@@ -2093,7 +2115,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                                           "#56B4E9",
                                                           "#009E73"),
                                       conditionThresholds = NULL,
-                                      symbolSize = 1.0) {
+                                      symbolSize = 1.0, textSize = 1.0) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -2105,6 +2127,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   }
   .checkMaxNameChars(maxNameChars, "makePedigreeMatingLayout")
   .checkSymbolSize(symbolSize, "makePedigreeMatingLayout") # Phase G14
+  .checkTextSize(textSize, "makePedigreeMatingLayout") # Phase G14
   edgeStyle <- match.arg(edgeStyle)
   if (!is.null(kinshipMatrix) &&
         (!(is.matrix(kinshipMatrix) || inherits(kinshipMatrix, "Matrix")) ||
@@ -2677,6 +2700,11 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     nodes$miscarriage <- .miscarriageNodes(nodes$id, miscarriage, dupIds,
                                            duplicates$realId)
   }
+
+  # pedkindraw Phase G14 (R140): the ids' and names' size, when it is not
+  # vis.js's own 14 pixels, on every node (only the animals' have words).
+  textPx <- .textPixels(textSize)
+  if (textPx != .fullTextSize) nodes$font.size <- textPx
 
   list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,
        isolatedIds = isolatedIds, conditions = conditions,

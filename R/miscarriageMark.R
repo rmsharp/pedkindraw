@@ -15,7 +15,9 @@
 ## .checkMiscarriage() names the animals with .idsShown() (R/markColumns.R).
 ## S60 (plan Phase G14, R140): .miscarriageRoom() moves the id in proportion
 ## to the node's size. S60's REFACTOR: the move by .sizedIdDown()
-## (R/symbolSize.R), the points moved with it by .markRoom()'s down.
+## (R/symbolSize.R), the points moved with it by .markRoom()'s down. S61
+## (plan Phase G14, R140): the room below the moved id is .idLabelDepth()
+## of the node's text size (R/textSize.R), 25 units at vis.js's 14.
 
 #' The miscarriage values read, and what each means
 #'
@@ -217,7 +219,8 @@
 #' their ids \code{__misc_l_} and \code{__misc_r_} and the node's id, under
 #' a prefix the layout reserves) stand where a full-size triangle's corners
 #' are, left and right, 2 units below the moved id's box, so the fit is as
-#' for a full-size symbol.
+#' for a full-size symbol. The moved id's box ends \code{.idLabelDepth()}
+#' of the node's text size below its triangle (Phase G14, S61).
 #' @param nodes the nodes to draw.
 #' @param mark see \code{.miscarriageMark}.
 #' @return \code{nodes} with a \code{font.vadjust} field and two more rows
@@ -228,12 +231,13 @@
   if (!"font.vadjust" %in% names(nodes)) nodes$font.vadjust <- 0L
   idDown <- .sizedIdDown(mark$idDown, nodes$size)
   nodes$font.vadjust[marked] <- idDown[marked]
-  shift <- c(0.0, 25.0 + 2.0)
+  shift <- c(0.0, 2.0)
+  down <- idDown + .idLabelDepth(.nodeTextPixels(nodes))
   out <- .markRoom(nodes, marked, "__misc_l_", c(-1.15, mark$scale), shift,
-                   idDown)
+                   down)
   added <- logical(nrow(out) - nrow(nodes))
   out <- .markRoom(out, c(marked, added), "__misc_r_",
-                   c(1.15, mark$scale), shift, c(idDown, added))
+                   c(1.15, mark$scale), shift, c(down, added))
   at <- which(marked)
   out$shape[at] <- "triangle"
   out$size[at] <- as.integer(round(out$size[at] * mark$scale))

@@ -15,7 +15,9 @@
 ## (R/markColumns.R), as .readMiscarriage() does. S60 (plan Phase G14,
 ## R140): .infertileRoom() moves the id in proportion to the node's size.
 ## S60's REFACTOR: the move by .sizedIdDown() (R/symbolSize.R), the point
-## moved with it by .markRoom()'s down.
+## moved with it by .markRoom()'s down. S61 (plan Phase G14, R140): the
+## room below the moved id is .idLabelDepth() of the node's text size
+## (R/textSize.R), 25 units at vis.js's 14.
 
 #' The fertility values read, and what each means
 #'
@@ -168,8 +170,9 @@
 #' to the nodes without the move, so a moved id in the bottom row was cut
 #' off (S58: 0.6 pixels to spare in a four-generation drawing at 500
 #' pixels); one invisible point per marked node, 2 units below the moved
-#' id's box (which ends 25 units below the symbol before the move), makes
-#' the fit take it in (23 pixels to spare). The points are built by
+#' id's box (which ends \code{.idLabelDepth()} of the node's text size below
+#' the symbol before the move, 25 units at vis.js's 14; Phase G14, S61),
+#' makes the fit take it in (23 pixels to spare). The points are built by
 #' \code{.markRoom()}; each point's id is \code{"__fert_"} and its node's
 #' id, a prefix the layout reserves (\code{.reservedIdPrefixes}), and its
 #' \code{fertility} is \code{""} (\code{.markRoom()} empties it), so the
@@ -183,8 +186,8 @@
   marked <- nodes[["fertility"]] %in% c("infertile", "infertile_choice_na")
   idDown <- .sizedIdDown(mark$idDown, nodes$size)
   nodes$font.vadjust <- ifelse(marked, idDown, 0L)
-  .markRoom(nodes, marked, "__fert_", c(0.0, 1.0), c(0.0, 25.0 + 2.0),
-            idDown)
+  .markRoom(nodes, marked, "__fert_", c(0.0, 1.0), c(0.0, 2.0),
+            idDown + .idLabelDepth(.nodeTextPixels(nodes)))
 }
 
 #' The legend's picture of an infertile mark
