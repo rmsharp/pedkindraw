@@ -13,7 +13,9 @@
 ## section colours read from the layout's conditions table (plan Phase G4,
 ## R111: sectionColors, and the help's paragraph on the colours), and S54's
 ## "Genotyped" row and the 45 px it adds (plan Phase G13, R133-R134:
-## genotypedRow, and the help's paragraph on it), each a DIVERGENCE.md row
+## genotypedRow, and the help's paragraph on it), and S55's "Carrier" row,
+## the 45 px it adds and the dot's handler (plan Phase G13, R135: carrierRow,
+## hasCarrier, and the help's paragraph on it), each a DIVERGENCE.md row
 ## until nprcgenekeepr has it; otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
@@ -34,7 +36,8 @@
 #' five sex symbols, one row per affected condition or a single
 #' \dQuote{Affected} row, a grey \dQuote{Affected status unknown} row when an
 #' animal's status is unknown, a \dQuote{Genotyped} row when an animal is
-#' genotyped, \dQuote{Deceased}, and the dashed
+#' genotyped, a \dQuote{Carrier} row when an animal is a carrier,
+#' \dQuote{Deceased}, and the dashed
 #' repeat-appearance and twin lines), each multi-condition symbol split into
 #' its colored sections, the slash through each deceased animal's symbol, a
 #' canvas that grows with the number of legend rows, the
@@ -69,6 +72,12 @@
 #' a square with that outline, then says what the thick outline is, and the
 #' canvas is 45 pixels taller for that row.
 #'
+#' An animal whose \code{carrier} column is \code{TRUE} (see
+#' \code{\link{makePedigreeMatingLayout}}) is drawn with a black dot at the
+#' centre of its symbol, on top of its fill, its sections and the slash; the
+#' legend's \dQuote{Carrier} row, a circle with the dot, then says what the
+#' dot is, and the canvas is 45 pixels taller for that row.
+#'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
 #' session, so a script leaves \code{onClick} out.
@@ -83,8 +92,8 @@
 #'   application can pass one that sends the clicked animal to its server.
 #' @return A \code{visNetwork} widget, 500 pixels tall, 45 more for each
 #'   affected condition past the first (at most four are drawn), for the
-#'   \dQuote{Affected status unknown} row and for the \dQuote{Genotyped}
-#'   row.
+#'   \dQuote{Affected status unknown} row, for the \dQuote{Genotyped} row
+#'   and for the \dQuote{Carrier} row.
 #' @seealso \code{\link{makePedigreeMatingLayout}}
 #' @examples
 #' ## Four animals: A and B are the parents of C and D; A has died, and C
@@ -237,8 +246,16 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
     color.background = .affectedColor(FALSE), image = NA_character_,
     stringsAsFactors = FALSE
   )[hasGenotyped, , drop = FALSE]
+  # pedkindraw Phase G13 (R133, R135): a carrier's symbol has a black dot at
+  # its centre (.carrierDotHandler()), and then a "Carrier" row, a picture of
+  # a circle with the dot, comes before "Deceased".
+  hasCarrier <- isTRUE(any(layout$nodes[["carrier"]]))
+  carrierRow <- data.frame(
+    label = "Carrier", shape = "image", color.background = NA_character_,
+    image = .carrierLegendImage(), stringsAsFactors = FALSE
+  )[hasCarrier, , drop = FALSE]
   legendNodes <- rbind(sexRows, conditionRows, unknownRow, genotypedRow,
-                       deceasedRow)
+                       carrierRow, deceasedRow)
   legendNodes$size <- 14L
   if (hasGenotyped) {
     legendNodes$borderWidth <- ifelse(legendNodes$label %in% genotypedRow$label,
@@ -251,7 +268,8 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # .diagramHeight()'s, which the Shiny application also gives its output.
   # pedkindraw Phase G2: the unknown row adds 45 px as one more condition row
   # does (with no condition column the legend still has its one row).
-  rowsForHeight <- max(nConditions, 1L) + hasUnknown + hasGenotyped
+  rowsForHeight <- max(nConditions, 1L) + hasUnknown + hasGenotyped +
+    hasCarrier
   visNetwork::visNetwork(layout$nodes, layout$edges,
                          height = sprintf("%dpx",
                                           .diagramHeight(rowsForHeight))) |>
@@ -265,7 +283,8 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
       click = onClick,
       # S1029: the sections of each multi-condition symbol, then
       # S1028's slash through each deceased animal's symbol on top.
-      afterDrawing = .diagramAfterDrawing(nConditions >= 2L, sectionColors)
+      afterDrawing = .diagramAfterDrawing(nConditions >= 2L, sectionColors,
+                                          hasCarrier)
     ) |>
     # Image export (issue #131): visExport() bundles its own JS deps
     # (FileSaver/Blob/canvas-toBlob/html2canvas/jsPDF) as htmlwidget

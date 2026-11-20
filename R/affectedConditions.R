@@ -9,7 +9,10 @@
 ## is "?", not "0") and .conditionSectionsHandler() (a "?" section is filled
 ## .unknownColor). pedkindraw S45 (plan Phase G4, R111; a DIVERGENCE.md row "at
 ## the switch") changed .diagramAfterDrawing(), which takes the colours it
-## passes to .conditionSectionsHandler(). Phase 8 copied
+## passes to .conditionSectionsHandler(). pedkindraw S55 (plan Phase G13,
+## R133 and R135; the same row) gave it an argument carrier, which runs
+## .carrierDotHandler() (pedkindraw's own, R/carrierMark.R) after the slash.
+## Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
 ## 9 its lines 76-201, the three the drawing uses
@@ -250,17 +253,26 @@
 #'   \code{.conditionSectionsHandler()} (pedkindraw S45, plan Phase G4:
 #'   \code{drawPedigreeDiagram()} passes the layout's colours, the defaults
 #'   after them).
+#' @param carrier \code{TRUE} when some node is a carrier's (pedkindraw S55,
+#'   plan Phase G13, R135): \code{.carrierDotHandler()} then runs after the
+#'   slash, so the dot is on top; it is left out otherwise.
 #' @return A JavaScript function, as a character string.
 #' @noRd
 .diagramAfterDrawing <- function(sections = FALSE,
-                                 colors = .conditionColors) {
-  if (!sections) {
+                                 colors = .conditionColors,
+                                 carrier = FALSE) {
+  if (!sections && !carrier) {
     return(.deceasedSlashHandler())
   }
   paste0(
     "function(ctx) {\n",
-    "  (", .conditionSectionsHandler(colors), ").call(this, ctx);\n",
+    if (sections) {
+      paste0("  (", .conditionSectionsHandler(colors), ").call(this, ctx);\n")
+    },
     "  (", .deceasedSlashHandler(), ").call(this, ctx);\n",
+    if (carrier) {
+      paste0("  (", .carrierDotHandler(), ").call(this, ctx);\n")
+    },
     "}"
   )
 }

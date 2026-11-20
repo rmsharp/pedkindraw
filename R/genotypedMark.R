@@ -20,7 +20,8 @@
 #' Read the genotyped column of a pedigree
 #'
 #' Phase G13 (R134). \code{NULL} when \code{ped} has no column
-#' \code{genotyped}. Otherwise the column as \code{TRUE}, \code{FALSE} or
+#' \code{column}, \code{genotyped} unless another is named (the carrier
+#' column, R135). Otherwise the column as \code{TRUE}, \code{FALSE} or
 #' \code{NA} for each animal, named by id: it may hold \code{TRUE},
 #' \code{FALSE} and \code{NA}, the numbers 1 and 0, and the text
 #' \code{as.logical()} reads (\code{"TRUE"}, \code{"false"}, \code{"T"} and
@@ -29,19 +30,20 @@
 #' \code{.genotypedOddValues()} finds.
 #' @param ped data frame with an \code{id} column.
 #' @param caller the caller's name, without parentheses, for the message.
+#' @param column the column's name.
 #' @return \code{NULL}, or a logical vector named by \code{ped$id}.
 #' @noRd
-.readGenotyped <- function(ped, caller) {
-  if (!"genotyped" %in% names(ped)) {
+.readGenotyped <- function(ped, caller, column = "genotyped") {
+  if (!column %in% names(ped)) {
     return(NULL)
   }
-  x <- ped[["genotyped"]]
+  x <- ped[[column]]
   if (is.factor(x)) x <- as.character(x)
   shown <- .genotypedOddValues(x)
   if (!is.null(shown)) {
-    stop(caller, "(): the column 'genotyped' holds values other than TRUE, ",
-         "FALSE and NA (", shown, "). Give TRUE or FALSE (or 1 or 0) for ",
-         "each animal, NA where it is not recorded.", call. = FALSE)
+    stop(caller, "(): the column '", column, "' holds values other than ",
+         "TRUE, FALSE and NA (", shown, "). Give TRUE or FALSE (or 1 or 0) ",
+         "for each animal, NA where it is not recorded.", call. = FALSE)
   }
   stats::setNames(as.logical(x), as.character(ped$id))
 }
