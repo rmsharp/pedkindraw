@@ -139,6 +139,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S55's entries were removed in S3-S56 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 57 Did
+**Deliverable:** Phase G13, mark 4 of 6: evaluated (IN PROGRESS)
+**Started:** 2026-11-19 21:46 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G13: evaluated mark (Recommended)"
+(orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (the column's name against the compared CSVs and
+`asPedFrame()`, Pedixplorer's "*" place and size, NA and text, the looks in headless Chrome against the deceased
+slash, a mating line and a sibship drop, the canvas edge, the legend row, the hover line).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 55 Handoff Evaluation (by Session 56)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(e) was the session's plan item for item: the 13 compared CSVs held

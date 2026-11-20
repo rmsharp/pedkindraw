@@ -17,6 +17,10 @@ keeps current. ledger-format: 2 — keep this marker; `bin/status` reads it.
 
 ## 2026-11
 
+### 2026-11-19 · [BL-Phase G13] S57: Phase G13, mark 4 of 6, evaluated (in progress)
+- **Change:** session claimed (Mark's pick "G13: evaluated mark (Recommended)" at the orient picker): R133's order (`docs/planning/gaps-and-shared-code-plan.md:374`), strict TDD; measure first (Learnings 17-21), a pre-RED picker, RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier d78023e is HEAD; no merges; S56's receipt complete, its ratchet citation matching the results file); drift 91/21/0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files.
+- **Commit/PR:** the claim commit · **Session:** S57 · **Verified:** pending (close-out).
+
 ### 2026-11-19 · [BL-Phase G13] S56 push 1: `master` to GitHub at close-out 2 (S56's claim, G13 mark 3, close-out 1-2)
 - **Change:** `git push origin master` (`e8e0715..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S55's push runs, finished during S56: site `44657425147` `success` (pages `44657799956` `success`); CI `44657424903` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors 0.50.3 fails to build on R-devel while installing dependencies, before pedkindraw is checked), the other four jobs `success`.
 - **Commit/PR:** none (push) · **Session:** S56 · **Verified:** the push's output; S55's runs by `gh run view`.
