@@ -107,7 +107,16 @@ the genetic trait but are not expected to show the disease, in the same
 values: a carrier's symbol is drawn with a black dot at its centre (see
 <code>carrier</code> in the returned <code>nodes</code>), and its hover text says
 “Carrier: Yes”, “No” or “Unknown”, after the
-genotyped line.</p></dd>
+genotyped line. Optional <code>proband</code> and <code>consultand</code> columns,
+in the same values, mark the proband (an affected animal through whom
+the family came to attention) and the consultand (an animal for whom
+counselling or testing is sought): each is drawn with a black arrow
+pointing at its symbol from the lower left, a proband's with
+“P” beside it (see <code>proband</code> and <code>consultand</code> in the
+returned <code>nodes</code>), and the hover text says “Proband:” and
+“Consultand:” “Yes”, “No” or “Unknown”,
+one line for each column, after the carrier line. An animal marked both
+stops, naming it, before any animal is left out.</p></dd>
 
 
 <dt id="arg-edgestyle">edgeStyle<a class="anchor" aria-label="anchor" href="#arg-edgestyle"></a></dt>
@@ -259,7 +268,8 @@ its repeat-appearance nodes, 1 for every other node, the width of the
 symbol's outline; <code>carrier</code> is added when <code>ped</code> has a
 <code>carrier</code> column: <code>TRUE</code> for the node of a carrier and each
 of its repeat-appearance nodes, <code>FALSE</code> for every other node, never
-<code>NA</code>), <code>edges</code> (<code>from</code>,
+<code>NA</code>; <code>proband</code> and <code>consultand</code> likewise, each added
+when <code>ped</code> has that column), <code>edges</code> (<code>from</code>,
 <code>to</code>, <code>dashes</code>, <code>smooth.enabled</code>, <code>smooth.type</code>,
 <code>smooth.roundness</code>, <code>color</code>, <code>width</code>; the <code>color</code>
 and <code>width</code> columns are always present once any mating unit

@@ -6,6 +6,7 @@ five sex symbols, one row per affected condition or a single
 &amp;#8220;Affected&amp;#8221; row, a grey &amp;#8220;Affected status unknown&amp;#8221; row when an
 animal's status is unknown, a &amp;#8220;Genotyped&amp;#8221; row when an animal is
 genotyped, a &amp;#8220;Carrier&amp;#8221; row when an animal is a carrier,
+&amp;#8220;Proband&amp;#8221; and &amp;#8220;Consultand&amp;#8221; rows when an animal is one,
 &amp;#8220;Deceased&amp;#8221;, and the dashed
 repeat-appearance and twin lines), each multi-condition symbol split into
 its colored sections, the slash through each deceased animal's symbol, a
@@ -22,6 +23,7 @@ five sex symbols, one row per affected condition or a single
 &amp;#8220;Affected&amp;#8221; row, a grey &amp;#8220;Affected status unknown&amp;#8221; row when an
 animal's status is unknown, a &amp;#8220;Genotyped&amp;#8221; row when an animal is
 genotyped, a &amp;#8220;Carrier&amp;#8221; row when an animal is a carrier,
+&amp;#8220;Proband&amp;#8221; and &amp;#8220;Consultand&amp;#8221; rows when an animal is one,
 &amp;#8220;Deceased&amp;#8221;, and the dashed
 repeat-appearance and twin lines), each multi-condition symbol split into
 its colored sections, the slash through each deceased animal's symbol, a
@@ -78,6 +80,7 @@ five sex symbols, one row per affected condition or a single
 “Affected” row, a grey “Affected status unknown” row when an
 animal's status is unknown, a “Genotyped” row when an animal is
 genotyped, a “Carrier” row when an animal is a carrier,
+“Proband” and “Consultand” rows when an animal is one,
 “Deceased”, and the dashed
 repeat-appearance and twin lines), each multi-condition symbol split into
 its colored sections, the slash through each deceased animal's symbol, a
@@ -124,8 +127,9 @@ application can pass one that sends the clicked animal to its server.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>visNetwork</code> widget, 500 pixels tall, 45 more for each
 affected condition past the first (at most four are drawn), for the
-“Affected status unknown” row, for the “Genotyped” row
-and for the “Carrier” row.</p>
+“Affected status unknown” row, for the “Genotyped” row,
+for the “Carrier” row, and for each of the “Proband” and
+“Consultand” rows.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -154,6 +158,13 @@ canvas is 45 pixels taller for that row.</p>
 centre of its symbol, on top of its fill, its sections and the slash; the
 legend's “Carrier” row, a circle with the dot, then says what the
 dot is, and the canvas is 45 pixels taller for that row.</p>
+<p>An animal whose <code>proband</code> or <code>consultand</code> column is <code>TRUE</code>
+(see <code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>) has a black arrow pointing at
+its symbol from the lower left, a proband's with “P” beside its
+tail; the legend's “Proband” and “Consultand” rows, each
+the arrow, then say what they are, and the canvas is 45 pixels taller for
+each. The drawing takes in each arrow, so one at its left edge is not cut
+off.</p>
 <p>A click does nothing unless <code>onClick</code> is given: a Shiny application
 can pass one to act on the clicked animal, which needs a live Shiny
 session, so a script leaves <code>onClick</code> out.</p>

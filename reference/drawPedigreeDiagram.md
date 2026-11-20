@@ -7,15 +7,16 @@ The diagram has the sex symbols at the layout's fixed positions, the
 legend (the five sex symbols, one row per affected condition or a single
 “Affected” row, a grey “Affected status unknown” row when an animal's
 status is unknown, a “Genotyped” row when an animal is genotyped, a
-“Carrier” row when an animal is a carrier, “Deceased”, and the dashed
-repeat-appearance and twin lines), each multi-condition symbol split
-into its colored sections, the slash through each deceased animal's
-symbol, a canvas that grows with the number of legend rows, the **Export
-Diagram (PNG)** button, a “Select by id” box that lists the animals, and
-the highlight on hover. The sections and the slash are painted by a
-drawing script inside the widget, so they appear wherever the widget is
-shown: in the RStudio viewer, in an R Markdown or Quarto document, or in
-a web page saved with
+“Carrier” row when an animal is a carrier, “Proband” and “Consultand”
+rows when an animal is one, “Deceased”, and the dashed repeat-appearance
+and twin lines), each multi-condition symbol split into its colored
+sections, the slash through each deceased animal's symbol, a canvas that
+grows with the number of legend rows, the **Export Diagram (PNG)**
+button, a “Select by id” box that lists the animals, and the highlight
+on hover. The sections and the slash are painted by a drawing script
+inside the widget, so they appear wherever the widget is shown: in the
+RStudio viewer, in an R Markdown or Quarto document, or in a web page
+saved with
 [`htmlwidgets::saveWidget()`](https://rdrr.io/pkg/htmlwidgets/man/saveWidget.html).
 
 ## Usage
@@ -52,7 +53,8 @@ drawPedigreeDiagram(
 
 A `visNetwork` widget, 500 pixels tall, 45 more for each affected
 condition past the first (at most four are drawn), for the “Affected
-status unknown” row, for the “Genotyped” row and for the “Carrier” row.
+status unknown” row, for the “Genotyped” row, for the “Carrier” row, and
+for each of the “Proband” and “Consultand” rows.
 
 ## Details
 
@@ -87,6 +89,14 @@ is drawn with a black dot at the centre of its symbol, on top of its
 fill, its sections and the slash; the legend's “Carrier” row, a circle
 with the dot, then says what the dot is, and the canvas is 45 pixels
 taller for that row.
+
+An animal whose `proband` or `consultand` column is `TRUE` (see
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md))
+has a black arrow pointing at its symbol from the lower left, a
+proband's with “P” beside its tail; the legend's “Proband” and
+“Consultand” rows, each the arrow, then say what they are, and the
+canvas is 45 pixels taller for each. The drawing takes in each arrow, so
+one at its left edge is not cut off.
 
 A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,

@@ -129,6 +129,27 @@ why.
   keeps its carriers in that column. Pedixplorer draws a smaller dot;
   nprcgenekeepr has no such mark. Without the column every drawing is as
   before.
+- New:
+  [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  reads the columns `proband` and `consultand` (`TRUE`, `FALSE`, `NA`,
+  1, 0, or text such as “TRUE”): the proband, an affected animal through
+  whom the family came to attention, and the consultand, an animal for
+  whom counselling or testing is sought. Each is drawn with a black
+  arrow pointing at its symbol from the lower left, a proband’s with “P”
+  beside its tail, and the hover text says “Proband:” and “Consultand:”
+  “Yes”, “No” or “Unknown”; any other value stops, naming the column,
+  and so does an animal marked both, naming it.
+  [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)’s
+  legend then has a row “Proband” and a row “Consultand”, each the
+  arrow, and the drawing is 45 px taller for each; the view takes in
+  each arrow, so one at the left edge is not cut off. An id starting
+  `__mark_` is now refused, as the other reserved prefixes are. A
+  Pedixplorer object converted by
+  [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
+  keeps both columns. Pedixplorer draws a smaller arrow at 45 degrees,
+  reads `NA` as `FALSE` and warns of a proband who is not affected,
+  which pedkindraw does not check; nprcgenekeepr has no such mark.
+  Without the columns every drawing is as before.
 - New: the legend’s four lines (the dashed line joining two places of
   the same animal, and the three twin lines) have no arrowheads, as the
   drawing’s own lines have none, and each line’s label sits on white.
