@@ -372,10 +372,10 @@ test_that(
   for (column in c("id", "sire")) {
     ped[[column]][ped[[column]] %in% "A"] <- "__misc_l_A"
   }
-  expect_error(makePedigreeMatingLayout(ped), "'__fert_'/'__misc_' prefix",
+  ## S60: __size_ (the drawing's size points) follows __misc_ in the list.
+  expect_error(makePedigreeMatingLayout(ped), "'__fert_'/'__misc_'",
                fixed = TRUE)
-  expect_identical(.reservedIdPrefixes[[length(.reservedIdPrefixes)]],
-                   "__misc_")
+  expect_true("__misc_" %in% .reservedIdPrefixes)
 })
 
 test_that(
