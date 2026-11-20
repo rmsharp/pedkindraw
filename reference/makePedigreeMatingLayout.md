@@ -81,6 +81,22 @@ makePedigreeMatingLayout(
   the returned `nodes`); an animal with offspring is marked as recorded.
   The hover text says “Fertility: Fertile”, “Infertile”, “No offspring
   by choice or for an unknown reason” or “Unknown”, after the evaluated
+  line. An optional `miscarriage` column, in Pedixplorer's words and
+  values, marks the miscarriages: `"SAB"`, a spontaneous abortion (also
+  `"spontaneous"` or `"spontaneous abortion"`), `"TOP"`, a termination
+  of pregnancy (also `"termination"`, `"terminated"` or
+  `"termination of pregnancy"`), and `"ECT"`, an ectopic pregnancy (also
+  `"ectopic"` or `"ectopic pregnancy"`); `FALSE`, 0 or `"no"` marks
+  nothing, `NA` is not recorded, text is read without its spaces and in
+  any case, and any other value stops, naming the column, before any
+  animal is left out. A miscarriage is drawn as a small triangle in
+  place of its symbol, a termination's or an ectopic pregnancy's with a
+  line across it, an ectopic pregnancy's also with “ECT” under it (see
+  `miscarriage` in the returned `nodes`). A miscarriage that is a sire
+  or dam, or that the `fertility` column marks infertile or with no
+  offspring, stops, naming it. The hover text says “Miscarriage:
+  Spontaneous abortion (SAB)”, “Termination of pregnancy (TOP)”,
+  “Ectopic pregnancy (ECT)”, “No” or “Unknown”, after the fertility
   line.
 
 - edgeStyle:
@@ -229,8 +245,11 @@ nodes, `FALSE` for every other node, never `NA`; `proband`, `consultand`
 and `evaluated` likewise, each added when `ped` has that column;
 `fertility` is added when `ped` has a `fertility` column: `"infertile"`
 or `"infertile_choice_na"` for the node of such an animal and each of
-its repeat-appearance nodes, `""` for every other node, never `NA`),
-`edges` (`from`, `to`, `dashes`, `smooth.enabled`, `smooth.type`,
+its repeat-appearance nodes, `""` for every other node, never `NA`;
+`miscarriage` is added when `ped` has a `miscarriage` column: `"SAB"`,
+`"TOP"` or `"ECT"` for the node of such an animal and each of its
+repeat-appearance nodes, `""` for every other node, never `NA`), `edges`
+(`from`, `to`, `dashes`, `smooth.enabled`, `smooth.type`,
 `smooth.roundness`, `color`, `width`; the `color` and `width` columns
 are always present once any mating unit exists: a consanguineous mating
 unit's (`kinship(sire, dam) > 0`) 2 spouse-to-union edges get

@@ -135,8 +135,10 @@ application can pass one that sends the clicked animal to its server.</p></dd>
 affected condition past the first (at most four are drawn), for the
 “Affected status unknown” row, for the “Genotyped” row,
 for the “Carrier” row, for each of the “Proband” and
-“Consultand” rows, for the “Evaluated” row, and for
-each of the “Infertile” and “No offspring” rows.</p>
+“Consultand” rows, for the “Evaluated” row, for
+each of the “Infertile” and “No offspring” rows, and
+for each of the “Miscarriage”, “Termination” and
+“Ectopic” rows.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -186,6 +188,18 @@ id moves down below them. The legend's “Infertile” and
 “No offspring” rows, each its mark, then say what they are, and
 the canvas is 45 pixels taller for each. The drawing takes in each moved
 id, so one in its bottom row is not cut off.</p>
+<p>An animal whose <code>miscarriage</code> column says it is one (see
+<code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>) is drawn as a triangle 0.6 the
+size of the other symbols, so smaller than the “Unknown” sex's,
+with no deceased slash. The triangle of a termination of pregnancy or of
+an ectopic pregnancy has a black line across it from its lower-left to
+its upper-right corner, and an ectopic pregnancy's has “ECT”
+under it, as in Pedixplorer. Its id moves down into the row of the other
+ids. The
+legend's “Miscarriage”, “Termination” and
+“Ectopic” rows, each its triangle, then say what they are, and
+the canvas is 45 pixels taller for each. The drawing keeps the room a
+full-size symbol would have, so a long id at its edge is not cut off.</p>
 <p>A click does nothing unless <code>onClick</code> is given: a Shiny application
 can pass one to act on the clicked animal, which needs a live Shiny
 session, so a script leaves <code>onClick</code> out.</p>

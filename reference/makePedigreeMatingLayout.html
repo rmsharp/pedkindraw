@@ -136,7 +136,25 @@ one bar, its id moved below them (see <code>fertility</code> in the returned
 <code>nodes</code>); an animal with offspring is marked as recorded. The hover
 text says “Fertility: Fertile”, “Infertile”,
 “No offspring by choice or for an unknown reason” or
-“Unknown”, after the evaluated line.</p></dd>
+“Unknown”, after the evaluated line. An optional
+<code>miscarriage</code> column, in Pedixplorer's words and values, marks the
+miscarriages: <code>"SAB"</code>, a spontaneous abortion (also
+<code>"spontaneous"</code> or <code>"spontaneous abortion"</code>),
+<code>"TOP"</code>, a termination of pregnancy (also <code>"termination"</code>,
+<code>"terminated"</code> or <code>"termination of pregnancy"</code>), and
+<code>"ECT"</code>, an ectopic pregnancy (also <code>"ectopic"</code> or
+<code>"ectopic pregnancy"</code>); <code>FALSE</code>, 0 or <code>"no"</code> marks
+nothing, <code>NA</code> is not recorded, text is read without its spaces and
+in any case, and any other value stops, naming the column, before any
+animal is left out. A miscarriage is drawn as a small triangle in place
+of its symbol, a termination's or an ectopic pregnancy's with a line
+across it, an ectopic pregnancy's also with “ECT” under it
+(see <code>miscarriage</code> in the returned <code>nodes</code>). A miscarriage
+that is a sire or dam, or that the <code>fertility</code> column marks
+infertile or with no offspring, stops, naming it. The hover text says
+“Miscarriage: Spontaneous abortion (SAB)”, “Termination
+of pregnancy (TOP)”, “Ectopic pregnancy (ECT)”, “No” or
+“Unknown”, after the fertility line.</p></dd>
 
 
 <dt id="arg-edgestyle">edgeStyle<a class="anchor" aria-label="anchor" href="#arg-edgestyle"></a></dt>
@@ -293,7 +311,11 @@ likewise, each added when <code>ped</code> has that column; <code>fertility</cod
 is added when <code>ped</code> has a <code>fertility</code> column:
 <code>"infertile"</code> or <code>"infertile_choice_na"</code> for the node of such
 an animal and each of its repeat-appearance nodes, <code>""</code> for every
-other node, never <code>NA</code>), <code>edges</code>
+other node, never <code>NA</code>; <code>miscarriage</code> is added when <code>ped</code>
+has a <code>miscarriage</code> column: <code>"SAB"</code>, <code>"TOP"</code> or
+<code>"ECT"</code> for the node of such an animal and each of its
+repeat-appearance nodes, <code>""</code> for every other node, never
+<code>NA</code>), <code>edges</code>
 (<code>from</code>,
 <code>to</code>, <code>dashes</code>, <code>smooth.enabled</code>, <code>smooth.type</code>,
 <code>smooth.roundness</code>, <code>color</code>, <code>width</code>; the <code>color</code>

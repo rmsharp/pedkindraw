@@ -56,7 +56,8 @@ A `visNetwork` widget, 500 pixels tall, 45 more for each affected
 condition past the first (at most four are drawn), for the “Affected
 status unknown” row, for the “Genotyped” row, for the “Carrier” row, for
 each of the “Proband” and “Consultand” rows, for the “Evaluated” row,
-and for each of the “Infertile” and “No offspring” rows.
+for each of the “Infertile” and “No offspring” rows, and for each of the
+“Miscarriage”, “Termination” and “Ectopic” rows.
 
 ## Details
 
@@ -115,6 +116,18 @@ and one bar, as in Pedixplorer; its id moves down below them. The
 legend's “Infertile” and “No offspring” rows, each its mark, then say
 what they are, and the canvas is 45 pixels taller for each. The drawing
 takes in each moved id, so one in its bottom row is not cut off.
+
+An animal whose `miscarriage` column says it is one (see
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md))
+is drawn as a triangle 0.6 the size of the other symbols, so smaller
+than the “Unknown” sex's, with no deceased slash. The triangle of a
+termination of pregnancy or of an ectopic pregnancy has a black line
+across it from its lower-left to its upper-right corner, and an ectopic
+pregnancy's has “ECT” under it, as in Pedixplorer. Its id moves down
+into the row of the other ids. The legend's “Miscarriage”, “Termination”
+and “Ectopic” rows, each its triangle, then say what they are, and the
+canvas is 45 pixels taller for each. The drawing keeps the room a
+full-size symbol would have, so a long id at its edge is not cut off.
 
 A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,
