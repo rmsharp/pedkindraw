@@ -3,7 +3,8 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase G14, gap
 ## B5 of docs/research/pedkindraw-gaps-2026-11-18.md; ruling R140,
 ## pedkindraw S61). The copied makePedigreeMatingLayout() checks its
-## textSize argument with .checkTextSize() and, when .textPixels() of it is
+## textSize argument with .checkPositiveNumber() (R/symbolSize.R; S61's
+## REFACTOR, where .checkTextSize() was) and, when .textPixels() of it is
 ## not vis.js's 14, gives every node that font.size; .infertileRoom()
 ## (R/infertileMark.R) and .miscarriageRoom() (R/miscarriageMark.R) keep a
 ## moved id's room by .idLabelDepth(); the copied drawPedigreeDiagram() adds
@@ -16,25 +17,6 @@
 #' Phase G14; the room builders' allowance for an id was measured at it.
 #' @noRd
 .fullTextSize <- 14L
-
-#' Stop on a textSize that is not one positive number
-#'
-#' Phase G14 (R140). \code{textSize} is a multiple of vis.js's 14 pixels, as
-#' kinship2's and Pedixplorer's \code{cex} is of their text; neither sets an
-#' upper limit, and neither does this.
-#' @param x the argument.
-#' @param caller the name of the function whose argument it is, for the
-#'   message.
-#' @return \code{NULL}, invisibly; stops otherwise.
-#' @noRd
-.checkTextSize <- function(x, caller) {
-  ok <- is.numeric(x) && length(x) == 1L && is.finite(x) && x > 0.0
-  if (!ok) {
-    stop(caller, "() requires 'textSize' to be one positive number.",
-         call. = FALSE)
-  }
-  invisible(NULL)
-}
 
 #' The ids' and names' size, in whole pixels, at a textSize
 #'

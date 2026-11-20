@@ -3,12 +3,15 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase G14, gap
 ## B5 of docs/research/pedkindraw-gaps-2026-11-18.md; ruling R140,
 ## pedkindraw S60). The copied makePedigreeMatingLayout() checks its
-## symbolSize argument with .checkSymbolSize() and gives each animal's node
-## .symbolUnits() of it; the copied drawPedigreeDiagram() adds the points of
-## .symbolSizeRoom() when an animal's symbol is smaller than full size
-## (DIVERGENCE.md). S60's REFACTOR added .sizedIdDown(), the move of an
-## id below a mark, which .infertileRoom() (R/infertileMark.R) and
-## .miscarriageRoom() (R/miscarriageMark.R) had each written out.
+## symbolSize and textSize arguments with .checkPositiveNumber() and gives
+## each animal's node .symbolUnits() of symbolSize; the copied
+## drawPedigreeDiagram() adds the points of .symbolSizeRoom() when an
+## animal's symbol is smaller than full size (DIVERGENCE.md). S60's REFACTOR
+## added .sizedIdDown(), the move of an id below a mark, which
+## .infertileRoom() (R/infertileMark.R) and .miscarriageRoom()
+## (R/miscarriageMark.R) had each written out. S61's REFACTOR added
+## .checkPositiveNumber(), where .checkSymbolSize() and R/textSize.R's
+## .checkTextSize() each checked one setting.
 
 #' The size, in units, of an animal's symbol at symbolSize 1
 #'
@@ -17,20 +20,23 @@
 #' @noRd
 .fullSymbolSize <- 25L
 
-#' Stop on a symbolSize that is not one positive number
+#' Stop on a size setting that is not one positive number
 #'
-#' Phase G14 (R140). \code{symbolSize} is a multiple of the full size, as
-#' kinship2's and Pedixplorer's \code{symbolsize} are; neither sets an upper
-#' limit, and neither does this.
+#' Phase G14 (R140). Each size setting (\code{symbolSize}, \code{textSize})
+#' is a multiple of the size drawn before it, as kinship2's and
+#' Pedixplorer's \code{symbolsize} and \code{cex} are; neither sets an upper
+#' limit, and neither does this. S61's REFACTOR: \code{.checkSymbolSize()}
+#' and \code{.checkTextSize()} had the same lines.
 #' @param x the argument.
+#' @param name the argument's name, for the message.
 #' @param caller the name of the function whose argument it is, for the
 #'   message.
 #' @return \code{NULL}, invisibly; stops otherwise.
 #' @noRd
-.checkSymbolSize <- function(x, caller) {
+.checkPositiveNumber <- function(x, name, caller) {
   ok <- is.numeric(x) && length(x) == 1L && is.finite(x) && x > 0.0
   if (!ok) {
-    stop(caller, "() requires 'symbolSize' to be one positive number.",
+    stop(caller, "() requires '", name, "' to be one positive number.",
          call. = FALSE)
   }
   invisible(NULL)

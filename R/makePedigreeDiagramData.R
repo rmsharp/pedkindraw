@@ -84,17 +84,18 @@
 ## each node a miscarriage field (.miscarriageNodes()); .reservedIdPrefixes
 ## gains __misc_, the prefix of the points drawPedigreeDiagram() adds for
 ## it; and its help (the same rows). Plan Phase G14's symbol size (pedkindraw
-## S60, R140): the argument symbolSize = 1, checked after maxNameChars
-## (.checkSymbolSize(), pedkindraw's own, R/symbolSize.R), each animal's
-## node and repeat node .symbolUnits() of it where they were 25;
-## .reservedIdPrefixes gains __size_, the prefix of the points
-## drawPedigreeDiagram() adds for symbols smaller than full size; and its
-## help (the same rows). Plan Phase G14's text size (pedkindraw S61, R140):
-## the argument textSize = 1, checked after symbolSize (.checkTextSize(),
-## pedkindraw's own, R/textSize.R), every node's font.size .textPixels() of
-## it when that is not vis.js's 14; .reservedIdPrefixes gains __text_, the
-## prefix of the points drawPedigreeDiagram() adds for larger text; and its
-## help (the same rows).
+## S60, R140): the argument symbolSize = 1, checked after maxNameChars, each
+## animal's node and repeat node .symbolUnits() of it where they were 25
+## (pedkindraw's own, R/symbolSize.R); .reservedIdPrefixes gains __size_, the
+## prefix of the points drawPedigreeDiagram() adds for symbols smaller than
+## full size; and its help (the same rows). Plan Phase G14's text size
+## (pedkindraw S61, R140): the argument textSize = 1, checked after
+## symbolSize, every node's font.size .textPixels() of it when that is not
+## vis.js's 14 (pedkindraw's own, R/textSize.R); .reservedIdPrefixes gains
+## __text_, the prefix of the points drawPedigreeDiagram() adds for larger
+## text; and its help (the same rows). Each size setting is checked by
+## .checkPositiveNumber() (R/symbolSize.R; S61's REFACTOR, where S60's
+## .checkSymbolSize() and S61's .checkTextSize() were).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -2126,8 +2127,9 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
          toString(required), ". Missing: ", toString(missingCols))
   }
   .checkMaxNameChars(maxNameChars, "makePedigreeMatingLayout")
-  .checkSymbolSize(symbolSize, "makePedigreeMatingLayout") # Phase G14
-  .checkTextSize(textSize, "makePedigreeMatingLayout") # Phase G14
+  # pedkindraw Phase G14 (R140): each size setting one positive number.
+  .checkPositiveNumber(symbolSize, "symbolSize", "makePedigreeMatingLayout")
+  .checkPositiveNumber(textSize, "textSize", "makePedigreeMatingLayout")
   edgeStyle <- match.arg(edgeStyle)
   if (!is.null(kinshipMatrix) &&
         (!(is.matrix(kinshipMatrix) || inherits(kinshipMatrix, "Matrix")) ||
