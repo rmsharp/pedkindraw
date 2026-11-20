@@ -142,6 +142,31 @@ code, `DIVERGENCE.md` in the repository says how and why.
   by `asPedFrame()` keeps the column and is drawn with its marks.
   nprcgenekeepr has no such mark. Without the column every drawing is as
   before.
+* New: `makePedigreeMatingLayout()` reads a column `miscarriage` in
+  Pedixplorer's words and values: "SAB" for a spontaneous abortion (also
+  "spontaneous" or "spontaneous abortion"), "TOP" for a termination of
+  pregnancy (also "termination", "terminated" or "termination of
+  pregnancy"), "ECT" for an ectopic pregnancy (also "ectopic" or "ectopic
+  pregnancy"), and `FALSE`, 0 or "no" for none, without spaces and in any
+  case, `NA` where it is not recorded. A miscarriage is drawn as a triangle
+  in place of its symbol, as in Pedixplorer, but 0.6 the size, so it is not
+  the "Unknown" sex's triangle; a termination's or an ectopic pregnancy's
+  has a black line across it and an ectopic pregnancy's "ECT" under it, as
+  in Pedixplorer. Its id moves down into the row of the other ids, and it
+  has no deceased slash, which would lie along a termination's line. Its
+  hover text says "Miscarriage: Spontaneous abortion (SAB)", "Termination of
+  pregnancy (TOP)", "Ectopic pregnancy (ECT)", "No" or "Unknown"; any other
+  value stops, naming the column (Pedixplorer reads such a value as none,
+  `TRUE` and 1 among them). A miscarriage that is a sire or dam, or that the
+  `fertility` column marks infertile or with no offspring, stops, naming it,
+  as Pedixplorer refuses both. `drawPedigreeDiagram()`'s legend then has a
+  row "Miscarriage", "Termination" and "Ectopic" for each kind drawn, its
+  triangle, 45 px each; the view keeps the room a full-size symbol would
+  have, so a long id at the edge is not cut off. An id starting `__misc_` is
+  now refused, as the other reserved prefixes are. A Pedixplorer object
+  converted by `asPedFrame()` keeps the column and is drawn with its marks.
+  nprcgenekeepr has no such mark. Without the column every drawing is as
+  before.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's

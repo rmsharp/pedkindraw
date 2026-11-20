@@ -450,6 +450,24 @@ cases$markings <- function(case = "markings") {
           paste(w$x$nodes$id[startsWith(w$x$nodes$id, "__fert_")],
                 collapse = " "))
   })
+  ## Phase G13 (pedkindraw S59, R133 and R139): the miscarriage mark, a column
+  ## miscarriage (Pedixplorer's name and values), drawn as a triangle 0.6 the
+  ## symbol's size, a line across a termination's or an ectopic pregnancy's.
+  lost <- ped
+  lost$miscarriage <- fields$miscarriage
+  layLost <- pedkindraw::makePedigreeMatingLayout(withGen(lost))
+  probe(case, "pedkindraw miscarriage : miscarriage field of A, B, C, D",
+        layLost$nodes$miscarriage[match(ped$id, layLost$nodes$id)])
+  probe(case, "pedkindraw miscarriage : legend row, C's shape, size, points", {
+    w <- pedkindraw::drawPedigreeDiagram(layLost)
+    rows <- w$x$legend$nodes
+    at <- match("Miscarriage", rows$label)
+    c3 <- match("C", w$x$nodes$id)
+    paste(rows$label[[at]], rows$shape[[at]], w$x$nodes$shape[[c3]],
+          w$x$nodes$size[[c3]],
+          paste(w$x$nodes$id[startsWith(w$x$nodes$id, "__misc_")],
+                collapse = " "))
+  })
   probe(case, "kinship2 pedigree() arguments",
         names(formals(kinship2::pedigree)))
 }
