@@ -167,6 +167,21 @@ code, `DIVERGENCE.md` in the repository says how and why.
   converted by `asPedFrame()` keeps the column and is drawn with its marks.
   nprcgenekeepr has no such mark. Without the column every drawing is as
   before.
+* New: `makePedigreeMatingLayout(symbolSize = )` sets the size of the
+  animals' symbols as a multiple of the size drawn before (1, the default),
+  as kinship2's and Pedixplorer's `symbolsize` does: each animal and each
+  repeat appearance is drawn 25 times it units across, rounded to a whole
+  unit, and the mating points keep theirs. The layout works out its lines'
+  detours around the symbols from it, and an infertile animal's and a
+  miscarriage's id moves down in proportion. Since the drawing zooms to
+  fit, a larger symbol leaves less room between the symbols: measured at
+  500 px, from 2 the symbols reach the lines and the mating points, and at
+  3 the rectilinear layout warns that it could not clear every symbol. With
+  symbols smaller than full size, `drawPedigreeDiagram()` keeps the room a
+  full-size symbol would have, so a long id at the edge is not cut off. An
+  id starting `__size_` is now refused, as the other reserved prefixes are.
+  Anything but one positive number stops. nprcgenekeepr has no such
+  argument. At 1 every layout and drawing is as before.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's

@@ -591,6 +591,23 @@ cases$style <- function(case = "style") {
             pedkindraw::drawPedigreeDiagram(lay)$x))
           regmatches(json, regexpr("var colors = \\[[^]]*\\]", json))
         })
+  ## Plan Phase G14 (pedkindraw S60, R140): the symbols' size, a multiple of
+  ## each package's own: kinship2's symbol width at symbolsize 0.6, 1 and
+  ## 1.6 (plot.pedigree()'s boxw, in its plot's units) and pedkindraw's
+  ## animals' node size at symbolSize 0.6, 1 and 1.6.
+  probe(case, "kinship2 boxw at symbolsize 0.6, 1, 1.6", {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    vapply(c(0.6, 1.0, 1.6), function(s) {
+      round(kinship2::plot.pedigree(k2Pedigree(ped), symbolsize = s)$boxw, 3L)
+    }, numeric(1L))
+  })
+  probe(case, "pedkindraw node size at symbolSize 0.6, 1, 1.6",
+        vapply(c(0.6, 1.0, 1.6), function(s) {
+          lay <- pedkindraw::makePedigreeMatingLayout(withGen(ped),
+                                                      symbolSize = s)
+          unique(lay$nodes$size[match(ped$id, lay$nodes$id)])
+        }, integer(1L)))
 }
 
 ## B6. Longer or several-line labels.
