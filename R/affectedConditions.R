@@ -17,7 +17,10 @@
 ## pedkindraw S57 (R137; the same row) an argument evaluated, which runs
 ## .evaluatedStarHandler() (pedkindraw's own, R/evaluatedMark.R) after the
 ## arrows; pedkindraw S58 (R138; the same row) an argument infertile, which
-## runs .infertileBarsHandler() (pedkindraw's own, R/infertileMark.R) last.
+## runs .infertileBarsHandler() (pedkindraw's own, R/infertileMark.R) after
+## the star; pedkindraw S59 (R139; the same row) an argument miscarriage,
+## which runs .miscarriageHandler() (pedkindraw's own, R/miscarriageMark.R)
+## last.
 ## Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
@@ -271,14 +274,19 @@
 #' @param infertile \code{TRUE} when some node is an infertile animal's or
 #'   one with no offspring by choice or for an unknown reason (pedkindraw
 #'   S58, plan Phase G13, R138): \code{.infertileBarsHandler()} then runs
-#'   last; it is left out otherwise.
+#'   after the star; it is left out otherwise.
+#' @param miscarriage \code{TRUE} when some node is a termination's or an
+#'   ectopic pregnancy's (pedkindraw S59, plan Phase G13, R139):
+#'   \code{.miscarriageHandler()} then runs last; it is left out otherwise.
 #' @return A JavaScript function, as a character string.
 #' @noRd
 .diagramAfterDrawing <- function(sections = FALSE,
                                  colors = .conditionColors,
                                  carrier = FALSE, arrows = FALSE,
-                                 evaluated = FALSE, infertile = FALSE) {
-  if (!sections && !carrier && !arrows && !evaluated && !infertile) {
+                                 evaluated = FALSE, infertile = FALSE,
+                                 miscarriage = FALSE) {
+  if (!sections && !carrier && !arrows && !evaluated && !infertile &&
+        !miscarriage) {
     return(.deceasedSlashHandler())
   }
   paste0(
@@ -298,6 +306,9 @@
     },
     if (infertile) {
       paste0("  (", .infertileBarsHandler(), ").call(this, ctx);\n")
+    },
+    if (miscarriage) {
+      paste0("  (", .miscarriageHandler(), ").call(this, ctx);\n")
     },
     "}"
   )

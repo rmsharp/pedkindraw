@@ -27,7 +27,12 @@
 ## each adds, the bars' handler, the ids moved below the bars and the points
 ## that keep them inside the drawing (plan Phase G13, R138: infertileRow,
 ## noOffspringRow, hasInfertile, hasNoOffspring, and the help's paragraph on
-## them), each a DIVERGENCE.md row until nprcgenekeepr has it;
+## them), and S59's "Miscarriage", "Termination" and "Ectopic" rows, the 45
+## px each adds, a miscarriage's small triangle and moved id, the points
+## that keep the drawing's fit as for a full-size symbol, and the lines'
+## handler (plan Phase G13, R139: sabRow, topRow, ectRow, hasMiscarriage, and
+## the help's paragraph on them), each a DIVERGENCE.md row until
+## nprcgenekeepr has it;
 ## otherwise help text only.
 ## The help describes the
 ## function alone (plan R36): the title, the opening sentences, the
@@ -117,6 +122,19 @@
 #' the canvas is 45 pixels taller for each. The drawing takes in each moved
 #' id, so one in its bottom row is not cut off.
 #'
+#' An animal whose \code{miscarriage} column says it is one (see
+#' \code{\link{makePedigreeMatingLayout}}) is drawn as a triangle 0.6 the
+#' size of the other symbols, so smaller than the \dQuote{Unknown} sex's,
+#' with no deceased slash. The triangle of a termination of pregnancy or of
+#' an ectopic pregnancy has a black line across it from its lower-left to
+#' its upper-right corner, and an ectopic pregnancy's has \dQuote{ECT}
+#' under it, as in Pedixplorer. Its id moves down into the row of the other
+#' ids. The
+#' legend's \dQuote{Miscarriage}, \dQuote{Termination} and
+#' \dQuote{Ectopic} rows, each its triangle, then say what they are, and
+#' the canvas is 45 pixels taller for each. The drawing keeps the room a
+#' full-size symbol would have, so a long id at its edge is not cut off.
+#'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
 #' session, so a script leaves \code{onClick} out.
@@ -133,8 +151,10 @@
 #'   affected condition past the first (at most four are drawn), for the
 #'   \dQuote{Affected status unknown} row, for the \dQuote{Genotyped} row,
 #'   for the \dQuote{Carrier} row, for each of the \dQuote{Proband} and
-#'   \dQuote{Consultand} rows, for the \dQuote{Evaluated} row, and for
-#'   each of the \dQuote{Infertile} and \dQuote{No offspring} rows.
+#'   \dQuote{Consultand} rows, for the \dQuote{Evaluated} row, for
+#'   each of the \dQuote{Infertile} and \dQuote{No offspring} rows, and
+#'   for each of the \dQuote{Miscarriage}, \dQuote{Termination} and
+#'   \dQuote{Ectopic} rows.
 #' @seealso \code{\link{makePedigreeMatingLayout}}
 #' @examples
 #' ## Four animals: A and B are the parents of C and D; A has died, and C
@@ -324,14 +344,34 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   noOffspringRow <- .markLegendRow("No offspring",
                                    .infertileLegendImage(FALSE),
                                    hasNoOffspring)
+  # pedkindraw Phase G13 (R133, R139): a miscarriage is drawn as a small
+  # triangle, a termination's and an ectopic pregnancy's with a line across
+  # it and an ectopic pregnancy's with "ECT" under it
+  # (.miscarriageHandler()), its id moved into its row; then a
+  # "Miscarriage", a "Termination" and an "Ectopic" row, each a picture of
+  # its triangle, come before "Deceased"; invisible points keep the
+  # drawing's fit as for a full-size symbol (.miscarriageRoom()).
+  kinds <- layout$nodes[["miscarriage"]]
+  hasSab <- isTRUE(any(kinds == "SAB"))
+  hasTop <- isTRUE(any(kinds == "TOP"))
+  hasEct <- isTRUE(any(kinds == "ECT"))
+  sabRow <- .markLegendRow("Miscarriage", .miscarriageLegendImage("SAB"),
+                           hasSab)
+  topRow <- .markLegendRow("Termination", .miscarriageLegendImage("TOP"),
+                           hasTop)
+  ectRow <- .markLegendRow("Ectopic", .miscarriageLegendImage("ECT"),
+                           hasEct)
   hasArrow <- hasProband || hasConsultand
   nodes <- if (hasArrow) .probandArrowRoom(layout$nodes) else layout$nodes
   if (hasEvaluated) nodes <- .evaluatedStarRoom(nodes)
   hasBars <- hasInfertile || hasNoOffspring
   if (hasBars) nodes <- .infertileRoom(nodes)
+  hasMiscarriage <- hasSab || hasTop || hasEct
+  if (hasMiscarriage) nodes <- .miscarriageRoom(nodes)
   legendNodes <- rbind(sexRows, conditionRows, unknownRow, genotypedRow,
                        carrierRow, probandRow, consultandRow, evaluatedRow,
-                       infertileRow, noOffspringRow, deceasedRow)
+                       infertileRow, noOffspringRow, sabRow, topRow, ectRow,
+                       deceasedRow)
   legendNodes$size <- 14L
   if (hasGenotyped) {
     legendNodes$borderWidth <- ifelse(legendNodes$label %in% genotypedRow$label,
@@ -346,7 +386,7 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # does (with no condition column the legend still has its one row).
   rowsForHeight <- max(nConditions, 1L) + hasUnknown + hasGenotyped +
     hasCarrier + hasProband + hasConsultand + hasEvaluated + hasInfertile +
-    hasNoOffspring
+    hasNoOffspring + hasSab + hasTop + hasEct
   visNetwork::visNetwork(nodes, layout$edges,
                          height = sprintf("%dpx",
                                           .diagramHeight(rowsForHeight))) |>
@@ -362,7 +402,7 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
       # S1028's slash through each deceased animal's symbol on top.
       afterDrawing = .diagramAfterDrawing(nConditions >= 2L, sectionColors,
                                           hasCarrier, hasArrow, hasEvaluated,
-                                          hasBars)
+                                          hasBars, hasTop || hasEct)
     ) |>
     # Image export (issue #131): visExport() bundles its own JS deps
     # (FileSaver/Blob/canvas-toBlob/html2canvas/jsPDF) as htmlwidget

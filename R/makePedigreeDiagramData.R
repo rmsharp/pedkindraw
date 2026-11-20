@@ -76,7 +76,14 @@
 ## (.readFertility(), pedkindraw's own, R/infertileMark.R), adds a hover line
 ## for it and gives each node a fertility field (.fertilityNodes());
 ## .reservedIdPrefixes gains __fert_, the prefix of the points
-## drawPedigreeDiagram() adds for it; and its help (the same rows).
+## drawPedigreeDiagram() adds for it; and its help (the same rows). Plan
+## Phase G13's miscarriage (pedkindraw S59, R133 and R139): it reads a column
+## miscarriage, Pedixplorer's values (.readMiscarriage(), pedkindraw's own,
+## R/miscarriageMark.R), stops on a miscarriage that is a parent or has a
+## fertility mark (.checkMiscarriage()), adds a hover line for it and gives
+## each node a miscarriage field (.miscarriageNodes()); .reservedIdPrefixes
+## gains __misc_, the prefix of the points drawPedigreeDiagram() adds for
+## it; and its help (the same rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -536,7 +543,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 ## prefix of the points that keep an infertile animal's moved id inside it
 ## (.infertileRoom()).
 .reservedIdPrefixes <- c("__union_", "__dup_", "__drop_", "__bar_", "__proj_",
-                         "__jog_", "__mark_", "__eval_", "__fert_")
+                         "__jog_", "__mark_", "__eval_", "__fert_",
+                         "__misc_")
 .reservedIdPattern <- paste0("^", .reservedIdPrefixes, collapse = "|")
 
 #' Transform a pedigree into a mating-unit forest (Option 2 layout, D1/D2)
@@ -1834,7 +1842,25 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   \code{nodes}); an animal with offspring is marked as recorded. The hover
 #'   text says \dQuote{Fertility: Fertile}, \dQuote{Infertile},
 #'   \dQuote{No offspring by choice or for an unknown reason} or
-#'   \dQuote{Unknown}, after the evaluated line.
+#'   \dQuote{Unknown}, after the evaluated line. An optional
+#'   \code{miscarriage} column, in Pedixplorer's words and values, marks the
+#'   miscarriages: \code{"SAB"}, a spontaneous abortion (also
+#'   \code{"spontaneous"} or \code{"spontaneous abortion"}),
+#'   \code{"TOP"}, a termination of pregnancy (also \code{"termination"},
+#'   \code{"terminated"} or \code{"termination of pregnancy"}), and
+#'   \code{"ECT"}, an ectopic pregnancy (also \code{"ectopic"} or
+#'   \code{"ectopic pregnancy"}); \code{FALSE}, 0 or \code{"no"} marks
+#'   nothing, \code{NA} is not recorded, text is read without its spaces and
+#'   in any case, and any other value stops, naming the column, before any
+#'   animal is left out. A miscarriage is drawn as a small triangle in place
+#'   of its symbol, a termination's or an ectopic pregnancy's with a line
+#'   across it, an ectopic pregnancy's also with \dQuote{ECT} under it
+#'   (see \code{miscarriage} in the returned \code{nodes}). A miscarriage
+#'   that is a sire or dam, or that the \code{fertility} column marks
+#'   infertile or with no offspring, stops, naming it. The hover text says
+#'   \dQuote{Miscarriage: Spontaneous abortion (SAB)}, \dQuote{Termination
+#'   of pregnancy (TOP)}, \dQuote{Ectopic pregnancy (ECT)}, \dQuote{No} or
+#'   \dQuote{Unknown}, after the fertility line.
 #' @param edgeStyle one of \code{"rectilinear"} (default), which routes
 #'   mate-line and sibship-bar edges through invisible waypoint nodes so
 #'   they render as a strict right angle, kinship2-style, or
@@ -1966,7 +1992,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   is added when \code{ped} has a \code{fertility} column:
 #'   \code{"infertile"} or \code{"infertile_choice_na"} for the node of such
 #'   an animal and each of its repeat-appearance nodes, \code{""} for every
-#'   other node, never \code{NA}), \code{edges}
+#'   other node, never \code{NA}; \code{miscarriage} is added when \code{ped}
+#'   has a \code{miscarriage} column: \code{"SAB"}, \code{"TOP"} or
+#'   \code{"ECT"} for the node of such an animal and each of its
+#'   repeat-appearance nodes, \code{""} for every other node, never
+#'   \code{NA}), \code{edges}
 #'   (\code{from},
 #'   \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 #'   \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
@@ -2115,6 +2145,11 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # pedkindraw Phase G13 (R133, R138): the fertility column, Pedixplorer's
   # three values; an infertile animal has a line and bars under its symbol.
   fertility <- .readFertility(ped, "makePedigreeMatingLayout")
+  # pedkindraw Phase G13 (R133, R139): the miscarriage column, Pedixplorer's
+  # values; a miscarriage is drawn as a small triangle, and one that is a
+  # parent or has a fertility mark stops.
+  miscarriage <- .readMiscarriage(ped, "makePedigreeMatingLayout")
+  .checkMiscarriage(ped, miscarriage, fertility, "makePedigreeMatingLayout")
 
   # A fully-isolated individual (no known parent, never a parent, not
   # twinRelations-connected) is suppressed from the diagram, matching
@@ -2159,6 +2194,9 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     if (!is.null(consultand)) emptyNodes$consultand <- logical() # Phase G13
     if (!is.null(evaluated)) emptyNodes$evaluated <- logical() # Phase G13
     if (!is.null(fertility)) emptyNodes$fertility <- character() # Phase G13
+    if (!is.null(miscarriage)) { # Phase G13
+      emptyNodes$miscarriage <- character()
+    }
     emptyEdges <- data.frame(from = character(), to = character(),
                               dashes = logical(), smooth.enabled = logical(),
                               smooth.type = character(),
@@ -2342,6 +2380,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
     if (!is.null(fertility)) { # pedkindraw Phase G13
       title <- paste0(title, sprintf("<br><b>Fertility:</b> %s",
                                      .fertilityLabel(fertility[ids])))
+    }
+    if (!is.null(miscarriage)) { # pedkindraw Phase G13
+      title <- paste0(title, sprintf("<br><b>Miscarriage:</b> %s",
+                                     .miscarriageLabel(miscarriage[ids])))
     }
     if (hasName) {
       title <- paste0(title, .nameTooltipLine(nameOf[ids]))
@@ -2605,6 +2647,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   if (!is.null(fertility)) { # pedkindraw Phase G13
     nodes$fertility <- .fertilityNodes(nodes$id, fertility, dupIds,
                                        duplicates$realId)
+  }
+  if (!is.null(miscarriage)) { # pedkindraw Phase G13
+    nodes$miscarriage <- .miscarriageNodes(nodes$id, miscarriage, dupIds,
+                                           duplicates$realId)
   }
 
   list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,
