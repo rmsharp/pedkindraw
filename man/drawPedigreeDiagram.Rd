@@ -25,8 +25,9 @@ application can pass one that sends the clicked animal to its server.}
 \value{
 A \code{visNetwork} widget, 500 pixels tall, 45 more for each
 affected condition past the first (at most four are drawn), for the
-\dQuote{Affected status unknown} row, for the \dQuote{Genotyped} row
-and for the \dQuote{Carrier} row.
+\dQuote{Affected status unknown} row, for the \dQuote{Genotyped} row,
+for the \dQuote{Carrier} row, and for each of the \dQuote{Proband} and
+\dQuote{Consultand} rows.
 }
 \description{
 Returns an interactive pedigree diagram, as a \code{visNetwork} widget,
@@ -36,6 +37,7 @@ five sex symbols, one row per affected condition or a single
 \dQuote{Affected} row, a grey \dQuote{Affected status unknown} row when an
 animal's status is unknown, a \dQuote{Genotyped} row when an animal is
 genotyped, a \dQuote{Carrier} row when an animal is a carrier,
+\dQuote{Proband} and \dQuote{Consultand} rows when an animal is one,
 \dQuote{Deceased}, and the dashed
 repeat-appearance and twin lines), each multi-condition symbol split into
 its colored sections, the slash through each deceased animal's symbol, a
@@ -77,6 +79,14 @@ An animal whose \code{carrier} column is \code{TRUE} (see
 centre of its symbol, on top of its fill, its sections and the slash; the
 legend's \dQuote{Carrier} row, a circle with the dot, then says what the
 dot is, and the canvas is 45 pixels taller for that row.
+
+An animal whose \code{proband} or \code{consultand} column is \code{TRUE}
+(see \code{\link{makePedigreeMatingLayout}}) has a black arrow pointing at
+its symbol from the lower left, a proband's with \dQuote{P} beside its
+tail; the legend's \dQuote{Proband} and \dQuote{Consultand} rows, each
+the arrow, then say what they are, and the canvas is 45 pixels taller for
+each. The drawing takes in each arrow, so one at its left edge is not cut
+off.
 
 A click does nothing unless \code{onClick} is given: a Shiny application
 can pass one to act on the clicked animal, which needs a live Shiny

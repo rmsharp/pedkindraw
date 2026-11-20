@@ -44,7 +44,16 @@ the genetic trait but are not expected to show the disease, in the same
 values: a carrier's symbol is drawn with a black dot at its centre (see
 \code{carrier} in the returned \code{nodes}), and its hover text says
 \dQuote{Carrier: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
-genotyped line.}
+genotyped line. Optional \code{proband} and \code{consultand} columns,
+in the same values, mark the proband (an affected animal through whom
+the family came to attention) and the consultand (an animal for whom
+counselling or testing is sought): each is drawn with a black arrow
+pointing at its symbol from the lower left, a proband's with
+\dQuote{P} beside it (see \code{proband} and \code{consultand} in the
+returned \code{nodes}), and the hover text says \dQuote{Proband:} and
+\dQuote{Consultand:} \dQuote{Yes}, \dQuote{No} or \dQuote{Unknown},
+one line for each column, after the carrier line. An animal marked both
+stops, naming it, before any animal is left out.}
 
 \item{edgeStyle}{one of \code{"rectilinear"} (default), which routes
 mate-line and sibship-bar edges through invisible waypoint nodes so
@@ -180,7 +189,8 @@ its repeat-appearance nodes, 1 for every other node, the width of the
 symbol's outline; \code{carrier} is added when \code{ped} has a
 \code{carrier} column: \code{TRUE} for the node of a carrier and each
 of its repeat-appearance nodes, \code{FALSE} for every other node, never
-\code{NA}), \code{edges} (\code{from},
+\code{NA}; \code{proband} and \code{consultand} likewise, each added
+when \code{ped} has that column), \code{edges} (\code{from},
 \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
 and \code{width} columns are always present once any mating unit
