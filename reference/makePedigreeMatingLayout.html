@@ -116,7 +116,13 @@ pointing at its symbol from the lower left, a proband's with
 returned <code>nodes</code>), and the hover text says “Proband:” and
 “Consultand:” “Yes”, “No” or “Unknown”,
 one line for each column, after the carrier line. An animal marked both
-stops, naming it, before any animal is left out.</p></dd>
+stops, naming it, before any animal is left out. An optional
+<code>evaluated</code> column, in the same values, marks the animals with a
+documented evaluation: each is drawn with a black <code>*</code> to the
+right of the upper-right corner of its symbol (see <code>evaluated</code> in
+the returned <code>nodes</code>), and its hover text says
+“Evaluated: Yes”, “No” or “Unknown”, after the
+consultand line.</p></dd>
 
 
 <dt id="arg-edgestyle">edgeStyle<a class="anchor" aria-label="anchor" href="#arg-edgestyle"></a></dt>
@@ -268,8 +274,9 @@ its repeat-appearance nodes, 1 for every other node, the width of the
 symbol's outline; <code>carrier</code> is added when <code>ped</code> has a
 <code>carrier</code> column: <code>TRUE</code> for the node of a carrier and each
 of its repeat-appearance nodes, <code>FALSE</code> for every other node, never
-<code>NA</code>; <code>proband</code> and <code>consultand</code> likewise, each added
-when <code>ped</code> has that column), <code>edges</code> (<code>from</code>,
+<code>NA</code>; <code>proband</code>, <code>consultand</code> and <code>evaluated</code>
+likewise, each added when <code>ped</code> has that column), <code>edges</code>
+(<code>from</code>,
 <code>to</code>, <code>dashes</code>, <code>smooth.enabled</code>, <code>smooth.type</code>,
 <code>smooth.roundness</code>, <code>color</code>, <code>width</code>; the <code>color</code>
 and <code>width</code> columns are always present once any mating unit

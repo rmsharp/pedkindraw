@@ -8,15 +8,15 @@ legend (the five sex symbols, one row per affected condition or a single
 “Affected” row, a grey “Affected status unknown” row when an animal's
 status is unknown, a “Genotyped” row when an animal is genotyped, a
 “Carrier” row when an animal is a carrier, “Proband” and “Consultand”
-rows when an animal is one, “Deceased”, and the dashed repeat-appearance
-and twin lines), each multi-condition symbol split into its colored
-sections, the slash through each deceased animal's symbol, a canvas that
-grows with the number of legend rows, the **Export Diagram (PNG)**
-button, a “Select by id” box that lists the animals, and the highlight
-on hover. The sections and the slash are painted by a drawing script
-inside the widget, so they appear wherever the widget is shown: in the
-RStudio viewer, in an R Markdown or Quarto document, or in a web page
-saved with
+rows when an animal is one, an “Evaluated” row when an animal is
+evaluated, “Deceased”, and the dashed repeat-appearance and twin lines),
+each multi-condition symbol split into its colored sections, the slash
+through each deceased animal's symbol, a canvas that grows with the
+number of legend rows, the **Export Diagram (PNG)** button, a “Select by
+id” box that lists the animals, and the highlight on hover. The sections
+and the slash are painted by a drawing script inside the widget, so they
+appear wherever the widget is shown: in the RStudio viewer, in an R
+Markdown or Quarto document, or in a web page saved with
 [`htmlwidgets::saveWidget()`](https://rdrr.io/pkg/htmlwidgets/man/saveWidget.html).
 
 ## Usage
@@ -53,8 +53,9 @@ drawPedigreeDiagram(
 
 A `visNetwork` widget, 500 pixels tall, 45 more for each affected
 condition past the first (at most four are drawn), for the “Affected
-status unknown” row, for the “Genotyped” row, for the “Carrier” row, and
-for each of the “Proband” and “Consultand” rows.
+status unknown” row, for the “Genotyped” row, for the “Carrier” row, for
+each of the “Proband” and “Consultand” rows, and for the “Evaluated”
+row.
 
 ## Details
 
@@ -97,6 +98,13 @@ proband's with “P” beside its tail; the legend's “Proband” and
 “Consultand” rows, each the arrow, then say what they are, and the
 canvas is 45 pixels taller for each. The drawing takes in each arrow, so
 one at its left edge is not cut off.
+
+An animal whose `evaluated` column is `TRUE` (see
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md))
+has a black `*` to the right of the upper-right corner of its symbol;
+the legend's “Evaluated” row, the `*`, then says what it is, and the
+canvas is 45 pixels taller for that row. The drawing takes in each `*`,
+so one at its right edge is not cut off.
 
 A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,

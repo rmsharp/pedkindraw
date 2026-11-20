@@ -63,7 +63,12 @@ makePedigreeMatingLayout(
   `proband` and `consultand` in the returned `nodes`), and the hover
   text says “Proband:” and “Consultand:” “Yes”, “No” or “Unknown”, one
   line for each column, after the carrier line. An animal marked both
-  stops, naming it, before any animal is left out.
+  stops, naming it, before any animal is left out. An optional
+  `evaluated` column, in the same values, marks the animals with a
+  documented evaluation: each is drawn with a black `*` to the right of
+  the upper-right corner of its symbol (see `evaluated` in the returned
+  `nodes`), and its hover text says “Evaluated: Yes”, “No” or “Unknown”,
+  after the consultand line.
 
 - edgeStyle:
 
@@ -207,9 +212,9 @@ column: 4 for the node of a genotyped animal and each of its
 repeat-appearance nodes, 1 for every other node, the width of the
 symbol's outline; `carrier` is added when `ped` has a `carrier` column:
 `TRUE` for the node of a carrier and each of its repeat-appearance
-nodes, `FALSE` for every other node, never `NA`; `proband` and
-`consultand` likewise, each added when `ped` has that column), `edges`
-(`from`, `to`, `dashes`, `smooth.enabled`, `smooth.type`,
+nodes, `FALSE` for every other node, never `NA`; `proband`, `consultand`
+and `evaluated` likewise, each added when `ped` has that column),
+`edges` (`from`, `to`, `dashes`, `smooth.enabled`, `smooth.type`,
 `smooth.roundness`, `color`, `width`; the `color` and `width` columns
 are always present once any mating unit exists: a consanguineous mating
 unit's (`kinship(sire, dam) > 0`) 2 spouse-to-union edges get
