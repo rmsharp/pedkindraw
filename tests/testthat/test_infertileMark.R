@@ -306,10 +306,10 @@ test_that(
   for (column in c("id", "sire")) {
     ped[[column]][ped[[column]] %in% "A"] <- "__fert_A"
   }
-  expect_error(makePedigreeMatingLayout(ped), "'__eval_'/'__fert_' prefix",
+  ## S59: __misc_ (the miscarriage mark's points) follows __fert_ in the list.
+  expect_error(makePedigreeMatingLayout(ped), "'__eval_'/'__fert_'",
                fixed = TRUE)
-  expect_identical(.reservedIdPrefixes[[length(.reservedIdPrefixes)]],
-                   "__fert_")
+  expect_true("__fert_" %in% .reservedIdPrefixes)
 })
 
 test_that(
