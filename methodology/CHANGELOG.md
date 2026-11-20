@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-20 · [BL-Phase G13] S58: Phase G13, mark 5 of 6, infertile (in progress)
+- **Change:** session claimed (Mark's pick "G13: infertile mark (Recommended)" at the orient picker): R133's order (`docs/planning/gaps-and-shared-code-plan.md:374`), strict TDD; measure first (Learnings 17-21), a pre-RED picker, RED, GREEN, REFACTOR by the gates. Phase 0 reconcile: nothing to backfill (frontier 587948b is HEAD; no merges; S57's receipt complete, its ratchet citation matching the results file); drift 91/21/0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S57's runs: site 44690103005 success, CI 44690103020 failure on Ubuntu R-devel only (S4Vectors 0.50.3 lazy loading failed, before pedkindraw was checked).
+- **Commit/PR:** the claim commit · **Session:** S58 · **Verified:** pending (close-out).
+
 ### 2026-11-20 · [BL-Phase G13] S57 push 1: `master` to GitHub at close-out 2 (S57's claim, G13 mark 4, close-out 1-2, the ledger archive)
 - **Change:** `git push origin master` (`d78023e..` close-out 2); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S56's push runs, finished during S57: site `44668565643` `success` (pages `44668941051` `success`); CI `44668565648` `failure` on its Ubuntu R-devel job only (Bioconductor's S4Vectors 0.50.3 "lazy loading failed" while installing dependencies, before pedkindraw is checked), the other four jobs `success`.
 - **Commit/PR:** none (push) · **Session:** S57 · **Verified:** the push's output; S56's runs by `gh run view`.

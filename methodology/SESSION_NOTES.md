@@ -144,6 +144,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S56's entries were removed in S3-S57 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 58 Did
+**Deliverable:** Phase G13, mark 5 of 6: infertile (IN PROGRESS)
+**Started:** 2026-11-20 03:22 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G13: infertile mark (Recommended)"
+(orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (the column's name and values against the compared
+CSVs and `asPedFrame()`; Pedixplorer's elements for "infertile" and "infertile_choice_na"; places other than under the
+symbol, red-mark overlap in both edge styles; the canvas edge; legend rows; the hover line).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 56 Handoff Evaluation (by Session 57)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(g) was the session's plan item for item: the 13 compared CSVs held
