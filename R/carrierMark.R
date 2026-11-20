@@ -3,7 +3,8 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase G13, gap
 ## B3 of docs/research/pedkindraw-gaps-2026-11-18.md; rulings R133 and R135,
 ## pedkindraw S55). The copied makePedigreeMatingLayout() reads a column
-## carrier with .readGenotyped() and marks each node with .carrierNodes();
+## carrier with .readMarkColumn() and marks each node with .markedNodes()
+## (both in R/markColumns.R, which the genotyped mark shares);
 ## the copied .diagramAfterDrawing() runs .carrierDotHandler() after the
 ## deceased slash, and the copied drawPedigreeDiagram() adds a "Carrier"
 ## legend row, .carrierLegendImage(), when any animal is a carrier
@@ -20,26 +21,6 @@
 #' hidden under the slash.
 #' @noRd
 .carrierDotRatio <- 0.24
-
-#' Which nodes of a layout are a carrier's
-#'
-#' Phase G13 (R135). \code{TRUE} for the node of an animal whose
-#' \code{carrier} value is \code{TRUE} and for each of its repeat-appearance
-#' nodes; \code{FALSE} for every other node: an animal that is not a carrier
-#' or not recorded, a mating union, a routing point.
-#' @param nodeIds ids of the layout's nodes.
-#' @param carrier what \code{.readGenotyped(ped, caller, "carrier")}
-#'   returns.
-#' @param dupIds ids of the repeat-appearance nodes.
-#' @param dupRealIds the real id of each repeat-appearance node.
-#' @return logical vector, as long as \code{nodeIds}, never \code{NA}.
-#' @noRd
-.carrierNodes <- function(nodeIds, carrier, dupIds, dupRealIds) {
-  animalOf <- ifelse(nodeIds %in% dupIds, dupRealIds[match(nodeIds, dupIds)],
-                     nodeIds)
-  marked <- unname(carrier[animalOf])
-  !is.na(marked) & marked
-}
 
 #' The afterDrawing handler that paints a carrier's dot
 #'

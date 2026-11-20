@@ -53,13 +53,14 @@
 ## before G1's check, its label states the rule and the tooltip gives the
 ## number; G1's message names the argument; and their help (DIVERGENCE.md
 ## rows). Plan Phase G13 (pedkindraw S54, R133-R134): makePedigreeMatingLayout()
-## reads a column genotyped (.readGenotyped(), pedkindraw's own,
-## R/genotypedMark.R) before any animal is left out, adds a hover line for it,
-## and gives each node a borderWidth (.genotypedBorderWidths()), 4 for a
-## genotyped animal; and its help (a DIVERGENCE.md row). Plan Phase G13's
-## carrier (pedkindraw S55, R133 and R135): it reads a column carrier the same
-## way, adds a hover line for it, and gives each node a carrier field
-## (.carrierNodes(), pedkindraw's own, R/carrierMark.R); and its help (the
+## reads a column genotyped (.readMarkColumn(), pedkindraw's own,
+## R/markColumns.R since S55's REFACTOR) before any animal is left out, adds
+## a hover line for it, and gives each node a borderWidth
+## (.genotypedBorderWidths()), 4 for a genotyped animal; and its help (a
+## DIVERGENCE.md row). Plan Phase G13's carrier (pedkindraw S55, R133 and
+## R135): it reads a column carrier the same way, adds a hover line for it,
+## and gives each node a carrier field
+## (.markedNodes(), pedkindraw's own, R/markColumns.R); and its help (the
 ## same row).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
@@ -2042,10 +2043,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   }
   # pedkindraw Phase G13 (R133-R134): the genotyped column, read and checked
   # before any animal is left out; a genotyped animal's outline is thick.
-  genotyped <- .readGenotyped(ped, "makePedigreeMatingLayout")
+  genotyped <- .readMarkColumn(ped, "genotyped", "makePedigreeMatingLayout")
   # pedkindraw Phase G13 (R133, R135): the carrier column, read and checked
   # the same way; a carrier's symbol has a black dot at its centre.
-  carrier <- .readGenotyped(ped, "makePedigreeMatingLayout", "carrier")
+  carrier <- .readMarkColumn(ped, "carrier", "makePedigreeMatingLayout")
 
   # A fully-isolated individual (no known parent, never a parent, not
   # twinRelations-connected) is suppressed from the diagram, matching
@@ -2498,8 +2499,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                                 duplicates$realId)
   }
   if (!is.null(carrier)) { # pedkindraw Phase G13
-    nodes$carrier <- .carrierNodes(nodes$id, carrier, dupIds,
-                                   duplicates$realId)
+    nodes$carrier <- .markedNodes(nodes$id, carrier, dupIds,
+                                  duplicates$realId)
   }
 
   list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,
