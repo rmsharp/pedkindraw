@@ -11,7 +11,9 @@
 ## "Proband" and a "Consultand" legend row (.probandLegendImage()) when an
 ## animal is marked (DIVERGENCE.md). S57's REFACTOR: .probandArrowRoom()
 ## builds its points with .markRoom() (R/markColumns.R), as
-## .evaluatedStarRoom() does.
+## .evaluatedStarRoom() does. S59's REFACTOR: .checkProbandConsultand()
+## names the animals with .idsShown() (R/markColumns.R), as
+## .checkMiscarriage() does.
 
 #' Where the arrow of a proband or a consultand is drawn
 #'
@@ -181,9 +183,7 @@
   if (length(both) == 0L) {
     return(invisible(NULL))
   }
-  shown <- toString(utils::head(both, 5L))
-  if (length(both) > 5L) shown <- paste0(shown, ", ...")
   stop(caller, "(): the columns 'proband' and 'consultand' are both TRUE ",
-       "for ", shown, ". Mark each animal as a proband or as a consultand, ",
-       "not both.", call. = FALSE)
+       "for ", .idsShown(both), ". Mark each animal as a proband or as a ",
+       "consultand, not both.", call. = FALSE)
 }

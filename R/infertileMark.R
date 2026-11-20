@@ -10,7 +10,9 @@
 ## an "Infertile" and a "No offspring" legend row (.infertileLegendImage()),
 ## when an animal is marked (DIVERGENCE.md). S58's REFACTOR: the reader's
 ## message and the node lookup use .oddValuesShown() and .nodeAnimals()
-## (R/markColumns.R), as the true/false mark columns do.
+## (R/markColumns.R), as the true/false mark columns do. S59's REFACTOR:
+## .readFertility() reads the column with .readWordColumn()
+## (R/markColumns.R), as .readMiscarriage() does.
 
 #' The fertility values read, and what each means
 #'
@@ -39,31 +41,18 @@
 #' be logical, numbers, text or a factor (\code{asPedFrame()} returns
 #' Pedixplorer's as a factor). Anything else stops, naming the caller, the
 #' column and up to five of its other values; Pedixplorer reads them as
-#' fertile without a word.
+#' fertile without a word. S59's REFACTOR: read by \code{.readWordColumn()},
+#' each value's key its text in lower case.
 #' @param ped data frame with an \code{id} column.
 #' @param caller the caller's name, without parentheses, for the message.
 #' @return \code{NULL}, or a character vector named by \code{ped$id}.
 #' @noRd
 .readFertility <- function(ped, caller) {
-  if (!"fertility" %in% names(ped)) {
-    return(NULL)
-  }
-  x <- ped[["fertility"]]
-  if (is.factor(x)) x <- as.character(x)
-  if (!is.logical(x) && !is.numeric(x) && !is.character(x)) {
-    shown <- paste("a column of class", class(x)[[1L]])
-  } else {
-    kind <- unname(.fertilityWords[tolower(as.character(x))])
-    shown <- .oddValuesShown(x[!is.na(x) & is.na(kind)])
-  }
-  if (!is.null(shown)) {
-    stop(caller, "(): the column 'fertility' holds values it cannot read (",
-         shown, "). Give \"fertile\", \"infertile\" or ",
-         "\"infertile_choice_na\" for each animal (TRUE or 1 for fertile, ",
-         "FALSE or 0 for infertile, as Pedixplorer reads them), NA where it ",
-         "is not recorded.", call. = FALSE)
-  }
-  stats::setNames(kind, as.character(ped$id))
+  .readWordColumn(ped, "fertility", .fertilityWords, tolower, caller, paste0(
+    "Give \"fertile\", \"infertile\" or \"infertile_choice_na\" for each ",
+    "animal (TRUE or 1 for fertile, FALSE or 0 for infertile, as ",
+    "Pedixplorer reads them), NA where it is not recorded."
+  ))
 }
 
 #' Each node's fertility mark

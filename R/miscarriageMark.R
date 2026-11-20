@@ -10,7 +10,9 @@
 ## the points of .miscarriageRoom(), and a "Miscarriage", a "Termination"
 ## and an "Ectopic" legend row (.miscarriageLegendImage()), when an animal is
 ## marked; the copied .diagramAfterDrawing() then runs
-## .miscarriageHandler() last (DIVERGENCE.md).
+## .miscarriageHandler() last (DIVERGENCE.md). S59's REFACTOR:
+## .readMiscarriage() reads the column with .readWordColumn() and
+## .checkMiscarriage() names the animals with .idsShown() (R/markColumns.R).
 
 #' The miscarriage values read, and what each means
 #'
@@ -45,34 +47,22 @@
 #' numbers, text or a factor (\code{asPedFrame()} returns Pedixplorer's as a
 #' factor). Anything else stops, naming the caller, the column and up to
 #' five of its other values; Pedixplorer reads them as no miscarriage
-#' without a word.
+#' without a word. S59's REFACTOR: read by \code{.readWordColumn()}, each
+#' value's key its text without spaces and in lower case.
 #' @param ped data frame with an \code{id} column.
 #' @param caller the caller's name, without parentheses, for the message.
 #' @return \code{NULL}, or a character vector named by \code{ped$id}.
 #' @noRd
 .readMiscarriage <- function(ped, caller) {
-  if (!"miscarriage" %in% names(ped)) {
-    return(NULL)
-  }
-  x <- ped[["miscarriage"]]
-  if (is.factor(x)) x <- as.character(x)
-  if (!is.logical(x) && !is.numeric(x) && !is.character(x)) {
-    shown <- paste("a column of class", class(x)[[1L]])
-  } else {
-    key <- gsub("[[:space:]]", "", tolower(as.character(x)))
-    kind <- unname(.miscarriageWords[key])
-    shown <- .oddValuesShown(x[!is.na(x) &
-                                 !key %in% names(.miscarriageWords)])
-  }
-  if (!is.null(shown)) {
-    stop(caller, "(): the column 'miscarriage' holds values it cannot read (",
-         shown, "). Give \"SAB\" (a spontaneous abortion), \"TOP\" (a ",
-         "termination of pregnancy) or \"ECT\" (an ectopic pregnancy) for ",
-         "each miscarriage, FALSE, 0 or \"no\" for an animal that is not ",
-         "one, as Pedixplorer reads them, NA where it is not recorded.",
-         call. = FALSE)
-  }
-  stats::setNames(kind, as.character(ped$id))
+  .readWordColumn(
+    ped, "miscarriage", .miscarriageWords,
+    function(text) gsub("[[:space:]]", "", tolower(text)), caller, paste0(
+      "Give \"SAB\" (a spontaneous abortion), \"TOP\" (a termination of ",
+      "pregnancy) or \"ECT\" (an ectopic pregnancy) for each miscarriage, ",
+      "FALSE, 0 or \"no\" for an animal that is not one, as Pedixplorer ",
+      "reads them, NA where it is not recorded."
+    )
+  )
 }
 
 #' Stop on a miscarriage that is a parent or has a fertility mark
@@ -93,21 +83,16 @@
     return(invisible(NULL))
   }
   ids <- names(miscarriage)[miscarriage %in% c("SAB", "TOP", "ECT")]
-  shownIds <- function(x) {
-    shown <- toString(utils::head(x, 5L))
-    if (length(x) > 5L) shown <- paste0(shown, ", ...")
-    shown
-  }
   parents <- ids[ids %in% c(as.character(ped$sire), as.character(ped$dam))]
   if (length(parents) > 0L) {
-    stop(caller, "(): the column 'miscarriage' marks ", shownIds(parents),
+    stop(caller, "(): the column 'miscarriage' marks ", .idsShown(parents),
          ", each a sire or dam. A miscarriage has no offspring: correct the ",
          "column or the parents.", call. = FALSE)
   }
   if (!is.null(fertility)) {
     marked <- ids[fertility[ids] %in% c("infertile", "infertile_choice_na")]
     if (length(marked) > 0L) {
-      stop(caller, "(): the column 'miscarriage' marks ", shownIds(marked),
+      stop(caller, "(): the column 'miscarriage' marks ", .idsShown(marked),
            ", which the column 'fertility' marks infertile or with no ",
            "offspring. A miscarriage has no fertility: give it \"fertile\" ",
            "or NA there.", call. = FALSE)

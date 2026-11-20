@@ -20,7 +20,12 @@
 ## fertility column's .readFertility() and .fertilityNodes()
 ## (R/infertileMark.R), each of which had the same lines. S59 (R139):
 ## .markRoom() empties a point's miscarriage field, the miscarriage mark's,
-## which is text too.
+## which is text too. S59's REFACTOR added .readWordColumn(), which the
+## fertility and miscarriage columns' readers (.readFertility(),
+## R/infertileMark.R; .readMiscarriage(), R/miscarriageMark.R) had each
+## written out, and .idsShown(), which .checkProbandConsultand()
+## (R/probandMark.R) and .checkMiscarriage() (R/miscarriageMark.R) had each
+## written out.
 
 #' Read a mark's column of a pedigree
 #'
@@ -93,6 +98,59 @@
   if (is.character(values)) values <- sprintf("'%s'", values)
   shown <- toString(utils::head(values, 5L))
   if (length(values) > 5L) shown <- paste0(shown, ", ...")
+  shown
+}
+
+#' Read a pedigree's column of words
+#'
+#' Phase G13 (R138, R139). S59's REFACTOR: the fertility and miscarriage
+#' columns' readers (\code{.readFertility()}, \code{.readMiscarriage()}) had
+#' the same lines. \code{NULL} when \code{ped} has no such column.
+#' Otherwise what each value means, \code{words} at its key, named by id:
+#' \code{NA} for \code{NA} and for a key \code{words} maps to \code{NA}.
+#' The column may be logical, numbers, text or a factor, read as text. Any
+#' other class, or a value whose key is not among \code{words}' names,
+#' stops, naming the caller, the column and up to five such values, then
+#' \code{advice}.
+#' @param ped data frame with an \code{id} column.
+#' @param column the column's name.
+#' @param words what each key means, named by the key.
+#' @param key a function giving each value's key from its text.
+#' @param caller the caller's name, without parentheses, for the message.
+#' @param advice the message's last sentence: the values to give.
+#' @return \code{NULL}, or a character vector named by \code{ped$id}.
+#' @noRd
+.readWordColumn <- function(ped, column, words, key, caller, advice) {
+  if (!column %in% names(ped)) {
+    return(NULL)
+  }
+  x <- ped[[column]]
+  if (is.factor(x)) x <- as.character(x)
+  if (!is.logical(x) && !is.numeric(x) && !is.character(x)) {
+    shown <- paste("a column of class", class(x)[[1L]])
+  } else {
+    keys <- key(as.character(x))
+    kind <- unname(words[keys])
+    shown <- .oddValuesShown(x[!is.na(x) & !keys %in% names(words)])
+  }
+  if (!is.null(shown)) {
+    stop(caller, "(): the column '", column, "' holds values it cannot ",
+         "read (", shown, "). ", advice, call. = FALSE)
+  }
+  stats::setNames(kind, as.character(ped$id))
+}
+
+#' Up to five animals' ids, as a message names them
+#'
+#' Phase G13 (R136, R139): the first five, then \dQuote{...} when there are
+#' more. S59's REFACTOR: \code{.checkProbandConsultand()} and
+#' \code{.checkMiscarriage()} had the same lines.
+#' @param ids the animals' ids.
+#' @return A character string.
+#' @noRd
+.idsShown <- function(ids) {
+  shown <- toString(utils::head(ids, 5L))
+  if (length(ids) > 5L) shown <- paste0(shown, ", ...")
   shown
 }
 
