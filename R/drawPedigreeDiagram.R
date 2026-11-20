@@ -97,11 +97,11 @@
 #' off.
 #'
 #' An animal whose \code{evaluated} column is \code{TRUE} (see
-#' \code{\link{makePedigreeMatingLayout}}) has a black \dQuote{*} to the
+#' \code{\link{makePedigreeMatingLayout}}) has a black `*` to the
 #' right of the upper-right corner of its symbol; the legend's
-#' \dQuote{Evaluated} row, the \dQuote{*}, then says what it is, and the
+#' \dQuote{Evaluated} row, the `*`, then says what it is, and the
 #' canvas is 45 pixels taller for that row. The drawing takes in each
-#' \dQuote{*}, so one at its right edge is not cut off.
+#' `*`, so one at its right edge is not cut off.
 #'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny

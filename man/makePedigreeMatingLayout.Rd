@@ -55,7 +55,7 @@ returned \code{nodes}), and the hover text says \dQuote{Proband:} and
 one line for each column, after the carrier line. An animal marked both
 stops, naming it, before any animal is left out. An optional
 \code{evaluated} column, in the same values, marks the animals with a
-documented evaluation: each is drawn with a black \dQuote{*} to the
+documented evaluation: each is drawn with a black \code{*} to the
 right of the upper-right corner of its symbol (see \code{evaluated} in
 the returned \code{nodes}), and its hover text says
 \dQuote{Evaluated: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
