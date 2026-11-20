@@ -59,7 +59,21 @@ documented evaluation: each is drawn with a black \code{*} to the
 right of the upper-right corner of its symbol (see \code{evaluated} in
 the returned \code{nodes}), and its hover text says
 \dQuote{Evaluated: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
-consultand line.}
+consultand line. An optional \code{fertility} column, in Pedixplorer's
+words and values, marks the animals that are infertile
+(\code{"infertile"}, also \code{"steril"}, \code{FALSE} or 0) and those
+with no offspring by choice or for an unknown reason
+(\code{"infertile_choice_na"}, also \code{"infertile_choice"} or
+\code{"infertile_na"}); \code{"fertile"}, \code{TRUE} or 1 marks
+nothing, \code{NA} is not recorded, text is read in any case, and any
+other value stops, naming the column, before any animal is left out. An
+infertile animal is drawn with a line down from its symbol and two bars,
+one with no offspring by choice or for an unknown reason with a line and
+one bar, its id moved below them (see \code{fertility} in the returned
+\code{nodes}); an animal with offspring is marked as recorded. The hover
+text says \dQuote{Fertility: Fertile}, \dQuote{Infertile},
+\dQuote{No offspring by choice or for an unknown reason} or
+\dQuote{Unknown}, after the evaluated line.}
 
 \item{edgeStyle}{one of \code{"rectilinear"} (default), which routes
 mate-line and sibship-bar edges through invisible waypoint nodes so
@@ -196,7 +210,11 @@ symbol's outline; \code{carrier} is added when \code{ped} has a
 \code{carrier} column: \code{TRUE} for the node of a carrier and each
 of its repeat-appearance nodes, \code{FALSE} for every other node, never
 \code{NA}; \code{proband}, \code{consultand} and \code{evaluated}
-likewise, each added when \code{ped} has that column), \code{edges}
+likewise, each added when \code{ped} has that column; \code{fertility}
+is added when \code{ped} has a \code{fertility} column:
+\code{"infertile"} or \code{"infertile_choice_na"} for the node of such
+an animal and each of its repeat-appearance nodes, \code{""} for every
+other node, never \code{NA}), \code{edges}
 (\code{from},
 \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
