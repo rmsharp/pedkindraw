@@ -6,14 +6,15 @@ layout made by
 The diagram has the sex symbols at the layout's fixed positions, the
 legend (the five sex symbols, one row per affected condition or a single
 “Affected” row, a grey “Affected status unknown” row when an animal's
-status is unknown, “Deceased”, and the dashed repeat-appearance and twin
-lines), each multi-condition symbol split into its colored sections, the
-slash through each deceased animal's symbol, a canvas that grows with
-the number of legend rows, the **Export Diagram (PNG)** button, a
-“Select by id” box that lists the animals, and the highlight on hover.
-The sections and the slash are painted by a drawing script inside the
-widget, so they appear wherever the widget is shown: in the RStudio
-viewer, in an R Markdown or Quarto document, or in a web page saved with
+status is unknown, a “Genotyped” row when an animal is genotyped,
+“Deceased”, and the dashed repeat-appearance and twin lines), each
+multi-condition symbol split into its colored sections, the slash
+through each deceased animal's symbol, a canvas that grows with the
+number of legend rows, the **Export Diagram (PNG)** button, a “Select by
+id” box that lists the animals, and the highlight on hover. The sections
+and the slash are painted by a drawing script inside the widget, so they
+appear wherever the widget is shown: in the RStudio viewer, in an R
+Markdown or Quarto document, or in a web page saved with
 [`htmlwidgets::saveWidget()`](https://rdrr.io/pkg/htmlwidgets/man/saveWidget.html).
 
 ## Usage
@@ -49,7 +50,8 @@ drawPedigreeDiagram(
 ## Value
 
 A `visNetwork` widget, 500 pixels tall, 45 more for each affected
-condition past the first (at most four are drawn).
+condition past the first (at most four are drawn), for the “Affected
+status unknown” row and for the “Genotyped” row.
 
 ## Details
 
@@ -70,6 +72,13 @@ one condition, or has that condition's section grey, with two or more,
 so it does not look unaffected; the legend's grey hexagon “Affected
 status unknown” then says what the grey is, and the canvas is 45 pixels
 taller for that row.
+
+An animal whose `genotyped` column is `TRUE` (see
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md))
+is drawn with its outline 4 pixels wide, where every other symbol's is
+1; the legend's “Genotyped” row, a square with that outline, then says
+what the thick outline is, and the canvas is 45 pixels taller for that
+row.
 
 A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,

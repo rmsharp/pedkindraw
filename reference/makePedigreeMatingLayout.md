@@ -42,7 +42,15 @@ makePedigreeMatingLayout(
   reads the column `affected` alone.) A condition drawn reads as
   [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)'s
   `affected` does: a number other than 0 and 1 stops, before any animal
-  is left out.
+  is left out. An optional `genotyped` column marks the genotyped
+  animals (what kinship2 and Pedixplorer call available): `TRUE`,
+  `FALSE` or `NA` (not recorded) for each animal, or 1 and 0, or text
+  [`as.logical()`](https://rdrr.io/r/base/logical.html) reads (`"TRUE"`,
+  `"false"`, `"T"`). A genotyped animal's symbol is drawn with its
+  outline 4 pixels wide, every other symbol's 1 (see `borderWidth` in
+  the returned `nodes`), and its hover text says “Genotyped: Yes”, “No”
+  or “Unknown”; any other value stops, naming the column, before any
+  animal is left out.
 
 - edgeStyle:
 
@@ -181,7 +189,10 @@ it is unaffected and `"?"` where it is unknown (the drawing fills that
 section grey), the same for a repeat-appearance node as for its animal,
 `""` for a node that is not an animal, never `NA`; with two or more
 conditions the animals' `color.background` is white, the sections
-carrying the color), `edges` (`from`, `to`, `dashes`, `smooth.enabled`,
+carrying the color; `borderWidth` is added when `ped` has a `genotyped`
+column: 4 for the node of a genotyped animal and each of its
+repeat-appearance nodes, 1 for every other node, the width of the
+symbol's outline), `edges` (`from`, `to`, `dashes`, `smooth.enabled`,
 `smooth.type`, `smooth.roundness`, `color`, `width`; the `color` and
 `width` columns are always present once any mating unit exists: a
 consanguineous mating unit's (`kinship(sire, dam) > 0`) 2

@@ -4,7 +4,8 @@ for a layout made by makePedigreeMatingLayout. The diagram
 has the sex symbols at the layout's fixed positions, the legend (the
 five sex symbols, one row per affected condition or a single
 &amp;#8220;Affected&amp;#8221; row, a grey &amp;#8220;Affected status unknown&amp;#8221; row when an
-animal's status is unknown, &amp;#8220;Deceased&amp;#8221;, and the dashed
+animal's status is unknown, a &amp;#8220;Genotyped&amp;#8221; row when an animal is
+genotyped, &amp;#8220;Deceased&amp;#8221;, and the dashed
 repeat-appearance and twin lines), each multi-condition symbol split into
 its colored sections, the slash through each deceased animal's symbol, a
 canvas that grows with the number of legend rows, the
@@ -18,7 +19,8 @@ for a layout made by makePedigreeMatingLayout. The diagram
 has the sex symbols at the layout's fixed positions, the legend (the
 five sex symbols, one row per affected condition or a single
 &amp;#8220;Affected&amp;#8221; row, a grey &amp;#8220;Affected status unknown&amp;#8221; row when an
-animal's status is unknown, &amp;#8220;Deceased&amp;#8221;, and the dashed
+animal's status is unknown, a &amp;#8220;Genotyped&amp;#8221; row when an animal is
+genotyped, &amp;#8220;Deceased&amp;#8221;, and the dashed
 repeat-appearance and twin lines), each multi-condition symbol split into
 its colored sections, the slash through each deceased animal's symbol, a
 canvas that grows with the number of legend rows, the
@@ -72,7 +74,8 @@ for a layout made by <code><a href="makePedigreeMatingLayout.html">makePedigreeM
 has the sex symbols at the layout's fixed positions, the legend (the
 five sex symbols, one row per affected condition or a single
 “Affected” row, a grey “Affected status unknown” row when an
-animal's status is unknown, “Deceased”, and the dashed
+animal's status is unknown, a “Genotyped” row when an animal is
+genotyped, “Deceased”, and the dashed
 repeat-appearance and twin lines), each multi-condition symbol split into
 its colored sections, the slash through each deceased animal's symbol, a
 canvas that grows with the number of legend rows, the
@@ -117,7 +120,9 @@ application can pass one that sends the clicked animal to its server.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>visNetwork</code> widget, 500 pixels tall, 45 more for each
-affected condition past the first (at most four are drawn).</p>
+affected condition past the first (at most four are drawn), for the
+“Affected status unknown” row and for the “Genotyped”
+row.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -135,6 +140,11 @@ agree.</p>
 with one condition, or has that condition's section grey, with two or more,
 so it does not look unaffected; the legend's grey hexagon
 “Affected status unknown” then says what the grey is, and the
+canvas is 45 pixels taller for that row.</p>
+<p>An animal whose <code>genotyped</code> column is <code>TRUE</code> (see
+<code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>) is drawn with its outline 4 pixels
+wide, where every other symbol's is 1; the legend's “Genotyped” row,
+a square with that outline, then says what the thick outline is, and the
 canvas is 45 pixels taller for that row.</p>
 <p>A click does nothing unless <code>onClick</code> is given: a Shiny application
 can pass one to act on the clicked animal, which needs a live Shiny

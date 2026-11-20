@@ -93,7 +93,15 @@ into sections, one colour each.
 (<code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData</a></code> reads the column
 <code>affected</code> alone.) A condition drawn reads as
 <code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData()</a></code>'s <code>affected</code> does: a number other
-than 0 and 1 stops, before any animal is left out.</p></dd>
+than 0 and 1 stops, before any animal is left out. An optional
+<code>genotyped</code> column marks the genotyped animals (what kinship2 and
+Pedixplorer call available): <code>TRUE</code>, <code>FALSE</code> or <code>NA</code>
+(not recorded) for each animal, or 1 and 0, or text <code><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical()</a></code>
+reads (<code>"TRUE"</code>, <code>"false"</code>, <code>"T"</code>). A genotyped animal's
+symbol is drawn with its outline 4 pixels wide, every other symbol's 1
+(see <code>borderWidth</code> in the returned <code>nodes</code>), and its hover text
+says “Genotyped: Yes”, “No” or “Unknown”; any other
+value stops, naming the column, before any animal is left out.</p></dd>
 
 
 <dt id="arg-edgestyle">edgeStyle<a class="anchor" aria-label="anchor" href="#arg-edgestyle"></a></dt>
@@ -239,7 +247,10 @@ character per condition, <code>"1"</code> where the animal is affected,
 repeat-appearance node as for its animal, <code>""</code> for a node that
 is not an animal, never <code>NA</code>; with two or more conditions the
 animals' <code>color.background</code> is white, the sections carrying the
-color), <code>edges</code> (<code>from</code>,
+color; <code>borderWidth</code> is added when <code>ped</code> has a
+<code>genotyped</code> column: 4 for the node of a genotyped animal and each of
+its repeat-appearance nodes, 1 for every other node, the width of the
+symbol's outline), <code>edges</code> (<code>from</code>,
 <code>to</code>, <code>dashes</code>, <code>smooth.enabled</code>, <code>smooth.type</code>,
 <code>smooth.roundness</code>, <code>color</code>, <code>width</code>; the <code>color</code>
 and <code>width</code> columns are always present once any mating unit
