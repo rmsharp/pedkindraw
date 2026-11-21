@@ -24,7 +24,8 @@ makePedigreeMatingLayout(
   symbolSize = 1,
   textSize = 1,
   columnSpacing = 1,
-  rowSpacing = 1
+  rowSpacing = 1,
+  lineWidth = 1
 )
 ```
 
@@ -288,6 +289,28 @@ makePedigreeMatingLayout(
   offspring cross the parents' ids. Stops unless it is one positive
   number.
 
+- lineWidth:
+
+  the width of the lines, as a multiple of the widths drawn before this
+  argument (1, the default), as kinship2's and Pedixplorer's `lwd` is:
+  every line between animals is `lineWidth` units wide (1 before) and
+  the mating line of related parents 4 times it; the dashed lines'
+  dashes and gaps grow with it, so a thick line keeps its gaps (vis.js
+  draws each dash with round ends: kept at today's length, the DZ twins'
+  line is solid at 5, like the MZ twins'); each symbol's outline is
+  `lineWidth` pixels and a genotyped animal's `lineWidth + 3` (1 and 4
+  before), so its fill keeps more of the symbol than 4 times the width
+  would leave; and
+  [`drawPedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
+  strokes each mark's lines (the deceased slash, the proband's arrow,
+  the evaluated star, the infertile bars, the miscarriage line and the
+  lines between the sections) that many times as wide. The legend keeps
+  its widths. Not rounded: 0.5 and 1.5 draw thinner and thicker lines
+  than 1. The drawing zooms to fit, and the zoom is the same at every
+  width, so thicker lines leave less room between them: measured at 500
+  pixels, at 3 the lines and outlines reach the ids in 4 of 16 drawings
+  (2 at 1). Stops unless it is one positive number.
+
 ## Value
 
 A list with `nodes` (`id`, `label`, `shape`, `title`, `size`,
@@ -316,22 +339,27 @@ its repeat-appearance nodes, `""` for every other node, never `NA`;
 `"TOP"` or `"ECT"` for the node of such an animal and each of its
 repeat-appearance nodes, `""` for every other node, never `NA`;
 `font.size` is added when `textSize` gives other than 14 pixels: that
-size, for every node), `edges` (`from`, `to`, `dashes`,
-`smooth.enabled`, `smooth.type`, `smooth.roundness`, `color`, `width`;
-the `color` and `width` columns are always present once any mating unit
-exists: a consanguineous mating unit's (`kinship(sire, dam) > 0`) 2
-spouse-to-union edges get `"#D55E00"`/`4`, an Okabe-Ito colorblind-safe
-vermillion in kinship2's doubled/thickened mate-line convention, and
-every other edge gets `NA`; `label` is added when `twinRelations` is
-supplied), and `duplicateToReal` (a named character vector, duplicate
-node id -\> real individual id). Under `edgeStyle = "rectilinear"`, an
-already-set edge `color` (e.g. the twin connector's or the consanguinity
-marker's) is preserved when the edge is kept as-is; a marked mate edge
-that gets replaced by a right-angle projection currently falls back to
-the generic routing color and width. Also `isolatedIds`, a character
-vector of ids suppressed from `nodes`/`edges` because they have no known
-parent, are never a parent, and are not connected by `twinRelations`; it
-is `character(0)` when nothing was suppressed. When every individual in
+size, for every node; at a `lineWidth` other than 1, `lineWidth` is
+added, that width for every node, and `borderWidth` is on every node,
+`lineWidth` for an ordinary one and `lineWidth + 3` for a genotyped
+one), `edges` (`from`, `to`, `dashes`, `smooth.enabled`, `smooth.type`,
+`smooth.roundness`, `color`, `width`; the `color` and `width` columns
+are always present once any mating unit exists: a consanguineous mating
+unit's (`kinship(sire, dam) > 0`) 2 spouse-to-union edges get
+`"#D55E00"`/`4`, an Okabe-Ito colorblind-safe vermillion in kinship2's
+doubled/thickened mate-line convention, and every other edge gets `NA`
+(at a `lineWidth` other than 1, that width, the consanguineous edges' 4
+times it, and each dash pattern times it, `TRUE` as vis.js's 5 and 5);
+`label` is added when `twinRelations` is supplied), and
+`duplicateToReal` (a named character vector, duplicate node id -\> real
+individual id). Under `edgeStyle = "rectilinear"`, an already-set edge
+`color` (e.g. the twin connector's or the consanguinity marker's) is
+preserved when the edge is kept as-is; a marked mate edge that gets
+replaced by a right-angle projection currently falls back to the generic
+routing color and width. Also `isolatedIds`, a character vector of ids
+suppressed from `nodes`/`edges` because they have no known parent, are
+never a parent, and are not connected by `twinRelations`; it is
+`character(0)` when nothing was suppressed. When every individual in
 `ped` is isolated, `nodes`/`edges` are both 0-row and `duplicateToReal`
 is empty. Also `conditions`, a data frame with one row per drawn
 condition (`column`, `label` such as “Affected” or “Affected

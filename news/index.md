@@ -274,6 +274,23 @@ why.
   to their offspring through the parents’ ids. Anything but one positive
   number stops. nprcgenekeepr has no such arguments. At 1 every layout
   and drawing is as before.
+- New: `makePedigreeMatingLayout(lineWidth = )` sets the width of the
+  lines as a multiple of the widths drawn before (1, the default), as
+  kinship2’s and Pedixplorer’s `lwd` does. Every line between animals,
+  the mating line of related parents (4 times it), each symbol’s outline
+  and the lines of each mark (the deceased slash, the proband’s arrow,
+  the evaluated star, the infertile bars, the miscarriage line and the
+  lines between a symbol’s sections) follow it, and the dashed lines’
+  dashes and gaps grow with it, so a thick line stays dashed (kept at
+  their old length, the DZ twins’ line would be solid at 5, like the MZ
+  twins’). A genotyped animal’s outline is the line width plus 3 (4 at
+  1, as before), so its fill keeps more of the symbol than 4 times the
+  width would leave. The legend keeps its widths. The width is not
+  rounded, and the drawing’s zoom is the same at every width, so thicker
+  lines leave less room: measured at 500 px, at 3 the lines and outlines
+  reach the ids in 4 of 16 drawings (2 at 1). Anything but one positive
+  number stops. nprcgenekeepr has no such argument. At 1 every layout
+  and drawing is as before.
 - New: the legend’s four lines (the dashed line joining two places of
   the same animal, and the three twin lines) have no arrowheads, as the
   drawing’s own lines have none, and each line’s label sits on white.

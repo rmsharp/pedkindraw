@@ -74,7 +74,8 @@ separate function.</p>
 <span>  symbolSize <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  textSize <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  columnSpacing <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  rowSpacing <span class="op">=</span> <span class="fl">1</span></span>
+<span>  rowSpacing <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  lineWidth <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -347,6 +348,28 @@ is more. Measured at 500 pixels, at 0.5 the lines from parents to their
 offspring cross the parents' ids. Stops unless it is one positive
 number.</p></dd>
 
+
+<dt id="arg-linewidth">lineWidth<a class="anchor" aria-label="anchor" href="#arg-linewidth"></a></dt>
+<dd><p>the width of the lines, as a multiple of the widths
+drawn before this argument (1, the default), as kinship2's and
+Pedixplorer's <code>lwd</code> is: every line between animals is
+<code>lineWidth</code> units wide (1 before) and the mating line of related
+parents 4 times it; the dashed lines' dashes and gaps grow with it, so
+a thick line keeps its gaps (vis.js draws each dash with round ends:
+kept at today's length, the DZ twins' line is solid at 5, like the MZ
+twins'); each symbol's outline is <code>lineWidth</code> pixels and a
+genotyped animal's <code>lineWidth + 3</code> (1 and 4 before), so its fill
+keeps more of the symbol than 4 times the width would leave; and
+<code><a href="drawPedigreeDiagram.html">drawPedigreeDiagram</a></code> strokes each mark's lines (the
+deceased slash, the proband's arrow, the evaluated star, the infertile
+bars, the miscarriage line and the lines between the sections) that
+many times as wide. The legend keeps its widths. Not rounded: 0.5 and
+1.5 draw thinner and thicker lines than 1. The drawing zooms to fit,
+and the zoom is the same at every width, so thicker lines leave less
+room between them: measured at 500 pixels, at 3 the lines and
+outlines reach the ids in 4 of 16 drawings (2 at 1). Stops unless it
+is one positive number.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -381,7 +404,11 @@ has a <code>miscarriage</code> column: <code>"SAB"</code>, <code>"TOP"</code> or
 <code>"ECT"</code> for the node of such an animal and each of its
 repeat-appearance nodes, <code>""</code> for every other node, never
 <code>NA</code>; <code>font.size</code> is added when <code>textSize</code> gives other
-than 14 pixels: that size, for every node), <code>edges</code>
+than 14 pixels: that size, for every node; at a <code>lineWidth</code>
+other than 1, <code>lineWidth</code> is added, that width for every node,
+and <code>borderWidth</code> is on every node, <code>lineWidth</code> for an
+ordinary one and <code>lineWidth + 3</code> for a genotyped one),
+<code>edges</code>
 (<code>from</code>,
 <code>to</code>, <code>dashes</code>, <code>smooth.enabled</code>, <code>smooth.type</code>,
 <code>smooth.roundness</code>, <code>color</code>, <code>width</code>; the <code>color</code>
@@ -389,7 +416,10 @@ and <code>width</code> columns are always present once any mating unit
 exists: a consanguineous mating unit's (<code>kinship(sire, dam) &gt; 0</code>)
 2 spouse-to-union edges get <code>"#D55E00"</code>/<code>4</code>, an Okabe-Ito
 colorblind-safe vermillion in kinship2's doubled/thickened mate-line
-convention, and every other edge gets <code>NA</code>; <code>label</code> is added
+convention, and every other edge gets <code>NA</code> (at a
+<code>lineWidth</code> other than 1, that width, the consanguineous edges' 4
+times it, and each dash pattern times it, <code>TRUE</code> as vis.js's 5
+and 5); <code>label</code> is added
 when <code>twinRelations</code> is supplied), and <code>duplicateToReal</code> (a
 named character vector, duplicate node id -&gt; real individual id).
 Under <code>edgeStyle = "rectilinear"</code>, an already-set edge

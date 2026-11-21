@@ -81,10 +81,11 @@ taller for that row.
 
 An animal whose `genotyped` column is `TRUE` (see
 [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md))
-is drawn with its outline 4 pixels wide, where every other symbol's is
-1; the legend's “Genotyped” row, a square with that outline, then says
-what the thick outline is, and the canvas is 45 pixels taller for that
-row.
+is drawn with its outline 4 pixels wide, where every other symbol's is 1
+(at another `lineWidth`, that width plus 3 where every other symbol's is
+that width); the legend's “Genotyped” row, a square with that outline,
+then says what the thick outline is, and the canvas is 45 pixels taller
+for that row.
 
 An animal whose `carrier` column is `TRUE` (see
 [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md))
@@ -142,6 +143,13 @@ The ids and names are written at the size
 room for the outermost labels, so a long id at its edge is not cut off,
 and an infertile animal's and a miscarriage's moved id keep their room
 below their marks.
+
+The lines are drawn at the width
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)'s
+`lineWidth` gives them, and each mark's lines (the deceased slash, the
+proband's arrow, the evaluated star, the infertile bars, the miscarriage
+line and the lines between the sections) that many times as wide as
+before; the legend keeps its widths, its “Genotyped” row among them.
 
 A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,
