@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-21 · [BL-Phase G15] S67: Phase G15c, the converters keep the matings (in progress)
+- **Change:** session claimed (Mark's pick "G15c: converters keep mates (Recommended)" at the orient picker): `asPedFrame()` returns `matings` from kinship2's relation code 4 and Pedixplorer's `"Spouse"` rows, by `docs/planning/mates-without-offspring-plan.md` section 7 (`:288`), R141; strict TDD; measure on a scratch copy first (Learnings 17, 19), then the pre-RED picker. Phase 0 reconcile: nothing to backfill (frontier 3719979 is HEAD; no merges; S66's receipt complete, its ratchet citation matching the results file); drift 91/23/0, exit 0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S66's runs: site 44920097920 success (pages 44920440754 success), R-CMD-check 44920097903 still running at the claim (Ubuntu release success, Ubuntu R-devel failure; Windows, macOS, oldrel in progress; logs not yet readable).
+- **Commit/PR:** the claim commit · **Session:** S67 · **Verified:** pending (close-out).
+
 ### 2026-11-21 · [BL-Phase G15] S66 push 1: `master` to GitHub at close-out 2 (S66's claim, G15b RED-REFACTOR, close-out 1-2)
 - **Change:** `git push origin master` (`36de6c5..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `tests/`, `man/`, `README.md`, `NEWS.md` and `tools/` changed, so both workflows run. S65's push runs, read in S66: site `44907119554` `success` (pages `44907347086` `success`); CI `44907119612` `failure` on its Ubuntu R-devel job only (setup-r-dependencies, before pedkindraw was checked), the other four `success`, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2, PASS 14,792, as predicted to the expectation.
 - **Commit/PR:** none (push) · **Session:** S66 · **Verified:** the push's output; S65's runs by `gh run view`.

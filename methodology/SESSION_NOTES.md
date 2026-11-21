@@ -124,6 +124,19 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 67 Did
+**Deliverable:** Phase G15c (IN PROGRESS; gap B1, mates with no offspring; the converters keep the matings:
+`asPedFrame()` returns `matings` from kinship2's relation code 4 and Pedixplorer's `"Spouse"` rows;
+`docs/planning/mates-without-offspring-plan.md:288`; `methodology/BACKLOG.md:26`): strict TDD, measure first, the
+pre-RED picker, then RED, GREEN, REFACTOR by the gates. G15 DONE after it.
+**Started:** 2026-11-21 09:53 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G15c: converters keep mates
+(Recommended)" (orient)
+**Status:** Session claimed. Measuring on a scratch copy first (`asPedFrame()` then the layout on the typed shapes and
+seeded random code-4/`"Spouse"` pedigrees against kinship2 and Pedixplorer; `autohint()`/`auto_hint()` rows for
+declared pairs; each option's test breakage), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 *S1-S65's entries were removed in S3-S66 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
