@@ -30,7 +30,8 @@ check each animal's generation and family tree; \code{\link[=getParents]{getPare
 \code{\link[=getOffspring]{getOffspring()}}, \code{\link[=getFounders]{getFounders()}}, \code{\link[=isFounder]{isFounder()}}, \code{\link[=hasBothParents]{hasBothParents()}} and
 \code{\link[=getIdsWithOneParent]{getIdsWithOneParent()}} find sires and dams, offspring and founders;
 \code{\link[=countOffspring]{countOffspring()}} counts each animal's offspring and \code{\link[=getMatings]{getMatings()}} lists
-the matings, each sire and dam with an offspring together.
+the matings, each sire and dam with an offspring together or declared
+mated.
 }
 
 \section{Checking and repair}{

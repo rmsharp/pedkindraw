@@ -21,7 +21,8 @@
 #' [getOffspring()], [getFounders()], [isFounder()], [hasBothParents()] and
 #' [getIdsWithOneParent()] find sires and dams, offspring and founders;
 #' [countOffspring()] counts each animal's offspring and [getMatings()] lists
-#' the matings, each sire and dam with an offspring together.
+#' the matings, each sire and dam with an offspring together or declared
+#' mated.
 #'
 #' @section Checking and repair:
 #' [checkPedigree()] lists each problem in a pedigree and

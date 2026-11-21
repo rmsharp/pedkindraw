@@ -308,6 +308,16 @@ code, `DIVERGENCE.md` in the repository says how and why.
   `kindepth(align = TRUE)` does; its help lists the steps. On the pedigrees
   its tests compare it equals kinship2's on most, and unlike kinship2's its
   answer does not depend on the order of the rows. The default is unchanged.
+* New: `getMatings(matings = )` lists declared matings too. Given the table
+  `makePedigreeMatingLayout(matings = )` takes, it adds each pair declared
+  mated with no offspring together after the matings built from offspring,
+  in the table's order, with `offspring` 0, so its rows are the matings the
+  drawing draws, in its order. In both functions a row naming a pair that
+  has offspring together is set aside without a message, so `getMatings()`'s
+  result can be passed back; before, the layout said it left out such a row
+  when one of the pair had no row of its own, and stopped on an animal
+  recorded as both sire and dam of one offspring. Without `matings`, the
+  result is as before.
 
 ## Checking and repair
 
