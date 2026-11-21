@@ -193,7 +193,7 @@ pick an animal in the “Select by id” box, and save the picture with the
 
 `asPedFrame()` converts a kinship2 `pedigree` or `pedigreeList` and a
 Pedixplorer `Pedigree` to the data frames above: the pedigree, its twins
-table and its layout hints.
+table, its layout hints and its declared matings.
 
 ``` r
 p <- kinship2::pedigree(

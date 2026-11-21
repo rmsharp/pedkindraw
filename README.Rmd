@@ -202,8 +202,8 @@ picture with the "Export Diagram (PNG)" button.
 **Converting kinship2 and Pedixplorer objects**
 
 `asPedFrame()` converts a kinship2 `pedigree` or `pedigreeList` and a
-Pedixplorer `Pedigree` to the data frames above: the pedigree, its twins table
-and its layout hints.
+Pedixplorer `Pedigree` to the data frames above: the pedigree, its twins
+table, its layout hints and its declared matings.
 
 ```{r convert, eval = requireNamespace("kinship2", quietly = TRUE)}
 p <- kinship2::pedigree(
