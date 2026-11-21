@@ -689,11 +689,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   # pedkindraw Phase G15a (R141): a mating declared in 'matings' whose pair
   # has no offspring together, in either role, is a unit of its own, after
   # the units built from offspring, so that their numbers are unchanged.
+  # .layoutHintPairKey() (R/layoutHints.R) names a pair in either role.
   declaredSire <- as.character(matings$sire)
   declaredDam <- as.character(matings$dam)
-  declared <- !paste(declaredSire, declaredDam, sep = "\u0001") %in%
-    uniqueKeys & !paste(declaredDam, declaredSire, sep = "\u0001") %in%
-    uniqueKeys
+  declared <- !.layoutHintPairKey(declaredSire, declaredDam) %in%
+    .layoutHintPairKey(sire[hasBoth], dam[hasBoth])
   nUnits <- length(uniqueKeys) + sum(declared)
 
   if (nUnits == 0L) {
