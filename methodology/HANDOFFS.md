@@ -204,11 +204,24 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S64
 date: 2026-11-20
-status: pending
-active_task: Phase G15 (gap B1, mates with no offspring), its planning session (docs/planning/gaps-and-shared-code-plan.md:378; methodology/BACKLOG.md:26): measure kinship2 and Pedixplorer first, an input picker, a grep-based inventory, the plan in docs/planning/; no code
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17 (CRAN submission), gap phases before 17g (R97). G1-G14 DONE (S42-S63). G15's plan written (S64, R141, docs/planning/mates-without-offspring-plan.md): mates with no offspring declared in a matings table (sire, dam) given to makePedigreeMatingLayout(matings = NULL), listed by getMatings() and returned by asPedFrame(); three build sessions. Next: G15a, the layout (the plan's section 7, :222). READY, tree clean but pedkindraw.Rproj (Mark's)
+what_was_done: G15's planning session, no package code (Mark's picks: G15's plan at orient; "A matings table (Recommended)" for the input, R141). Measured kinship2 1.9.6.2 and Pedixplorer 1.8.0 on 16 typed shapes under timeout 30 each; a scratch prototype of the picked input on 10 typed shapes and 100 seeded random pedigrees in both edge styles (one stop at childSide, R/makePedigreeDiagramData.R:1524, fixed by the sex rule; then 200 of 200 declared matings on one row, 600 of 600 fidelity); each input option's existing-test cost on scratch copies (10, 2, 3, 0 read). Wrote the plan (references, decision and alternatives, prototype, interface, grep inventory, phases G15a-G15c with DONE, commands, surface and boundary, 8 dragons), R141, G15's row; close-out 1 the plans' statuses and entries, dragons 78-80, roadmap, backlog. Commits d58a52f (claim), 445302f (plan), 41814b1 (close-out 1)
+next_steps: Orient (drift expect 91/22/0; nprcgenekeepr's 4 commits; S64's push runs: docs/planning changed so both workflows run, expected but not measured: R-devel's S4Vectors failure only, Ubuntu release as S63's, PASS 13,832; the site builds). Then G15a by docs/planning/mates-without-offspring-plan.md section 7 (:222): measure first on a scratch copy (pictures at 500 px of the typed shapes in both styles with today's and the hub anchor rule; the 7 seeds' extra collision warnings, 18 30 55 65 73 77 84; what trimming leaves in a matings table), the pre-RED picker (:232-:234), then RED (with secondMate, which reaches childSide), GREEN, REFACTOR by the gates
+key_files: docs/planning/mates-without-offspring-plan.md:38 (references), :72 (options), :90 (prototype), :131 (interface), :165 (inventory), :206 (phases; G15a :222, G15b :246, G15c :258), :279 (dragons); docs/planning/standalone-pedigree-package-plan.md:89 (Next), :298 (R141), :1299 (G15's plan entry); docs/planning/gaps-and-shared-code-plan.md:17 (status), :379 (G15's row), :810-:818 (dragons 78-80); docs/planning/cran-submission-plan.md:35, :688; R/makePedigreeDiagramData.R:540, :638, :669-:686, :1522-:1528, :2179, :2206, :2276, :2327, :2554; R/layoutHints.R:28, :114-:180, :148, :189, :489; tools/gapCases.R:289-:312; vignettes/drawing.Rmd:69, :433-:446; DIVERGENCE.md:14, :17, :18; R/getMatings.R:40; R/asPedFrame.R:248, :287, :351-:353, :404, :496-:527; methodology/BACKLOG.md:26, :43, :61, :68, :74, :82, :91, :97, :137, :144, :153-:214, :227
+gotchas: a unit with no offspring has no side (childSide NA, :1522-:1524; reached by secondMate, not the gap case); new units after the offspring units or 600 of 600 breaks; R70's check must read matings (the returned hints carry the declared pair; check matings before hints); today's anchor rule draws a hub twice; kinship2's plot() and Pedixplorer's align() fail on 2 animals and twoChildless, Pedixplorer refuses a pair named twice, its rel() is S4; zsh does not split an unquoted variable (dragon 79); conditionCall() names the failing if (80); a cd into methodology/ persists; the orient picker must list the backlog's every item (:227, :137, :144 were missing in S48-S64); carried dragons 37, 41, 66-77
+runtime_smoke: n/a, documentation and plans only, no package code changed (R/, tests/, man/ as at 4b31671); the prototype ran in scratch copies only; quality_ratchet: 4/5 pass · 0 fail · 1 unmeasured · results 42b564bc4c70 · manifest 01151c525b8a — unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: R/, tests/, man/, DESCRIPTION and NAMESPACE unchanged since 4b31671 (git diff empty), where S63's suite ran 80 files, 994 tests, 0 failed, 0 skipped, 0 warnings
+changelog_ref: CHANGELOG.md "2026-11-21 · [BL-Phase G15] S64: Phase G15's plan (gap B1, mates with no offspring together), `docs/planning/mates-without-offspring-plan.md`"
+commit: the close-out 2 commit (session commits d58a52f to 41814b1 listed above)
 ```
+S64 wrote G15's plan from measures: the references on 16 shapes, a prototype of the picked input on typed and
+random cases, and each option's test cost, so the one picker stated counts and was answered at once. Self 8/10:
++ every claim measured; the stop traced to its line; citations checked by machine (4 corrected before the commit);
+each phase names its surface and its limits. - slips caught before a commit (an S4 accessor, a zsh loop, 3 line
+ranges, an unmeasured clause, an imprecise count); the orient picker left out three backlog items; the deepest
+reasoning mode could not be set from inside the session.
 
 ```handoff
 session: S63
