@@ -3,10 +3,10 @@
 ## Copied from nprcgenekeepr R/deceasedSlash.R at nprcgenekeepr commit
 ## baef1e12c (unchanged to 4375e2715), whole. Changes: pedkindraw S63's
 ## line width (plan Phase G14, R140: .deceasedSlashHandler()'s argument
-## lineWidth, the slash 3 times it; a DIVERGENCE.md row until
-## nprcgenekeepr has it). Plan R32 moved
-## it from Phase 8 to Phase 9, with the drawing that uses it. Its comments
-## name nprcgenekeepr's sessions and app.
+## lineWidth, the slash 3 times it, written by .strokeWidthJs() since
+## S63's REFACTOR; a DIVERGENCE.md row until nprcgenekeepr has it). Plan
+## R32 moved it from Phase 8 to Phase 9, with the drawing that uses it. Its
+## comments name nprcgenekeepr's sessions and app.
 
 # The deceased-animal slash of the Pedigree Browser's Diagram (S1028)
 
@@ -60,7 +60,7 @@
     "{filter: function(n) { return n.deceased === true; }});\n",
     "  if (marked.length === 0) { return; }\n",
     "  ctx.save();\n",
-    "  ctx.lineWidth = ", format(3.0 * lineWidth, digits = 4L), ";\n",
+    .strokeWidthJs(3.0, lineWidth),
     "  ctx.lineCap = 'round';\n",
     "  ctx.strokeStyle = '#000000';\n",
     "  marked.forEach(function(n) {\n",

@@ -23,7 +23,8 @@
 ## last; pedkindraw S63 (plan Phase G14, R140; the same row) an argument
 ## lineWidth, which it passes to every handler, and
 ## .conditionSectionsHandler() its argument lineWidth, the width of its
-## lines (a DIVERGENCE.md row).
+## lines (a DIVERGENCE.md row; written by .strokeWidthJs() since S63's
+## REFACTOR, pedkindraw's own, R/lineWidth.R).
 ## Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
@@ -176,7 +177,7 @@
     "    ctx.closePath();\n",
     "  };\n",
     "  ctx.save();\n",
-    "  ctx.lineWidth = ", format(lineWidth, digits = 4L), ";\n",
+    .strokeWidthJs(1.0, lineWidth),
     "  animals.forEach(function(n) {\n",
     "    var p = net.getPosition(n.id), s = n.size || 25;\n",
     "    var k = n.affectedSections.length, d = 2 * Math.PI / k;\n",

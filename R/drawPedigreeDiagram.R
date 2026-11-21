@@ -37,7 +37,8 @@
 ## larger text's room (plan Phase G14, R140: nodes, and the help's
 ## paragraph on the text's size), and S63's line width (plan Phase G14,
 ## R140: lineWidth, hasGenotyped, the afterDrawing handlers, and the
-## help's paragraph on the line width), each a DIVERGENCE.md row until
+## help's paragraph on the line width; .outlineAt() since S63's
+## REFACTOR), each a DIVERGENCE.md row until
 ## nprcgenekeepr has it;
 ## otherwise help text only.
 ## The help describes the
@@ -331,7 +332,7 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # genotyped outline is the layout's line width plus 3, 4 at 1.
   lineWidth <- .layoutLineWidth(layout$nodes)
   hasGenotyped <- any(layout$nodes[["borderWidth"]] %in%
-                        (.genotypedBorderWidth + lineWidth - 1.0))
+                        .outlineAt(.genotypedBorderWidth, lineWidth))
   genotypedRow <- data.frame(
     label = "Genotyped", shape = "square",
     color.background = .affectedColor(FALSE), image = NA_character_,

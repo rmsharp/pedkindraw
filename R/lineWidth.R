@@ -7,7 +7,10 @@
 ## other width than 1, gives its lines, dashes and outlines the width with
 ## .lineWidthLayout(); the copied drawPedigreeDiagram() reads it back with
 ## .layoutLineWidth() and passes it to each mark's handler, which strokes its
-## lines that many times today's width (DIVERGENCE.md).
+## lines that many times today's width (DIVERGENCE.md). S63's REFACTOR:
+## .strokeWidthJs(), the line each of the six handlers wrote out, and
+## .outlineAt(), the outline rule .lineWidthLayout() and
+## drawPedigreeDiagram()'s Genotyped row each wrote out.
 
 #' The dash pattern vis.js draws for an edge whose dashes are TRUE
 #'
@@ -45,9 +48,39 @@
   })
   outline <- nodes[["borderWidth"]]
   if (is.null(outline)) outline <- rep(1.0, nrow(nodes))
-  nodes$borderWidth <- outline + lineWidth - 1.0
+  nodes$borderWidth <- .outlineAt(outline, lineWidth)
   nodes$lineWidth <- rep(lineWidth, nrow(nodes))
   list(nodes = nodes, edges = edges)
+}
+
+#' An outline's width at a line width
+#'
+#' Phase G14 (R140; Mark's pick, S63). The outline \code{lineWidth - 1}
+#' wider than at the line width 1: an ordinary outline (1) \code{lineWidth}
+#' pixels and a genotyped one (\code{.genotypedBorderWidth}, 4)
+#' \code{lineWidth + 3}. S63's REFACTOR: \code{.lineWidthLayout()} and
+#' \code{drawPedigreeDiagram()}'s Genotyped row each wrote it.
+#' @param outline the outline's width at the line width 1.
+#' @param lineWidth one positive number.
+#' @return The width, a number.
+#' @noRd
+.outlineAt <- function(outline, lineWidth) {
+  outline + lineWidth - 1.0
+}
+
+#' The line of a mark's handler that sets its stroke width
+#'
+#' Phase G14 (R140). The canvas's line width, \code{width} times the
+#' layout's \code{lineWidth}, written as a number, so at the line width 1
+#' each handler's text is as before (the fidelity check compares it). S63's
+#' REFACTOR: the six handlers (the slash's, the arrow's, the star's, the
+#' bars', the miscarriage line's and the sections') each wrote it.
+#' @param width the stroke's width at the line width 1.
+#' @param lineWidth one positive number.
+#' @return One line of JavaScript, as a character string.
+#' @noRd
+.strokeWidthJs <- function(width, lineWidth) {
+  paste0("  ctx.lineWidth = ", format(width * lineWidth, digits = 4L), ";\n")
 }
 
 #' The line width a layout was made with
