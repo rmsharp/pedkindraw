@@ -2,8 +2,9 @@
 ## This file is part of pedkindraw
 ## pedkindraw's own tests, not copied from nprcgenekeepr (pedkindraw S63, plan
 ## Phase G14, gap B5 (line width) of
-## docs/research/pedkindraw-gaps-2026-11-18.md; ruling R140). pedkindraw drew every line 1 unit wide (vis.js's default),
-## the half-siblings' mating line 4, each outline 1 pixel and a genotyped
+## docs/research/pedkindraw-gaps-2026-11-18.md; ruling R140). pedkindraw
+## drew every line 1 unit wide (vis.js's default), the half-siblings' mating
+## line 4, each outline 1 pixel and a genotyped
 ## animal's 4, and the marks' strokes 2 or 3 units; kinship2's plot() passes
 ## lwd to par(), so every line and outline it draws follows it, and
 ## Pedixplorer's lwd multiplies 158 of the 262 rows of its drawing table and
@@ -280,15 +281,18 @@ test_that(
 
   ## Every stroke of one redraw: its colour, its width in units and its dash
   ## pattern; and the zoom. An outline's width in units is its pixels over
-  ## the zoom (vis.js draws it in screen pixels at any zoom).
+  ## the zoom (vis.js draws it in screen pixels at any zoom). Returned as
+  ## text, the zoom first and then one "colour;width;dash;" per stroke, each
+  ## after a "|" (S63 GREEN: read without jsonlite, as the other browser
+  ## tests read theirs; the trailing ";" keeps an empty dash).
   body <- paste0(
     "const rec = []; const P = CanvasRenderingContext2D.prototype; ",
     "const s0 = P.stroke; P.stroke = function() { ",
-    "rec.push({color: String(this.strokeStyle).toLowerCase(), ",
-    "width: this.lineWidth, dash: this.getLineDash().join(',')}); ",
+    "rec.push(String(this.strokeStyle).toLowerCase() + ';' + ",
+    "this.lineWidth + ';' + this.getLineDash().join(',') + ';'); ",
     "return s0.apply(this, arguments); }; ",
     "try { net.redraw(); } finally { P.stroke = s0; } ",
-    "return JSON.stringify({scale: net.getScale(), rec: rec});"
+    "return [net.getScale()].concat(rec).join('|');"
   )
   strokes <- function(edgeStyle, w) {
     layout <- makePedigreeMatingLayout(.linePed(), edgeStyle = edgeStyle,
@@ -300,10 +304,15 @@ test_that(
     htmlwidgets::saveWidget(widget, html, selfcontained = TRUE)
     session$go_to(paste0("file://", html), timeout_ = 30, delay = 0.5)
     expect_true(.waitForLegendPictures(session))
-    got <- jsonlite::fromJSON(
-      session$Runtime$evaluate(.pixelReaderJs(body))$result$value
-    )
-    list(scale = got$scale, strokes = got$rec)
+    got <- strsplit(
+      session$Runtime$evaluate(.pixelReaderJs(body))$result$value,
+      "|", fixed = TRUE
+    )[[1L]]
+    parts <- do.call(rbind, strsplit(got[-1L], ";", fixed = TRUE))
+    list(scale = as.numeric(got[[1L]]),
+         strokes = data.frame(color = parts[, 1L],
+                              width = as.numeric(parts[, 2L]),
+                              dash = parts[, 3L], stringsAsFactors = FALSE))
   }
   for (edgeStyle in c("rectilinear", "direct")) {
     one <- strokes(edgeStyle, 1)
