@@ -659,6 +659,47 @@ cases$style <- function(case = "style") {
           row <- min(diff(sort(unique(at$y))))
           paste(round(column), round(row))
         }, character(1L)))
+  ## Plan Phase G14 (pedkindraw S63, R140): the line width. kinship2 passes
+  ## plot()'s ... to par(), so lwd sets the width of every line it draws
+  ## (read from its first recorded par() call, before it puts par back);
+  ## Pedixplorer's lwd multiplies the lines of its drawing table (its rows
+  ## whose lwd doubles at 2, of all rows); pedkindraw's line, related
+  ## parents' mating line, outline and genotyped outline at lineWidth 0.5, 1
+  ## and 3 (vis.js's 1 where none is set).
+  probe(case, "kinship2 lwd its plot(lwd = 1, 2, 3) gives par()",
+        vapply(c(1.0, 2.0, 3.0), function(w) {
+          grDevices::pdf(NULL)
+          on.exit(grDevices::dev.off())
+          grDevices::dev.control("enable")
+          kinship2::plot.pedigree(k2Pedigree(ped), lwd = w)
+          shown <- grDevices::recordPlot()[[1L]]
+          calls <- vapply(shown, function(x) x[[2L]][[1L]]$name,
+                          character(1L))
+          shown[calls == "C_par"][[1L]][[2L]][[2L]][["lwd"]]
+        }, numeric(1L)))
+  probe(case, "Pedixplorer rows whose lwd doubles at lwd 2, of all rows", {
+    p <- Pedixplorer::Pedigree(pxFrame(ped))
+    one <- pxPlotDf(p, lwd = 1.0)
+    two <- pxPlotDf(p, lwd = 2.0)
+    paste(sum(two$lwd == 2.0 * one$lwd, na.rm = TRUE), "of", nrow(one))
+  })
+  probe(case, "pedkindraw line, related, outline, genotyped at 0.5, 1, 3", {
+    related <- data.frame(
+      id = c("S", "D1", "D2", "A", "B", "C"),
+      sire = c(NA, NA, NA, "S", "S", "A"), dam = c(NA, NA, NA, "D1", "D2", "B"),
+      sex = c("M", "F", "F", "M", "F", "M"),
+      genotyped = c(TRUE, FALSE, FALSE, FALSE, FALSE, FALSE),
+      stringsAsFactors = FALSE
+    )
+    vapply(c(0.5, 1.0, 3.0), function(w) {
+      lay <- pedkindraw::makePedigreeMatingLayout(withGen(related),
+                                                  lineWidth = w)
+      widths <- lay$edges$width
+      widths[is.na(widths)] <- 1.0
+      outline <- lay$nodes$borderWidth[match(c("A", "S"), lay$nodes$id)]
+      paste(min(widths), max(widths), outline[[1L]], outline[[2L]])
+    }, character(1L))
+  })
 }
 
 ## B6. Longer or several-line labels.
