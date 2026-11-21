@@ -11,98 +11,96 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17f2 DONE (S33-S41); the gap
 phases G1-G17 run before 17g (R97, `docs/planning/gaps-and-shared-code-plan.md` section 5.1). G1-G14 DONE (S42-S63).
-**G15's plan written (S64, R141, `docs/planning/mates-without-offspring-plan.md`):** gap B1, two animals mated with
-no offspring together. Mark's pick: a `matings` table, a data frame of `sire` and `dam` given to
-`makePedigreeMatingLayout(matings = NULL)`, listed by `getMatings()` and returned by `asPedFrame()` as a fourth
-element. Three build sessions: **G15a the layout** (1, or 2), G15b `getMatings()`, G15c the converters.
-**Next: G15a, the layout draws declared matings** (the plan's section 7, `:222`; strict TDD; measure first, then the
-pre-RED picker with pictures).
-**Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's). S64's commits are pushed
+G15 (gap B1, mates with no offspring; R141; `docs/planning/mates-without-offspring-plan.md`): plan S64; **G15a DONE
+(S65)**: `makePedigreeMatingLayout(matings = NULL)`, a data frame of `sire` and `dam`, draws each pair joined at a
+mating point with no line down, never left out (Mark's five S65 picks, in R141 and the plan's G15a DONE bullet).
+**Next: G15b, `getMatings(ped, matings = NULL)` lists declared matings** (the plan's section 7, `:260`; strict TDD;
+measure first, then the pre-RED picker at `:264`-`:265`). Then G15c (the converters), G16-G17, 17g.
+**Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's). S65's commits are pushed
 (Mark's standing pick, a memory).
-**The orient picker:** G15a (recommended: the plan's order, R97's). Also READY: the narrow legend
-(`methodology/BACKLOG.md:61`), the drawing vignette's measured trait (`:68`), the `smallPed` fixture (`:91`),
-rewording `DIVERGENCE.md`'s older rows (`:43`), tests for full coverage (`:97`), `findPedigreeNumber()`'s speed
-(`:227`, READY since S6 and missing from S48-S64's pickers), and the "Ready, small" items (seven: `:153`, `:165`,
-`:172`, `:181`, `:191`, `:208`, `:214`). NEEDS DECISION: a converted Pedixplorer object's `avail` (`:74`); long
-names at the edges (`:82`); the dashboard not seeing `methodology/BACKLOG.md` (`:137`); copying nprcgenekeepr's
-colony overview (`:144`, later). Name every item in the picker (memory "Picker sets: name items, include all").
-**Session boundary:** one session (two if the anchor rule or the collision warnings grow), G15a DONE; G15b and G15c
-are sessions of their own.
-**Priority:** HIGH (G15a-G15c, G16-G17, then 17g).
+**The orient picker:** G15b (recommended: the plan's order, R97's). Also, from `methodology/BACKLOG.md`: READY, the
+narrow legend (`:61`), the drawing vignette's measured trait (`:68`), the `smallPed` fixture (`:91`), rewording
+`DIVERGENCE.md`'s older rows (`:43`), tests for full coverage (`:97`), `findPedigreeNumber()`'s speed (`:236`), and the
+seven "Ready, small" items (`:162`, `:174`, `:181`, `:190`, `:200`, `:217`, `:223`); NEEDS DECISION, a converted
+Pedixplorer object's `avail` (`:74`), long names at the edges (`:82`); "Waiting on Mark", the dashboard not seeing
+`methodology/BACKLOG.md` (`:137`), copying nprcgenekeepr's colony overview (`:144`), and **new in S65**, an animal
+with two or more mates drawn once between them as kinship2 draws it (`:151`). BLOCKED, and so not offered: `:11`,
+`:52`, `:131`. Name every item in the picker (memory "Picker sets: name items, include all").
+**Session boundary:** one session, G15b DONE; G15c is a session of its own.
+**Priority:** HIGH (G15b-G15c, G16-G17, then 17g).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 22 differ, 0 without a row**: S64 changed no package code);
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**: S65 added `.findIsolatedIds()`'s row);
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l
    'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
-   (`4283e3502`, `a85311021`, `392dd347e`, `471589138`). nprcgenekeepr was at `3e06730c5`, tree clean, through S64.
-2. Check S64's push: `docs/planning/` changed, which neither workflow's `paths-ignore` lists, so both run with no
-   package change. Expected, not measured: CI fails on Ubuntu R-devel only (S4Vectors in "setup-r-dependencies",
-   as S56-S63), the other four `success`, Ubuntu release's tests the same as S63's push (FAIL 0, WARN 0, SKIP 2,
-   PASS 13,832); the site builds.
-3. **G15a** by `docs/planning/mates-without-offspring-plan.md` section 7 (`:222`-`:244`), its interface in section 5
-   (`:131`), its inventory in section 6 (`:165`), its dragons in section 8 (`:279`). Before the pre-RED picker
-   (Learning 17), on a scratch copy: (a) pictures in headless Chrome at 500 px of the typed shapes (section 4) in
-   both edge styles, today's anchor rule and the "hub" rule side by side, and what a mating point with nothing below
-   looks like; (b) the 7 seeds whose rectilinear drawing gained a collision warning (18, 30, 55, 65, 73, 77, 84 of
-   `tests/testthat/helper-layoutHints.R:14`'s generator, 1-3 matings from `pickMatings()`): which line crosses which
-   animal, and whether the declared mating causes it; (c) what `trimPedigree()` and its kin leave in a `matings`
-   table. Then the picker (the plan's `:232`-`:234`: the anchor, a pair named twice, the sexes, the hover's words,
-   rows naming removed animals, whether the point is drawn), RED, GREEN, REFACTOR by the gates.
+   (`4283e3502`, `a85311021`, `392dd347e`, `471589138`). nprcgenekeepr was at `3e06730c5`, tree clean, through S65.
+2. Check S65's push: `R/`, `tests/`, `man/`, `vignettes/` changed, so both workflows run. An estimate, not measured:
+   CI fails on Ubuntu R-devel only (S4Vectors in "setup-r-dependencies", as S56-S64), the other four `success`, and
+   Ubuntu release's tests read about FAIL 0, WARN 0, SKIP 2, PASS 14,792 (S64's 13,832 plus the new file's 960
+   local expectations, if its browser and random tests run there as S63's did); the site builds.
+3. **G15b** by `docs/planning/mates-without-offspring-plan.md` section 7 (`:260`-`:270`) and section 5 (`:149`-`:151`):
+   `getMatings(ped, matings = NULL)` adds the declared pairs with no offspring after the offspring matings, `offspring`
+   0, so R119's "the matings the drawing's layout builds" holds. Measure first on a scratch copy (Learning 17): the
+   layout's mating points against `getMatings()`'s rows on the 12 typed shapes and the 100 random cases of
+   `tests/testthat/helper-matesNoOffspring.R` (reuse `.matesShapes()`, `.matesPick()`); then the picker (the declared
+   rows' place; `offspring` 0 or a column saying a row was declared), RED, GREEN, REFACTOR by the gates. The shared
+   check is `.checkMatings()` (`R/matings.R:25`): its messages name `makePedigreeMatingLayout()`, so it needs the
+   caller's name (as `.checkPositiveNumber()` takes one); and see the first gotcha.
 
 ### Gotchas
-- **A unit with no offspring has no side** (the plan's dragon 1; `R/makePedigreeDiagramData.R:1522`-`:1524`):
-  `childSide` is `NA` and `NA == 0.0` stops an `if`. The gap case does not reach it; `secondMate` (A with B and
-  offspring, A with G and none) does. RED needs that shape, or the fix goes untested.
-- **New mating units go after the offspring units** (dragon 7): numbering the declared ones first renumbers every
-  `__union_<n>` and breaks 600 of 600.
-- **R70's check must read `matings`** (dragon 3): the layout returns the declared pair as a mate hint (G10), and
-  passed back it stops today; check `matings` before `hints` (`.checkLayoutHints()`, `R/layoutHints.R:28`).
-- **Today's anchor rule draws a hub twice** (dragon 2): `secondMate` and `twoChildless` draw A at each mating;
-  kinship2 draws it once. The "hub" variant fixed `twoChildless` only.
-- **The references fail where pedkindraw draws:** kinship2's `plot()` on fewer than 3 animals and on
-  `twoChildless`, Pedixplorer's `align()` on both; Pedixplorer refuses a pair named twice; `rel()` is S4 (read with
-  `as.data.frame()`). Compare only where each returns, with a floor (`expect_gte()`).
-- **zsh does not split `$VAR` in `for f in $VAR`** (dragon 79): a check reported every file missing. **"missing
-  value where TRUE/FALSE needed"** is found with `conditionCall(e)` (dragon 80).
-- **A `cd` into `methodology/` persists** (it happened again in S64's ratchet run): run the ratchet as
-  `(cd methodology && python3 quality_ratchet.py --run)` or follow it with an absolute `cd`.
-- **Carried:** vis.js outlines in screen pixels, lines in units (73); the fidelity check compares the drawing's
-  script (74); `pkg::` in a test warns in `R CMD check` (75); a number measured under one prototype option goes
-  stale when another is picked (76); `\s` in an R one-liner inside shell quotes fails; dry-run every edit script on
-  a copy (S64's prototype, option and close-out scripts each checked all anchors first); `NOT_CRAN=true` for the
-  browser tests; guarded `rm` (`"${SP:?}"`); an unquoted heredoc rewrites backslashes (69); a `DIVERGENCE.md` row by
-  its first cell (70); lintr refuses `par()` (71); covr's line numbers move with each edit; a `git archive` copy's
-  `.Rprofile` (67) and the fidelity tool on a copy needs `env -u RENV_PROJECT R_LIBS=<renv lib> R_LIBS_USER=<renv
-  lib>` (37); Monitors on `pgrep` (68); `gen` from `findGeneration()` (66); `tools/gapCases.R` leaves `Rplots.pdf`
-  (41); the 5-file cap splits GREEN; the ratchet's suite gate times out at 300 s; `CLAUDE.md` is over its budget
-  (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's; the stale pedkindraw 0.0.1 in renv's
-  library (`BACKLOG.md:165`).
-- **Ledger sizes:** see S64's receipt (`CHANGELOG.md` about 145 KB, `HANDOFFS.md` about 115 KB, both under the
-  196,608 B threshold).
-- **Scratch scripts** (`/private/tmp/claude-501/-Users-rmsharp-Development-pedkindraw/3df268da-e0a2-458c-a7fc-ce6aea638359/scratchpad/g15/`,
-  may be gone; the plan's section 10 says what each did): `refcases.R` (16 shapes in kinship2 and Pedixplorer),
-  `pxhint.R`, `apply_proto.py` (the prototype's edits), `apply_fix.py` (variants `na`, `hub`), `protorun.R`
-  (`runLayout()`, `checkMatings()`, `pickMatings()`, `kindOf()`; `Rscript protorun.R <copy> <nSeeds> [out.rds]`),
-  `tabulate.R`, `extras.R`, `trace2.R`, `apply_option.py`, `runtests.R` (test files of a copy, failures named),
-  `closeout1.py`; outputs `refcases.out`, `rand_na.rds`, `rand_hub.rds`, `fidelity_na.out`.
-- **Times** (S64's): the 16 reference shapes about 1 min; `protorun.R` on 100 seeds, both styles, with and without
-  matings about 3 min; the fidelity tool about 3.5 min (97.5 s and 96.3 s); the suite about 5 min.
+- **A `getMatings()` row naming a sire or dam without a row of its own is "left out" with a message by
+  `.checkMatings()`** (found at S65's close-out, not fixed; measured): `getMatings()` lists such a parent as recorded,
+  so passing its result back for a pedigree where C's sire S has no row prints "1 mating(s) in 'matings' naming an
+  animal not in 'ped' left out: S and B", although S and B are drawn from their offspring anyway. The drawing is
+  right; the message misleads. G15b's shared check is the place: decide (in its picker) whether a declared row whose
+  pair has offspring together in `ped` is dropped silently before the absent check.
+- **What G15a decided** (R141's S65 picks; don't re-ask): an animal with several matings is drawn at each; a row
+  naming an animal not in `ped` is left out with a message (not a stop); a pair named twice, in either column, once;
+  any sexes; the point hovered "0 offspring". Stops: not `NULL` or a data frame with `sire` and `dam`, `NA`, the same
+  id as sire and dam; checked before the hints.
+- **A pair in either role:** use `.layoutHintPairKey()` (`R/layoutHints.R:211`), the unordered key (the G15 plan's
+  dragon 11); `getMatings()` itself keys `sire`, `dam` in order (`R/getMatings.R:48`).
+- **The rectilinear style's routing points have `NA` hover text** (gaps plan dragon 82): `id[title == x]` returns
+  `NA` ids; use `which()`.
+- **`makePedigreeMatingLayout()`'s default style is rectilinear**: compare a default call with a rectilinear layout
+  (a draft test of S65 compared it with a direct one).
+- **The rectilinear style warns "could not be fully resolved" on 49 of 100 random pedigrees without matings**:
+  `.matesLayout()` (the helper) muffles that warning alone; any other warning is kept (gate `test-suite-warnings-zero`).
+- **Run Rscript from the root** (gaps plan dragon 83): from `tests/testthat/` renv is not loaded ("The package
+  "quadprog" is required") and the `cd` stays. zsh does not split an unquoted variable (dragon 79): S65 hit it once.
+- **Carried:** a unit with no offspring takes the sex rule (fixed; `R/makePedigreeDiagramData.R:1547`-`:1553`); new
+  units go after the offspring units (`:689`-`:697`), or 600 of 600 breaks; vis.js outlines in screen pixels (73);
+  the fidelity check compares the drawing's script (74); `NOT_CRAN=true` for the browser tests; dry-run every edit
+  script on a `git archive` copy and check new lines' widths (S65's caught two long lines and a joined one); guarded
+  `rm` (`"${SP:?}"`); the 5-file cap splits GREEN; the ratchet's suite gate times out at 300 s (run the suite by
+  hand); `CLAUDE.md` is over its budget (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's;
+  the stale pedkindraw 0.0.1 in renv's library (`BACKLOG.md:174`); a `cd` into `methodology/` persists (run the
+  ratchet in a subshell).
+- **Ledger sizes:** see S65's receipt (both well under the 196,608 B threshold).
+- **Scratch scripts** (`/private/tmp/claude-501/-Users-rmsharp-Development-pedkindraw/249e536b-3df4-4009-abed-c09e52477510/scratchpad/g15a/`,
+  may be gone): `pics.R` (typed shapes drawn in headless Chrome at 500 px), `sheet.R` (a contact sheet of PNGs),
+  `coll.R` (which unresolved lines the matings add, by wrapping `.resolveEdgeNodeCollisions()`), `trim.R` (what the
+  trimming functions leave in a `matings` table), `apply_proto2.py` (prototype 2, Mark's picks), `runone.R` and
+  `runmany.R` (test files on a copy, from its `tests/testthat/` with `R_LIBS` set), `record.R` (every layout of the
+  test file's cases, for a before/after proof), `closeout1.py`.
+- **Times** (S65's): the full suite 353 s; the new test file 16 s (12 s its random cases); the fidelity tool about
+  3.5 min; `R CMD check --as-cran` about 10 min (tests 173 s).
 
 ### Key files
-- `docs/planning/mates-without-offspring-plan.md` (new): section 2 `:38` (the references' table), 3 `:72` (the
-  options), 4 `:90` (the prototype), 5 `:131` (the interface), 6 `:165` (the inventory), 7 `:206` (phases; G15a
-  `:222`, G15b `:246`, G15c `:258`), 8 `:279` (dragons).
-- `docs/planning/standalone-pedigree-package-plan.md`: `:89` (Next), `:298` (R141), `:1299` (G15's plan entry);
-  `docs/planning/cran-submission-plan.md:35`, `:688`; `docs/planning/gaps-and-shared-code-plan.md`: `:17` (status),
-  `:379` (G15's row), `:810`-`:818` (dragons 78-80).
-- G15a's code: `R/makePedigreeDiagramData.R:540` (`.findIsolatedIds()`), `:638` (`.buildMatingUnitForest()`),
-  `:669`-`:686` (the pair keys), `:1522`-`:1528` (`childSide`), `:2179` (the last argument), `:2206` (the hints'
-  check), `:2276` (isolated ids), `:2327` (the forest), `:2554` ("%d offspring"); help `:1812`, `:1930`, `:1947`,
-  `:2117`-`:2122`; `R/layoutHints.R:28`, `:114`-`:180` (`.checkLayoutHintMate()`), `:148`, `:189`
-  (`.layoutHintTogether()`), `:489` (`.layoutHintsUsedMate()`); `tools/gapCases.R:289`-`:312`;
-  `vignettes/drawing.Rmd:69`, `:433`-`:446`; `DIVERGENCE.md:14`, `:17`, `:18`.
-- Later: `R/getMatings.R:40` (G15b); `R/asPedFrame.R:248`, `:287`, `:351`-`:353`, `:404`, `:496`-`:527` (G15c).
-- `methodology/BACKLOG.md:26` (G15-G17), and the items listed in the orient picker above.
+- `docs/planning/mates-without-offspring-plan.md`: section 5 `:132` (G15b's interface `:149`), 7 `:208` (G15a
+  `:224`, its DONE bullet `:247`; G15b `:260`; G15c `:272`), 8 `:293` (dragons 9-11 `:316`-`:326`).
+- `R/matings.R:25` (`.checkMatings()`); `R/makePedigreeDiagramData.R:551` (`.findIsolatedIds()`), `:655`
+  (`.buildMatingUnitForest()`, the declared units `:689`-`:697`), `:1547` (`childSide`), `:2095` (`@param matings`),
+  `:2234` (the argument), `:2263` (the check), `:2334`, `:2385`, `:2612` ("%d offspring"); `R/layoutHints.R:32`,
+  `:119`, `:153` (a declared pair together), `:211` (`.layoutHintPairKey()`), `:497` (`.layoutHintsUsedMate()`).
+- G15b: `R/getMatings.R:40` (help `:6`-`:39`), `R/pedkindraw-package.R:23`, `README.Rmd:167`,
+  `docs/planning/pedkindraw-api-contract.md:186`, `tests/testthat/test_getMatings.R`,
+  `tests/testthat/helper-offspringAndMatings.R`.
+- G15c (later): `R/asPedFrame.R:248`, `:287`, `:351`, `:404`, `:496`.
+- Tests: `tests/testthat/test_matesNoOffspring.R` (14 tests), `tests/testthat/helper-matesNoOffspring.R`.
+- `docs/planning/standalone-pedigree-package-plan.md:90` (Next), `:299` (R141 with the S65 picks), `:1309` (G15a's
+  entry); `docs/planning/gaps-and-shared-code-plan.md:17` (status), `:380` (G15's row), `:820`-`:828` (dragons
+  81-83); `docs/planning/cran-submission-plan.md:35`, `:692`; `methodology/BACKLOG.md:26`, `:151`.
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -116,61 +114,53 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S63's entries were removed in S3-S64 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S64's entries were removed in S3-S65 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 65 Did
-**Deliverable:** Phase G15a (IN PROGRESS; gap B1, mates with no offspring; the layout draws declared matings;
-`docs/planning/mates-without-offspring-plan.md:222`; `methodology/BACKLOG.md:26`): strict TDD, measure first, the
-pre-RED picker, then RED, GREEN, REFACTOR by the gates.
-**Started:** 2026-11-21 00:38 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G15a: draw mated pairs
-(Recommended)" (orient)
-**Status:** Session claimed. Measuring on a scratch copy first (pictures of the typed shapes, the 7 seeds' collision
-warnings, trimming and a matings table), then the pre-RED picker.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest.
-
-### Session 63 Handoff Evaluation (by Session 64)
+### Session 64 Handoff Evaluation (by Session 65)
 **Score: 9/10.**
-- **What helped:** item 3 of "What You Must Do" was the session's plan: measure kinship2's and Pedixplorer's
-  `matesNoOffspring` first, the input to Mark in a picker with each option measured, a grep inventory of
-  `.buildMatingUnitForest()` (rightly at `:638`, G15's row's `:454` stale), `.findIsolatedIds()` (`:540`, `:2276`),
-  the mate hint's stop (R70) and the converters' left-out pairs, per-phase DONE and surface, 600 of 600. The
-  orient predictions held: drift 91/22/0, nprcgenekeepr's 4 commits, S63's CI (R-devel only; Ubuntu release FAIL 0,
-  WARN 0, SKIP 2, PASS 13,832, S62's 13,636 plus the new test's 196). The gotchas were used: dry-run edit scripts,
-  guarded `rm`, dragon 67's `.Rprofile`, dragon 37's fidelity run on a copy, `NOT_CRAN`, the `cd methodology` trap.
-- **What was missing:** that the converters drop the spouse pairs in their twins readers too
-  (`R/asPedFrame.R:287`, `:404`, help `:37`-`:40`, `:86`), not only the hint rows at `:491`-`:508`; that R119
-  defers "mates with no offspring" to G15, so `getMatings()` is in its scope; that no G phase had yet had a plan of
-  its own (where it goes and what it is called); and the backlog's `findPedigreeNumber()` speed (`:227`, READY) and
-  two DECISION NEEDED items (`:137`, `:144`), which its orient list (and so S64's picker) left out.
-- **What was wrong:** nothing found wrong (R70's stop cited at `R/layoutHints.R:151` is inside the `stop()` that
-  starts at `:150`).
+- **What helped:** item 3's measure-first list (a)-(c) was the session's plan, and the plan's picker list
+  (`:232`-`:234`) became S65's two pickers. The gotchas were used: dragon 1 (`secondMate` reaches `childSide`; RED has
+  a test for it), dragon 7 (units after the offspring units; the random test checks the numbers), dragon 3 (matings
+  checked before the hints). S64's scratch scripts survived and were reused (`apply_proto.py`, `apply_fix.py`,
+  `protorun.R`'s `pickMatings()` and `checkMatings()`). Every key-file line was right (`:540`, `:638`, `:1522`-`:1528`,
+  `:2179`, `:2206`, `:2276`, `:2327`, `:2554`; `R/layoutHints.R:28`, `:148`, `:189`). The predictions held: drift
+  91/22/0; nprcgenekeepr's 4 commits at `3e06730c5`; S64's CI failed on Ubuntu R-devel only (setup-r-dependencies),
+  Ubuntu release FAIL 0, WARN 0, SKIP 2, PASS 13,832; the site built.
+- **What was missing:** that pedkindraw already draws a two-dam sire twice when both matings have offspring (the
+  hub choice's baseline, found by measuring); that "7 seeds gained a collision warning" counted layouts that warn,
+  not unresolved lines (26 gained, 12 lost, by lines); that the plan's "stops on an id not in `ped`" and the
+  picker's "removed animals" are one decision; that the prototype's pair key was ordered (a swapped row would make
+  a second unit).
+- **What was wrong:** nothing found wrong.
 - **ROI:** high.
 
-### What Session 64 Did
-**Deliverable:** Phase G15's plan, `docs/planning/mates-without-offspring-plan.md` (gap B1, mates with no offspring),
-a planning session, no package code; ruling R141.
-**Started:** 2026-11-20 23:36 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time):** "G15's plan
-(Recommended)" (orient); "A matings table (Recommended)" (the input, R141). No corrections from Mark.
-**Commits:** claim `d58a52f`; the plan, R141 and G15's row `445302f`; close-out 1 `41814b1`; close-out 2 (these
-notes, the receipt, the ledger). Pushed at close.
-**Measured:** kinship2 and Pedixplorer on 16 typed shapes, one process each under `timeout 30` (both draw the pair
-joined on one row; both fail on 2 animals and on no offspring at all; Pedixplorer refuses a pair named twice;
-kinship2's spouse hint alone draws such a pair in 11 of 13, Pedixplorer's in 2 of 4, against R74's "both ignore
-it"); a scratch prototype of the picked input: 13 of 20 random pedigrees stopped at `childSide` (`:1524`) until a
-unit with no offspring took the sex rule, then 0 of 100 in either style, all 200 declared matings on one row with
-the point between and nothing between, 72 pedigrees gaining repeat nodes (130; "hub" 129), 7 gaining a collision
-warning, the related pair's line `#D55E00` 4, the returned hints refused when passed back, fidelity 600 of 600; each
-input option's cost in existing tests on scratch copies (10, 2, 3; a column 0 read).
+### What Session 65 Did
+**Deliverable:** Phase G15a, the layout draws declared matings (gap B1; R141), strict TDD. DONE.
+**Started:** 2026-11-21 00:38 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time):** "G15a: draw
+mated pairs (Recommended)" (orient); "At each mating", "Leave it out, with a message", "Accept it, drawn once",
+"Accept any sexes", "Dot, hover '0 offspring'" (all Recommended); PRE-RED->RED, RED->GREEN (the NEWS bullet as
+quoted), GREEN->REFACTOR ("Yes, proceed to REFACTOR (Recommended)"). No corrections from Mark.
+**Commits:** claim `036875b`; RED `d8a8060`; GREEN `22a6f7b` (code), `46dce77` (help, NEWS), `eaddc77`
+(`DIVERGENCE.md`, contract, vignette, gap case); REFACTOR `5a35482`; close-out 1 `c912992`, `ab3c781`; close-out 2
+(these notes, the receipt, the ledger). Pushed at close.
+**Measured:** pictures of 13 shapes in both styles under both anchor rules; pedkindraw's own two-dam drawing
+(`[A B A' G]`, kinship2 `B A G`); the unresolved lines the matings add on 100 seeds (139 of 139 repeat-node arcs);
+what 6 trimming calls leave in a `matings` table (190 of 200 rows after `trimPedigree()`); the drafts run on a
+prototype of the picks (960 of 960) and 10 existing test files on it (0 failed). Verified: the new file 14 tests,
+960 expectations; full suite 81 files, 1,008 tests, 0 failed, 0 skipped, 0 warnings; lint 0; roxygen unchanged;
+covr 54 of 54 changed code lines and 32 of 32 of `R/matings.R` reached by the new file alone; `R CMD check
+--as-cran` 1 NOTE (R16's); drift 91/23/0, exit 0; fidelity 600 of 600, exit 0; REFACTOR 224 of 224 layouts
+identical before and after.
 **Self-assessment: 8/10.**
-+ Every claim in the plan and the picker measured first; the one stop traced to its line and fixed in the
-  prototype; the picker answered at once; all `file:line` citations checked by machine, 4 corrected before the
-  commit; each phase names its surface and what the surface cannot enforce.
-- Slips, all caught before a commit: the reference script read Pedixplorer's S4 `rel()` with `$`; a zsh loop
-  reported every test file missing; the plan's first draft had 3 wrong line ranges, an unmeasured "the same without
-  them" and an imprecise "11 of 13 valid shapes". The orient picker left out three backlog items (`:227`, `:137`,
-  `:144`) by following the handoff's list instead of the backlog. The deepest reasoning mode could not be set from
-  inside the session (told Mark: `/effort max`).
-**Learnings:** the gaps plan's dragons 78-80; the G15 plan's own dragons 1-8. No `CLAUDE.md` row (over budget).
-**Ledger:** `CHANGELOG.md` S64 entries (the session, ruling R141, push 1).
++ Every expected value measured on a prototype before RED; the decisions put with pictures and counts, each
+  answered at once; RED failed for the right reason only; GREEN passed on its first run; every DONE criterion
+  checked, the browser test included; REFACTOR proven by machine.
+- Slips, none reaching a commit: 4 draft-test bugs found on the prototype (`NA` not recycled, `NA` hover ids, a
+  pedigree with a rowless sire and no `gen`, the default edge style); a zsh unquoted list and a wrong file name; a
+  `cd` into `tests/testthat/` that stuck; two long lines and a joined one in the close-out script, caught by the dry
+  run; `_R_CHECK_FORCE_SUGGESTS_=false` added to the check command (not `CLAUDE.md`'s; every Suggests is installed,
+  so no effect). Found at close-out and left for G15b: the misleading "left out" message for a `getMatings()` row
+  naming a rowless parent.
+**Learnings:** the G15 plan's dragons 9-11; the gaps plan's dragons 81-83. No `CLAUDE.md` row (over budget).
+**Ledger:** `CHANGELOG.md` S65 entries (the session, R141's G15a picks, push 1).
