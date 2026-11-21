@@ -11,110 +11,110 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17f2 DONE (S33-S41); the gap
 phases G1-G17 run before 17g (R97, `docs/planning/gaps-and-shared-code-plan.md` section 5.1). G1-G13 DONE (S42-S59).
-**G14 under way (R140, `docs/planning/standalone-pedigree-package-plan.md:292`):** four settings, each an argument
+**G14 under way (R140, `docs/planning/standalone-pedigree-package-plan.md:294`):** four settings, each an argument
 of `makePedigreeMatingLayout()` and a multiple of today's (1 = as before), one positive number with no upper limit,
-one a session. **Session 1, the symbol size, DONE in S60** (`symbolSize`); **session 2, the text size, DONE in S61:**
-`makePedigreeMatingLayout(textSize = 1)` gives every node `font.size` 14 times it (rounded, at least 1; no column at
-14 px), the places and lines unchanged; above 14 px `drawPedigreeDiagram()` adds three invisible points (`__text_l_`,
-`__text_r_`, `__text_b_`) at the outermost labels' ends (widths from R's Helvetica metrics, `.labelWidths()`); the
-moved ids' room is `.idLabelDepth()` = 4 + 1.5 times the text size; the marks' words ("P", "ECT") and the twins'
-labels keep their sizes (Mark's S61 picks). The REFACTOR made one check, `.checkPositiveNumber(x, name, caller)`.
-**Next: G14 session 3 of 3, the column and row spacing and the line width** (R140's last: "then the spacing with the
-line width"; gaps plan `:376`).
-**Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's). S61's commits are pushed
+one a session; **four sessions since Mark's S62 pick** (R140 said three). Session 1, the symbol size, DONE in S60;
+session 2, the text size, DONE in S61; **session 3, the column and row spacing, DONE in S62:**
+`makePedigreeMatingLayout(columnSpacing = 1, rowSpacing = 1)` place the animals of a row 120 times the first apart
+and the rows 150 times the second, rounded to a whole unit and at least 1 (`R/spacing.R`'s constants;
+`.wholeMultiple()`, `R/symbolSize.R:58`, the REFACTOR's one helper for the three settings). Mark's S62 picks: two
+settings; large text does not widen the columns by itself; the line width a session of its own.
+**Next: G14 session 4 of 4, the line width** (R140's last setting; gaps plan `:377`).
+**Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's). S62's commits are pushed
 (Mark's standing pick, a memory).
-**The orient picker:** G14's spacing and line width (recommended: R140's order; then G15-G17, 17g). Also READY: the
-narrow legend (`methodology/BACKLOG.md:58`), the drawing vignette's measured trait (`:65`), the `smallPed` fixture
-(`:88`), rewording `DIVERGENCE.md`'s older rows (`:40`), tests for full coverage (`:94`), and the "Ready, small"
-items (`:150`-`:211`; name all seven in the last option, as S48-S61 did). NEEDS DECISION: a converted Pedixplorer
-object's `avail` (`:71`); long names at the edges cut at the default text size (`:79`, new in S61).
-**Session boundary:** R140's third session; it may need two (spacing; line width) if the measures say so: ask.
-**Priority:** HIGH (G14's spacing and line width, then G15-G17 and 17g).
+**The orient picker:** G14's line width (recommended: R140's order; then G15-G17, 17g). Also READY: the narrow
+legend (`methodology/BACKLOG.md:59`), the drawing vignette's measured trait (`:66`), the `smallPed` fixture (`:89`),
+rewording `DIVERGENCE.md`'s older rows (`:41`), tests for full coverage (`:95`), and the "Ready, small" items
+(`:151`-`:212`, seven: `:151`, `:163`, `:170`, `:179`, `:189`, `:206`, `:212`; name all seven in the last option, as
+S48-S62 did). NEEDS DECISION: a converted Pedixplorer object's `avail` (`:72`); long names at the edges cut at the
+default text size (`:80`).
+**Session boundary:** one session, G14's last; when it is DONE, mark G14 DONE in the four plans' places, the roadmap
+and the backlog (R140: 4 sessions).
+**Priority:** HIGH (G14's line width, then G15-G17 and 17g).
 
 ### What You Must Do
 1. Orient; drift tool (expect **91 functions, 21 differ, 0 without a row**); nprcgenekeepr's log on the copied
    files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R
    tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`,
-   `392dd347e`, `471589138`). nprcgenekeepr was at `3e06730c5`, tree clean, through all of S61.
-2. Check S61's push: both workflows run. S56-S60's CI runs failed on Ubuntu R-devel only (Bioconductor's S4Vectors,
-   in "setup-r-dependencies", before pedkindraw is checked; S60's run `44815278598`: the other four jobs `success`,
-   Ubuntu release among them, which ran the browser tests); expect the same. Any other failure is real (the new
-   browser test reads label boxes on Linux's fonts: S61 measured only on the Mac). The site must build.
-3. **Spacing and line width, measure before the pre-RED picker (Learnings 17-21; dragons 60, 61, 64, 66):**
-   (a) one setting or two: R140's option was "Column and row spacing" -- ask whether columns and rows are one
-   number or two (`columnSpacing`, `rowSpacing`?), with pictures. (b) where the spacing goes: `xScale <- 120L`,
-   `yScale <- 150L` (`R/makePedigreeDiagramData.R:2315`-`:2316`, used at `:2510`-`:2511`); the rectilinear
-   waypoints and the collision repair (`.resolveEdgeNodeCollisions()`, whose help at `:3196` says it reads the
-   row geometry, "never a hardcoded yScale") must be measured at each value, both styles, rhesus375 included; grep
-   the layout for other numbers in units that assume 120/150 (the jog 1 unit below the symbols, the sibship bars'
-   and drops' heights, arc roundness). Measure whether the curved arcs and jogs change, as dragon 60 did for size.
-   (c) the line width: which lines -- the edges (vis.js's 1, the consanguinity mating's 4 at `:2546`), the
-   symbols' outlines (1; genotyped 4, `R/genotypedMark.R:20`), the marks' strokes (`ctx.lineWidth` 1-3 in
-   `R/affectedConditions.R:172`, `R/deceasedSlash.R:57`, `R/evaluatedMark.R:49`, `R/infertileMark.R:138`,
-   `R/miscarriageMark.R:181`, `R/probandMark.R:71`), the legend's lines; Pedixplorer's `lwd` is "the line width of
-   the segments, arcs and polygons" (results only, R11: measure what it changes with `ped_to_plotdf()`). Picker
-   question: which follow. (d) the text size meets the spacing: a 10-character id is 118 units wide at text 1.4
-   and 165 at 2, the columns 120 apart; draw text 2 with column spacing 1.4 for the picker's pictures. (e) each
-   default leaving 600 of 600 (no column or argument effect at 1). (f) `.checkPositiveNumber()` for each new
-   argument (`R/symbolSize.R:36`). Draw candidates with S61's looks harness (scratch scripts below) at 500 px in both
-   styles with all seven marks on, at symbolSize 0.6/1.6 and textSize 1.4 too.
-4. RED, GREEN, REFACTOR by the gates. DONE (plan section 5.1, "Every G phase", `:340`): suite 0 failed, WARN 0;
+   `392dd347e`, `471589138`). nprcgenekeepr was at `3e06730c5`, tree clean, through all of S62.
+2. Check S62's push: both workflows run. Expected, not measured: CI fails on Ubuntu R-devel only (Bioconductor's
+   S4Vectors in "setup-r-dependencies", before pedkindraw is checked, as on S56-S61's pushes), the other four jobs
+   `success`; read Ubuntu release's testthat summary (S61's push: FAIL 0, WARN 0, SKIP 2 math-library tests, PASS
+   13,391), since the new browser test reads label boxes on Linux's fonts. The site must build.
+3. **The line width, measured before the pre-RED picker (Learnings 17-21; dragons 60, 61, 64):** (a) which lines
+   take it. S62's inventory: the edges (vis.js's width 1, unset; `visEdges(smooth = FALSE)` at
+   `R/drawPedigreeDiagram.R:417` sets none); the consanguinity mating lines' 4 (`R/makePedigreeDiagramData.R:2580`,
+   carried onto the doglegs at `:2955`); the symbols' outlines (vis.js's borderWidth 1; genotyped 4,
+   `R/genotypedMark.R:20`, `.genotypedBorderWidths()` `:34`, the legend's `:399`); the marks' canvas strokes
+   (`ctx.lineWidth`: `R/affectedConditions.R:172` 1, `R/deceasedSlash.R:57` 3, `R/evaluatedMark.R:49` 2,
+   `R/infertileMark.R:138` 2, `R/miscarriageMark.R:181` 2, `R/probandMark.R:71` 2); the legend's pictures (SVG
+   `stroke-width` at `R/affectedConditions.R:242`, `:246`, `R/carrierMark.R:70`, `R/deceasedSlash.R:89`, `:91`,
+   `R/evaluatedMark.R:107`, `R/infertileMark.R:206`, `R/miscarriageMark.R:271`, `:275`, `R/probandMark.R:150`)
+   and its line rows (the twins' dash patterns at `R/drawPedigreeDiagram.R:237`, in pixels). Picker question:
+   which follow (all lines and outlines, as Pedixplorer's `lwd`; the legend too or not; the dash patterns).
+   (b) Pedixplorer's `lwd`, measured S62 (scratch `pdx/lwd.R`): it multiplies every line, 158 of
+   `ped_to_plotdf()`'s 262 rows (all symbol outlines, segments, its 2.5-wide ones to 5, arrows, arcs; text and
+   points unchanged). kinship2's `plot.pedigree()` has no `lwd` (its `...`: measure what it passes on). (c) the
+   genotyped outline must stay told apart from an ordinary one (4 to 1 today): measure at 2 and 3. (d) whether
+   whole pixels (`.wholeMultiple()`) or any width: vis.js and the canvas take fractional widths; measure 0.5.
+   (e) what thick lines do to vis.js's fit and the edges' room (dragon 57), and to the marks drawn beside the
+   symbols. (f) 600 of 600 at the default: no new column at 1, as `textSize`'s `font.size` (`:2742`).
+   (g) `.checkPositiveNumber()` for the argument (`R/symbolSize.R:38`). Draw the candidates with S62's looks harness
+   at 500 px in both styles with all seven marks on, also at symbolSize 1.6 and columnSpacing 0.75.
+4. RED, GREEN, REFACTOR by the gates. DONE (plan section 5.1, "Every G phase", `:341`): suite 0 failed, WARN 0;
    lint 0; roxygen stable; covr on every new statement; `R CMD check --as-cran` R16's NOTE only; a NEWS bullet; the
    contract's section 4; `DIVERGENCE.md` sentences in copied code and the drift tool exit 0; fidelity 600 of 600.
-   When G14 is DONE, mark it so in the four plans' places, the roadmap and the backlog (R140: 3 sessions).
+   Then G14 DONE in the plans, the roadmap and the backlog.
 
 ### Gotchas
-- **A `git archive` copy runs its own renv** (dragon 67, new): delete each copy's `.Rprofile` before running in it,
-  or run Rscript from outside with the copy's path (S61 lost a first check run to it).
-- **A Monitor on `pgrep -f <script>` never ends** (dragon 68, new): it matches itself; wait for the background
-  task's notification.
-- **A hand-typed `gen` can draw another pedigree** (dragon 66, new): take a fixture's `gen` from `findGeneration()`
-  and check which side sets the zoom before choosing a browser floor (S61's first deep check measured nothing).
-- **vis.js's `labelModule.size.top` is not where a label is drawn** (dragon 64, new): its top is `size + 0.5 f + 4`
-  below the centre, each line `f` tall; read sides and width from `labelModule.size`.
-- **The Write tool writes `é` as the character**: S61's test had a literal "e acute" until the non-ASCII grep;
-  write escapes through a script, and grep each new file for non-ASCII.
-- **A replacement that ends mid-line leaves broken lines** (S60's gotcha, again in S61's first REFACTOR draft, caught
-  by `diff` before the repository): replace whole paragraphs; check `awk 'length > 80'` on R files.
-- **Browser floors** (dragon 62): S61's are 8 px at the edges (prototype 15.9-16.8, mutants -30 to 3.7) and 18 px
-  under a deep drawing's moved bottom id (prototype 23, mutant 9-14): set each from a prototype and its mutant.
-- **Carried:** set a size in the layout, not after it (60); vis.js's fit never zooms past 1 (61); `expect_warning()`
-  returns the condition (Learning 10); `.markRoom()` copies fields onto its points (compare with `expect_equal()` on
-  `names(nodes)`); `rm` with bare variables is refused (write `"${SP:?}/${d:?}"`); a background check's processes
-  are named `R` (56); the canvas reaches 5.5 px below the widget's box (52); `font.vadjust` moves a label but not its
-  box (54); roxygen pairs asterisks (48); Pedixplorer writes `Rplots.pdf` (41: probes from the scratchpad, and
-  `rm -f Rplots.pdf` after `tools/gapCases.R`); the 5-file cap splits GREEN (code; man/; records); the ratchet's
-  suite gate times out at 300 s (name it unmeasured with the suite by hand); `CLAUDE.md` is over its budget
-  (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's; the stale pedkindraw 0.0.1 in renv's
-  library answers `pedkindraw::` calls from outside `load_all()` (`BACKLOG.md:162`).
-- **Ledger sizes:** `CHANGELOG.md` 133,229 B of its 196,608 B threshold; `HANDOFFS.md` 97,899 B.
-- **Scratch scripts** (`/private/tmp/claude-501/-Users-rmsharp-Development-pedkindraw/c46a5382-eb31-448f-9928-dd101e5e1c1a/scratchpad/g14t/`,
-  may be gone): `looks.R` (each setting at 500 px, 7 pedigrees, both styles, all seven marks; ids green against a
-  drawing with them transparent; label sides and bottoms against the canvas and widget; options switch the
-  prototype's variants), `analyse.R` (its summary), `box.R` (vis.js's label box per font size, lines, shape),
-  `deep.R` (a deep pedigree, bottom row setting the zoom), `marks.R` (marks' words drawn red, counted on other
-  ink), `names.R`, `refs.R`, `pics/page.html` (the picture page), `apply_red.py`, `apply_green.py`,
-  `apply_green2.py`, `apply_refactor.py`, `closeout1.py`, `mutate.py`, `probe_browser.R`, `runtests.R`,
-  `run_checks2.sh` (suite, check, fidelity, covr side by side; remove `.Rprofile` from the copies first),
-  `covr_new4.R`, `refactor_save2.R`.
-- **Times** (S61's): suite about 5 min (78 files, 978 tests); `run_checks2.sh` about 9-10 min; the looks harness
-  84 drawings per process in about 35 min, three processes side by side (252 in all; one process alone ran faster).
+- **`rm` of a path built from variables is refused** unless each is guarded: write `"${SP:?}"/"${d:?}"/.Rprofile`,
+  never `$SP/$d/.Rprofile` (S62 slipped once; nothing ran, the command was rewritten).
+- **An unquoted heredoc rewrites a script's backslashes** (dragon 69, new): write scripts with the Write tool, or
+  `<<'EOF'`. The same bit an R one-liner in single quotes holding `"\\s"`: use `[[:space:]]`.
+- **A `DIVERGENCE.md` anchor at the end of a commit list matches other rows** (dragon 70, new): find a row by its
+  first cell (`editRow()` in S62's `apply_green2.py`).
+- **lintr refuses `par()`, even to read** (dragon 71, new): `grconvertX()`/`grconvertY()` instead.
+- **A step's depth grows with the row gap** (dragon 72, new): `max(0.15 x gap, largest symbol + 1)`; a fixed
+  expected depth holds only while the symbol's floor binds.
+- **covr's line numbers move with every edit**: re-grep the new statements' lines on the tree measured (S62's first
+  REFACTOR tally missed two).
+- **A `cd` into `methodology/` persists** (to run `quality_ratchet.py --run`): run it as `(cd methodology && ...)`.
+- **Carried:** a `git archive` copy runs its own renv, delete its `.Rprofile` (67); a Monitor on `pgrep -f` never
+  ends (68); take a fixture's `gen` from `findGeneration()` (66); `labelModule.size.top` is not where a label is
+  drawn (64); set a geometry setting in the layout (60); vis.js's fit never zooms past 1 (61); `expect_warning()`
+  returns the condition (Learning 10); the Write tool writes accented letters as characters (grep new files for
+  non-ASCII); a replacement ending mid-line breaks lines (check `awk 'length > 80'`); browser floors from a
+  prototype and its mutant (62); Pedixplorer writes `Rplots.pdf` (41: probes from the scratchpad, `rm -f
+  Rplots.pdf` after `tools/gapCases.R`); the 5-file cap splits GREEN (code; man/; records); the ratchet's suite
+  gate times out at 300 s (name it unmeasured with the suite by hand); `CLAUDE.md` is over its budget (learnings go
+  to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's; the stale pedkindraw 0.0.1 in renv's library
+  (`BACKLOG.md:163`).
+- **Ledger sizes:** `CHANGELOG.md` about 137 KB of its 196,608 B threshold; `HANDOFFS.md` about 100 KB.
+- **Scratch scripts** (`/private/tmp/claude-501/-Users-rmsharp-Development-pedkindraw/c6497c58-66b9-41d6-a90d-709b0403b9b7/scratchpad/g14s/`,
+  may be gone): `cases.R` (S61's 7 pedigrees and `withMarks()`, shared), `looks.R` (each config at 500 px, both
+  styles, all seven marks: zoom, symbol and text px, label room at the sides, id pairs overlapping and their least
+  gap, ids over other ink; configs `C(s, t, cs, rs)`; add a line width there), `analyse.R`, `spacing.R` (R only:
+  what a setting does to every place, waypoint, edge and arc against the default), `small.R`, `probe.R` (expected
+  values for the tests), `compose.py` (the picture page, crops each drawing left of its legend), `pdx/lwd.R`,
+  `pdx/k2shape.R`, `runtests.R`, `mutrun.R` (one test file on a mutant copy), `run_checks.sh` (suite, check,
+  fidelity, covr side by side on `<prefix>_*` copies), `refactor_save.R`, `apply_green.py`, `apply_green2.py`,
+  `apply_refactor.py`, `closeout1.py`.
+- **Times** (S62's): suite about 5 min (79 files, 986 tests); `run_checks.sh` about 10 min; the looks harness 182
+  drawings in about 25 min in three processes; the R-only `spacing.R` 2 min.
 
 ### Key files
-- `docs/planning/gaps-and-shared-code-plan.md`: `:376` (G14's row), `:340` ("Every G phase"), `:746`-`:771`
-  (dragons 63-68; 64-68 new).
-- `docs/planning/standalone-pedigree-package-plan.md`: `:85` (Next), `:292` (R140), `:1252` (G14 session 2);
-  `docs/planning/cran-submission-plan.md:668` (G14 session 2).
+- `docs/planning/gaps-and-shared-code-plan.md`: `:377` (G14's row), `:341` ("Every G phase"), `:747`-`:787`
+  (dragons 63-72; 69-72 new).
+- `docs/planning/standalone-pedigree-package-plan.md`: `:87` (Next), `:294` (R140), `:1270` (G14 session 3);
+  `docs/planning/cran-submission-plan.md:675` (G14 session 3).
 - `docs/research/pedkindraw-gaps-2026-11-18.md:219` (B5: what kinship2 and Pedixplorer take).
-- S61's work: `R/textSize.R` (`.fullTextSize` `:19`, `.textPixels()` `:28`, `.nodeTextPixels()` `:39`,
-  `.idLabelDepth()` `:56`, `.labelCharWidths` `:68`, `.labelWidths()` `:88`, `.textSizeRoom()` `:121`);
-  `R/symbolSize.R:36` (`.checkPositiveNumber()`); `R/infertileMark.R:190`, `R/miscarriageMark.R:235` (the depth);
-  `R/makePedigreeDiagramData.R` (`:562` the reserved prefixes, `:1999` `@param textSize`, `:2119` the arguments,
-  `:2131`-`:2132` the checks, `:2315`-`:2316` `xScale` and `yScale`, the spacing session's, `:2546` the
-  consanguinity width, `:2708` the font size); `R/drawPedigreeDiagram.R` (`:148` the help, `:386` the text points,
-  `:469` `width = 0.28`, `:481` `stepY = 60L`); `tests/testthat/test_textSize.R` (10 tests; the browser test
-  `:330`); `tools/gapCases.R:611` (the text-size probes).
-- `methodology/BACKLOG.md:26` (G14-G17), `:40`, `:58`, `:65`, `:71`, `:79` (new), `:88`, `:94`, `:150`-`:211`.
+- S62's work: `R/spacing.R` (`.fullColumnUnits` `:18`, `.fullRowUnits` `:25`); `R/symbolSize.R` (`.checkPositiveNumber()`
+  `:38`, `.wholeMultiple()` `:58`, `.symbolUnits()` `:70`); `R/makePedigreeDiagramData.R` (`:2021` `@param
+  columnSpacing`, `:2033` `@param rowSpacing`, `:2162` the checks, `:2349`-`:2350` `xScale` and `yScale`, `:2580` the
+  consanguinity width, `:2742` the font size); `tests/testthat/test_spacing.R` (8 tests; the browser test `:241`);
+  `tools/gapCases.R` (the spacing probes at the end of the style case).
+- The line width's places: listed in What You Must Do, item 3 (a).
+- `methodology/BACKLOG.md:26` (G14-G17), `:41`, `:59`, `:66`, `:72`, `:80`, `:89`, `:95`, `:151`-`:212`.
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -128,69 +128,55 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
-*S1-S60's entries were removed in S3-S61 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
+*S1-S61's entries were removed in S3-S62 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
-### What Session 62 Did
-**Deliverable:** Phase G14 session 3 of 3, the column and row spacing and the line width (IN PROGRESS; R140's
-last setting; it may split into two sessions, spacing then line width, if the measures say so: a picker)
-**Started:** 2026-11-20 18:13 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G14: spacing + line width
-(Recommended)" (orient)
-**Status:** Session claimed. Measuring before the pre-RED picker (one spacing setting or two; `xScale`/`yScale`
-and every unit number that assumes them; the rectilinear waypoints and the collision repair at each value, both
-styles, rhesus375 included; which lines a line width takes; Pedixplorer's `lwd`, results only; text 2 with wider
-columns; 600 of 600 at the defaults).
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest.
-
-### Session 60 Handoff Evaluation (by Session 61)
+### Session 61 Handoff Evaluation (by Session 62)
 **Score: 9/10.**
-- **What helped:** the measure-first list (a)-(f) was the session's plan item for item: (a) a `font.size` column only
-  when the text is not 14 px held and kept 600 of 600; (b) the label box at several sizes gave vis.js's rule (top
-  `0.5 f + 4` below the shape, `f` a line), which became `.idLabelDepth()`; (c) "points at estimated label ends
-  against other ways, and the cost in nodes on rhesus375" framed the first picker question exactly (3 points, every
-  animal's 1,090, a re-fit); (d) the "P" and "ECT" became the second picker question; (e) and (f) went into the
-  picker's text. The scratch scripts were there and were adapted (`looks.R`, `labels.R`, `refs.R`, `compose.R`,
-  `run_checks.sh`, `covr_new2.R`, `refactor_save.R`, the mutation idea). Drift 91/21/0, the 4 nprcgenekeepr
-  commits, the CI prediction (R-devel's S4Vectors only, the other four `success`), the gotchas (`expect_warning()`,
-  `rm` with `${SP:?}`, replacements ending mid-line, which recurred and was caught) all held.
-- **What was missing:** that S60's scratch copies had no `.Rprofile` (S61's had one, and three of four checks did
-  not run the first time: dragon 67).
-- **What was wrong:** dragon 63 counted `.symbolSizeRoom()`'s 25 below the centre as the text's allowance; it is
-  the full-size symbol's corner, and stays (noted under dragon 63).
+- **What helped:** the measure-first list (a)-(f) was the session's plan: (a) one setting or two became the first
+  picker question; (b) `xScale`/`yScale` at `:2315`-`:2316`, used at `:2510`-`:2511`, were exactly where the change
+  went, and the repair's help ("never a hardcoded yScale") held when measured; (c) the line-width inventory (the
+  consanguinity 4, the genotyped 4, the six marks' `ctx.lineWidth` lines, the legend, Pedixplorer's `lwd` through
+  `ped_to_plotdf()`) was right line for line and framed the scope picker that split it off; (d) text 2 against
+  columns 120 apart became the second picker question; (e) and (f) held. The scratch scripts (`looks.R`,
+  `analyse.R`, `runtests.R`, `run_checks2.sh`) were there and were adapted. Drift 91/21/0, the 4 nprcgenekeepr
+  commits and the CI prediction (R-devel only) held; S61's browser test was confirmed run on Linux.
+- **What was missing:** that S60 had prototyped the spacing (options `g14.x`/`g14.y`, named in S61's `looks.R`
+  header) and that the prototype was gone; the step depth's rule (0.15 of the gap to the nearest row of lines, or
+  the symbol + 1).
+- **What was wrong:** "the jog 1 unit below the symbols" holds only while the symbol's floor binds (27 units, not
+  26, at row spacing 3; dragon 72).
 - **ROI:** high.
 
-### What Session 61 Did
-**Deliverable:** Phase G14's second session DONE: the text size, `makePedigreeMatingLayout(textSize = 1)`, with room
-kept for the outermost labels and the moved ids' room by vis.js's own label depth; the REFACTOR made one check for
-each size setting.
-**Started:** 2026-11-20 14:55 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time):** "G14: text size
-(Recommended)" (orient); "Points at outer label ends (Recommended)" and "Keep their sizes (Recommended)" (pre-RED,
-with a picture page opened for him); "Yes, proceed to RED"; "Yes, proceed to GREEN"; "Yes, REFACTOR (Recommended)".
-No corrections.
-**Commits:** claim `21d4807`; RED `4026c5f`; GREEN 1 `8fac8aa` (code, help); GREEN 1b `e1e1794` (man/); GREEN 2
-`10d1a45` (NEWS, DIVERGENCE.md, contract, gap case); REFACTOR `68b7bc1`; close-out 1 `5ce69fd` (plans, roadmap,
-backlog, R140, dragons 64-68); close-out 2 (these notes, the receipt, the ledger). Pushed at close.
-**Measured:** vis.js's label box at 7-28 px, 1-2 lines, four shapes and three sizes (its rule); 132 label widths
-against Helvetica's (within 0.05 px); 252 drawings at 500 px (7 pedigrees, both styles, all seven marks, 18
-settings: no room, extreme points, every animal's points, a re-fit; the moved ids' room fixed or scaled; the marks'
-words following or not; symbol 0.6 and 1.6 with text 1.4); a deep pedigree whose bottom row sets the zoom (120
-drawings); the marks' words drawn red and counted on other ink (98 drawings); rhesus375's layout at text 1.4 (places
-and lines unchanged; 3 against 1,090 points); kinship2's and Pedixplorer's cex (results only); long names at the
-edges at text 1 (cut 4.1 and 6.3 px: a backlog item). The prototype: 10 tests, 277 expectations, and every DONE
-check before RED; RED 10 of 10 failing with 0 warnings; the browser test failing on 3 mutants. Final: suite on
-`68b7bc1` 78 files, 978 tests, 0 failed, 0 skipped, 0 warnings (also on `10d1a45`); lint 0; roxygen stable; covr 43
-of 43 new at GREEN and 41 of 41 new and changed after the REFACTOR, the package 98.46%; `R CMD check --as-cran` on
-`10d1a45` and `68b7bc1` R16's NOTE only; fidelity 600 of 600 on both; drift 91/21/0; the REFACTOR's 74 saved parts
-identical.
+### What Session 62 Did
+**Deliverable:** Phase G14's third session DONE: the column and row spacing,
+`makePedigreeMatingLayout(columnSpacing = 1, rowSpacing = 1)`; the REFACTOR made one whole-unit multiple for the
+three settings; the line width split off as G14's fourth session (Mark's pick).
+**Started:** 2026-11-20 18:13 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time):** "G14: spacing +
+line width (Recommended)" (orient); "Two: columns and rows (Recommended)", "No, the user widens them (Recommended)"
+and "Spacing now, line width next (Recommended)" (pre-RED, with a picture page opened for him); "Yes, proceed to
+RED"; "Yes, proceed to GREEN"; "Yes, REFACTOR (Recommended)". No corrections.
+**Commits:** claim `eadf96b`; RED `83cbc71`; GREEN 1 `ed76a4a` (code, help); GREEN 1b `685374a` (man/); GREEN 2
+`85c5ae9` (NEWS, DIVERGENCE.md, contract, gap case); REFACTOR `059bfbf`; close-out 1 `251e2ea` (plans, roadmap,
+backlog, R140, dragons 69-72); close-out 2 (these notes, the receipt, the ledger). Pushed at close.
+**Measured:** in R, every place, waypoint, edge and arc at 13 spacings against the default (7 pedigrees, smallPed,
+rhesus375, both styles: 234 layouts; places exact, rectilinear steps and rhesus375's links worked out anew); small
+spacings (centres 120 apart, the repair's warnings unchanged to 0.1); 182 drawings at 500 px (13 configs, 7
+pedigrees, both styles, all seven marks: room at the sides, id pairs overlapping, ids over ink); one setting
+against sizes 1/1.4; kinship2's distances on three page shapes; Pedixplorer's `lwd` in `ped_to_plotdf()`. The
+prototype: 8 tests, 245 expectations, and the fidelity check before RED; 4 mutants each failing 2-5 tests. Final:
+suite on `059bfbf` 79 files, 986 tests, 0 failed, 0 skipped, 0 warnings (also on `85c5ae9`; on the RED commit
+exactly the 8 new tests failing); lint 0; roxygen stable; covr 5 of 5 new at GREEN and 7 of 7 new and changed
+after the REFACTOR, the package 98.46%; `R CMD check --as-cran` on `85c5ae9` and `059bfbf` R16's NOTE only;
+fidelity 600 of 600 on both; drift 91/21/0, exit 0; the REFACTOR's 102 saved parts identical.
 **Self-assessment: 8/10.**
-+ Every pick and gate first time, from a picture page and measured counts; the prototype through every check before
-  RED and applied by script, byte-identical at each step; the browser test mutation-checked, which exposed a fixture
-  that measured nothing (a hand-typed `gen`); the REFACTOR proved on 74 saved parts; a defect found and recorded
-  with numbers, not fixed (long names at the edges).
-- Process slips, each caught before a commit but each costing time: three Monitors that could never end (`pgrep`
-  matching itself); the copies' `.Rprofile` (a check run lost); the hand-typed `gen` (a browser floor first set on a
-  drawing that did not test it); the Write tool's literal "e acute"; the REFACTOR's first draft splitting lines; a
-  stray `git init` in a scratch copy.
-**Learnings:** the gaps plan's dragons 64-68. No `CLAUDE.md` row (over budget).
-**Ledger:** `CHANGELOG.md` S61 entries (the session, the ruling, push 1).
++ Every pick and gate first time, from measured counts and a picture page; the scope question asked with a line-by-
+  line inventory, not a guess; the prototype applied by script and byte-identical at each step; the tests
+  mutation-checked; the REFACTOR proved on 102 saved parts; every expected value computed first (a rounded literal
+  that missed by 0.004 units was caught on the prototype, not in RED).
+- Process slips, each caught before a commit: an unguarded `rm` refused by the safety check (the gotcha was in the
+  handoff); GREEN 2's `DIVERGENCE.md` anchor matching two rows; a heredoc that broke a script's `"\n"`; a
+  parenthesis slip and two `par()` lints in the gap probe; RED's failing-test listing broken by its own quoting
+  (the counts were read); a coverage tally on moved line numbers.
+**Learnings:** the gaps plan's dragons 69-72. No `CLAUDE.md` row (over budget).
+**Ledger:** `CHANGELOG.md` S62 entries (the session, the ruling, push 1).
