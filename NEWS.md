@@ -230,6 +230,21 @@ code, `DIVERGENCE.md` in the repository says how and why.
   3 the lines and outlines reach the ids in 4 of 16 drawings (2 at 1).
   Anything but one positive number stops. nprcgenekeepr has no such
   argument. At 1 every layout and drawing is as before.
+* New: `makePedigreeMatingLayout(matings = )` draws two animals as mates
+  although they have no offspring together, as kinship2's relation code 4
+  and Pedixplorer's "Spouse" rows do: a data frame with the columns `sire`
+  and `dam`, one row per mating (other columns are ignored, so
+  `getMatings()`'s result can be passed with rows added). The two are drawn
+  side by side on one row, joined at a mating point with no line down,
+  whose hover reads "0 offspring"; before, both were left out of the
+  drawing when neither had parents or offspring (`isolatedIds`). An animal
+  with other matings is drawn at each, as for two matings with offspring. A
+  mate hint may place such a mating. A row naming an animal not in `ped`
+  (as after trimming) is left out with a message; a pair named twice, in
+  either column, is drawn once; any sexes are drawn as given. Anything but
+  `NULL` or a data frame with those columns stops, as do `NA` and the same
+  id as sire and dam. nprcgenekeepr has no such argument. Without it every
+  layout is as before.
 * New: the legend's four lines (the dashed line joining two places of the
   same animal, and the three twin lines) have no arrowheads, as the drawing's
   own lines have none, and each line's label sits on white. nprcgenekeepr's

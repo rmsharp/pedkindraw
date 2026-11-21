@@ -17,7 +17,8 @@ makePedigreeMatingLayout(
   textSize = 1,
   columnSpacing = 1,
   rowSpacing = 1,
-  lineWidth = 1
+  lineWidth = 1,
+  matings = NULL
 )
 }
 \arguments{
@@ -141,7 +142,8 @@ An order may put a sibling between twins; the twin line then crosses
 it. \code{mate} is a data frame with one row per mating to place and
 the columns \code{left}, \code{right} and \code{anchor}: \code{left}
 and \code{right} are a sire and a dam with offspring together in
-\code{ped}, in either column, and \code{left} is drawn left of
+\code{ped}, or a pair \code{matings} declares, in either column, and
+\code{left} is drawn left of
 \code{right} at their mating; \code{anchor} (\code{"left"},
 \code{"right"} or \code{"either"}) names the partner whose own place the
 offspring are drawn under, the other partner then drawn beside it as a
@@ -157,7 +159,8 @@ order that is not numeric, a number without a name, a name given twice
 or not in \code{ped}, and \code{NA}; and on a \code{mate} that is not a
 data frame or lacks a column, \code{NA}, the same id as \code{left} and
 \code{right}, an id not in \code{ped} (a sire or dam without a row of
-its own), a pair with no offspring together or named twice, an
+its own), a pair with no offspring together that \code{matings} does
+not declare, a pair named twice, an
 \code{anchor} other than those three, and an anchor on the partner of
 an earlier generation than its mate (the layout draws a mating on the
 row of its later partner). The returned \code{hints} are the hints the
@@ -282,6 +285,30 @@ and the zoom is the same at every width, so thicker lines leave less
 room between them: measured at 500 pixels, at 3 the lines and
 outlines reach the ids in 4 of 16 drawings (2 at 1). Stops unless it
 is one positive number.}
+
+\item{matings}{\code{NULL} (the default) or a data frame with the columns
+\code{sire} and \code{dam} (text or factor), one row per mating to draw
+whether or not the two have offspring together in \code{ped}, as
+kinship2's relation code 4 and Pedixplorer's \code{"Spouse"} rows
+declare them. Other columns are ignored, so the result of
+\code{\link{getMatings}} can be passed with rows added. The two are
+drawn side by side on the row of the partner of the later generation,
+joined at a mating point with no line down, its hover text
+\dQuote{0 offspring}, and neither is left out as an animal with no
+relative (\code{isolatedIds}). An animal with other matings is drawn at
+each, as it is when they all have offspring (kinship2 draws it once,
+between its mates), and a partner with parents of its own is drawn again
+beside its mate, as for a mating with offspring. A mate hint
+(\code{hints}) may place such a mating. A pair with offspring together
+changes nothing, and a pair named twice, in either column, is drawn
+once. The sexes are not checked: two males, an animal of unknown sex
+and a female in the \code{sire} column are drawn as given, as kinship2
+and Pedixplorer draw them. A row naming an animal without a row of its
+own in \code{ped}, as a trimming function leaves, is left out, with a
+message naming the pair. \code{NULL} or no rows give the layout of no
+declared mating. Stops, before the hints are checked, on anything but
+\code{NULL} or a data frame with both columns, on \code{NA}, and on the
+same id as sire and dam.}
 }
 \value{
 A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
@@ -339,8 +366,9 @@ marker's) is preserved when the edge is kept as-is; a marked mate edge
 that gets replaced by a right-angle projection currently falls back to
 the generic routing color and width. Also \code{isolatedIds}, a
 character vector of ids suppressed from \code{nodes}/\code{edges}
-because they have no known parent, are never a parent, and are not
-connected by \code{twinRelations}; it is \code{character(0)} when
+because they have no known parent, are never a parent, are not
+connected by \code{twinRelations}, and have no mating in
+\code{matings}; it is \code{character(0)} when
 nothing was suppressed. When every individual in \code{ped} is
 isolated, \code{nodes}/\code{edges} are both 0-row and
 \code{duplicateToReal} is empty. Also \code{conditions}, a data
@@ -388,7 +416,8 @@ to the mating unit and from the mating unit to each child.
 
 A simple two-real-parent mating unit (each parent has exactly one
 mate and both have unambiguous \code{"M"}/\code{"F"} sex codes) is
-drawn with the male parent to the left of the female parent. The final
+drawn with the male parent to the left of the female parent, and so is
+such a mating that \code{matings} declares with no offspring. The final
 horizontal positions come from a joint quadratic program that preserves
 each row's provisional left-to-right order, so this rule carries into
 the rendered layout. It cannot be turned off, unless a mate hint says
