@@ -31,8 +31,8 @@ corner of an evaluated animal's symbol; R137; S58: its fifth, a line and bars un
 its id moved below them; R138; S59: its sixth and last, a miscarriage drawn as a small triangle; R139). Phase G14
 under way (S60: the symbol size, `makePedigreeMatingLayout(symbolSize = )`, the first of its four sessions; R140;
 S61: the text size, `textSize`, the second; S62: the column and row spacing, `columnSpacing` and `rowSpacing`, the
-third, the line width split off by Mark's pick). Next: G14's line width (that plan's section 5.1), then G15-G17
-before 17g.
+third, the line width split off by Mark's pick; S63: the line width, `lineWidth`, the fourth and last). G14 DONE.
+Next: G15, its planning session first (that plan's section 5.1), then G16-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -679,6 +679,11 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   and the line width is a fourth session (Mark's picks); copied code changed, with a `DIVERGENCE.md` sentence.
   Commits `83cbc71` (RED) to `059bfbf` (REFACTOR, one whole-unit multiple for the three settings); fidelity 600 of
   600 with no set-aside. The line width follows (R140).
+- **G14, session 4 of 4, the line width (S63; R140):** `makePedigreeMatingLayout(lineWidth = 1)`, every line,
+  outline and mark that many times as wide, not rounded, the dashes growing with it, a genotyped outline the
+  width plus 3, the legend kept (Mark's picks); a stop on anything but one positive number; copied code changed,
+  with `DIVERGENCE.md` sentences and a new row. Commits `8f23975` (RED) to `4b31671` (REFACTOR, one outline rule
+  and one stroke-width line); fidelity 600 of 600 with no set-aside. G14 DONE.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
