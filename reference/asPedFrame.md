@@ -2,8 +2,8 @@
 
 Turns a kinship2 `pedigree` or `pedigreeList` object, or a Pedixplorer
 `Pedigree` object, back into the data frames the rest of the package
-takes: a pedigree with one row per animal, and a table of twin pairs;
-and its layout hints into the form
+takes: a pedigree with one row per animal, a table of twin pairs and a
+table of declared matings; and its layout hints into the form
 [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
 takes.
 
@@ -38,7 +38,7 @@ asPedFrame(x, ...)
 
 ## Value
 
-A list of three:
+A list of four:
 
 - `ped`:
 
@@ -59,6 +59,11 @@ A list of three:
   the object's layout hints as a list of `order` (numbers named by id)
   and `mate` (a data frame of `left`, `right` and `anchor`), each only
   when the object holds it, or `NULL` when it holds none.
+
+- `matings`:
+
+  a data frame with the character columns `sire` and `dam`, one row per
+  spouse pair the object holds, or `NULL` when it holds none.
 
 ## Details
 
@@ -82,9 +87,8 @@ column. kinship2 keeps no other column, so names, dates and the like are
 not in its objects to convert.
 
 Twin pairs come from the object's `relation` codes 1, 2 and 3 (MZ, DZ
-and UZ twins), whether kinship2 stored them as numbers or as text; code
-4, a spouse pair, is left out, since the package draws a mating from its
-offspring.
+and UZ twins), and declared matings from its code 4, a spouse pair,
+whether kinship2 stored them as numbers or as text.
 
 A `pedigreeList` (several families) is converted whole when no id
 appears in two families, with a `famid` column naming each animal's
@@ -126,12 +130,30 @@ columns, of its `mcols()`, as they are, less Pedixplorer's own (`error`,
 and each condition's and the availability's columns). `asPedFrame()`
 stops when a column name would appear twice (an extra column called
 `sire`, say), naming it. Twin pairs are the MZ, DZ and UZ twins of
-`rel(x)`; spouse pairs are left out.
+`rel(x)`, and declared matings its `"Spouse"` rows.
+
+**Declared matings.** Each spouse pair of either package becomes a row
+of `matings`, a data frame of `sire` and `dam` in the form
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)`(matings = )`
+and
+[`getMatings`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md)`(matings = )`
+take: two animals mated, whether or not they have offspring together.
+Every row the object holds is kept, in the object's order, a pair with
+offspring together (which the layout and
+[`getMatings()`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md)
+set aside) and a pair kinship2 holds twice (Pedixplorer refuses one)
+included, so a table converted to either package and back is the same.
+When one of the two is male and the other not, the male is the sire;
+otherwise, when one is female and the other not, the female is the dam;
+otherwise the two are in the order the object holds them, which for
+Pedixplorer is sorted by id.
 
 **Layout hints.** An object's layout hints come back in the form
 [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
-takes, so `makePedigreeMatingLayout(x$ped, hints = x$hints)` draws with
-them, once `x$ped` has its generations
+takes, so
+`makePedigreeMatingLayout(x$ped, hints = x$hints, matings = x$matings)`
+draws with them and with the object's matings, once `x$ped` has its
+generations
 ([`findGeneration()`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md)).
 kinship2 keeps them in the object's `hints` element, which a user sets,
 to
@@ -154,9 +176,10 @@ Both packages make their automatic hints for their own layouts, and some
 of the mate rows are ones
 [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
 refuses. `asPedFrame()` fixes them and one message names each change: a
-pair with no offspring together is left out (both packages ignore it); a
-pair named in an earlier row is left out, the first row kept (as
-kinship2 keeps it); and an anchor on the partner of the earlier
+pair with no offspring together that the object does not declare mated
+is left out (the layout draws a mating only from offspring or from
+`matings`); a pair named in an earlier row is left out, the first row
+kept (as kinship2 keeps it); and an anchor on the partner of the earlier
 generation
 ([`findGeneration()`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md))
 becomes `"either"`, its side kept, since the layout draws a mating on
@@ -189,11 +212,19 @@ if (requireNamespace("kinship2", quietly = TRUE)) {
   ## A layout hint: D drawn left of C.
   p$hints <- list(order = c(1, 2, 4, 3))
   asPedFrame(p)$hints
+  ## E and F, with no offspring, declared mates (relation code 4): F, the
+  ## male, is the sire.
+  p <- kinship2::pedigree(
+    id = c("A", "B", "C", "E", "F"),
+    dadid = c(NA, NA, "A", NA, NA),
+    momid = c(NA, NA, "B", NA, NA),
+    sex = c("male", "female", "male", "female", "male"),
+    relation = data.frame(id1 = "E", id2 = "F", code = 4)
+  )
+  asPedFrame(p)$matings
 }
-#> $order
-#> A B C D 
-#> 1 2 4 3 
-#> 
+#>   sire dam
+#> 1    F   E
 if (requireNamespace("Pedixplorer", quietly = TRUE)) {
   ## The same family as a Pedixplorer object, with a name for each animal.
   p <- Pedixplorer::Pedigree(data.frame(
@@ -219,6 +250,9 @@ if (requireNamespace("Pedixplorer", quietly = TRUE)) {
 #> 1   C   D DZ twin
 #> 
 #> $hints
+#> NULL
+#> 
+#> $matings
 #> NULL
 #> 
 ```

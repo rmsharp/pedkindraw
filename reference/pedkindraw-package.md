@@ -86,8 +86,8 @@ and
 
 [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
 converts a kinship2 `pedigree` or `pedigreeList` and a Pedixplorer
-`Pedigree` to the pedigree, twins table and layout hints the functions
-above take.
+`Pedigree` to the pedigree, twins table, layout hints and declared
+matings the functions above take.
 
 ## Getting started
 

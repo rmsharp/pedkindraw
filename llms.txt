@@ -233,8 +233,8 @@ pick an animal in the “Select by id” box, and save the picture with the
 
 [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
 converts a kinship2 `pedigree` or `pedigreeList` and a Pedixplorer
-`Pedigree` to the data frames above: the pedigree, its twins table and
-its layout hints.
+`Pedigree` to the data frames above: the pedigree, its twins table, its
+layout hints and its declared matings.
 
 ``` r
 

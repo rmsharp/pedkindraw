@@ -358,11 +358,14 @@ identical(makePedigreeMatingLayout(fam, hints = layout$hints), layout)
 
 [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
 converts a kinship2 `pedigree` or a Pedixplorer `Pedigree` to the data
-frame, the twins table and the hints that the layout takes. kinship2
-keeps hints in the object’s `hints` element: `order`, and `spouse`, a
-matrix with a row for each mating to place, holding the places (row
-numbers) of its left and right animal and the anchor, 1 for left, 2 for
-right and 0 for either. Here they are set by hand to show their form;
+frame, the twins table, the hints and the declared matings that the
+layout takes; the matings, from kinship2’s relation code 4 or
+Pedixplorer’s “Spouse” rows, are passed with `matings = x$matings`.
+kinship2 keeps hints in the object’s `hints` element: `order`, and
+`spouse`, a matrix with a row for each mating to place, holding the
+places (row numbers) of its left and right animal and the anchor, 1 for
+left, 2 for right and 0 for either. Here they are set by hand to show
+their form;
 [`kinship2::autohint()`](https://rdrr.io/pkg/kinship2/man/autohint.html)
 makes them for kinship2’s own layout, and gives these same hints for
 this pedigree. Add the generations before the layout. The chunks below

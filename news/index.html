@@ -105,6 +105,7 @@
 <div class="section level3">
 <h3 id="converters-0-0-1">Converters<a class="anchor" aria-label="anchor" href="#converters-0-0-1"></a></h3>
 <ul><li>New: <code><a href="../reference/asPedFrame.html">asPedFrame()</a></code> converts a kinship2 <code>pedigree</code> or <code>pedigreeList</code> and a Pedixplorer <code>Pedigree</code> to pedkindraw’s pedigree, twins table and layout hints. kinship2 and Pedixplorer are suggested, never required.</li>
+<li>New: <code><a href="../reference/asPedFrame.html">asPedFrame()</a></code> returns a fourth element, <code>matings</code>: the pairs a kinship2 object’s relation code 4 or a Pedixplorer object’s “Spouse” rows declare mated, as the data frame of <code>sire</code> and <code>dam</code> that <code>makePedigreeMatingLayout(matings = )</code> and <code>getMatings(matings = )</code> take, or <code>NULL</code> when the object has none. Each row is kept as the object holds it, a pair with offspring together or named twice included; the male is the sire, else the female is the dam, else the two are in the object’s order. A mate hint row naming such a pair is kept. Draw with <code>makePedigreeMatingLayout(x$ped, hints = x$hints, matings = x$matings)</code>. Before, spouse pairs were left out, and so were mate hint rows naming them, with a message.</li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -328,7 +328,8 @@ all(kU[upper.tri(kU)] == 0)
 [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md)
 converts a kinship2 `pedigree` or `pedigreeList`, or a Pedixplorer
 `Pedigree`, to a list: the pedigree as a data frame (`ped`), its twins
-table (`twinRelations`) and its layout hints (`hints`), each `NULL` when
+table (`twinRelations`), its layout hints (`hints`) and its declared
+matings (`matings`, from kinship2’s relation code 4), each `NULL` when
 the object has none. The chunks below run only when kinship2 is
 installed. They convert family 2 of kinship2’s `sample.ped`, 14 animals.
 kinship2 codes sex as 1 and 2 and an unknown parent as 0; the data frame
