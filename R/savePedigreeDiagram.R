@@ -1,0 +1,225 @@
+## Copyright(c) 2017-2026 R. Mark Sharp
+## This file is part of pedkindraw
+## pedkindraw's own code, not copied from nprcgenekeepr (pedkindraw S69, plan
+## Phase G16a, gaps A1 and A2 of docs/research/pedkindraw-gaps-2026-11-18.md;
+## rulings R142 and R143, docs/planning/picture-files-plan.md section 11).
+
+#' Save a pedigree diagram as a picture file
+#'
+#' Writes the widget \code{\link{drawPedigreeDiagram}} returns as a picture
+#' file, from a script: it is drawn in a browser by JavaScript, and nothing
+#' else in R can turn it into a file. A headless Chrome (through the
+#' \pkg{chromote} package) runs the very drawing the widget shows, a small
+#' recording layer writes every line, shape and word it draws, and the result
+#' is an SVG file: the same drawing, with every mark, colour and legend row,
+#' and each id as text that a reader can select, search and zoom to.
+#'
+#' Only \code{.svg} files are written by this version; \code{.pdf} and
+#' \code{.png} stop with a message.
+#'
+#' The widget on screen draws an id only when it would be 4 pixels tall, so a
+#' large pedigree shows no ids until a reader zooms in. A file has no zoom, so
+#' the function writes every id: it lowers that limit on a copy of the widget,
+#' and the widget \code{diagram} itself is not changed.
+#'
+#' The picture is the widget's size in the browser, 10 inches (960 pixels)
+#' wide, unless \code{width} or \code{height} say otherwise. The drawing and
+#' its legend are drawn for that page, and the SVG's own size is the page, so
+#' it prints at that size.
+#'
+#' The function starts its own headless Chrome for each call and closes it, and
+#' stops if the drawing is not done within 60 seconds
+#' (\code{options(pedkindraw.saveTimeout = seconds)} changes that).
+#'
+#' @param diagram the widget \code{\link{drawPedigreeDiagram}} returns.
+#' @param file the file to write, one file name. Its ending, in any case,
+#'   chooses the kind of file: \code{.svg}. The folder must exist.
+#' @param width,height the page, in inches: a positive number, or \code{NULL}
+#'   (the default) for the size the widget has in the browser, 10 inches wide.
+#'   The widget is drawn at \code{width * 96} by \code{height * 96} pixels, so
+#'   the drawing fills the page, with its legend at the right.
+#' @return \code{file}, invisibly.
+#' @section Requirements:
+#'   The \pkg{chromote} package, and Google Chrome or Chromium on the computer
+#'   (set \code{CHROMOTE_CHROME} to its path if \pkg{chromote} cannot find
+#'   it). Both are checked before anything is drawn.
+#' @seealso \code{\link{drawPedigreeDiagram}} for the widget, and
+#'   \code{\link{makePedigreeMatingLayout}} for what it draws.
+#' @examples
+#' if (identical(Sys.getenv("NOT_CRAN"), "true") &&
+#'       requireNamespace("chromote", quietly = TRUE) &&
+#'       !is.null(suppressMessages(chromote::find_chrome()))) {
+#'   ped <- data.frame(
+#'     id = c("A", "B", "C", "D"),
+#'     sire = c(NA, NA, "A", "A"),
+#'     dam = c(NA, NA, "B", "B"),
+#'     sex = c("M", "F", "F", "M"),
+#'     status = c("DECEASED", "ALIVE", "ALIVE", "ALIVE"),
+#'     affected = c(FALSE, FALSE, TRUE, FALSE),
+#'     stringsAsFactors = FALSE
+#'   )
+#'   ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
+#'   diagram <- drawPedigreeDiagram(makePedigreeMatingLayout(ped))
+#'   file <- tempfile(fileext = ".svg")
+#'   savePedigreeDiagram(diagram, file, width = 7, height = 5)
+#'   file.exists(file)
+#'   unlink(file)
+#' }
+#' @export
+savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
+  if (!inherits(diagram, "visNetwork")) {
+    stop("savePedigreeDiagram() requires 'diagram' to be the widget ",
+         "drawPedigreeDiagram() returns.")
+  }
+  if (!is.character(file) || length(file) != 1L || is.na(file)) {
+    stop("savePedigreeDiagram() requires 'file' to be one file name, as a ",
+         "character string.")
+  }
+  ending <- tolower(sub(".*\\.([^.]*)$", "\\1", basename(file)))
+  if (!ending %in% c("svg", "pdf", "png")) {
+    stop("savePedigreeDiagram() requires 'file' to end in .svg, .pdf or ",
+         ".png.")
+  }
+  if (!identical(ending, "svg")) {
+    stop("savePedigreeDiagram(): writing .", ending, " files is not ",
+         "available yet; use a file name ending in .svg.")
+  }
+  for (argument in c("width", "height")) {
+    inches <- get(argument)
+    if (!is.null(inches) && !(is.numeric(inches) && length(inches) == 1L &&
+                                is.finite(inches) && inches > 0.0)) {
+      stop("savePedigreeDiagram() requires '", argument, "' to be NULL or ",
+           "one positive number of inches.")
+    }
+  }
+  if (!dir.exists(dirname(file))) {
+    stop("savePedigreeDiagram(): the folder of 'file' does not exist.")
+  }
+  if (!requireNamespace("chromote", quietly = TRUE)) {
+    stop("savePedigreeDiagram() needs the 'chromote' package; install it ",
+         "with install.packages(\"chromote\").")
+  }
+  if (is.null(suppressMessages(chromote::find_chrome()))) {
+    stop("savePedigreeDiagram() could not find Google Chrome or Chromium; ",
+         "install one, or set CHROMOTE_CHROME to its path.")
+  }
+  # A copy: the widget is a list, so the caller's is not changed.
+  copy <- visNetwork::visNodes(
+    diagram, scaling = list(label = list(drawThreshold = 0.0))
+  )
+  copy$width <- if (is.null(width)) 960.0 else round(width * 96.0)
+  if (!is.null(height)) copy$height <- sprintf("%dpx", round(height * 96.0))
+  recorded <- .recordDiagramSvg(copy, widthIn = width, heightIn = height)
+  writeLines(recorded$svg, file, useBytes = TRUE)
+  invisible(file)
+}
+
+#' Record what a widget draws, in headless Chrome, as SVG
+#'
+#' Saves \code{diagram} to a folder of its own, opens it in a headless Chrome
+#' of its own with the recording layer (\code{inst/js/recordCanvas.js}) in
+#' place before the widget runs, waits until the drawing is done, and reads the
+#' SVG the layer composes. The browser and the folder are gone on every way
+#' out.
+#'
+#' @param diagram a \code{visNetwork} widget, as it is to be drawn.
+#' @param timeout the seconds to wait, for the whole call; the option
+#'   \code{pedkindraw.saveTimeout}, or 60.
+#' @param scaleFactor the browser's device scale factor; the function always
+#'   uses 1, a test uses 2.
+#' @param widthIn,heightIn the page in inches for the SVG's own size, or
+#'   \code{NULL} for the drawing's box over 96 pixels per inch.
+#' @return A list: \code{svg}, the SVG text, and \code{x}, \code{y},
+#'   \code{w}, \code{h}, the box of the widget's canvases, in CSS pixels.
+#' @noRd
+.recordDiagramSvg <- function(diagram,
+                              timeout = getOption("pedkindraw.saveTimeout",
+                                                  60.0),
+                              scaleFactor = 1.0, widthIn = NULL,
+                              heightIn = NULL) {
+  deadline <- Sys.time() + timeout
+  stopTooSlow <- function() {
+    stop("savePedigreeDiagram() did not finish drawing within ",
+         format(timeout), " seconds.", call. = FALSE)
+  }
+  secondsLeft <- function() {
+    as.numeric(difftime(deadline, Sys.time(), units = "secs"))
+  }
+  folder <- tempfile("pedkindraw-save-")
+  dir.create(folder)
+  on.exit(unlink(folder, recursive = TRUE), add = TRUE)
+  page <- file.path(folder, "diagram.html")
+  htmlwidgets::saveWidget(diagram, page, selfcontained = FALSE)
+  layer <- paste(readLines(system.file("js", "recordCanvas.js",
+                                       package = "pedkindraw"),
+                           warn = FALSE), collapse = "\n")
+
+  chrome <- chromote::Chromote$new()
+  # The browser closes first, then the folder it reads goes.
+  on.exit(chrome$close(), add = TRUE, after = FALSE)
+  # chromote's first launch can take longer than its 10 s default allows on a
+  # slow machine (a fresh Chrome on a CI runner).
+  chrome$default_timeout <- max(chrome$default_timeout, 60.0)
+  # A window with room round the widget.
+  windowWidth <- max(1200L, as.integer(.widgetPixels(diagram$width, 960.0)) +
+                       200L)
+  windowHeight <- max(1300L, as.integer(.widgetPixels(diagram$height, 500.0)) +
+                        200L)
+  session <- chromote::ChromoteSession$new(parent = chrome,
+                                           width = windowWidth,
+                                           height = windowHeight)
+  session$Page$enable()
+  session$Emulation$setDeviceMetricsOverride(
+    width = windowWidth, height = windowHeight,
+    deviceScaleFactor = scaleFactor, mobile = FALSE
+  )
+  session$Page$addScriptToEvaluateOnNewDocument(source = layer)
+  session$Page$navigate(paste0("file://", page))
+
+  # Drawn: both canvases have drawn, no canvas call for 300 ms, and every
+  # legend picture has loaded. A page that never returns from its JavaScript
+  # never answers, and runs into the deadline.
+  repeat {
+    left <- secondsLeft()
+    if (left <= 0.0) stopTooSlow()
+    state <- tryCatch(
+      session$Runtime$evaluate("window.__ready ? window.__ready() : '0 0 0'",
+                               returnByValue = TRUE,
+                               timeout_ = left)$result$value,
+      error = function(e) NULL
+    )
+    if (is.character(state)) {
+      ready <- as.numeric(strsplit(state, " ", fixed = TRUE)[[1L]])
+      if (ready[[1L]] >= 2L && ready[[2L]] > 300.0 && ready[[3L]] == 1L) break
+    }
+    Sys.sleep(0.05)
+  }
+
+  asNumber <- function(inches) {
+    if (is.null(inches)) "null" else format(inches, digits = 15L)
+  }
+  answer <- tryCatch(
+    session$Runtime$evaluate(
+      sprintf("window.__svg(%s, %s)", asNumber(widthIn), asNumber(heightIn)),
+      returnByValue = TRUE, timeout_ = max(secondsLeft(), 1.0)
+    )$result$value,
+    error = function(e) stopTooSlow()
+  )
+  firstLine <- regexpr("\n", answer, fixed = TRUE)
+  box <- as.numeric(strsplit(substr(answer, 1L, firstLine - 1L), " ",
+                             fixed = TRUE)[[1L]])
+  list(svg = substr(answer, firstLine + 1L, nchar(answer)),
+       x = box[[1L]], y = box[[2L]], w = box[[3L]], h = box[[4L]])
+}
+
+#' A widget's width or height in pixels
+#'
+#' @param size an htmlwidget's \code{width} or \code{height}: \code{NULL}, a
+#'   number of pixels, or text such as \code{"945px"}.
+#' @param default the pixels when \code{size} is not one of those.
+#' @return A number.
+#' @noRd
+.widgetPixels <- function(size, default) {
+  pixels <- suppressWarnings(as.numeric(sub("px$", "", size)))
+  if (length(pixels) == 1L && !is.na(pixels)) pixels else default
+}
