@@ -5,7 +5,9 @@
 ## trip from a pedigree data frame through kinship2::pedigree() and back
 ## through asPedFrame(), on the fixture pedigrees and on seeded random ones
 ## (run only where kinship2 is installed, R7, R28). Plan Phase 15c (R62,
-## pedkindraw S24): what it should give gains hints, NULL.
+## pedkindraw S24): what it should give gains hints, NULL. Plan Phase G15c
+## (R141, pedkindraw S67): and matings, NULL (none of these objects holds a
+## spouse pair).
 
 ## kinship2's sex words for the package's sex codes, and the code each comes
 ## back as (kinship2 has no hermaphrodite).
@@ -136,7 +138,8 @@ asPedFrameTrip <- function(f, cond, withStatus, twins = NULL, seed = 1L) {
                             code = twins$code, stringsAsFactors = FALSE)
   }
   list(got = got,
-       want = list(ped = want, twinRelations = wantTwins, hints = NULL))
+       want = list(ped = want, twinRelations = wantTwins, hints = NULL,
+                   matings = NULL))
 }
 
 ## A seeded random pedigree (checkPedigreeClean() in helper-checkPedigree.R)

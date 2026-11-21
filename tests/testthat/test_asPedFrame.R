@@ -7,7 +7,10 @@
 ## skip without kinship2 (R7, R28); those on hand-built objects do not, since
 ## the methods read the object without kinship2 (R55). Plan Phase 15c (R62,
 ## pedkindraw S24): the tests comparing the whole returned list expect its
-## third element, hints, NULL (none of these objects holds hints).
+## third element, hints, NULL (none of these objects holds hints). Plan
+## Phase G15c (R141, pedkindraw S67): and its fourth, matings, NULL (none
+## holds a spouse pair); relation code 4's spouse pairs come back in
+## matings (test_asPedFrameMatings.R).
 
 ## Seven animals with founders listed between their offspring: an unknown
 ## parent's index 0 comes before known indexes in findex and mindex.
@@ -44,7 +47,7 @@ test_that("a hand-built pedigree list converts without calling kinship2", {
     list(ped = data.frame(id = c("A", "B", "C"), sire = c(NA, NA, "A"),
                           dam = c(NA, NA, "B"), sex = c("M", "F", "U"),
                           stringsAsFactors = FALSE),
-         twinRelations = NULL, hints = NULL)
+         twinRelations = NULL, hints = NULL, matings = NULL)
   )
 })
 
@@ -67,7 +70,7 @@ test_that("each parent is read by its own index (unknown parents first)", {
     list(ped = data.frame(id = s$id, sire = s$sire, dam = s$dam,
                           sex = c("M", "F", "M", "F", "F", "M", "M"),
                           stringsAsFactors = FALSE),
-         twinRelations = NULL, hints = NULL)
+         twinRelations = NULL, hints = NULL, matings = NULL)
   )
 })
 
@@ -153,7 +156,8 @@ test_that("status: 1 DECEASED, 0 ALIVE; no status, no column", {
   expect_identical(names(asPedFrame(p)$ped), c("id", "sire", "dam", "sex"))
 })
 
-test_that("twins from relation codes 1-3, numbers or text; spouses left out", {
+test_that("twins from relation codes 1-3, numbers or text; spouses in
+           matings", {
   skip_if_not_installed("kinship2")
   id <- c("P1", "P2", "T1", "T2", "T3", "T4", "T5", "T6")
   sire <- c(NA, NA, rep("P1", 6L))
@@ -163,16 +167,21 @@ test_that("twins from relation codes 1-3, numbers or text; spouses left out", {
   want <- data.frame(id1 = c("T1", "T3", "T5"), id2 = c("T2", "T4", "T6"),
                      code = c("MZ twin", "DZ twin", "UZ twin"),
                      stringsAsFactors = FALSE)
+  spouses <- data.frame(sire = "P1", dam = "P2", stringsAsFactors = FALSE)
   rel <- data.frame(id1 = c("T1", "T3", "P1", "T5"),
                     id2 = c("T2", "T4", "P2", "T6"), code = c(1, 2, 4, 3))
   p <- kinship2::pedigree(id, sire, dam, sex, relation = rel)
   expect_identical(asPedFrame(p)$twinRelations, want)
+  expect_identical(asPedFrame(p)$matings, spouses)
   rel$code <- c("MZ twin", "DZ twin", "spouse", "UZ twin")
   p <- kinship2::pedigree(id, sire, dam, sex, relation = rel)
   expect_identical(asPedFrame(p)$twinRelations, want)
+  expect_identical(asPedFrame(p)$matings, spouses)
   p <- kinship2::pedigree(id, sire, dam, sex, relation = rel[3L, ])
   expect_null(asPedFrame(p)$twinRelations)
+  expect_identical(asPedFrame(p)$matings, spouses)
   expect_null(asPedFrame(kinship2::pedigree(id, sire, dam, sex))$twinRelations)
+  expect_null(asPedFrame(kinship2::pedigree(id, sire, dam, sex))$matings)
 })
 
 test_that("a pedigreeList converts whole, with famid, in the object's order", {
@@ -201,7 +210,7 @@ test_that("a pedigreeList converts whole, with famid, in the object's order", {
          twinRelations = data.frame(id1 = c("13", "23"), id2 = c("14", "24"),
                                     code = c("MZ twin", "DZ twin"),
                                     stringsAsFactors = FALSE),
-         hints = NULL)
+         hints = NULL, matings = NULL)
   )
 })
 

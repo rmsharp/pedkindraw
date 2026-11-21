@@ -13,7 +13,10 @@
 ## read as a pedigree's. Every expected value was computed with a scratch
 ## prototype before this file was written (Learning 18). Helpers:
 ## helper-asPedFrame.R (kinship2 objects, random cases),
-## helper-layoutHints.R (the random family pedigrees, the rows drawn).
+## helper-layoutHints.R (the random family pedigrees, the rows drawn). Plan
+## Phase G15c (R141, pedkindraw S67): asPedFrame() returns a fourth
+## element, matings; a mate hint row naming a pair it declares is kept
+## (test_asPedFrameMatings.R).
 
 ## A kinship2 pedigree object built by hand, as kinship2 holds one (each
 ## parent by its place, 0 when unknown; sex a factor), with hints when
@@ -124,7 +127,8 @@ test_that("an object without hints, or hints that ask for nothing, gives
                  list(spouse = matrix(0L, 0L, 3L)), list(foo = 1),
                  list(order = rep(NA_real_, 8L)))) {
     x <- asPedFrame(asPedFrameHintsM1(h))
-    expect_identical(names(x), c("ped", "twinRelations", "hints"))
+    expect_identical(names(x), c("ped", "twinRelations", "hints",
+                                 "matings"))
     expect_null(x$hints)
   }
 })

@@ -7,7 +7,8 @@
 ## fixture pedigrees and on seeded random ones (run only where Pedixplorer is
 ## installed, R7). It uses helper-asPedFrame.R's fixtures, preparation, sex
 ## codes and random cases. Plan Phase 15c (R62, pedkindraw S24): what it
-## should give gains hints, NULL.
+## should give gains hints, NULL. Plan Phase G15c (R141, pedkindraw S67):
+## and matings, NULL (none of these objects holds a spouse pair).
 
 ## The rhesus fixture's twin pairs that Pedixplorer accepts: both twins with
 ## known parents (Pedixplorer refuses a twin pair with unknown parents).
@@ -75,5 +76,6 @@ asPedFramePxTrip <- function(f, cond, withStatus, family, twins = NULL,
                             code = twins$code, stringsAsFactors = FALSE)
   }
   list(got = got,
-       want = list(ped = want, twinRelations = wantTwins, hints = NULL))
+       want = list(ped = want, twinRelations = wantTwins, hints = NULL,
+                   matings = NULL))
 }

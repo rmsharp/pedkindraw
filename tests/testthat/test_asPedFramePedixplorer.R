@@ -7,7 +7,9 @@
 ## Pedixplorer (R7); the refusal of a non-S4 Pedigree and the stop without
 ## Pedixplorer do not. Plan Phase 15c (R62, pedkindraw S24): the tests
 ## comparing the whole returned list expect its third element, hints, NULL
-## (none of these objects holds hints).
+## (none of these objects holds hints). Plan Phase G15c (R141, pedkindraw
+## S67): and its fourth, matings, NULL (none holds a spouse pair); the
+## Spouse rows come back in matings (test_asPedFrameMatings.R).
 
 ## Five animals with founders listed after their offspring, and a
 ## hermaphrodite, which Pedixplorer holds as unknown.
@@ -51,7 +53,7 @@ test_that("ids, parents and sex in the object's order; nothing else", {
                           dam = c("B", NA, NA, "D", NA),
                           sex = c("M", "M", "F", "U", "F"),
                           stringsAsFactors = FALSE),
-         twinRelations = NULL, hints = NULL)
+         twinRelations = NULL, hints = NULL, matings = NULL)
   )
 })
 
@@ -127,11 +129,11 @@ test_that("families: ids as Pedixplorer holds them, with famid", {
                                     id2 = c("f1_D", "f2_D"),
                                     code = c("MZ twin", "UZ twin"),
                                     stringsAsFactors = FALSE),
-         hints = NULL)
+         hints = NULL, matings = NULL)
   )
 })
 
-test_that("twins from rel(x), codes MZ, DZ and UZ; spouses left out", {
+test_that("twins from rel(x), codes MZ, DZ and UZ; spouses in matings", {
   skip_if_not_installed("Pedixplorer")
   ## An animal is in one twin set only: Pedixplorer refuses one in two sets
   ## with different codes.
@@ -147,9 +149,14 @@ test_that("twins from rel(x), codes MZ, DZ and UZ; spouses left out", {
                code = c("MZ twin", "DZ twin", "UZ twin"),
                stringsAsFactors = FALSE)
   )
+  pair <- data.frame(sire = "A", dam = "B", stringsAsFactors = FALSE)
+  expect_identical(
+    asPedFrame(Pedixplorer::Pedigree(d, rel_df = rel))$matings, pair
+  )
   spouses <- Pedixplorer::Pedigree(d, rel_df = rel[3L, ])
   expect_identical(as.character(Pedixplorer::rel(spouses, "code")), "Spouse")
   expect_null(asPedFrame(spouses)$twinRelations)
+  expect_identical(asPedFrame(spouses)$matings, pair)
 })
 
 test_that("Pedixplorer's fields are kept when not all its filled-in value", {
