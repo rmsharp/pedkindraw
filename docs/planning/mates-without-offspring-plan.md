@@ -4,7 +4,8 @@
 "Planning Sessions"; failure mode #18: this session writes no package code). **Governs:** Phase G15 of
 `docs/planning/gaps-and-shared-code-plan.md` (section 5.1, G15's row), gap B1 of
 `docs/research/pedkindraw-gaps-2026-11-18.md` (section 4, B1). **Ruling made here:** R141 (Mark's pick of the input,
-`docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; G15a next.
+`docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; G15a DONE
+(pedkindraw S65); G15b next.
 
 **Versions:** kinship2 1.9.6.2 and Pedixplorer 1.8.0 from this project's renv library; pedkindraw at `d58a52f`
 (its `R/` as at `4b31671`); nprcgenekeepr at `3e06730c5`; R 4.6.2; this Mac (Apple M2 Max). Every count below was
@@ -138,7 +139,8 @@ Pedixplorer draw `crossGen`), the mating point between them, with no line down w
 together; neither is left out as isolated; a hint may place it (R70's check accepts it); the layout's returned hints
 include it. A row naming a pair with offspring together changes nothing (both packages accept `redundant`).
 Stops (decided now, as both packages and R70 stop): not a data frame; a column `sire` or `dam` missing; `NA`; an id
-not in `ped`; the same id as sire and dam. **G15a's picker decides:** a pair named twice (Pedixplorer stops, kinship2
+not in `ped` (S65: Mark picked leaving such a row out, with a message, in its place; dragon 10); the same id as
+sire and dam. **G15a's picker decides:** a pair named twice (Pedixplorer stops, kinship2
 accepts); the sexes (both packages accept two males and an unknown sex; kinship2's spouse hint refuses them;
 pedkindraw's offspring matings are not sex-checked today); the anchor of an animal with several matings (section 4,
 item 3); the hover's words; rows naming animals a trimming function removed (stop, as hints do, or leave them out
@@ -242,6 +244,18 @@ each returns (section 2: both fail on `onlyTwo` and `twoChildless`).
   units).
 - **Session boundary:** close out when DONE. The 5-file cap splits GREEN into commits (`R/`, then `man/` and
   NEWS, then `DIVERGENCE.md`, contract, vignette, gap case).
+- **DONE (pedkindraw S65;
+  RED `d8a8060`, GREEN `22a6f7b`, `46dce77`, `eaddc77`, REFACTOR `5a35482`).** Mark's picks, each first time
+  (R141): an animal with several matings drawn at each (today's rule, which pedkindraw already applies to two
+  matings with offspring; dragon 9); a row naming an animal not in `ped` left out with a message; a pair named
+  twice, in either column, drawn once; any sexes; the mating point drawn as every other, its hover "0 offspring".
+  Measured first: pictures of 13 shapes in both styles under both anchor rules; every unresolved line the matings
+  add on 100 seeds a dashed repeat-node arc (139 of 139); trimming leaves rows naming removed animals in 99 of 100
+  random pedigrees. `tests/testthat/test_matesNoOffspring.R`: 14 tests, 960 expectations, incl. 100 random
+  pedigrees of at most 300 animals and a headless-Chrome test; `.checkMatings()` in `R/matings.R`; full suite 81
+  files, 1,008 tests, 0 failed, 0 warnings; 600 of 600; `R CMD check --as-cran` R16's note only. Drawing an
+  animal once between all its mates, as kinship2 does, is a backlog item (`methodology/BACKLOG.md`, "Waiting on
+  Mark").
 
 ### G15b -- `getMatings()` lists declared matings (one session)
 
@@ -299,6 +313,17 @@ each returns (section 2: both fail on `onlyTwo` and `twoChildless`).
 8. **A repeat node beside a declared mate with parents** is today's rule for a mating with offspring (S678), so it
    is not a G15 change; kinship2 draws such a pair without one (`C#D`, `C=J`). Say so in the help rather than change
    it.
+9. **pedkindraw already draws an animal with two matings twice** (S65): a founder sire with two dams, both matings
+   with offspring, is drawn `[A B A' G]` today, where kinship2 draws `B A G`; so item 3 of section 4 was not new to
+   G15, and the hub rule would have fixed only an animal whose matings all lack offspring. Measure today's drawing
+   of the nearest existing shape before offering a rule as a choice.
+10. **The layout cannot tell a removed animal from a typo** (S65): an id not in `ped` is the same input either way,
+    so section 5's stop on an id not in `ped` and the picker's "rows naming removed animals" were one decision;
+    trimming leaves such rows in 99 of 100 random pedigrees (190 of 200 rows after `trimPedigree()` to 3 animals).
+11. **A pair in either role needs an unordered key** (S65): the prototype keyed a declared pair `sire`, `dam` in
+    order, so a row with the two swapped, or a swapped row naming a pair with offspring, would make a second unit;
+    `.layoutHintPairKey()` is the package's unordered key (`.checkMatings()`, the mate-hint check, and
+    `.buildMatingUnitForest()` since REFACTOR `5a35482`).
 
 ---
 

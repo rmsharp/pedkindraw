@@ -32,8 +32,8 @@ its id moved below them; R138; S59: its sixth and last, a miscarriage drawn as a
 under way (S60: the symbol size, `makePedigreeMatingLayout(symbolSize = )`, the first of its four sessions; R140;
 S61: the text size, `textSize`, the second; S62: the column and row spacing, `columnSpacing` and `rowSpacing`, the
 third, the line width split off by Mark's pick; S63: the line width, `lineWidth`, the fourth and last). G14 DONE.
-G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`). Next: G15a, the layout (that
-plan's section 7), then G15b-G15c and G16-G17 before 17g.
+G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`); G15a DONE (S65, the layout).
+Next: G15b, `getMatings()` (that plan's section 7), then G15c and G16-G17 before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -689,6 +689,11 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   in a `matings` table of `sire` and `dam` (Mark's pick), measured on kinship2, Pedixplorer and a scratch
   prototype (200 of 200 declared matings drawn, 600 of 600 fidelity); three build sessions, G15a the layout, G15b
   `getMatings()`, G15c the converters. Commit `445302f`; no package code.
+- **G15a (S65; R141):** `makePedigreeMatingLayout(matings = )` draws two animals declared mated with no offspring
+  together, side by side, joined at a mating point with no line down; Mark's five picks (each animal drawn at each
+  mating, rows naming missing animals left out with a message, a pair twice drawn once, any sexes, the point
+  hovered "0 offspring"). Commits `d8a8060` (RED) to `5a35482` (REFACTOR, one unordered pair key); 14 tests,
+  fidelity 600 of 600 with no set-aside, `R CMD check --as-cran` R16's note only.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
