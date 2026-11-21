@@ -639,10 +639,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   \code{hints$mate} row anchors it on a named partner takes that partner
 #'   as its anchor (pedkindraw S23).
 #' @param matings \code{NULL} (default) or the checked declared matings of
-#'   \code{\link{makePedigreeMatingLayout}} (\code{.checkMatings()}): a pair
-#'   with no offspring together, in either role, gets a mating unit of its
-#'   own with no child, numbered after the units built from offspring
-#'   (pedkindraw S65, plan Phase G15a).
+#'   \code{\link{makePedigreeMatingLayout}} (\code{.checkMatings()}, which
+#'   sets aside a pair with offspring together, in either role, since plan
+#'   Phase G15b): each pair gets a mating unit of its own with no child,
+#'   numbered after the units built from offspring (pedkindraw S65, plan
+#'   Phase G15a).
 #' @return A list with three data frames: \code{matingUnits} (\code{id},
 #'   \code{sire}, \code{dam}, \code{anchor}, \code{nonAnchor} --
 #'   \code{anchor}/\code{nonAnchor} both \code{NA} when neither parent has
@@ -686,15 +687,13 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   pairKey <- rep(NA_character_, length(ids))
   pairKey[hasBoth] <- paste(sire[hasBoth], dam[hasBoth], sep = "\u0001")
   uniqueKeys <- unique(pairKey[hasBoth])
-  # pedkindraw Phase G15a (R141): a mating declared in 'matings' whose pair
-  # has no offspring together, in either role, is a unit of its own, after
-  # the units built from offspring, so that their numbers are unchanged.
-  # .layoutHintPairKey() (R/layoutHints.R) names a pair in either role.
+  # pedkindraw Phase G15a (R141): each mating declared in 'matings' is a
+  # unit of its own, after the units built from offspring, so that their
+  # numbers are unchanged. .checkMatings() (R/matings.R) has set aside a
+  # pair with offspring together, in either role (plan Phase G15b).
   declaredSire <- as.character(matings$sire)
   declaredDam <- as.character(matings$dam)
-  declared <- !.layoutHintPairKey(declaredSire, declaredDam) %in%
-    .layoutHintPairKey(sire[hasBoth], dam[hasBoth])
-  nUnits <- length(uniqueKeys) + sum(declared)
+  nUnits <- length(uniqueKeys) + length(declaredSire)
 
   if (nUnits == 0L) {
     matingUnits <- data.frame(id = character(), sire = character(),
@@ -706,8 +705,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
                               stringsAsFactors = FALSE)
   } else {
     firstRow <- match(uniqueKeys, pairKey)
-    unitSire <- c(sire[firstRow], declaredSire[declared])
-    unitDam <- c(dam[firstRow], declaredDam[declared])
+    unitSire <- c(sire[firstRow], declaredSire)
+    unitDam <- c(dam[firstRow], declaredDam)
     unionIds <- sprintf("__union_%d", seq_len(nUnits))
 
     mateCountTab <- table(c(unitSire, unitDam))
