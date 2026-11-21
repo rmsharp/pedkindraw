@@ -334,6 +334,27 @@ cases$matesNoOffspring <- function(case = "matesNoOffspring") {
   probe(case, "pedkindraw getMatings(ped, getMatings(ped)) unchanged",
         identical(pedkindraw::getMatings(ped, pedkindraw::getMatings(ped)),
                   pedkindraw::getMatings(ped)))
+  ## Plan Phase G15c (pedkindraw S67, R141): asPedFrame() returns each
+  ## object's declared pair as matings, and the layout draws it.
+  probe(case, "pedkindraw asPedFrame(kinship2 object)$matings (G15c)", {
+    m <- pedkindraw::asPedFrame(k2Pedigree(
+      ped, relation = data.frame(id1 = "E", id2 = "F", code = 4L)))$matings
+    paste(m$sire, m$dam)
+  })
+  probe(case, "pedkindraw asPedFrame(Pedixplorer object)$matings (G15c)", {
+    m <- pedkindraw::asPedFrame(Pedixplorer::Pedigree(
+      pxFrame(ped), rel_df = data.frame(id1 = "E", id2 = "F",
+                                        code = "Spouse")))$matings
+    paste(m$sire, m$dam)
+  })
+  probe(case, "pedkindraw converted matings drawn, E, F joined (G15c)", {
+    x <- pedkindraw::asPedFrame(k2Pedigree(
+      ped, relation = data.frame(id1 = "E", id2 = "F", code = 4L)))
+    nodes <- pedkindraw::makePedigreeMatingLayout(
+      withGen(x$ped), matings = x$matings)$nodes
+    dot <- nodes$id[which(nodes$title == "0 offspring")]
+    length(unique(nodes$y[match(c("E", dot, "F"), nodes$id)])) == 1L
+  })
 }
 
 ## B2. An affected status recorded as unknown.
