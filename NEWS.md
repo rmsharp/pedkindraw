@@ -368,3 +368,14 @@ code, `DIVERGENCE.md` in the repository says how and why.
 * New: `asPedFrame()` converts a kinship2 `pedigree` or `pedigreeList` and a
   Pedixplorer `Pedigree` to pedkindraw's pedigree, twins table and layout
   hints. kinship2 and Pedixplorer are suggested, never required.
+* New: `asPedFrame()` returns a fourth element, `matings`: the pairs a
+  kinship2 object's relation code 4 or a Pedixplorer object's "Spouse" rows
+  declare mated, as the data frame of `sire` and `dam` that
+  `makePedigreeMatingLayout(matings = )` and `getMatings(matings = )` take,
+  or `NULL` when the object has none. Each row is kept as the object holds
+  it, a pair with offspring together or named twice included; the male is
+  the sire, else the female is the dam, else the two are in the object's
+  order. A mate hint row naming such a pair is kept. Draw with
+  `makePedigreeMatingLayout(x$ped, hints = x$hints, matings = x$matings)`.
+  Before, spouse pairs were left out, and so were mate hint rows naming
+  them, with a message.

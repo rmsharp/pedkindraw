@@ -58,8 +58,8 @@ in steps also exported: \code{\link[=bitSize]{bitSize()}}, \code{\link[=findUnav
 \section{Converting kinship2 and Pedixplorer objects}{
 
 \code{\link[=asPedFrame]{asPedFrame()}} converts a kinship2 \code{pedigree} or \code{pedigreeList} and a
-Pedixplorer \code{Pedigree} to the pedigree, twins table and layout hints the
-functions above take.
+Pedixplorer \code{Pedigree} to the pedigree, twins table, layout hints and
+declared matings the functions above take.
 }
 
 \section{Getting started}{

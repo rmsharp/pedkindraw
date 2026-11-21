@@ -43,8 +43,8 @@
 #'
 #' @section Converting kinship2 and Pedixplorer objects:
 #' [asPedFrame()] converts a kinship2 `pedigree` or `pedigreeList` and a
-#' Pedixplorer `Pedigree` to the pedigree, twins table and layout hints the
-#' functions above take.
+#' Pedixplorer `Pedigree` to the pedigree, twins table, layout hints and
+#' declared matings the functions above take.
 #'
 #' @section Getting started:
 #' `vignette("pedkindraw", package = "pedkindraw")` takes the 375-animal
