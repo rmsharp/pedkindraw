@@ -35,7 +35,8 @@ issues).*
       third, the column and row spacing, DONE in S62, R140, the line width split off as a fourth session by
       Mark's pick; its fourth and last, the line width, DONE in S63, R140, so G14 DONE in four sessions; G15's
       plan written in S64, R141, `docs/planning/mates-without-offspring-plan.md`, three build sessions;
-      G15a, the layout, DONE in S65, R141's picks; next G15b, `getMatings()`) --
+      G15a, the layout, DONE in S65, R141's picks; G15b, `getMatings()`, DONE in S66, R141's picks; next G15c,
+      the converters) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
