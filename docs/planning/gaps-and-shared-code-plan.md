@@ -846,6 +846,11 @@ sessions a day, about 11-15 days, an estimate.
 87. **A saved widget is 960 px wide whatever the browser window, and a screenshot is blank beyond the window** (S68):
     set `w$width` before `saveWidget()`, and pass `captureBeyondViewport = TRUE` or size the window to the widget;
     the first fidelity run lost the whole legend to the second. (The picture-files plan, dragon 2.)
+88. **Count the drawing's primitive calls before offering "redraw it" or "photograph it"** (S68): A1's row named two
+    ways (a second renderer in R, or a headless-browser screenshot). Tallying every `CanvasRenderingContext2D` call
+    the widget makes (22 methods, 10 properties, for the largest pedigree and the one with every mark) showed a third:
+    record those calls as SVG, which keeps the one drawing and gives vector text. Mark picked it (R142). A tally of
+    the primitives is a half-hour measure that can change which options a picker offers.
 
 ### 7.3 Out of scope
 
