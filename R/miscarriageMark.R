@@ -19,7 +19,8 @@
 ## (plan Phase G14, R140): the room below the moved id is .idLabelDepth()
 ## of the node's text size (R/textSize.R), 25 units at vis.js's 14. S63
 ## (plan Phase G14, R140): .miscarriageHandler() strokes its line 2 times
-## the line width.
+## the line width. S63's REFACTOR: written by
+## .strokeWidthJs() (R/lineWidth.R).
 
 #' The miscarriage values read, and what each means
 #'
@@ -183,7 +184,7 @@
     " return n.miscarriage === 'TOP' || n.miscarriage === 'ECT'; }});\n",
     "  if (marked.length === 0) { return; }\n",
     "  ctx.save();\n",
-    "  ctx.lineWidth = ", format(2.0 * lineWidth, digits = 4L), ";\n",
+    .strokeWidthJs(2.0, lineWidth),
     "  ctx.lineCap = 'butt';\n",
     "  ctx.strokeStyle = '#000000';\n",
     "  ctx.fillStyle = '#000000';\n",

@@ -14,7 +14,8 @@
 ## .evaluatedStarRoom() does. S59's REFACTOR: .checkProbandConsultand()
 ## names the animals with .idsShown() (R/markColumns.R), as
 ## .checkMiscarriage() does. S63 (plan Phase G14, R140):
-## .probandArrowHandler() strokes the arrow 2 times the line width.
+## .probandArrowHandler() strokes the arrow 2 times the line width. S63's
+## REFACTOR: written by .strokeWidthJs() (R/lineWidth.R).
 
 #' Where the arrow of a proband or a consultand is drawn
 #'
@@ -71,7 +72,7 @@
     "  ctx.save();\n",
     "  ctx.strokeStyle = '#000000';\n",
     "  ctx.fillStyle = '#000000';\n",
-    "  ctx.lineWidth = ", format(2.0 * lineWidth, digits = 4L), ";\n",
+    .strokeWidthJs(2.0, lineWidth),
     "  ctx.font = '12px arial';\n",
     "  ctx.textAlign = 'right';\n",
     "  ctx.textBaseline = 'middle';\n",

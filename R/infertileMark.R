@@ -19,7 +19,8 @@
 ## room below the moved id is .idLabelDepth() of the node's text size
 ## (R/textSize.R), 25 units at vis.js's 14. S63 (plan Phase G14, R140):
 ## .infertileBarsHandler() strokes the line and bars 2 times the line
-## width.
+## width. S63's REFACTOR: written by
+## .strokeWidthJs() (R/lineWidth.R).
 
 #' The fertility values read, and what each means
 #'
@@ -139,7 +140,7 @@
     "  if (marked.length === 0) { return; }\n",
     "  ctx.save();\n",
     "  ctx.strokeStyle = '#000000';\n",
-    "  ctx.lineWidth = ", format(2.0 * lineWidth, digits = 4L), ";\n",
+    .strokeWidthJs(2.0, lineWidth),
     "  marked.forEach(function(n) {\n",
     "    var p = net.getPosition(n.id);\n",
     "    var s = n.size || 25;\n",

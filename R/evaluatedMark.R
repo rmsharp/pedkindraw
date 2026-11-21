@@ -11,6 +11,7 @@
 ## S57's REFACTOR: .evaluatedStarRoom() builds its points with .markRoom()
 ## (R/markColumns.R), as .probandArrowRoom() does. S63 (plan Phase G14,
 ## R140): .evaluatedStarHandler() strokes the star 2 times the line width.
+## S63's REFACTOR: written by .strokeWidthJs() (R/lineWidth.R).
 
 #' Where the evaluated star is drawn
 #'
@@ -49,7 +50,7 @@
     "  if (marked.length === 0) { return; }\n",
     "  ctx.save();\n",
     "  ctx.strokeStyle = '#000000';\n",
-    "  ctx.lineWidth = ", format(2.0 * lineWidth, digits = 4L), ";\n",
+    .strokeWidthJs(2.0, lineWidth),
     "  ctx.lineCap = 'round';\n",
     "  marked.forEach(function(n) {\n",
     "    var p = net.getPosition(n.id);\n",
