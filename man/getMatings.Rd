@@ -4,32 +4,50 @@
 \alias{getMatings}
 \title{List the matings of a pedigree}
 \usage{
-getMatings(ped)
+getMatings(ped, matings = NULL)
 }
 \arguments{
 \item{ped}{a data frame with the columns \code{id}, \code{sire} and
 \code{dam}, an unknown parent written \code{NA} (see
 \code{\link{recodePedigree}}). Factor columns are read by their labels and
 numbers as text.}
+
+\item{matings}{\code{NULL} (the default) or a data frame with the columns
+\code{sire} and \code{dam} (text or factor; other columns are ignored),
+one row per mating declared whether or not the two have offspring
+together, as \code{\link{makePedigreeMatingLayout}} takes it. Stops on
+anything but \code{NULL} or a data frame with both columns, on
+\code{NA}, and on the same id as sire and dam.}
 }
 \value{
 A data frame with one row per mating and the columns \code{sire}
 and \code{dam} (text) and \code{offspring} (an integer, the number of
-animals with that sire and dam). It has no rows when no animal has both
-parents known.
+animals with that sire and dam; 0 for a declared mating with none). It has
+no rows when no animal has both parents known and no mating is declared.
 }
 \description{
 A mating is a sire and a dam with at least one offspring recorded with both
-of them. \code{getMatings()} lists each mating once, in the order its first
-offspring comes in \code{ped}, with the number of offspring the two share;
-these are the matings a drawing of the pedigree draws
-(\code{\link{makePedigreeMatingLayout}}). An animal's mates are the
-animals it is listed with.
+of them, or a pair declared mated in \code{matings}. \code{getMatings()}
+lists each mating once: first those with offspring, in the order the first
+offspring of each comes in \code{ped}, with the number of offspring the
+two share; then each declared pair with no offspring together, in the
+order of \code{matings}, with 0. These are the matings a drawing of the
+pedigree draws, in its order (\code{\link{makePedigreeMatingLayout}},
+given the same \code{matings}). An animal's mates are the animals it is
+listed with.
 }
 \details{
 An offspring with only one known parent makes no mating (its parent's
 \code{\link{countOffspring}} counts it). A sire or dam with no row of its
 own is listed as recorded. Each offspring is counted once.
+
+A row of \code{matings} naming a pair with offspring together, in either
+column, adds nothing and gives no message, so the result of
+\code{getMatings()} can be passed back, with rows added. A pair named
+twice, in either column, is listed once, as its first row names it; the
+sexes are not checked. A row naming an animal without a row of its own in
+\code{ped}, as a trimming function leaves, is left out, with a message
+naming the pair, as the drawing leaves it out.
 }
 \examples{
 ## A and B have C; A and E have F; A has G, its dam unknown; B has H,
@@ -43,6 +61,8 @@ matings <- getMatings(ped)
 matings
 ## The mates of E.
 c(matings$dam[matings$sire == "E"], matings$sire[matings$dam == "E"])
+## K and B declared mated, with no offspring together.
+getMatings(ped, matings = data.frame(sire = "K", dam = "B"))
 }
 \seealso{
 \code{\link{countOffspring}}, \code{\link{getOffspring}}
