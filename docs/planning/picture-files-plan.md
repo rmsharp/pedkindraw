@@ -320,8 +320,9 @@ the smaller way).
 
 1. **`addScriptToEvaluateOnNewDocument()` runs only after `Page$enable()`** (chromote 0.5.1, Chrome 157): without it
    the call returns an identifier and the script never runs, silently (`window.__probe` was `undefined` after the load;
-   with `Page$enable()` first it read 42). Wait for the load event with the navigation call's own wait: on a page small
-   enough to load before `loadEventFired()` is asked for, the wait times out.
+   with `Page$enable()` first it read 42). Also: on a small SVG document `loadEventFired()` timed out after
+   `navigate(wait_ = FALSE)`, while the navigation call's own wait worked (the likely cause, an event already fired,
+   was not tested).
 2. **The saved widget is 960 px wide whatever the window** (`w$width` sets it), and a screenshot clip wider than the
    window is blank beyond it unless `captureBeyondViewport = TRUE` (the first fidelity run lost the whole legend that
    way). The widget's height is `.diagramHeight()`'s (`R/affectedConditions.R:345`): 500 px, and 45 more for each optional
