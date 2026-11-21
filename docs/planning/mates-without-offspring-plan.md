@@ -5,7 +5,7 @@
 `docs/planning/gaps-and-shared-code-plan.md` (section 5.1, G15's row), gap B1 of
 `docs/research/pedkindraw-gaps-2026-11-18.md` (section 4, B1). **Ruling made here:** R141 (Mark's pick of the input,
 `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; G15a DONE
-(pedkindraw S65); G15b next.
+(pedkindraw S65); G15b DONE (pedkindraw S66); G15c next.
 
 **Versions:** kinship2 1.9.6.2 and Pedixplorer 1.8.0 from this project's renv library; pedkindraw at `d58a52f`
 (its `R/` as at `4b31671`); nprcgenekeepr at `3e06730c5`; R 4.6.2; this Mac (Apple M2 Max). Every count below was
@@ -149,6 +149,9 @@ with a message).
 **`getMatings(ped, matings = NULL)`** (G15b). With `matings`, its declared pairs with no offspring together are
 added after the matings built from offspring, in their rows' order, with `offspring` 0, so that R119's "the matings
 the drawing's layout builds" holds for the same input. Checked as the layout checks them (one shared check).
+S66, Mark's picks: as written here (after the offspring matings; `offspring` 0, no new column); and the shared
+check sets aside, without a message, a row naming a pair with offspring together, in either column, before its
+same-id stop and its "left out" message, for the layout too, so `getMatings()`'s result can be passed back.
 
 **`asPedFrame(x)`** (G15c). A fourth element, `matings`: `NULL` or a data frame `sire`, `dam` from kinship2's
 relation code 4 (number or text) and Pedixplorer's `"Spouse"` rows, the male as sire. **G15c's picker decides:** a
@@ -268,6 +271,19 @@ each returns (section 2: both fail on `onlyTwo` and `twoChildless`).
   equal the rows); without `matings`, every existing `getMatings()` test unchanged.
 - **Surface:** this Mac; no browser.
 - **Session boundary:** close out when DONE.
+- **DONE (pedkindraw S66;
+  RED `40565da`, GREEN `3a4a115`, `a85f129`, `d94778a`, REFACTOR `f74627d`).** Mark's picks, each first time
+  (R141): the declared rows after the matings built from offspring, in their rows' order (the drawing's order,
+  112 of 112 measured; first appearance differed in 84 of 112); `offspring` 0, no new column (a fourth would
+  have changed 11 checks in 6 tests); a row naming a pair with offspring together set aside without a message
+  by the shared check, for the layout too (`getMatings(ped, getMatings(ped))` unchanged on 123 of 123
+  pedigrees, where the check had printed a misleading message on 1 and stopped on 1).
+  `tests/testthat/test_getMatings.R`: 16 tests, 806 expectations (7 new; on the 12 typed shapes and 100 random
+  pedigrees the rows equal the layout's mating units and its drawn mating points, in order, 215 declared
+  rows); `test_matesNoOffspring.R`: one message changed, one test added; covr 12 of 12 and 5 of 5 changed
+  lines; full suite 81 files, 1,016 tests, 0 failed, 0 warnings; 600 of 600; `R CMD check --as-cran` R16's
+  note only. The REFACTOR removed the mating-unit builder's own filter of such pairs (355 of 355 results
+  identical; dragon 12).
 
 ### G15c -- the converters keep the matings (one session)
 
@@ -324,6 +340,13 @@ each returns (section 2: both fail on `onlyTwo` and `twoChildless`).
     order, so a row with the two swapped, or a swapped row naming a pair with offspring, would make a second unit;
     `.layoutHintPairKey()` is the package's unordered key (`.checkMatings()`, the mate-hint check, and
     `.buildMatingUnitForest()` since REFACTOR `5a35482`).
+12. **A check that starts filtering can leave its consumer filtering too** (S66): G15b's set-aside in
+    `.checkMatings()` made `.buildMatingUnitForest()`'s own filter of pairs with offspring dead weight (it
+    changed none of 355 results); the REFACTOR `f74627d` removed it. When a shared check takes on a rule, grep
+    its callers for their own copy of it.
+13. **Where the set-aside sits in the check decides what passes back** (S66): after the `NA` stop (a key built
+    with `NA` matches no pair) and before the same-id stop, or `getMatings()`'s own row for an animal recorded
+    as both sire and dam of one offspring (`X`, `X`) stops the layout when passed back.
 
 ---
 
