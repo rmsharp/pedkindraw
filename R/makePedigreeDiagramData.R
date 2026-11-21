@@ -95,7 +95,12 @@
 ## __text_, the prefix of the points drawPedigreeDiagram() adds for larger
 ## text; and its help (the same rows). Each size setting is checked by
 ## .checkPositiveNumber() (R/symbolSize.R; S61's REFACTOR, where S60's
-## .checkSymbolSize() and S61's .checkTextSize() were).
+## .checkSymbolSize() and S61's .checkTextSize() were). Plan Phase G14's
+## spacing (pedkindraw S62, R140): the arguments columnSpacing = 1 and
+## rowSpacing = 1, checked after textSize, the columns .spacingUnits() of
+## .fullColumnUnits apart and the rows .spacingUnits() of .fullRowUnits,
+## where they were 120L and 150L (pedkindraw's own, R/spacing.R); and its
+## help (the same rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -2009,7 +2014,28 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   miscarriage's moved id clear of the drawing's bottom edge. The drawing
 #'   zooms to fit, so larger text leaves less room between the ids: an id
 #'   of 10 characters is 118 units wide at 1.4 and 165 at 2, and the
-#'   animals in a row are 120 apart. Stops unless it is one positive
+#'   animals in a row are 120 apart at \code{columnSpacing} 1, so larger
+#'   text needs wider columns (168 apart at 1.4). Stops unless it is one
+#'   positive number.
+#' @param columnSpacing the distance between neighbouring animals in a row,
+#'   as a multiple of the 120 units used before this argument (1, the
+#'   default): the columns are 120 times it apart, rounded to a whole unit
+#'   and at least 1. With \code{rowSpacing} it sets the drawing's
+#'   proportions, as the width and height of kinship2's page set its
+#'   distances; the drawing zooms to fit, so wider columns leave the symbols
+#'   and text smaller beside the distances rather than making a larger
+#'   drawing. The layout works the lines' detours out at the spacing given.
+#'   Larger text needs wider columns: at \code{textSize} 2 an id of 10
+#'   characters is up to 167 units wide, and at 1.4 the columns are 168
+#'   apart. Measured at 500 pixels, at 0.5 long ids run over their
+#'   neighbours'. Stops unless it is one positive number.
+#' @param rowSpacing the distance between generations, as a multiple of the
+#'   150 units used before this argument (1, the default): the rows are 150
+#'   times it apart, rounded to a whole unit and at least 1. In the
+#'   rectilinear style a step around an animal keeps its depth, 1 unit below
+#'   the symbols, or 0.15 of the gap to the nearest row of lines when that
+#'   is more. Measured at 500 pixels, at 0.5 the lines from parents to their
+#'   offspring cross the parents' ids. Stops unless it is one positive
 #'   number.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
@@ -2116,7 +2142,9 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                                           "#56B4E9",
                                                           "#009E73"),
                                       conditionThresholds = NULL,
-                                      symbolSize = 1.0, textSize = 1.0) {
+                                      symbolSize = 1.0, textSize = 1.0,
+                                      columnSpacing = 1.0,
+                                      rowSpacing = 1.0) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -2130,6 +2158,9 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # pedkindraw Phase G14 (R140): each size setting one positive number.
   .checkPositiveNumber(symbolSize, "symbolSize", "makePedigreeMatingLayout")
   .checkPositiveNumber(textSize, "textSize", "makePedigreeMatingLayout")
+  .checkPositiveNumber(columnSpacing, "columnSpacing",
+                       "makePedigreeMatingLayout")
+  .checkPositiveNumber(rowSpacing, "rowSpacing", "makePedigreeMatingLayout")
   edgeStyle <- match.arg(edgeStyle)
   if (!is.null(kinshipMatrix) &&
         (!(is.matrix(kinshipMatrix) || inherits(kinshipMatrix, "Matrix")) ||
@@ -2312,8 +2343,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   ## GA204Z/8LKBV9 loop fixture and a wide fan-out fixture -- matches
   ## vis.js's own hierarchical-layout defaults (nodeSpacing ~100,
   ## levelSeparation 150) closely enough to render legibly.
-  xScale <- 120L
-  yScale <- 150L
+  ## pedkindraw Phase G14 (R140): the distances, 120 and 150 units at the
+  ## default spacings of 1.
+  xScale <- .spacingUnits(.fullColumnUnits, columnSpacing)
+  yScale <- .spacingUnits(.fullRowUnits, rowSpacing)
 
   shapeMap <- c(F = "dot", M = "square", H = "star", U = "triangle")
   sexLabelMap <- c(F = "Female", M = "Male", H = "Hermaphrodite",
