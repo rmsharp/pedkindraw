@@ -2,7 +2,8 @@
 ## This file is part of pedkindraw
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase 14,
 ## rulings R55-R57, pedkindraw S19; rulings R58-R59, pedkindraw S20; plan
-## Phase 15c, the layout hints, rulings R62 and R73, pedkindraw S24). New
+## Phase 15c, the layout hints, rulings R62 and R73, pedkindraw S24; plan
+## Phase G15c, the declared matings, ruling R141, pedkindraw S67). New
 ## code (R7), written from kinship2's help pages for pedigree(), autohint()
 ## and align.pedigree(), Pedixplorer's help pages for Pedigree(), Ped, Rel,
 ## Scales, Hints, auto_hint() and align(), and the objects each was measured
@@ -13,8 +14,8 @@
 #'
 #' Turns a kinship2 \code{pedigree} or \code{pedigreeList} object, or a
 #' Pedixplorer \code{Pedigree} object, back into the data frames the rest of
-#' the package takes: a pedigree with one row per animal, and a table of twin
-#' pairs; and its layout hints into the form
+#' the package takes: a pedigree with one row per animal, a table of twin
+#' pairs and a table of declared matings; and its layout hints into the form
 #' \code{\link{makePedigreeMatingLayout}()} takes.
 #'
 #' \strong{kinship2 objects.} The rows keep the object's order, which is the
@@ -35,9 +36,8 @@
 #' so names, dates and the like are not in its objects to convert.
 #'
 #' Twin pairs come from the object's \code{relation} codes 1, 2 and 3 (MZ, DZ
-#' and UZ twins), whether kinship2 stored them as numbers or as text; code 4,
-#' a spouse pair, is left out, since the package draws a mating from its
-#' offspring.
+#' and UZ twins), and declared matings from its code 4, a spouse pair,
+#' whether kinship2 stored them as numbers or as text.
 #'
 #' A \code{pedigreeList} (several families) is converted whole when no id
 #' appears in two families, with a \code{famid} column naming each animal's
@@ -83,12 +83,26 @@
 #' each condition's and the availability's columns). \code{asPedFrame()}
 #' stops when a column name would appear twice (an extra column called
 #' \code{sire}, say), naming it. Twin pairs are the MZ, DZ and UZ twins of
-#' \code{rel(x)}; spouse pairs are left out.
+#' \code{rel(x)}, and declared matings its \code{"Spouse"} rows.
+#'
+#' \strong{Declared matings.} Each spouse pair of either package becomes a
+#' row of \code{matings}, a data frame of \code{sire} and \code{dam} in the
+#' form \code{\link{makePedigreeMatingLayout}(matings = )} and
+#' \code{\link{getMatings}(matings = )} take: two animals mated, whether or
+#' not they have offspring together. Every row the object holds is kept, in
+#' the object's order, a pair with offspring together (which the layout and
+#' \code{getMatings()} set aside) and a pair kinship2 holds twice
+#' (Pedixplorer refuses one) included, so a table converted to either
+#' package and back is the same. When one of the two is male and the other
+#' not, the male is the sire; otherwise, when one is female and the other
+#' not, the female is the dam; otherwise the two are in the order the object
+#' holds them, which for Pedixplorer is sorted by id.
 #'
 #' \strong{Layout hints.} An object's layout hints come back in the form
 #' \code{\link{makePedigreeMatingLayout}()} takes, so
-#' \code{makePedigreeMatingLayout(x$ped, hints = x$hints)} draws with them,
-#' once \code{x$ped} has its generations (\code{\link{findGeneration}()}).
+#' \code{makePedigreeMatingLayout(x$ped, hints = x$hints, matings =
+#' x$matings)} draws with them and with the object's matings, once
+#' \code{x$ped} has its generations (\code{\link{findGeneration}()}).
 #' kinship2 keeps them in the object's \code{hints} element, which a user
 #' sets, to \code{kinship2::autohint()}'s result for instance: its
 #' \code{order}, one number per animal in the object's order, becomes
@@ -108,11 +122,13 @@
 #' Both packages make their automatic hints for their own layouts, and some
 #' of the mate rows are ones \code{makePedigreeMatingLayout()} refuses.
 #' \code{asPedFrame()} fixes them and one message names each change: a pair
-#' with no offspring together is left out (both packages ignore it); a pair
-#' named in an earlier row is left out, the first row kept (as kinship2
-#' keeps it); and an anchor on the partner of the earlier generation
-#' (\code{\link{findGeneration}()}) becomes \code{"either"}, its side kept,
-#' since the layout draws a mating on the row of its later partner.
+#' with no offspring together that the object does not declare mated is left
+#' out (the layout draws a mating only from offspring or from
+#' \code{matings}); a pair named in an earlier row is left out, the first
+#' row kept (as kinship2 keeps it); and an anchor on the partner of the
+#' earlier generation (\code{\link{findGeneration}()}) becomes
+#' \code{"either"}, its side kept, since the layout draws a mating on the
+#' row of its later partner.
 #'
 #' \code{asPedFrame()} stops for an object of any other class, naming the
 #' class.
@@ -120,7 +136,7 @@
 #' @param x a kinship2 \code{pedigree} or \code{pedigreeList} object, or a
 #' Pedixplorer \code{Pedigree} object.
 #' @param ... not used.
-#' @return A list of three:
+#' @return A list of four:
 #' \describe{
 #'   \item{\code{ped}}{a data frame with the character columns \code{id},
 #'   \code{sire}, \code{dam} (an unknown parent is \code{NA}) and \code{sex};
@@ -136,6 +152,9 @@
 #'   (numbers named by id) and \code{mate} (a data frame of \code{left},
 #'   \code{right} and \code{anchor}), each only when the object holds it, or
 #'   \code{NULL} when it holds none.}
+#'   \item{\code{matings}}{a data frame with the character columns
+#'   \code{sire} and \code{dam}, one row per spouse pair the object holds,
+#'   or \code{NULL} when it holds none.}
 #' }
 #'
 #' @seealso \code{\link{checkPedigree}}, \code{\link{checkTwinRelations}},
@@ -159,6 +178,16 @@
 #'   ## A layout hint: D drawn left of C.
 #'   p$hints <- list(order = c(1, 2, 4, 3))
 #'   asPedFrame(p)$hints
+#'   ## E and F, with no offspring, declared mates (relation code 4): F, the
+#'   ## male, is the sire.
+#'   p <- kinship2::pedigree(
+#'     id = c("A", "B", "C", "E", "F"),
+#'     dadid = c(NA, NA, "A", NA, NA),
+#'     momid = c(NA, NA, "B", NA, NA),
+#'     sex = c("male", "female", "male", "female", "male"),
+#'     relation = data.frame(id1 = "E", id2 = "F", code = 4)
+#'   )
+#'   asPedFrame(p)$matings
 #' }
 #' if (requireNamespace("Pedixplorer", quietly = TRUE)) {
 #'   ## The same family as a Pedixplorer object, with a name for each animal.
@@ -245,8 +274,10 @@ asPedFrame.Pedigree <- function(x, ...) {
   if (!is.null(x[["status"]])) {
     ped$status <- ifelse(x[["status"]] == 1L, "DECEASED", "ALIVE")
   }
+  matings <- .asPedFrameK2Matings(x[["relation"]], id, ped)
   list(ped = ped, twinRelations = .asPedFrameTwins(x[["relation"]], id),
-       hints = .asPedFrameK2Hints(x[["hints"]], ped))
+       hints = .asPedFrameK2Hints(x[["hints"]], ped, matings),
+       matings = matings)
 }
 
 ## ped with kinship2's conditions added: a single affected vector as the
@@ -293,6 +324,36 @@ asPedFrame.Pedigree <- function(x, ...) {
   .asPedFrameTwinTable(id[relation[["indx1"]][twin]],
                        id[relation[["indx2"]][twin]],
                        c("MZ twin", "DZ twin", "UZ twin")[code[twin]])
+}
+
+## The declared matings of a kinship2 relation table: its spouse pairs, code
+## 4 (stored as a factor or as whole numbers); NULL when there is none (plan
+## Phase G15c).
+.asPedFrameK2Matings <- function(relation, id, ped) {
+  if (is.null(relation)) {
+    return(NULL)
+  }
+  spouse <- which(as.integer(relation[["code"]]) == 4L)
+  .asPedFrameMatings(id[relation[["indx1"]][spouse]],
+                     id[relation[["indx2"]][spouse]], ped)
+}
+
+## The matings table of either package's spouse pairs id1 and id2 (plan
+## Phase G15c, R141; Mark's S67 picks): every pair kept, in order; the male
+## as sire when one of the two is male and the other not, else the female as
+## dam when one is female and the other not, else the order given. NULL when
+## there is no pair.
+.asPedFrameMatings <- function(id1, id2, ped) {
+  if (length(id1) == 0L) {
+    return(NULL)
+  }
+  sex <- stats::setNames(ped$sex, ped$id)
+  sex1 <- unname(sex[id1])
+  sex2 <- unname(sex[id2])
+  swap <- (sex2 == "M" & sex1 != "M") |
+    (sex1 == "F" & !sex2 %in% c("M", "F"))
+  data.frame(sire = ifelse(swap, id2, id1), dam = ifelse(swap, id1, id2),
+             stringsAsFactors = FALSE)
 }
 
 ## The twins table of either package's pairs: id1, id2 and code as text, or
@@ -348,9 +409,11 @@ asPedFrame.Pedigree <- function(x, ...) {
   for (name in names(added)) ped[[name]] <- added[[name]]
   for (name in extraNames) ped[[name]] <- extra[[name]]
   rownames(ped) <- NULL
-  list(ped = ped,
-       twinRelations = .asPedFramePxTwins(as.data.frame(Pedixplorer::rel(x))),
-       hints = .asPedFramePxHints(Pedixplorer::hints(x), ped))
+  rel <- as.data.frame(Pedixplorer::rel(x))
+  matings <- .asPedFramePxMatings(rel, ped)
+  list(ped = ped, twinRelations = .asPedFramePxTwins(rel),
+       hints = .asPedFramePxHints(Pedixplorer::hints(x), ped, matings),
+       matings = matings)
 }
 
 ## The condition columns, in fill's order, each with a known value: affection
@@ -408,12 +471,21 @@ asPedFrame.Pedigree <- function(x, ...) {
                        as.character(rel$id2[twin]), code[twin])
 }
 
+## The declared matings of a Pedixplorer relation table, its "Spouse" rows;
+## NULL when there is none (plan Phase G15c).
+.asPedFramePxMatings <- function(rel, ped) {
+  spouse <- which(as.character(rel$code) == "Spouse")
+  .asPedFrameMatings(as.character(rel$id1[spouse]),
+                     as.character(rel$id2[spouse]), ped)
+}
+
 ## The layout hints of a kinship2 object (x$hints: order, one number per
 ## animal in the object's order; spouse, rows of two animals' places and an
 ## anchor, 1 left, 2 right, 0 either) in makePedigreeMatingLayout()'s form,
 ## or NULL when it holds none (plan R62, R73). Stops on hints it cannot read
-## as ids (pedkindraw S24).
-.asPedFrameK2Hints <- function(hints, ped) {
+## as ids (pedkindraw S24). matings: the object's declared matings (plan
+## Phase G15c).
+.asPedFrameK2Hints <- function(hints, ped, matings) {
   if (is.null(hints)) {
     return(NULL)
   }
@@ -431,7 +503,8 @@ asPedFrame.Pedigree <- function(x, ...) {
     }
     hintOrder <- stats::setNames(hintOrder, id)
   }
-  .asPedFrameHints(hintOrder, .asPedFrameK2Mate(hints[["spouse"]], id), ped)
+  .asPedFrameHints(hintOrder, .asPedFrameK2Mate(hints[["spouse"]], id), ped,
+                   matings)
 }
 
 ## kinship2's spouse rows as mate rows of ids, or NULL when it has none.
@@ -460,8 +533,8 @@ asPedFrame.Pedigree <- function(x, ...) {
 ## The layout hints of a Pedixplorer Hints object (horder named by id;
 ## spouse with idl, idr and an ordered factor anchor) in
 ## makePedigreeMatingLayout()'s form, or NULL when it holds none (plan R62,
-## R73).
-.asPedFramePxHints <- function(h, ped) {
+## R73). matings: the object's declared matings (plan Phase G15c).
+.asPedFramePxHints <- function(h, ped, matings) {
   spouse <- Pedixplorer::spouse(h)
   hintMate <- NULL
   if (nrow(spouse) > 0L) {
@@ -470,17 +543,17 @@ asPedFrame.Pedigree <- function(x, ...) {
                            anchor = as.character(spouse$anchor),
                            stringsAsFactors = FALSE)
   }
-  .asPedFrameHints(Pedixplorer::horder(h), hintMate, ped)
+  .asPedFrameHints(Pedixplorer::horder(h), hintMate, ped, matings)
 }
 
 ## The order and mate hints as one list, NULL when neither asks for
 ## anything: an NA in the order leaves that animal unnumbered, and mate rows
 ## makePedigreeMatingLayout() would refuse are changed
 ## (.asPedFrameUsableMate()).
-.asPedFrameHints <- function(hintOrder, hintMate, ped) {
+.asPedFrameHints <- function(hintOrder, hintMate, ped, matings) {
   hintOrder <- hintOrder[!is.na(hintOrder)]
   if (!is.null(hintMate)) {
-    hintMate <- .asPedFrameUsableMate(hintMate, ped)
+    hintMate <- .asPedFrameUsableMate(hintMate, ped, matings)
   }
   hints <- list(order = hintOrder, mate = hintMate)
   hints <- hints[lengths(hints) > 0L]
@@ -488,15 +561,18 @@ asPedFrame.Pedigree <- function(x, ...) {
 }
 
 ## Mate rows made usable by makePedigreeMatingLayout(), each change named in
-## one message (pedkindraw S24): a pair with no offspring together left out
-## (kinship2 and Pedixplorer ignore it); a pair named before left out, the
-## first row kept (as kinship2 keeps it); an anchor on the partner of the
-## earlier generation set to "either", its side kept. NULL when no row is
-## left.
-.asPedFrameUsableMate <- function(hintMate, ped) {
+## one message (pedkindraw S24): a pair with no offspring together and not
+## in matings, the object's declared matings, left out (the layout draws a
+## mating only from offspring or from matings; plan Phase G15c); a pair
+## named before left out, the first row kept (as kinship2 keeps it); an
+## anchor on the partner of the earlier generation set to "either", its
+## side kept. NULL when no row is left.
+.asPedFrameUsableMate <- function(hintMate, ped, matings) {
   left <- hintMate$left
   right <- hintMate$right
-  together <- .layoutHintTogether(left, right, ped)
+  together <- .layoutHintTogether(left, right, ped) |
+    .layoutHintPairKey(left, right) %in%
+      .layoutHintPairKey(matings$sire, matings$dam)
   again <- together & duplicated(.layoutHintPairKey(left, right))
   keep <- together & !again
   gen <- stats::setNames(findGeneration(ped$id, ped$sire, ped$dam), ped$id)
