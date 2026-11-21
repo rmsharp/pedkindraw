@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-21 · [BL-Phase G15] S66: Phase G15b, getMatings() lists declared matings (in progress)
+- **Change:** session claimed (Mark's pick "G15b: list declared matings (Recommended)" at the orient picker): `getMatings(ped, matings = NULL)` by `docs/planning/mates-without-offspring-plan.md` section 7 (`:260`), R141; strict TDD; measure on a scratch copy first (Learning 17), then the pre-RED picker. Phase 0 reconcile: nothing to backfill (frontier 36de6c5 is HEAD; no merges; S65's receipt complete, its ratchet citation matching the results file); drift 91/23/0, exit 0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S65's runs: site 44907119554 success (pages 44907347086 success), R-CMD-check 44907119612 failure on Ubuntu R-devel only (setup-r-dependencies), the other four success, Ubuntu release FAIL 0, WARN 0, SKIP 2, PASS 14,792 (S65's estimate exactly).
+- **Commit/PR:** the claim commit · **Session:** S66 · **Verified:** pending (close-out).
+
 ### 2026-11-21 · [BL-Phase G15] S65 push 1: `master` to GitHub at close-out 2 (S65's claim, G15a RED-REFACTOR, close-out 1-2)
 - **Change:** `git push origin master` (`0a8a003..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `tests/`, `man/`, `vignettes/`, `NEWS.md` and `tools/` changed, so both workflows run. S64's push runs, read in S65: site `44875962170` `success` (pages `44876171776` `success`); CI `44875962136` `failure` on its Ubuntu R-devel job only (setup-r-dependencies, before pedkindraw was checked), the other four `success`, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2, PASS 13,832, as predicted.
 - **Commit/PR:** none (push) · **Session:** S65 · **Verified:** the push's output; S64's runs by `gh run view`.

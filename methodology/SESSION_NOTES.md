@@ -117,6 +117,18 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S64's entries were removed in S3-S65 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 66 Did
+**Deliverable:** Phase G15b (IN PROGRESS; gap B1, mates with no offspring; `getMatings(ped, matings = NULL)` lists
+declared matings; `docs/planning/mates-without-offspring-plan.md:260`; `methodology/BACKLOG.md:26`): strict TDD,
+measure first, the pre-RED picker, then RED, GREEN, REFACTOR by the gates.
+**Started:** 2026-11-21 08:18 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G15b: list declared matings
+(Recommended)" (orient)
+**Status:** Session claimed. Measuring on a scratch copy first (the layout's mating points against `getMatings()`'s
+rows on the test helper's 12 shapes and 100 random cases; the "left out" message for a rowless parent), then the
+pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 64 Handoff Evaluation (by Session 65)
 **Score: 9/10.**
 - **What helped:** item 3's measure-first list (a)-(c) was the session's plan, and the plan's picker list
