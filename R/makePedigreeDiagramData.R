@@ -101,7 +101,11 @@
 ## .fullColumnUnits apart and the rows .wholeMultiple() of .fullRowUnits,
 ## where they were 120L and 150L (pedkindraw's own, R/spacing.R and
 ## R/symbolSize.R; .spacingUnits() until S62's REFACTOR); and its help (the
-## same rows).
+## same rows). Plan Phase G14's line width (pedkindraw S63, R140): the
+## argument lineWidth = 1, checked after rowSpacing, and at another width
+## the lines, dashes and outlines of .lineWidthLayout() and a lineWidth
+## column on every node (pedkindraw's own, R/lineWidth.R); and its help
+## (the same rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -2038,6 +2042,25 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   is more. Measured at 500 pixels, at 0.5 the lines from parents to their
 #'   offspring cross the parents' ids. Stops unless it is one positive
 #'   number.
+#' @param lineWidth the width of the lines, as a multiple of the widths
+#'   drawn before this argument (1, the default), as kinship2's and
+#'   Pedixplorer's \code{lwd} is: every line between animals is
+#'   \code{lineWidth} units wide (1 before) and the mating line of related
+#'   parents 4 times it; the dashed lines' dashes and gaps grow with it, so
+#'   a thick line keeps its gaps (vis.js draws each dash with round ends:
+#'   kept at today's length, the DZ twins' line is solid at 5, like the MZ
+#'   twins'); each symbol's outline is \code{lineWidth} pixels and a
+#'   genotyped animal's \code{lineWidth + 3} (1 and 4 before), so its fill
+#'   keeps more of the symbol than 4 times the width would leave; and
+#'   \code{\link{drawPedigreeDiagram}} strokes each mark's lines (the
+#'   deceased slash, the proband's arrow, the evaluated star, the infertile
+#'   bars, the miscarriage line and the lines between the sections) that
+#'   many times as wide. The legend keeps its widths. Not rounded: 0.5 and
+#'   1.5 draw thinner and thicker lines than 1. The drawing zooms to fit,
+#'   and the zoom is the same at every width, so thicker lines leave less
+#'   room between them: measured at 500 pixels, at 3 the lines and
+#'   outlines reach the ids in 7 of 16 drawings (2 at 1). Stops unless it
+#'   is one positive number.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -2069,7 +2092,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   \code{"ECT"} for the node of such an animal and each of its
 #'   repeat-appearance nodes, \code{""} for every other node, never
 #'   \code{NA}; \code{font.size} is added when \code{textSize} gives other
-#'   than 14 pixels: that size, for every node), \code{edges}
+#'   than 14 pixels: that size, for every node; at a \code{lineWidth}
+#'   other than 1, \code{lineWidth} is added, that width for every node,
+#'   and \code{borderWidth} is on every node, \code{lineWidth} for an
+#'   ordinary one and \code{lineWidth + 3} for a genotyped one),
+#'   \code{edges}
 #'   (\code{from},
 #'   \code{to}, \code{dashes}, \code{smooth.enabled}, \code{smooth.type},
 #'   \code{smooth.roundness}, \code{color}, \code{width}; the \code{color}
@@ -2077,7 +2104,10 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   exists: a consanguineous mating unit's (\code{kinship(sire, dam) > 0})
 #'   2 spouse-to-union edges get \code{"#D55E00"}/\code{4}, an Okabe-Ito
 #'   colorblind-safe vermillion in kinship2's doubled/thickened mate-line
-#'   convention, and every other edge gets \code{NA}; \code{label} is added
+#'   convention, and every other edge gets \code{NA} (at a
+#'   \code{lineWidth} other than 1, that width, the consanguineous edges' 4
+#'   times it, and each dash pattern times it, \code{TRUE} as vis.js's 5
+#'   and 5); \code{label} is added
 #'   when \code{twinRelations} is supplied), and \code{duplicateToReal} (a
 #'   named character vector, duplicate node id -> real individual id).
 #'   Under \code{edgeStyle = "rectilinear"}, an already-set edge
@@ -2145,7 +2175,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                       conditionThresholds = NULL,
                                       symbolSize = 1.0, textSize = 1.0,
                                       columnSpacing = 1.0,
-                                      rowSpacing = 1.0) {
+                                      rowSpacing = 1.0,
+                                      lineWidth = 1.0) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -2162,6 +2193,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   .checkPositiveNumber(columnSpacing, "columnSpacing",
                        "makePedigreeMatingLayout")
   .checkPositiveNumber(rowSpacing, "rowSpacing", "makePedigreeMatingLayout")
+  .checkPositiveNumber(lineWidth, "lineWidth", "makePedigreeMatingLayout")
   edgeStyle <- match.arg(edgeStyle)
   if (!is.null(kinshipMatrix) &&
         (!(is.matrix(kinshipMatrix) || inherits(kinshipMatrix, "Matrix")) ||
@@ -2741,6 +2773,13 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # vis.js's own 14 pixels, on every node (only the animals' have words).
   textPx <- .textPixels(textSize)
   if (textPx != .fullTextSize) nodes$font.size <- textPx
+  # pedkindraw Phase G14 (R140): at another line width, the lines, the
+  # dashes and the outlines, and the width on every node for the marks.
+  if (lineWidth != 1.0) {
+    widened <- .lineWidthLayout(nodes, edges, lineWidth)
+    nodes <- widened$nodes
+    edges <- widened$edges
+  }
 
   list(nodes = nodes, edges = edges, duplicateToReal = duplicateToReal,
        isolatedIds = isolatedIds, conditions = conditions,

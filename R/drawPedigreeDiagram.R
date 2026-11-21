@@ -35,7 +35,9 @@
 ## symbol's room for smaller symbols (plan Phase G14, R140: nodes, and the
 ## help's paragraph on the symbols' size), and S61's points that keep
 ## larger text's room (plan Phase G14, R140: nodes, and the help's
-## paragraph on the text's size), each a DIVERGENCE.md row until
+## paragraph on the text's size), and S63's line width (plan Phase G14,
+## R140: lineWidth, hasGenotyped, the afterDrawing handlers, and the
+## help's paragraph on the line width), each a DIVERGENCE.md row until
 ## nprcgenekeepr has it;
 ## otherwise help text only.
 ## The help describes the
@@ -92,7 +94,9 @@
 #'
 #' An animal whose \code{genotyped} column is \code{TRUE} (see
 #' \code{\link{makePedigreeMatingLayout}}) is drawn with its outline 4 pixels
-#' wide, where every other symbol's is 1; the legend's \dQuote{Genotyped} row,
+#' wide, where every other symbol's is 1 (at another \code{lineWidth}, that
+#' width plus 3 where every other symbol's is that width); the legend's
+#' \dQuote{Genotyped} row,
 #' a square with that outline, then says what the thick outline is, and the
 #' canvas is 45 pixels taller for that row.
 #'
@@ -150,6 +154,13 @@
 #' text larger than before, the drawing keeps room for the outermost labels,
 #' so a long id at its edge is not cut off, and an infertile animal's and a
 #' miscarriage's moved id keep their room below their marks.
+#'
+#' The lines are drawn at the width \code{\link{makePedigreeMatingLayout}}'s
+#' \code{lineWidth} gives them, and each mark's lines (the deceased slash,
+#' the proband's arrow, the evaluated star, the infertile bars, the
+#' miscarriage line and the lines between the sections) that many times
+#' as wide as before; the legend keeps its widths, its \dQuote{Genotyped}
+#' row among them.
 #'
 #' A click does nothing unless \code{onClick} is given: a Shiny application
 #' can pass one to act on the clicked animal, which needs a live Shiny
@@ -316,8 +327,11 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
   # pedkindraw Phase G13 (R133-R134): a genotyped animal's node has a thick
   # outline, and then a "Genotyped" row, a square with that outline, comes
   # before "Deceased". The rows get a borderWidth only then, so a drawing with
-  # no genotyped animal is as before.
-  hasGenotyped <- any(layout$nodes[["borderWidth"]] %in% .genotypedBorderWidth)
+  # no genotyped animal is as before. pedkindraw Phase G14 (R140): the
+  # genotyped outline is the layout's line width plus 3, 4 at 1.
+  lineWidth <- .layoutLineWidth(layout$nodes)
+  hasGenotyped <- any(layout$nodes[["borderWidth"]] %in%
+                        (.genotypedBorderWidth + lineWidth - 1.0))
   genotypedRow <- data.frame(
     label = "Genotyped", shape = "square",
     color.background = .affectedColor(FALSE), image = NA_character_,
@@ -424,7 +438,8 @@ drawPedigreeDiagram <- function(layout, edgeStyle = c("rectilinear",
       # S1028's slash through each deceased animal's symbol on top.
       afterDrawing = .diagramAfterDrawing(nConditions >= 2L, sectionColors,
                                           hasCarrier, hasArrow, hasEvaluated,
-                                          hasBars, hasTop || hasEct)
+                                          hasBars, hasTop || hasEct,
+                                          lineWidth = lineWidth)
     ) |>
     # Image export (issue #131): visExport() bundles its own JS deps
     # (FileSaver/Blob/canvas-toBlob/html2canvas/jsPDF) as htmlwidget

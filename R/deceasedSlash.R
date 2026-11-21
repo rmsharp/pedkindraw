@@ -1,7 +1,10 @@
 ## Copyright(c) 2017-2026 R. Mark Sharp
 ## This file is part of pedkindraw
 ## Copied from nprcgenekeepr R/deceasedSlash.R at nprcgenekeepr commit
-## baef1e12c (unchanged to 4375e2715), whole. Changes: none. Plan R32 moved
+## baef1e12c (unchanged to 4375e2715), whole. Changes: pedkindraw S63's
+## line width (plan Phase G14, R140: .deceasedSlashHandler()'s argument
+## lineWidth, the slash 3 times it; a DIVERGENCE.md row until
+## nprcgenekeepr has it). Plan R32 moved
 ## it from Phase 8 to Phase 9, with the drawing that uses it. Its comments
 ## name nprcgenekeepr's sessions and app.
 
@@ -41,10 +44,13 @@
 #' text uses single quotes only: it travels inside a JSON string.
 #' @param reach see \code{.deceasedSlashReach}.
 #' @param outline see \code{.deceasedOutlineFactors}.
+#' @param lineWidth the layout's line width (pedkindraw S63, plan Phase
+#'   G14, R140): the slash is stroked 3 times it, 3 at 1, as before.
 #' @return A JavaScript function, as a character string.
 #' @noRd
 .deceasedSlashHandler <- function(reach = .deceasedSlashReach,
-                                  outline = .deceasedOutlineFactors) {
+                                  outline = .deceasedOutlineFactors,
+                                  lineWidth = 1.0) {
   sprintf(paste0(
     "function(ctx) {\n",
     "  var net = this;\n",
@@ -54,7 +60,7 @@
     "{filter: function(n) { return n.deceased === true; }});\n",
     "  if (marked.length === 0) { return; }\n",
     "  ctx.save();\n",
-    "  ctx.lineWidth = 3;\n",
+    "  ctx.lineWidth = ", format(3.0 * lineWidth, digits = 4L), ";\n",
     "  ctx.lineCap = 'round';\n",
     "  ctx.strokeStyle = '#000000';\n",
     "  marked.forEach(function(n) {\n",

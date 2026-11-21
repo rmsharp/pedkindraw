@@ -20,7 +20,10 @@
 ## runs .infertileBarsHandler() (pedkindraw's own, R/infertileMark.R) after
 ## the star; pedkindraw S59 (R139; the same row) an argument miscarriage,
 ## which runs .miscarriageHandler() (pedkindraw's own, R/miscarriageMark.R)
-## last.
+## last; pedkindraw S63 (plan Phase G14, R140; the same row) an argument
+## lineWidth, which it passes to every handler, and
+## .conditionSectionsHandler() its argument lineWidth, the width of its
+## lines (a DIVERGENCE.md row).
 ## Phase 8 copied
 ## its lines 1-75, the four pieces the layout uses (.conditionColors,
 ## .conditionColumns(), .conditionLabels() and .affectedSectionsOf()); Phase
@@ -131,9 +134,13 @@
 #' lines again so an open section still reads as one. The text uses single
 #' quotes only: it travels inside a JSON string.
 #' @param colors the fill of each condition, in order.
+#' @param lineWidth the layout's line width (pedkindraw S63, plan Phase
+#'   G14, R140): the outline and section lines are stroked that wide, 1
+#'   at 1, as before.
 #' @return A JavaScript function, as a character string.
 #' @noRd
-.conditionSectionsHandler <- function(colors = .conditionColors) {
+.conditionSectionsHandler <- function(colors = .conditionColors,
+                                      lineWidth = 1.0) {
   paste0(
     "function(ctx) {\n",
     "  var net = this;\n",
@@ -169,7 +176,7 @@
     "    ctx.closePath();\n",
     "  };\n",
     "  ctx.save();\n",
-    "  ctx.lineWidth = 1;\n",
+    "  ctx.lineWidth = ", format(lineWidth, digits = 4L), ";\n",
     "  animals.forEach(function(n) {\n",
     "    var p = net.getPosition(n.id), s = n.size || 25;\n",
     "    var k = n.affectedSections.length, d = 2 * Math.PI / k;\n",
@@ -278,37 +285,45 @@
 #' @param miscarriage \code{TRUE} when some node is a termination's or an
 #'   ectopic pregnancy's (pedkindraw S59, plan Phase G13, R139):
 #'   \code{.miscarriageHandler()} then runs last; it is left out otherwise.
+#' @param lineWidth the layout's line width (pedkindraw S63, plan Phase
+#'   G14, R140), passed to every handler that strokes lines.
 #' @return A JavaScript function, as a character string.
 #' @noRd
 .diagramAfterDrawing <- function(sections = FALSE,
                                  colors = .conditionColors,
                                  carrier = FALSE, arrows = FALSE,
                                  evaluated = FALSE, infertile = FALSE,
-                                 miscarriage = FALSE) {
+                                 miscarriage = FALSE, lineWidth = 1.0) {
   if (!sections && !carrier && !arrows && !evaluated && !infertile &&
         !miscarriage) {
-    return(.deceasedSlashHandler())
+    return(.deceasedSlashHandler(lineWidth = lineWidth))
   }
   paste0(
     "function(ctx) {\n",
     if (sections) {
-      paste0("  (", .conditionSectionsHandler(colors), ").call(this, ctx);\n")
+      paste0("  (", .conditionSectionsHandler(colors, lineWidth),
+             ").call(this, ctx);\n")
     },
-    "  (", .deceasedSlashHandler(), ").call(this, ctx);\n",
+    "  (", .deceasedSlashHandler(lineWidth = lineWidth),
+    ").call(this, ctx);\n",
     if (carrier) {
       paste0("  (", .carrierDotHandler(), ").call(this, ctx);\n")
     },
     if (arrows) {
-      paste0("  (", .probandArrowHandler(), ").call(this, ctx);\n")
+      paste0("  (", .probandArrowHandler(lineWidth = lineWidth),
+             ").call(this, ctx);\n")
     },
     if (evaluated) {
-      paste0("  (", .evaluatedStarHandler(), ").call(this, ctx);\n")
+      paste0("  (", .evaluatedStarHandler(lineWidth = lineWidth),
+             ").call(this, ctx);\n")
     },
     if (infertile) {
-      paste0("  (", .infertileBarsHandler(), ").call(this, ctx);\n")
+      paste0("  (", .infertileBarsHandler(lineWidth = lineWidth),
+             ").call(this, ctx);\n")
     },
     if (miscarriage) {
-      paste0("  (", .miscarriageHandler(), ").call(this, ctx);\n")
+      paste0("  (", .miscarriageHandler(lineWidth = lineWidth),
+             ").call(this, ctx);\n")
     },
     "}"
   )
