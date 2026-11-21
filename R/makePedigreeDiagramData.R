@@ -2059,7 +2059,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   1.5 draw thinner and thicker lines than 1. The drawing zooms to fit,
 #'   and the zoom is the same at every width, so thicker lines leave less
 #'   room between them: measured at 500 pixels, at 3 the lines and
-#'   outlines reach the ids in 7 of 16 drawings (2 at 1). Stops unless it
+#'   outlines reach the ids in 4 of 16 drawings (2 at 1). Stops unless it
 #'   is one positive number.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},

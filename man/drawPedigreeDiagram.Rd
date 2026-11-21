@@ -75,7 +75,9 @@ canvas is 45 pixels taller for that row.
 
 An animal whose \code{genotyped} column is \code{TRUE} (see
 \code{\link{makePedigreeMatingLayout}}) is drawn with its outline 4 pixels
-wide, where every other symbol's is 1; the legend's \dQuote{Genotyped} row,
+wide, where every other symbol's is 1 (at another \code{lineWidth}, that
+width plus 3 where every other symbol's is that width); the legend's
+\dQuote{Genotyped} row,
 a square with that outline, then says what the thick outline is, and the
 canvas is 45 pixels taller for that row.
 
@@ -133,6 +135,13 @@ The ids and names are written at the size
 text larger than before, the drawing keeps room for the outermost labels,
 so a long id at its edge is not cut off, and an infertile animal's and a
 miscarriage's moved id keep their room below their marks.
+
+The lines are drawn at the width \code{\link{makePedigreeMatingLayout}}'s
+\code{lineWidth} gives them, and each mark's lines (the deceased slash,
+the proband's arrow, the evaluated star, the infertile bars, the
+miscarriage line and the lines between the sections) that many times
+as wide as before; the legend keeps its widths, its \dQuote{Genotyped}
+row among them.
 
 A click does nothing unless \code{onClick} is given: a Shiny application
 can pass one to act on the clicked animal, which needs a live Shiny
