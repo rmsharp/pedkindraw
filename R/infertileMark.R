@@ -17,7 +17,9 @@
 ## S60's REFACTOR: the move by .sizedIdDown() (R/symbolSize.R), the point
 ## moved with it by .markRoom()'s down. S61 (plan Phase G14, R140): the
 ## room below the moved id is .idLabelDepth() of the node's text size
-## (R/textSize.R), 25 units at vis.js's 14.
+## (R/textSize.R), 25 units at vis.js's 14. S63 (plan Phase G14, R140):
+## .infertileBarsHandler() strokes the line and bars 2 times the line
+## width.
 
 #' The fertility values read, and what each means
 #'
@@ -122,9 +124,11 @@
 #' node's own \code{size}. The text uses single quotes only: it travels
 #' inside a JSON string.
 #' @param mark see \code{.infertileMark}.
+#' @param lineWidth the layout's line width (Phase G14, R140): the lines
+#'   are stroked 2 times it, 2 at 1, as before.
 #' @return A JavaScript function, as a character string.
 #' @noRd
-.infertileBarsHandler <- function(mark = .infertileMark) {
+.infertileBarsHandler <- function(mark = .infertileMark, lineWidth = 1.0) {
   number <- function(x) format(x, digits = 4L)
   sprintf(paste0(
     "function(ctx) {\n",
@@ -135,7 +139,7 @@
     "  if (marked.length === 0) { return; }\n",
     "  ctx.save();\n",
     "  ctx.strokeStyle = '#000000';\n",
-    "  ctx.lineWidth = 2;\n",
+    "  ctx.lineWidth = ", format(2.0 * lineWidth, digits = 4L), ";\n",
     "  marked.forEach(function(n) {\n",
     "    var p = net.getPosition(n.id);\n",
     "    var s = n.size || 25;\n",

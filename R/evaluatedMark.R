@@ -9,7 +9,8 @@
 ## the points of .evaluatedStarRoom() and an "Evaluated" legend row
 ## (.evaluatedLegendImage()) when an animal is evaluated (DIVERGENCE.md).
 ## S57's REFACTOR: .evaluatedStarRoom() builds its points with .markRoom()
-## (R/markColumns.R), as .probandArrowRoom() does.
+## (R/markColumns.R), as .probandArrowRoom() does. S63 (plan Phase G14,
+## R140): .evaluatedStarHandler() strokes the star 2 times the line width.
 
 #' Where the evaluated star is drawn
 #'
@@ -34,9 +35,11 @@
 #' placed by \code{star} in units of the node's own \code{size}. The text
 #' uses single quotes only: it travels inside a JSON string.
 #' @param star see \code{.evaluatedStar}.
+#' @param lineWidth the layout's line width (Phase G14, R140): the lines
+#'   are stroked 2 times it, 2 at 1, as before.
 #' @return A JavaScript function, as a character string.
 #' @noRd
-.evaluatedStarHandler <- function(star = .evaluatedStar) {
+.evaluatedStarHandler <- function(star = .evaluatedStar, lineWidth = 1.0) {
   number <- function(x) format(x, digits = 4L)
   sprintf(paste0(
     "function(ctx) {\n",
@@ -46,7 +49,7 @@
     "  if (marked.length === 0) { return; }\n",
     "  ctx.save();\n",
     "  ctx.strokeStyle = '#000000';\n",
-    "  ctx.lineWidth = 2;\n",
+    "  ctx.lineWidth = ", format(2.0 * lineWidth, digits = 4L), ";\n",
     "  ctx.lineCap = 'round';\n",
     "  marked.forEach(function(n) {\n",
     "    var p = net.getPosition(n.id);\n",

@@ -13,7 +13,8 @@
 ## builds its points with .markRoom() (R/markColumns.R), as
 ## .evaluatedStarRoom() does. S59's REFACTOR: .checkProbandConsultand()
 ## names the animals with .idsShown() (R/markColumns.R), as
-## .checkMiscarriage() does.
+## .checkMiscarriage() does. S63 (plan Phase G14, R140):
+## .probandArrowHandler() strokes the arrow 2 times the line width.
 
 #' Where the arrow of a proband or a consultand is drawn
 #'
@@ -53,9 +54,11 @@
 #' (12 units, right-aligned 2 units left of the tail) beside a proband's.
 #' The text uses single quotes only: it travels inside a JSON string.
 #' @param arrow see \code{.probandArrow}.
+#' @param lineWidth the layout's line width (Phase G14, R140): the lines
+#'   are stroked 2 times it, 2 at 1, as before.
 #' @return A JavaScript function, as a character string.
 #' @noRd
-.probandArrowHandler <- function(arrow = .probandArrow) {
+.probandArrowHandler <- function(arrow = .probandArrow, lineWidth = 1.0) {
   number <- function(x) format(x, digits = 4L)
   sprintf(paste0(
     "function(ctx) {\n",
@@ -68,7 +71,7 @@
     "  ctx.save();\n",
     "  ctx.strokeStyle = '#000000';\n",
     "  ctx.fillStyle = '#000000';\n",
-    "  ctx.lineWidth = 2;\n",
+    "  ctx.lineWidth = ", format(2.0 * lineWidth, digits = 4L), ";\n",
     "  ctx.font = '12px arial';\n",
     "  ctx.textAlign = 'right';\n",
     "  ctx.textBaseline = 'middle';\n",

@@ -17,7 +17,9 @@
 ## to the node's size. S60's REFACTOR: the move by .sizedIdDown()
 ## (R/symbolSize.R), the points moved with it by .markRoom()'s down. S61
 ## (plan Phase G14, R140): the room below the moved id is .idLabelDepth()
-## of the node's text size (R/textSize.R), 25 units at vis.js's 14.
+## of the node's text size (R/textSize.R), 25 units at vis.js's 14. S63
+## (plan Phase G14, R140): .miscarriageHandler() strokes its line 2 times
+## the line width.
 
 #' The miscarriage values read, and what each means
 #'
@@ -168,9 +170,12 @@
 #' spontaneous abortion is the triangle alone. The text uses single quotes
 #' only: it travels inside a JSON string.
 #' @param mark see \code{.miscarriageMark}.
+#' @param lineWidth the layout's line width (Phase G14, R140): the lines
+#'   are stroked 2 times it, 2 at 1, as before.
 #' @return A JavaScript function, as a character string.
 #' @noRd
-.miscarriageHandler <- function(mark = .miscarriageMark) {
+.miscarriageHandler <- function(mark = .miscarriageMark,
+                                lineWidth = 1.0) {
   sprintf(paste0(
     "function(ctx) {\n",
     "  var net = this;\n",
@@ -178,7 +183,7 @@
     " return n.miscarriage === 'TOP' || n.miscarriage === 'ECT'; }});\n",
     "  if (marked.length === 0) { return; }\n",
     "  ctx.save();\n",
-    "  ctx.lineWidth = 2;\n",
+    "  ctx.lineWidth = ", format(2.0 * lineWidth, digits = 4L), ";\n",
     "  ctx.lineCap = 'butt';\n",
     "  ctx.strokeStyle = '#000000';\n",
     "  ctx.fillStyle = '#000000';\n",
