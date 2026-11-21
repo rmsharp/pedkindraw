@@ -131,6 +131,18 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S61's entries were removed in S3-S62 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 63 Did
+**Deliverable:** Phase G14 session 4 of 4, the line width (IN PROGRESS; R140's last setting;
+`docs/planning/gaps-and-shared-code-plan.md:377`; `methodology/BACKLOG.md:26`)
+**Started:** 2026-11-20 21:52 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G14: line width (Recommended)"
+(orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (which lines follow the setting: the edges, the
+consanguinity lines, the outlines and the genotyped outline, the marks' strokes, the legend; Pedixplorer's `lwd`,
+results only; the genotyped outline told apart; whole pixels or any width; thick lines and vis.js's fit; 600 of
+600 at the default).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 61 Handoff Evaluation (by Session 62)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(f) was the session's plan: (a) one setting or two became the first

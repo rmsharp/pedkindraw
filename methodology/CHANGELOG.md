@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-20 · [BL-Phase G14] S63: Phase G14 session 4 of 4, the line width (in progress)
+- **Change:** session claimed (Mark's pick "G14: line width (Recommended)" at the orient picker): R140's last setting (`docs/planning/standalone-pedigree-package-plan.md:294`; `docs/planning/gaps-and-shared-code-plan.md:377`), strict TDD; measure first (Learnings 17-21; which lines follow the setting, Pedixplorer's `lwd`, results only, the genotyped outline told apart, whole pixels or any width, thick lines and vis.js's fit, 600 of 600 at the default), a pre-RED picker, RED, GREEN, REFACTOR by the gates, then G14 DONE. Phase 0 reconcile: nothing to backfill (frontier 060f6b1 is HEAD; no merges; S62's receipt complete, its ratchet citation matching the results file); drift 91/21/0, exit 0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S62's runs: site 44861276741 success (pages 44861496731 success), R-CMD-check 44861276685 failure on Ubuntu R-devel only (setup-r-dependencies, S4Vectors), the other four success, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2, PASS 13,636, so S62's spacing browser test ran on Linux.
+- **Commit/PR:** the claim commit · **Session:** S63 · **Verified:** pending (close-out).
+
 ### 2026-11-20 · [BL-Phase G14] S62 push 1: `master` to GitHub at close-out 2 (S62's claim, G14 session 3, close-out 1-2)
 - **Change:** `git push origin master` (`270e3c4..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S61's push runs, read at S62's Orient: site `44833366466` `success` (pages `44833726275` `success`); CI `44833366464` `failure` on its Ubuntu R-devel job only (setup-r-dependencies, before pedkindraw was checked), the other four `success`, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2 (two math-library solver tests), PASS 13,391, so S61's browser test ran on Linux.
 - **Commit/PR:** none (push) · **Session:** S62 · **Verified:** the push's output; S61's runs by `gh run view`.

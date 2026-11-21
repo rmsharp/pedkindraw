@@ -202,6 +202,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S63
+date: 2026-11-20
+status: pending
+active_task: Phase G14 (B5) session 4 of 4, the line width (R140; docs/planning/gaps-and-shared-code-plan.md:377; methodology/BACKLOG.md:26): measure first, a pre-RED picker, then RED, GREEN, REFACTOR by the gates; then G14 DONE
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S62
 date: 2026-11-20
 status: complete
