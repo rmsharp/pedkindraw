@@ -68,19 +68,6 @@ asPedFrameHintsLayout <- function(x) {
                                             hints = x$hints))
 }
 
-## kinship2's autohint() or Pedixplorer's auto_hint() with their one
-## expected warning muffled: on some pedigrees each warns "Unexpected result
-## in autohint, please contact developer" (auto_hint without the space) and
-## still returns hints. Any other warning still reaches the test.
-asPedFrameHintsAuto <- function(expr) {
-  withCallingHandlers(expr, warning = function(w) {
-    if (grepl("Unexpected result in auto_?hint, ?please contact developer",
-              conditionMessage(w))) {
-      invokeRestart("muffleWarning")
-    }
-  })
-}
-
 ## asPedFrame() with its message muffled; returns the conversion and
 ## whether a message was given.
 asPedFrameHintsQuiet <- function(obj) {

@@ -97,19 +97,6 @@ asPedFrameMatingsDrawn <- function(x) {
   sort(unique(drawn[!is.na(drawn)]))
 }
 
-## kinship2's autohint() or Pedixplorer's auto_hint() with their one
-## expected warning muffled ("Unexpected result in autohint, please contact
-## developer", as test_asPedFrameHints.R muffles it); any other warning
-## still reaches the test.
-asPedFrameMatingsAuto <- function(expr) {
-  withCallingHandlers(expr, warning = function(w) {
-    if (grepl("Unexpected result in auto_?hint, ?please contact developer",
-              conditionMessage(w))) {
-      invokeRestart("muffleWarning")
-    }
-  })
-}
-
 ## kinship2's sex numbers for the package's sex codes.
 asPedFrameMatingsSexNumber <- c(M = 1L, F = 2L, U = 3L)
 
@@ -363,7 +350,7 @@ test_that("the round trip: a table of matings through kinship2::pedigree()
     expect_identical(x$matings, want, label = label)
     expect_true(all(matingPairs(want) %in% asPedFrameMatingsDrawn(x)),
                 label = label)
-    h <- tryCatch(asPedFrameMatingsAuto(kinship2::autohint(p)),
+    h <- tryCatch(asPedFrameHintsAuto(kinship2::autohint(p)),
                   error = function(e) NULL)
     if (!is.null(h)) {
       p$hints <- h
@@ -392,7 +379,7 @@ test_that("the round trip: a table of matings through kinship2::pedigree()
     expect_true(all(sexOf[x$matings$sire[oneMale]] == "M"), label = label)
     expect_true(all(matingPairs(want) %in% asPedFrameMatingsDrawn(x)),
                 label = label)
-    h <- tryCatch(asPedFrameMatingsAuto(Pedixplorer::auto_hint(px)),
+    h <- tryCatch(asPedFrameHintsAuto(Pedixplorer::auto_hint(px)),
                   error = function(e) NULL)
     if (!is.null(h)) {
       Pedixplorer::hints(px) <- h

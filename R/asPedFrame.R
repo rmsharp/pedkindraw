@@ -570,9 +570,7 @@ asPedFrame.Pedigree <- function(x, ...) {
 .asPedFrameUsableMate <- function(hintMate, ped, matings) {
   left <- hintMate$left
   right <- hintMate$right
-  together <- .layoutHintTogether(left, right, ped) |
-    .layoutHintPairKey(left, right) %in%
-      .layoutHintPairKey(matings$sire, matings$dam)
+  together <- .layoutHintMated(left, right, ped, matings)
   again <- together & duplicated(.layoutHintPairKey(left, right))
   keep <- together & !again
   gen <- stats::setNames(findGeneration(ped$id, ped$sire, ped$dam), ped$id)

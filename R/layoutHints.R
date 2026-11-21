@@ -12,7 +12,9 @@
 ## helpers give the hints a layout used, which makePedigreeMatingLayout()
 ## returns, so that passing them back gives the same layout. Plan Phase G15a
 ## (pedkindraw S65, R141): the mate check accepts a pair declared in the
-## layout's matings argument, which may have no offspring together.
+## layout's matings argument, which may have no offspring together. Plan
+## Phase G15c (pedkindraw S67): that rule is .layoutHintMated(), which
+## asPedFrame() shares.
 
 #' Check the hints given to makePedigreeMatingLayout()
 #'
@@ -150,9 +152,7 @@
     stop("makePedigreeMatingLayout() found id(s) in 'hints$mate' that are ",
          "not in 'ped': ", toString(unique(absent)))
   }
-  together <- .layoutHintTogether(left, right, ped) |
-    .layoutHintPairKey(left, right) %in%
-      .layoutHintPairKey(matings$sire, matings$dam)
+  together <- .layoutHintMated(left, right, ped, matings)
   if (!all(together)) {
     stop("makePedigreeMatingLayout() found pair(s) in 'hints$mate' with no ",
          "offspring together in 'ped': ",
@@ -185,6 +185,22 @@
   }
   data.frame(left = left, right = right, anchor = anchor,
              stringsAsFactors = FALSE)
+}
+
+#' Which mate hint rows name a pair the layout draws as a mating
+#'
+#' @param left,right character vectors of ids, one per mate hint row.
+#' @param ped the pedigree data frame, every row's.
+#' @param matings \code{NULL} or the declared matings, a data frame with
+#'   the columns \code{sire} and \code{dam}.
+#' @return A logical vector, one per row: \code{TRUE} when the two have
+#'   offspring together in \code{ped} or \code{matings} declares them
+#'   mated, in either role (plan Phases G15a and G15c).
+#' @noRd
+.layoutHintMated <- function(left, right, ped, matings) {
+  .layoutHintTogether(left, right, ped) |
+    .layoutHintPairKey(left, right) %in%
+      .layoutHintPairKey(matings$sire, matings$dam)
 }
 
 #' Which mate hint rows name a pair with offspring together

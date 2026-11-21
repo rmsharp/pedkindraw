@@ -142,6 +142,20 @@ asPedFrameTrip <- function(f, cond, withStatus, twins = NULL, seed = 1L) {
                    matings = NULL))
 }
 
+## kinship2's autohint() or Pedixplorer's auto_hint() with their one
+## expected warning muffled: on some pedigrees each warns "Unexpected result
+## in autohint, please contact developer" (auto_hint without the space) and
+## still returns hints. Any other warning still reaches the test. Shared by
+## test_asPedFrameHints.R and test_asPedFrameMatings.R (pedkindraw S67).
+asPedFrameHintsAuto <- function(expr) {
+  withCallingHandlers(expr, warning = function(w) {
+    if (grepl("Unexpected result in auto_?hint, ?please contact developer",
+              conditionMessage(w))) {
+      invokeRestart("muffleWarning")
+    }
+  })
+}
+
 ## A seeded random pedigree (checkPedigreeClean() in helper-checkPedigree.R)
 ## with one hermaphrodite and one unknown sex, ready for kinship2.
 asPedFrameRandomCase <- function(seed) {
