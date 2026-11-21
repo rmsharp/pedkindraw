@@ -5,7 +5,7 @@
 `docs/planning/gaps-and-shared-code-plan.md` (section 5.1, G15's row), gap B1 of
 `docs/research/pedkindraw-gaps-2026-11-18.md` (section 4, B1). **Ruling made here:** R141 (Mark's pick of the input,
 `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; G15a DONE
-(pedkindraw S65); G15b DONE (pedkindraw S66); G15c next.
+(pedkindraw S65); G15b DONE (pedkindraw S66); G15c DONE (pedkindraw S67), so G15 DONE.
 
 **Versions:** kinship2 1.9.6.2 and Pedixplorer 1.8.0 from this project's renv library; pedkindraw at `d58a52f`
 (its `R/` as at `4b31671`); nprcgenekeepr at `3e06730c5`; R 4.6.2; this Mac (Apple M2 Max). Every count below was
@@ -159,6 +159,15 @@ pair with offspring together (kept or left out); a pair the layout would refuse 
 R74 fixes hint rows); a same-sex pair. A mate hint row naming a declared pair is kept (no longer "left out, no
 offspring together"); one naming an undeclared pair with no offspring together is left out as now, with R74's reason
 reworded to section 2's measures.
+S67, Mark's picks, each first time (measured first on a prototype of the three, the 14 typed shapes through
+both packages and 100 seeded random pedigrees): a pair with offspring together is kept as stored, so a table
+converted and back is the same (the layout and `getMatings()` set it aside quietly since S66); a pair named
+twice stays twice (kinship2 holds it so, Pedixplorer refuses it; no other pair the layout refuses can come
+from either package, since both stop on an id not in the pedigree and on an animal mated with itself, so
+that was the one case of the plan's "a pair the layout would refuse"); any sexes, the male as sire, else the
+female as dam, else the order the object holds (Pedixplorer sorts each pair's ids). A mate hint row naming a
+declared pair is kept; the layout draws a mating only from offspring or `matings`, so R74's reason for the
+other rows is reworded.
 
 **Not changed:** `drawPedigreeDiagram()` (it draws any layout; its legend has no mating row); `makePedigreeDiagramData()`
 (it draws sire-to-offspring and dam-to-offspring lines only and leaves no animal out: no mating to add, as R61 kept
@@ -301,6 +310,22 @@ each returns (section 2: both fail on `onlyTwo` and `twoChildless`).
   converter test passes with `matings = NULL` added.
 - **Surface:** this Mac; kinship2 and Pedixplorer from renv (Suggests).
 - **Session boundary:** close out when DONE; G15 DONE (the gaps plan's row, the backlog item).
+- **DONE (pedkindraw S67;
+  RED `affea2e`, `3dc9b3f`, GREEN `0e9333e`, `0fd11a6`, `3b83590`, REFACTOR `1a6092e`).** Mark's three picks,
+  each first time (R141): a spouse pair with offspring together kept as stored; a pair kinship2 holds twice
+  kept twice; any sexes kept, the male as sire, else the female as dam, else the object's order. Measured
+  first: the 14 typed shapes (section 2's, with a pair with offspring and a pair twice): pedkindraw's drawn
+  pairs equal kinship2's joined pairs in 14 of 14 and Pedixplorer's in 11 of 11 where it aligns (13 convert);
+  100 seeded random pedigrees (243 declared rows): every declared pair drawn; kinship2's joined pairs equal
+  pedkindraw's in 25 of 100 and Pedixplorer's in 39 (R69's kind of difference), so only the typed shapes
+  compare drawings. The automatic hints: kinship2's `autohint()` wrote 34 rows naming declared pairs in 26 of
+  its 99 returns and Pedixplorer's `auto_hint()` 32 in 27 of its 81, each left out with a message before,
+  now kept and drawn. `tests/testthat/test_asPedFrameMatings.R`: 7 tests, 771 expectations; 12 existing
+  tests changed (10 whole-list comparisons gain `matings = NULL`; the two spouse tests read `$matings`);
+  covr 32 of 32 changed lines; full suite 82 files, 1,023 tests, 16,067 expectations, 0 failed, 0 warnings;
+  600 of 600; `R CMD check --as-cran` R16's note only. The REFACTOR shares one rule with the layout's mate
+  check, `.layoutHintMated()` (672 of 672 results identical). `asPedFrame()` is pedkindraw's own: no
+  `DIVERGENCE.md` row.
 
 **Sessions:** 1 (this) + 3 to 4 (a guess; the gaps plan guessed 1 + 3-5).
 
@@ -347,6 +372,20 @@ each returns (section 2: both fail on `onlyTwo` and `twoChildless`).
 13. **Where the set-aside sits in the check decides what passes back** (S66): after the `NA` stop (a key built
     with `NA` matches no pair) and before the same-id stop, or `getMatings()`'s own row for an animal recorded
     as both sire and dam of one offspring (`X`, `X`) stops the layout when passed back.
+14. **Pedixplorer stores each spouse pair with its ids sorted, and reorders the rows** (S67): `F, E` comes
+    back `E-F`, `Z, A` `A-Z`, and `9, 10` `10-9` (text order); 63 of 100 random cases returned rows in an
+    order of its own. The male as sire cannot be read from what it stores, so the converter rebuilds the
+    roles from the sexes, and a pair of two males comes back in sorted order (7 cases, each with such a pair
+    added). kinship2 keeps the rows and the order given (100 of 100). The test compares Pedixplorer's pairs
+    as a set and checks the male is the sire where only one is male.
+15. **A planned picker item can be empty** (S67): section 7 listed "a pair the layout would refuse"; measured,
+    neither package can hold one (both stop on an id not in the pedigree, and on an animal mated with itself,
+    where Pedixplorer returns a data frame that `asPedFrame()` refuses as any other class), so only the pair
+    named twice was left, and the picker said so. Measure each planned choice before asking.
+16. **The references draw other pairs than pedkindraw on random pedigrees** (S67, R69 again): the joined pairs
+    match in 25 of 100 (kinship2) and 39 of 100 (Pedixplorer), and each joins its own declared pair in 91 and
+    92 of 100; compare drawings on the typed shapes, and on random cases test only that pedkindraw draws
+    every declared pair (243 of 243).
 
 ---
 

@@ -33,7 +33,8 @@ under way (S60: the symbol size, `makePedigreeMatingLayout(symbolSize = )`, the 
 S61: the text size, `textSize`, the second; S62: the column and row spacing, `columnSpacing` and `rowSpacing`, the
 third, the line width split off by Mark's pick; S63: the line width, `lineWidth`, the fourth and last). G14 DONE.
 G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`); G15a DONE (S65, the layout).
-G15b DONE (S66, `getMatings()`). Next: G15c, the converters (that plan's section 7), then G16-G17 before 17g.
+G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. Next: G16's planning session,
+then G17, before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -699,6 +700,11 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   offspring together without a message, the layout's too (Mark's three picks). Commits `40565da` (RED) to
   `f74627d` (REFACTOR, one rule in one place); 7 new tests, fidelity 600 of 600 with no set-aside, `R CMD
   check --as-cran` R16's note only.
+- **G15c (S67; R141):** `asPedFrame()` returns the declared matings (kinship2's relation code 4, Pedixplorer's
+  "Spouse" rows) as `matings`, every row as stored, the male as sire; a mate hint row naming one is kept
+  (Mark's three picks). Commits `affea2e` (RED) to `1a6092e` (REFACTOR, one rule shared with the layout);
+  7 new tests, 12 changed, fidelity 600 of 600 with no set-aside, `R CMD check --as-cran` R16's note only.
+  G15 is done.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
