@@ -629,6 +629,36 @@ cases$style <- function(case = "style") {
           px <- lay$nodes$font.size
           if (is.null(px)) 14L else unique(px[match(ped$id, lay$nodes$id)])
         }, integer(1L)))
+  ## Plan Phase G14 (pedkindraw S62, R140): the spacing. kinship2's distances
+  ## follow its page: the distance between its rows as a multiple of the
+  ## least distance between two neighbours in a row, on pages of 7 by 7, 14
+  ## by 7 and 7 by 14 inches; pedkindraw's least distance between two
+  ## neighbours and between rows, in units, at columnSpacing and rowSpacing
+  ## 0.75, 1 and 1.4.
+  probe(case, "kinship2 rows per column distance, 7x7, 14x7, 7x14 in pages",
+        vapply(list(c(7.0, 7.0), c(14.0, 7.0), c(7.0, 14.0)), function(page) {
+          grDevices::pdf(NULL, width = page[[1L]], height = page[[2L]])
+          on.exit(grDevices::dev.off())
+          drawn <- kinship2::plot.pedigree(k2Pedigree(ped))
+          ok <- !is.na(drawn$x)
+          xIn <- graphics::grconvertX(drawn$x[ok], "user", "inches")
+          yIn <- graphics::grconvertY(drawn$y[ok], "user", "inches")
+          rows <- split(xIn, drawn$y[ok])
+          column <- min(unlist(lapply(rows, function(x) diff(sort(x)))))
+          row <- min(diff(sort(unique(round(yIn, 6L)))))
+          round(row / column, 2L)
+        }, numeric(1L)))
+  probe(case, "pedkindraw column and row units at spacing 0.75, 1, 1.4",
+        vapply(c(0.75, 1.0, 1.4), function(s) {
+          lay <- pedkindraw::makePedigreeMatingLayout(withGen(ped),
+                                                      columnSpacing = s,
+                                                      rowSpacing = s)
+          at <- lay$nodes[match(ped$id, lay$nodes$id), ]
+          rows <- split(at$x, at$y)
+          column <- min(unlist(lapply(rows, function(x) diff(sort(x)))))
+          row <- min(diff(sort(unique(at$y))))
+          paste(round(column), round(row))
+        }, character(1L)))
 }
 
 ## B6. Longer or several-line labels.
