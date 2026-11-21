@@ -36,7 +36,8 @@ done (S52, R129-R130), G12, a measured trait drawn by a cut-off, is done (S53, R
 marks, is done: the genotyped mark (S54, R133-R134), the carrier mark (S55, R135), the proband and consultand marks
 (S56, R136), the evaluated mark (S57, R137), the infertile mark (S58, R138) and the miscarriage mark (S59, R139);
 G14, symbol and text sizes, spacing and line width as arguments, is under way: the symbol size is done (S60, R140),
-the text size is done (S61, R140), and the spacing and the line width are next (Planned, below).
+the text size is done (S61, R140), the column and row spacing is done (S62, R140), and the line width is next,
+a session of its own by Mark's S62 pick (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -72,8 +73,8 @@ session each unless marked. They follow the copy slices.
   relatives within a distance of chosen animals) is done (S52); G12 (a measured trait drawn by a cut-off) is
   done (S53); G13 (Pedixplorer's marks) is done, the genotyped mark (S54), the carrier mark (S55), proband with
   consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes, spacing and line
-  width) under way, the symbol size done (S60), the text size done (S61), the spacing and the line width
-  next, then
+  width) under way, the symbol size done (S60), the text size done (S61), the spacing done (S62), the line
+  width next, then
   the medium additions and the three large ones (mates with no offspring; PDF, SVG
   and PNG files; an app), each large one planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
@@ -251,6 +252,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G14, session 3 of 4: the column and row spacing (pedkindraw S62, 2026-11-20).** kinship2's distances
+  follow the width and height of its page; pedkindraw placed the animals of a row 120 units apart and the rows 150
+  apart. `makePedigreeMatingLayout(columnSpacing = , rowSpacing = )` now set them as multiples of those
+  distances, so a drawing can be made wider or deeper; every place is today's times the spacing, and the
+  rectilinear lines' steps and curves are worked out at it. Mark's picks: two settings; large text does not widen
+  the columns by itself (the help says text 2 needs columns 1.4); the line width a session of its own (R140). The
+  fidelity cases 600 of 600, nothing set aside.
 - **Phase G14, session 2 of 3: the text size (pedkindraw S61, 2026-11-20).** kinship2 and Pedixplorer take a
   text size; pedkindraw wrote every id and name at vis.js's 14 pixels. `makePedigreeMatingLayout(textSize = )`
   now sets it as a multiple of that size, as their `cex` does, the layout's places and lines unchanged; with

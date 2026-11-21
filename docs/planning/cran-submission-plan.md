@@ -29,9 +29,10 @@ of a carrier's symbol from a column `carrier`; R135; S56: its third, an arrow at
 a consultand's symbol, "P" beside a proband's; R136; S57: its fourth, a black star to the right of the upper-right
 corner of an evaluated animal's symbol; R137; S58: its fifth, a line and bars under an infertile animal's symbol,
 its id moved below them; R138; S59: its sixth and last, a miscarriage drawn as a small triangle; R139). Phase G14
-under way (S60: the symbol size, `makePedigreeMatingLayout(symbolSize = )`, the first of its three sessions; R140;
-S61: the text size, `textSize`, the second). Next: G14's spacing and line width (that plan's section 5.1), then
-G15-G17 before 17g.
+under way (S60: the symbol size, `makePedigreeMatingLayout(symbolSize = )`, the first of its four sessions; R140;
+S61: the text size, `textSize`, the second; S62: the column and row spacing, `columnSpacing` and `rowSpacing`, the
+third, the line width split off by Mark's pick). Next: G14's line width (that plan's section 5.1), then G15-G17
+before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -671,6 +672,13 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   by vis.js's label depth; the marks' words and the twins' labels keep their sizes; copied code changed, with
   `DIVERGENCE.md` sentences. Commits `4026c5f` (RED) to `68b7bc1` (REFACTOR, one check for each size setting);
   fidelity 600 of 600 with no set-aside. The spacing and the line width follow (R140).
+- **G14, session 3 of 4, the column and row spacing (S62; R140):** `makePedigreeMatingLayout(columnSpacing = 1,
+  rowSpacing = 1)`, the distances between neighbouring animals in a row and between generations as multiples of
+  the 120 and 150 units used before, every place today's times them and the rectilinear steps and curved links
+  worked out at them, a stop on anything but one positive number; large text does not widen the columns by itself
+  and the line width is a fourth session (Mark's picks); copied code changed, with a `DIVERGENCE.md` sentence.
+  Commits `83cbc71` (RED) to `059bfbf` (REFACTOR, one whole-unit multiple for the three settings); fidelity 600 of
+  600 with no set-aside. The line width follows (R140).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
