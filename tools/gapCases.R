@@ -324,6 +324,16 @@ cases$matesNoOffspring <- function(case = "matesNoOffspring") {
         is.list(pedkindraw::makePedigreeMatingLayout(
           withGen(ped), matings = mates, hints = list(mate = data.frame(
             left = "E", right = "F", anchor = "either")))))
+  ## Plan Phase G15b (pedkindraw S66, R141): getMatings() lists the declared
+  ## pair after the mating with offspring, as the drawing draws them, and
+  ## its own result passed back adds nothing.
+  probe(case, "pedkindraw getMatings(ped, matings): sire, dam, offspring", {
+    m <- pedkindraw::getMatings(ped, matings = mates)
+    paste(m$sire, m$dam, m$offspring)
+  })
+  probe(case, "pedkindraw getMatings(ped, getMatings(ped)) unchanged",
+        identical(pedkindraw::getMatings(ped, pedkindraw::getMatings(ped)),
+                  pedkindraw::getMatings(ped)))
 }
 
 ## B2. An affected status recorded as unknown.

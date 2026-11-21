@@ -154,7 +154,7 @@ pick an animal in the “Select by id” box, and save the picture with the
   animals with one.
 - `countOffspring()` counts each animal’s offspring; `getMatings()`
   lists the matings, each sire and dam with their number of offspring
-  together.
+  together (0 for a pair declared mated with none).
 
 **Checking and repair**
 
