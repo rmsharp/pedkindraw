@@ -14,7 +14,13 @@
 //    the opposite sign to the spec's wording and unscaled by the transform) and writes every label
 //    with an alphabetic baseline; MODE.snap 'up' rounds that y to the nearest pixel, as canvas does.
 //  - window.__lastOp / window.__nOps: the time of the last canvas call, for a quiet-time wait.
-//  - NOT yet handled (G16a's tests): a device scale factor other than 1 (canvas width / CSS width).
+//  - NOT handled here (G16a's tests and GREEN): a device scale factor other than 1 (canvas width / CSS
+//    width: the scratch reference scaled each canvas's group by it, with 6 decimals; 3 decimals turned
+//    0.4996 into 0.5, 0.2 px across the legend).
+//  - FIXED after the measures (S69, validating RED): with MODE.base 'metrics' the text elements carried
+//    dominant-baseline="[object Object]" (the metrics map was the whole ternary's result: an
+//    operator-precedence slip). Chrome ignores an invalid value and takes the alphabetic default, which
+//    is what every measure in the plan's section 11 therefore measured; the line now writes 'alphabetic'.
 //
 // How it was used: window.__MODE = {...} set first, then this file, injected with Page$enable()
 // FIRST and Page$addScriptToEvaluateOnNewDocument(); window.__svg() returns one SVG of every
@@ -181,8 +187,8 @@
     if (MODE.snap === 'floor') { p[1] = Math.floor(p[1]); }
     var f = /^((?:italic |bold |normal )*)\s*([0-9.]+)px\s+(.+)$/.exec(s.font) || [0, '', '10', 'sans-serif'];
     var anchor = {start: 'start', left: 'start', end: 'end', right: 'end', center: 'middle'}[s.ta] || 'start';
-    var base = dyMetrics ? {alphabetic: 'alphabetic', middle: 'alphabetic', top: 'alphabetic', bottom: 'alphabetic', hanging: 'alphabetic', ideographic: 'alphabetic'} : {alphabetic: 'alphabetic', middle: MODE.base, top: 'text-before-edge',
-      bottom: 'text-after-edge', hanging: 'hanging', ideographic: 'ideographic'}[s.tb] || 'alphabetic';
+    var base = dyMetrics ? 'alphabetic' : ({alphabetic: 'alphabetic', middle: MODE.base, top: 'text-before-edge',
+      bottom: 'text-after-edge', hanging: 'hanging', ideographic: 'ideographic'}[s.tb] || 'alphabetic');
     var style = (/bold/.test(f[1]) ? ' font-weight="bold"' : '') + (/italic/.test(f[1]) ? ' font-style="italic"' : '');
     r.ops.push('<text x="' + n(p[0]) + '" y="' + n(p[1]) + '" font-family="' + esc(f[3]) +
       '" font-size="' + n(parseFloat(f[2]) * k) + '"' + style + ' text-anchor="' + anchor +

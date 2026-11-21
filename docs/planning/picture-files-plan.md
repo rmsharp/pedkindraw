@@ -478,7 +478,7 @@ measured 0.4% (drawing) and 0.2% (legend)** (14 cases compared, `expect_equal(le
 holds 11 `<image>` elements, every `href` beginning `data:image/svg+xml`, none `data:image/png`, and a `<text>` "Sex";
 the 375 animals: 545 id texts, 375 distinct (the ids found among the `<text>` contents), and `.recordDiagramSvg()` of
 the unchanged widget 0; `width = 7, height = 7` gives root `7in` by `7in` and a `viewBox` 672 wide; a scale factor of 2
-gives the same box and a main text font size within 1% of a factor of 1's (9.441); the widget is `identical()` before and
+gives the same box and a drawing within 1.0% of the live widget's (measured 0.00% for the four animals, 0.54% for the feature pedigree; its legend, 9.8% and 5.5%, is not compared, dragon 17); the widget is `identical()` before and
 after, and the temporary folder is gone; the option set to 0.01 s stops "did not finish drawing within"; a widget whose
 page never returns from JavaScript (`htmlwidgets::onRender()` with a loop), the option 3 s, stops with the same message
 within 20 s. The pixel bounds were measured on macOS, Chrome 157: Linux and Windows text rounding may differ (dragon 20).
@@ -498,7 +498,12 @@ within 20 s. The pixel bounds were measured on macOS, Chrome 157: Linux and Wind
 16. **chromote 0.5.1's event timeouts are not reliable**: `Page$navigate()` waits out the 10 s command timeout on a
     server that never answers and `loadEventFired(timeout_ =)` then fails with an internal error. Poll
     `Runtime$evaluate(timeout_ = )` against one deadline of your own, and close the parent (its own Chrome).
-17. **A device scale factor other than 1 doubles the recording**: scale each canvas by CSS width over pixel width.
+17. **A device scale factor other than 1 doubles the recording**: scale each canvas by CSS width over pixel width, with
+    6 decimals (3 turned 0.4996 into 0.5, 0.2 px across the legend). At 2 the drawing still matches the live widget
+    (0.00%) and the legend does not (9.8% for four animals, 5.5% for the feature pedigree): its labels round to a half
+    CSS pixel, the canvas's own pixel at 2 ("Female" at y 56.5 against 56 at 1), which moves the anti-aliasing of
+    all its text; the scaling itself is right (`scale(0.5 0.5)`). The function pins the factor to 1, so a user never
+    meets it; the test compares the drawing only.
 18. **The legend's pictures load after the first draw** (an image node's `imageObj.width` is 0 until it loads): wait for
     them as well as for quiet, as `.waitForLegendPictures()` does.
 19. **The picture's box is not the widget's size** (11.2: 500 px high gives 491, 995 gives 961.25, 672 gives
@@ -508,3 +513,14 @@ within 20 s. The pixel bounds were measured on macOS, Chrome 157: Linux and Wind
 20. **The pixel bounds are one machine's** (macOS, Chrome 157, the same Chrome's canvas and SVG text rules): read each CI
     job's result for the new tests (Linux, Windows) before trusting a bound; a different rounding there is a finding,
     not a reason to widen a bound unread.
+21. **A scratch layer that passes is not the layer: validate RED against a reference first.** The RED file was run
+    against a scratch implementation built from the measured prototype (not committed) before RED was written to the
+    repository: it found four faults in the *tests* (an R `NULL` sent to the page as `[]`, truthy in JavaScript, made the
+    root `width="NaNin"`, so Chrome drew the SVG at 300 x 150 and the ink comparison read 86%; a font-size compared
+    across scale factors that is the same size at `font-size="28"` in a group scaled 0.5; a stuck-page widget whose
+    loop started at 500 ms, which races the first quiet window, now 50 ms) and one in the *prototype*:
+    `dominant-baseline="[object Object]"` on every label, a ternary's precedence. Chrome ignores the invalid value and
+    takes the alphabetic default, which is what the measures measured. GREEN writes `alphabetic`.
+22. **chromote leaves 4 small files in `tempdir()` after `parent$close()`** (`chrome-*-stderr.log`, `chrome-*-stdout.log`
+    and two `supervisor_*` pipes): a test cannot require `tempdir()` to be unchanged; it checks the function's own
+    folder (`pedkindraw-save-*`) is gone, also after an error.
