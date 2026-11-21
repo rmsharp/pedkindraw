@@ -202,6 +202,13 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S69
+date: 2026-11-21
+status: pending
+active_task: G16a (gaps A1, picture files from a script, and A2, a whole large pedigree on one page; docs/planning/picture-files-plan.md:253, R142): the recording layer and the SVG file, strict TDD. Session claimed; measuring first (the plan's measure-before-picker list), then the pre-RED picker.
+```
+
+```handoff
 session: S68
 date: 2026-11-21
 status: complete

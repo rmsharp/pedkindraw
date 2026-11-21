@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-21 · [BL-Phase G16] S69: G16a, the recording layer and the SVG file (in progress)
+- **Change:** session claimed (Mark's orient pick, "G16a: SVG picture file (Recommended)"): gaps A1 and A2's first build session (`docs/planning/picture-files-plan.md:253`, R142), strict TDD; the plan's measure-before-picker list on a scratch copy first, then the pre-RED picker, then RED, GREEN, REFACTOR by the gates. Phase 3F replaces this entry with the outcome.
+- **Commit/PR:** claim commit · **Session:** S69 · **Model:** Claude Sonnet 5.5 · **Verified:** n/a (claim).
+
 ### 2026-11-21 · [BL-Phase G16] S68 push 1: `master` to GitHub at close-out 2 (S68's claim, the plan, close-out 1-2)
 - **Change:** `git push origin master` (`3a2146a..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `docs/planning/` changed, so both workflows run (their `paths-ignore` is only `CLAUDE.md` and `methodology/**`; S67's note had read as if the changed directories decided it). S67's push runs, read in S68: site `44939299345` `success` (pages `44939558200` `success`); CI `44939299378` `failure` on its Ubuntu R-devel job only (S4Vectors, setup-r-dependencies, before pedkindraw was checked), the other four `success`, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2, PASS 16,056 (S67's estimate exactly).
 - **Commit/PR:** none (push) · **Session:** S68 · **Verified:** the push's output; S67's runs by `gh run view`.

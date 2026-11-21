@@ -136,6 +136,19 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 69 Did
+**Deliverable:** Phase G16a (IN PROGRESS; the recording layer and the SVG file, gaps A1 and A2;
+`docs/planning/picture-files-plan.md:253`, R142): strict TDD. First its pre-RED measures (the plan's
+measure-before-picker list, Learning 17), then the pre-RED picker (the function's name and arguments, the legend's
+way, Imports or Suggests, a layout accepted as well as a widget, the layer as a string or a file in `inst/`), then
+RED, GREEN, REFACTOR, each transition one `AskUserQuestion`. Mark's three R142 picks are made: not re-asked.
+**Started:** 2026-11-21 · **Model:** Claude Sonnet 5.5 · **Mark's pick:** "G16a: SVG picture file (Recommended)"
+(orient picker; S68's orient found the ledgers reconciled, drift 91/23/0, nprcgenekeepr at `3e06730c5`).
+**Status:** Session claimed. Reading the plan's sections 3-5 and dragons, the prototype and the gaps plan's dragons
+86-88; then the measures on a scratch copy.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### What Session 68 Did
 **Deliverable:** G16's planning session: `docs/planning/picture-files-plan.md` (gaps A1 and A2, picture files from a
 script and a whole large pedigree on one page), no package code (failure mode #18). DONE.
