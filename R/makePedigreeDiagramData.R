@@ -105,7 +105,14 @@
 ## argument lineWidth = 1, checked after rowSpacing, and at another width
 ## the lines, dashes and outlines of .lineWidthLayout() and a lineWidth
 ## column on every node (pedkindraw's own, R/lineWidth.R); and its help
-## (the same rows).
+## (the same rows). Plan Phase G15a, mates with no offspring (pedkindraw S65,
+## R141): the argument matings = NULL, read by .checkMatings() (pedkindraw's
+## own, R/matings.R) before the hints, which accept a declared pair;
+## .findIsolatedIds() leaves no declared partner out;
+## .buildMatingUnitForest() adds a mating unit for each declared pair with no
+## offspring together, after the units built from offspring; in
+## .positionMatingUnitForest() a unit with no offspring takes the sex rule
+## for its mate's side; and the help (DIVERGENCE.md rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -520,8 +527,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #' else's \code{sire}/\code{dam} (never a parent themselves) AND they are
 #' not connected via \code{twinRelations} -- i.e. literally zero edges,
 #' matching kinship2's own \code{align.pedigree()} convention (this
-#' package's mating-unit model only recognizes a union via a shared child,
-#' so a parent with no children is not, on its own, "mated"). A dangling
+#' package's mating-unit model recognizes a union via a shared child, so a
+#' parent with no children is not, on its own, "mated"), unless
+#' \code{matings} declares it a partner (plan Phase G15a). A dangling
 #' parent reference (a \code{sire}/\code{dam} value with no own row in
 #' \code{ped}) still counts as having a parent edge -- a child of a
 #' trimmed-away parent is correctly not isolated. Not validated here
@@ -535,9 +543,12 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #' @param twinRelations optional data.frame with columns \code{id1},
 #'   \code{id2} (see \code{\link{checkTwinRelations}}). \code{NULL}
 #'   (default): the twin exclusion is a no-op.
+#' @param matings optional data.frame of declared matings, the columns
+#'   \code{sire} and \code{dam} (checked by \code{.checkMatings()}); neither
+#'   partner is isolated. \code{NULL} (default): no-op.
 #' @return character vector of isolated ids (possibly empty).
 #' @noRd
-.findIsolatedIds <- function(ped, twinRelations = NULL) {
+.findIsolatedIds <- function(ped, twinRelations = NULL, matings = NULL) {
   ids <- as.character(ped$id)
   sire <- as.character(ped$sire)
   dam <- as.character(ped$dam)
@@ -549,7 +560,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   } else {
     character()
   }
-  ids[!hasParent & !isParent & !(ids %in% twinIds)]
+  mateIds <- c(matings$sire, matings$dam)
+  ids[!hasParent & !isParent & !(ids %in% twinIds) & !(ids %in% mateIds)]
 }
 
 ## pedkindraw S38 (plan R94): the prefixes of the ids the layout gives its own
@@ -626,6 +638,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   \code{\link{makePedigreeMatingLayout}}: a mating whose
 #'   \code{hints$mate} row anchors it on a named partner takes that partner
 #'   as its anchor (pedkindraw S23).
+#' @param matings \code{NULL} (default) or the checked declared matings of
+#'   \code{\link{makePedigreeMatingLayout}} (\code{.checkMatings()}): a pair
+#'   with no offspring together, in either role, gets a mating unit of its
+#'   own with no child, numbered after the units built from offspring
+#'   (pedkindraw S65, plan Phase G15a).
 #' @return A list with three data frames: \code{matingUnits} (\code{id},
 #'   \code{sire}, \code{dam}, \code{anchor}, \code{nonAnchor} --
 #'   \code{anchor}/\code{nonAnchor} both \code{NA} when neither parent has
@@ -635,7 +652,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   mating-unit id, or a single known parent's real id under the D5
 #'   partial-parentage fallback).
 #' @noRd
-.buildMatingUnitForest <- function(ped, hints = NULL) {
+.buildMatingUnitForest <- function(ped, hints = NULL, matings = NULL) {
   if (!is.data.frame(ped)) {
     stop(".buildMatingUnitForest() requires 'ped' to be a data frame.")
   }
@@ -669,7 +686,15 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   pairKey <- rep(NA_character_, length(ids))
   pairKey[hasBoth] <- paste(sire[hasBoth], dam[hasBoth], sep = "\u0001")
   uniqueKeys <- unique(pairKey[hasBoth])
-  nUnits <- length(uniqueKeys)
+  # pedkindraw Phase G15a (R141): a mating declared in 'matings' whose pair
+  # has no offspring together, in either role, is a unit of its own, after
+  # the units built from offspring, so that their numbers are unchanged.
+  declaredSire <- as.character(matings$sire)
+  declaredDam <- as.character(matings$dam)
+  declared <- !paste(declaredSire, declaredDam, sep = "\u0001") %in%
+    uniqueKeys & !paste(declaredDam, declaredSire, sep = "\u0001") %in%
+    uniqueKeys
+  nUnits <- length(uniqueKeys) + sum(declared)
 
   if (nUnits == 0L) {
     matingUnits <- data.frame(id = character(), sire = character(),
@@ -681,8 +706,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
                               stringsAsFactors = FALSE)
   } else {
     firstRow <- match(uniqueKeys, pairKey)
-    unitSire <- sire[firstRow]
-    unitDam <- dam[firstRow]
+    unitSire <- c(sire[firstRow], declaredSire[declared])
+    unitDam <- c(dam[firstRow], declaredDam[declared])
     unionIds <- sprintf("__union_%d", seq_len(nUnits))
 
     mateCountTab <- table(c(unitSire, unitDam))
@@ -1520,8 +1545,11 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
       }
       side <- if (length(us) == 1L) {
         childSide <- sign(unitX[[u]] - tier1X[[a]])
-        ## correctableUnitIds: see the side bullet above (S856).
-        if (u %in% correctableUnitIds || qualifies(u) || childSide == 0.0) {
+        ## correctableUnitIds: see the side bullet above (S856). pedkindraw
+        ## Phase G15a (R141): a declared mating with no offspring has no
+        ## offspring's side (NA), and takes the sex rule.
+        if (u %in% correctableUnitIds || qualifies(u) || is.na(childSide) ||
+              childSide == 0.0) {
           sexSide
         } else {
           childSide
@@ -1806,7 +1834,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'
 #' A simple two-real-parent mating unit (each parent has exactly one
 #' mate and both have unambiguous \code{"M"}/\code{"F"} sex codes) is
-#' drawn with the male parent to the left of the female parent. The final
+#' drawn with the male parent to the left of the female parent, and so is
+#' such a mating that \code{matings} declares with no offspring. The final
 #' horizontal positions come from a joint quadratic program that preserves
 #' each row's provisional left-to-right order, so this rule carries into
 #' the rendered layout. It cannot be turned off, unless a mate hint says
@@ -1928,7 +1957,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   it. \code{mate} is a data frame with one row per mating to place and
 #'   the columns \code{left}, \code{right} and \code{anchor}: \code{left}
 #'   and \code{right} are a sire and a dam with offspring together in
-#'   \code{ped}, in either column, and \code{left} is drawn left of
+#'   \code{ped}, or a pair \code{matings} declares, in either column, and
+#'   \code{left} is drawn left of
 #'   \code{right} at their mating; \code{anchor} (\code{"left"},
 #'   \code{"right"} or \code{"either"}) names the partner whose own place the
 #'   offspring are drawn under, the other partner then drawn beside it as a
@@ -1944,7 +1974,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   or not in \code{ped}, and \code{NA}; and on a \code{mate} that is not a
 #'   data frame or lacks a column, \code{NA}, the same id as \code{left} and
 #'   \code{right}, an id not in \code{ped} (a sire or dam without a row of
-#'   its own), a pair with no offspring together or named twice, an
+#'   its own), a pair with no offspring together that \code{matings} does
+#'   not declare, a pair named twice, an
 #'   \code{anchor} other than those three, and an anchor on the partner of
 #'   an earlier generation than its mate (the layout draws a mating on the
 #'   row of its later partner). The returned \code{hints} are the hints the
@@ -2061,6 +2092,29 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   room between them: measured at 500 pixels, at 3 the lines and
 #'   outlines reach the ids in 4 of 16 drawings (2 at 1). Stops unless it
 #'   is one positive number.
+#' @param matings \code{NULL} (the default) or a data frame with the columns
+#'   \code{sire} and \code{dam} (text or factor), one row per mating to draw
+#'   whether or not the two have offspring together in \code{ped}, as
+#'   kinship2's relation code 4 and Pedixplorer's \code{"Spouse"} rows
+#'   declare them. Other columns are ignored, so the result of
+#'   \code{\link{getMatings}} can be passed with rows added. The two are
+#'   drawn side by side on the row of the partner of the later generation,
+#'   joined at a mating point with no line down, its hover text
+#'   \dQuote{0 offspring}, and neither is left out as an animal with no
+#'   relative (\code{isolatedIds}). An animal with other matings is drawn at
+#'   each, as it is when they all have offspring (kinship2 draws it once,
+#'   between its mates), and a partner with parents of its own is drawn again
+#'   beside its mate, as for a mating with offspring. A mate hint
+#'   (\code{hints}) may place such a mating. A pair with offspring together
+#'   changes nothing, and a pair named twice, in either column, is drawn
+#'   once. The sexes are not checked: two males, an animal of unknown sex
+#'   and a female in the \code{sire} column are drawn as given, as kinship2
+#'   and Pedixplorer draw them. A row naming an animal without a row of its
+#'   own in \code{ped}, as a trimming function leaves, is left out, with a
+#'   message naming the pair. \code{NULL} or no rows give the layout of no
+#'   declared mating. Stops, before the hints are checked, on anything but
+#'   \code{NULL} or a data frame with both columns, on \code{NA}, and on the
+#'   same id as sire and dam.
 #' @return A list with \code{nodes} (\code{id}, \code{label}, \code{shape},
 #'   \code{title}, \code{size}, \code{color.background},
 #'   \code{deceased} (logical, never \code{NA}: \code{TRUE} for the node of
@@ -2116,8 +2170,9 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   that gets replaced by a right-angle projection currently falls back to
 #'   the generic routing color and width. Also \code{isolatedIds}, a
 #'   character vector of ids suppressed from \code{nodes}/\code{edges}
-#'   because they have no known parent, are never a parent, and are not
-#'   connected by \code{twinRelations}; it is \code{character(0)} when
+#'   because they have no known parent, are never a parent, are not
+#'   connected by \code{twinRelations}, and have no mating in
+#'   \code{matings}; it is \code{character(0)} when
 #'   nothing was suppressed. When every individual in \code{ped} is
 #'   isolated, \code{nodes}/\code{edges} are both 0-row and
 #'   \code{duplicateToReal} is empty. Also \code{conditions}, a data
@@ -2176,7 +2231,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                                       symbolSize = 1.0, textSize = 1.0,
                                       columnSpacing = 1.0,
                                       rowSpacing = 1.0,
-                                      lineWidth = 1.0) {
+                                      lineWidth = 1.0, matings = NULL) {
   if (!is.data.frame(ped)) {
     stop("makePedigreeMatingLayout() requires 'ped' to be a data frame.")
   }
@@ -2203,7 +2258,10 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
          "matrix (or Matrix) with row and column names set to individual ",
          "ids, or NULL.")
   }
-  hints <- .checkLayoutHints(hints, ped)
+  # pedkindraw Phase G15a (R141): the declared matings, checked before the
+  # hints, which may place them.
+  matings <- .checkMatings(matings, ped)
+  hints <- .checkLayoutHints(hints, ped, matings)
 
   # S1029: every column whose name starts "affected" is a condition (owner
   # ruling), in file order, the first four drawn (kinship2's own limit).
@@ -2273,7 +2331,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   # filtering 'ped' here (Dragon 2) means .buildMatingUnitForest() and
   # .positionMatingUnitForest(), and every downstream table, never see an
   # isolated row at all -- no separate exclusion needed later.
-  isolatedIds <- .findIsolatedIds(ped, twinRelations)
+  isolatedIds <- .findIsolatedIds(ped, twinRelations, matings)
   ped <- ped[!ped$id %in% isolatedIds, , drop = FALSE]
   if (!is.null(hints$order)) ped <- .layoutHintRows(ped, hints$order)
 
@@ -2324,7 +2382,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
                 hints = .layoutHintsUsed(ped, hints)))
   }
 
-  forest <- .buildMatingUnitForest(ped, hints)
+  forest <- .buildMatingUnitForest(ped, hints, matings)
   pos <- .positionMatingUnitForest(ped, forest, hints)
   matingUnits <- forest$matingUnits
   duplicates <- forest$duplicates

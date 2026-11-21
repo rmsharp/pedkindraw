@@ -10,7 +10,9 @@
 ## shares, so a converted mate hint is fixed by the rules the check applies.
 ## Plan Phase G10 (pedkindraw S51, R127-R128): .layoutHintsUsed() and its two
 ## helpers give the hints a layout used, which makePedigreeMatingLayout()
-## returns, so that passing them back gives the same layout.
+## returns, so that passing them back gives the same layout. Plan Phase G15a
+## (pedkindraw S65, R141): the mate check accepts a pair declared in the
+## layout's matings argument, which may have no offspring together.
 
 #' Check the hints given to makePedigreeMatingLayout()
 #'
@@ -20,12 +22,14 @@
 #'   or both.
 #' @param ped the pedigree data frame, every row's (\code{id}, \code{sire},
 #'   \code{dam}, \code{gen}).
+#' @param matings \code{NULL} or the checked declared matings
+#'   (\code{.checkMatings()}), a data frame of \code{sire} and \code{dam}.
 #' @return \code{NULL} when the hints ask for nothing (\code{NULL},
 #'   \code{list()}, or each element \code{NULL} or empty); otherwise
 #'   \code{list(order = , mate = )}, an element \code{NULL} where it asks
 #'   for nothing. Stops on a hint it cannot use.
 #' @noRd
-.checkLayoutHints <- function(hints, ped) {
+.checkLayoutHints <- function(hints, ped, matings = NULL) {
   if (is.null(hints)) {
     return(NULL)
   }
@@ -48,7 +52,7 @@
          toString(unknown), ". Known: order, mate.")
   }
   hintOrder <- .checkLayoutHintOrder(hints$order, ped$id)
-  hintMate <- .checkLayoutHintMate(hints$mate, ped)
+  hintMate <- .checkLayoutHintMate(hints$mate, ped, matings)
   if (is.null(hintOrder) && is.null(hintMate)) {
     return(NULL)
   }
@@ -98,20 +102,21 @@
 
 #' Check a mate hint
 #'
-#' Each row names a sire and dam with offspring together in \code{ped}, in
-#' either column: \code{left} is drawn left of \code{right} at that
-#' mating, and \code{anchor} (\code{"left"}, \code{"right"} or
-#' \code{"either"}) names the partner whose own place the offspring hang
-#' under.
+#' Each row names a sire and dam with offspring together in \code{ped}, or
+#' a pair \code{matings} declares (plan Phase G15a), in either column:
+#' \code{left} is drawn left of \code{right} at that mating, and
+#' \code{anchor} (\code{"left"}, \code{"right"} or \code{"either"}) names the
+#' partner whose own place the offspring hang under.
 #'
 #' @param hintMate \code{NULL} or a data frame with the columns \code{left},
 #'   \code{right} and \code{anchor}.
 #' @param ped the pedigree data frame, every row's.
+#' @param matings \code{NULL} or the checked declared matings.
 #' @return \code{NULL} when \code{hintMate} is \code{NULL} or has no rows,
 #'   otherwise a data frame of the three columns as character. Stops on a
 #'   row it cannot use.
 #' @noRd
-.checkLayoutHintMate <- function(hintMate, ped) {
+.checkLayoutHintMate <- function(hintMate, ped, matings = NULL) {
   if (is.null(hintMate)) {
     return(NULL)
   }
@@ -145,11 +150,14 @@
     stop("makePedigreeMatingLayout() found id(s) in 'hints$mate' that are ",
          "not in 'ped': ", toString(unique(absent)))
   }
-  together <- .layoutHintTogether(left, right, ped)
+  together <- .layoutHintTogether(left, right, ped) |
+    .layoutHintPairKey(left, right) %in%
+      .layoutHintPairKey(matings$sire, matings$dam)
   if (!all(together)) {
     stop("makePedigreeMatingLayout() found pair(s) in 'hints$mate' with no ",
          "offspring together in 'ped': ",
-         toString(paste(left[!together], "and", right[!together])))
+         toString(paste(left[!together], "and", right[!together])),
+         ". A mating with no offspring is declared in 'matings'.")
   }
   repeated <- duplicated(.layoutHintPairKey(left, right))
   if (any(repeated)) {
