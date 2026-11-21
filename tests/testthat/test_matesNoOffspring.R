@@ -20,7 +20,10 @@
 ## value here computed on a prototype of the change first (Learning 18), the
 ## typed shapes' rows drawn in headless Chrome at 500 pixels first. The
 ## stops are the plan's section 5. nprcgenekeepr has no such argument;
-## DIVERGENCE.md records it "at the switch" (R98).
+## DIVERGENCE.md records it "at the switch" (R98). S66 (plan Phase G15b;
+## Mark's pick): a row naming a pair with offspring together, in either role,
+## is dropped without a message before the other checks, so a table
+## getMatings() returns can be passed back (123 of 123 pedigrees measured).
 library(testthat)
 
 test_that("matings is the layout's last argument, NULL by default", {
@@ -174,7 +177,9 @@ test_that(
            "naming an animal not in 'ped' left out: C and Z")
   )
   expect_identical(got, once)
-  ## Both absent, and a sire with no row of its own (a trimmed parent).
+  ## Both absent, left out with a message; and S, a sire with no row of its
+  ## own (a trimmed parent), with B, the parents of C, dropped without one
+  ## (S66, plan Phase G15b).
   dangling <- data.frame(id = c("B", "C", "E", "F"), sire = c(NA, "S", NA, NA),
                          dam = c(NA, "B", NA, NA), sex = c("F", "M", "M", "F"),
                          gen = c(0L, 1L, 0L, 0L), stringsAsFactors = FALSE)
@@ -182,8 +187,8 @@ test_that(
     got <- makePedigreeMatingLayout(dangling, matings = .matesTable(
       c("E", "S", "X"), c("F", "B", "Y")
     )),
-    paste0("2 mating\\(s\\) in 'matings' naming an animal not in 'ped' ",
-           "left out: S and B, X and Y")
+    paste0("1 mating\\(s\\) in 'matings' naming an animal not in 'ped' ",
+           "left out: X and Y")
   )
   expect_identical(got, .matesLayout(dangling, .matesTable("E", "F"),
                                      "rectilinear"))
@@ -208,6 +213,37 @@ test_that(
     "left out: A and G, E and F"
   )
   expect_identical(got, .matesLayout(trimmed, NULL, "rectilinear"))
+})
+
+test_that(
+  "a row naming a pair with offspring together, in either role, is dropped
+   without a message before the other checks, so a table getMatings()
+   returns can be passed back", {
+  b4 <- .matesPlus()
+  expect_no_message(
+    got <- makePedigreeMatingLayout(b4, edgeStyle = "direct",
+                                    matings = .matesTable("B", "A"))
+  )
+  expect_identical(got, .matesLayout(b4))
+  ## S, a sire with no row of its own, and B have C.
+  dangling <- data.frame(id = c("B", "C"), sire = c(NA, "S"),
+                         dam = c(NA, "B"), sex = c("F", "M"),
+                         gen = c(0L, 1L), stringsAsFactors = FALSE)
+  expect_no_message(
+    got <- makePedigreeMatingLayout(dangling, edgeStyle = "direct",
+                                    matings = getMatings(dangling))
+  )
+  expect_identical(got, .matesLayout(dangling))
+  ## Each typed shape: its getMatings() result with its declared rows
+  ## added draws what the declared rows alone draw.
+  shapes <- .matesShapes()
+  for (nm in names(shapes)) {
+    listed <- getMatings(shapes[[nm]]$ped)
+    listed <- rbind(listed[c("sire", "dam")], shapes[[nm]]$matings)
+    expect_identical(.matesLayout(shapes[[nm]]$ped, listed),
+                     .matesLayout(shapes[[nm]]$ped, shapes[[nm]]$matings),
+                     info = nm)
+  }
 })
 
 test_that("stops on a matings table it cannot read", {

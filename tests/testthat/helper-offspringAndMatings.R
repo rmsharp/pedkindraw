@@ -4,7 +4,9 @@
 ## G6, gap C5, pedkindraw S47), for test_countOffspring.R and
 ## test_getMatings.R: the typed pedigrees, seeded random ones, and slow
 ## versions of each count and mating written from their definitions, which
-## agreed with the functions on 311 of 311 pedigrees before RED (S47).
+## agreed with the functions on 311 of 311 pedigrees before RED (S47). S66
+## (plan Phase G15b, gap B1, R141) added the declared matings' cases and a
+## reading of a layout's drawn mating points.
 
 ## The gap case lookups (tools/gapCases.R): A and B, founders, with offspring
 ## C and D.
@@ -86,11 +88,60 @@ matesSlow <- function(ped, id) {
 }
 
 ## The matings the drawing's layout builds (sire and dam of each mating unit,
-## in its order), for a pedigree with id, sire and dam.
-layoutMatings <- function(ped) {
+## in its order), for a pedigree with id, sire and dam, and the declared
+## matings as the layout reads them (S66, plan Phase G15b).
+layoutMatings <- function(ped, matings = NULL) {
   p <- data.frame(id = as.character(ped$id), sire = as.character(ped$sire),
                   dam = as.character(ped$dam), sex = "U", gen = 0L,
                   stringsAsFactors = FALSE)
-  units <- .buildMatingUnitForest(p)$matingUnits
+  declared <- suppressMessages(.checkMatings(matings, p))
+  units <- .buildMatingUnitForest(p, NULL, declared)$matingUnits
   data.frame(sire = units$sire, dam = units$dam, stringsAsFactors = FALSE)
+}
+
+## The cases G15b's agreement test runs on (S66, plan Phase G15b): the 12
+## typed shapes of helper-matesNoOffspring.R, then 100 seeded random family
+## pedigrees with declared matings, picked as test_matesNoOffspring.R picks
+## them; each a list of ped and matings.
+declaredMatingCases <- function() {
+  cases <- .matesShapes()
+  seed <- 0L
+  n <- 0L
+  while (n < 100L) {
+    seed <- seed + 1L
+    ped <- layoutHintsFamilies(seed)
+    if (nrow(ped) > 300L) next
+    matings <- .matesPick(ped, seed, 1L + seed %% 3L)
+    if (nrow(matings) == 0L) next
+    n <- n + 1L
+    cases[[paste0("random", seed)]] <- list(ped = ped, matings = matings)
+  }
+  cases
+}
+
+## Each mating point a layout draws, in the order of its number
+## (__union_<n>), as its two partners sorted and joined with "+", a repeat
+## node read as its animal; NA for a point that two animals' lines do not
+## reach. The layout is made with edgeStyle = "direct".
+drawnMatings <- function(layout) {
+  points <- layout$nodes$id[grepl("^__union_", layout$nodes$id)]
+  points <- points[order(as.integer(sub("^__union_", "", points)))]
+  animalOf <- function(node) {
+    real <- layout$duplicateToReal[node]
+    ifelse(is.na(real), node, real)
+  }
+  unname(vapply(points, function(point) {
+    from <- layout$edges$from[layout$edges$to == point]
+    from <- from[!grepl("^__", from) | grepl("^__dup_", from)]
+    if (length(from) != 2L) return(NA_character_)
+    paste(sort(unname(animalOf(from))), collapse = "+")
+  }, character(1L)))
+}
+
+## Each row of a getMatings() result as its sire and dam sorted and joined
+## with "+".
+matingPairs <- function(m) {
+  vapply(seq_len(nrow(m)), function(i) {
+    paste(sort(c(m$sire[[i]], m$dam[[i]])), collapse = "+")
+  }, character(1L))
 }

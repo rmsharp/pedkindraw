@@ -6,6 +6,12 @@
 ## share: the matings the drawing's layout builds. Every expected value was
 ## computed with a scratch prototype before this file was written (Learning
 ## 18). The pedigrees and slow versions are in helper-offspringAndMatings.R.
+## S66 (plan Phase G15b, gap B1, R141; Mark's picks): with 'matings', the
+## declared pairs with no offspring together follow the matings built from
+## offspring, in their rows' order, with offspring 0; a row naming a pair
+## with offspring together is dropped without a message; the rows are the
+## drawing's mating points, in its order. The typed shapes are in
+## helper-matesNoOffspring.R.
 library(testthat)
 
 matings <- function(sire, dam, offspring) {
@@ -105,4 +111,126 @@ test_that("getMatings() stops on a pedigree it cannot read", {
                "getMatings: ped must be a data frame")
   expect_error(getMatings(data.frame(id = "A", dam = NA)),
                "getMatings: ped lacks the column\\(s\\) sire")
+})
+
+test_that("matings is getMatings()'s last argument, NULL by default; NULL or
+  a table with no rows changes nothing", {
+  expect_identical(names(formals(getMatings)), c("ped", "matings"))
+  expect_null(formals(getMatings)$matings)
+  ped <- halfSibsPed()
+  expect_identical(getMatings(ped, NULL), getMatings(ped))
+  expect_identical(getMatings(ped, .matesTable(character(), character())),
+                   getMatings(ped))
+})
+
+test_that("declared matings with no offspring follow the matings built from
+  offspring, in their rows' order, each as written, with offspring 0", {
+  shape <- .matesShapes()$matesNoOffspring
+  expect_identical(getMatings(shape$ped, shape$matings),
+                   matings(c("A", "E"), c("B", "F"), c(2L, 0L)))
+  ## E and F in the first rows of ped: still after A and B.
+  expect_identical(getMatings(shape$ped[c(5L, 6L, 1L:4L), ], shape$matings),
+                   matings(c("A", "E"), c("B", "F"), c(2L, 0L)))
+  ## No mating with offspring; two declared rows, in their order.
+  two <- .matesShapes()$twoChildless
+  expect_identical(getMatings(two$ped, two$matings),
+                   matings(c("A", "A"), c("B", "G"), c(0L, 0L)))
+  expect_identical(getMatings(two$ped, two$matings[2L:1L, ]),
+                   matings(c("A", "A"), c("G", "B"), c(0L, 0L)))
+  ## The sexes are not checked: F, a female, listed as sire as written.
+  first <- .matesShapes()$femaleFirst
+  expect_identical(getMatings(first$ped, first$matings),
+                   matings(c("A", "F"), c("B", "E"), c(2L, 0L)))
+  ## Factor columns read as text; other columns ignored.
+  expect_identical(
+    getMatings(shape$ped, data.frame(sire = factor("E"), dam = factor("F"),
+                                     note = "x")),
+    matings(c("A", "E"), c("B", "F"), c(2L, 0L))
+  )
+})
+
+test_that("a declared row naming a pair with offspring together, in either
+  role, adds nothing and says nothing; a pair named twice is listed once", {
+  expect_no_message(got <- getMatings(lookupsPed(), .matesTable("B", "A")))
+  expect_identical(got, matings("A", "B", 2L))
+  shape <- .matesShapes()$matesNoOffspring
+  expect_identical(
+    getMatings(shape$ped, .matesTable(c("E", "F", "E", "A"),
+                                      c("F", "E", "F", "B"))),
+    matings(c("A", "E"), c("B", "F"), c(2L, 0L))
+  )
+})
+
+test_that("getMatings(ped, getMatings(ped)) is getMatings(ped), with no
+  message, on every fixture pedigree, 100 seeded random ones and the typed
+  ones", {
+  selfed <- data.frame(id = c("X", "C"), sire = c(NA, "X"), dam = c(NA, "X"),
+                       stringsAsFactors = FALSE)
+  rowless <- halfSibsPed()
+  rowless$sire[rowless$id == "H"] <- "Z"
+  peds <- c(matingCheckPeds(),
+            list(halfSibs = halfSibsPed(), sireAndDam = sireAndDamPed(),
+                 selfed = selfed, rowlessSire = rowless))
+  for (name in names(peds)) {
+    listed <- getMatings(peds[[name]])
+    expect_no_message(got <- getMatings(peds[[name]], listed))
+    expect_identical(got, listed, info = name)
+  }
+})
+
+test_that("a declared row naming an animal without a row in ped is left out,
+  with a message naming getMatings(); the other rows are listed", {
+  shape <- .matesShapes()$matesNoOffspring
+  expect_message(
+    got <- getMatings(shape$ped, .matesTable(c("E", "C"), c("F", "Z"))),
+    paste0("getMatings\\(\\): 1 mating\\(s\\) in 'matings' naming an ",
+           "animal not in 'ped' left out: C and Z")
+  )
+  expect_identical(got, matings(c("A", "E"), c("B", "F"), c(2L, 0L)))
+  ## Z, a sire with no row of its own (of H, with B), declared with E: left
+  ## out, as the drawing, which draws no animal without a row, leaves it.
+  rowless <- halfSibsPed()
+  rowless$sire[rowless$id == "H"] <- "Z"
+  expect_message(got <- getMatings(rowless, .matesTable("Z", "E")),
+                 "left out: Z and E")
+  expect_identical(got, getMatings(rowless))
+})
+
+test_that("getMatings() stops on a matings table it cannot read, naming
+  itself, after checking ped", {
+  ped <- .matesShapes()$matesNoOffspring$ped
+  notFrame <- paste0("getMatings\\(\\) requires 'matings' to be NULL or a ",
+                     "data frame with the columns sire and dam")
+  expect_error(getMatings(ped, list(sire = "E", dam = "F")), notFrame)
+  expect_error(getMatings(ped, "E"), notFrame)
+  expect_error(getMatings(ped, data.frame(sire = "E")),
+               paste0("getMatings\\(\\) requires 'matings' to have the ",
+                      "columns sire and dam. Missing: dam"))
+  expect_error(getMatings(ped, .matesTable("E", NA)),
+               "getMatings\\(\\) found NA in 'matings' columns sire and dam")
+  expect_error(getMatings(ped, .matesTable("E", "E")),
+               paste0("getMatings\\(\\) found the same id as sire and dam ",
+                      "in 'matings': E"))
+  expect_error(getMatings(list(id = "A", sire = NA, dam = NA), "E"),
+               "getMatings: ped must be a data frame")
+})
+
+test_that("with declared matings, getMatings() lists the matings the
+  drawing draws, in its order, on the typed shapes and 100 seeded random
+  pedigrees", {
+  skip_on_cran()
+  cases <- declaredMatingCases()
+  expect_identical(length(cases), 112L)
+  nDeclared <- 0L
+  for (name in names(cases)) {
+    ped <- cases[[name]]$ped
+    m <- cases[[name]]$matings
+    got <- getMatings(ped, m)
+    nDeclared <- nDeclared + sum(got$offspring == 0L)
+    expect_identical(got[c("sire", "dam")], layoutMatings(ped, m),
+                     info = name)
+    expect_identical(drawnMatings(.matesLayout(ped, m)), matingPairs(got),
+                     info = name)
+  }
+  expect_gte(nDeclared, 200L)
 })
