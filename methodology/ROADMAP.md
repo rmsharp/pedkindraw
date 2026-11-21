@@ -37,8 +37,9 @@ marks, is done: the genotyped mark (S54, R133-R134), the carrier mark (S55, R135
 (S56, R136), the evaluated mark (S57, R137), the infertile mark (S58, R138) and the miscarriage mark (S59, R139);
 G14, symbol and text sizes, spacing and line width as arguments, is done: the symbol size is done (S60, R140),
 the text size is done (S61, R140), the column and row spacing is done (S62, R140), and the line width is done
-(S63, R140), so G14 is done in four sessions. Next is G15, mates with no offspring, its planning session first
-(Planned, below).
+(S63, R140), so G14 is done in four sessions. G15, mates with no offspring, is planned (S64, R141,
+`docs/planning/mates-without-offspring-plan.md`): a user declares such mates in a `matings` table of `sire`
+and `dam`; next is G15a, the layout that draws them (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -75,9 +76,9 @@ session each unless marked. They follow the copy slices.
   done (S53); G13 (Pedixplorer's marks) is done, the genotyped mark (S54), the carrier mark (S55), proband with
   consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes, spacing and line
   width) is done, the symbol size (S60), the text size (S61), the spacing (S62) and the line width (S63);
-  then
-  the medium additions and the three large ones (mates with no offspring; PDF, SVG
-  and PNG files; an app), each large one planned first; then 17g-17q.
+  G15 (mates with no offspring) is planned (S64, R141), G15a the layout next, then G15b `getMatings()` and G15c
+  the converters; then
+  the two other large additions (PDF, SVG and PNG files; an app), each planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
@@ -253,6 +254,13 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G15's plan (pedkindraw S64, 2026-11-21).** kinship2 and Pedixplorer can draw two animals as mates
+  although they have no offspring together; pedkindraw left both out of the drawing. Measured first: both
+  packages on 16 typed shapes, and a scratch prototype of pedkindraw's layout that drew all 200 declared matings
+  of 100 random pedigrees, with every existing drawing unchanged (600 of 600). Mark's pick: a `matings` table of
+  `sire` and `dam` given to `makePedigreeMatingLayout()` (R141). The plan
+  (`docs/planning/mates-without-offspring-plan.md`) has three build sessions: the layout, `getMatings()`, the
+  converters.
 - **Phase G14, session 4 of 4: the line width (pedkindraw S63, 2026-11-20).** kinship2's and Pedixplorer's
   `lwd` thicken every line they draw; pedkindraw's lines were 1 unit wide, its outlines 1 pixel (a genotyped
   one 4). `makePedigreeMatingLayout(lineWidth = )` now sets the width of every line, outline and mark as a

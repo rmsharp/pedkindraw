@@ -83,9 +83,11 @@ from a column `miscarriage`, R139); Phase G14 under way (pedkindraw S60: its fir
 animals' symbol size as `makePedigreeMatingLayout(symbolSize = )`, a multiple of today's, R140; S61: its second, the
 ids' and names' size as `textSize`, with room kept for the outermost labels, R140; S62: its third, the column
 and row spacing as `columnSpacing` and `rowSpacing`, R140, the line width split off as a fourth session by Mark's
-pick; S63: its fourth and last, the line width as `lineWidth`, R140); Phase G14 DONE (four sessions, S60-S63).
-**Next:** Phase G15, mates with no offspring (gap B1), its planning session first
-(`docs/planning/gaps-and-shared-code-plan.md` section 5.1), then its build sessions, G16-G17, then 17g.
+pick; S63: its fourth and last, the line width as `lineWidth`, R140); Phase G14 DONE (four sessions, S60-S63);
+Phase G15's plan written (pedkindraw S64: `docs/planning/mates-without-offspring-plan.md`, R141, mates with no
+offspring declared in a `matings` table).
+**Next:** Phase G15a, the layout draws declared matings (`docs/planning/mates-without-offspring-plan.md` section 7),
+then G15b and G15c, G16-G17, then 17g.
 In nprcgenekeepr: N1 (its two
 faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) done in its S1190
 (closed at `faf6823c3`); its S1191 (a standard error for simulated kinship, no copied file) closed at `3e06730c5`.
@@ -1293,6 +1295,15 @@ width as a number, so at 1 every drawing's script is as before (a first prototyp
 script read 540 of 600). 8 tests (`tests/testthat/test_lineWidth.R`), a headless-Chrome reading of every canvas
 stroke among them; NEWS; the contract's row; the gap case `style` reads kinship2's `par()` lwd, Pedixplorer's
 doubled rows and pedkindraw's widths. Fidelity 600 of 600 with no set-aside. G14 DONE (R140).
+
+**G15's plan (pedkindraw S64; R141):** `docs/planning/mates-without-offspring-plan.md`, a planning session (no
+package code). kinship2 1.9.6.2 and Pedixplorer 1.8.0 measured on 16 typed shapes of mates with no offspring; a
+scratch prototype of the picked input (`makePedigreeMatingLayout(matings = )`, a `sire` and `dam` table, a mating
+unit per declared pair after the units built from offspring, the `childSide` line given the sex rule) drew all 200
+declared matings of 100 seeded random pedigrees on one row with nothing between the partners, 600 of 600 fidelity
+results identical; each input option's cost in existing tests run on scratch copies (10, 2, 3, 0 read). Mark's
+pick, a matings table (R141). Three build sessions planned: G15a the layout, G15b `getMatings()`, G15c the
+converters, each with its DONE, commands, surface and pre-RED choices. Commit `445302f`.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

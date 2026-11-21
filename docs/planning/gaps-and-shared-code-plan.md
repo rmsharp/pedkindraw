@@ -13,8 +13,9 @@ R129-R130). G12 DONE (pedkindraw S53; R131-R132). G13 DONE (pedkindraw S54: the 
 S55: the carrier mark, 2 of 6; R135; S56: the proband and consultand marks, 3 of 6; R136; S57: the evaluated mark,
 4 of 6; R137; S58: the infertile mark, 5 of 6; R138; S59: the miscarriage mark, 6 of 6; R139). G14 under way
 (pedkindraw S60: the symbol size, 1 of 4; R140; S61: the text size, 2 of 4; S62: the column and row spacing, 3 of
-4, the line width split off by Mark's pick; S63: the line width, 4 of 4), so G14 DONE. Next: G15's planning
-session, in pedkindraw (section 5.1); in nprcgenekeepr N1 and
+4, the line width split off by Mark's pick; S63: the line width, 4 of 4), so G14 DONE. G15's plan written
+(pedkindraw S64; R141; `docs/planning/mates-without-offspring-plan.md`). Next: G15a, in pedkindraw (section 5.1);
+in nprcgenekeepr N1 and
 N2 are done (its S1189 and S1190, section
 5.2).
 **Measured at:** pedkindraw `f709b00` (S41's claim; `R/`, `tests/` and `NAMESPACE` as at `c5f8e84`); nprcgenekeepr
@@ -806,6 +807,15 @@ sessions a day, about 11-15 days, an estimate.
 77. **kinship2's `plot(lwd =)` is read from the recorded display list** (S63): `plot.pedigree()` passes `...` to
     `par(xpd = TRUE, ...)`; lintr refuses `par()` (dragon 71), so the gap case reads the first `C_par` call of
     `grDevices::recordPlot()` after `dev.control("enable")`.
+78. **A ruling's stated reason covers the cases it was measured on** (S64, G15): R74 leaves out a converted mate
+    hint row with no offspring because "kinship2 and Pedixplorer ignore it", measured on the 8-animal case; on
+    S64's 13 shapes kinship2's spouse hint alone drew such a pair in 11 and Pedixplorer's in 2 of 4. Before a plan
+    builds on a ruling's reason, run it on the new phase's shapes (Learning 19).
+79. **zsh does not split an unquoted variable into words** (S64): `for f in $FILES` ran once with the whole list
+    as one word, and a check reported every file missing. Use an array, `${=FILES}`, or list the files by pattern.
+80. **"missing value where TRUE/FALSE needed" names its `if` through `conditionCall()`** (S64, G15):
+    `sys.calls()` from a calling handler showed only `.positionMatingUnitForest()`, while
+    `conditionCall(e)` printed the failing condition (`childSide == 0`), found at once with `grep`.
 
 ### 7.3 Out of scope
 

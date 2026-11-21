@@ -33,8 +33,9 @@ issues).*
       DONE in S59, R139, so G13 DONE in six sessions, R133; G14's first session, the symbol size, DONE in S60,
       R140, the four settings and their order picked there; its second, the text size, DONE in S61, R140; its
       third, the column and row spacing, DONE in S62, R140, the line width split off as a fourth session by
-      Mark's pick; its fourth and last, the line width, DONE in S63, R140, so G14 DONE in four sessions; next
-      G15's planning session) --
+      Mark's pick; its fourth and last, the line width, DONE in S63, R140, so G14 DONE in four sessions; G15's
+      plan written in S64, R141, `docs/planning/mates-without-offspring-plan.md`, three build sessions;
+      next G15a, the layout) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
