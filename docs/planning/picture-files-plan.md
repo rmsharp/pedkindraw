@@ -4,8 +4,9 @@
 "Planning Sessions"; failure mode #18: this session writes no package code; the one code file it adds is a measured
 prototype, section 10). **Governs:** Phase G16 of `docs/planning/gaps-and-shared-code-plan.md` (section 5.1, G16's
 row), gaps A1 and A2 of `docs/research/pedkindraw-gaps-2026-11-18.md` (section 3). **Ruling made here:** R142 (Mark's
-three picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; no build
-session started.
+three picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; G16a started in
+S69 (pre-RED measures and R143's picks in section 11, which corrects 4.3's and 4.5's legend figures and the plan's
+dragon 4); no code yet.
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0, visNetwork 2.1.4 and chromote 0.5.1 from this project's renv
 library; Google Chrome 157.0.8103.51; pedkindraw at `ec8356b` (its `R/` unchanged since `1a6092e`); nprcgenekeepr at
@@ -115,7 +116,7 @@ colour channel differs by more than 100 (more than 40 in brackets):
 | four animals (the help example) | drawing | 4,181 | 0 (22, 0.5%) |
 | feature pedigree: 18 animals drawn, deceased, 2 conditions with an unknown status, genotyped, carrier, proband, consultand, evaluated, infertile, miscarriage (3 kinds), MZ twins, a repeat animal | drawing | 12,554 | 86, **0.7%** (899, 7.2%) |
 | 375 rhesus animals, fitted view (zoom 0.0456) | drawing | 21,240 | 770, 3.6% (6,253, 29.4%) |
-| the same three | legend | 4,282 / 7,887 / 4,282 | 11.7% / 22.7% / 11.7% (38.9% / 55.3% / 38.6%) |
+| the same three | legend | 4,282 / 7,887 / 4,282 | 11.7% / 22.7% / 11.7% (38.9% / 55.3% / 38.6%) -- **corrected in section 11.2:** the feature row's photograph was taken in a 700 px window for a 961 px widget, blank below it; on a tall window the prototype's legend is 14.0%, and 0.2% after S69's four fixes |
 
 The sections, slash, dot, arrows, star, bars, miscarriage triangles and "ECT", the MZ label and the dashed repeat arc
 all came out as in the widget (looked at). The 375-animal figure is hairline anti-aliasing: at that zoom every line is
@@ -389,3 +390,121 @@ the smaller way).
   `m7_cost.R` (the handlers' lines, 4.1).
 - The files measured: the references' PDFs 97,007-101,971 B; the recorded SVGs 14,993 B (four animals), 72,090 B (feature)
   and 761,580 or 849,232 B (375 animals); the PDF 5,668,432 B.
+
+---
+
+## 11. G16a's pre-RED measures and picks (pedkindraw S69; R143)
+
+**Date:** 2026-11-21 · **Session:** pedkindraw S69 · same machine, Chrome 157, chromote 0.5.1, visNetwork 2.1.4; scratch
+scripts in the session's scratchpad `g16a/` (may be gone); the measured layer is committed as
+`docs/planning/picture-files-prototype/recorder2.js` (a prototype, not package code).
+
+**Method (every figure below).** The live widget is photographed in a window tall enough for it (`captureBeyondViewport`
+or a 1,300 px window), the select box, the export button and the labels hidden, over the box of its two canvases; the
+recorded SVG is loaded in Chrome and photographed at its own size; "ink" is a pixel that is not near white (channel sum
+under 740) in either picture; one *differs* when a colour channel differs by more than 100; the legend is the part
+right of the legend canvas's left edge. Widths of 1,000 px unless said.
+
+### 11.1 Mark's picks (R143), each first time, all the recommended option
+
+1. **The function:** `savePedigreeDiagram(diagram, file, width, height)`; `width` and `height` the page in inches (R142),
+   left out the picture has the widget's own size, 10 in wide (960 px); `.svg` only in G16a, `.pdf` and `.png` stop with
+   a message until G16b. (The other option: no page size until G16b.)
+2. **The input:** the drawing only, not a layout. (The other: a layout too: measured safe, a layout made with
+   `edgeStyle = "direct"` and drawn with the default gave an identical picture, 0 of 13,341 ink pixels, because
+   `edgeStyle` at draw time only sets how far hovering highlights, `R/drawPedigreeDiagram.R:578`; it costs 2-3 tests
+   and a second input shape.)
+3. **The legend's pictures:** the original vector pictures. (Small rasters; or the rows redrawn from R's tables, not
+   built: R's tables hold each row's shape, colour and picture but not its place, which vis.js fits to the canvas.)
+4. **The packages:** `chromote` in Suggests, the recording layer a file in `inst/js/`; `htmlwidgets` to Imports.
+
+### 11.2 What the measures found
+
+| Question | Result |
+|---|---|
+| Why the legend differed (4.5) | `recorder.js` ignored `drawImage()`'s **source rectangle**: vis.js keeps each icon in a detached 36 x 25 canvas, four copies side by side (25, 12, 6, 3 px: a mipmap), and draws one region of it with the nine-argument form; the whole pyramid was squeezed into each icon (11 of 11 on the feature pedigree). Each such canvas is itself drawn from the original `Image` whose `src` is the picture's SVG data URI, so the recording layer can read it back. |
+| The legend's pictures | all 11 sources are `width='50' height='50'` with **no `viewBox`** (so the layer adds one; the two image functions in copied files, `R/deceasedSlash.R` and `R/affectedConditions.R`, are not changed): written as vectors or as cropped rasters the match at 100% is the same, below. |
+| Text baselines | canvas and SVG both put a text baseline on a whole pixel, canvas to the nearest (a tie down), SVG by its own rule: `dominant-baseline="central"` (the prototype's) sits 1 px below canvas `middle` and `middle` matches only where y is under .5; every label here has a scaled transform and a `hanging` or `middle` baseline. Reading `ctx.measureText(t).alphabeticBaseline` (Chrome: -10.859 for `top`, -10.400 `hanging`, -3.859 `middle`, 3.000 `ideographic`, 14 px Arial, **not scaled** by the transform, and the opposite sign to the spec's wording) gives the alphabetic y = y - alphabeticBaseline x scale; rounding it to the nearest pixel then matches canvas. |
+| The title | "Sex" is `div#legend_main...` above the legend canvas (the canvas starts 16 px lower, 91 against 75): written as a `<text>` from its computed style and box. |
+| Legend, differing ink | four animals: prototype 10.4%, crop 8.1%, vector 8.1%, +title 5.3%, +measured baselines **0.0%** (76 pixels, 1.9%, differ by more than 40). Feature pedigree: prototype 14.0%, crop 6.4%, vector 6.5%, +title 5.0%, +baselines 2.2%, +round to nearest **0.2%** (13 of 7,371; crop 0.1%). Rounding up and half down gave the same 13: no ties; rounding down 8.1%. |
+| The drawing | feature 0.4% (49 of 13,198; prototype 0.5%), four animals 0.0%, the 375 animals 4.2% (957 of 22,702; hairlines, as 4.3). |
+| Vector against raster | the same at 100% (legend 0.2% against 0.1%); 4 times enlarged the rasters are visibly blurred and the vectors sharp; the feature file 64,050 B against 73,550 B. |
+| The 12 typed shapes (`.matesShapes()`, 2-7 animals) | **0 of their ink pixels differ**, drawing and legend, all 12 (the legend 76 pixels over 40, 1.9%, in each). |
+| Style settings, feature pedigree | `direct` edges, `symbolSize` 0.6 and 1.5, `textSize` 0.7 and 1.5, `columnSpacing` and `rowSpacing` 1.5, `lineWidth` 3: drawing 0.2-0.4%, legend 0.2% in all eight (ink and element counts changed, so each setting took effect). |
+| Page size in inches | the 18-animal pedigree on 7 x 7 in (672 px): drawing 0.6%, legend 0.8%; the 375 animals on 14 x 7 in (1,344 x 672 px) at label limit 0: 561 `<text>`, 545 of them ids, drawing 6.6% (hairlines), legend 5.3%. |
+| Size of the picture box | defaults: four animals 960 x 491 px (10 x 5.1146 in), feature 960 x 961.25 (10 x 10.013 in); a widget set to 672 x 672 px gives 672 x 654.391: the box is not the widget's size (500 px high gives 491, 995 gives 961.25, 672 gives 654.391; the cause was not worked out), and the legend canvas starts 16 px below the main one, under its title. |
+| Ids, 375 animals | at vis.js's default limit **0 id texts** (16 texts, the legend's); with `nodes.scaling.label.drawThreshold = 0` set by `visNodes(w, scaling = list(label = list(drawThreshold = 0)))` on a copy, **545 id texts, 375 distinct** (S68's numbers, reproduced). |
+| `edgeStyle` | see 11.1, 2. |
+| `Imports` weight | `chromote` as Imports adds 13 packages (chromote, curl, later, processx, promises, websocket, withr, zip, Rcpp, ps, otel, cpp11, AsioHeaders), about 32 MB installed, 7 compiled (curl, later, processx, websocket, zip, Rcpp, ps; websocket 7.9 MB); `htmlwidgets` adds 0 (it is in `visNetwork`'s closure: 31 packages today). |
+| The wait | a quiet-time signal (the last canvas call 300 ms ago, both canvases drawn) took 0.31-0.33 s (7 polls of 50 ms) against the prototype's fixed 8 s; the SVG read then was identical to one read 5 s later (2 of 2: feature, 375 animals). Whole pipeline: save 0.04 s, a new Chrome 0.77 s (0.06 s when one is running), load 0.09-0.15 s, read 0.01-0.04 s. |
+| A stuck page | `Runtime$evaluate(..., timeout_ = 3)` on a page that never returns from JavaScript raised "Chromote: timed out waiting for response to command Runtime.evaluate" at 3.01 s and the session closed in 0 s; a server that accepts and never answers made `Page$navigate()` itself wait out chromote's 10 s command timeout, then `loadEventFired(timeout_ = 3)` failed with an internal error (`could not find function "deregister_callback_fn"`, 13.01 s in all). `parent$close()` leaves no Chrome process (0 before and after). |
+| A device scale factor of 2 | canvases are 2 times wider than their CSS width and the recorded drawing 2 times too large (font 18.881 against 9.441) inside the same box: the layer must scale each canvas by its CSS width over its pixel width. |
+| Another reader | librsvg 2.63.3 (`rsvg-convert`) renders the feature file 0.1% different from Chrome's (drawing and legend), the legend's nested SVG pictures included. One file, one reader. |
+| The layer | 239 lines, 13,765 B, 9 backslashes (5 lines), 77 lines over 80 columns; the seven existing drawing scripts are R strings in `R/`. |
+
+### 11.3 What G16a builds (the plan for GREEN)
+
+`savePedigreeDiagram()` in `R/savePedigreeDiagram.R`: (1) checks, in order, `diagram` (a `visNetwork` widget),
+`file` (one string; the folder exists; the ending `.svg`, case ignored; `.pdf` and `.png` named as not yet written;
+any other ending naming the three), `width` and `height` (NULL or one positive finite number); (2) `chromote` installed,
+Chrome found (`chromote::find_chrome()`); (3) a copy of the widget with the label limit 0 and, when given, the size
+(`width * 96` px wide, `height * 96` px high); (4) saves it with `htmlwidgets::saveWidget(selfcontained = FALSE)` to a
+folder it removes; (5) its own `chromote::Chromote$new()` (not the tests' shared one), `default_timeout` raised as the
+shared helper does for macOS CI's first launch, a `ChromoteSession` with `Page$enable()` first, the layer from
+`inst/js/` injected, navigate; (6) polls `Runtime$evaluate()` against one deadline (the option
+`pedkindraw.saveTimeout`, 60 s by default; the tests set it) until both canvases have drawn, the last canvas call is
+300 ms old and every legend picture has loaded (the logic of `.waitForLegendPictures()`,
+`tests/testthat/helper-legendPictures.R:15`); (7) reads `window.__svg()` and writes the file (UTF-8); (8) closes the
+session and the browser on every path. The internal `.recordDiagramSvg(diagram, timeout, scaleFactor = 1)` does 5-7 and
+returns the SVG and its box, so a test can record an unchanged widget (0 ids) or a scale factor of 2. The SVG's root has
+`width` and `height` in inches (the page given, or the box's pixels over 96) and a `viewBox` of the box, the
+drawing scaled to fit by `preserveAspectRatio` `xMidYMid meet`.
+
+### 11.4 RED's tests, each value computed with the scratch layer first (Learning 18)
+
+No Chrome (cheap, run on CRAN): `diagram` not a widget (NULL, a list, a data frame, the layout list, a string); `file`
+not one string (NULL, NA, two strings, a number); an ending not `.svg`, `.pdf` or `.png` (`x`, `x.txt`, `x.jpg`); `.pdf`
+and `.png` "not available yet"; `width` and `height` each not a positive finite number (0, -1, NA, Inf, "7", two numbers);
+the folder of `file` missing; `chromote` not installed and Chrome not found (`mockery::stub()` of
+`requireNamespace` and `chromote::find_chrome`). Messages: "requires 'diagram' to be", "requires 'file' to be one",
+"to end in .svg, .pdf or .png", "not available yet", "requires 'width' to be NULL or one positive number", "folder",
+"needs the 'chromote' package", "could not find Google Chrome".
+
+Chrome (`skip_if_no_chrome()`, `skip_on_cran()`): the four-animal help case writes a file that Chrome loads as an SVG
+document (root `svg`, no `parsererror`), root `width="10in"`, `height` 5.1146 in (491 px over 96, within 0.001), returns the path invisibly, and an
+ending in capitals (`X.SVG`) works; the ink comparison (method above) on the four animals and the 12 typed shapes,
+**differing ink at most 0.5%, drawing and legend, measured 0.0% in all 13**, on the feature pedigree **at most 1.0%,
+measured 0.4% (drawing) and 0.2% (legend)** (14 cases compared, `expect_equal(length(...), 14L)`); the feature file
+holds 11 `<image>` elements, every `href` beginning `data:image/svg+xml`, none `data:image/png`, and a `<text>` "Sex";
+the 375 animals: 545 id texts, 375 distinct (the ids found among the `<text>` contents), and `.recordDiagramSvg()` of
+the unchanged widget 0; `width = 7, height = 7` gives root `7in` by `7in` and a `viewBox` 672 wide; a scale factor of 2
+gives the same box and a main text font size within 1% of a factor of 1's (9.441); the widget is `identical()` before and
+after, and the temporary folder is gone; the option set to 0.01 s stops "did not finish drawing within"; a widget whose
+page never returns from JavaScript (`htmlwidgets::onRender()` with a loop), the option 3 s, stops with the same message
+within 20 s. The pixel bounds were measured on macOS, Chrome 157: Linux and Windows text rounding may differ (dragon 20).
+
+### 11.5 Dragons found in G16a's measures
+
+13. **A canvas `drawImage()` has a source rectangle** (the nine-argument form): a recording that takes the whole source
+    squeezes vis.js's mipmap pyramid into each icon. The same canvas's own `drawImage()` calls hold the original picture.
+14. **Canvas and SVG round a text baseline to a whole pixel by different rules, and `middle` is not `central`.** Read
+    `measureText().alphabeticBaseline` (opposite sign to the spec's wording, unscaled by the transform), write every
+    label with an alphabetic baseline, round the y to the nearest pixel. A test with one label cannot show it: the first
+    micro test gave 4 cases right by luck; the cases that failed were rows whose y was .5-1.0.
+15. **A screenshot window shorter than the widget is blank below it**: S68's legend figures (11.7-22.7%) and the
+    first runs of S69 counted that blank as difference (the rows below 620 px "3 px off"). Check what the photograph
+    holds before reading a difference, and state the window's size with the number (dragon 2 had the width; this is the
+    height).
+16. **chromote 0.5.1's event timeouts are not reliable**: `Page$navigate()` waits out the 10 s command timeout on a
+    server that never answers and `loadEventFired(timeout_ =)` then fails with an internal error. Poll
+    `Runtime$evaluate(timeout_ = )` against one deadline of your own, and close the parent (its own Chrome).
+17. **A device scale factor other than 1 doubles the recording**: scale each canvas by CSS width over pixel width.
+18. **The legend's pictures load after the first draw** (an image node's `imageObj.width` is 0 until it loads): wait for
+    them as well as for quiet, as `.waitForLegendPictures()` does.
+19. **The picture's box is not the widget's size** (11.2: 500 px high gives 491, 995 gives 961.25, 672 gives
+    654.391; the cause was not worked out) and the legend canvas starts 16 px below the main one, under its title; the
+    SVG's root takes the page in inches and the `viewBox` the box, so a page 7 x 7 in holds a drawing 7 x 6.8166 in,
+    centred. Never size a test's expectation from the widget's height: measure the box.
+20. **The pixel bounds are one machine's** (macOS, Chrome 157, the same Chrome's canvas and SVG text rules): read each CI
+    job's result for the new tests (Linux, Windows) before trusting a bound; a different rounding there is a finding,
+    not a reason to widen a bound unread.
