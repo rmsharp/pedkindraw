@@ -40,7 +40,8 @@ the text size is done (S61, R140), the column and row spacing is done (S62, R140
 (S63, R140), so G14 is done in four sessions. G15, mates with no offspring, is planned (S64, R141,
 `docs/planning/mates-without-offspring-plan.md`): a user declares such mates in a `matings` table of `sire`
 and `dam`; G15a, the layout that draws them, is done (S65); G15b, `getMatings()` listing them, is done (S66);
-next is G15c, the converters (Planned, below).
+G15c, the converters returning them, is done (S67), so G15 is done; next is G16, picture files, planned first
+(Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -77,8 +78,8 @@ session each unless marked. They follow the copy slices.
   done (S53); G13 (Pedixplorer's marks) is done, the genotyped mark (S54), the carrier mark (S55), proband with
   consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes, spacing and line
   width) is done, the symbol size (S60), the text size (S61), the spacing (S62) and the line width (S63);
-  G15 (mates with no offspring) is planned (S64, R141), G15a the layout done (S65), G15b `getMatings()` done
-  (S66), G15c the converters next; then
+  G15 (mates with no offspring) is done in four sessions (S64's plan, R141; G15a the layout S65, G15b
+  `getMatings()` S66, G15c the converters S67); G16 (picture files) is next, planned first; then
   the two other large additions (PDF, SVG and PNG files; an app), each planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
@@ -254,6 +255,14 @@ session each unless marked. They follow the copy slices.
   widened it from `R/` and `man/` to the README, NEWS and vignettes).
 
 ## Completed Milestones
+
+- **Phase G15c: the converters keep mates with no offspring (pedkindraw S67, 2026-11-21).**
+  `asPedFrame()` returns a fourth element, `matings`: the pairs a kinship2 object's relation code 4 or a
+  Pedixplorer object's "Spouse" rows declare mated, in the table the drawing and `getMatings()` take, so an
+  object with mates that have no offspring is drawn with them. Mark picked that every pair is kept as the
+  object holds it (a pair with offspring, and a pair kinship2 holds twice, included) and that any sexes are
+  kept, the male as sire. The pair's hint rows from the two packages' automatic hints, which were left out
+  with a message, are kept. Every existing drawing is unchanged (600 of 600). G15 is done.
 
 - **Phase G15b: `getMatings()` lists mates with no offspring (pedkindraw S66, 2026-11-21).**
   `getMatings(ped, matings = )` takes the table the drawing takes and lists each declared pair after the
