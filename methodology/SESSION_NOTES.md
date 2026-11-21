@@ -131,6 +131,18 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S60's entries were removed in S3-S61 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 62 Did
+**Deliverable:** Phase G14 session 3 of 3, the column and row spacing and the line width (IN PROGRESS; R140's
+last setting; it may split into two sessions, spacing then line width, if the measures say so: a picker)
+**Started:** 2026-11-20 18:13 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G14: spacing + line width
+(Recommended)" (orient)
+**Status:** Session claimed. Measuring before the pre-RED picker (one spacing setting or two; `xScale`/`yScale`
+and every unit number that assumes them; the rectilinear waypoints and the collision repair at each value, both
+styles, rhesus375 included; which lines a line width takes; Pedixplorer's `lwd`, results only; text 2 with wider
+columns; 600 of 600 at the defaults).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 60 Handoff Evaluation (by Session 61)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(f) was the session's plan item for item: (a) a `font.size` column only
