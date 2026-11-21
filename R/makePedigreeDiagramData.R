@@ -97,10 +97,11 @@
 ## .checkPositiveNumber() (R/symbolSize.R; S61's REFACTOR, where S60's
 ## .checkSymbolSize() and S61's .checkTextSize() were). Plan Phase G14's
 ## spacing (pedkindraw S62, R140): the arguments columnSpacing = 1 and
-## rowSpacing = 1, checked after textSize, the columns .spacingUnits() of
-## .fullColumnUnits apart and the rows .spacingUnits() of .fullRowUnits,
-## where they were 120L and 150L (pedkindraw's own, R/spacing.R); and its
-## help (the same rows).
+## rowSpacing = 1, checked after textSize, the columns .wholeMultiple() of
+## .fullColumnUnits apart and the rows .wholeMultiple() of .fullRowUnits,
+## where they were 120L and 150L (pedkindraw's own, R/spacing.R and
+## R/symbolSize.R; .spacingUnits() until S62's REFACTOR); and its help (the
+## same rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -2345,8 +2346,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   ## levelSeparation 150) closely enough to render legibly.
   ## pedkindraw Phase G14 (R140): the distances, 120 and 150 units at the
   ## default spacings of 1.
-  xScale <- .spacingUnits(.fullColumnUnits, columnSpacing)
-  yScale <- .spacingUnits(.fullRowUnits, rowSpacing)
+  xScale <- .wholeMultiple(.fullColumnUnits, columnSpacing)
+  yScale <- .wholeMultiple(.fullRowUnits, rowSpacing)
 
   shapeMap <- c(F = "dot", M = "square", H = "star", U = "triangle")
   sexLabelMap <- c(F = "Female", M = "Male", H = "Hermaphrodite",

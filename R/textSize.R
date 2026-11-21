@@ -9,7 +9,8 @@
 ## (R/infertileMark.R) and .miscarriageRoom() (R/miscarriageMark.R) keep a
 ## moved id's room by .idLabelDepth(); the copied drawPedigreeDiagram() adds
 ## the points of .textSizeRoom() when the text is larger than vis.js's 14
-## (DIVERGENCE.md).
+## (DIVERGENCE.md). S62's REFACTOR: .textPixels() is .wholeMultiple()
+## (R/symbolSize.R) of .fullTextSize.
 
 #' The size, in pixels, of the animals' ids and names at textSize 1
 #'
@@ -21,12 +22,13 @@
 #' The ids' and names' size, in whole pixels, at a textSize
 #'
 #' Phase G14 (R140). \code{.fullTextSize} times \code{textSize}, rounded to
-#' a whole pixel and at least 1, so 1 gives vis.js's 14 exactly.
+#' a whole pixel and at least 1, so 1 gives vis.js's 14 exactly
+#' (\code{.wholeMultiple()}).
 #' @param textSize one positive number.
 #' @return One integer.
 #' @noRd
 .textPixels <- function(textSize) {
-  max(1L, as.integer(round(.fullTextSize * textSize)))
+  .wholeMultiple(.fullTextSize, textSize)
 }
 
 #' Each node's text size, in pixels

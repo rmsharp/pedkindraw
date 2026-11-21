@@ -11,7 +11,9 @@
 ## .infertileRoom() (R/infertileMark.R) and .miscarriageRoom()
 ## (R/miscarriageMark.R) had each written out. S61's REFACTOR added
 ## .checkPositiveNumber(), where .checkSymbolSize() and R/textSize.R's
-## .checkTextSize() each checked one setting.
+## .checkTextSize() each checked one setting. S62's REFACTOR added
+## .wholeMultiple(), which .symbolUnits(), R/textSize.R's .textPixels() and
+## R/spacing.R's .spacingUnits() each wrote out; .spacingUnits() is gone.
 
 #' The size, in units, of an animal's symbol at symbolSize 1
 #'
@@ -42,16 +44,31 @@
   invisible(NULL)
 }
 
+#' A size or distance, in whole units, at a setting
+#'
+#' Phase G14 (R140). \code{full} times \code{multiple}, rounded to a whole
+#' unit and at least 1, so the result stays an integer, as the size or
+#' distance was, and 1 gives \code{full} exactly. S62's REFACTOR: the symbol
+#' size (\code{.symbolUnits()}), the text size (\code{.textPixels()},
+#' R/textSize.R) and the spacing (R/spacing.R) each had this line.
+#' @param full the size or distance at the setting 1.
+#' @param multiple one positive number, the setting.
+#' @return One integer.
+#' @noRd
+.wholeMultiple <- function(full, multiple) {
+  max(1L, as.integer(round(full * multiple)))
+}
+
 #' An animal's node size, in whole units, at a symbolSize
 #'
 #' Phase G14 (R140). \code{.fullSymbolSize} times \code{symbolSize}, rounded
 #' to a whole unit and at least 1, so the node's size stays an integer, as it
-#' was, and 1 gives the full size exactly.
+#' was, and 1 gives the full size exactly (\code{.wholeMultiple()}).
 #' @param symbolSize one positive number.
 #' @return One integer.
 #' @noRd
 .symbolUnits <- function(symbolSize) {
-  max(1L, as.integer(round(.fullSymbolSize * symbolSize)))
+  .wholeMultiple(.fullSymbolSize, symbolSize)
 }
 
 #' How far an id moves down at its node's size
