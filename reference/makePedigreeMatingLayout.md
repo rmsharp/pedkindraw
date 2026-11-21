@@ -319,25 +319,26 @@ makePedigreeMatingLayout(
   (text or factor), one row per mating to draw whether or not the two
   have offspring together in `ped`, as kinship2's relation code 4 and
   Pedixplorer's `"Spouse"` rows declare them. Other columns are ignored,
-  so the result of
+  and a row naming a pair with offspring together, in either column,
+  changes nothing and gives no message, so the result of
   [`getMatings`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md)
-  can be passed with rows added. The two are drawn side by side on the
-  row of the partner of the later generation, joined at a mating point
-  with no line down, its hover text “0 offspring”, and neither is left
-  out as an animal with no relative (`isolatedIds`). An animal with
+  can be passed with rows added (`getMatings(ped, matings)` lists the
+  matings drawn, in the drawing's order). The two are drawn side by side
+  on the row of the partner of the later generation, joined at a mating
+  point with no line down, its hover text “0 offspring”, and neither is
+  left out as an animal with no relative (`isolatedIds`). An animal with
   other matings is drawn at each, as it is when they all have offspring
   (kinship2 draws it once, between its mates), and a partner with
   parents of its own is drawn again beside its mate, as for a mating
   with offspring. A mate hint (`hints`) may place such a mating. A pair
-  with offspring together changes nothing, and a pair named twice, in
-  either column, is drawn once. The sexes are not checked: two males, an
-  animal of unknown sex and a female in the `sire` column are drawn as
-  given, as kinship2 and Pedixplorer draw them. A row naming an animal
-  without a row of its own in `ped`, as a trimming function leaves, is
-  left out, with a message naming the pair. `NULL` or no rows give the
-  layout of no declared mating. Stops, before the hints are checked, on
-  anything but `NULL` or a data frame with both columns, on `NA`, and on
-  the same id as sire and dam.
+  named twice, in either column, is drawn once. The sexes are not
+  checked: two males, an animal of unknown sex and a female in the
+  `sire` column are drawn as given, as kinship2 and Pedixplorer draw
+  them. A row naming an animal without a row of its own in `ped`, as a
+  trimming function leaves, is left out, with a message naming the pair.
+  `NULL` or no rows give the layout of no declared mating. Stops, before
+  the hints are checked, on anything but `NULL` or a data frame with
+  both columns, on `NA`, and on the same id as sire and dam.
 
 ## Value
 
