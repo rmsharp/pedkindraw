@@ -309,6 +309,21 @@ cases$matesNoOffspring <- function(case = "matesNoOffspring") {
         suppressMessages(pedkindraw::makePedigreeMatingLayout(
           withGen(ped), hints = list(mate = data.frame(
             left = "E", right = "F", anchor = "either")))))
+  ## Plan Phase G15a (pedkindraw S65, R141): the pair declared in matings.
+  mates <- data.frame(sire = "E", dam = "F")
+  probe(case, "pedkindraw isolatedIds with matings, how many (G15a)",
+        length(pedkindraw::makePedigreeMatingLayout(
+          withGen(ped), matings = mates)$isolatedIds))
+  probe(case, "pedkindraw E, its mating point and F on one row (G15a)", {
+    nodes <- pedkindraw::makePedigreeMatingLayout(
+      withGen(ped), matings = mates)$nodes
+    dot <- nodes$id[which(nodes$title == "0 offspring")]
+    length(unique(nodes$y[match(c("E", dot, "F"), nodes$id)])) == 1L
+  })
+  probe(case, "pedkindraw mate hint naming E and F, with matings (G15a)",
+        is.list(pedkindraw::makePedigreeMatingLayout(
+          withGen(ped), matings = mates, hints = list(mate = data.frame(
+            left = "E", right = "F", anchor = "either")))))
 }
 
 ## B2. An affected status recorded as unknown.
