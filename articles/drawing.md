@@ -278,6 +278,23 @@ zLayout$isolatedIds
 #> [1] "Z"
 ```
 
+Two animals that have mated but have no offspring together are not left
+out when the `matings` argument names them, one row per mating with its
+`sire` and `dam`: they are drawn side by side on one row, joined at a
+mating dot with no line down, as kinship2 and Pedixplorer draw a
+declared mating. The dot’s hover text reads “0 offspring”. Here Y is Z’s
+mate.
+
+``` r
+
+withYZ <- rbind(withZ, data.frame(id = "Y", sire = NA, dam = NA, sex = "F",
+                                  gen = 0L))
+yzLayout <- makePedigreeMatingLayout(
+  withYZ, matings = data.frame(sire = "Z", dam = "Y")
+)
+drawPedigreeDiagram(yzLayout)
+```
+
 ## Layout hints
 
 The layout chooses the order of siblings and of families, and, for two

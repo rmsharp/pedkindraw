@@ -25,7 +25,8 @@ makePedigreeMatingLayout(
   textSize = 1,
   columnSpacing = 1,
   rowSpacing = 1,
-  lineWidth = 1
+  lineWidth = 1,
+  matings = NULL
 )
 ```
 
@@ -154,28 +155,29 @@ makePedigreeMatingLayout(
   is not done. An order may put a sibling between twins; the twin line
   then crosses it. `mate` is a data frame with one row per mating to
   place and the columns `left`, `right` and `anchor`: `left` and `right`
-  are a sire and a dam with offspring together in `ped`, in either
-  column, and `left` is drawn left of `right` at their mating; `anchor`
-  (`"left"`, `"right"` or `"either"`) names the partner whose own place
-  the offspring are drawn under, the other partner then drawn beside it
-  as a repeat node when it has parents of its own, and `"either"` keeps
-  the layout's own choice. As kinship2 draws its `spouse` hint, the
-  offspring of an animal's several matings follow its mates' sides,
-  mates hinted to one side are drawn left to right in the order of the
-  rows, and mates not hinted are drawn nearest the animal. A hint can
-  change where the layout draws matings it does not name.
-  [`list()`](https://rdrr.io/r/base/list.html), and `order` or `mate`
-  `NULL` or empty, give the layout of no hint. Stops on an element other
-  than `order` and `mate`; on an order that is not numeric, a number
-  without a name, a name given twice or not in `ped`, and `NA`; and on a
-  `mate` that is not a data frame or lacks a column, `NA`, the same id
-  as `left` and `right`, an id not in `ped` (a sire or dam without a row
-  of its own), a pair with no offspring together or named twice, an
-  `anchor` other than those three, and an anchor on the partner of an
-  earlier generation than its mate (the layout draws a mating on the row
-  of its later partner). The returned `hints` are the hints the layout
-  used, in this form: passed back, they give the same layout, so an edit
-  can start from the layout's own order (see the example).
+  are a sire and a dam with offspring together in `ped`, or a pair
+  `matings` declares, in either column, and `left` is drawn left of
+  `right` at their mating; `anchor` (`"left"`, `"right"` or `"either"`)
+  names the partner whose own place the offspring are drawn under, the
+  other partner then drawn beside it as a repeat node when it has
+  parents of its own, and `"either"` keeps the layout's own choice. As
+  kinship2 draws its `spouse` hint, the offspring of an animal's several
+  matings follow its mates' sides, mates hinted to one side are drawn
+  left to right in the order of the rows, and mates not hinted are drawn
+  nearest the animal. A hint can change where the layout draws matings
+  it does not name. [`list()`](https://rdrr.io/r/base/list.html), and
+  `order` or `mate` `NULL` or empty, give the layout of no hint. Stops
+  on an element other than `order` and `mate`; on an order that is not
+  numeric, a number without a name, a name given twice or not in `ped`,
+  and `NA`; and on a `mate` that is not a data frame or lacks a column,
+  `NA`, the same id as `left` and `right`, an id not in `ped` (a sire or
+  dam without a row of its own), a pair with no offspring together that
+  `matings` does not declare, a pair named twice, an `anchor` other than
+  those three, and an anchor on the partner of an earlier generation
+  than its mate (the layout draws a mating on the row of its later
+  partner). The returned `hints` are the hints the layout used, in this
+  form: passed back, they give the same layout, so an edit can start
+  from the layout's own order (see the example).
 
 - maxNameChars:
 
@@ -311,6 +313,32 @@ makePedigreeMatingLayout(
   pixels, at 3 the lines and outlines reach the ids in 4 of 16 drawings
   (2 at 1). Stops unless it is one positive number.
 
+- matings:
+
+  `NULL` (the default) or a data frame with the columns `sire` and `dam`
+  (text or factor), one row per mating to draw whether or not the two
+  have offspring together in `ped`, as kinship2's relation code 4 and
+  Pedixplorer's `"Spouse"` rows declare them. Other columns are ignored,
+  so the result of
+  [`getMatings`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md)
+  can be passed with rows added. The two are drawn side by side on the
+  row of the partner of the later generation, joined at a mating point
+  with no line down, its hover text “0 offspring”, and neither is left
+  out as an animal with no relative (`isolatedIds`). An animal with
+  other matings is drawn at each, as it is when they all have offspring
+  (kinship2 draws it once, between its mates), and a partner with
+  parents of its own is drawn again beside its mate, as for a mating
+  with offspring. A mate hint (`hints`) may place such a mating. A pair
+  with offspring together changes nothing, and a pair named twice, in
+  either column, is drawn once. The sexes are not checked: two males, an
+  animal of unknown sex and a female in the `sire` column are drawn as
+  given, as kinship2 and Pedixplorer draw them. A row naming an animal
+  without a row of its own in `ped`, as a trimming function leaves, is
+  left out, with a message naming the pair. `NULL` or no rows give the
+  layout of no declared mating. Stops, before the hints are checked, on
+  anything but `NULL` or a data frame with both columns, on `NA`, and on
+  the same id as sire and dam.
+
 ## Value
 
 A list with `nodes` (`id`, `label`, `shape`, `title`, `size`,
@@ -358,26 +386,26 @@ preserved when the edge is kept as-is; a marked mate edge that gets
 replaced by a right-angle projection currently falls back to the generic
 routing color and width. Also `isolatedIds`, a character vector of ids
 suppressed from `nodes`/`edges` because they have no known parent, are
-never a parent, and are not connected by `twinRelations`; it is
-`character(0)` when nothing was suppressed. When every individual in
-`ped` is isolated, `nodes`/`edges` are both 0-row and `duplicateToReal`
-is empty. Also `conditions`, a data frame with one row per drawn
-condition (`column`, `label` such as “Affected” or “Affected
-(diabetes)”, and its `color`, from `conditionColors` as a `"#RRGGBB"`
-code), 0-row when `ped` has no such column, and `conditionsNotDrawn`,
-the names of any such columns past the fourth. Last, `hints`, the hints
-the layout used, in the form the argument `hints` takes, so that passing
-them back gives the same layout: `order` numbers each animal drawn that
-has a parent by its row in the rows the layout drew from (an order hint
-applied, the animals left out not counted), and a founder only where an
-order hint named it, since naming a founder turns off the layout's own
-ordering of founder lines; `mate` holds the rows of a mate hint as
-given, then a row for each other mating whose sire and dam both have
-rows in `ped`, `left` and `right` as drawn and `anchor` the partner the
-offspring hang under, except the matings of an animal that anchors three
-or more matings or that the given rows place, where a row can change how
-far its mates are drawn. With every animal left out, `order` has no
-numbers and `mate` no rows.
+never a parent, are not connected by `twinRelations`, and have no mating
+in `matings`; it is `character(0)` when nothing was suppressed. When
+every individual in `ped` is isolated, `nodes`/`edges` are both 0-row
+and `duplicateToReal` is empty. Also `conditions`, a data frame with one
+row per drawn condition (`column`, `label` such as “Affected” or
+“Affected (diabetes)”, and its `color`, from `conditionColors` as a
+`"#RRGGBB"` code), 0-row when `ped` has no such column, and
+`conditionsNotDrawn`, the names of any such columns past the fourth.
+Last, `hints`, the hints the layout used, in the form the argument
+`hints` takes, so that passing them back gives the same layout: `order`
+numbers each animal drawn that has a parent by its row in the rows the
+layout drew from (an order hint applied, the animals left out not
+counted), and a founder only where an order hint named it, since naming
+a founder turns off the layout's own ordering of founder lines; `mate`
+holds the rows of a mate hint as given, then a row for each other mating
+whose sire and dam both have rows in `ped`, `left` and `right` as drawn
+and `anchor` the partner the offspring hang under, except the matings of
+an animal that anchors three or more matings or that the given rows
+place, where a row can change how far its mates are drawn. With every
+animal left out, `order` has no numbers and `mate` no rows.
 
 ## Details
 
@@ -396,7 +424,8 @@ and from the mating unit to each child.
 
 A simple two-real-parent mating unit (each parent has exactly one mate
 and both have unambiguous `"M"`/`"F"` sex codes) is drawn with the male
-parent to the left of the female parent. The final horizontal positions
+parent to the left of the female parent, and so is such a mating that
+`matings` declares with no offspring. The final horizontal positions
 come from a joint quadratic program that preserves each row's
 provisional left-to-right order, so this rule carries into the rendered
 layout. It cannot be turned off, unless a mate hint says otherwise (see
