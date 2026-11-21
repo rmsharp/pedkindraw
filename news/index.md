@@ -258,6 +258,22 @@ why.
   now refused, as the other reserved prefixes are. Anything but one
   positive number stops. nprcgenekeepr has no such argument. At 1 every
   layout and drawing is as before.
+- New: `makePedigreeMatingLayout(columnSpacing = , rowSpacing = )` set
+  the distance between neighbouring animals in a row and between
+  generations as multiples of the 120 and 150 units used before (1, the
+  defaults), each rounded to a whole unit, so a drawing can be made
+  wider or deeper, as kinship2’s distances follow the width and height
+  of its page. Every place in the layout is the one before times the
+  spacing, and the rectilinear lines’ steps and curves are worked out at
+  the spacing given. Since the drawing zooms to fit, wider spacing
+  leaves the symbols and text smaller beside the distances. Larger text
+  needs wider columns: at `textSize = 2` an id of 10 characters is up to
+  167 units wide, so neighbours’ ids run together at `columnSpacing = 1`
+  and stand apart at 1.4. Measured at 500 px, columns at 0.5 lay long
+  ids over their neighbours’ and rows at 0.5 run the lines from parents
+  to their offspring through the parents’ ids. Anything but one positive
+  number stops. nprcgenekeepr has no such arguments. At 1 every layout
+  and drawing is as before.
 - New: the legend’s four lines (the dashed line joining two places of
   the same animal, and the three twin lines) have no arrowheads, as the
   drawing’s own lines have none, and each line’s label sits on white.

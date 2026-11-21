@@ -22,7 +22,9 @@ makePedigreeMatingLayout(
   conditionColors = c("#CC79A7", "#E69F00", "#56B4E9", "#009E73"),
   conditionThresholds = NULL,
   symbolSize = 1,
-  textSize = 1
+  textSize = 1,
+  columnSpacing = 1,
+  rowSpacing = 1
 )
 ```
 
@@ -256,7 +258,34 @@ makePedigreeMatingLayout(
   miscarriage's moved id clear of the drawing's bottom edge. The drawing
   zooms to fit, so larger text leaves less room between the ids: an id
   of 10 characters is 118 units wide at 1.4 and 165 at 2, and the
-  animals in a row are 120 apart. Stops unless it is one positive
+  animals in a row are 120 apart at `columnSpacing` 1, so larger text
+  needs wider columns (168 apart at 1.4). Stops unless it is one
+  positive number.
+
+- columnSpacing:
+
+  the distance between neighbouring animals in a row, as a multiple of
+  the 120 units used before this argument (1, the default): the columns
+  are 120 times it apart, rounded to a whole unit and at least 1. With
+  `rowSpacing` it sets the drawing's proportions, as the width and
+  height of kinship2's page set its distances; the drawing zooms to fit,
+  so wider columns leave the symbols and text smaller beside the
+  distances rather than making a larger drawing. The layout works the
+  lines' detours out at the spacing given. Larger text needs wider
+  columns: at `textSize` 2 an id of 10 characters is up to 167 units
+  wide, and at 1.4 the columns are 168 apart. Measured at 500 pixels, at
+  0.5 long ids run over their neighbours'. Stops unless it is one
+  positive number.
+
+- rowSpacing:
+
+  the distance between generations, as a multiple of the 150 units used
+  before this argument (1, the default): the rows are 150 times it
+  apart, rounded to a whole unit and at least 1. In the rectilinear
+  style a step around an animal keeps its depth, 1 unit below the
+  symbols, or 0.15 of the gap to the nearest row of lines when that is
+  more. Measured at 500 pixels, at 0.5 the lines from parents to their
+  offspring cross the parents' ids. Stops unless it is one positive
   number.
 
 ## Value
