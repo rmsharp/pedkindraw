@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-20 · [BL-Phase G15] S64: Phase G15's planning session, gap B1, mates with no offspring (in progress)
+- **Change:** session claimed (Mark's pick "G15's plan (Recommended)" at the orient picker): the plan for gap B1 (`docs/planning/gaps-and-shared-code-plan.md:378`; `docs/research/pedkindraw-gaps-2026-11-18.md:159`), written to `docs/planning/`, no code (failure mode #18); measure kinship2's and Pedixplorer's drawings of `matesNoOffspring` first (Learnings 18-19), the input in a picker, a grep-based inventory, per-phase DONE criteria, commands and surface. Phase 0 reconcile: nothing to backfill (frontier a99cfcc is HEAD; no merges; S63's receipt complete, its ratchet citation matching the results file); drift 91/22/0, exit 0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S63's runs: site 44871352269 success (pages 44871561698 success), R-CMD-check 44871351960 still running at the claim.
+- **Commit/PR:** the claim commit · **Session:** S64 · **Verified:** pending (close-out).
+
 ### 2026-11-20 · [BL-Phase G14] S63 push 1: `master` to GitHub at close-out 2 (S63's claim, G14 session 4, close-out 1-2)
 - **Change:** `git push origin master` (`060f6b1..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `man/`, `tests/`, `NEWS.md` and `tools/` changed, so both workflows run. S62's push runs, read at S63's Orient: site `44861276741` `success` (pages `44861496731` `success`); CI `44861276685` `failure` on its Ubuntu R-devel job only (setup-r-dependencies, S4Vectors, before pedkindraw was checked), the other four `success`, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2, PASS 13,636, so S62's browser test ran on Linux.
 - **Commit/PR:** none (push) · **Session:** S63 · **Verified:** the push's output; S62's runs by `gh run view`.

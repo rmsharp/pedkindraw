@@ -125,6 +125,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S62's entries were removed in S3-S63 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 64 Did
+**Deliverable:** Phase G15's plan (IN PROGRESS; gap B1, mates with no offspring;
+`docs/planning/gaps-and-shared-code-plan.md:378`; `methodology/BACKLOG.md:26`): a planning session, the plan written
+to `docs/planning/` and committed, no code (failure mode #18).
+**Started:** 2026-11-20 23:36 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G15's plan (Recommended)" (orient)
+**Status:** Session claimed. Measuring kinship2's and Pedixplorer's drawings of `matesNoOffspring` first, then the
+input picker, then the grep-based inventory and the plan.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 62 Handoff Evaluation (by Session 63)
 **Score: 9/10.**
 - **What helped:** the measure-first list (a)-(g) was the session's plan and became the scope picker's four
