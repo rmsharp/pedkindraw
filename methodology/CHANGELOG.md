@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-21 · [BL-Phase G16] S68: G16's planning session, picture files and one-page drawings (in progress)
+- **Change:** session claimed (Mark's orient pick, "G16 planning session (Recommended)"): the plan for gaps A1 (picture files written by a script) and A2 (a whole large pedigree on one page with every id written), no package code; measure first, then the approach picker, then the plan with each phase's DONE, commands and surface. Phase 3F replaces this entry with the outcome.
+- **Commit/PR:** claim commit · **Session:** S68 · **Model:** Claude Sonnet 5.5 · **Verified:** n/a (claim).
+
 ### 2026-11-21 · [BL-Phase G15] S67 push 1: `master` to GitHub at close-out 2 (S67's claim, G15c RED-REFACTOR, close-out 1-2)
 - **Change:** `git push origin master` (`3719979..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `tests/`, `man/`, `README.md`, `NEWS.md`, `vignettes/` and `tools/` changed, so both workflows run. S66's push runs, read in S67: site `44920097920` `success` (pages `44920440754` `success`); CI `44920097903` `failure` on its Ubuntu R-devel job only (S4Vectors "unable to load R code" in setup-r-dependencies, before pedkindraw was checked), the other four `success`, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2, PASS 15,279 (S66's estimate exactly).
 - **Commit/PR:** none (push) · **Session:** S67 · **Verified:** the push's output; S66's runs by `gh run view`.

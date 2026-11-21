@@ -120,6 +120,20 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 68 Did
+**Deliverable:** G16's planning session (IN PROGRESS; gaps A1, picture files written by a script, and A2, a whole
+large pedigree on one page with every id written; `docs/planning/gaps-and-shared-code-plan.md:383`, the research
+record `:109` and `:128`): the plan is the deliverable, no package code (failure mode #18); measure first
+(Learnings 17, 19, 21), then the approach picker, then the plan with each phase's DONE, commands and surface.
+**Started:** 2026-11-21 13:12 CST · **Model:** Claude Sonnet 5.5 · **Mark's pick:** "G16 planning session
+(Recommended)" (orient picker). The runner asks for the deepest reasoning mode at a planning session's start
+(`/effort max`); the agent cannot set it, so it runs at the session's setting.
+**Status:** Session claimed. Reading the G16 row, A1 and A2's rows, the research record and the comparison study's
+section 10; then the measures (layout against the drawing, chromote's PNG, PDF and SVG, the references' pictures of
+the 375-animal pedigree).
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### What Session 67 Did
 **Deliverable:** Phase G15c (IN PROGRESS; gap B1, mates with no offspring; the converters keep the matings:
 `asPedFrame()` returns `matings` from kinship2's relation code 4 and Pedixplorer's `"Spouse"` rows;

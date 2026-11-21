@@ -202,6 +202,13 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S68
+date: 2026-11-21
+status: pending
+active_task: G16's planning session (gaps A1, picture files from a script, and A2, a whole large pedigree on one page with every id written; docs/planning/gaps-and-shared-code-plan.md:383): the plan is the deliverable, no package code. Session claimed; measuring first.
+```
+
+```handoff
 session: S67
 date: 2026-11-21
 status: complete
