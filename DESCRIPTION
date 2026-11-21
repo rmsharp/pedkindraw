@@ -17,6 +17,7 @@ Depends:
 Imports:
     data.table,
     grDevices,
+    htmlwidgets,
     Matrix,
     methods,
     quadprog,
@@ -25,7 +26,6 @@ Imports:
     visNetwork
 Suggests:
     chromote,
-    htmlwidgets,
     kinship2,
     knitr,
     mockery,

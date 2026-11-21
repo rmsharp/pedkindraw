@@ -262,6 +262,24 @@ code, `DIVERGENCE.md` in the repository says how and why.
   order named it); `mate` holds your rows, then the layout's own row for each
   other mating (none for an animal with three or more matings, where a row
   can move its mates).
+* New: `savePedigreeDiagram(diagram, file, width, height)` writes the widget
+  `drawPedigreeDiagram()` returns as an SVG file, from a script: before, a
+  drawing could be saved only as a web page, or by clicking its "Export
+  Diagram (PNG)" button in a browser. A headless Chrome (the chromote package
+  and Chrome or Chromium on the computer) runs the same drawing the widget
+  shows and a recording layer writes it, so every mark, colour and legend row
+  comes out as drawn, the legend's pictures as vector pictures, and every id
+  as text a reader can select and zoom to: the widget draws an id only when it
+  would be 4 pixels tall, so its 375 rhesus animals show none until zoomed in,
+  and the file has all 545 id labels (375 distinct, the rest repeat
+  appearances). `width` and `height` are the page in inches; left out, the
+  widget's own size, 10 inches wide. Measured against the live widget in Chrome
+  157 on macOS, over the pixels that are not white in either: on the four
+  animals and 12 typed shapes none of the drawing's and 0.03% of the legend's
+  differ by more than 100 in a colour channel, on an 18-animal pedigree with
+  all seven marks 0.26% and 0.07%. Only `.svg` is written so far: `.pdf` and
+  `.png` stop with a message. It stops, saying what is missing, without
+  chromote (in Suggests) or Chrome. nprcgenekeepr has no such function.
 
 ## Kinship and relatedness
 
