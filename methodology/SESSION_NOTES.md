@@ -119,6 +119,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 *S1-S63's entries were removed in S3-S64 (FM #28): their durable records are the receipts in `HANDOFFS.md` and the
 entries in `CHANGELOG.md`.*
 
+### What Session 65 Did
+**Deliverable:** Phase G15a (IN PROGRESS; gap B1, mates with no offspring; the layout draws declared matings;
+`docs/planning/mates-without-offspring-plan.md:222`; `methodology/BACKLOG.md:26`): strict TDD, measure first, the
+pre-RED picker, then RED, GREEN, REFACTOR by the gates.
+**Started:** 2026-11-21 00:38 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G15a: draw mated pairs
+(Recommended)" (orient)
+**Status:** Session claimed. Measuring on a scratch copy first (pictures of the typed shapes, the 7 seeds' collision
+warnings, trimming and a matings table), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### Session 63 Handoff Evaluation (by Session 64)
 **Score: 9/10.**
 - **What helped:** item 3 of "What You Must Do" was the session's plan: measure kinship2's and Pedixplorer's

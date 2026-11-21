@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-21 · [BL-Phase G15] S65: Phase G15a, the layout draws declared matings (in progress)
+- **Change:** session claimed (Mark's pick "G15a: draw mated pairs (Recommended)" at the orient picker): `makePedigreeMatingLayout(matings = NULL)` by `docs/planning/mates-without-offspring-plan.md` section 7 (`:222`), R141; strict TDD; measure on a scratch copy first (Learning 17), then the pre-RED picker. Phase 0 reconcile: nothing to backfill (frontier 0a8a003 is HEAD; no merges; S64's receipt complete, its ratchet citation matching the results file); drift 91/22/0, exit 0; nprcgenekeepr at 3e06730c5, clean, the same 4 commits on the copied files; S64's runs: site 44875962170 success (pages 44876171776 success), R-CMD-check 44875962136 still running at the claim.
+- **Commit/PR:** the claim commit · **Session:** S65 · **Verified:** pending (close-out).
+
 ### 2026-11-21 · [BL-Phase G15] S64 push 1: `master` to GitHub at close-out 2 (S64's claim, G15's plan, close-out 1-2)
 - **Change:** `git push origin master` (`a99cfcc..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `docs/planning/` changed, which neither workflow's `paths-ignore` lists, so both run with no package change. S63's push runs, read in S64: site `44871352269` `success` (pages `44871561698` `success`); CI `44871351960` `failure` on its Ubuntu R-devel job only (setup-r-dependencies, S4Vectors, before pedkindraw was checked), the other four `success`, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2, PASS 13,832 (S62's 13,636 plus `test_lineWidth.R`'s 196), so S63's stroke-recording browser test ran on Linux.
 - **Commit/PR:** none (push) · **Session:** S64 · **Verified:** the push's output; S63's runs by `gh run view`.
