@@ -23,7 +23,7 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G16 next; Effort L altogether, 15-25
+- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G16a next; Effort L altogether, 15-25
       sessions, a guess, the sum of the rows; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
       DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
@@ -36,7 +36,8 @@ issues).*
       Mark's pick; its fourth and last, the line width, DONE in S63, R140, so G14 DONE in four sessions; G15's
       plan written in S64, R141, `docs/planning/mates-without-offspring-plan.md`, three build sessions;
       G15a, the layout, DONE in S65, R141's picks; G15b, `getMatings()`, DONE in S66, R141's picks; G15c, the
-      converters, DONE in S67, R141's picks, so G15 DONE; next G16, a planning session) --
+      converters, DONE in S67, R141's picks, so G15 DONE; G16's plan written in S68, R142,
+      `docs/planning/picture-files-plan.md`, three build sessions; next G16a, the recording layer and the SVG file) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.

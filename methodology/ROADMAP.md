@@ -40,8 +40,10 @@ the text size is done (S61, R140), the column and row spacing is done (S62, R140
 (S63, R140), so G14 is done in four sessions. G15, mates with no offspring, is planned (S64, R141,
 `docs/planning/mates-without-offspring-plan.md`): a user declares such mates in a `matings` table of `sire`
 and `dam`; G15a, the layout that draws them, is done (S65); G15b, `getMatings()` listing them, is done (S66);
-G15c, the converters returning them, is done (S67), so G15 is done; next is G16, picture files, planned first
-(Planned, below).
+G15c, the converters returning them, is done (S67), so G15 is done. G16, picture files, is planned (S68, R142,
+`docs/planning/picture-files-plan.md`): the widget's own drawing is recorded in headless Chrome and written as
+SVG, PDF or PNG, a whole large pedigree on one page with every id written; next is G16a, the recording layer and
+the SVG file (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -79,8 +81,9 @@ session each unless marked. They follow the copy slices.
   consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes, spacing and line
   width) is done, the symbol size (S60), the text size (S61), the spacing (S62) and the line width (S63);
   G15 (mates with no offspring) is done in four sessions (S64's plan, R141; G15a the layout S65, G15b
-  `getMatings()` S66, G15c the converters S67); G16 (picture files) is next, planned first; then
-  the two other large additions (PDF, SVG and PNG files; an app), each planned first; then 17g-17q.
+  `getMatings()` S66, G15c the converters S67); G16 (picture files) is planned (S68's plan, R142) and its build
+  sessions are next (G16a the recording layer and the SVG, G16b the PDF, the PNG and the page, G16c the whole
+  large pedigree and the documents); then the other large addition (an app), planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
@@ -255,6 +258,16 @@ session each unless marked. They follow the copy slices.
   widened it from `R/` and `man/` to the README, NEWS and vignettes).
 
 ## Completed Milestones
+
+- **Phase G16's plan: picture files from a script and a whole large pedigree on one page (pedkindraw S68,
+  2026-11-21).** A planning session, no package code (`docs/planning/picture-files-plan.md`, R142). Four ways to
+  write PDF, SVG and PNG files were measured or costed on scratch prototypes and Mark picked: record the widget's own
+  drawing in headless Chrome, so every mark and legend row already drawn comes out with no second version to keep;
+  SVG, PDF and PNG by the file name's ending; a page size the user gives. On the prototype the SVG's drawing differs
+  from the live widget in 0.7% of ink pixels on a pedigree with all seven marks, and the 375 rhesus animals give 545
+  id labels as text on one PDF page, none over another, where kinship2's and Pedixplorer's ids overlap in 94-100%
+  of cases on 7 and 14 inch pages. Needs Chrome on the user's computer; the legend's icons, the PDF's size
+  (5.7 MB) and Windows and Linux runs are open. Three build sessions planned (G16a-c).
 
 - **Phase G15c: the converters keep mates with no offspring (pedkindraw S67, 2026-11-21).**
   `asPedFrame()` returns a fourth element, `matings`: the pairs a kinship2 object's relation code 4 or a
