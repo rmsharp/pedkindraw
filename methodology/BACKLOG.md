@@ -35,7 +35,7 @@ issues).*
       third, the column and row spacing, DONE in S62, R140, the line width split off as a fourth session by
       Mark's pick; its fourth and last, the line width, DONE in S63, R140, so G14 DONE in four sessions; G15's
       plan written in S64, R141, `docs/planning/mates-without-offspring-plan.md`, three build sessions;
-      next G15a, the layout) --
+      G15a, the layout, DONE in S65, R141's picks; next G15b, `getMatings()`) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
@@ -147,6 +147,15 @@ issues).*
       Mark's call"; scoping
       `nprcgenekeepr:docs/planning/colony-overview-scoping.md:117-118`). Not in the plan or the contract; it would
       need a ruling and a plan change first.
+
+- [ ] **An animal with two or more mates drawn once, between them, as kinship2 draws it** (DECISION NEEDED,
+      Effort M-L, a guess; found S65, G15a) -- pedkindraw draws a founder sire with two dams at each mating,
+      the second time as a repeat node with a dashed arc (`[A B A' G]`, measured S65, both matings with
+      offspring), where kinship2 draws him once, `B A G`; the anchor rule (D2, the partner with fewer matings
+      anchors) of the copied `.buildMatingUnitForest()` (`R/makePedigreeDiagramData.R:655`). Mark's G15a pick
+      kept that rule for matings with no offspring and sent this here. Changing it changes today's drawings, so
+      the fidelity results with nprcgenekeepr (600 of 600) and the `DIVERGENCE.md` rows; it needs a ruling and
+      a plan with pictures first.
 
 ## Ready, small
 

@@ -39,7 +39,7 @@ G14, symbol and text sizes, spacing and line width as arguments, is done: the sy
 the text size is done (S61, R140), the column and row spacing is done (S62, R140), and the line width is done
 (S63, R140), so G14 is done in four sessions. G15, mates with no offspring, is planned (S64, R141,
 `docs/planning/mates-without-offspring-plan.md`): a user declares such mates in a `matings` table of `sire`
-and `dam`; next is G15a, the layout that draws them (Planned, below).
+and `dam`; G15a, the layout that draws them, is done (S65); next is G15b, `getMatings()` (Planned, below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -76,8 +76,8 @@ session each unless marked. They follow the copy slices.
   done (S53); G13 (Pedixplorer's marks) is done, the genotyped mark (S54), the carrier mark (S55), proband with
   consultand (S56), evaluated (S57), infertile (S58) and miscarriage (S59); G14 (sizes, spacing and line
   width) is done, the symbol size (S60), the text size (S61), the spacing (S62) and the line width (S63);
-  G15 (mates with no offspring) is planned (S64, R141), G15a the layout next, then G15b `getMatings()` and G15c
-  the converters; then
+  G15 (mates with no offspring) is planned (S64, R141), G15a the layout done (S65), G15b `getMatings()` next,
+  then G15c the converters; then
   the two other large additions (PDF, SVG and PNG files; an app), each planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
@@ -254,6 +254,12 @@ session each unless marked. They follow the copy slices.
 
 ## Completed Milestones
 
+- **Phase G15a: the layout draws mates with no offspring (pedkindraw S65, 2026-11-21).**
+  `makePedigreeMatingLayout(matings = )` takes a table of `sire` and `dam`; each pair is drawn side by side,
+  joined at a mating point with no line down, rather than left out of the drawing. Mark picked the rules after
+  pictures and measures: an animal with several matings is drawn at each, as pedkindraw already draws two
+  matings with offspring; a row naming an animal the pedigree no longer has is left out with a message; a pair
+  named twice is drawn once; any sexes. Every existing drawing is unchanged (600 of 600).
 - **Phase G15's plan (pedkindraw S64, 2026-11-21).** kinship2 and Pedixplorer can draw two animals as mates
   although they have no offspring together; pedkindraw left both out of the drawing. Measured first: both
   packages on 16 typed shapes, and a scratch prototype of pedkindraw's layout that drew all 200 declared matings
