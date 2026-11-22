@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-22 · [BL-Phase G17] S75 (in progress): G17b, choosing the animals the app draws, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S75's stub), `methodology/HANDOFFS.md` (S75's `status: pending` receipt) and this entry. The deliverable is G17b (`docs/planning/pedigree-app-plan.md:341`), strict TDD. Phase 3F rewrites this entry.
+- **Commit/PR:** the S75 claim commit · **Session:** S75 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits, ledgers current, no ghost session).
+
 ### 2026-11-22 · [ad hoc] Ledger trim: `methodology/CHANGELOG.md` → `methodology/archive/CHANGELOG-through-2026-11-19.md` (88 record(s), 196,845 B → 97,459 B)
 
 **Written by:** `methodology_trim.py` v1.8.1 — a tool action, not a session's judgment.

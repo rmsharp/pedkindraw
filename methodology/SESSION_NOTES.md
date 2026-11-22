@@ -136,6 +136,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 75 Did
+**Deliverable:** Phase G17b, choosing the animals the app draws: one family (F6), focal animals' ancestors and
+descendants (F7), relatives within k steps (F8), a click (F15), a size warning (F19)
+(`docs/planning/pedigree-app-plan.md:341`), strict TDD. (IN PROGRESS)
+**Started:** 2026-11-22 16:42 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G17b: choose the animals (Recommended)"
+(orient picker).
+**Status:** Session claimed. Work beginning: the measures before the pre-RED picker (the app's drawing time at about 500,
+1,000 and 2,000 animals; whether a click adds to the focal animals or replaces them; backlog `:201`, parents with no row).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 74 Did
 **Deliverable:** Phase G17a, the app's first slice (`docs/planning/pedigree-app-plan.md:322`), strict TDD. DONE.
 **Started:** 2026-11-22 14:13 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time, all the recommended
