@@ -4,18 +4,25 @@
 \alias{savePedigreeDiagram}
 \title{Save a pedigree diagram as a picture file}
 \usage{
-savePedigreeDiagram(diagram, file, width = NULL, height = NULL)
+savePedigreeDiagram(diagram, file, width = NULL, height = NULL, dpi = 300)
 }
 \arguments{
 \item{diagram}{the widget \code{\link{drawPedigreeDiagram}} returns.}
 
 \item{file}{the file to write, one file name. Its ending, in any case,
-chooses the kind of file: \code{.svg}. The folder must exist.}
+chooses the kind of file: \code{.svg}, \code{.pdf} or \code{.png}. The
+folder must exist.}
 
 \item{width, height}{the page, in inches: a positive number, or \code{NULL}
 (the default) for the size the widget has in the browser, 10 inches wide.
 The widget is drawn at \code{width * 96} by \code{height * 96} pixels, so
 the drawing fills the page, with its legend at the right.}
+
+\item{dpi}{the pixels per inch of the page in a \code{.png} file, one
+positive number (the default is 300): a page of 7 by 5 inches is 2100 by
+1500 pixels. An \code{.svg} or \code{.pdf} file is vector and has no
+pixels, so the number does not change it; it is checked for every kind of
+file.}
 }
 \value{
 \code{file}, invisibly.
@@ -30,8 +37,13 @@ is an SVG file: the same drawing, with every mark, colour and legend row,
 and each id as text that a reader can select, search and zoom to.
 }
 \details{
-Only \code{.svg} files are written by this version; \code{.pdf} and
-\code{.png} stop with a message.
+The ending of \code{file} chooses the kind of file: \code{.svg}, the
+recorded drawing as it is; \code{.pdf}, that drawing printed as one page of
+the picture's size, still vector, with each id as text (each dashed line is
+written as a row of short strokes, because Chrome writes every dash of a
+dashed line as an outline and a pedigree with many repeat animals would
+otherwise be a PDF of several megabytes); or \code{.png}, a photograph of
+the same drawing at \code{dpi} pixels per inch of the page.
 
 The widget on screen draws an id only when it would be 4 pixels tall, so a
 large pedigree shows no ids until a reader zooms in. A file has no zoom, so
@@ -40,18 +52,21 @@ and the widget \code{diagram} itself is not changed.
 
 The picture is the widget's size in the browser, 10 inches (960 pixels)
 wide, unless \code{width} or \code{height} say otherwise. The drawing and
-its legend are drawn for that page, and the SVG's own size is the page, so
+its legend are drawn for that page, and the file's own size is the page, so
 it prints at that size.
 
-The function starts its own headless Chrome for each call and closes it, and
-stops if the drawing is not done within 60 seconds
-(\code{options(pedkindraw.saveTimeout = seconds)} changes that).
+The function starts its own headless Chrome for each call (two for a
+\code{.pdf} or \code{.png}) and closes it, and stops if the drawing is not
+done within 60 seconds (\code{options(pedkindraw.saveTimeout = seconds)}
+changes that).
 }
 \section{Requirements}{
 
 The \pkg{chromote} package, and Google Chrome or Chromium on the computer
 (set \code{CHROMOTE_CHROME} to its path if \pkg{chromote} cannot find
-it). Both are checked before anything is drawn.
+it). Both are checked before anything is drawn. A \code{.pdf} or
+\code{.png} file also needs \pkg{jsonlite}, which \pkg{chromote} needs
+too.
 }
 
 \examples{
@@ -70,10 +85,12 @@ if (interactive() &&
   )
   ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
   diagram <- drawPedigreeDiagram(makePedigreeMatingLayout(ped))
-  file <- tempfile(fileext = ".svg")
-  savePedigreeDiagram(diagram, file, width = 7, height = 5)
-  file.exists(file)
-  unlink(file)
+  for (kind in c(".svg", ".pdf", ".png")) {
+    file <- tempfile(fileext = kind)
+    savePedigreeDiagram(diagram, file, width = 7, height = 5)
+    print(file.exists(file))
+    unlink(file)
+  }
 }
 }
 \seealso{
