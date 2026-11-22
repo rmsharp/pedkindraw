@@ -185,8 +185,22 @@
 
 ## Where poppler's pdftotext is not installed, the tests that read a PDF's
 ## words skip: there is no PDF reader in R's own library (the plan's dragon 9).
+## They skip too where it is installed and cannot read a PDF that R itself
+## writes: GitHub's Windows runner has Git for Windows' own, which exits with
+## status 99 (S71's push, run 45000649737). A tool that reads that PDF and then
+## not ours is a fault of ours, and fails the word tests.
 .skipUnlessPdftotext <- function() {
-  if (!nzchar(Sys.which("pdftotext"))) skip("pdftotext is not installed")
+  tool <- Sys.which("pdftotext")
+  if (!nzchar(tool)) skip("pdftotext is not installed")
+  probe <- withr::local_tempfile(fileext = ".pdf")
+  grDevices::pdf(probe)
+  plot.new()
+  text(0.5, 0.5, "probe")
+  grDevices::dev.off()
+  words <- suppressWarnings(system2(tool, c("-bbox", shQuote(probe), "-"),
+                                    stdout = TRUE, stderr = FALSE))
+  if (!is.null(attr(words, "status"))) skip("pdftotext cannot read a PDF here")
+  invisible(NULL)
 }
 
 ## The words of a PDF's first page, in the order pdftotext -bbox gives them.
