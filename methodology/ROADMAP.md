@@ -82,7 +82,7 @@ session each unless marked. They follow the copy slices.
   width) is done, the symbol size (S60), the text size (S61), the spacing (S62) and the line width (S63);
   G15 (mates with no offspring) is done in four sessions (S64's plan, R141; G15a the layout S65, G15b
   `getMatings()` S66, G15c the converters S67); G16 (picture files) is planned (S68's plan, R142) and G16a, the
-  recording layer and the SVG, is done (S69, R143); G16b (the PDF, the PNG and the page) and G16c (the whole
+  recording layer and the SVG, is done (S69, R143) and its CI repair too (S70, R145); G16b (the PDF, the PNG and the page) and G16c (the whole
   large pedigree and the documents) are next; then the other large addition (an app), planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
@@ -258,6 +258,19 @@ session each unless marked. They follow the copy slices.
   widened it from `R/` and `man/` to the README, NEWS and vignettes).
 
 ## Completed Milestones
+
+- **Phase G16a's CI repair (pedkindraw S70, 2026-11-21).** S69's push was red on GitHub, and neither fault had shown
+  on the Mac, because the local check ran without `NOT_CRAN` and the full suite on macOS. (1) The help example failed
+  `R CMD check` ("connections left open": chromote leaves two processx pipes open; reproduced with
+  `NOT_CRAN=true` and `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true`): it now runs only when typed in R, and the quality gate
+  `examples-no-open-connections` (`tools/checkExamples.sh`) runs the check the way GitHub does. (2) 13 tests failed on
+  Ubuntu (the legend 1.6% against a bound of 0.5%): on Linux Chrome photographs an SVG's text with coloured LCD edges
+  and the live widget's canvas text in grey, so the test file's photographs now come from a Chrome of its own started
+  with `--disable-lcd-text`, with a new test that it draws grey text. Reproduced first in a Linux container
+  (`tools/linux/`: Ubuntu 26.04, R 4.6, Google Chrome): 1.57% and 13 of 143 expectations, then 0. Mark's two picks
+  (R145), each the recommended option. G16b's pre-RED measures and picks were made first (R144, section 12 of the
+  picture plan): the page 10 in wide as `.svg` has it, the PNG at 300 dpi, the PDF's size cut from 5.77 MB to 1.04 MB
+  by writing each dash as a short stroke. A Windows job that did not end after its tests is open (backlog).
 
 - **Phase G16a: `savePedigreeDiagram()` writes the widget as an SVG file (pedkindraw S69, 2026-11-21).**
   `savePedigreeDiagram(diagram, file, width, height)` records the widget's own drawing in headless Chrome and writes

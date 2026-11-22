@@ -8,6 +8,16 @@ issues).*
 
 ## Up Next
 
+- [ ] **A Windows job that does not end after its tests finish** (READY, Effort M, a guess; found S70, dragon 30 of
+      `docs/planning/picture-files-plan.md`) -- S69's Windows job ran the tests to the end (`[ FAIL 13 | WARN 0 | SKIP
+      1 | PASS 16196 ]`) and then the check step went on "running" for 77 minutes until it was cancelled; two
+      orphan `Rterm` processes were killed at clean-up. S68's run, before `savePedigreeDiagram()`, ended in under 19
+      minutes. Cause not known (suspects: the stuck-page tests, and the one Chrome the function starts per call left
+      running at R's exit on Windows). First: read the Windows job of the push that follows S70 (it has the repaired
+      tests, so its 13 legend failures should be gone); if it passes 40 minutes, `gh run cancel` it and read its log; add
+      `timeout-minutes` to `.github/workflows/R-CMD-check.yaml` so a hang ends as a failure with a log. No Windows
+      machine here: iterate on GitHub.
+
 - [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
       timing runs, Effort L, a guess; before the release, Phases 17g-17i of
       `docs/planning/cran-submission-plan.md`, R84)
@@ -38,7 +48,7 @@ issues).*
       G15a, the layout, DONE in S65, R141's picks; G15b, `getMatings()`, DONE in S66, R141's picks; G15c, the
       converters, DONE in S67, R141's picks, so G15 DONE; G16's plan written in S68, R142,
       `docs/planning/picture-files-plan.md`, three build sessions; G16a, the recording layer and the SVG file, DONE in
-      S69, R143; next G16b, the PDF, the PNG and the page) --
+      S69, R143; G16a's CI repair DONE in S70, R145; next G16b, the PDF, the PNG and the page) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
