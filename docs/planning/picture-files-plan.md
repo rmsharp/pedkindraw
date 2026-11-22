@@ -659,3 +659,84 @@ specks at 300 dpi and read at 1,200 dpi. Pixels are the page in inches times dpi
     the animals' shapes and ids was 489 KB, and a test that only reads the size would have taken it for a better fix.
 25. **Chrome rounds the paper:** a page asked at 6.8 in high came out 490.08 pt (489.6 expected, 0.48 pt over; the
     cause was not worked out); 14 x 7 in and 7 x 7 in were exact. DONE's "within 1 pt" held in both.
+
+---
+
+## 13. G16a's CI repair: the two faults found in S69's push (pedkindraw S70; R145)
+
+**Date:** 2026-11-21 · **Session:** pedkindraw S70. Claimed as G16b; after G16b's picks and measures (section 12,
+`ff862e5`) S69's push (`1d0e00a`, run 44986823915) was read job by job and found red, and Mark chose "Repair CI first;
+G16b next session (Recommended)". Section 12 stands unchanged for G16b.
+
+**What GitHub showed.** ubuntu-latest (devel): fails in setup-r-dependencies ("unable to load R code in package
+‘S4Vectors’": the known fault of S56-S69, not a check). macOS (release, R 4.6.2): `checking examples ... ERROR`; tests
+FAIL 0, WARN 0, SKIP 0, PASS 16,210. ubuntu-latest (release) and (oldrel-1, R 4.5.3): `checking examples ... ERROR`
+and tests FAIL 13, WARN 0, SKIP 2, PASS 16,186: all 13 in one test (`test_savePedigreeDiagram.R:188`), each "legend ink
+differing, percent <= limit: 1.6 > 0.5" (the 4 animals and the 12 typed shapes; the feature pedigree passes at its bound
+of 1.0; the drawing passes everywhere). Windows (release): still running when this was written (read at close-out).
+Neither showed on the Mac: S69's local `R CMD check --as-cran` ran without `NOT_CRAN`, so the example and the 10 Chrome
+tests skipped, and the full suite by hand ran on macOS, where the legend matches.
+
+### 13.1 Mark's picks (R145), each first time, all the recommended option
+
+1. **The example:** it runs only in an interactive session (a person typing `example(savePedigreeDiagram)`), never in
+   `R CMD check`, and a new quality gate runs the check's examples with GitHub's settings. (The others: the same
+   change with no gate; `\dontrun`. Not offered: closing chromote's pipes ourselves, because the only way,
+   `processx::supervisor_kill()`, "terminates all supervised processes and the supervisor process itself": every
+   browser the user's session has running.)
+2. **The Linux legend:** the test file's photographs are taken by a Chrome of its own started with
+   `--disable-lcd-text`. (The others: compare brightness instead of colour channels; widen the bound to 2%.)
+
+### 13.2 What the measures found
+
+**The example.** Reproduced on this Mac: `NOT_CRAN=true _R_CHECK_CONNECTIONS_LEFT_OPEN_=true R CMD check --no-tests
+--no-manual --no-vignettes --no-build-vignettes --ignore-vignettes` gives `checking examples ... ERROR  connections left
+open: .../supervisor_stdin... (fifo) .../supervisor_stdout... (fifo)`; without the variable, `OK`. Two pipes stay open
+after the first `savePedigreeDiagram()` call of an R session and stay at two over later calls (`showConnections()`):
+chromote starts Chrome through processx with `supervise = TRUE`, and processx keeps one supervisor per session. With
+the guard `interactive() &&` in place of `identical(Sys.getenv("NOT_CRAN"), "true") &&` the same check reads `OK`;
+build and check together take 28 s. testthat does not check connections: macOS's tests passed.
+
+**The legend on Linux.** Reproduced in a container (`tools/linux/`: Ubuntu 26.04.1, R 4.6.1, Google Chrome
+158.0.8127.36 for arm64; GitHub's runner is x86-64 on the same Ubuntu): the four animals' legend differs 1.57% (61 of 3,881
+ink pixels) and the drawing 0%, as on GitHub (1.6%); the whole test file reads 18 tests, 143 expectations, **13 expectations failed**,
+all in the one test, as GitHub's FAIL 13; the other 17 tests pass on Linux. The 61 pixels lie along the legend's rows (y 66 to
+387; none in the title). The pictures show the cause: on Linux the live widget's canvas text is grey, and the SVG
+document's text photographed by the same Chrome has coloured (LCD) edges, so the same letters differ in colour channels
+(macOS: 1 pixel). It is a property of the photograph, not of the file. The three ways, on those pictures:
+
+| The test's way | Linux legend differing | macOS | Test file on Linux |
+|---|---:|---:|---|
+| as it is (colour channels, bound 0.5%) | 61 pixels, 1.57% | 1 pixel, 0.03% | 13 expectations failed |
+| Chrome started with `--disable-lcd-text` | 0 pixels, 0% (drawing 0%) | unchanged | 0 failed of 18 tests, 143 expectations |
+| brightness instead of colour channels (difference over 100) | 0 pixels | 0 pixels | not run |
+
+With a Chrome of its own (not the shared one) three Chrome test files run together on Linux read 42 tests, 604
+expectations, 0 failed. Setting the flag with `chromote::set_chrome_args()` after the shared Chrome exists changes
+nothing for that Chrome: other files (`test_carrierMark.R` to `test_symbolSize.R`) start it before
+`test_savePedigreeDiagram.R` runs.
+
+### 13.3 The plan for RED and GREEN (every number a prediction until the real code runs, Learning 18)
+
+- **RED:** the gate `examples-no-open-connections` (`methodology/.quality-gates.json`, max 0, command
+  `tools/checkExamples.sh`, which builds the package in a scratch folder and runs `R CMD check`'s examples with
+  `NOT_CRAN=true` and `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true`, printing the count of ERRORs; it reads 1); one new test in
+  `test_savePedigreeDiagram.R` that photographs a line of text through `.saveChromeSession()` and expects every ink pixel
+  grey (it fails in the Linux container, where the shared Chrome draws LCD text, and passes on macOS, which has none).
+- **GREEN:** the example's guard (`R/savePedigreeDiagram.R`, `man/`); `.saveChromeSession()` makes a Chrome of its own
+  with `--disable-lcd-text`, closed after the suite. Checked by: the gate 1 to 0; `tools/linux/runTests.sh
+  savePedigreeDiagram` 0 failed; the full suite on this Mac; lint; roxygen; the push's five jobs.
+
+### 13.4 Dragons found in the repair's measures
+
+26. **Run the DONE check the way GitHub does.** `R CMD check` without `NOT_CRAN=true` skips the Chrome example and tests,
+    and without `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true` does not see chromote's two open pipes; S69's "1 NOTE" was true of a
+    check that skipped both. An example or vignette chunk that starts Chrome must not run in `R CMD check` (G16c's
+    vignette chunks: not measured whether the vignette step has the same check).
+27. **On Linux Chrome draws SVG text with coloured LCD edges and canvas text in grey** (macOS draws neither). Any pixel
+    comparison, and any PNG file, made from an SVG's text needs `--disable-lcd-text` in the Chrome that photographs it:
+    G16b's PNG, in the function's own Chrome (the PDF is vector and has no such edges). Windows: not measured here.
+28. **A Linux box to reproduce GitHub's Ubuntu jobs:** `tools/linux/Dockerfile` and `runTests.sh`. Ubuntu's own
+    `r-cran-*` packages are built for R 4.5 and do not load in R 4.6 (`rlang.so: undefined symbol: SETLENGTH`), so every
+    R package in it is compiled from CRAN source. It reproduced GitHub's 1.6% as 1.57% and FAIL 13 as 13.
+29. **A Chrome flag set after the shared Chrome exists does not reach it:** the test file needs a Chrome of its own.
