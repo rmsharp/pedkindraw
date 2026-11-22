@@ -5,7 +5,7 @@
 beside this plan, section 3). **Governs:** Phase G17 of `docs/planning/gaps-and-shared-code-plan.md` (section 5.1,
 G17's row, `:386`), gap A3 of `docs/research/pedkindraw-gaps-2026-11-18.md` (`:144`). **Ruling made here:** R148
 (Mark's four picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written (S73);
-G17a's picks made (S74, R149, section 11); G17a-G17d not built (section 7).
+G17a DONE (S74, R149, section 11): `runPedigreeApp()`; G17b next, then G17c and G17d (section 7).
 
 **Versions:** shiny 1.14.0, Pedixplorer 1.8.0, visNetwork 2.1.4, chromote 0.5.1 and callr 3.8.0 from this project's
 renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); Google Chrome 157;
@@ -411,6 +411,13 @@ each); the gaps plan guessed 1 + 4-8.
 12. **The counts and sizes here are guesses or one machine's** (picture-files plan dragons 42-43): the session count,
     the server tests' CRAN time and the Chrome timings are this Mac's; a test states an order, a presence or an exact
     count, not a time.
+13. **Measure a check with the flags the DONE check uses** (S74): a scratch `R CMD check` without `--as-cran` passed
+    a test helper's undeclared `pkgload::` call, and the `--as-cran` check warned on it. `--as-cran` reads
+    `tests/testthat/` for undeclared packages; without it the check reads only `tests/*.R`.
+14. **`testServer()` computes every output at each change, read or not** (S74, section 11.2): a server test that sets
+    the sample's columns pays for drawing 375 animals (2.4 s here) on CRAN too. G17a's server tests load the sample
+    without choosing its columns, and only the Chrome test draws it. An assignment inside `testServer()`'s code lands
+    in the server's environment, not the caller's: keep a result in an environment object.
 
 ---
 
@@ -465,10 +472,12 @@ and prints "Listening on http://127.0.0.1:<port>" to its standard error; the par
 | `R CMD check`, `NOT_CRAN` unset | `pedkindraw.Rcheck/pedkindraw` (installed) | 0.75 s | yes | ended |
 
 Renv's stale pedkindraw 0.0.1 (31 exports, no `savePedigreeDiagram()`, backlog `:223`) was loaded by neither. The
-check read Status OK and its tests 2.08 s. **Found:** `R CMD check`'s "checking for unstated dependencies in 'tests'"
-does not read `tests/testthat/`: a helper calling `fakepkgxyz::foo()` passed it. Declaring `shiny` and `callr` in
-Suggests is this package's own discipline, not the check's; `pkgload` is not declared, because its one call runs only
-when `pkgload` loaded the package. **Found:** `shiny::testServer()` and `shiny::runApp()` each call `require(shiny)`,
+check read Status OK and its tests 2.08 s. **Found, and corrected the same session:** without `--as-cran`, `R CMD
+check`'s "checking for unstated dependencies in 'tests'" does not read `tests/testthat/` (a helper calling
+`fakepkgxyz::foo()` passed it), and this section first concluded that `pkgload` need not be declared. The DONE check
+runs `--as-cran`, which does read `tests/testthat/`: it warned "'::' or ':::' import not declared from: 'pkgload'"
+(section 11.6), as dragon 1 had said, and `pkgload` went into Suggests (GREEN 4, `81da303`). The scratch measure ran
+with other flags than the check it stood for (dragon 13). **Found:** `shiny::testServer()` and `shiny::runApp()` each call `require(shiny)`,
 attaching shiny and printing "Loading required package: shiny"; the test helper hides the message and detaches shiny
 when it attached it.
 
@@ -527,3 +536,45 @@ argument**, a data frame with `id`, `sire`, `dam` and `sex` columns, others kept
 female) as `M`, `F`, `H` and `U`, said under the column choices, any other value left as it is; **both apps' column
 names recognised**, ignoring case, spaces, dots and underscores: id from id, ego, egoid or indid; sire from sire,
 sireid, father, fatherid or dadid; dam from dam, damid, mother, motherid or momid; sex from sex or gender.
+
+### 11.6 What G17a built and measured (S74)
+
+**Commits:** claim `f8bca6f`; the measures and R149 `2274af3`; RED `feb21f1`; GREEN `7ecfab7` (the function and the
+app), `da4aa11` (the help index, `?pedkindraw`, NEWS), `83ecac5` (the contract, the `app` case), `81da303` (`pkgload`
+in Suggests); REFACTOR `ffee08d`.
+
+**Built:** `runPedigreeApp(ped = NULL, port = NULL, launch.browser = interactive())` (`R/runPedigreeApp.R`), and the
+app's page, server and helpers, internal (`R/pedigreeApp.R`): F1 (a CSV or text file), F3 (the sample), the `ped`
+argument, F4 (R149's names and sex codes, each column chosen from a list, the sex note), `gen` added, everyone drawn,
+the layout's warnings and messages shown (finding 2), the page saying when a file cannot be read, has fewer than four
+columns or no animals, a column is not chosen or is chosen twice, or the pedigree cannot be drawn; F5 (the Checks
+tab) and F18 (the Animals tab). Help with an `interactive()`-guarded example; `_pkgdown.yml`; `?pedkindraw`'s Drawing
+section; NEWS; the contract's section 4.7 and section 5; `shiny`, `callr` and `pkgload` in Suggests; the gap cases'
+`app` case starts the app and reads its title.
+
+**Tests:** 26, 128 expectations: `test_runPedigreeApp.R` (9, no app started: `shiny::runApp()` stubbed, each call
+under a time limit), `test_pedigreeAppServer.R` (15, `testServer()`), `test_pedigreeAppBrowser.R` (2, the app in a
+second process and Chrome; skipped on CRAN). On CRAN's path (`NOT_CRAN` unset, the installed package) 24 run in 1.73 s
+here (the server tests 1.43 s) and the 2 browser tests skip.
+
+**Verified:** the full suite at `ffee08d` (`NOT_CRAN=true`), 88 files, 1,090 tests, 16,470 expectations, 0 failed, 0
+errors, SKIP 0, WARN 0 (535 s); `R CMD check --as-cran` from a scratch folder (`NOT_CRAN=true`, connections left open
+checked) at `81da303`: 0 errors, 0 warnings, 1 NOTE (the new submission), `[ FAIL 0 | WARN 0 | SKIP 6 | PASS 16443 ]`
+(598 s); the first check, at `83ecac5`, warned on `pkgload` (section 11.1) and noted a GitHub URL answering 503 (200
+when tried again); coverage 117 of 117 statements of `R/pedigreeApp.R` and 16 of 16 of `R/runPedigreeApp.R` by the
+app's tests; `bash tools/checkExamples.sh` errors 0; `lint_package()` 0; `roxygenise()` no change; drift 91 / 23 / 0;
+fidelity 600 of 600 identical; `Rscript tools/gapCases.R app` prints `<title>pedkindraw: draw a pedigree</title>`. The
+REFACTOR proved by the server's six outputs over 30 cases (five files by six column choices) `identical()` before and
+after.
+
+**By hand, in headless Chrome on this Mac:** the sample drawn in 2.68 s with the collision note above it; a CSV
+uploaded through the page's own file input (DevTools' `DOM.setFileInputFiles`) with columns Ego, Father, Mother, Gender
+and codes 1 and 2: the columns chosen, "Sex values read as pedkindraw's codes: 1 as M, 2 as F.", its sire with no row
+shown in red as "could not be drawn", `findGeneration()`'s note under it and no earlier drawing left, the Checks tab
+"1 problem found." naming `s9`; the file corrected and uploaded again, "4 animals drawn". **Not run:** another browser,
+a real file dialog (the upload went through DevTools), a phone-width window, a hosted server; GitHub's jobs are read
+after the push.
+
+**Found for later:** a file whose parents have no row of their own cannot be drawn (section 11.4); Pedixplorer's app
+and nprcgenekeepr's Input tab add such parents. A backlog item (`methodology/BACKLOG.md`, "The app: parents with no
+row of their own").

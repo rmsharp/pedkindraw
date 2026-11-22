@@ -94,7 +94,8 @@ G16a's CI repair DONE (pedkindraw S70, R145: S69's push was red on GitHub, its t
 Phase G16b DONE (pedkindraw S71: `savePedigreeDiagram()` writes `.pdf` and `.png` files and takes `dpi`, R144 built, R146's decoder pick; the Windows job hung again with its tests passing, still open);
 Phase G16c DONE (pedkindraw S72, R147's picks): the 375 animals' SVG and PDF hold 545 id labels, 375 distinct, none overlapping, on 14 by 7 inches and on letter paper, the PNG holds them too; the README, both vignettes, the help and NEWS say how to save a drawing and what the colony's files hold (`docs/planning/picture-files-plan.md` section 15), so G16 is DONE.
 Phase G17's plan written (pedkindraw S73: `docs/planning/pedigree-app-plan.md`, R148, an app that opens a CSV file and draws it, chooses the animals, follows a click and saves the drawing; `shiny` in Suggests; one exported function).
-**Next:** Phase G17a (the app starts, opens a file and draws everyone; the plan's section 7), then G17b-G17d, then 17g.
+Phase G17a DONE (pedkindraw S74, R149's picks): `runPedigreeApp()` starts the app, which opens a CSV or text file, the sample pedigree or a `ped` data frame, recognises the four columns and the common sex codes, draws everyone with the layout's notes shown, and lists `checkPedigree()`'s problems and the animals (`docs/planning/pedigree-app-plan.md` section 11.6).
+**Next:** Phase G17b (choosing the animals: one family, focal animals' relatives, a click; the plan's section 7), then G17c and G17d, then 17g.
 In nprcgenekeepr: N1 (its two
 faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) done in its S1190
 (closed at `faf6823c3`); its S1191 (a standard error for simulated kinship, no copied file) closed at `3e06730c5`.
