@@ -2,7 +2,9 @@
 ## This file is part of pedkindraw
 ## pedkindraw's own code, not copied from nprcgenekeepr (pedkindraw S69, plan
 ## Phase G16a, gaps A1 and A2 of docs/research/pedkindraw-gaps-2026-11-18.md;
-## rulings R142 and R143, docs/planning/picture-files-plan.md section 11).
+## rulings R142 and R143, docs/planning/picture-files-plan.md section 11; the
+## .pdf and .png files and dpi: pedkindraw S71, Phase G16b, ruling R144,
+## section 12).
 
 #' Save a pedigree diagram as a picture file
 #'
@@ -14,8 +16,13 @@
 #' is an SVG file: the same drawing, with every mark, colour and legend row,
 #' and each id as text that a reader can select, search and zoom to.
 #'
-#' Only \code{.svg} files are written by this version; \code{.pdf} and
-#' \code{.png} stop with a message.
+#' The ending of \code{file} chooses the kind of file: \code{.svg}, the
+#' recorded drawing as it is; \code{.pdf}, that drawing printed as one page of
+#' the picture's size, still vector, with each id as text (each dashed line is
+#' written as a row of short strokes, because Chrome writes every dash of a
+#' dashed line as an outline and a pedigree with many repeat animals would
+#' otherwise be a PDF of several megabytes); or \code{.png}, a photograph of
+#' the same drawing at \code{dpi} pixels per inch of the page.
 #'
 #' The widget on screen draws an id only when it would be 4 pixels tall, so a
 #' large pedigree shows no ids until a reader zooms in. A file has no zoom, so
@@ -24,25 +31,34 @@
 #'
 #' The picture is the widget's size in the browser, 10 inches (960 pixels)
 #' wide, unless \code{width} or \code{height} say otherwise. The drawing and
-#' its legend are drawn for that page, and the SVG's own size is the page, so
+#' its legend are drawn for that page, and the file's own size is the page, so
 #' it prints at that size.
 #'
-#' The function starts its own headless Chrome for each call and closes it, and
-#' stops if the drawing is not done within 60 seconds
-#' (\code{options(pedkindraw.saveTimeout = seconds)} changes that).
+#' The function starts its own headless Chrome for each call (two for a
+#' \code{.pdf} or \code{.png}) and closes it, and stops if the drawing is not
+#' done within 60 seconds (\code{options(pedkindraw.saveTimeout = seconds)}
+#' changes that).
 #'
 #' @param diagram the widget \code{\link{drawPedigreeDiagram}} returns.
 #' @param file the file to write, one file name. Its ending, in any case,
-#'   chooses the kind of file: \code{.svg}. The folder must exist.
+#'   chooses the kind of file: \code{.svg}, \code{.pdf} or \code{.png}. The
+#'   folder must exist.
 #' @param width,height the page, in inches: a positive number, or \code{NULL}
 #'   (the default) for the size the widget has in the browser, 10 inches wide.
 #'   The widget is drawn at \code{width * 96} by \code{height * 96} pixels, so
 #'   the drawing fills the page, with its legend at the right.
+#' @param dpi the pixels per inch of the page in a \code{.png} file, one
+#'   positive number (the default is 300): a page of 7 by 5 inches is 2100 by
+#'   1500 pixels. An \code{.svg} or \code{.pdf} file is vector and has no
+#'   pixels, so the number does not change it; it is checked for every kind of
+#'   file.
 #' @return \code{file}, invisibly.
 #' @section Requirements:
 #'   The \pkg{chromote} package, and Google Chrome or Chromium on the computer
 #'   (set \code{CHROMOTE_CHROME} to its path if \pkg{chromote} cannot find
-#'   it). Both are checked before anything is drawn.
+#'   it). Both are checked before anything is drawn. A \code{.pdf} or
+#'   \code{.png} file also needs \pkg{jsonlite}, which \pkg{chromote} needs
+#'   too.
 #' @seealso \code{\link{drawPedigreeDiagram}} for the widget, and
 #'   \code{\link{makePedigreeMatingLayout}} for what it draws.
 #' @examples
@@ -61,13 +77,16 @@
 #'   )
 #'   ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
 #'   diagram <- drawPedigreeDiagram(makePedigreeMatingLayout(ped))
-#'   file <- tempfile(fileext = ".svg")
-#'   savePedigreeDiagram(diagram, file, width = 7, height = 5)
-#'   file.exists(file)
-#'   unlink(file)
+#'   for (kind in c(".svg", ".pdf", ".png")) {
+#'     file <- tempfile(fileext = kind)
+#'     savePedigreeDiagram(diagram, file, width = 7, height = 5)
+#'     print(file.exists(file))
+#'     unlink(file)
+#'   }
 #' }
 #' @export
-savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
+savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
+                                dpi = 300.0) {
   if (!inherits(diagram, "visNetwork")) {
     stop("savePedigreeDiagram() requires 'diagram' to be the widget ",
          "drawPedigreeDiagram() returns.")
@@ -81,12 +100,9 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
     stop("savePedigreeDiagram() requires 'file' to end in .svg, .pdf or ",
          ".png.")
   }
-  if (!identical(ending, "svg")) {
-    stop("savePedigreeDiagram(): writing .", ending, " files is not ",
-         "available yet; use a file name ending in .svg.")
-  }
   .checkInches(width, "width")
   .checkInches(height, "height")
+  .checkDpi(dpi)
   if (!dir.exists(dirname(file))) {
     stop("savePedigreeDiagram(): the folder of 'file' does not exist.")
   }
@@ -104,8 +120,17 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
   )
   copy$width <- if (is.null(width)) 960.0 else round(width * 96.0)
   if (!is.null(height)) copy$height <- sprintf("%dpx", round(height * 96.0))
-  recorded <- .recordDiagramSvg(copy, widthIn = width, heightIn = height)
-  writeLines(recorded$svg, file, useBytes = TRUE)
+  timeout <- getOption("pedkindraw.saveTimeout", 60.0)
+  deadline <- Sys.time() + timeout
+  recorded <- .recordDiagramSvg(copy, timeout = timeout, widthIn = width,
+                                heightIn = height,
+                                expandDashes = identical(ending, "pdf"))
+  if (identical(ending, "svg")) {
+    writeLines(recorded$svg, file, useBytes = TRUE)
+  } else {
+    .renderPicture(recorded, ending, file, width, height, dpi, deadline,
+                   timeout)
+  }
   invisible(file)
 }
 
@@ -124,6 +149,8 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
 #'   uses 1, a test uses 2.
 #' @param widthIn,heightIn the page in inches for the SVG's own size, or
 #'   \code{NULL} for the drawing's box over 96 pixels per inch.
+#' @param expandDashes \code{TRUE} to have each dashed line written as short
+#'   strokes (the recording layer's third argument), for a PDF.
 #' @return A list: \code{svg}, the SVG text, and \code{x}, \code{y},
 #'   \code{w}, \code{h}, the box of the widget's canvases, in CSS pixels.
 #' @noRd
@@ -131,7 +158,7 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
                               timeout = getOption("pedkindraw.saveTimeout",
                                                   60.0),
                               scaleFactor = 1.0, widthIn = NULL,
-                              heightIn = NULL) {
+                              heightIn = NULL, expandDashes = FALSE) {
   deadline <- Sys.time() + timeout
   stopTooSlow <- function() {
     stop("savePedigreeDiagram() did not finish drawing within ",
@@ -175,7 +202,8 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
   }
   answer <- tryCatch(
     session$Runtime$evaluate(
-      sprintf("window.__svg(%s, %s)", asNumber(widthIn), asNumber(heightIn)),
+      sprintf("window.__svg(%s, %s, %s)", asNumber(widthIn),
+              asNumber(heightIn), if (expandDashes) "true" else "false"),
       returnByValue = TRUE, timeout_ = max(.secondsLeft(deadline), 1.0)
     )$result$value,
     error = function(e) stopTooSlow()
@@ -218,6 +246,104 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
       call = sys.call(-1L)
     ))
   }
+  invisible(NULL)
+}
+
+#' Stop unless the dpi of savePedigreeDiagram() is one positive number
+#'
+#' The check \code{savePedigreeDiagram()} makes of \code{dpi}, as
+#' \code{.checkInches()} makes of the page.
+#'
+#' @param dpi the argument.
+#' @return \code{NULL}, invisibly, when \code{dpi} is acceptable.
+#' @noRd
+.checkDpi <- function(dpi) {
+  if (!(is.numeric(dpi) && length(dpi) == 1L && is.finite(dpi) && dpi > 0.0)) {
+    stop(simpleError(
+      paste0("savePedigreeDiagram() requires 'dpi' to be one positive number ",
+             "of pixels per inch."),
+      call = sys.call(-1L)
+    ))
+  }
+  invisible(NULL)
+}
+
+#' Print or photograph a recorded SVG as a PDF or PNG file
+#'
+#' Writes \code{recorded$svg} to a folder of its own, opens it in a headless
+#' Chrome of its own (started with LCD text off, so that a PNG's text has no
+#' coloured edges on Linux and Windows), waits until the page is painted (two
+#' animation frames: a print right after the load event can come out without
+#' the shapes and ids), and writes the page: \code{Page.printToPDF} with the
+#' paper the page's size and no margins, or \code{Page.captureScreenshot}
+#' clipped to the page at \code{dpi / 96} times its size. The browser and the
+#' folder are gone on every way out, and the file is written only when the
+#' browser has answered.
+#'
+#' @param recorded the list \code{.recordDiagramSvg()} returns.
+#' @param ending \code{"pdf"} or \code{"png"}.
+#' @param file the file to write.
+#' @param widthIn,heightIn the page in inches, or \code{NULL} for the box
+#'   (\code{recorded$w}, \code{recorded$h}) over 96 pixels per inch.
+#' @param dpi the pixels per inch of a PNG.
+#' @param deadline the time to give up, from \code{Sys.time()}.
+#' @param timeout the seconds the deadline was, for the message.
+#' @return \code{NULL}, invisibly.
+#' @noRd
+.renderPicture <- function(recorded, ending, file, widthIn, heightIn, dpi,
+                           deadline, timeout) {
+  stopTooSlow <- function() {
+    stop("savePedigreeDiagram() did not finish drawing within ",
+         format(timeout), " seconds.", call. = FALSE)
+  }
+  pageWidth <- if (is.null(widthIn)) recorded$w / 96.0 else widthIn
+  pageHeight <- if (is.null(heightIn)) recorded$h / 96.0 else heightIn
+  folder <- tempfile("pedkindraw-save-")
+  dir.create(folder)
+  on.exit(unlink(folder, recursive = TRUE), add = TRUE)
+  picture <- file.path(folder, "picture.svg")
+  writeLines(recorded$svg, picture, useBytes = TRUE)
+
+  chrome <- chromote::Chromote$new(browser = chromote::Chrome$new(
+    args = unique(c(chromote::default_chrome_args(), "--disable-lcd-text"))
+  ))
+  on.exit(chrome$close(), add = TRUE, after = FALSE)
+  chrome$default_timeout <- max(chrome$default_timeout, 60.0)
+  session <- chromote::ChromoteSession$new(
+    parent = chrome, width = as.integer(ceiling(pageWidth * 96.0)) + 50L,
+    height = as.integer(ceiling(pageHeight * 96.0)) + 50L
+  )
+  session$Page$enable()
+  left <- function() max(.secondsLeft(deadline), 0.5)
+  answer <- tryCatch({
+    session$Page$navigate(paste0("file://", picture), timeout_ = left())
+    session$Runtime$evaluate(
+      paste0("new Promise(function (done) { requestAnimationFrame(",
+             "function () { requestAnimationFrame(done); }); })"),
+      awaitPromise = TRUE, timeout_ = left()
+    )
+    if (identical(ending, "pdf")) {
+      session$Page$printToPDF(
+        paperWidth = pageWidth, paperHeight = pageHeight, marginTop = 0.0,
+        marginBottom = 0.0, marginLeft = 0.0, marginRight = 0.0,
+        printBackground = TRUE, pageRanges = "1", timeout_ = left()
+      )
+    } else {
+      session$Page$captureScreenshot(
+        format = "png",
+        clip = list(x = 0.0, y = 0.0, width = pageWidth * 96.0,
+                    height = pageHeight * 96.0, scale = dpi / 96.0),
+        timeout_ = left()
+      )
+    }
+  }, error = function(e) {
+    if (.secondsLeft(deadline) < 0.5 ||
+          grepl("timed out", conditionMessage(e), fixed = TRUE)) {
+      stopTooSlow()
+    }
+    stop(e)
+  })
+  writeBin(jsonlite::base64_dec(answer$data), file)
   invisible(NULL)
 }
 

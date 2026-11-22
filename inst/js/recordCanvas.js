@@ -33,9 +33,17 @@
 //
 // The page asks, through Runtime.evaluate: window.__ready(), "<canvases drawn>
 // <ms since the last canvas call> <1 when every legend picture has loaded>",
-// and window.__svg(widthIn, heightIn), "<x> <y> <width> <height>" of the
-// canvases' box in CSS pixels, a newline, then the SVG. A string, not JSON, so
-// the R side needs no JSON package.
+// and window.__svg(widthIn, heightIn, expandDashes), "<x> <y> <width>
+// <height>" of the canvases' box in CSS pixels, a newline, then the SVG. A
+// string, not JSON, so the R side needs no JSON package.
+//
+// expandDashes (pedkindraw G16b, R144; plan section 12): a dashed line is
+// written as one short stroke per dash, with the dash array dropped, for the
+// PDF. Chrome's PDF writer turns every dash into a closed outline (the 375
+// animals' 170 dashed edges hold about 52,000 dashes: 5.77 MB), and each as a
+// short stroke is 1.04 MB. A path that is not one subpath of M, L and Q
+// commands, has a dash offset or a dash array of more than two numbers keeps
+// its dashes.
 (function () {
   var proto = CanvasRenderingContext2D.prototype;
   var recs = [];
@@ -59,8 +67,8 @@
   function R(ctx) {
     var cv = ctx.canvas, r = byCanvas.get(cv);
     if (!r) {
-      r = {ctx: ctx, cv: cv, ops: [], defs: [], clipN: 0, stack: [],
-        s: fresh(), d: '', has: false, draws: []};
+      r = {ctx: ctx, cv: cv, ops: [], short: {}, defs: [], clipN: 0,
+        stack: [], s: fresh(), d: '', has: false, draws: []};
       byCanvas.set(cv, r);
       recs.push(r);
     }
@@ -87,6 +95,63 @@
     var p = P(r, x, y);
     r.d += cmd + n(p[0]) + ' ' + n(p[1]) + ' ';
     r.has = true;
+  }
+  // The path d (M, L and Q commands in one subpath, in device pixels) cut
+  // along its length into dashes of `on` with `off` between, each written as
+  // "M x y L x y"; null for any other path.
+  function dashStrokes(d, on, off) {
+    var toks = d.match(/[A-Za-z]|-?\d+\.?\d*/g) || [];
+    var pts = [], i = 0, cur = null, moves = 0;
+    if (!(on > 0) || !(off >= 0)) { return null; }
+    while (i < toks.length) {
+      var c = toks[i++];
+      if (c === 'M' || c === 'L') {
+        if (c === 'M' && ++moves > 1) { return null; }
+        cur = [parseFloat(toks[i]), parseFloat(toks[i + 1])];
+        i += 2;
+        pts.push(cur);
+      } else if (c === 'Q' && cur) {
+        var c1 = [parseFloat(toks[i]), parseFloat(toks[i + 1])];
+        var e = [parseFloat(toks[i + 2]), parseFloat(toks[i + 3])];
+        i += 4;
+        for (var k = 1; k <= 300; k++) {
+          var t = k / 300, u = 1 - t;
+          pts.push([u * u * cur[0] + 2 * u * t * c1[0] + t * t * e[0],
+            u * u * cur[1] + 2 * u * t * c1[1] + t * t * e[1]]);
+        }
+        cur = e;
+      } else {
+        return null;
+      }
+    }
+    var segs = [], len = 0;
+    for (var j = 1; j < pts.length; j++) {
+      var l = Math.hypot(pts[j][0] - pts[j - 1][0], pts[j][1] - pts[j - 1][1]);
+      segs.push({p: pts[j - 1], q: pts[j], l: l, c: len});
+      len += l;
+    }
+    if (!segs.length) { return null; }
+    function at(s) {
+      for (var m = 0; m < segs.length; m++) {
+        var g = segs[m];
+        if (s <= g.c + g.l || m === segs.length - 1) {
+          var f = g.l === 0 ? 0 : Math.min(Math.max((s - g.c) / g.l, 0), 1);
+          return [g.p[0] + (g.q[0] - g.p[0]) * f, g.p[1] + (g.q[1] - g.p[1]) * f];
+        }
+      }
+    }
+    var out = [];
+    for (var s0 = 0; s0 < len; s0 += on + off) {
+      var a = at(s0), b = at(Math.min(s0 + on, len));
+      out.push('M' + n(a[0]) + ' ' + n(a[1]) + ' L' + n(b[0]) + ' ' + n(b[1]));
+    }
+    return out.join(' ');
+  }
+  // What a canvas drew, as SVG; each dashed line as short strokes when asked.
+  function opsOf(r, expandDashes) {
+    return r.ops.map(function (op, i) {
+      return expandDashes && r.short[i] ? r.short[i] : op;
+    }).join('');
   }
   var wrap = {
     save: function (r) { r.stack.push(clone(r.s)); },
@@ -136,13 +201,19 @@
     stroke: function (r) {
       if (!r.d) { return; }
       var s = r.s, k = sc(r);
-      var dash = s.dash.map(function (v) { return n(v * k); }).join(' ');
-      r.ops.push('<path d="' + r.d + '" fill="none" stroke="' + esc(s.stroke) +
-        '" stroke-opacity="' + s.ga + '" stroke-width="' + n(s.lw * k) + '"' +
+      var lengths = s.dash.map(function (v) { return n(v * k); });
+      var dash = lengths.join(' ');
+      var common = ' fill="none" stroke="' + esc(s.stroke) +
+        '" stroke-opacity="' + s.ga + '" stroke-width="' + n(s.lw * k) + '"';
+      var ends = ' stroke-linecap="' + s.cap + '" stroke-linejoin="' + s.join +
+        '"' + clipAttr(r) + '/>';
+      r.ops.push('<path d="' + r.d + '"' + common +
         (dash ? ' stroke-dasharray="' + dash + '" stroke-dashoffset="' +
-          n(s.doff * k) + '"' : '') +
-        ' stroke-linecap="' + s.cap + '" stroke-linejoin="' + s.join + '"' +
-        clipAttr(r) + '/>');
+          n(s.doff * k) + '"' : '') + ends);
+      var strokes = dash && s.doff === 0 && lengths.length <= 2 ?
+        dashStrokes(r.d, lengths[0], lengths.length > 1 ? lengths[1] : lengths[0])
+        : null;
+      if (strokes) { r.short[r.ops.length - 1] = '<path d="' + strokes + '"' + common + ends; }
     },
     clip: function (r) {
       var id = 'c' + (r.clipN++) + '_' + recs.indexOf(r);
@@ -156,7 +227,9 @@
         n(w * k) + '" height="' + n(h * k) + '" fill="' + esc(r.s.fill) +
         '" fill-opacity="' + r.s.ga + '"' + clipAttr(r) + '/>');
     },
-    clearRect: function (r) { r.ops = []; r.defs = []; r.clipN = 0; },
+    clearRect: function (r) {
+      r.ops = []; r.short = {}; r.defs = []; r.clipN = 0;
+    },
     setLineDash: function (r, d) { r.s.dash = (d || []).slice(); },
     setTransform: function (r, a, b, c, d, e, f) {
       r.s.m = (arguments.length >= 7) ? [a, b, c, d, e, f] : [1, 0, 0, 1, 0, 0];
@@ -298,7 +371,7 @@
     var ratio = window.devicePixelRatio;
     return Math.round(v * ratio) / ratio;
   }
-  window.__svg = function (widthIn, heightIn) {
+  window.__svg = function (widthIn, heightIn, expandDashes) {
     var boxes = recs.map(function (r) {
       var b = r.cv.getBoundingClientRect();
       return {r: r, x: b.left, y: b.top, w: b.width, h: b.height};
@@ -324,7 +397,8 @@
       out.push('<g transform="translate(' + n(snap(b.x) - x0) + ' ' +
         n(snap(b.y) - y0) +
         ') scale(' + n6(1 / window.devicePixelRatio) +
-        ')" clip-path="url(#box' + i + ')">' + b.r.ops.join('') + '</g>');
+        ')" clip-path="url(#box' + i + ')">' + opsOf(b.r, expandDashes) +
+        '</g>');
     });
     document.querySelectorAll('[id^="legend_main"] div').forEach(function (e) {
       if (e.children.length > 0 || !e.textContent.trim()) { return; }

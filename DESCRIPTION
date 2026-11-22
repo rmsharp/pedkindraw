@@ -26,6 +26,7 @@ Imports:
     visNetwork
 Suggests:
     chromote,
+    jsonlite,
     kinship2,
     knitr,
     mockery,
