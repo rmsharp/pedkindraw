@@ -75,7 +75,8 @@ for what it draws.
 ## Examples
 
 ``` r
-if (identical(Sys.getenv("NOT_CRAN"), "true") &&
+# It starts Chrome, so it runs when typed in R, and not in R CMD check.
+if (interactive() &&
       requireNamespace("chromote", quietly = TRUE) &&
       !is.null(suppressMessages(chromote::find_chrome()))) {
   ped <- data.frame(
