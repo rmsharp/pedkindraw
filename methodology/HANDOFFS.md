@@ -202,6 +202,13 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S71
+date: 2026-11-22
+status: pending
+active_task: G16b (gaps A1 and A2, picture files from a script; docs/planning/picture-files-plan.md:281): the PDF and the PNG file for savePedigreeDiagram(), strict TDD, Mark's three R144 picks already made. Session claimed; from the PRE-RED to RED gate on.
+```
+
+```handoff
 session: S70
 date: 2026-11-21
 status: complete

@@ -145,6 +145,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 71 Did
+**Deliverable:** Phase G16b, the PDF and the PNG file for `savePedigreeDiagram()` (gaps A1 and A2,
+`docs/planning/picture-files-plan.md:281`), strict TDD (IN PROGRESS)
+**Started:** 2026-11-22 00:47 CST · **Model:** Claude Sonnet 5.5
+**Status:** Session claimed (Mark's orient pick, "G16b: PDF and PNG files (Recommended)"). Orient done: tree clean but
+`pedkindraw.Rproj`, no ghost session, ledgers at `a150a49`, dashboard 93/100, drift 91/23/0, nprcgenekeepr unchanged
+(`3e06730c5`). S70's push (run 44994050682): Ubuntu release and macOS green (PASS 16,201 and 16,212), R-devel red in
+"setup-r-dependencies" (known), Windows and Ubuntu oldrel-1 still running at claim (unread). Next: the PRE-RED to RED gate.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### What Session 70 Did
 **Deliverable (changed mid-session by Mark's pick):** the CI repair of G16a's two faults, strict TDD. DONE. Claimed as
 Phase G16b (Mark's orient pick, "G16b: PDF and PNG files (Recommended)"); G16b's pre-RED measures and Mark's three picks

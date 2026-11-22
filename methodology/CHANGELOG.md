@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-22 · [BL-Phase G16] S71: G16b, the PDF and the PNG file (in progress)
+- **Change:** session claimed (Mark's orient pick, "G16b: PDF and PNG files (Recommended)"): gaps A1 and A2's second build session (`docs/planning/picture-files-plan.md:281`), strict TDD, Mark's three R144 picks already made; from the PRE-RED to RED gate on. Orient found no ghost session, the ledgers at `a150a49`, drift 91/23/0, S70's push green on Ubuntu release and macOS, Windows and oldrel-1 still running.
+- **Commit/PR:** claim commit · **Session:** S71 · **Model:** Claude Sonnet 5.5 · **Verified:** n/a (claim).
+
 ### 2026-11-21 · [BL-Phase G16] S70 push 1: `master` to GitHub at close-out 2 (S70's claim, G16b's picks and measures, the repair's picks, RED, GREEN 1-2, REFACTOR, close-out 1-2)
 - **Change:** `git push origin master` (`1d0e00a..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `man/`, `tests/`, `tools/`, `docs/` changed, so both workflows run (their `paths-ignore` is only `CLAUDE.md` and `methodology/**`). The runs of this push are not read yet (they start after the handoff; S71 reads them first, every job). S69's push runs were read by `gh run view` and the Windows job's log by `gh api`: run 44986823915, four of five jobs red, then cancelled (next entry).
 - **Commit/PR:** none (push) · **Session:** S70 · **Verified:** the push's output.
