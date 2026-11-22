@@ -95,8 +95,10 @@ description). Each title was found at its line by `grep -n '^- \[ \]'` when S73 
   out at 300 s (run the suite by hand, 7.5-9 min; S72: 536 s); `CLAUDE.md` is over its budget (learnings go to the plans'
   dragons); `pedkindraw.Rproj` untracked, Mark's; `NOT_CRAN=true` for the browser tests; scratch files go in the
   scratchpad, never `/tmp`. renv prints "The project is out-of-sync" on activation (pre-existing; not S73's).
-- **Ledger sizes** (S73's close-out): see the receipt; `CHANGELOG.md` is near its 196,608 B archive threshold: archive it
-  with `methodology_trim.py` when it passes (`--check` first).
+- **Ledger sizes** (S73's close-out 2b): `CHANGELOG.md` 193,105 B; `HANDOFFS.md` 171,596 B, both under their 196,608 B
+  archive threshold. About 3.5 KB of room in `CHANGELOG.md`, less than one session's entries: archive it with
+  `methodology_trim.py` (`--check` first) early in S74, or as soon as it passes. This file is about 36 KB (S70's entry
+  removed, FM #28).
 - **Times** (S73's, this Mac): the prototype's server walk 4.7 s (6.2 s with R's start); its browser walk 8.5 s; the
   375 animals drawn in the app 2.6 s; a view of a few animals 0.02-0.05 s; Pedixplorer's app answers in 1.82 s.
 
