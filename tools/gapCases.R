@@ -270,6 +270,48 @@ cases$largeIds <- function(case = "largeIds") {
     pedkindraw::makePedigreeMatingLayout(ped)))
   probe(case, "pedkindraw animals drawn", sum(lay$nodes$id %in% rh$id))
   w <- pedkindraw::drawPedigreeDiagram(lay)
+  ## pedkindraw's own files (G16c): each on a 14 x 7 in page, with its own
+  ## Chrome that is closed before the one below starts.
+  saved <- file.path(tempfile("gapIdsFiles"), c("rhesus.pdf", "rhesus.svg",
+                                                "rhesus.png"))
+  dir.create(dirname(saved[[1L]]))
+  for (f in saved) {
+    probe(case, paste0("pedkindraw savePedigreeDiagram() to ",
+                       tools::file_ext(f), " (14 x 7 in) bytes"), {
+      pedkindraw::savePedigreeDiagram(w, f, width = 14, height = 7)
+      file.size(f)
+    })
+  }
+  probe(case, "pedkindraw rhesus pdf pages", pdfPages(saved[[1L]]))
+  probe(case, "pedkindraw rhesus svg id texts written (repeat animals too); distinct", {
+    svg <- paste(readLines(saved[[2L]], warn = FALSE), collapse = "\n")
+    texts <- regmatches(svg, gregexpr("<text [^>]*>[^<]*</text>", svg))[[1L]]
+    ids <- sub("^<text [^>]*>([^<]*)</text>$", "\\1", texts)
+    ids <- ids[ids %in% rh$id]
+    c(length(ids), length(unique(ids)))
+  })
+  if (nzchar(Sys.which("pdftotext"))) {
+    probe(case, paste("pedkindraw rhesus pdf id words (pdftotext -bbox);",
+                      "distinct; overlapping another word"), {
+      xml <- system2("pdftotext", c("-bbox", shQuote(saved[[1L]]), "-"),
+                     stdout = TRUE, stderr = FALSE)
+      xml <- regmatches(xml, regexpr("<word [^>]*>[^<]+</word>", xml))
+      box <- function(name) {
+        as.numeric(sub(paste0(".*", name, "=\"([-0-9.]+)\".*"), "\\1", xml))
+      }
+      text <- sub("^<word [^>]*>([^<]+)</word>$", "\\1", xml)
+      x0 <- box("xMin")
+      y0 <- box("yMin")
+      x1 <- box("xMax")
+      y1 <- box("yMax")
+      id <- which(text %in% rh$id)
+      over <- vapply(id, function(i) {
+        any(pmin(x1[i], x1[-i]) > pmax(x0[i], x0[-i]) &
+              pmin(y1[i], y1[-i]) > pmax(y0[i], y0[-i]))
+      }, logical(1L))
+      c(length(id), length(unique(text[id])), sum(over))
+    })
+  }
   f <- file.path(tempfile("gapIds"), "w.html")
   dir.create(dirname(f))
   htmlwidgets::saveWidget(w, f, selfcontained = FALSE)

@@ -6,8 +6,9 @@
 ## of the package's example pedigree, with their 3 twin pairs, written by
 ## savePedigreeDiagram() as an SVG, a PDF and a PNG with every id: 545 id texts
 ## (the 375 animals and 170 repeat appearances), 375 distinct, none over
-## another (kinship2's 517 and Pedixplorer's 472 at cex 0.5 on 7 inch pages are
-## 94% to 100% overlapped, plan section 2).
+## another. (kinship2 and Pedixplorer, drawing the same pedigree at cex 0.5 on
+## 7 inch pages, overlap nearly all of theirs, plan section 2; the counts of
+## tools/gapCases.R's largeIds case are 520 and 473 labels, S72.)
 ##
 ## These tests lock what G16b built (S71): the function was written and these
 ## tests pass on it. Each is shown able to fail on a scratch copy of the
