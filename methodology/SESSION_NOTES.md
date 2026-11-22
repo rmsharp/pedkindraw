@@ -139,6 +139,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 70 Did
+**Deliverable:** Phase G16b, the PDF and the PNG file (gaps A1 and A2, `docs/planning/picture-files-plan.md:281`):
+`savePedigreeDiagram()` accepts `.pdf` and `.png` as well as `.svg` (IN PROGRESS), strict TDD.
+**Started:** 2026-11-21 22:53 CST · **Model:** Claude Sonnet 5.5 · **Mark's pick:** "G16b: PDF and PNG files
+(Recommended)" (orient picker, answered at once).
+**Status:** Session claimed. Work beginning: the plan's measure-before-picker list on a scratch copy (Learning 17),
+then the pre-RED picker, then RED, GREEN, REFACTOR by the gates.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### What Session 69 Did
 **Deliverable:** Phase G16a, the recording layer and the SVG file (gaps A1 and A2): `savePedigreeDiagram(diagram, file,
 width, height)` writes the widget `drawPedigreeDiagram()` returns as an SVG file, by recording its own drawing in headless

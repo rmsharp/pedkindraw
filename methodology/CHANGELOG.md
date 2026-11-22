@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-21 · [BL-Phase G16] S70: G16b, the PDF and the PNG file (in progress)
+- **Change:** session claimed (Mark's orient pick, "G16b: PDF and PNG files (Recommended)"): gaps A1 and A2's second build session (`docs/planning/picture-files-plan.md:281`), strict TDD; the plan's measure-before-picker list on a scratch copy first (Learning 17), then the pre-RED picker, then RED, GREEN, REFACTOR by Mark's gates.
+- **Commit/PR:** claim commit · **Session:** S70 · **Model:** Claude Sonnet 5.5 · **Verified:** n/a (claim).
+
 ### 2026-11-21 · [BL-Phase G16] S69 push 1: `master` to GitHub at close-out 2 (S69's claim, G16a's picks and measures, RED, GREEN 1-3, REFACTOR, close-out 1-2)
 - **Change:** `git push origin master` (`265462b..` close-out 2), by Mark's standing pick (S58's "Push at close (Recommended)", a memory); `R/`, `inst/`, `man/`, `NAMESPACE`, `DESCRIPTION`, `NEWS.md`, `_pkgdown.yml`, `tests/`, `tools/` and `docs/planning/` changed, so both workflows run. S68's push runs, read in S69: site `44942449757` `success`; CI `44942449760` `failure` on its Ubuntu R-devel job only (S4Vectors, in setup-r-dependencies, before pedkindraw was checked), the other four `success`, Ubuntu release's tests FAIL 0, WARN 0, SKIP 2, PASS 16,056 (S68's estimate exactly). An estimate for this push, not measured: Ubuntu release PASS 16,199 (16,056 + the 143 new expectations) if the 10 browser tests run there, FAIL 0; the pixel bounds were measured on macOS, Chrome 157 only (the picture plan's dragon 20), so read the Linux, Windows and macOS jobs' results for `test_savePedigreeDiagram.R` one by one.
 - **Commit/PR:** none (push) · **Session:** S69 · **Verified:** the push's output; S68's runs by `gh run view`.
