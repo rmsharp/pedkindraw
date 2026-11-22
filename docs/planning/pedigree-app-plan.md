@@ -572,8 +572,8 @@ uploaded through the page's own file input (DevTools' `DOM.setFileInputFiles`) w
 and codes 1 and 2: the columns chosen, "Sex values read as pedkindraw's codes: 1 as M, 2 as F.", its sire with no row
 shown in red as "could not be drawn", `findGeneration()`'s note under it and no earlier drawing left, the Checks tab
 "1 problem found." naming `s9`; the file corrected and uploaded again, "4 animals drawn". **Not run:** another browser,
-a real file dialog (the upload went through DevTools), a phone-width window, a hosted server; GitHub's jobs are read
-after the push.
+a real file dialog (the upload went through DevTools), a phone-width window, a hosted server. **GitHub, after the push
+(run 45073310658, `6a3fab2`):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16416 ]`; macOS `SKIP 9 PASS 16427` (the 2 browser tests ran and passed there: Chrome is found on GitHub's macOS too, so the plan's "browser tests skip on macOS" does not hold for them); Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16425 ]`, `proc.time()` 1,110 s, and the hang a seventh time (cancelled at 41 minutes; two orphan `Rterm` processes, as before G17a); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known).
 
 **Found for later:** a file whose parents have no row of their own cannot be drawn (section 11.4); Pedixplorer's app
 and nprcgenekeepr's Input tab add such parents. A backlog item (`methodology/BACKLOG.md:201`, "The app: parents with

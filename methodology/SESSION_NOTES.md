@@ -18,8 +18,8 @@ which opens a CSV or text file, the 375-animal sample or a `ped` data frame; rec
 layout's warnings and messages shown; says when a file or a drawing fails; lists `checkPedigree()`'s problems (Checks
 tab) and the animals (Animals tab). `shiny`, `callr` and `pkgload` in Suggests. Plan section 11 (`:453`) has every
 measure; 11.6 (`:540`) what was built and verified.
-**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`); S74's push is the
-first since S72 to carry code (read it job by job: see "What You Must Do" 2).
+**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; seven runs in a row,
+S74's included: its tests passed, `PASS 16425`).
 **Next: G17b** (`docs/planning/pedigree-app-plan.md:341`): choosing the animals (F6 one family, F7 focal animals'
 ancestors and descendants, F8 relatives within k steps, F15 a click, F19 a size warning); strict TDD, one session; then
 G17c (`:354`), G17d (`:365`), then 17g.
@@ -46,12 +46,9 @@ include all"; max 4 options, so group them and name each in a description). Each
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied
    from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`,
    `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr was at `3e06730c5`, tree clean, through S74.
-2. **S74's push** (the first with code since S72): read in S74 if the session's last CHANGELOG entry says so; otherwise
-   read it job by job (`gh run list --limit 6`; Windows: cancel at 40 minutes and read the log). A guess from S72's
-   push 2 plus G17a's 26 tests (128 expectations; the 2 browser tests skip on macOS, where the workflow sets up no
-   Chrome): Ubuntu release and oldrel-1 `SKIP 11 PASS 16416`, macOS `SKIP 11 PASS 16419`, Windows `SKIP 11 PASS 16425`
-   and the hang; pkgdown `success` (it must find `runPedigreeApp` in `_pkgdown.yml`). Watch on Windows for an orphan R
-   process from the browser tests' second process (plan dragon 2).
+2. **S74's push was read in S74, job by job** (run 45073310658): pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16416 ]`; macOS `SKIP 9 PASS 16427` (the 2 browser tests ran and passed there: Chrome is found on GitHub's macOS too, so the plan's "browser tests skip on macOS" does not hold for them); Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16425 ]`, `proc.time()` 1,110 s, and the hang a seventh time (cancelled at 41 minutes; two orphan `Rterm` processes, as before G17a); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Ubuntu and Windows
+   matched the handoff's guess exactly; macOS did not (the guess had the browser tests skipping there). Nothing is left
+   to read. The next push that changes code: expect these counts plus G17b's tests, and the Windows hang.
 3. **G17b, if picked** (plan section 7, `:341`). **Measure first, before the pre-RED picker** (Learning 17): the app's
    drawing time at about 500, 1,000 and 2,000 animals (F19's number and words; Pedixplorer warns at 300 and refuses at
    500; nprcgenekeepr 400 or 750); whether a click adds to the focal animals or replaces them (nprcgenekeepr replaces);
@@ -165,6 +162,7 @@ Checks tab, the corrected file drawn (pictures were in the scratchpad, not kept)
 **Found:** the first `--as-cran` check warned on an undeclared `pkgload` (my scratch measure had run without
 `--as-cran`; section 11.1 corrected, GREEN 4); a file whose parent has no row cannot be drawn (backlog `:201`).
 **Not run:** another browser, a real file dialog, a phone-width window, a hosted server.
+**After close-out 2 (its push, run 45073310658):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16416 ]`; macOS `SKIP 9 PASS 16427` (the 2 browser tests ran and passed there: Chrome is found on GitHub's macOS too, so the plan's "browser tests skip on macOS" does not hold for them); Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16425 ]`, `proc.time()` 1,110 s, and the hang a seventh time (cancelled at 41 minutes; two orphan `Rterm` processes, as before G17a); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known).
 
 #### Session 73 Handoff Evaluation (by Session 74)
 **Score: 9/10.** ROI high: the handoff's three measures were the pre-RED session's whole plan.
