@@ -204,11 +204,24 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S73
 date: 2026-11-22
-status: pending
-active_task: G17's planning session (the interactive app, gap A3): the plan document in docs/planning/, no code. Claimed; work beginning.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17 (CRAN submission), gap phases before 17g (R97). G1-G16 DONE (S42-S72); G17 (gap A3, a ready-made app) PLANNED in S73, R148: docs/planning/pedigree-app-plan.md. Mark's four picks, each the recommended one: the app does 16 of the 21 things Pedixplorer's app and nprcgenekeepr's Pedigree Browser do (F1, F3-F9, F11-F13, F15-F18, F19 as a warning; F2, F10, F14, F20, F21 wait at methodology/BACKLOG.md:191); shiny in Suggests; testServer() tests on CRAN, browser tests (callr + chromote) skipped there; one exported function, its name at G17a's picker. Four build sessions G17a-G17d, a guess. Next G17a. The Windows hang (BACKLOG.md:11) is open.
+what_was_done: G17's planning session, one session, no package code. Claim b1c317e; the evidence draft 0bf0019 (what G17 closes; what ped_shiny() and nprcgenekeepr's Pedigree Browser do, F1-F21 with pedkindraw's function behind each; the prototype's measures: shiny +11 packages to 32, DT +3, readxl +14, shinytest2 6 new to renv; testServer 0.02-0.05 s a small view, 2-2.6 s the 375-animal sample; in Chrome the app answers 1.23 s and draws the sample in 2.61 s, savePedigreeDiagram() inside it gives an 843,620-character SVG in 1.82 s; seven findings; the grep inventory); Mark's picker (R148); the plan 61c62f2 (decisions, interface, phases G17a-G17d with DONE, commands, surface and session boundary, 12 dragons, out of scope, sources); close-out 1 275037a (R148, the G17 row, the Next lines), 1b 8e78475 (roadmap, backlog item :191, citations re-found); close-out 2 (notes, receipt, ledger), pushed.
+next_steps: Orient (drift expect 91/23/0; nprcgenekeepr's 4 commits at 3e06730c5). No push to read (S73's commits are documents with [skip ci]). Then G17a by docs/planning/pedigree-app-plan.md:322: measure first how the test's second R process loads the code under test under test_local() and R CMD check (never renv's stale pedkindraw 0.0.1, BACKLOG.md:223; dragon 1, :384), the name (runPedigreeApp() that runs, or pedigreeApp() returning the app object), and the server tests' time on CRAN's path; then the pre-RED picker, RED, GREEN, REFACTOR by strict TDD; shiny and callr into Suggests (both already in renv.lock).
+key_files: docs/planning/pedigree-app-plan.md:88 (F1-F21), :123 (the prototype's measures), :173 (findings), :197 (R148), :230 (interface), :267 (inventory), :297 (phases), :322 (G17a), :382 (dragons); docs/planning/pedigree-app-prototype/app.R:1 (the 135-line prototype); docs/planning/standalone-pedigree-package-plan.md:312 (R148), :97 (Next); docs/planning/gaps-and-shared-code-plan.md:387 (G17's row); methodology/BACKLOG.md:191 (the app's features left for later), :11 (Windows), :223 (stale pedkindraw 0.0.1); tools/gapCases.R:344 (cases$app); tests/testthat/helper-live-render-positions.R:136 (ChromoteSession), :190 (skip_if_no_chrome); DESCRIPTION:27 (Suggests); _pkgdown.yml:18 (Drawing group)
+gotchas: R148's picks are made (do not re-ask). The app's second process must load the code under test, not renv's stale pedkindraw 0.0.1; a callr child inherits the parent's environment (CHROMOTE_CHROME too; measured); testServer() cannot see update*Input() or a click; the layout warns on the 375-animal sample (a test must expect it: WARN 0); %||% is base R only from 4.4.0 (pedkindraw depends on 4.1.0); a fixed port collides; every shiny call shiny:: (Suggests). Run the prototype's scripts with the folder as the last word, no --args; a source()d script's top-level on.exit() runs at once. Windows hangs every run (cancel at 40 minutes); S71 found orphan Rterm processes, and G17a adds a second R process: kill it at teardown. Do not run two Chrome-starting jobs at once. CHANGELOG.md is near its archive threshold.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: the full suite at 8e78475 (NOT_CRAN=true), 85 files, 1,064 tests, 16,342 expectations, 0 failed, 0 errors, SKIP 0, WARN 0 (530 s). Docs-only session: no file under R/, tests/, inst/, man/, vignettes/, DESCRIPTION, NAMESPACE, README, NEWS, _pkgdown.yml or .github/ changed since S72's close (git diff --name-only ab5dda0..HEAD: 0), so S72's R CMD check stands; the full suite was run again by hand (above). The prototype app ran in real headless Chrome 157 on this Mac (measureBrowser.R) and under shiny::testServer() (measureServer.R, twice).
+changelog_ref: CHANGELOG.md "2026-11-22 · [BL-Phase G17] S73: G17's plan, a ready-made app (gap A3)"
+commit: the close-out 2 commit (session commits b1c317e to 8e78475 listed above)
 ```
+S73 wrote G17's plan, `docs/planning/pedigree-app-plan.md`, and recorded R148. Model: Claude Sonnet 5.5 for the orientation
+and the claim commit, then Claude Opus 5.5 (the harness switched it) for the evidence, the prototype, the plan and the
+close-out. Mark's five picks (the orient pick and R148's four) were each the recommended option, first time. Self 8/10:
+the measures behind the picker were complete and each phase has its DONE, commands and surface; five wrong statements in
+the draft were caught before their commits, two of them claims I had not run (dragon 10, the run command), and the scope
+option's preview headed "15" over a list of 16 (recorded in the plan). Predecessor S72 9/10.
 ```handoff
 session: S72
 date: 2026-11-22
