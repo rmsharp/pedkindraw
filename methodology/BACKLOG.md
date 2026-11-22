@@ -18,7 +18,9 @@ issues).*
       step still did not end (cancelled at 07:14, about 24 minutes later; two orphan `Rterm` processes, a `cmd` and a
       `conhost` killed): the second run in a row, so not a one-off. Mark's pick (S71): go on with G16b, this stays open;
       every push will probably hang Windows until it is repaired, so cancel the Windows run at 40 minutes (`gh run
-      cancel`) and read its log. First (guesses, one change at a time, iterating on GitHub since there is no Windows
+      cancel`) and read its log. **A second reading, S71's own push (run 45000649737):** the same hang, with failing tests
+      this time (`FAIL 4`, the two PDF word tests, repaired in S71; testthat ended "Execution halted"), two orphan `Rterm`
+      processes again: it does not depend on the tests passing. First (guesses, one change at a time, iterating on GitHub since there is no Windows
       machine here): add `timeout-minutes` to `.github/workflows/R-CMD-check.yaml` so a hang ends as a failure with a
       log; close the test Chromes explicitly at the end of the suite (the helper's `.saveChrome$parent`, chromote's
       default one) and list the processes left (`Get-Process`) in a step after the tests.
@@ -258,3 +260,10 @@ issues).*
 - [ ] **`findPedigreeNumber()`'s speed** (READY, Effort M) -- 12.9 s for 100,000 animals, close to the square of the
       size (contract section 7); new work after the copy (contract section 10 item 5). A faster version here is a
       divergence from nprcgenekeepr: a `DIVERGENCE.md` row marked "at the switch" (R98, R101).
+
+- [ ] **Install poppler in CI so the PDF word tests run there** (READY, Effort S; found S71, picture plan section 14.7)
+      -- GitHub's Ubuntu and macOS runners have no `pdftotext` (S71's push: Ubuntu `SKIP 4 PASS 16268`, macOS `SKIP 2
+      PASS 16279`, against this Mac's `SKIP 0 PASS 16283`) and Windows has Git's, which cannot read the PDF (now skipped), so
+      the two tests that read a PDF's words, the guard against a PDF printed without its shapes and ids, run only on this
+      Mac and in the Linux box. Add `poppler-utils` (Ubuntu) and `poppler` (macOS) to `.github/workflows/R-CMD-check.yaml`,
+      or take `pdftools` into Suggests; G16c's first question is how ids in a PDF are counted, so settle it there first.

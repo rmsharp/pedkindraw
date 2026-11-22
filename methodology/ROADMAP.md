@@ -271,7 +271,9 @@ session each unless marked. They follow the copy slices.
   differing, the 18-animal pedigree 0.26% and 0.07%). 30 tests (it was 19), 216 expectations, 0 failed on this Mac and
   in the Linux box; each value was run first on a throwaway reference. `R CMD check --as-cran` with GitHub's settings:
   0 errors, 0 warnings, 1 NOTE (the new submission), tests 16,283 expectations. S70's Windows run hung again after its
-  tests passed (936 s, two orphan `Rterm` processes): Mark's pick was to go on with G16b and leave that open (backlog).
+  tests passed (936 s, two orphan `Rterm` processes): Mark's pick was to go on with G16b and leave that open (backlog). S71's own push then showed the
+  two PDF word tests failing on Windows (Git's `pdftotext` exits 99 on the file); Mark's pick was to repair the test
+  helper at once (it skips where the tool cannot read a PDF R writes), and the hang happened again.
 
 - **Phase G16a's CI repair (pedkindraw S70, 2026-11-21).** S69's push was red on GitHub, and neither fault had shown
   on the Mac, because the local check ran without `NOT_CRAN` and the full suite on macOS. (1) The help example failed
