@@ -215,8 +215,8 @@ cases$files <- function(case = "files") {
     htmlwidgets::saveWidget(w, f, selfcontained = FALSE)
     file.size(f)
   })
-  ## Phase G16a (S69, R143): the widget's own drawing, recorded in headless
-  ## Chrome, as an SVG file; .pdf and .png are G16b's.
+  ## Phase G16a (S69, R143) and G16b (S71, R144): the widget's own drawing,
+  ## recorded in headless Chrome, as an SVG, a PDF and a PNG file.
   probe(case, "pedkindraw savePedigreeDiagram() svg bytes", {
     f <- file.path(out, "pk.svg")
     pedkindraw::savePedigreeDiagram(w, f)
@@ -227,8 +227,20 @@ cases$files <- function(case = "files") {
                  collapse = "\n")
     length(regmatches(svg, gregexpr("<text ", svg))[[1L]])
   })
-  probe(case, "pedkindraw savePedigreeDiagram() to pdf",
-        pedkindraw::savePedigreeDiagram(w, file.path(out, "pk.pdf")))
+  for (kind in c("pdf", "png")) {
+    probe(case, paste("pedkindraw savePedigreeDiagram() to", kind, "bytes"), {
+      f <- file.path(out, paste0("pk2.", kind))
+      pedkindraw::savePedigreeDiagram(w, f)
+      file.size(f)
+    })
+  }
+  probe(case, "pedkindraw savePedigreeDiagram() pdf pages",
+        pdfPages(file.path(out, "pk2.pdf")))
+  probe(case, "pedkindraw savePedigreeDiagram() png width x height", {
+    header <- readBin(file.path(out, "pk2.png"), "raw", 24L)
+    number <- function(b) sum(as.integer(b) * 256^(3:0))
+    c(number(header[17:20]), number(header[21:24]))
+  })
 }
 
 ## A2. A whole large pedigree in one picture with every id written.
