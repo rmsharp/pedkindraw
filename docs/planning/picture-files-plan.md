@@ -922,8 +922,8 @@ say nothing of `.pdf` and `.png`.
 
 Mark's three pre-RED picks, each the recommended option (R147, `docs/planning/standalone-pedigree-package-plan.md` section 2):
 count the ids from the SVG in Chrome and from the PDF by pdftotext where it is installed (no new package); a floor of 100
-differing pixels for the PNG's ids with the documents saying an id is about 3 pixels high at 300 dpi; a guarded example with
-the numbers checked in the tests. Strict TDD, one session: claim `8cada92`, measures `ea1eeb0`, RED `3fd1caf`, GREEN
+differing pixels for the PNG's ids (replaced after the push, 15.5: the order of two counts, not a floor) with the documents
+saying an id is about 3 pixels high at 300 dpi; a guarded example with the numbers checked in the tests. Strict TDD, one session: claim `8cada92`, measures `ea1eeb0`, RED `3fd1caf`, GREEN
 `c1836a1` (help and NEWS), `61370be` (README and the two vignettes), `1187457` (the `largeIds` probe), REFACTOR `6dcbf76`.
 
 ### 15.1 Measured first (the three scripts are `docs/planning/picture-files-prototype/g16cMeasure1-3.R`; Mac, Chrome, poppler 26.08)
@@ -986,3 +986,32 @@ SKIP 0, WARN 0 on the Mac and in the Linux box; `lint_package()` 0; `roxygenise(
 41. **An id is under a point high on any page the colony fits:** 0.75 pt on 14 x 7 inches, 0.45 on letter portrait, 2.8 px in a 300
     dpi PNG. The files hold every id as text to zoom to; nothing in G16 makes them readable at print size (a colony needs a
     page far larger than 14 x 7 inches, or a smaller drawing).
+
+### 15.5 S72's push (run 45038005488, `605512a`), read job by job, and the repair it called for
+
+- **pkgdown: `success`** (the site builds). **Ubuntu release and oldrel-1:** `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16279 ]`, examples
+  OK, `Status: OK`. **macOS:** `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 16290 ]`. The SKIP counts are S71's plus the six documents' tests
+  (no source tree under `R CMD check`) and the colony's PDF test (no `pdftotext`): the handoff's guess, 11 and 9, held.
+  **Ubuntu R-devel:** red in "setup-r-dependencies" (Bioconductor's S4Vectors does not load on R-devel; known,
+  `methodology/BACKLOG.md`).
+- **Windows, cancelled at 40 minutes: `[ FAIL 1 | WARN 0 | SKIP 11 | PASS 16287 ]`.** The one failure was mine:
+  `test_savePedigreeDiagramColony.R:94`, the PNG's ids as "at least 100 differing pixels" (`Actual 27`). Measured in the same
+  session: the drawing without its ids differs from the PNG in **347 pixels on the Mac, 573 in the Linux box and 27 on
+  Windows**, where Chrome draws the 2.8 pixel ids lighter; the floor was one machine's number (dragon 12 says so, and I did not
+  look at a second platform). The hang came a fifth time, now with R exiting with an error ("Execution halted"): not at a clean
+  exit either (backlog `:11`, fourth reading).
+- **The repair (Mark's pick, strict TDD, test files only):** RED `7e7d36d` a no-browser test of `.pngHoldsIds(ink)` on typed
+  counts (the Mac, the Linux box, Windows with its as-written count 0 and 5, a copy with the ids in `#6a6a6a`: TRUE; no id taken
+  out, a PNG with no ids, 0 and 0, 27 and 27: FALSE), and the committed test failing on the lighter-ids copy at the same line
+  as Windows (`42 < 100`); GREEN `3872a21` `.pngHoldsIds()` (an id was taken out, the count without ids is above 0 and above
+  the count as written) in the helper, the PNG test calling it; REFACTOR `30d5555` the counts' comment in one place. Colony file 4
+  tests, 31 expectations, 0 failed on the Mac and on the lighter-ids copy; 12 failed on the ids-dropped copy; the three files
+  in the Linux box 41 tests, 275 expectations, 0 failed. Lighter ids tried: `#505050` 338 pixels, `#606060` 46, `#666666` 42,
+  `#6a6a6a` 42, `#707070` 0.
+
+42. **A count from one machine is not a floor for another, and text is the case that differs most:** the same 2.8 pixel ids gave
+    347, 573 and 27 differing pixels on three machines. State what does not move (an order, a presence, an exact 0) and
+    test it on typed counts; and measure on a second platform before a bound reaches a commit (the Linux box is one).
+43. **Test a decision rule on typed measurements:** a failure of a test's bound has no failing code, so RED is the rule as a
+    function (`.pngHoldsIds()`) with every platform's measured count typed in and the refused cases beside them; a throwaway
+    copy with the ids drawn lighter reproduces the fault on the Mac.

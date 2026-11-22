@@ -273,7 +273,9 @@ session each unless marked. They follow the copy slices.
   in Chrome and pdftotext for the ids (`pdftools` counted the same but cannot check overlap), a pixel floor and dpi advice
   for the PNG, a guarded example with the numbers checked in the tests. Full suite 85 files, 1,063 tests, 16,333
   expectations, 0 failed, SKIP 0, WARN 0; `R CMD check --as-cran` with GitHub's settings 0 errors, 0 warnings, 1 NOTE (the
-  new submission). G16 is done; the Windows job's hang is still open (backlog).
+  new submission). S72's push read: pkgdown `success`, Ubuntu release and oldrel-1 and macOS green; Windows failed the PNG
+  test's floor of 100 (27 differing pixels there, 347 on the Mac, 573 in the Linux box) and was repaired the same session, by
+  Mark's pick, as a rule on the order of two counts. G16 is done; the Windows job's hang is still open (backlog).
 
 - **Phase G16b: `savePedigreeDiagram()` writes `.pdf` and `.png` files and takes `dpi` (pedkindraw S71, 2026-11-22).**
   `savePedigreeDiagram(diagram, file, width, height, dpi = 300)` now writes the widget as an SVG, a PDF or a PNG by the

@@ -733,7 +733,9 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   hidden chunks check only what needs no browser. Three new Chrome tests skip on CRAN; the six documents' tests read the
   README, the vignettes, `man/` and `NEWS.md` from the source tree and so skip under `R CMD check` (the check reads `SKIP 6`).
   `R CMD check --as-cran` here with `NOT_CRAN=true` and the connection check on: 0 errors, 0 warnings, 1 NOTE (the new
-  submission), `[ FAIL 0 | WARN 0 | SKIP 6 | PASS 16306 ]`, 594 s.
+  submission), `[ FAIL 0 | WARN 0 | SKIP 6 | PASS 16306 ]`, 594 s. On GitHub (S72's push): Ubuntu `SKIP 11 PASS 16279`, macOS
+  `SKIP 9 PASS 16290`, pkgdown `success`; Windows failed the colony PNG test's pixel floor (27 against 347 here), repaired the
+  same session (test files only); its hang is open (`methodology/BACKLOG.md`).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
