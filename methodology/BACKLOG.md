@@ -18,9 +18,11 @@ issues).*
       step still did not end (cancelled at 07:14, about 24 minutes later; two orphan `Rterm` processes, a `cmd` and a
       `conhost` killed): the second run in a row, so not a one-off. Mark's pick (S71): go on with G16b, this stays open;
       every push will probably hang Windows until it is repaired, so cancel the Windows run at 40 minutes (`gh run
-      cancel`) and read its log. **A second reading, S71's own push (run 45000649737):** the same hang, with failing tests
-      this time (`FAIL 4`, the two PDF word tests, repaired in S71; testthat ended "Execution halted"), two orphan `Rterm`
-      processes again: it does not depend on the tests passing. First (guesses, one change at a time, iterating on GitHub since there is no Windows
+      cancel`) and read its log. **A second and a third reading, S71's two pushes (runs 45000649737 and
+      45011132429):** the same hang, first with failing tests (`FAIL 4`, the two PDF word tests, repaired in S71), then with
+      every test passing (`[ FAIL 0 | WARN 0 | SKIP 4 | PASS 16278 ]`, `proc.time()` 1,041 s printed, so R finished its
+      script and did not exit; the log's "Running 'testthat.R'" and "Execution halted" appear only at the cancel; two
+      orphan `Rterm` processes each time): it does not depend on the tests, and is probably at R's exit (an inference). First (guesses, one change at a time, iterating on GitHub since there is no Windows
       machine here): add `timeout-minutes` to `.github/workflows/R-CMD-check.yaml` so a hang ends as a failure with a
       log; close the test Chromes explicitly at the end of the suite (the helper's `.saveChrome$parent`, chromote's
       default one) and list the processes left (`Get-Process`) in a step after the tests.

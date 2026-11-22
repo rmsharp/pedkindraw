@@ -892,8 +892,9 @@ sessions a day, about 11-15 days, an estimate.
 97. **A Windows job can end its tests and not exit, twice running** (S71): S70's push read `[ FAIL 0 | WARN 0 | SKIP 1 |
     PASS 16211 ]` in 936 s and the step then ran about 24 minutes more until cancelled, two orphan `Rterm` processes
     killed; S69's did the same for 77 minutes. Cancel at 40 minutes and read the log's `proc.time()`; the cause is still
-    not known (`methodology/BACKLOG.md`). It recurred with failing tests too (S71's push), so it does not depend on the tests
-    passing. (The picture plan, dragons 30, 34 and 14.7.)
+    not known (`methodology/BACKLOG.md`). It recurred with failing tests (S71's first push) and with every test passing (its
+    second: `proc.time()` printed, 1,041 s), so it does not depend on the tests and is probably at R's exit. (The
+    picture plan, dragons 30, 34, 37 and 14.7-14.8.)
 98. **A program's being installed is not its working** (S71): GitHub's Windows runner has a `pdftotext` (Git for
     Windows') that exits 99 on a PDF; the two tests that skipped only without the program ran, got no words and failed
     (`FAIL 4, WARN 2`). Its Ubuntu and macOS runners have none (`SKIP 4` and `SKIP 2`). Probe a tool on a file you made

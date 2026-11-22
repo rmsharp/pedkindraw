@@ -896,3 +896,21 @@ say nothing of `.pdf` and `.png`.
 36. **GitHub's runners differ in what they have installed:** no `pdftotext` on Ubuntu or macOS, Git's broken one on
     Windows; a test that needs a tool runs, in CI, only where the tool is present and works. State beside the test which
     machines ran it (here the Mac and the Linux box). Installing poppler in the workflow is a backlog item.
+
+### 14.8 The repair's push (run 45011132429, `a57246b`), read job by job
+
+- **Ubuntu release and oldrel-1:** `[ FAIL 0 | WARN 0 | SKIP 4 | PASS 16269 ]` (one more than 14.7's: the new helper test),
+  examples OK. **macOS:** `[ FAIL 0 | WARN 0 | SKIP 2 | PASS 16280 ]`. **Ubuntu R-devel:** red in "setup-r-dependencies".
+- **Windows, cancelled at 40 minutes (10:50 UTC): `[ FAIL 0 | WARN 0 | SKIP 4 | PASS 16278 ]`, `proc.time()` 1,041 s.** The
+  repair is shown on Windows: the two word tests skip through the probe (Git's `pdftotext` cannot read a PDF R writes), and
+  SKIP 4 is the earlier 1, those two and the new test (skipped on Windows). Every other test passed there.
+- **The hang, a fourth run in a row, now with every test passing.** R printed its final `proc.time()`, so it finished the
+  script (about 10:32) and did not exit; the step ran until the cancel (18 minutes later); two orphan `Rterm` processes, a
+  `cmd` and a `conhost` killed at clean-up. The log's "Running 'testthat.R'" and "Execution halted" are printed at the
+  cancel (the check's output is buffered).
+
+37. **The Windows hang is probably at R's exit, not in a test** (an inference from four runs, none reproduced): tests passing
+    (S70's push, 936 s), failing (S71's first push) and passing again (1,041 s) all hang, and the final `proc.time()` is
+    printed when the tests have finished. What stays alive at exit is the question: Chromes the suite leaves (the shared
+    `chromote` one the other Chrome tests start, the helper's own) or `websocket` and `later` threads. First tries are in
+    `methodology/BACKLOG.md` (close every Chrome at the end of the suite; list the processes left).
