@@ -333,3 +333,56 @@ test_that("a page that never returns from its JavaScript stops within the
   expect_false(file.exists(file))
   expect_length(list.files(tempdir(), pattern = "^pedkindraw-save-"), 0L)
 })
+
+## The pixel comparison above photographs the live widget and the SVG file
+## with one Chrome and expects their text to match. A Chrome that draws the
+## SVG's text with coloured (LCD) edges, as it does on Linux unless told not
+## to (and on Windows, unmeasured), makes every letter differ in the colour
+## channels while the widget's canvas text stays grey: on GitHub's Ubuntu jobs
+## 13 expectations of that test failed (the legend, 1.6% against a bound of
+## 0.5%; pedkindraw S70, plan section 13). So the Chrome of these tests must
+## photograph text in grey. Black text on white has no colour in its edges
+## when it is grey: the widest spread among a pixel's three channels is 0.
+.saveTextSpread <- function(session, dir) {
+  file <- file.path(dir, "text.svg")
+  writeLines(paste0(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="60" ',
+    'viewBox="0 0 320 60"><rect width="100%" height="100%" fill="#ffffff"/>',
+    '<text x="10" y="38" font-family="arial" font-size="22" fill="#000000">',
+    "Hamburgefonstiv 0123</text></svg>"
+  ), file)
+  session$go_to(paste0("file://", file), timeout_ = 30, delay = 0.3)
+  photograph <- session$Page$captureScreenshot(
+    format = "png",
+    clip = list(x = 0, y = 0, width = 320, height = 60, scale = 1)
+  )$data
+  session$go_to("about:blank", timeout_ = 30)
+  .saveEvaluate(session, paste0(
+    "(async () => { const i = new Image(); ",
+    "await new Promise((ok, no) => { i.onload = ok; i.onerror = no; ",
+    "i.src = 'data:image/png;base64,", photograph, "'; }); ",
+    "const c = document.createElement('canvas'); ",
+    "c.width = i.width; c.height = i.height; ",
+    "const x = c.getContext('2d'); x.drawImage(i, 0, 0); ",
+    "const d = x.getImageData(0, 0, c.width, c.height).data; ",
+    "let ink = 0, widest = 0; ",
+    "for (let k = 0; k < d.length; k += 4) { ",
+    "if (d[k] + d[k + 1] + d[k + 2] < 740) { ink++; ",
+    "const s = Math.max(d[k], d[k + 1], d[k + 2]) - ",
+    "Math.min(d[k], d[k + 1], d[k + 2]); ",
+    "if (s > widest) { widest = s; } } } ",
+    "return {ink: ink, widest: widest}; })()"
+  ), awaitPromise = TRUE)
+}
+
+test_that("the browser that photographs the pictures draws text in grey, not
+           with coloured edges", {
+  .skipUnlessBrowser()
+  ## Measured, a line of black 22 px text on white, 320 x 60 px: 1,785 ink
+  ## pixels on macOS and 1,504 on Linux with LCD text off, all grey (widest
+  ## spread 0); on Linux with LCD text on, 1,804 and a widest spread of 160
+  ## (Ubuntu 26.04, Google Chrome 158). The bound separates the two.
+  spread <- .saveTextSpread(.saveChromeSession(), .saveTmp())
+  expect_gt(spread[["ink"]], 500)
+  expect_lte(spread[["widest"]], 20)
+})

@@ -53,6 +53,16 @@
       "why": "S9 (2026-11-11): under testthat edition 2 (nprcgenekeepr) expect_message() and expect_warning() return the expression's value, under edition 3 (pedkindraw, plan R29) the condition, so a copied `result <- expect_message(f())` leaves result holding the message (Learning 10). RED cannot show it, because the missing function errors first: S9 met 5 such tests only in GREEN. Assign inside instead: expect_message(result <- f()). Measured 5 on nprcgenekeepr's test_makePedigreeMatingLayout.R at baef1e12c (the only 5 in its tests), 0 as committed."
     },
     {
+      "name": "examples-no-open-connections",
+      "direction": "max",
+      "threshold": 0,
+      "unit": "errors",
+      "command": "bash tools/checkExamples.sh",
+      "extract": "errors: (\\d+)",
+      "timeout_seconds": 300,
+      "why": "S70 (2026-11-21): S69's push was red on GitHub because the help example of savePedigreeDiagram() leaves chromote's two processx pipes open and GitHub's R CMD check, run with NOT_CRAN=true and _R_CHECK_CONNECTIONS_LEFT_OPEN_=true, calls that an ERROR; a check run without them (S69's) skips the Chrome example and sees nothing. Measured 1 before the repair; 0 after (docs/planning/picture-files-plan.md section 13)."
+    },
+    {
       "name": "user-facing-sire-dam-words",
       "direction": "max",
       "threshold": 0,
