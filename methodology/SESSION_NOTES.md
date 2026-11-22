@@ -14,25 +14,30 @@ phases G1-G17 run before 17g (R97, `docs/planning/gaps-and-shared-code-plan.md` 
 G16a DONE in S69 (R143, the SVG), its CI repair DONE in S70 (R145), **G16b DONE in S71 (R144 built, R146):**
 `savePedigreeDiagram(diagram, file, width, height, dpi = 300)` writes `.svg`, `.pdf` and `.png` by the file's ending
 (`R/savePedigreeDiagram.R:88`; the recording layer `inst/js/recordCanvas.js`, its third argument `expandDashes`, `:374`).
-**Open, not fixed:** the Windows job whose check step does not end after its tests pass (`methodology/BACKLOG.md:11`;
-Mark's pick in S71: go on with G16b). Then **G16c** (the whole large pedigree on one page and the documents, the
+**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; four runs in a row,
+probably at R's exit: plan dragon 37; Mark's pick in S71: go on with G16b). S71's first push also showed the two PDF
+word tests failing on Windows (Git for Windows' `pdftotext` exits 99); **repaired in S71** (the test helper, commits
+`bbb26b8`, `fd9c7e2`, `048a100`; shown on Windows by the second push). Then **G16c** (the whole large pedigree on one page and the documents, the
 `largeIds` case), G17 (an app, a planning session first), then 17g.
 **Next: G16c**, strict TDD, from the orient picker: measure first (the list below), a pre-RED picker, then RED, GREEN,
 REFACTOR, each gate an `AskUserQuestion`.
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's). S71's commits are pushed at
-close (Mark's standing pick, a memory); what the push's runs showed is in `CHANGELOG.md`'s S71 push entry.
+close (Mark's standing pick, a memory), in three pushes (`6cd865d`, `a57246b`, then the last two commits, documents only, the head
+one carrying `[skip ci]` so that no workflow starts); the first two pushes' runs were read job by job in S71 (their
+entries in `CHANGELOG.md`); nothing is left to read.
 **The orient picker:** G16c (recommended), or the Windows item (`BACKLOG.md:11`) first. Also, from
-`methodology/BACKLOG.md`: READY, the legend's labels in a narrow drawing (`:80`), the drawing vignette's measured trait
-(`:90`), the `smallPed` fixture (`:113`), rewording `DIVERGENCE.md`'s older rows (`:62`), tests for full coverage
-(`:119`), `findPedigreeNumber()`'s speed (`:258`), and the seven "Ready, small" items (`:184` the suite gate's time
-limit, `:196` the stale pedkindraw 0.0.1 in renv, `:203` the drift tool and copied constants, `:212` the context-budget
-tool, `:222` CI notices, `:239` report a vacuous test to nprcgenekeepr, `:245` tell nprcgenekeepr's edition-3 conversion);
-NEEDS DECISION, a converted Pedixplorer object's `avail` (`:96`), long names at the edges (`:104`); "Waiting on Mark", the
-dashboard not seeing `methodology/BACKLOG.md` (`:159`), copying nprcgenekeepr's colony overview (`:166`), an animal with
-two or more mates drawn once between them as kinship2 draws it (`:173`). BLOCKED, and so not offered: `:26` (the speed
-vignette), `:71` (retire the drift tools), `:153` (nprcgenekeepr imports pedkindraw). Name every item in the picker
-(memory "Picker sets: name items, include all"; max 4 options, so group them and name each in a description). Each
-title was checked at its cited line when S71 closed out (23 of 23 by `grep`: the 22 items plus the G item at `:41`).
+`methodology/BACKLOG.md`: READY, the legend's labels in a narrow drawing (`:84`), the drawing vignette's measured trait
+(`:94`), the `smallPed` fixture (`:117`), rewording `DIVERGENCE.md`'s older rows (`:66`), tests for full coverage
+(`:123`), `findPedigreeNumber()`'s speed (`:262`), installing poppler in CI so the PDF word tests run there (`:266`,
+found S71), and the seven "Ready, small" items (`:188` the suite gate's time limit, `:200` the stale pedkindraw 0.0.1 in
+renv, `:207` the drift tool and copied constants, `:216` the context-budget tool, `:226` CI notices, `:243` report a
+vacuous test to nprcgenekeepr, `:249` tell nprcgenekeepr's edition-3 conversion); NEEDS DECISION, a converted Pedixplorer
+object's `avail` (`:100`), long names at the edges (`:108`); "Waiting on Mark", the dashboard not seeing
+`methodology/BACKLOG.md` (`:163`), copying nprcgenekeepr's colony overview (`:170`), an animal with two or more mates
+drawn once between them as kinship2 draws it (`:177`). BLOCKED, and so not offered: `:30` (the speed vignette), `:75`
+(retire the drift tools), `:157` (nprcgenekeepr imports pedkindraw). Name every item in the picker (memory "Picker sets:
+name items, include all"; max 4 options, so group them and name each in a description). Each title was checked at its
+cited line when S71 closed out (24 of 24 by `grep`: the 23 items plus the G item at `:45`).
 **Session boundary:** one session, then close out.
 **Priority:** HIGH (G16c, G17, then 17g).
 
@@ -41,18 +46,19 @@ title was checked at its cited line when S71 closed out (23 of 23 by `grep`: the
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied
    from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`,
    `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr was at `3e06730c5`, tree clean, through S71.
-2. **Read S71's push, every job** (`gh run list --limit 6`, then each job; treat every figure here as a guess). R/,
-   inst/, man/, tests/, tools/ changed, so both workflows run. A guess: Ubuntu release and oldrel-1 `FAIL 0, WARN 0,
-   PASS 16,283`, SKIP 2 (S70's run read SKIP 2) plus 2 if GitHub's Ubuntu has no `pdftotext` (not measured); macOS
-   `FAIL 0` and PASS 16,283 less the two word tests' expectations if it has no `pdftotext` (S70's read SKIP 0 and PASS
-   16,212); Ubuntu R-devel red in "setup-r-dependencies" (S56-S71, not a check). **Windows will probably hang again**
-   (S69's and S70's both did, with the tests passing): at 40 minutes `gh run cancel <run>` and read its log
-   (`gh api --allow-escape-sequences repos/rmsharp/pedkindraw/actions/jobs/<id>/logs | sed 's/\x1b\[[0-9;]*[A-Za-z]//g'`,
-   available once the run has completed or been cancelled, not while it runs); its `proc.time()` line is the tests' time.
+2. **No push of S71's is left to read** (both of its workflow runs were read job by job in S71, `CHANGELOG.md`'s push
+   entries; the last push is documents only and its head commit says `[skip ci]`). The next push that changes
+   `R/`, `tests/` or `docs/` starts both workflows. A guess for it: Ubuntu release and oldrel-1 `FAIL 0, WARN 0, SKIP 4,
+   PASS` the session's tests added; macOS `SKIP 2`; Ubuntu R-devel red in "setup-r-dependencies" (S56-S71, not a check).
+   S71's second push read: Ubuntu `SKIP 4 PASS 16269`, macOS `SKIP 2 PASS 16280` (GitHub's Ubuntu and macOS have no
+   `pdftotext`), Windows `FAIL 0 WARN 0 SKIP 4 PASS 16278`. **Windows hangs every time** (S69, S70, S71 twice): at 40
+   minutes `gh run cancel <run>` and read its log (`gh api --allow-escape-sequences
+   repos/rmsharp/pedkindraw/actions/jobs/<id>/logs | sed 's/\x1b\[[0-9;]*[A-Za-z]//g'`, available once the run has
+   completed or been cancelled, not while it runs); its `proc.time()` line is the tests' time (936 s and 1,041 s).
 3. **G16c**, by `docs/planning/picture-files-plan.md` section 7 (`:301`), 14.5 (`:841`) and dragons 31-34 (`:851`). The
    plan's measure-before-picker list: how a test counts the ids in a PDF (dragon 9 of the plan: `pdftools` in Suggests, or
    the SVG's count alone, or the `pdftotext` command, which is not portable; `.savePdfWords()` at
-   `tests/testthat/helper-savePedigreeDiagram.R:193` already counts the 375 animals' 545 id words, 375 distinct, with
+   `tests/testthat/helper-savePedigreeDiagram.R:213` already counts the 375 animals' 545 id words, 375 distinct, with
    `pdftotext`); an overlap test from the PDF's word boxes (`pdftotext -bbox`; the prototype read 0 of 545) against the SVG's
    text positions; the colony's picture on a 14 x 7 in page (the shape the layout fits) and on letter paper, each as the
    ids' size in points; the time of the whole case. The pre-RED picker: how ids are counted in a PDF; the vignette's
@@ -66,18 +72,26 @@ title was checked at its cited line when S71 closed out (23 of 23 by `grep`: the
    `GREEN->REFACTOR`) is one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
-- **Windows:** see item 2; a hang does not cost a session if you cancel at 40 minutes; the cause is not known
-  (`BACKLOG.md:11` lists what to try first). Do not run two Chrome-starting jobs at once on the Mac (the suite, the
+- **Windows:** see item 2; a hang does not cost a session if you cancel at 40 minutes; the cause is not known, probably
+  R's exit after the tests (plan dragon 37; `BACKLOG.md:11` lists what to try first). **Set a monitor's clock by `date -u`
+  and the run's own `createdAt`:** S71's first monitor parsed the time with BSD `date -j` and warned at once, falsely.
+  **A tool's existing is not its working** (plan dragons 35-36): `Sys.which("pdftotext")` found Git for Windows' on the
+  Windows runner, which exits 99 on a PDF; `.skipUnlessPdftotext()` now tries it on a PDF R writes first
+  (`helper-savePedigreeDiagram.R:192`); GitHub's Ubuntu and macOS runners have none, so the word tests ran only on the Mac
+  and in the Linux box (`BACKLOG.md:266`). **`tools/linux/runTests.sh` hides an error's text** (it prints the counts); the
+  Linux box read `214 expectations, 1 error` in 2 of 10 runs of the file (the other 8 read 217 and 0; the test is not known:
+  a test with three expectations), not on the Mac or GitHub's Ubuntu: if it appears again, run the file with your own
+  `test_file()` and print each non-success expectation (S71's `one.R` did). Do not run two Chrome-starting jobs at once on the Mac (the suite, the
   ratchet, a Docker run): they share CPU and the stuck-page tests have time limits.
 - **A PDF is read by its page and words, never its pixels** (plan dragons 31-32): `pdftoppm` at 96 dpi gave 960 x 493
   for a 960 x 491 picture and 18% of the ink differing; the page size and count are plain text in Chrome's PDF
-  (`.savePdfPages()`, `helper-savePedigreeDiagram.R:170`), the words need `pdftotext` (`:188` skips without it). The
+  (`.savePdfPages()`, `helper-savePedigreeDiagram.R:170`), the words need `pdftotext` (`:192` skips without it or where it fails). The
   Linux image has `pdftotext` and `pdfinfo` (S71 found it; the Dockerfile does not install them, the base image does).
 - **Chrome rounds a page's height** (up to 0.87 pt for the four animals' default page, 369.12 pt for 368.25): typed
   pages are exact; a test on a default page states a 1.5 pt bound.
 - **Two Chromes per `.pdf` or `.png`** (the recording's, then the render step's with `--disable-lcd-text`,
   `R/savePedigreeDiagram.R:290`); `mockery::stub(savePedigreeDiagram, ".recordDiagramSvg", list(svg = , x = , y = , w =
-  , h = ))` replaces the recording, which is how the stuck-print test works (`tests/testthat/test_savePedigreeDiagram.R:564`).
+  , h = ))` replaces the recording, which is how the stuck-print test works (`tests/testthat/test_savePedigreeDiagram.R:579`).
 - **A dashed path the layer cannot cut keeps its dashes** (an arc, `Z`, several subpaths, a dash offset, more than two dash
   numbers): `dashStrokes()`, `inst/js/recordCanvas.js:102`; on the 375 animals all 179 are cut (none keeps a
   `stroke-dasharray`); a pedigree with a dashed arc would give a bigger PDF.
@@ -95,7 +109,7 @@ title was checked at its cited line when S71 closed out (23 of 23 by `grep`: the
 - **zsh does not split an unquoted `$var`** (use `bash -c '...'` for any loop over words); `rm -rf name*` with no match
   aborts a zsh `&&` chain; a `cd` into `methodology/` persists (run the ratchet in a subshell).
 - **The photograph's window** (the plans' dragons 15 and 90): a screenshot is blank beyond the window, in height as in
-  width; `.saveInkDiff()` (`helper-savePedigreeDiagram.R:277`) photographs an `.svg` or, since S71, a `.png`.
+  width; `.saveInkDiff()` (`helper-savePedigreeDiagram.R:296`) photographs an `.svg` or, since S71, a `.png`.
 - **chromote 0.5.1:** the function raises `default_timeout` to 60 s and polls against one deadline; `Page$navigate()`
   waits 10 s on a server that never answers; the stderr line `[warning] got non-close frame while closing` is the
   websocket package logging, not an R warning.
@@ -105,9 +119,10 @@ title was checked at its cited line when S71 closed out (23 of 23 by `grep`: the
   library (dragons 83-84); guard every variable in a removal path (dragon 85); dry-run every edit script on a `git archive`
   copy; the 5-file cap splits commits; the ratchet's suite gate times out at 300 s (run the suite by hand, 7.5-9 min; S71:
   528 s); `CLAUDE.md` is over its budget (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's; the
-  stale pedkindraw 0.0.1 in renv's library (`BACKLOG.md:196`); `NOT_CRAN=true` for the browser tests.
-- **Ledger sizes** (S71's close-out 2, before its push entry): `CHANGELOG.md` 175,716 B; `HANDOFFS.md` 156,965 B, both
-  under their 196,608 B archive threshold.
+  stale pedkindraw 0.0.1 in renv's library (`BACKLOG.md:200`); `NOT_CRAN=true` for the browser tests.
+- **Ledger sizes** (S71's close-out 2b): `CHANGELOG.md` 180,834 B; `HANDOFFS.md` 158,054 B, both under their 196,608 B
+  archive threshold (about 15 KB of room in CHANGELOG.md: a session or two; archive it with `methodology_trim.py` when it
+  passes the threshold).
 - **Scratch scripts** (`/private/tmp/claude-501/-Users-rmsharp-Development-pedkindraw/09440ea4-4a72-4b6c-a386-a67b9bc8369a/scratchpad/g16b71/`,
   may be gone): `patchref.py` and `patchref2.py` (the throwaway reference), `ref/` (its tree), `red.R` (a test file's
   table), `fullsuite.R`, `check71.sh` (the full check), `eq.R` (the before-and-after of the REFACTOR), `ref375.R` (the 375
@@ -118,14 +133,15 @@ title was checked at its cited line when S71 closed out (23 of 23 by `grep`: the
 ### Key files
 - G16: `docs/planning/picture-files-plan.md` (`:301` G16c, `:567` section 12, `:772` section 14, `:841` 14.5 what G16c
   inherits, `:851` dragons 31-34); `docs/planning/standalone-pedigree-package-plan.md` (`:309` R146, `:95` Next);
-  `docs/planning/gaps-and-shared-code-plan.md` (`:887`, `:892` dragons 96-97); `methodology/BACKLOG.md:11` (Windows),
-  `:41` (G15-G17).
+  `docs/planning/gaps-and-shared-code-plan.md` (`:887`, `:892`, `:898` dragons 96-98); `methodology/BACKLOG.md:11` (Windows),
+  `:45` (G15-G17).
 - The code: `R/savePedigreeDiagram.R:88` (the function), `:157` (`.recordDiagramSvg()`), `:257` (`.checkDpi()`), `:290`
   (`.renderPicture()`), `:352` (`.stopTooSlow()`); `inst/js/recordCanvas.js:102` (`dashStrokes()`), `:151` (`opsOf()`),
   `:374` (`window.__svg`); `tools/gapCases.R:167` (`files`), `:247` (`largeIds`).
-- The tests: `tests/testthat/test_savePedigreeDiagram.R` (30 tests, 216 expectations; `:347` the PDF test, `:490` the
-  375 animals' words, `:564` the stuck print); `tests/testthat/helper-savePedigreeDiagram.R:170` (`.savePdfPages`), `:193`
-  (`.savePdfWords`), `:205` (`.savePngSize`), `:226` (`.saveChromeSession`), `:277` (`.saveInkDiff`).
+- The tests: `tests/testthat/test_savePedigreeDiagram.R` (31 tests, 217 expectations; `:347` the PDF test, `:490` the
+  375 animals' words, `:505` the pdftotext-fails test, `:579` the stuck print); `tests/testthat/helper-savePedigreeDiagram.R:170`
+  (`.savePdfPages`), `:192` (`.skipUnlessPdftotext`), `:207` (`.pdftotextXml`), `:213` (`.savePdfWords`), `:224`
+  (`.savePngSize`), `:245` (`.saveChromeSession`), `:296` (`.saveInkDiff`).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -146,10 +162,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 option):** "G16b: PDF and PNG files (Recommended)" (orient); "Yes, proceed to RED"; "Cancel it and read its log" (S70's
 Windows run, at 40 minutes); "Go on with G16b" (when that run was found to have hung again; I had said in the orient
 picker that I would stop and ask); R146's decoder, "jsonlite in Suggests", with "Yes, proceed to GREEN" (one picker, two
-questions); "Yes, proceed to REFACTOR". No correction and no tool use declined.
+questions); "Yes, proceed to REFACTOR"; then, after the push, "Fix it now (Recommended)" for the Windows word tests,
+"Yes, proceed to GREEN" and "Yes, proceed to REFACTOR" again. No correction and no tool use declined.
 **Commits:** claim `fd207de`; RED `3ed03b8`; GREEN `42e090b` (function, recording layer, `DESCRIPTION`), `fc8df0c` (help,
 NEWS), `8cb2b8c` (contract row, the `files` case); REFACTOR `057a2e2`; close-out 1 `2bfd5b7`, `10da9bd`; close-out 2
-(these notes, the receipt, the ledger). Pushed at close.
+`6cd865d` (pushed). Then, found by that push, the Windows word tests' repair: RED `bbb26b8`, GREEN `fd9c7e2`, REFACTOR
+`048a100` (amended once: its message first claimed a clean Linux run it had not read), close-out 1c `1c0fbe8`, 1d
+`a57246b` (pushed); close-out 2b (these notes, the receipt, the ledger), pushed last.
 **Found:** S70's push (run 44994050682, `a150a49`): Ubuntu release `FAIL 0, WARN 0, SKIP 2, PASS 16201`, macOS `FAIL 0,
 SKIP 0, PASS 16212`, Ubuntu oldrel-1 `success` (its counts not read), R-devel red in "setup-r-dependencies" (known); the
 Windows job passed its tests (`FAIL 0, WARN 0, SKIP 1, PASS 16211`, `proc.time()` 936 s: S70's LCD repair reached
@@ -173,9 +192,22 @@ expectations, 0 failed, 0 errors, SKIP 0, WARN 0 (528 s); `R CMD check --as-cran
 `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true` at `8cb2b8c`: 0 errors, 0 warnings, 1 NOTE (the new submission), `PASS 16283`
 (581 s); `lint_package()` 0; `roxygenise()` no further change; drift 91 / 23 / 0 with no copied file changed; the REFACTOR's
 time-limit paths byte-identical before and after (`cmp`, 870 bytes); the `files` case prints the three files.
-**Not verified:** any GitHub run of the final tree (it starts after this handoff; read it first thing next time);
-Windows; an absurd `dpi`; whether GitHub's runners have `pdftotext`.
-**Quality gates:** quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: the full suite on `057a2e2` (the REFACTOR), 83 files, 1,053 tests, 16,283 expectations, 0 failed, 0 errors, SKIP 0, WARN 0 (528 s)
+**After close-out 2 (found by its push, run 45000649737):** Ubuntu release and oldrel-1 `FAIL 0 WARN 0 SKIP 4 PASS
+16268`, macOS `SKIP 2 PASS 16279` (GitHub's Ubuntu and macOS have no `pdftotext`: the two word tests skip); R-devel red
+in "setup-r-dependencies"; **Windows `FAIL 4 WARN 2`**: Git for Windows' `pdftotext` exists and exits 99 on a PDF, so my
+`.skipUnlessPdftotext()` (existence only) let the two word tests run and fail; every other test passed there. Mark's pick:
+repair it now. **The repair (test helper only, strict TDD):** RED a test with a stand-in `pdftotext` exiting 99 first on the
+path expects a skip (failed on the old helper); GREEN the helper tries the tool on a PDF R writes and skips when it fails;
+REFACTOR one function runs the command (the words of both PDFs and the probe's three outcomes byte-identical, `cmp`, 6,128
+bytes). 31 tests, 217 expectations, 0 failed on the Mac; the full suite at the REFACTOR 83 files, 1,054 tests, 16,284
+expectations, 0 failed, 0 errors, SKIP 0, WARN 0 (518 s); lint 0; roxygen no change. **The repair's push (run
+45011132429, `a57246b`):** Ubuntu `SKIP 4 PASS 16269`, macOS `SKIP 2 PASS 16280`, **Windows `FAIL 0 WARN 0 SKIP 4 PASS
+16278`, `proc.time()` 1,041 s**, and the hang again with every test passing (cancelled at 40 minutes, 10:50 UTC): the
+fourth run in a row, so it is probably at R's exit, not in a test (plan dragon 37). **One unexplained error:** the Linux
+box read `214 expectations, 1 error` in 2 of 10 runs of the file (the others 217 and 0), through `runTests.sh`, which hides
+the text; not on the Mac or GitHub's Ubuntu.
+**Not verified:** an absurd `dpi`; the Linux box's intermittent error (cause unknown).
+**Quality gates:** quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: the full suite on `048a100` (the repair's REFACTOR), 83 files, 1,054 tests, 16,284 expectations, 0 failed, 0 errors, SKIP 0, WARN 0 (518 s)
 
 #### Session 70 Handoff Evaluation (by Session 71)
 **Score: 9/10.** ROI high: the handoff saved the orientation, the plan reading and the CI reading, and its one wrong
@@ -197,13 +229,21 @@ figure was labelled a guess.
   plan, not a measurement: the build uses a second Chrome, so the recording stays replaceable in a test.
 - **ROI:** high.
 
-**Self-assessment: 8/10.**
+**Self-assessment: 7/10.**
 + Followed the handoff's order (read the push job by job, the picks not re-asked), kept the promise made in the orient
   picker (stopped and asked when Windows hung again, then asked before cancelling a run), ran every RED value on a
   throwaway reference on two platforms before committing (one idea, a PDF pixel comparison, failed there and was
   dropped with its helper before it reached a commit), GREEN passed on its first run on both surfaces, the REFACTOR was
   proved byte-identical, the check was run the way GitHub does, and every figure in the plans was re-measured on the
   real code (the 375 animals' PDF 1,025,352 B against the reference's 1,025,349) before the close-out committed it.
+- **The slip that cost the score:** my two PDF word tests broke the Windows job. They skipped only where `pdftotext` is
+  missing, and S70's own lesson (a photograph, a platform's text) pointed at the same class of fault: a tool can exist
+  and not work. The tests had run only on the Mac and in the Linux box, both of which have a working one; I did not ask
+  which tool GitHub's runners would find. Repaired in the session, by Mark's pick, in strict TDD. Also: the REFACTOR's
+  commit message said the Linux box read 217 and 0 before I had read that run (it read 214 and an error): found, and the
+  unpushed commit amended; a monitor's clock parsed with BSD `date -j` warned at once, falsely (nothing was cancelled on
+  it); the gate said "218 expectations" (it is 217); the Linux box's intermittent error left unexplained because the
+  script hides the text.
 - Slips, none reaching a release: a placeholder anchor in one `Edit` call (it failed harmlessly); the first measuring
   script ran outside testthat and failed on `teardown_env()`; a helper (`.savePdfAsPng`) written and deleted unused; the
   CRAN plan said 11 of the 30 tests start a browser (it is 22; found by counting the file before the commit); the
