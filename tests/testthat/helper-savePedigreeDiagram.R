@@ -396,3 +396,126 @@
     "return {ink: ink, widest: widest}; })()"
   ), awaitPromise = TRUE)
 }
+
+## ---- the ids of a large drawing (G16c, pedkindraw S72) -----------------------
+## Readers for test_savePedigreeDiagramColony.R: where each id is written in an
+## SVG (its box in Chrome) and in a PDF (its word box from pdftotext -bbox),
+## how many boxes lie over another, and how many pixels of a PNG are its ids.
+## The measures behind the numbers the tests state are
+## docs/planning/picture-files-prototype/g16cMeasure1-3.R.
+
+## One row per id text of an SVG file, drawn by Chrome: the text and its box in
+## CSS pixels (x0, y0, x1, y1). The legend's labels have a white halo (a first
+## <text> whose fill is "none"); an id has none, but the halo is left out all
+## the same.
+.saveSvgIdBoxes <- function(file, ids) {
+  session <- .saveChromeSession()
+  session$go_to(paste0("file://", file), timeout_ = 30, delay = 0.5)
+  json <- .saveEvaluate(session, sprintf(paste0(
+    "(() => { const ids = new Set(%s); const out = []; ",
+    "document.querySelectorAll('text').forEach(t => { ",
+    "if (t.getAttribute('fill') !== 'none' && ids.has(t.textContent)) { ",
+    "const r = t.getBoundingClientRect(); ",
+    "out.push({text: t.textContent, x0: r.left, y0: r.top, ",
+    "x1: r.right, y1: r.bottom}); } }); ",
+    "return JSON.stringify(out); })()"
+  ), jsonlite::toJSON(as.character(ids))))
+  session$go_to("about:blank", timeout_ = 30)
+  boxes <- jsonlite::fromJSON(json)
+  if (!is.data.frame(boxes)) {
+    boxes <- data.frame(text = character(), x0 = numeric(), y0 = numeric(),
+                        x1 = numeric(), y1 = numeric())
+  }
+  boxes
+}
+
+## One row per word of a PDF's first page, as pdftotext -bbox gives them: the
+## word and its box in points (x0, y0, x1, y1).
+.savePdfBoxes <- function(file) {
+  xml <- .pdftotextXml(file)
+  found <- regmatches(xml, regexpr("<word [^>]*>[^<]+</word>", xml))
+  number <- function(name) {
+    as.numeric(sub(paste0('.*', name, '="([-0-9.]+)".*'), "\\1", found))
+  }
+  text <- sub("^<word [^>]*>([^<]+)</word>$", "\\1", found)
+  text <- gsub("&lt;", "<", text, fixed = TRUE)
+  text <- gsub("&gt;", ">", text, fixed = TRUE)
+  text <- gsub("&amp;", "&", text, fixed = TRUE)
+  data.frame(text = text, x0 = number("xMin"), y0 = number("yMin"),
+             x1 = number("xMax"), y1 = number("yMax"),
+             stringsAsFactors = FALSE)
+}
+
+## How many of the boxes `of` (a logical vector over the rows) lie over another
+## box of the set by a positive area; edges that only touch do not count.
+.saveOverlapped <- function(boxes, of = rep(TRUE, nrow(boxes))) {
+  over <- vapply(which(of), function(i) {
+    width <- pmin(boxes$x1[i], boxes$x1[-i]) - pmax(boxes$x0[i], boxes$x0[-i])
+    height <- pmin(boxes$y1[i], boxes$y1[-i]) - pmax(boxes$y0[i], boxes$y0[-i])
+    any(width > 0 & height > 0)
+  }, logical(1L))
+  sum(over)
+}
+
+## What a PNG holds of its ids: the PNG against two photographs, in Chrome, of
+## the SVG file of the same drawing at the PNG's scale (`dpi` / 96): the SVG as
+## written (`withIds`) and the SVG with every <text> whose contents is one of
+## `ids` taken out (`withoutIds`). Each is a list of `ink`, the pixels not white
+## in either picture, and `differ`, those of them whose colour differs by more
+## than 100 in a channel. `removed` is how many <text> elements were taken out (a
+## guard: one for each id written, 545 for the 375 animals). A PNG that holds
+## its ids differs little from the first and by about the ids from the second.
+.savePngIdInk <- function(png, svg, ids, dpi = 300) {
+  text <- .saveSvgText(svg)
+  found <- regmatches(text, gregexpr("<text [^>]*>[^<]*</text>", text))[[1L]]
+  contents <- gsub("&amp;", "&", sub("^<text [^>]*>([^<]*)</text>$", "\\1",
+                                     found), fixed = TRUE)
+  drop <- contents %in% ids
+  regmatches(text, gregexpr("<text [^>]*>[^<]*</text>", text)) <-
+    list(ifelse(drop, "", found))
+  stripped <- withr::local_tempfile(fileext = ".svg")
+  writeLines(text, stripped, useBytes = TRUE)
+  size <- .savePngSize(png)
+  scale <- dpi / 96
+  session <- .saveChromeSession()
+  photograph <- function(file) {
+    session$go_to(paste0("file://", file), timeout_ = 30, delay = 0.5)
+    ## The page is wider than this browser's window: beyond the window a
+    ## photograph is blank unless it is taken past the viewport (the plan's
+    ## dragon 2).
+    session$Page$captureScreenshot(
+      format = "png", clip = list(x = 0, y = 0, width = size[["width"]] / scale,
+                                  height = size[["height"]] / scale,
+                                  scale = scale),
+      captureBeyondViewport = TRUE
+    )$data
+  }
+  whole <- photograph(svg)
+  without <- photograph(stripped)
+  session$go_to("about:blank", timeout_ = 30)
+  bytes <- readBin(png, "raw", file.size(png))
+  file <- gsub("[\r\n ]", "", jsonlite::base64_enc(bytes))
+  compared <- .saveEvaluate(session, paste0(
+    "(async () => { ", .savePixelsJs,
+    "const a = pixels(await load('", file, "')); ",
+    "const compare = async s => { const b = pixels(await load(s)); ",
+    "let ink = 0, differ = 0; ",
+    "for (let k = 0; k < a.data.length; k += 4) { ",
+    "const sa = a.data[k] + a.data[k + 1] + a.data[k + 2]; ",
+    "const sb = b.data[k] + b.data[k + 1] + b.data[k + 2]; ",
+    "if (sa < 740 || sb < 740) { ink++; ",
+    "if (Math.abs(a.data[k] - b.data[k]) > 100 || ",
+    "Math.abs(a.data[k + 1] - b.data[k + 1]) > 100 || ",
+    "Math.abs(a.data[k + 2] - b.data[k + 2]) > 100) { differ++; } } } ",
+    "return {ink: ink, differ: differ, size: [b.width, b.height]}; }; ",
+    "return {png: [a.width, a.height], withIds: await compare('", whole, "'), ",
+    "withoutIds: await compare('", without, "')}; })()"
+  ), awaitPromise = TRUE)
+  list(removed = sum(drop), pngSize = unlist(compared$png),
+       withIds = list(ink = compared$withIds$ink,
+                      differ = compared$withIds$differ,
+                      size = unlist(compared$withIds$size)),
+       withoutIds = list(ink = compared$withoutIds$ink,
+                         differ = compared$withoutIds$differ,
+                         size = unlist(compared$withoutIds$size)))
+}
