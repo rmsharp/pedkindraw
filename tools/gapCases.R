@@ -341,6 +341,32 @@ cases$largeIds <- function(case = "largeIds") {
 }
 
 ## A3. A ready-made app.
+## Start pedkindraw's app (this working copy) in a second R process, read its
+## page's title, and kill the process (G17a, pedkindraw S74).
+pedkindrawAppTitle <- function(seconds = 30) {
+  log <- tempfile(fileext = ".txt")
+  app <- callr::r_bg(function(root) {
+    pkgload::load_all(root, quiet = TRUE, export_all = FALSE)
+    pedkindraw::runPedigreeApp(launch.browser = FALSE)
+  }, args = list(root = normalizePath(".")), libpath = .libPaths(),
+  stdout = log, stderr = "2>&1")
+  on.exit(app$kill(), add = TRUE)
+  start <- proc.time()[["elapsed"]]
+  url <- character(0L)
+  while (length(url) == 0L && app$is_alive() &&
+           proc.time()[["elapsed"]] - start < seconds) {
+    Sys.sleep(0.1)
+    said <- readLines(log, warn = FALSE)
+    url <- regmatches(said, regexpr("http://[0-9.]+:[0-9]+", said))
+  }
+  if (length(url) == 0L) {
+    stop("the app did not start: ",
+         paste(readLines(log, warn = FALSE), collapse = " / "))
+  }
+  page <- paste(readLines(url[[1L]], warn = FALSE), collapse = "\n")
+  regmatches(page, regexpr("<title>[^<]*</title>", page))
+}
+
 cases$app <- function(case = "app") {
   probe(case, "Pedixplorer ped_shiny() arguments",
         names(formals(Pedixplorer::ped_shiny)))
@@ -351,6 +377,10 @@ cases$app <- function(case = "app") {
              ignore.case = TRUE, value = TRUE))
   probe(case, "pedkindraw drawPedigreeDiagram() arguments",
         names(formals(pedkindraw::drawPedigreeDiagram)))
+  probe(case, "pedkindraw runPedigreeApp() arguments",
+        names(formals(pedkindraw::runPedigreeApp)))
+  probe(case, "pedkindraw runPedigreeApp() starts; its page's title",
+        pedkindrawAppTitle())
 }
 
 ## B1. Two animals declared mates with no offspring together.

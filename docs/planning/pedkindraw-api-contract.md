@@ -256,6 +256,15 @@ and `spouse`, a data frame of `left`, `right`, `anchor`; R61, the element rename
 them (R63): 4.1's `order` in 15a (pedkindraw S22), its `mate` in 15b (pedkindraw S23), 4.5 in 15c (pedkindraw S24). Nothing else from nprcgenekeepr is
 exported.
 
+### 4.7 New export, a ready-made app (G17; R148, R149)
+
+| Interface | Input | Output | Error | Phase |
+|---|---|---|---|---|
+| `runPedigreeApp(ped = NULL, port = NULL, launch.browser = interactive())` (pedkindraw S74) | `ped`, `NULL` or a data frame with the columns `id`, `sire`, `dam` and `sex` and at least one row, its other columns kept, opened in the app as if read from a file; `port`, `NULL` (a free port chosen by shiny) or one whole number from 1 to 65535; `launch.browser`, `TRUE` or `FALSE` | what `shiny::runApp()` returns when the app is closed, invisibly; the call waits until then. The app (G17a): a CSV or text file read as text (empty cells `NA`), the sample pedigree (`inst/extdata/obfuscated_rhesus_mhc_ped.csv`, 375 animals) or `ped`; the id, sire, dam and sex columns recognised by name (R149: ignoring case, spaces, dots and underscores, id from id, ego, egoid or indid; sire from sire, sireid, father, fatherid or dadid; dam from dam, damid, mother, motherid or momid; sex from sex or gender) and chosen by the user; the sex codes m, f, h, u in any case, male, female, hermaphrodite, unknown, 1 and 2 read as M, F, H and U and said; `gen` added by `findGeneration()`; everyone drawn by `makePedigreeMatingLayout()` and `drawPedigreeDiagram()`, their warnings and messages shown on the page; `checkPedigree()`'s problems on a Checks tab and the animals on an Animals tab. The page says when a file cannot be read, has fewer than four columns or no animals, a column is not chosen or chosen twice, or the pedigree cannot be drawn | stops when shiny is not installed (naming it and `install.packages("shiny")`), `ped` is not a data frame, lacks one of the four columns (naming each) or has no rows, `port` is not `NULL` or one whole number from 1 to 65535, `launch.browser` is not `TRUE` or `FALSE` | G17a |
+
+Its page and server are internal (R148: one exported function, so they can change). G17b-G17d add what the plan's
+section 7 names (`docs/planning/pedigree-app-plan.md`): choosing the animals, what is drawn, saving.
+
 ---
 
 ## 5. Dependencies
@@ -267,6 +276,7 @@ exported.
 | Layout engine (Phase 8) | `quadprog`, `Matrix`, `utils` | renderer | `quadprog::solve.QP.compact()` and `utils::head()`, both arrived pedkindraw S9; Matrix through `kinship()` |
 | Renderer (Phase 9) | `visNetwork` | users | `chromote` in Suggests for browser tests |
 | Converters (Phase 14) | kinship2, Pedixplorer (Suggests) | users | |
+| App (G17) | `shiny` (Suggests), the renderer | users | `callr` in Suggests for the tests that start the app in a second process |
 
 **Imports:** `data.table`, `Matrix`, `quadprog`, `visNetwork`, `stats`, `utils`, `grDevices`: 32 packages to install, measured
 this session. Each is added by the phase that first needs it; `stats` and `utils` only once a copied function uses
@@ -278,7 +288,9 @@ installed as kinship2's dependency) and `utils` (`utils::head()` in the layout).
 install). **Suggests:** kinship2 (also the fidelity tests;
 arrived in Phase 7, plan R28), Pedixplorer, `testthat`, `mockery` (the copied tests' stand-ins, Phase 6), `withr`
 (the copied C11 test's `with_seed()`, Phase 7, R28), `chromote`, and what the vignettes need: `knitr` and `rmarkdown`,
-with `VignetteBuilder: knitr` (Phase 16b, pedkindraw S27; both were in renv's lock already). No circular
+with `VignetteBuilder: knitr` (Phase 16b, pedkindraw S27; both were in renv's lock already), and `shiny` and `callr` (G17a,
+pedkindraw S74, R148: the app, and its browser tests' second process; both were in renv's lock already, as Pedixplorer's
+dependencies; shiny adds 11 packages to the 32, plan section 3.1 of `docs/planning/pedigree-app-plan.md`). No circular
 dependencies: each phase's slice uses only earlier slices.
 
 ---
