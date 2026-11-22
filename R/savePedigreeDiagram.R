@@ -160,10 +160,7 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
                               scaleFactor = 1.0, widthIn = NULL,
                               heightIn = NULL, expandDashes = FALSE) {
   deadline <- Sys.time() + timeout
-  stopTooSlow <- function() {
-    stop("savePedigreeDiagram() did not finish drawing within ",
-         format(timeout), " seconds.", call. = FALSE)
-  }
+  stopTooSlow <- function() .stopTooSlow(timeout)
   folder <- tempfile("pedkindraw-save-")
   dir.create(folder)
   on.exit(unlink(folder, recursive = TRUE), add = TRUE)
@@ -292,10 +289,7 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
 #' @noRd
 .renderPicture <- function(recorded, ending, file, widthIn, heightIn, dpi,
                            deadline, timeout) {
-  stopTooSlow <- function() {
-    stop("savePedigreeDiagram() did not finish drawing within ",
-         format(timeout), " seconds.", call. = FALSE)
-  }
+  stopTooSlow <- function() .stopTooSlow(timeout)
   pageWidth <- if (is.null(widthIn)) recorded$w / 96.0 else widthIn
   pageHeight <- if (is.null(heightIn)) recorded$h / 96.0 else heightIn
   folder <- tempfile("pedkindraw-save-")
@@ -345,6 +339,19 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
   })
   writeBin(jsonlite::base64_dec(answer$data), file)
   invisible(NULL)
+}
+
+#' Stop because the drawing was not finished in time
+#'
+#' The one message of every time limit \code{savePedigreeDiagram()} keeps: the
+#' recording, the wait for the drawing, the print and the photograph.
+#'
+#' @param timeout the seconds the limit was.
+#' @return Does not return: it stops, with no call in the message.
+#' @noRd
+.stopTooSlow <- function(timeout) {
+  stop("savePedigreeDiagram() did not finish drawing within ",
+       format(timeout), " seconds.", call. = FALSE)
 }
 
 #' The seconds left to a deadline
