@@ -14,6 +14,8 @@
   : Draw an interactive pedigree diagram from a mating layout
 - [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
   : Save a pedigree diagram as a picture file
+- [`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)
+  : Draw a pedigree in an app, from a file, with no code
 - [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
   : Convert a pedigree data frame into visNetwork-ready diagram data
 

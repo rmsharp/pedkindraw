@@ -16,6 +16,8 @@ draws the layout as an interactive graph.
 makes a simpler drawing's nodes and edges.
 [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
 saves a drawing as an SVG, a PDF or a PNG file.
+[`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)
+starts an app that opens a pedigree file and draws it, with no code.
 
 ## Kinship and relatedness
 
