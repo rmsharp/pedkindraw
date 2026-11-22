@@ -161,6 +161,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 **Started:** 2026-11-22 06:40 CST · **Model:** Claude Sonnet 5.5 · Mark's pick (orient): "G16c (Recommended)".
 **Status:** Session claimed. Orient found no ghost session, the ledgers at `253b2ca`, drift 91/23/0, nprcgenekeepr at
 `3e06730c5` with the same 4 commits on the copied files. In PRE-RED: measure first (the plan's list), then the pre-RED picker.
+**Measured (Mac, Chrome; the three scripts are `docs/planning/picture-files-prototype/g16cMeasure1-3.R`):** the 375 animals
+through `savePedigreeDiagram()` on 14 x 7 in, letter landscape, letter portrait and 7 x 5 in: every PDF 567 words, 545 id words,
+375 distinct, 0 overlapped (pdftotext -bbox, strict and with a 1% tolerance); an id's box is 0.75, 0.59, 0.45 and 0.37 pt
+high (the SVG's id font is 0.893 user units: 0.89 px at 96 dpi, 2.79 px at 300 dpi). PDFs 0.92-1.03 MB; times SVG 1.4 s,
+PDF 2.4-3.4 s, PNG 2.4 s. pdftools 3.9.1 (poppler 26.08, scratch library, not in renv) gives the same 545/375 in 0.08 s
+but whole-number boxes (id height 0). The SVG in Chrome: 545 id texts, 375 distinct, box 3.42 x 1.01 px, 0 overlapped.
+The PNG at 300 dpi (4200 x 2100): 347 pixels differ from the same drawing with its ids removed (0 at 96 dpi). The plan's
+"PNG ids at 6,200 px" is the live-widget route (vis.js's 4 px label limit), not this function's.
+**Mark's pre-RED picks (all three the recommended):** counting ids = "SVG in Chrome + pdftotext" (no new package); PNG =
+"Pixel floor + dpi advice" (at least 100 differing pixels; the documents say ids are about 3 px at 300 dpi); documents =
+"Guarded example, checks in tests" (`eval = interactive()`, hidden chunks only for what needs no browser).
 **Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
 
 ### What Session 71 Did
