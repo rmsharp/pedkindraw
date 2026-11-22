@@ -578,3 +578,99 @@ a real file dialog (the upload went through DevTools), a phone-width window, a h
 **Found for later:** a file whose parents have no row of their own cannot be drawn (section 11.4); Pedixplorer's app
 and nprcgenekeepr's Input tab add such parents. A backlog item (`methodology/BACKLOG.md:201`, "The app: parents with
 no row of their own").
+
+---
+
+## 12. G17b's measures and picks (pedkindraw S75)
+
+Measured before the pre-RED picker (Learning 17); the scripts are beside the prototype
+(`docs/planning/pedigree-app-prototype/g17bSize.R`, `g17bBrowser.R`, `g17bViews.R`, `g17bCases.R`,
+`g17bClickParents.R`), each run from the repository root with renv's library. This Mac, R 4.6.2, shiny 1.14.0,
+Chrome 157; pedkindraw at `40c5472`. Each count covers the cases run (Learning 19).
+
+### 12.1 How long a drawing takes (F19)
+
+The app's own drawing, `.appDraw()` (`findGeneration()`, `makePedigreeMatingLayout()`, `drawPedigreeDiagram()`), one
+size per process (`g17bSize.R`). The pedigrees past the sample are taken from nprcgenekeepr's `examplePedigree` (3,694
+animals, read from its clone's `data/`): the ancestors of animals with a recorded parent, added one at a time in a
+seeded random order until at least n are kept, so every parent kept has its row.
+
+| Animals | Nodes | In R | In Chrome, from the page connecting to the drawing shown (`g17bBrowser.R`) |
+|---:|---:|---:|---:|
+| 375 (the sample) | 1,460 | 2.0 s | 2.54 s |
+| 501 | 1,711 | 2.0 s | -- |
+| 1,001 | 3,976 | 9.1 s | 9.83 s |
+| 1,500 | 6,190 | 23.5 s | -- |
+| 2,000 | 8,573 | 50.5 s | -- |
+
+The structure matters as much as the count: two other pedigrees of about 1,000 animals, the ancestors of the last three
+generations only (an earlier pool of the same script), took 16.7 s (1,000 animals) and 19.1 s (1,062). The contract's
+"past 120 s at 2,000" (section 7, nprcgenekeepr's code before G1-G16) no longer holds: 50.5 s. Chrome adds under a
+second. While the app draws it answers nothing else (one R process).
+
+### 12.2 What each way of choosing the animals gives on the sample (F6-F8)
+
+Every one of the sample's 375 animals taken as the one focal animal in turn (`g17bViews.R`).
+
+- **F6, one family** (`findPedigreeNumber()`): 5 families of 343, 13, 11, 5 and 3 animals (numbered 5, 4, 1, 2, 3);
+  each drawn, 1.94 s for the 343. In `examplePedigree`, 271 families in 0.09 s, **255 of them one animal** (no parent,
+  no offspring: the layout draws none of them) and 16 of two or more (the largest 2,922).
+- **F7, ancestors and descendants** (`trimPedigree()` and `getDescendantPedigree()`, as nprcgenekeepr's Browser keeps
+  them): 2 to 84 animals, 15 at the median. **In 344 of the 375 a descendant's other parent is outside the view**, and
+  drawn as the app draws (`gen` from the rows kept) those 344 fail (306 "pdepth must not be missing for any animal",
+  38 "missing value where TRUE/FALSE needed"). Three ways each draw all 375: the outside parent set to `NA`
+  (`removeAnimals()`); the outside parent added as a row of its own with its parents unknown (5 rows added at the
+  median, 7.9 on average, 66 at most; about a third of the drawing at the median; 0.019 s a drawing at the median,
+  0.14 s at most); and nprcgenekeepr's way, `gen` from the whole pedigree before the cut, where **the outside parent
+  gets no node** (0 of the 2,981 such parents: its edge names an animal the drawing does not hold) and a generation
+  with no animal shown is an empty row (focal `BRI2MW`, a founder dam: her daughter at row 2, row 1 empty).
+- **F8, near relatives** (`getNearRelativePedigree()`): at distance 1, 1 to 3 animals and **182 of 375 draw no animal**
+  (the focal animal alone, which the layout leaves out with its message); at 2, 2 to 17 (6 at the median); at 3, 2 to
+  43 (14); at 4, 2 to 70 (28); every one drawn, 0.11 s at most. Pedixplorer's app asks for "Max kinship", 3 by
+  default, 1 at least (its `inf_sel_server()`).
+
+**On S74's eight typed cases** (section 11.4; `g17bCases.R`, each call under a 10 s limit): every function returned.
+`getNearRelativePedigree()` stops, naming the problem, on the sire with no row, the id twice, the animal its own sire
+and the cycle; `findPedigreeNumber()` gives `NA` to both animals of the cycle; `trimPedigree()` and
+`getDescendantPedigree()` return rows on all eight (the id twice gives `o2` twice).
+
+### 12.3 What a click lands on, and parents with no row (F15; backlog `:201`)
+
+`g17bClickParents.R`. **The sample's drawing:** 1,460 nodes: 375 animals, 170 repeat nodes (`__dup_`, repeats of 113
+animals, each mapped by the layout's `duplicateToReal` to an animal with a row), and 915 points with no animal (237
+`__union_` mating dots, 237 `__drop_`, 251 `__bar_` and 190 `__jog_` routing points). The layout's reserved prefixes
+are 12 (`.reservedIdPrefixes`, `R/makePedigreeDiagramData.R:584`). **Parents with no row:** `addParents()` on the four
+animals with `o2`'s sire `s9` rowless adds `s9` (sex M, `recordStatus` "added"; it adds a `recordStatus` column,
+"original" for the others, replacing one the file has); the app's drawing then shows 5 animals with no note, and
+`checkPedigree()` finds no problem; a rowless sire and a rowless dam add 2 rows, M and F.
+
+### 12.4 The picks (R150)
+
+Mark's four, each first time, each the recommended option: **a descendant's other parent outside the view is drawn as
+an animal of its own, its parents not shown** (the others: left out, the offspring drawn with that parent unknown;
+nprcgenekeepr's way); **a click replaces the focal animals** with the clicked one, its id in the focal box, a repeat
+node meaning its animal and a mating dot or routing point doing nothing; the view does not change (the others: added
+to them; replace and switch the view); **over 1,000 animals the app asks first**: it does not start drawing, says how
+many and that drawing more than 1,000 can take a minute or more, suggests one family or focal animals, and has a "Draw
+anyway" button (the others: over 500, ask first; over 1,000, draw and warn); **a parent with no row of its own is
+added** with `addParents()` before drawing, and the page names those added; the Checks tab, which checks the file as
+read, still lists them (the others: a button; leave it as G17a does).
+
+### 12.5 What G17b builds (the design RED tests; Claude's, from the plan's section 5 and R150)
+
+- **Animals to draw**, four choices, "Everyone" first and the default: "One family", a list of the families of two or
+  more animals, largest first, each with its size ("Family 5: 343 animals"), saying how many animals have no relative
+  in the file; "Focal animals with their ancestors and descendants" (F7, R150's mates added); "Focal animals' near
+  relatives", with "How close", 3 by default, 1 at least, and words saying what 2, 3 and 4 hold.
+- **Focal animals** typed or pasted, separated by commas, semicolons, spaces, tabs or new lines; ids not in the
+  pedigree named on the page; a focal view with none says to type one or click one.
+- **The click** (F15): `drawPedigreeDiagram(onClick = )` sends the clicked nodes; R150's rule, tested as a function in
+  `testServer()`'s tests and end to end in Chrome (finding 4).
+- **The size question** (F19): R150's words and button; the limit 1,000 is an argument of the internal server, so the
+  server tests use a small one.
+- **Parents with no row** (backlog `:201`): added as R150 says; G17a's test of a sire with no row changes from "could
+  not be drawn" to "added and drawn".
+- **The Animals tab** shows the animals chosen to draw (G17a: everyone read), as nprcgenekeepr's Browser's table does;
+  the Checks tab still checks the whole file.
+- **A view that cannot be made** (`getNearRelativePedigree()` stopping) is said on the page as a drawing that fails
+  is (G17a).
