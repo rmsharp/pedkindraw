@@ -12,7 +12,7 @@
 ## and is quoted beside its bound; they are one machine's (the plan's dragon
 ## 20), so read each CI job's result before trusting a bound.
 ##
-## The tests that need no browser (the first nine) run everywhere, CRAN too.
+## The tests that need no browser (the first eight) run everywhere, CRAN too.
 ## The ones that start Chrome skip on CRAN and where no browser is found; the
 ## function starts its own Chrome for each call, so these take a second or two
 ## each.

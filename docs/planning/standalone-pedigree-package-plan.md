@@ -89,9 +89,9 @@ offspring declared in a `matings` table); Phase G15a DONE (pedkindraw S65: `make
 draws them, R141's S65 picks); Phase G15b DONE (pedkindraw S66: `getMatings(matings = )` lists them, R141's
 S66 picks); Phase G15c DONE (pedkindraw S67: `asPedFrame()` returns them, R141's S67 picks), so G15 DONE;
 Phase G16's plan written (pedkindraw S68: `docs/planning/picture-files-plan.md`, R142, picture files by recording the
-widget's own drawing in headless Chrome).
-**Next:** Phase G16a (the recording layer and the SVG file; `docs/planning/picture-files-plan.md` section 7), then
-G16b, G16c, G17's planning session, then 17g.
+widget's own drawing in headless Chrome); Phase G16a DONE (pedkindraw S69: `savePedigreeDiagram()` writes the widget as an SVG file, R143's picks).
+**Next:** Phase G16b (the PDF and the PNG and the page; `docs/planning/picture-files-plan.md` section 7), then
+G16c, G17's planning session, then 17g.
 In nprcgenekeepr: N1 (its two
 faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) done in its S1190
 (closed at `faf6823c3`); its S1191 (a standard error for simulated kinship, no copied file) closed at `3e06730c5`.
@@ -1347,6 +1347,21 @@ another, where kinship2's and Pedixplorer's ids overlap in 94-100% of cases on 7
 picks (R142). Three build sessions planned: G16a the recording layer and the SVG, G16b the PDF and PNG and the
 page, G16c the whole large pedigree and the documents, each with its DONE, commands, surface and pre-RED choices;
 12 dragons. Commit `1a7077b`.
+
+**G16a (pedkindraw S69; R143):** `savePedigreeDiagram(diagram, file, width, height)` writes the widget
+`drawPedigreeDiagram()` returns as an SVG file by recording its own drawing in headless Chrome
+(`R/savePedigreeDiagram.R`, the recording layer `inst/js/recordCanvas.js`); Mark's four pre-RED picks, each the
+recommended option (R143). Measured first on a scratch layer: the prototype's legend fault was `drawImage()`'s
+source rectangle ignored (vis.js's mipmap pyramid squeezed into each icon), plus the title not recorded and the text
+baselines (alphabetic, from `measureText()`, rounded to the nearest pixel); found in GREEN, each canvas is written as
+the browser paints it (its box at whole device pixels, scaled 1 over the device pixel ratio). Against the live widget
+over 14 cases: the four animals and 12 typed shapes 0 of the drawing's ink pixels and 0.03% of the legend's differ
+by more than 100 in a colour channel, the 18-animal pedigree with every mark 0.26% and 0.07%; the 375 animals give
+545 id texts (375 distinct). `tests/testthat/test_savePedigreeDiagram.R`: 18 tests, 143 expectations; full suite 83
+files, 1,041 tests, 16,210 expectations, 0 failed, SKIP 0, WARN 0; `lint_package()` 0; `covr` 100 of 100 lines of the
+new file; drift 91 / 23 / 0; fidelity 600 of 600; `R CMD check --as-cran` 1 NOTE (the new submission). Commits: claim
+`bbb3b04`; picks and measures `8d3834a`; RED `3bc62dc`; GREEN `35932ac`, `7418f9c`, `71409eb`; REFACTOR `dc672f2`.
+Dragons 13-22 in the picture plan's section 11.5.
 
 ### Later, optional -- nprcgenekeepr uses the new package
 

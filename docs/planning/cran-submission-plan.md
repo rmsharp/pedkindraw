@@ -34,8 +34,8 @@ S61: the text size, `textSize`, the second; S62: the column and row spacing, `co
 third, the line width split off by Mark's pick; S63: the line width, `lineWidth`, the fourth and last). G14 DONE.
 G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`); G15a DONE (S65, the layout).
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
-`docs/planning/picture-files-plan.md`). Next: G16a (the recording layer and the SVG file), then G16b, G16c, G17's
-planning session, before 17g.
+`docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG). Next: G16b (the
+PDF, the PNG and the page), then G16c, G17's planning session, before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -713,6 +713,12 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   over another); three build sessions, G16a the recording layer and the SVG, G16b the PDF, PNG and page, G16c the
   large pedigree and the documents. The new browser tests skip on CRAN (`skip_on_cran()`), so they add nothing to the
   CRAN check's time. Commit `1a7077b`; no package code.
+- **G16a (S69; R143):** `savePedigreeDiagram()` for `.svg` (`R/savePedigreeDiagram.R`, `inst/js/recordCanvas.js`). For
+  CRAN: `htmlwidgets` moves to Imports (0 new packages: `visNetwork` already needs it), `chromote` stays in Suggests
+  and the function stops saying so without it (as Imports it would add 13 packages, about 32 MB, 7 compiled); the help
+  example is guarded by `NOT_CRAN`, `chromote` and a Chrome found; of the 18 new tests 10 start a browser and skip on
+  CRAN (`skip_on_cran()`), and the 8 that need none run there. `R CMD check --as-cran` here: 1 NOTE, the new
+  submission; tests 175 s. The function starts its own Chrome and closes it on every way out, a stuck page included.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

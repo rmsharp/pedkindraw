@@ -251,7 +251,7 @@ under a time limit (Learning 19). The browser is the surface that **cannot** enf
 in another program: a file is checked in Chrome (an SVG read by Chrome, a PDF by `pdftotext`), not in Word, Inkscape or
 a print driver.
 
-### G16a -- the recording layer and the SVG file (one session; two if the legend takes it)
+### G16a -- the recording layer and the SVG file (one session; two if the legend takes it) -- DONE in S69 (R143)
 
 - **Work:** the function for `.svg` (R142 picks 1-2), end to end: a copy of the widget with the label limit at 0 and its
   size set, saved to a temp folder, opened in a chromote session with the recording layer in place, the last frame of
@@ -276,6 +276,7 @@ a print driver.
   plan: an outline is in screen pixels, a line in units).
 - **Session boundary:** close out when DONE. The 5-file cap splits GREEN into commits (`R/`, then `man/` with NEWS and
   `_pkgdown.yml`, then the contract and the gap case).
+- **DONE (S69):** one session, the legend taken in it; the result and what G16b inherits are section 11.6.
 
 ### G16b -- PDF and PNG, and the page (one session)
 
@@ -471,7 +472,7 @@ the folder of `file` missing; `chromote` not installed and Chrome not found (`mo
 "needs the 'chromote' package", "could not find Google Chrome".
 
 Chrome (`skip_if_no_chrome()`, `skip_on_cran()`): the four-animal help case writes a file that Chrome loads as an SVG
-document (root `svg`, no `parsererror`), root `width="10in"`, `height` 5.1146 in (491 px over 96, within 0.001), returns the path invisibly, and an
+document (root `svg`, no `parsererror`), root `width="10in"`, `height` agreeing with the `viewBox` and between 300 and 500 px (measured 491 px, 5.1146 in; the test does not state the machine's 491), returns the path invisibly, and an
 ending in capitals (`X.SVG`) works; the ink comparison (method above) on the four animals and the 12 typed shapes,
 **differing ink at most 0.5%, drawing and legend, measured 0.0% in all 13**, on the feature pedigree **at most 1.0%,
 measured 0.4% (drawing) and 0.2% (legend)** (14 cases compared, `expect_equal(length(...), 14L)`); the feature file
@@ -524,3 +525,36 @@ within 20 s. The pixel bounds were measured on macOS, Chrome 157: Linux and Wind
 22. **chromote leaves 4 small files in `tempdir()` after `parent$close()`** (`chrome-*-stderr.log`, `chrome-*-stdout.log`
     and two `supervisor_*` pipes): a test cannot require `tempdir()` to be unchanged; it checks the function's own
     folder (`pedkindraw-save-*`) is gone, also after an error.
+
+### 11.6 What G16a delivered, and what G16b inherits (S69)
+
+**Delivered** (commits: claim `bbb3b04`; picks and measures `8d3834a`; RED `3bc62dc`; GREEN `35932ac`, `7418f9c`,
+`71409eb`; REFACTOR `dc672f2`): `savePedigreeDiagram(diagram, file, width, height)` in `R/savePedigreeDiagram.R`, with
+`.recordDiagramSvg()`, `.checkInches()`, `.waitUntilDrawn()`, `.secondsLeft()` and `.widgetPixels()`, and the layer
+`inst/js/recordCanvas.js`; `htmlwidgets` in Imports; the help page, NEWS, the site index, the contract's row, the
+`files` case's probes. Tests: `tests/testthat/test_savePedigreeDiagram.R`, 18 tests (8 need no browser, 10 start Chrome),
+143 expectations, about 56 s; the full suite 83 files, 1,041 tests, 16,210 expectations, 0 failed, SKIP 0, WARN 0 (447 s);
+`lint_package()` 0; `covr` 100 of 100 lines of the new R file; drift 91 / 23 / 0; fidelity 600 of 600; `R CMD check
+--as-cran` 1 NOTE (the new submission), tests 175 s.
+
+**Measured on the real code, all 14 cases of the ink comparison** (over the pixels not white in either picture, a
+channel differing by more than 100): the four animals and the 12 typed shapes, 0 of 892-4,207 drawing pixels and 1 of
+3,926 legend pixels (0.03%); the 18-animal pedigree with every mark, 33 of 12,507 (0.26%) and 5 of 7,261 (0.07%).
+Section 4.3's prototype figures are superseded for the four animals, the shapes and the feature pedigree (drawing and
+legend); the 375 animals' drawing was not re-measured on the real code (the scratch layer's 4.2%, hairlines, stands as
+a prediction, Learning 18).
+
+**Found in GREEN, not in the measures:** a canvas is painted at whole device pixels and not stretched, so each canvas is
+written at its box snapped to whole device pixels and scaled by 1 over the device pixel ratio (dragon 91 of the gaps
+plan); the scratch reference's 3-decimal rounding had hidden it. **Miscounts of mine, corrected:** chromote's
+dependencies are 7 compiled packages, not 8 (R143 and 11.2 say 7); of the 18 tests 8 need no browser, not 9.
+
+**G16b inherits:** the layer writes an SVG whose root is the page in inches (`width`, `height`) with a `viewBox` of the
+canvases' box, so Chrome's `Page.printToPDF` of that file at the same size is the PDF, and a screenshot of the SVG
+document at `scale = dpi / 96` is the PNG; the recorded drawing itself stays at a device scale factor of 1 (at 2 the
+legend does not match the live widget, 9.8%, dragon 17, so never record at the PNG's resolution). The function starts its
+own `Chromote` and closes it on every way out; G16b's second Chrome use (printing) can reuse that session inside
+`.recordDiagramSvg()` or start another, a choice for its pre-RED picker. The box is not the widget's size (dragon 19: 500
+px high gives 491, 995 gives 961.25, 672 gives 654.391, cause not worked out): the page rule's "what the drawing's shape
+leaves of a page" is measured on the box. The PDF's size (5.7 MB for the 375 animals, section 4.4) is still the open
+measure of section 7's G16b. The one test of G16a that names `.pdf` and `.png` ("is not available yet") changes in G16b.
