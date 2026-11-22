@@ -295,6 +295,22 @@ code, `DIVERGENCE.md` in the repository says how and why.
   300 dpi an id is about 3 pixels high (a larger `dpi` makes it bigger). The
   drawing vignette's "Saving a drawing" and "A colony-size drawing" show the
   files.
+* New: `runPedigreeApp(ped, port, launch.browser)` starts an app in the web
+  browser that draws a pedigree from a CSV or text file, with no code, for
+  someone who keeps a pedigree in a spreadsheet. It opens the file, the 375
+  rhesus animals of the sample pedigree, or a `ped` data frame from R;
+  recognises the id, sire, dam and sex columns by pedkindraw's names and
+  common others (ego, egoid, indid; father, fatherid, dadid; mother,
+  motherid, momid; gender), in any case and with or without spaces, dots or
+  underscores, and lets you choose each; reads the sex codes m, f, h and u,
+  male, female, hermaphrodite and unknown, and 1 and 2 (male and female, as
+  kinship2 and PLINK files code them) as M, F, H and U, and says so; adds
+  `gen`; and draws everyone. What the layout says (a warning, an animal it
+  leaves out) is shown on the page, and a pedigree that cannot be drawn is
+  said so. The Checks tab lists `checkPedigree()`'s problems and the Animals
+  tab the animals read. It needs the shiny package (in Suggests).
+  Pedixplorer's `ped_shiny()` is such an app; nprcgenekeepr's app is its
+  whole colony application, `runGeneKeepR()`.
 
 ## Kinship and relatedness
 

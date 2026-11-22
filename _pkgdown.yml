@@ -20,6 +20,7 @@ reference:
   - makePedigreeMatingLayout
   - drawPedigreeDiagram
   - savePedigreeDiagram
+  - runPedigreeApp
   - makePedigreeDiagramData
 - title: Kinship and relatedness
   contents:

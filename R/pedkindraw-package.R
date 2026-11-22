@@ -10,6 +10,8 @@
 #' [drawPedigreeDiagram()] draws the layout as an interactive graph.
 #' [makePedigreeDiagramData()] makes a simpler drawing's nodes and edges.
 #' [savePedigreeDiagram()] saves a drawing as an SVG, a PDF or a PNG file.
+#' [runPedigreeApp()] starts an app that opens a pedigree file and draws it,
+#' with no code.
 #'
 #' @section Kinship and relatedness:
 #' [kinship()] computes the kinship matrix, [ibdMatrix()] builds an IBD matrix

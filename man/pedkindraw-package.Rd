@@ -15,6 +15,8 @@ with a twins table, a kinship matrix and layout hints, and
 \code{\link[=drawPedigreeDiagram]{drawPedigreeDiagram()}} draws the layout as an interactive graph.
 \code{\link[=makePedigreeDiagramData]{makePedigreeDiagramData()}} makes a simpler drawing's nodes and edges.
 \code{\link[=savePedigreeDiagram]{savePedigreeDiagram()}} saves a drawing as an SVG, a PDF or a PNG file.
+\code{\link[=runPedigreeApp]{runPedigreeApp()}} starts an app that opens a pedigree file and draws it,
+with no code.
 }
 
 \section{Kinship and relatedness}{
