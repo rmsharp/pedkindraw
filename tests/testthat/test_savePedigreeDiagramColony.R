@@ -93,3 +93,32 @@ test_that("the 375 animals' PNG is 4200 by 2100 pixels at the default dpi and
   expect_lt(ink$withIds$differ, 100L)
   expect_gte(ink$withoutIds$differ, 100L)
 })
+
+## The rule that says a PNG holds its ids (S72's Windows repair). The counts of
+## .savePngIdInk() are one machine's: the drawing without its ids differs from
+## the PNG in 347 pixels on the Mac, 573 in the Linux box and 27 on GitHub's
+## Windows (run 45038005488, where Chrome draws 2.8 pixel text lighter), so the
+## floor of 100 above failed there. What does not move is the order: with its
+## ids the PNG is nearer the drawing as written than the drawing without them.
+test_that("a PNG holds its ids when it differs from the drawing without them
+           more than from the drawing as written", {
+  ink <- function(removed, withIds, withoutIds) {
+    list(removed = removed, withIds = list(differ = withIds),
+         withoutIds = list(differ = withoutIds))
+  }
+  ## Measured: the Mac, the Linux box, GitHub's Windows (its as-written count
+  ## was under 100: 0 and 5 are both tried) and a Mac copy whose ids are drawn
+  ## in #6a6a6a (42 pixels).
+  expect_true(.pngHoldsIds(ink(545L, 0L, 347L)))
+  expect_true(.pngHoldsIds(ink(545L, 0L, 573L)))
+  expect_true(.pngHoldsIds(ink(545L, 0L, 27L)))
+  expect_true(.pngHoldsIds(ink(545L, 5L, 27L)))
+  expect_true(.pngHoldsIds(ink(545L, 0L, 42L)))
+  ## Refused: no id was taken out (a copy of the package that writes none gave
+  ## 0, 0 and 0 on the Mac), a PNG with no ids (nearer the picture without
+  ## them), and two equal counts.
+  expect_false(.pngHoldsIds(ink(0L, 0L, 0L)))
+  expect_false(.pngHoldsIds(ink(545L, 347L, 0L)))
+  expect_false(.pngHoldsIds(ink(545L, 0L, 0L)))
+  expect_false(.pngHoldsIds(ink(545L, 27L, 27L)))
+})
