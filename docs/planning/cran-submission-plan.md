@@ -34,8 +34,9 @@ S61: the text size, `textSize`, the second; S62: the column and row spacing, `co
 third, the line width split off by Mark's pick; S63: the line width, `lineWidth`, the fourth and last). G14 DONE.
 G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`); G15a DONE (S65, the layout).
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
-`docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145). Next: G16b (the
-PDF, the PNG and the page), then G16c, G17's planning session, before 17g.
+`docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
+G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). Next: G16c (the whole large pedigree on one page and the
+documents), then G17's planning session, before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -719,6 +720,13 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   example is guarded by `NOT_CRAN`, `chromote` and a Chrome found; of the 18 new tests 10 start a browser and skip on
   CRAN (`skip_on_cran()`), and the 8 that need none run there. `R CMD check --as-cran` here: 1 NOTE, the new
   submission; tests 175 s. The function starts its own Chrome and closes it on every way out, a stuck page included.
+- **G16b (S71; R144, R146):** `savePedigreeDiagram()` writes `.pdf` and `.png` as well and takes `dpi` (300). For CRAN:
+  `jsonlite` joins Suggests (Mark's pick; already installed as `chromote`'s dependency, so no new package for a user
+  who has `chromote`); a `.pdf` or `.png` starts a second Chrome for the print or the photograph. Of the 30 tests 22 start a
+  browser and skip on CRAN, the 8 that need none run there (the new `dpi` check among them); the two that read a PDF's words
+  skip without `pdftotext`. `R CMD check --as-cran` here with `NOT_CRAN=true` and the connection check on: 0 errors, 0
+  warnings, 1 NOTE (the new submission), tests 16,283 expectations, 581 s. Windows: the tests pass and the job did not
+  exit, open (`methodology/BACKLOG.md`).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

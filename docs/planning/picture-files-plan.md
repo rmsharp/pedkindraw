@@ -4,9 +4,9 @@
 "Planning Sessions"; failure mode #18: this session writes no package code; the one code file it adds is a measured
 prototype, section 10). **Governs:** Phase G16 of `docs/planning/gaps-and-shared-code-plan.md` (section 5.1, G16's
 row), gaps A1 and A2 of `docs/research/pedkindraw-gaps-2026-11-18.md` (section 3). **Ruling made here:** R142 (Mark's
-three picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; G16a started in
-S69 (pre-RED measures and R143's picks in section 11, which corrects 4.3's and 4.5's legend figures and the plan's
-dragon 4); no code yet.
+three picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; G16a DONE in
+S69 (section 11, which corrects 4.3's and 4.5's legend figures and the plan's dragon 4) and its CI repair in S70
+(section 13); G16b DONE in S71 (section 14, R146); G16c next.
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0, visNetwork 2.1.4 and chromote 0.5.1 from this project's renv
 library; Google Chrome 157.0.8103.51; pedkindraw at `ec8356b` (its `R/` unchanged since `1a6092e`); nprcgenekeepr at
@@ -278,7 +278,7 @@ a print driver.
   `_pkgdown.yml`, then the contract and the gap case).
 - **DONE (S69):** one session, the legend taken in it; the result and what G16b inherits are section 11.6.
 
-### G16b -- PDF and PNG, and the page (one session)
+### G16b -- PDF and PNG, and the page (one session) -- DONE in S71 (R144, R146)
 
 *Pre-RED measures and Mark's picks made in S70: section 12 (R144). The sizes in the DONE below are read there.*
 
@@ -296,6 +296,7 @@ a print driver.
   the 375-animal pedigree's PDF within the size G16b's measure picks.
 - **Surface:** as common; a PDF is read by `pdfinfo` and `pdftotext` here, and by `pdftools` if G16c adds it.
 - **Session boundary:** close out when DONE.
+- **DONE (S71):** one session; the result, the deviations from 12.3 and what G16c inherits are section 14.
 
 ### G16c -- the whole large pedigree on one page, and the documents (one session)
 
@@ -765,3 +766,96 @@ change; `R CMD check --as-cran` with `NOT_CRAN=true` and `_R_CHECK_CONNECTIONS_L
 `savePedigreeDiagram` 19 tests, 145 expectations, 0 failed, and five Chrome test files together 61 tests, 1,128
 expectations, 0 failed. **Not measured here:** a Windows run (dragon 30), and any GitHub run of the repaired tree until
 the push (read at close-out).
+
+---
+
+## 14. What G16b delivered, and what G16c inherits (pedkindraw S71; R146)
+
+**Date:** 2026-11-22 · **Session:** pedkindraw S71 · same machine (Apple M2 Max, macOS), Chrome 157; the Linux box
+(`tools/linux/runTests.sh`: Ubuntu 26.04, Google Chrome 158). Mark's picks, each first time, all the recommended option:
+"G16b: PDF and PNG files" (orient); "Go on with G16b" (when S70's Windows run hung again, 14.4); R146's, the decoder,
+"jsonlite in Suggests"; "Yes, proceed to RED", "Yes, proceed to GREEN", "Yes, proceed to REFACTOR". Also "Cancel it and
+read its log" (the Windows run).
+
+### 14.1 Delivered
+
+Commits: claim `fd207de`; RED `3ed03b8`; GREEN `42e090b` (the function, the recording layer, `DESCRIPTION`), `fc8df0c`
+(help and NEWS), `8cb2b8c` (contract row and the `files` case); REFACTOR `057a2e2`. `savePedigreeDiagram(diagram, file,
+width = NULL, height = NULL, dpi = 300.0)` writes `.svg`, `.pdf` and `.png` by the file's ending; `dpi` is one positive
+finite number, checked for every kind and used for the PNG only. The PDF: the recording layer's `window.__svg(widthIn,
+heightIn, expandDashes)` writes each dashed line as one short stroke per dash (a path that is not one subpath of M, L
+and Q commands, has a dash offset or a dash array of more than two numbers keeps its dashes), the SVG is opened in a
+Chrome started with `--disable-lcd-text`, painted for two animation frames, printed (`Page.printToPDF`, paper = the
+page, no margins). The PNG: the same SVG, `Page.captureScreenshot` clipped to the page at `scale = dpi / 96`. One time
+limit (`pedkindraw.saveTimeout`) covers the recording and the render step, and a stuck print or photograph stops with
+the function's own message. 30 tests in `test_savePedigreeDiagram.R` (it was 19), 216 expectations (145).
+
+### 14.2 Measured on the final tree (every number below is a run of S71's)
+
+- The 30 tests: this Mac 216 expectations, 0 failed, 0 errors, SKIP 0, WARN 0 (2 min 9 s); the Linux box the same (98 s).
+  RED, on the real package before any code: 140 expectations, 12 errors (each "unused argument (dpi = )" or "writing .pdf
+  files is not available yet"), SKIP 0, WARN 0, on both. The throwaway reference (the prototypes in a `git archive`
+  copy, not committed) ran the same file first: 216, 0 failed, on both (dragon 89 of the gaps plan).
+- Values the tests state, measured on the reference first: the four animals' PDF 504 x 360 pt for 7 x 5 in and 432 x 288
+  for 6 x 4 (bound 1 pt); the default page 720 x 369.12 pt for a picture of 10 x 5.1146 in (368.25 pt: Chrome's rounding
+  put 0.87 pt on the height; the 18-animal pedigree 0.21 pt; bound 1.5 pt); the PNG 672 x 480 at 96 dpi, 1050 x 750 at
+  150, 2100 x 1500 at 300, and 3000 x 1534 for the default page (1534.375 at 300 dpi); the PNG at 96 dpi against the live
+  widget, 0 of 4,184 and 1 of 3,926 ink pixels differing (four animals), 33 of 12,507 and 5 of 7,261 (the feature
+  pedigree), the SVG's own figures; the 375 animals on 14 x 7 in: the PDF one page of 1008 x 504 pt, 567 words (545 ids, 375
+  distinct), the PNG 4200 x 2100 (354,965 B), the SVG's 179 `stroke-dasharray`s kept (the reference's PDF was 1,025,349 B;
+  the real code's, measured after REFACTOR, is 1,025,352 B in 2.5 s, the SVG 846,685 B in 1.6 s, the PNG 2.4 s).
+- Full suite on this Mac at `057a2e2`: 83 files, 1,053 tests, 16,283 expectations, 0 failed, 0 errors, SKIP 0, WARN 0
+  (528 s). `R CMD check --as-cran` with `NOT_CRAN=true` and
+  `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true` at `8cb2b8c` (581 s): 0 errors, 0 warnings, 1 NOTE (the new submission), examples
+  OK, tests `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16283 ]` (16,212 + the 71 new expectations). `lint_package()` 0;
+  `roxygenise()` no change; the drift tool 91 / 23 / 0; no copied file changed.
+- The `files` case (`Rscript tools/gapCases.R files`): pedkindraw's SVG 13,531 B, PDF 86,353 B on 1 page, PNG 67,277 B
+  of 3000 x 1534; kinship2's and Pedixplorer's pdf, svg and png each one page.
+
+### 14.3 Where the build differs from 12.3, and what the tests read
+
+- **Two Chromes, not one:** the recording keeps its own Chrome and the render step starts a second (with LCD text off),
+  so `.recordDiagramSvg()` stays a function a test can replace with an SVG that never returns (the stuck-print test);
+  about 1 s more per PDF or PNG (a four-animal PDF 2.2 s against the SVG's 1.3 s).
+- **A PDF is read by its page and its words, not its pixels** (dragon 31). Its page size and page count are plain text
+  in Chrome's PDF (`/MediaBox [0 0 504 360]`, `/Count 1`), read in base R on any platform
+  (`helper-savePedigreeDiagram.R`, `.savePdfPages()`); its words need poppler's `pdftotext` (not portable: the two
+  word tests skip where it is absent). A PNG is compared with the live widget's picture by pixels (`.saveInkDiff()` now
+  photographs a `.png`).
+- **The dash cutting is in the recording layer (JavaScript), as 12.3 planned**, with the fallback for paths it cannot
+  cut; the 375 animals' PDF is 1,025,352 B with every dashed path cut (179, the legend's rows too; none keeps a
+  `stroke-dasharray`), the plan's 1,038,369 B having cut the 170 repeat-animal edges only.
+- **Not tested, said so:** an absurd `dpi` (the prototype's Chrome with 20,000 dpi on a 7 x 5 in page, 140,000 x 100,000
+  px, timed out after chromote's own 60 s; not measured with the real function, whose commands carry its own deadline);
+  Windows (14.4); whether GitHub's runners have `pdftotext`.
+
+### 14.4 Windows (S70's push, run 44994050682; cancelled with Mark's pick at 07:14 UTC)
+
+Windows' tests passed, `[ FAIL 0 | WARN 0 | SKIP 1 | PASS 16211 ]` in 936 s (about 15.6 minutes; they ended about 06:50):
+S70's LCD-text repair reached Windows (S69's 13 failures are gone). The check step then did not end: "checking tests"
+began at 06:34:38 and was still running at the cancel, about 24 minutes after the tests ended; the clean-up killed two
+orphan `Rterm` processes (and a `cmd` and a `conhost`). The second run in a row (S69's: 77 minutes) and the first in
+which the tests are known to have passed; the cause is not known (`methodology/BACKLOG.md`). Mark's pick, with this
+known: go on with G16b; the hang stays open.
+
+### 14.5 What G16c inherits
+
+The id count in a PDF: `.savePdfWords()` (pdftotext, skipped where absent) already counts the 375 animals' 545 id words,
+375 distinct, on 14 x 7 in; G16c's picker settles pdftotext against `pdftools` in Suggests (dragon 9). The `largeIds`
+probe of `tools/gapCases.R` still prints kinship2's and Pedixplorer's counts and has none for pedkindraw's PDF. The
+documents (the drawing vignette's "Saving a drawing", README, the package help) say what section 7's G16c lists and still
+say nothing of `.pdf` and `.png`.
+
+### 14.6 Dragons found in G16b
+
+31. **A PDF is not compared pixel by pixel with the live widget.** `pdftoppm` at 96 dpi gave 960 x 493 pixels for a 960 x
+    491 picture (the page is 369.12 pt, Chrome's rounding of 368.25): 18.0% of the four animals' drawing and 23.2% of its
+    legend differ, against 0.00% and 0.03% for the PNG. Compare a PDF by its page and its words, a PNG by its pixels.
+32. **A page's size and count can be read from Chrome's PDF without a reader; its words cannot.** The page tree and
+    each `/MediaBox` are uncompressed text; the text of the page is not. A test that needs the words skips without
+    `pdftotext` (the Linux box has it; whether GitHub's runners do is not measured).
+33. **A stuck page can be tested in the print and the photograph, not only in the recording:** replace
+    `.recordDiagramSvg()` (`mockery::stub()`) with an SVG whose `<script>` never returns; both stop at the limit with the
+    function's message, no file and no folder (3.1 s for a limit of 3).
+34. **The Windows job's hang recurs with the tests passing** (14.4): measure a hung job from its log's `proc.time()` (the
+    tests took 936 s) and its orphan processes, not from the minutes it ran.
