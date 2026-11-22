@@ -502,6 +502,21 @@ test_that("the 375 animals' PDF has every id as a word", {
   expect_identical(length(unique(words[words %in% ids])), 375L)
 })
 
+test_that("the word tests skip where pdftotext cannot read a PDF", {
+  ## GitHub's Windows runner has a pdftotext (Git for Windows' own) that exits
+  ## with status 99 on a PDF: the two word tests failed there with no words
+  ## (S71's push, run 45000649737), as they would with this stand-in first on
+  ## the path. A tool that cannot read a PDF R itself writes is skipped; one
+  ## that reads it and then cannot read ours would still fail the word tests.
+  skip_on_os("windows")
+  bin <- .saveTmp()
+  fake <- file.path(bin, "pdftotext")
+  writeLines(c("#!/bin/sh", "exit 99"), fake)
+  Sys.chmod(fake, "0755")
+  withr::local_path(bin, action = "prefix")
+  expect_condition(.skipUnlessPdftotext(), class = "skip")
+})
+
 test_that("dpi changes the PNG only: the SVG and the PDF are as they were", {
   .skipUnlessBrowser()
   widget <- .saveFourWidget()
