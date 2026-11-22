@@ -140,12 +140,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 70 Did
-**Deliverable:** Phase G16b, the PDF and the PNG file (gaps A1 and A2, `docs/planning/picture-files-plan.md:281`):
-`savePedigreeDiagram()` accepts `.pdf` and `.png` as well as `.svg` (IN PROGRESS), strict TDD.
-**Started:** 2026-11-21 22:53 CST · **Model:** Claude Sonnet 5.5 · **Mark's pick:** "G16b: PDF and PNG files
-(Recommended)" (orient picker, answered at once).
-**Status:** Session claimed. Work beginning: the plan's measure-before-picker list on a scratch copy (Learning 17),
-then the pre-RED picker, then RED, GREEN, REFACTOR by the gates.
+**Deliverable (changed mid-session by Mark's pick):** the CI repair of G16a's two faults, strict TDD (IN PROGRESS).
+Claimed as Phase G16b (the PDF and the PNG file, `docs/planning/picture-files-plan.md:281`, Mark's orient pick "G16b: PDF
+and PNG files (Recommended)"); G16b's pre-RED measures and Mark's three picks were made and committed first (R144,
+`ff862e5`, plan section 12), then S69's push was read job by job and found red: (1) the help example fails `R CMD
+check` with "connections left open" (chromote's two `supervisor_*` pipes; reproduced here with `NOT_CRAN=true
+_R_CHECK_CONNECTIONS_LEFT_OPEN_=true`), on every job that runs it; (2) 13 tests fail on Ubuntu release and oldrel: the
+legend's ink differs 1.6% from the live widget against the bound 0.5% (macOS 0.03%; all 16,210 macOS tests pass). Mark's pick:
+"Repair CI first; G16b next session (Recommended)". G16b itself waits, its picks and measures kept.
+**Started:** 2026-11-21 22:53 CST · **Model:** Claude Sonnet 5.5.
+**Status:** Session claimed. Diagnosing the two faults, then the pre-RED picker, then RED, GREEN, REFACTOR by the gates.
 **Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
 
 ### What Session 69 Did

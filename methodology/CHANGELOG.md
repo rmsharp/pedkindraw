@@ -21,8 +21,8 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
-### 2026-11-21 · [BL-Phase G16] S70: G16b, the PDF and the PNG file (in progress)
-- **Change:** session claimed (Mark's orient pick, "G16b: PDF and PNG files (Recommended)"): gaps A1 and A2's second build session (`docs/planning/picture-files-plan.md:281`), strict TDD; the plan's measure-before-picker list on a scratch copy first (Learning 17), then the pre-RED picker, then RED, GREEN, REFACTOR by Mark's gates.
+### 2026-11-21 · [BL-Phase G16] S70: the CI repair of G16a's two faults (in progress)
+- **Change:** session claimed as G16b (Mark's orient pick, "G16b: PDF and PNG files (Recommended)"); G16b's pre-RED measures and Mark's three picks (R144) made and committed (`ff862e5`); S69's push read job by job and found red (the help example's open pipes; 13 Linux legend tests); Mark's pick "Repair CI first; G16b next session (Recommended)" changed the deliverable to the repair, strict TDD.
 - **Commit/PR:** claim commit · **Session:** S70 · **Model:** Claude Sonnet 5.5 · **Verified:** n/a (claim).
 
 ### 2026-11-21 · [BL-Phase G16] S69 push 1: `master` to GitHub at close-out 2 (S69's claim, G16a's picks and measures, RED, GREEN 1-3, REFACTOR, close-out 1-2)

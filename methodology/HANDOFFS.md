@@ -205,7 +205,7 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 session: S70
 date: 2026-11-21
 status: pending
-active_task: G16b (gaps A1 and A2, picture files from a script; docs/planning/picture-files-plan.md:281): the PDF and the PNG file for savePedigreeDiagram(), strict TDD. Session claimed; measuring first (the plan's measure-before-picker list on a scratch copy, Learning 17), then the pre-RED picker.
+active_task: The CI repair of G16a's two faults (S69's push is red): (1) the help example fails R CMD check with 'connections left open' (chromote's two supervisor pipes; reproduced with NOT_CRAN=true and _R_CHECK_CONNECTIONS_LEFT_OPEN_=true), (2) 13 tests fail on Ubuntu (the legend's ink differs 1.6% from the live widget against the bound 0.5%; macOS passes), strict TDD. Claimed as G16b; G16b's pre-RED measures and Mark's three picks (R144) were made and committed (ff862e5, picture-files-plan.md section 12), then Mark chose 'Repair CI first; G16b next session'. Session claimed; diagnosing.
 ```
 
 ```handoff
