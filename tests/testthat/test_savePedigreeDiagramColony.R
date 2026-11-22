@@ -82,16 +82,19 @@ test_that("the 375 animals' PNG is 4200 by 2100 pixels at the default dpi and
 
   ## Chrome's photograph of the SVG as written, at the PNG's size, differs
   ## from the PNG in 0 of 271,931 ink pixels; its photograph of the same SVG
-  ## with the 545 id texts taken out differs in 347 of 271,930: the ids, 2.8
-  ## pixels high each. The 100 is a floor, since Chrome's text edges can move
-  ## it; the guard says the ids were all taken out.
+  ## with the 545 id texts taken out differs in 347 of 271,930 on the Mac, 573
+  ## in the Linux box and 27 on GitHub's Windows: the ids, 2.8 pixels high each,
+  ## drawn lighter there. A count is one machine's, so the PNG holds its ids
+  ## when it differs more from the drawing without them than from the drawing
+  ## as written (.pngHoldsIds(), tested below); the guard says the ids were all
+  ## taken out.
   ink <- .savePngIdInk(png, svg, ids)
   expect_identical(ink$removed, 545L)
   expect_identical(ink$withIds$size, ink$pngSize)
   expect_identical(ink$withoutIds$size, ink$pngSize)
   expect_gt(ink$withIds$ink, 100000)
   expect_lt(ink$withIds$differ, 100L)
-  expect_gte(ink$withoutIds$differ, 100L)
+  expect_true(.pngHoldsIds(ink))
 })
 
 ## The rule that says a PNG holds its ids (S72's Windows repair). The counts of
