@@ -280,6 +280,8 @@ a print driver.
 
 ### G16b -- PDF and PNG, and the page (one session)
 
+*Pre-RED measures and Mark's picks made in S70: section 12 (R144). The sizes in the DONE below are read there.*
+
 - **Work:** `.pdf` (Chrome prints the SVG on a page of `width` x `height`), `.png` (a picture of the page at `dpi`),
   the page rule (R142 pick 3), help, the contract row, NEWS, the `files` case.
 - **Measure before the pre-RED picker:** the PDF's size (4.4: 5.7 MB): what Chrome writes for the 375 animals under each
@@ -558,3 +560,102 @@ own `Chromote` and closes it on every way out; G16b's second Chrome use (printin
 px high gives 491, 995 gives 961.25, 672 gives 654.391, cause not worked out): the page rule's "what the drawing's shape
 leaves of a page" is measured on the box. The PDF's size (5.7 MB for the 375 animals, section 4.4) is still the open
 measure of section 7's G16b. The one test of G16a that names `.pdf` and `.png` ("is not available yet") changes in G16b.
+
+---
+
+## 12. G16b's pre-RED measures and picks (pedkindraw S70; R144)
+
+**Date:** 2026-11-21 · **Session:** pedkindraw S70 · same machine (Apple M2 Max, macOS), Chrome 157, chromote 0.5.1;
+scratch scripts in the session's scratchpad `g16b/` (may be gone); the three that matter are committed in
+`docs/planning/picture-files-prototype/` (`expandDashes.py`, `printPdf.R`, `savePng.R`; prototypes, not package code).
+
+**Method (every figure below).** Each file starts from the real function's SVG (`savePedigreeDiagram()` as G16a left
+it, the 375-animal rhesus pedigree, label limit 0, at the page named). A PDF is Chrome's `Page.printToPDF` of that SVG
+(paper = the page in inches, margins 0, `printBackground`, `pageRanges = "1"`) after two animation frames; it counts
+as complete when `pdfinfo` reads 1 page and `pdftotext -bbox` reads 567 words (545 ids and the legend's words).
+Picture differences: `pdftoppm` of each PDF at 150 and 300 dpi (the whole page), and a 300 x 160 px crop at 1,200
+dpi (x 3,350, y 3,540: a stretch of the repeat-animal edges beside three animals); "ink" is a pixel not white in either
+picture, and it *differs* when a colour channel differs by more than 100.
+
+### 12.1 Mark's picks (R144), each first time, all the recommended option
+
+1. **The page when none is given:** 10 in wide, the widget's own size, as `.svg` has it since G16a; one default for
+   all three kinds of file. (The others: 7 x 7 in like kinship2; US letter landscape 11 x 8.5 in; both would change
+   the `.svg` default too.)
+2. **The PNG's dpi when none is given:** 300. (The others: 150; 96.)
+3. **The PDF's size:** write each dash as a short stroke (5.77 MB to 1.04 MB), for the PDF only; `.svg` and `.png`
+   unchanged. (The others: those lines solid, 0.37 MB; flat ends on the dashes, 2.14 MB; leave as Chrome writes it.)
+
+### 12.2 What the measures found
+
+**Why the PDF is 5.77 MB.** The 375 animals' PDF at 14 x 7 in is 5,770,567 B (the 4 animals at 7 x 7 in: 91,265 B).
+One drawing stream is 5,566,634 B of it (96.5%; 15,482,574 B inflated, 198,198 curve, 90,510 line and 48,000 move
+operators against 2,111 strokes). The cause is the dashes: 170 paths (quadratic curves, `stroke-dasharray="0.319
+0.319"`, width 0.3, round ends: the repeat-animal edges) hold about 52,470 dashes in 34,145 units of dashed length, and
+Chrome's PDF writer bakes each dash into a closed outline (`m l c c c c ... h`), where a solid stroke is one operator
+(three more dashed paths are legend rows). The three fixes of section 7 do not touch it:
+
+| Variant (375 animals, 14 x 7 in) | PDF bytes | ink differing at 150 dpi | at 300 dpi | at 1,200 dpi, the crop |
+|---|---:|---:|---:|---:|
+| as Chrome writes it | 5,770,567 | | | |
+| numbers in paths to 1 decimal | 5,770,665 | 0.62% | 2.30% | not measured |
+| strokes of one style joined (4,460 paths) | 5,769,710 | 0.00% | not measured | not measured |
+| no clip paths | 5,770,505 | 0.00% | not measured | not measured |
+| flat ends on the dashes | 2,141,283 | 0.07% | 3.01% | 7.32% |
+| every dashed line solid | 357,178 | 0.55% | not measured | not measured |
+| solid where the round ends close the gaps (the 170 lines) | 367,062 | 0.02% | 0.10% | 7.57% |
+| that, with digits, joined strokes and no clip | 366,804 | 1.51% | 2.50% | not measured |
+| **each dash a short stroke (`expandDashes.py`)** | **1,038,369** | 0.00% | 0.03% | 11.22% |
+
+Every one of the nine is 1 page and 567 words. Viewed at 1,200 dpi (a crop of the edges): the baseline's repeat-animal
+edges are dotted lines; the solid variant draws them solid (the "same animal, again" marking lost at that zoom); the
+short-stroke variant keeps the dotted look with the dots a little differently placed along the line (its 11.22% is
+that, not a different drawing). Time: record 1.6 s (the real function, 375 animals at 14 x 7 in), a new Chrome and the
+SVG's load 0.85 s, the two frames 0.05 s, the print 0.59 s as written, 0.16-0.18 s with short strokes, 0.09 s solid.
+The page sizes `pdfinfo` reads: 14 x 7 in 1008 x 504 pt, 7 x 7 in 504 x 504 pt, a page asked at 6.8 in high 720 x 490.08
+pt.
+
+**A PDF printed right after the load event can be cut short.** The segments SVG's first print was 489 KB, 1 page, 21
+words (the animals' shapes, ids and the legend's title missing, the edges and legend rows there); the same file after
+a 2 s wait, 1.04 MB and 567 words; after `Runtime.evaluate` of a promise on two `requestAnimationFrame`s with
+`awaitPromise`, 1,038,369 B and 567 words in 3 of 3 runs (and the baseline's, 5,770,567 B, 3 of 3), 0.05 s. The nine
+other files (the baseline and eight variants) printed complete without any wait, so the fault depends on timing.
+
+**The page** (the real function's SVG header, three pedigrees; the box is the widget redrawn at the page's size): the
+box fills 100.0% of a default page and 97.4% (7 x 7 in), 97.0% (11 x 8.5 in), 96.5% (8.5 x 11 in) and 97.0% (11.69
+x 8.27 in) of the others, the same for all three pedigrees. What stays blank is the drawing's own white space, as in
+the browser: the ink is 1.4-2.5% of a page for the 4 animals, 2.6-3.3% for the feature pedigree (18 animals), 4.1-8.7%
+for the 375 animals (8.7% on the default page); the drawing's ink is 15.8-26.5% of the page's width for the 4 animals
+and 65.3-65.8% for the other two (the legend is the right 28%), and 12.3-30.8% of the page's height for the 375 animals
+(30.8% on the default page, 16.1% on 7 x 7 in), 19.1-34.7% for the feature pedigree, 21.8-46.6% for the 4 animals.
+
+**The PNG** (a screenshot of the SVG document, clipped to the page, `scale = dpi / 96`; the default page, 10 x 5.11 in
+typed): 96 dpi 960 x 491 px, 56,001 B, 0.05 s; 150 dpi 1,500 x 767, 102,080 B, 0.26 s; 300 dpi 3,000 x 1,533, 238,454 B,
+0.10 s; 600 dpi 6,000 x 3,066, 552,108 B, 0.25 s; 1,200 dpi 12,000 x 6,132, 1,363,168 B, 0.99 s; 2,400 dpi 24,000 x
+12,264 (294 megapixels), 3,129,464 B, 2.51 s: no limit met. The 4 animals: 16,568, 29,932 and 68,285 B at 96, 150 and
+300 dpi; the 18-animal pedigree (10 x 10.01 in): 40,029, 69,762 and 162,342 B. The 375 animals' ids are unreadable
+specks at 300 dpi and read at 1,200 dpi. Pixels are the page in inches times dpi.
+
+### 12.3 What G16b builds (the plan for GREEN; every number a prediction until the real code runs, Learning 18)
+
+- `savePedigreeDiagram(diagram, file, width = NULL, height = NULL, dpi = 300)`: `dpi` a positive finite number,
+  checked for every kind of file, used for `.png` only (the help says so).
+- `.svg`: as G16a. `.pdf`: record with the dashes written as short strokes (`window.__svg()` takes a third argument,
+  `expandDashes`: each dashed line's path flattened, cut along its length into dashes, each an `M L` with the round
+  ends and the colour kept, the `stroke-dasharray` dropped), write the SVG to the function's own folder, open it in a
+  second session of the same Chrome, wait two animation frames, `Page.printToPDF` (paper = the page in inches, margins
+  0, `printBackground`, `pageRanges = "1"`), write the bytes. `.png`: record as for `.svg`, load it, wait two frames,
+  `Page.captureScreenshot` clipped to the page at `scale = dpi / 96`.
+- The page left out is the box's own size over 96 pixels per inch (G16a's rule), for all three kinds.
+- The `files` case's DONE (section 7), with the 375-animal PDF's bound at 1.5 MB (the measured 1.04 MB with room:
+  Chrome's writer changes, dragon 12).
+
+### 12.4 Dragons found in G16b's measures
+
+23. **A dashed line costs a PDF one outline per dash.** The size follows the number of dashes, not the paths or the
+    digits (section 12.2's table): 170 lines gave 52,470 dashes and 5.57 MB. A pedigree with more repeat-animal edges
+    is larger still. Count a drawing's dashes before promising a PDF size.
+24. **Print after the page is painted, not after it loads**, and read the PDF's words, not its size: a print that lost
+    the animals' shapes and ids was 489 KB, and a test that only reads the size would have taken it for a better fix.
+25. **Chrome rounds the paper:** a page asked at 6.8 in high came out 490.08 pt (489.6 expected, 0.48 pt over; the
+    cause was not worked out); 14 x 7 in and 7 x 7 in were exact. DONE's "within 1 pt" held in both.
