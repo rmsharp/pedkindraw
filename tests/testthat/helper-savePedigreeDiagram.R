@@ -18,6 +18,23 @@
 ## colour channel differs by more than 100; the legend is the part right of the
 ## legend canvas's left edge.
 
+## A folder for a test's files, removed when the test ends.
+.saveTmp <- function(envir = parent.frame()) {
+  withr::local_tempdir(.local_envir = envir)
+}
+
+## A test of the whole path, in Chrome, is skipped without one (and on CRAN);
+## one that reads a PDF's words says so and is skipped too where pdftotext is
+## absent or cannot read a PDF.
+.skipUnlessBrowser <- function(pdftotext = FALSE) {
+  skip_on_cran()
+  skip_if_not_installed("htmlwidgets")
+  skip_if_not_installed("withr")
+  skip_if_not_installed("jsonlite")
+  skip_if_no_chrome()
+  if (pdftotext) .skipUnlessPdftotext()
+}
+
 .saveMuffled <- function(expr) {
   withCallingHandlers(
     expr,
@@ -210,14 +227,7 @@
 }
 
 ## The words of a PDF's first page, in the order pdftotext -bbox gives them.
-.savePdfWords <- function(file) {
-  xml <- .pdftotextXml(file)
-  words <- regmatches(xml, regexpr(">[^<]+</word>", xml))
-  words <- gsub("^>|</word>$", "", words)
-  words <- gsub("&lt;", "<", words, fixed = TRUE)
-  words <- gsub("&gt;", ">", words, fixed = TRUE)
-  gsub("&amp;", "&", words, fixed = TRUE)
-}
+.savePdfWords <- function(file) .savePdfBoxes(file)$text
 
 ## A PNG's width and height in pixels, from its header (the signature, then
 ## the IHDR chunk, whose first eight bytes are the two sizes).

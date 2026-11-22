@@ -23,10 +23,6 @@
 ## function starts its own Chrome for each call, so these take a second or two
 ## each.
 
-.saveTmp <- function(envir = parent.frame()) {
-  withr::local_tempdir(.local_envir = envir)
-}
-
 test_that("savePedigreeDiagram() stops unless 'diagram' is the widget
            drawPedigreeDiagram() returns", {
   file <- file.path(.saveTmp(), "x.svg")
@@ -129,14 +125,6 @@ test_that("savePedigreeDiagram() stops when Chrome is not found", {
                "could not find Google Chrome", fixed = TRUE)
   expect_false(file.exists(file))
 })
-
-## A test of the whole path, in Chrome, is skipped without one.
-.skipUnlessBrowser <- function() {
-  skip_on_cran()
-  skip_if_not_installed("htmlwidgets")
-  skip_if_not_installed("withr")
-  skip_if_no_chrome()
-}
 
 test_that("the four animals are written as an SVG document Chrome loads, 10
            inches wide, and the path comes back invisibly", {

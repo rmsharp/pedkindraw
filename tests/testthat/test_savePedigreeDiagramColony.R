@@ -24,31 +24,13 @@
 ## letter paper. Under 1 pt, so a reader zooms in (vector files) or needs dpi:
 ## at the default 300 an id in the PNG is 2.8 pixels high.
 
-## A test of the whole path, in Chrome, is skipped without one; one that reads
-## a PDF's words is skipped too where pdftotext is absent or cannot read a PDF.
-.colonySkip <- function(pdftotext = FALSE) {
-  skip_on_cran()
-  skip_if_not_installed("htmlwidgets")
-  skip_if_not_installed("withr")
-  skip_if_not_installed("jsonlite")
-  skip_if_no_chrome()
-  if (pdftotext) .skipUnlessPdftotext()
-}
-
-## A folder for the test's files, removed when the test ends. (test_savePedigree
-## Diagram.R has its own .saveTmp() and .skipUnlessBrowser(), local to that file:
-## these two are copies, for a REFACTOR to bring into the helper.)
-.colonyTmp <- function(envir = parent.frame()) {
-  withr::local_tempdir(.local_envir = envir)
-}
-
 .colonyWidget <- function() drawPedigreeDiagram(.saveRhesusLayout())
 
 test_that("the 375 animals' SVG writes 545 ids, 375 distinct, and none lies over
            another", {
-  .colonySkip()
+  .skipUnlessBrowser()
   ids <- .saveRhesusPed()$id
-  svg <- file.path(.colonyTmp(), "rhesus.svg")
+  svg <- file.path(.saveTmp(), "rhesus.svg")
   savePedigreeDiagram(.colonyWidget(), svg, width = 14, height = 7)
 
   ## Measured in Chrome: 545 texts, 375 distinct (the 375 animals and 170
@@ -61,9 +43,9 @@ test_that("the 375 animals' SVG writes 545 ids, 375 distinct, and none lies over
 
 test_that("the 375 animals' PDF writes 545 ids, 375 distinct, and none lies over
            another word, on a 14 by 7 inch page and on letter paper", {
-  .colonySkip(pdftotext = TRUE)
+  .skipUnlessBrowser(pdftotext = TRUE)
   ids <- .saveRhesusPed()$id
-  dir <- .colonyTmp()
+  dir <- .saveTmp()
   widget <- .colonyWidget()
 
   ## Measured on both pages: 567 words (545 ids, 375 distinct; the legend's
@@ -88,9 +70,9 @@ test_that("the 375 animals' PDF writes 545 ids, 375 distinct, and none lies over
 
 test_that("the 375 animals' PNG is 4200 by 2100 pixels at the default dpi and
            has its ids drawn", {
-  .colonySkip()
+  .skipUnlessBrowser()
   ids <- .saveRhesusPed()$id
-  dir <- .colonyTmp()
+  dir <- .saveTmp()
   widget <- .colonyWidget()
   svg <- file.path(dir, "rhesus.svg")
   png <- file.path(dir, "rhesus.png")
