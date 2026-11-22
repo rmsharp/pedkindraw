@@ -84,14 +84,8 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
     stop("savePedigreeDiagram(): writing .", ending, " files is not ",
          "available yet; use a file name ending in .svg.")
   }
-  for (argument in c("width", "height")) {
-    inches <- get(argument)
-    if (!is.null(inches) && !(is.numeric(inches) && length(inches) == 1L &&
-                                is.finite(inches) && inches > 0.0)) {
-      stop("savePedigreeDiagram() requires '", argument, "' to be NULL or ",
-           "one positive number of inches.")
-    }
-  }
+  .checkInches(width, "width")
+  .checkInches(height, "height")
   if (!dir.exists(dirname(file))) {
     stop("savePedigreeDiagram(): the folder of 'file' does not exist.")
   }
@@ -142,9 +136,6 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
     stop("savePedigreeDiagram() did not finish drawing within ",
          format(timeout), " seconds.", call. = FALSE)
   }
-  secondsLeft <- function() {
-    as.numeric(difftime(deadline, Sys.time(), units = "secs"))
-  }
   folder <- tempfile("pedkindraw-save-")
   dir.create(folder)
   on.exit(unlink(folder, recursive = TRUE), add = TRUE)
@@ -176,24 +167,7 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
   session$Page$addScriptToEvaluateOnNewDocument(source = layer)
   session$Page$navigate(paste0("file://", page))
 
-  # Drawn: both canvases have drawn, no canvas call for 300 ms, and every
-  # legend picture has loaded. A page that never returns from its JavaScript
-  # never answers, and runs into the deadline.
-  repeat {
-    left <- secondsLeft()
-    if (left <= 0.0) stopTooSlow()
-    state <- tryCatch(
-      session$Runtime$evaluate("window.__ready ? window.__ready() : '0 0 0'",
-                               returnByValue = TRUE,
-                               timeout_ = left)$result$value,
-      error = function(e) NULL
-    )
-    if (is.character(state)) {
-      ready <- as.numeric(strsplit(state, " ", fixed = TRUE)[[1L]])
-      if (ready[[1L]] >= 2L && ready[[2L]] > 300.0 && ready[[3L]] == 1L) break
-    }
-    Sys.sleep(0.05)
-  }
+  .waitUntilDrawn(session, deadline, stopTooSlow)
 
   asNumber <- function(inches) {
     if (is.null(inches)) "null" else format(inches, digits = 15L)
@@ -201,7 +175,7 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
   answer <- tryCatch(
     session$Runtime$evaluate(
       sprintf("window.__svg(%s, %s)", asNumber(widthIn), asNumber(heightIn)),
-      returnByValue = TRUE, timeout_ = max(secondsLeft(), 1.0)
+      returnByValue = TRUE, timeout_ = max(.secondsLeft(deadline), 1.0)
     )$result$value,
     error = function(e) stopTooSlow()
   )
@@ -222,4 +196,67 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL) {
 .widgetPixels <- function(size, default) {
   pixels <- suppressWarnings(as.numeric(sub("px$", "", size)))
   if (length(pixels) == 1L && !is.na(pixels)) pixels else default
+}
+
+#' Stop unless an argument of savePedigreeDiagram() is NULL or inches
+#'
+#' The check \code{savePedigreeDiagram()} makes of \code{width} and
+#' \code{height}. The error carries the caller's call, as when the function
+#' made the check itself.
+#'
+#' @param inches the argument.
+#' @param name its name, for the message.
+#' @return \code{NULL}, invisibly, when \code{inches} is acceptable.
+#' @noRd
+.checkInches <- function(inches, name) {
+  if (!is.null(inches) && !(is.numeric(inches) && length(inches) == 1L &&
+                              is.finite(inches) && inches > 0.0)) {
+    stop(simpleError(
+      paste0("savePedigreeDiagram() requires '", name, "' to be NULL or one ",
+             "positive number of inches."),
+      call = sys.call(-1L)
+    ))
+  }
+  invisible(NULL)
+}
+
+#' The seconds left to a deadline
+#'
+#' @param deadline a time, from \code{Sys.time()}.
+#' @return A number, negative once the deadline has passed.
+#' @noRd
+.secondsLeft <- function(deadline) {
+  as.numeric(difftime(deadline, Sys.time(), units = "secs"))
+}
+
+#' Wait until a page the recording layer is in has drawn its widget
+#'
+#' Drawn: both canvases have drawn, no canvas call for 300 ms, and every
+#' legend picture has loaded. A page that never returns from its JavaScript
+#' never answers, and runs into the deadline.
+#'
+#' @param session the \code{ChromoteSession} that has the page.
+#' @param deadline the time to give up, from \code{Sys.time()}.
+#' @param stopTooSlow a function that stops with the message for a deadline
+#'   passed.
+#' @return \code{NULL}, invisibly, once drawn.
+#' @noRd
+.waitUntilDrawn <- function(session, deadline, stopTooSlow) {
+  repeat {
+    left <- .secondsLeft(deadline)
+    if (left <= 0.0) stopTooSlow()
+    state <- tryCatch(
+      session$Runtime$evaluate("window.__ready ? window.__ready() : '0 0 0'",
+                               returnByValue = TRUE,
+                               timeout_ = left)$result$value,
+      error = function(e) NULL
+    )
+    if (is.character(state)) {
+      ready <- as.numeric(strsplit(state, " ", fixed = TRUE)[[1L]])
+      if (ready[[1L]] >= 2L && ready[[2L]] > 300.0 && ready[[3L]] == 1L) {
+        return(invisible(NULL))
+      }
+    }
+    Sys.sleep(0.05)
+  }
 }

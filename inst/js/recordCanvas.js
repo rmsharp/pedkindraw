@@ -174,9 +174,11 @@
     strokeText: function (r, t, x, y) { text(r, t, x, y, true); },
     drawImage: function (r, img) {
       var a = arguments, sx, sy, sw, sh, dx, dy, dw, dh;
-      var iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      var iw = img.naturalWidth || img.width;
+      var ih = img.naturalHeight || img.height;
       if (a.length === 4) {
-        dx = a[2]; dy = a[3]; dw = iw; dh = ih; sx = 0; sy = 0; sw = iw; sh = ih;
+        dx = a[2]; dy = a[3]; dw = iw; dh = ih;
+        sx = 0; sy = 0; sw = iw; sh = ih;
       } else if (a.length === 6) {
         dx = a[2]; dy = a[3]; dw = a[4]; dh = a[5]; sx = 0; sy = 0; sw = iw;
         sh = ih;
@@ -236,9 +238,10 @@
     // Chrome gives the offset from the baseline in use to the alphabetic
     // one, not scaled by the transform and with the opposite sign to the
     // specification's wording.
-    p[1] = Math.round(p[1] - r.ctx.measureText(String(t)).alphabeticBaseline * k);
-    var f = /^((?:italic |bold |normal )*)\s*([0-9.]+)px\s+(.+)$/.exec(s.font) ||
-      [0, '', '10', 'sans-serif'];
+    var offset = r.ctx.measureText(String(t)).alphabeticBaseline;
+    p[1] = Math.round(p[1] - offset * k);
+    var f = /^((?:italic |bold |normal )*)\s*([0-9.]+)px\s+(.+)$/
+      .exec(s.font) || [0, '', '10', 'sans-serif'];
     var anchor = {start: 'start', left: 'start', end: 'end', right: 'end',
       center: 'middle'}[s.ta] || 'start';
     var style = (/bold/.test(f[1]) ? ' font-weight="bold"' : '') +
@@ -302,8 +305,12 @@
     }).filter(function (b) { return b.w > 0 && b.h > 0; });
     var x0 = Math.min.apply(null, boxes.map(function (b) { return b.x; }));
     var y0 = Math.min.apply(null, boxes.map(function (b) { return b.y; }));
-    var x1 = Math.max.apply(null, boxes.map(function (b) { return b.x + b.w; }));
-    var y1 = Math.max.apply(null, boxes.map(function (b) { return b.y + b.h; }));
+    var x1 = Math.max.apply(null, boxes.map(function (b) {
+      return b.x + b.w;
+    }));
+    var y1 = Math.max.apply(null, boxes.map(function (b) {
+      return b.y + b.h;
+    }));
     var W = x1 - x0, H = y1 - y0;
     var out = ['<svg xmlns="http://www.w3.org/2000/svg" width="' +
       n6(widthIn || W / 96) + 'in" height="' + n6(heightIn || H / 96) +
