@@ -20,8 +20,9 @@
 ##
 ## pedkindraw S75 (G17b, R150): a parent with no row of its own is now added
 ## with addParents() and the pedigree drawn; the test of a sire with no row
-## said "could not be drawn" before. G17b's own tests are in
-## test_pedigreeAppViews.R.
+## said "could not be drawn" before, and an animal its own sire now tests a
+## pedigree that cannot be drawn (S75 GREEN, found by covr: no other test
+## reached that message). G17b's own tests are in test_pedigreeAppViews.R.
 
 test_that(".guessAppColumns() recognises both apps' names, ignoring case,
            spaces, dots and underscores", {
@@ -230,6 +231,27 @@ test_that("a sire with no row is added and named and the pedigree drawn; the
     expect_match(output$checks, "<td> rowlessParents </td>", fixed = TRUE)
     expect_match(output$table, "<td> s9 </td>", fixed = TRUE)
     expect_match(output$table, "<td> added </td>", fixed = TRUE)
+  })
+})
+
+test_that("an animal its own sire stops the drawing; the app says so, shows
+           what findGeneration() said, and the Checks tab names it", {
+  skip_if_not_installed("shiny")
+  ped <- .appFour()
+  ped$sire[3L] <- "o1"
+  .appTestServer(.pedigreeAppServer(ped), {
+    .setAppColumns(session)
+    expect_identical(output$drawn, "")
+    expect_identical(output$problem,
+                     paste0("The pedigree could not be drawn (missing value ",
+                            "where TRUE/FALSE needed). The Checks tab lists ",
+                            "the records' problems."))
+    expect_match(output$notes,
+                 paste0("findGeneration: 1 id(s) could not be assigned a ",
+                        "generation"), fixed = TRUE)
+    expect_identical(output$added, "")
+    expect_identical(checks()$check, c("ownParent", "femaleSires"))
+    expect_identical(output$checkSummary, "2 problems found.")
   })
 })
 
