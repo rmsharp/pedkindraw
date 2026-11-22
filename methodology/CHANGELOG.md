@@ -33,8 +33,8 @@ Moved the oldest **88** record(s) (2026-11-16 → 2026-11-19) out of [`methodolo
 pinning) and L3 (record partition), and is **re-derivable** — run [`methodology/archive/CHANGELOG-through-2026-11-19.md.verify.sh`](archive/CHANGELOG-through-2026-11-19.md.verify.sh)
 rather than trusting a digest printed here. Live file 196,845 B → 97,459 B (−50.5%).
 
-### 2026-11-22 · [BL-Phase G17] S74 push 2: `master` to GitHub at close-out 2b (the CI reading; documents only, `[skip ci]`)
-- **Change:** `git push origin master` (`6a3fab2..` close-out 2b), by Mark's standing pick; close-out 2b changes only `methodology/` and `docs/planning/` and says `[skip ci]`, so no workflow starts: push 1's runs carried the session's code and were read in full.
+### 2026-11-22 · [BL-Phase G17] S74 push 2: `master` to GitHub at close-out 2d (the CI reading, the ledger archive, the notes; documents only, `[skip ci]`)
+- **Change:** `git push origin master` (`6a3fab2..` close-out 2d: 2b the CI reading `49b4729`, 2c the archive `0e332cd`, 2d the notes' ledger sizes), by Mark's standing pick; they change only `methodology/` and `docs/planning/` and each says `[skip ci]`, so no workflow starts: push 1's runs carried the session's code and were read in full.
 - **Commit/PR:** none (push) · **Session:** S74 · **Verified:** the push's output.
 
 ### 2026-11-22 · [BL-Phase G17] S74: the push's CI read job by job; the hung Windows job cancelled

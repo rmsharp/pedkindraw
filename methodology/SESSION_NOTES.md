@@ -102,10 +102,10 @@ include all"; max 4 options, so group them and name each in a description). Each
   out at 300 s (run the suite by hand, 9 min; S74: 535 s); `CLAUDE.md` is over its budget (learnings go to the plans'
   dragons); `pedkindraw.Rproj` untracked, Mark's; `NOT_CRAN=true` for the browser tests; scratch files go in the
   scratchpad, never `/tmp`; renv prints "The project is out-of-sync" on activation (pre-existing).
-- **Ledger sizes** (S74's close-out 2, before its push entries): `CHANGELOG.md` 194,829 B, `HANDOFFS.md` 177,367 B,
-  both under their 196,608 B archive threshold; `CHANGELOG.md` has under 2 KB of room, less than one session's entries:
-  run `python3 methodology/methodology_trim.py --file methodology/CHANGELOG.md --check` at S75's claim and archive when
-  it fires.
+- **Ledger sizes** (S74's close-out 2d): `CHANGELOG.md` archived in close-out 2c (`0e332cd`: 88 records, 2026-11-16 to
+  2026-11-19, into `methodology/archive/CHANGELOG-through-2026-11-19.md`, its `verify.sh` holding L1-L3), live about
+  98 KB; `HANDOFFS.md` 177,405 B, under its 196,608 B threshold with about 19 KB of room (two or three sessions' receipts):
+  run `python3 methodology/methodology_trim.py --file methodology/HANDOFFS.md --check` at each close-out.
 - **Times** (S74's, this Mac): the app's server tests 1.43 s (CRAN path), runPedigreeApp's 0.17 s, the 2 browser tests 8.2
   s; the sample drawn in the app 2.68 s; the app process answers in 0.75-1.14 s; the full suite 535-544 s; the check 598 s.
 
