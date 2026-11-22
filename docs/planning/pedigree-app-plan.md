@@ -80,7 +80,7 @@ It calls 12 helpers pedkindraw does not have, in 10 nprcgenekeepr files of about
 turn was not followed): `setPopulation()`,
 `isLivingAnimal()`, `isGeneratedUnknownId()`, `readWithFinalNewline()` and `readTwinRelations()` (two of R13's
 readers), `makeColonyOverview()`, `drawColonyOverview()` and `getMaternalLinePedigree()` (the colony overview:
-backlog `methodology/BACKLOG.md:183`, "Waiting on Mark"), `signalDataReady()`, `dataReadyContainer()`, `.countOf()`,
+backlog `methodology/BACKLOG.md:184`, "Waiting on Mark"), `signalDataReady()`, `dataReadyContainer()`, `.countOf()`,
 `.twinPairsWithin()`; a thirteenth, `.diagramHeight()`, pedkindraw has copied. Its tests: 9
 `test_modPedigree*.R` files with 171 tests through `shiny::testServer()`, and 4 end-to-end files through
 `shinytest2::AppDriver`.
@@ -111,7 +111,7 @@ behind it" is pedkindraw's export an app would call today.
 | F17 | save the animals drawn as a CSV file | yes | yes | `utils::write.csv()` | a download button |
 | F18 | read the animals as a table | counts only | yes (DT, searchable) | none | shiny's own table (no new package) or DT (3 more) |
 | F19 | be stopped before a drawing too large to use | warns at 300, refuses at 500 | 400 or 750 | none (`drawPedigreeDiagram()` has no limit; past 120 s at 2,000 animals, the contract's section 7) | a number, and words |
-| F20 | see a colony too large to draw as its maternal lines | no | yes | none | copy 3 functions, 526 lines (backlog `:183`) |
+| F20 | see a colony too large to draw as its maternal lines | no | yes | none | copy 3 functions, 526 lines (backlog `:184`) |
 | F21 | change symbol, text and spacing sizes and line width | symbol size, line width | no | `symbolSize`, `textSize`, `columnSpacing`, `rowSpacing`, `lineWidth` (G14) | four or five numbers |
 
 Pedixplorer's app has 17 of the 21 (all but F7, F12, F15 and F20; F18 and F21 in part); nprcgenekeepr's Browser
@@ -201,9 +201,9 @@ Mark's picks, each first time, each the recommended option:
 
 1. **What the app does: "Both apps' core".** It builds 16 of the 21: F1, F3-F9, F11-F13 and F15-F18, and F19 as a
    warning on a very large drawing (the option's preview headed its list "15" and listed these 16, F19 marked "+").
-   **Waiting, each a backlog item:** F2 (Excel files: `readxl`, 14 packages, what R13 kept out), F10 (colour
-   pickers), F14 (a matings file), F20 (the colony overview, `methodology/BACKLOG.md:183`, waiting on Mark) and F21
-   (the size settings). Not picked: "All 21" (6-8 build sessions, a guess; Excel reverses R13; the colony overview is
+   **Waiting, in one backlog item** (`methodology/BACKLOG.md:191`, "The app's features left for later"): F2 (Excel
+   files: `readxl`, 14 packages, what R13 kept out), F10 (colour pickers), F14 (a matings file), F20 (the colony
+   overview, `methodology/BACKLOG.md:184`, waiting on Mark) and F21 (the size settings). Not picked: "All 21" (6-8 build sessions, a guess; Excel reverses R13; the colony overview is
    waiting on Mark), "Smallest: open, draw, save" (8 of 21; no family, no informative animals, so Pedixplorer's app
    would still do more) and "Copy nprcgenekeepr's Browser" (about 1,940 copied lines under the drift rule, DT and
    two of R13's readers, and without Pedixplorer's column picker, family choice and informative animals).
@@ -333,7 +333,7 @@ the phase's notes as not run.
   killed at teardown; at least: each stop; the columns guessed and chosen; a file with a problem shows it on the
   Checks tab; the sample drawn in Chrome (375 animals, 1,460 nodes in the prototype).
 - **Measure first (pre-RED):** how the second process loads the code under test, under `testthat::test_local()`
-  (pedkindraw from source) and under `R CMD check` (installed), not renv's stale pedkindraw 0.0.1 (backlog `:213`;
+  (pedkindraw from source) and under `R CMD check` (installed), not renv's stale pedkindraw 0.0.1 (backlog `:223`;
   dragon 1); the name candidates (section 5); the server tests' time on CRAN's path.
 - **DONE:** as "every phase"; `Rscript tools/gapCases.R app` prints that pedkindraw's app builds and starts (the
   gap row's `app` case). **Session boundary:** this phase is one session; close out when done.
@@ -382,7 +382,7 @@ each); the gaps plan guessed 1 + 4-8.
 ## 8. Here be dragons (found this session)
 
 1. **The app's second process must load the code under test.** Under `test_local()` pedkindraw is loaded from source
-   by `pkgload`; under `R CMD check` it is installed; renv's library holds a stale pedkindraw 0.0.1 (backlog `:213`)
+   by `pkgload`; under `R CMD check` it is installed; renv's library holds a stale pedkindraw 0.0.1 (backlog `:223`)
    that a plain `library(pedkindraw)` in the child would load. The prototype's child ran `pkgload::load_all()` on the
    repository; a test needs both ways, and any package a test names (`callr`, `pkgload`) must be in Suggests (R CMD
    check's "unstated dependencies in tests"). G17a measures it first.
@@ -417,7 +417,7 @@ each); the gaps plan guessed 1 + 4-8.
 ## 9. Out of scope
 
 - **F2, F10, F14, F20, F21** (R148, pick 1): Excel files, colour pickers, a matings file, the colony overview and the
-  size settings, each a backlog item (`methodology/BACKLOG.md`), each a later ruling.
+  size settings, in one backlog item (`methodology/BACKLOG.md:191`), each a later ruling.
 - **Exporting the app's parts** as a module (R148, pick 4).
 - **shinytest2 and DT** (R148, picks 1 and 3).
 - **Other sources of data:** LabKey EHR (nprcgenekeepr's), PLINK ped/fam files (Pedixplorer's; R13), a database.
