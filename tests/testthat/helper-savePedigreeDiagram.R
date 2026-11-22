@@ -157,19 +157,28 @@
 
 ## ---- Chrome ----------------------------------------------------------------
 
-## A tall window with the shared parent of the browser tests (a 60 s timeout
-## before the first session, one graceful close after the suite), its session
-## closed when the caller's test ends.
+## The browser of these tests: its own, not the shared one, started with LCD
+## text off. The pictures are photographs of the live widget (canvas text, grey)
+## and of an SVG document (text that Chrome on Linux draws with coloured
+## edges unless told not to), so both must come from a Chrome that draws grey
+## text (plan section 13). The shared Chrome cannot be told: a flag set once it
+## exists does not reach it, and other test files start it first.
+.saveChrome <- new.env(parent = emptyenv())
+
+## A tall window of that browser (a 60 s timeout before the first session, one
+## graceful close after the suite), its session closed when the caller's test
+## ends.
 .saveChromeSession <- function(envir = parent.frame()) {
-  chromeParent <- chromote::default_chromote_object()
-  if (chromeParent$default_timeout < 60) {
-    chromeParent$default_timeout <- 60
+  if (is.null(.saveChrome$parent)) {
+    parent <- chromote::Chromote$new(browser = chromote::Chrome$new(
+      args = unique(c(chromote::default_chrome_args(), "--disable-lcd-text"))
+    ))
+    parent$default_timeout <- 60
+    withr::defer(parent$close(), envir = testthat::teardown_env())
+    .saveChrome$parent <- parent
   }
-  if (!isTRUE(.chromoteParentTeardownRegistered$done)) {
-    withr::defer(chromeParent$close(), envir = testthat::teardown_env())
-    .chromoteParentTeardownRegistered$done <- TRUE
-  }
-  session <- chromote::ChromoteSession$new(width = 1200L, height = 1300L)
+  session <- chromote::ChromoteSession$new(parent = .saveChrome$parent,
+                                           width = 1200L, height = 1300L)
   withr::defer(session$close(), envir = envir)
   session
 }
