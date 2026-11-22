@@ -645,7 +645,8 @@ specks at 300 dpi and read at 1,200 dpi. Pixels are the page in inches times dpi
   ends and the colour kept, the `stroke-dasharray` dropped), write the SVG to the function's own folder, open it in a
   second session of the same Chrome, wait two animation frames, `Page.printToPDF` (paper = the page in inches, margins
   0, `printBackground`, `pageRanges = "1"`), write the bytes. `.png`: record as for `.svg`, load it, wait two frames,
-  `Page.captureScreenshot` clipped to the page at `scale = dpi / 96`.
+  `Page.captureScreenshot` clipped to the page at `scale = dpi / 96`, in a Chrome started with `--disable-lcd-text`
+  (dragon 27: on Linux and Windows the SVG's text would otherwise have coloured edges in the PNG).
 - The page left out is the box's own size over 96 pixels per inch (G16a's rule), for all three kinds.
 - The `files` case's DONE (section 7), with the 375-animal PDF's bound at 1.5 MB (the measured 1.04 MB with room:
   Chrome's writer changes, dragon 12).
@@ -735,8 +736,32 @@ nothing for that Chrome: other files (`test_carrierMark.R` to `test_symbolSize.R
     vignette chunks: not measured whether the vignette step has the same check).
 27. **On Linux Chrome draws SVG text with coloured LCD edges and canvas text in grey** (macOS draws neither). Any pixel
     comparison, and any PNG file, made from an SVG's text needs `--disable-lcd-text` in the Chrome that photographs it:
-    G16b's PNG, in the function's own Chrome (the PDF is vector and has no such edges). Windows: not measured here.
+    G16b's PNG, in the function's own Chrome (the PDF is vector and has no such edges). Windows has them too: its job's
+    log read the same 13 failures ("1.29 > 0.50" for the legend); the fix was measured on Linux only.
 28. **A Linux box to reproduce GitHub's Ubuntu jobs:** `tools/linux/Dockerfile` and `runTests.sh`. Ubuntu's own
     `r-cran-*` packages are built for R 4.5 and do not load in R 4.6 (`rlang.so: undefined symbol: SETLENGTH`), so every
     R package in it is compiled from CRAN source. It reproduced GitHub's 1.6% as 1.57% and FAIL 13 as 13.
 29. **A Chrome flag set after the shared Chrome exists does not reach it:** the test file needs a Chrome of its own.
+30. **A Windows job can fail to end after its tests have finished.** S69's Windows job: `checking examples ... [14s] OK`;
+    the tests ran to the end (`testthat.Rout`: `[ FAIL 13 | WARN 0 | SKIP 1 | PASS 16196 ]`) and the check step went on
+    "running" for 77 minutes (04:52Z to the cancel at 06:09Z) until Mark's pick let me cancel the run; the clean-up killed
+    two orphan `Rterm` processes. S68's run, before G16a, ended its Windows job inside 19 minutes. Cause not known, not
+    reproduced and not fixed (outside the two picked faults): suspects are the stuck-page tests (a Chrome whose page never
+    returns) and the one Chrome the function starts per call, left running at R's exit on Windows. The push after this
+    repair shows whether it recurs: if the Windows job passes 40 minutes, cancel the run (`gh run cancel`) and read its log.
+
+### 13.5 What the repair delivered (S70)
+
+**Delivered** (commits: claim `caa4c04`, changed to the repair `184ee68`; G16b's picks and measures `ff862e5`; this
+repair's picks and measures `1939b0b`; RED `9c29cb4`; GREEN `63beb69`, `fe42d4b`; REFACTOR `a6e1c3d`): the example's
+guard (`interactive()`, `R/savePedigreeDiagram.R`, `man/`); `tools/checkExamples.sh` and the quality gate
+`examples-no-open-connections` (read 1, then 0); the test file's own Chrome with LCD text off and a new test that it
+photographs text in grey (`tests/testthat/helper-savePedigreeDiagram.R`, `.saveTextSpread()`, `.savePixelsJs`);
+`tools/linux/` (Dockerfile, `runTests.sh`; the committed Dockerfile built from scratch, `pedkindraw-linux`).
+**Measured on the final tree:** this Mac, the full suite 83 files, 1,042 tests, 16,212 expectations, 0 failed, 0 errors,
+SKIP 0, WARN 0 (before the REFACTOR; re-run after it, see the receipt); `lint_package()` 0; `roxygenise()` no further
+change; `R CMD check --as-cran` with `NOT_CRAN=true` and `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true`: 0 errors, 0 warnings,
+1 NOTE (the new submission), tests `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16212 ]`, examples OK; the Linux container,
+`savePedigreeDiagram` 19 tests, 145 expectations, 0 failed, and five Chrome test files together 61 tests, 1,128
+expectations, 0 failed. **Not measured here:** a Windows run (dragon 30), and any GitHub run of the repaired tree until
+the push (read at close-out).

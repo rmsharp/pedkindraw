@@ -34,7 +34,7 @@ S61: the text size, `textSize`, the second; S62: the column and row spacing, `co
 third, the line width split off by Mark's pick; S63: the line width, `lineWidth`, the fourth and last). G14 DONE.
 G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`); G15a DONE (S65, the layout).
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
-`docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG). Next: G16b (the
+`docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145). Next: G16b (the
 PDF, the PNG and the page), then G16c, G17's planning session, before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,

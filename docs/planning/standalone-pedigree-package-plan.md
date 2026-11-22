@@ -89,7 +89,8 @@ offspring declared in a `matings` table); Phase G15a DONE (pedkindraw S65: `make
 draws them, R141's S65 picks); Phase G15b DONE (pedkindraw S66: `getMatings(matings = )` lists them, R141's
 S66 picks); Phase G15c DONE (pedkindraw S67: `asPedFrame()` returns them, R141's S67 picks), so G15 DONE;
 Phase G16's plan written (pedkindraw S68: `docs/planning/picture-files-plan.md`, R142, picture files by recording the
-widget's own drawing in headless Chrome); Phase G16a DONE (pedkindraw S69: `savePedigreeDiagram()` writes the widget as an SVG file, R143's picks).
+widget's own drawing in headless Chrome); Phase G16a DONE (pedkindraw S69: `savePedigreeDiagram()` writes the widget as an SVG file, R143's picks);
+G16a's CI repair DONE (pedkindraw S70, R145: S69's push was red on GitHub, its two faults repaired; a Windows job that did not end is open, `methodology/BACKLOG.md`).
 **Next:** Phase G16b (the PDF and the PNG and the page; `docs/planning/picture-files-plan.md` section 7), then
 G16c, G17's planning session, then 17g.
 In nprcgenekeepr: N1 (its two

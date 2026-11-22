@@ -17,7 +17,7 @@ S55: the carrier mark, 2 of 6; R135; S56: the proband and consultand marks, 3 of
 (pedkindraw S64; R141; `docs/planning/mates-without-offspring-plan.md`); G15a DONE (pedkindraw S65, the layout draws
 declared matings); G15b DONE (pedkindraw S66, `getMatings()` lists them); G15c DONE (pedkindraw S67, the
 converters keep them), so G15 DONE. G16's plan written (pedkindraw S68; R142;
-`docs/planning/picture-files-plan.md`); G16a DONE (pedkindraw S69, the SVG file; R143). Next: G16b, the PDF, the PNG
+`docs/planning/picture-files-plan.md`); G16a DONE (pedkindraw S69, the SVG file; R143); G16a's CI repair DONE (S70; R145). Next: G16b, the PDF, the PNG
 and the page, in pedkindraw
 (section 5.1);
 in nprcgenekeepr N1 and
@@ -870,6 +870,20 @@ sessions a day, about 11-15 days, an estimate.
     out the 10 s command timeout, then `loadEventFired(timeout_ = )` fails with an internal error
     (`could not find function "deregister_callback_fn"`); `Runtime$evaluate(timeout_ = )` times out cleanly. Poll
     `Runtime$evaluate()` against a deadline of your own. (The picture plan, dragon 16.)
+93. **Run the DONE check the way GitHub does** (S70): a green local `R CMD check --as-cran` and a green full suite on
+    macOS were both true of a tree that was red on GitHub, because the check ran without `NOT_CRAN=true` (so the Chrome
+    example and the 10 Chrome tests skipped) and without `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true` (so chromote's two open
+    pipes passed). Run the check with both set (`tools/checkExamples.sh` is the gate for the examples), and after a push
+    read every job of the run, not only the one expected to fail (S69's handoff predicted R-devel alone; four of five
+    failed). (The picture plan, dragon 26.)
+94. **Photographs of text differ by platform** (S70): on Linux and Windows Chrome draws an SVG's text with coloured
+    LCD edges and a canvas's in grey; a pixel bound measured on macOS fails there (1.6% against 0.5%), and a PNG made
+    from the SVG would carry the edges. Start the photographing Chrome with `--disable-lcd-text`, in a Chrome of its
+    own, not the shared one. (The picture plan, dragons 27 and 29.)
+95. **A Linux box reproduces GitHub's Ubuntu jobs** (S70): `tools/linux/runTests.sh <filter>` (Docker; Ubuntu 26.04,
+    R 4.6, Google Chrome; R packages compiled from source, since Ubuntu's `r-cran-*` are built for R 4.5) read
+    1.57% where GitHub read 1.6% and 13 failures where GitHub read 13, in one minute against a 19-minute round trip.
+    Use it before a push that touches a Chrome test. (The picture plan, dragon 28.)
 
 ### 7.3 Out of scope
 
