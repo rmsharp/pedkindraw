@@ -81,13 +81,9 @@ test_that("the 375 animals' PNG is 4200 by 2100 pixels at the default dpi and
   expect_equal(.savePngSize(png), c(width = 4200, height = 2100))
 
   ## Chrome's photograph of the SVG as written, at the PNG's size, differs
-  ## from the PNG in 0 of 271,931 ink pixels; its photograph of the same SVG
-  ## with the 545 id texts taken out differs in 347 of 271,930 on the Mac, 573
-  ## in the Linux box and 27 on GitHub's Windows: the ids, 2.8 pixels high each,
-  ## drawn lighter there. A count is one machine's, so the PNG holds its ids
-  ## when it differs more from the drawing without them than from the drawing
-  ## as written (.pngHoldsIds(), tested below); the guard says the ids were all
-  ## taken out.
+  ## from the PNG in 0 of 271,931 ink pixels (the Mac); that the PNG holds its
+  ## ids is .pngHoldsIds()'s rule, not a count (tested below); the guard says
+  ## the 545 id texts were all taken out.
   ink <- .savePngIdInk(png, svg, ids)
   expect_identical(ink$removed, 545L)
   expect_identical(ink$withIds$size, ink$pngSize)
@@ -97,12 +93,8 @@ test_that("the 375 animals' PNG is 4200 by 2100 pixels at the default dpi and
   expect_true(.pngHoldsIds(ink))
 })
 
-## The rule that says a PNG holds its ids (S72's Windows repair). The counts of
-## .savePngIdInk() are one machine's: the drawing without its ids differs from
-## the PNG in 347 pixels on the Mac, 573 in the Linux box and 27 on GitHub's
-## Windows (run 45038005488, where Chrome draws 2.8 pixel text lighter), so the
-## floor of 100 above failed there. What does not move is the order: with its
-## ids the PNG is nearer the drawing as written than the drawing without them.
+## The rule that says a PNG holds its ids (S72's Windows repair; the helper's
+## .pngHoldsIds() says why it is an order and not a floor).
 test_that("a PNG holds its ids when it differs from the drawing without them
            more than from the drawing as written", {
   ink <- function(removed, withIds, withoutIds) {

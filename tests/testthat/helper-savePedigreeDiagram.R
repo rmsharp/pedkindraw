@@ -533,9 +533,10 @@
 ## Whether the result of .savePngIdInk() says the PNG holds its ids: some id was
 ## taken out of the picture it is compared with, and the PNG differs from the
 ## drawing without its ids in more pixels than from the drawing as written. The
-## counts themselves are one machine's (the drawing without the ids differs in
-## 347 pixels on the Mac, 573 in the Linux box and 27 on GitHub's Windows, S72);
-## the order is not.
+## counts themselves are one machine's: the drawing without the ids differs
+## from the PNG in 347 pixels on the Mac, 573 in the Linux box and 27 on
+## GitHub's Windows (run 45038005488, S72), where Chrome draws the 2.8 pixel ids
+## lighter, so a floor of 100 failed there. The order does not move.
 .pngHoldsIds <- function(ink) {
   ink$removed > 0L && ink$withoutIds$differ > 0L &&
     ink$withoutIds$differ > ink$withIds$differ
