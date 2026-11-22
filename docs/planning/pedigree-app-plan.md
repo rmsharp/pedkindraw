@@ -4,8 +4,8 @@
 "Planning Sessions"; failure mode #18: this session writes no package code; the code it adds is a measured prototype
 beside this plan, section 3). **Governs:** Phase G17 of `docs/planning/gaps-and-shared-code-plan.md` (section 5.1,
 G17's row, `:386`), gap A3 of `docs/research/pedkindraw-gaps-2026-11-18.md` (`:144`). **Ruling made here:** R148
-(Mark's picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** draft; the evidence
-(sections 1-3) and the inventory (section 6) are written; the decisions are put to Mark next.
+(Mark's four picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written (S73);
+G17a-G17d not started (section 7), G17a next.
 
 **Versions:** shiny 1.14.0, Pedixplorer 1.8.0, visNetwork 2.1.4, chromote 0.5.1 and callr 3.8.0 from this project's
 renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); Google Chrome 157;
@@ -127,8 +127,10 @@ in `.Rbuildignore`): `app.R` is a small app made only of pedkindraw's exports, 1
 F4, F5, F6, F7, F8, F9 (no threshold), F12, F15, F16, F17 and F18 (shiny's own table); `measureServer.R` drives its
 server with `shiny::testServer()`, no browser; `measureBrowser.R` starts it in a background R process (`callr`) and
 drives it with headless Chrome (`chromote`); `countDependencies.R` counts packages. Each runs from the repository
-root with renv's library (`Rscript --no-init-file -e 'source("renv/activate.R")' -e 'source(<script>)'`, the
-prototype's folder as its argument).
+root with renv's library: `Rscript --no-init-file -e 'source("renv/activate.R")' -e
+'source("docs/planning/pedigree-app-prototype/measureServer.R")' docs/planning/pedigree-app-prototype` (the folder as
+the last word; an explicit `--args` before it reaches the script as its first argument and breaks it). A second run of
+`measureServer.R` read the same times within 0.03 s.
 
 ### 3.1 What each choice adds to an install
 
@@ -152,8 +154,8 @@ needs no install.
 
 `shiny::testServer()` ran the prototype's server through five drawings of the 375-animal sample and a download in
 **4.7 s** (the whole script 6.2 s with R's start and `load_all()`): the sample read and everyone drawn (375
-animals) 2.6 s, the largest family (343 of 5 families) 2.0 s, a focal animal's ancestors and descendants (11 animals) 0.04 s, its relatives within 1 step (3)
-0.05 s, the same with direct lines 0.02 s, the CSV download 0.00 s. **A view of a few animals takes 0.02-0.05 s**;
+animals) 2.6 s, the largest family (343 of 5 families) 2.0 s, a focal animal's ancestors and descendants (11
+animals) 0.04 s, its relatives within 1 step (3) 0.05 s, the same with direct lines 0.02 s, the CSV download 0.00 s. **A view of a few animals takes 0.02-0.05 s**;
 the whole sample about 2 s, nearly all of it the layout.
 
 ### 3.3 The app in a browser (`measureBrowser.R`)
@@ -194,8 +196,71 @@ the whole sample about 2 s, nearly all of it the layout.
 
 ## 4. The decisions (R148)
 
-To be put to Mark by picker in this session (Learning 1), each option measured above: what the app does (which of
-F1-F21), `shiny` in Suggests or Imports, the tests and CRAN's check time, and what pedkindraw exports for the app.
+Four questions were put to Mark in one picker (S73), each option measured or costed first (sections 2-3). **R148**,
+Mark's picks, each first time, each the recommended option:
+
+1. **What the app does: "Both apps' core".** It builds 16 of the 21: F1, F3-F9, F11-F13 and F15-F18, and F19 as a
+   warning on a very large drawing (the option's preview headed its list "15" and listed these 16, F19 marked "+").
+   **Waiting, each a backlog item:** F2 (Excel files: `readxl`, 14 packages, what R13 kept out), F10 (colour
+   pickers), F14 (a matings file), F20 (the colony overview, `methodology/BACKLOG.md:183`, waiting on Mark) and F21
+   (the size settings). Not picked: "All 21" (6-8 build sessions, a guess; Excel reverses R13; the colony overview is
+   waiting on Mark), "Smallest: open, draw, save" (8 of 21; no family, no informative animals, so Pedixplorer's app
+   would still do more) and "Copy nprcgenekeepr's Browser" (about 1,940 copied lines under the drift rule, DT and
+   two of R13's readers, and without Pedixplorer's column picker, family choice and informative animals).
+2. **`shiny`: "Suggests".** Only someone who wants the app installs it (11 packages beyond pedkindraw's 32). The
+   function that starts the app stops with a message naming `shiny` when it is missing, as `savePedigreeDiagram()`
+   does for `chromote` (R143); every app test skips without it, so 17l's check without suggested packages passes.
+   Not picked: "Imports" (32 becomes 43 for every user).
+3. **Tests: "Server tests on CRAN".** `shiny::testServer()` tests on small typed pedigrees, with no browser, run
+   everywhere `shiny` is installed, CRAN included (0.02-0.05 s a view, measured; about 1-3 s in all, a guess, read in
+   the check at each build session and by 17k's win-builder reading). Tests that open the app in Chrome skip on CRAN,
+   as every browser test does now; they start the app in a second R process with `callr` (Suggests; 3.8.0 already in
+   `renv.lock`) and drive it with `chromote`. Not picked: "Every app test skips on CRAN" and "Add shinytest2" (6
+   packages new to renv's library).
+4. **Exports: "One function".** pedkindraw exports one function that starts the app; its name and arguments are
+   settled at G17a's pre-RED picker (section 5). The app's parts stay internal, so they can change; exporting a
+   module later is a new ruling. Not picked: "The function and its parts" (a Shiny module another app embeds, as
+   Pedixplorer's 21 app exports and nprcgenekeepr's `modPedigreeUI()` and `modPedigreeServer()`).
+
+What this means for nprcgenekeepr: nothing now. Its app keeps its own Pedigree Browser; it can call pedkindraw's app
+function once it imports pedkindraw (N3), but cannot embed its parts unless a later ruling exports them.
+
+---
+
+## 5. The interface (R148, with what each build session decides)
+
+A proposal; each name and default is settled by its build session's pre-RED picker (Learning 1), measured first
+(Learning 17):
+
+```r
+runPedigreeApp(ped = NULL, port = NULL, launch.browser = interactive())   # working name
+```
+
+- **The name:** G17a's picker. Candidates: `runPedigreeApp()` (it runs; nprcgenekeepr's `runGeneKeepR()` is the
+  model), `pedigreeApp()` returning the app object, which runs when printed (Pedixplorer's `ped_shiny()` does this,
+  and a test can hand the object to a second process), or another Mark names.
+- **`ped`:** optional; a pedigree data frame from the user's R session, opened in the app as if read from a file
+  (neither other app has this; it lets a script user explore what they already hold). Whether it is offered, and
+  whether a twins table comes with it, is G17a's choice.
+- **`port`, `launch.browser`:** passed to `shiny::runApp()`; defaults G17a's.
+- **Return:** what `shiny::runApp()` returns, invisibly; the call blocks until the app stops (as `runGeneKeepR()`).
+- **Stops, each with a test:** `shiny` not installed (a message naming it and `install.packages("shiny")`); `ped` not
+  a data frame with the columns the app needs; `port` not one whole number; `launch.browser` not `TRUE` or `FALSE`.
+- **Where the app lives:** internal functions in `R/` that build the user interface and the server, every `shiny`
+  call written `shiny::` (Suggests: no `importFrom`), not a folder in `inst/` (G17a may measure the other way). The
+  prototype's 135 lines are the starting shape, not code to copy blind: each build session writes its piece by
+  strict TDD.
+- **What the app reads:** a CSV or text file through `utils::read.csv()` (F1; no reader is exported, R13), ids as
+  character; the columns `id`, `sire`, `dam`, `sex` chosen by the user (F4), with common other names guessed
+  (Pedixplorer's `indid`, `fatherid`, `motherid`, `gender`; the guesses G17a's); `gen` added by `findGeneration()`
+  (finding 1); every other column passed through, so a column pedkindraw reads by name (F11: `genotyped`, `carrier`,
+  `proband`, `consultand`, `evaluated`, `fertility`, `miscarriage`, `status`, `name`) is drawn as a script draws it.
+- **What the app draws:** `makePedigreeMatingLayout()` and `drawPedigreeDiagram()` with `onClick` sending the clicked
+  animal to the server (F15); a mating dot or a routing point (`__union_`, `__drop_`, `__bar_`, `__proj_`) does
+  nothing, a repeat node (`__dup_`) means its animal (`duplicateToReal`), as nprcgenekeepr's Browser does
+  (`R/modPedigree.R:907`-`:917`). The layout's warnings shown to the user (finding 2).
+- **What the app saves:** the drawing through `savePedigreeDiagram()` (F16; Chrome on the user's computer, so the
+  buttons say so when it is missing) and the animals drawn through `utils::write.csv()` (F17).
 
 ---
 
@@ -219,10 +284,159 @@ Searched: `shiny`, `Shiny`, `runApp`, `onClick`, `Shiny.setInputValue`, `applica
 | `README.Rmd`, README.md | the drawing section | a sentence; README.md rendered from a scratch install (S72's way) | G17c |
 | `NEWS.md` | the "New" items | a bullet each build session | G17a-c |
 | `docs/planning/pedkindraw-api-contract.md` | section 4 (`:91`), a new group; section 5 dependencies (`:261`) | the app's row(s); the Suggests line | G17a-c |
-| `tools/gapCases.R` | `:344`-`:352` (`cases$app`) | probes that pedkindraw's app builds and starts | G17a |
+| `tools/gapCases.R` | `:344`-`:354` (`cases$app`) | probes that pedkindraw's app builds and starts | G17a |
 | new `tests/testthat/test_*app*.R` and a helper | -- | `testServer()` tests (typed pedigrees), browser tests (`callr` + `chromote`) | G17a-c |
 | `tests/testthat/helper-live-render-positions.R` | `:136` (`ChromoteSession$new()`), `:190` (`skip_if_no_chrome()`) | reused for the browser tests | G17a |
 | `.github/workflows/R-CMD-check.yaml` | `:50` (`setup-r-dependencies`, which installs Suggests), `:73` (Chrome on Ubuntu and Windows) | none; read each job's result for the new tests | G17a-c |
 | `inst/extdata/obfuscated_rhesus_mhc_ped.csv` | -- | the sample pedigree (F3), unchanged | -- |
 | `tests/testthat/test_resolveEdgeNodeCollisions.R`, `test_drawPedigreeDiagram.R` | `:769`-`:825`, `:18` (comments naming nprcgenekeepr's app and shinytest2) | none | -- |
 | `docs/research/pedkindraw-gaps-2026-11-18.md` | A3 (`:144`), `:413`, `:446` | none: a dated record | -- |
+
+---
+
+## 7. Phases
+
+**Common to each** (the gaps plan's "Every G phase", `docs/planning/gaps-and-shared-code-plan.md:347`): strict TDD,
+its three gates and a pre-RED picker by `AskUserQuestion` in plain words, each option measured on a scratch copy first
+(Learning 17); every expected value computed before RED (Learnings 18-21; the prototype's numbers in section 3 are
+predictions until the real code runs). **The order is a vertical slice each** (failure mode #25): after G17a the app
+starts and draws a file; each later phase adds what a user can do, end to end, with its tests.
+**DONE, every phase:** the full suite 0 failed, WARN 0 (`NOT_CRAN=true`, by hand: the ratchet's suite gate times out
+at 300 s); `lintr::lint_package()` 0; `roxygen2::roxygenise()` leaves `NAMESPACE` and `man/` unchanged; `covr` reaches
+every new statement or names what reaches it; `R CMD check --as-cran` from a scratch folder, R16's NOTE only, and its
+test line read for the app tests' time on the CRAN path (`NOT_CRAN` unset); `bash tools/checkExamples.sh`; a NEWS
+bullet; the contract's row; the drift tool 91 / 23 / 0 (no copied function changes); the fidelity tool 600 of 600
+identical (nothing it compares changes); `Rscript tools/gapCases.R app`. **Commands:** `CLAUDE.md`'s Build / Test /
+Verify table; `Rscript tools/compareWithNprcgenekeepr.R ../nprcgenekeepr`; `Rscript
+tools/compareResultsWithNprcgenekeepr.R ../nprcgenekeepr`.
+**Surface:** this Mac, headless Chrome 157 for the browser tests; GitHub Actions after the push, read job by job: Chrome
+is set up by the workflow on Ubuntu and Windows, not macOS (`.github/workflows/R-CMD-check.yaml:73`), so the browser
+tests skip on macOS there and run on Ubuntu and Windows; the Windows job's check step hangs after its tests (backlog
+`:11`, six runs), so its tests are read from the log after a cancel at 40 minutes; Ubuntu R-devel stops before
+pedkindraw (S4Vectors), enforcing nothing. CRAN's machines run the server tests and skip the browser ones, so the app
+in a browser is checked only here and on GitHub. **What no surface here enforces:** another browser (Safari, Firefox,
+Edge), a real file dialog (the tests set a file by `testServer()`'s input or Chrome's DevTools), a phone-width
+window, a user's own Chrome when they save a file, and a hosted server (shinyapps.io, Shiny Server): each is named in
+the phase's notes as not run.
+
+### G17a -- the app starts, opens a file and draws everyone (one session)
+
+- **Builds:** the exported function (name, arguments and defaults at its picker, section 5); `shiny` and `callr` in
+  Suggests (R148); the stop when `shiny` is missing; F1 (a CSV or text file), F3 (the sample pedigree,
+  `inst/extdata/obfuscated_rhesus_mhc_ped.csv`), F4 (the four columns, with guesses), `gen` added, everyone drawn
+  with `drawPedigreeDiagram()`, the layout's warnings shown (finding 2), F5 (the checker's table), F18 (the animals
+  as shiny's own table); the help page and a guarded example (`if (interactive())`); `_pkgdown.yml`; the contract's
+  row and its Suggests line; NEWS; `tools/gapCases.R`'s `app` case starting pedkindraw's app.
+- **Tests:** a test helper for `testServer()` on typed pedigrees (`skip_if_not_installed("shiny")`, no
+  `skip_on_cran()`); a test helper that starts the app in a second process (`callr::r_bg()`, a free port) and opens
+  it in the shared Chrome (`helper-live-render-positions.R:136`), `skip_on_cran()`, `skip_if_no_chrome()`, the process
+  killed at teardown; at least: each stop; the columns guessed and chosen; a file with a problem shows it on the
+  Checks tab; the sample drawn in Chrome (375 animals, 1,460 nodes in the prototype).
+- **Measure first (pre-RED):** how the second process loads the code under test, under `testthat::test_local()`
+  (pedkindraw from source) and under `R CMD check` (installed), not renv's stale pedkindraw 0.0.1 (backlog `:213`;
+  dragon 1); the name candidates (section 5); the server tests' time on CRAN's path.
+- **DONE:** as "every phase"; `Rscript tools/gapCases.R app` prints that pedkindraw's app builds and starts (the
+  gap row's `app` case). **Session boundary:** this phase is one session; close out when done.
+
+### G17b -- choosing the animals (one session)
+
+- **Builds:** F6 (one family, `findPedigreeNumber()`, each listed with its size), F7 (focal animals' ancestors and
+  descendants, `trimPedigree()` and `getDescendantPedigree()`), F8 (their relatives within k steps,
+  `getNearRelativePedigree()`), the focal animals typed or pasted; F15 (a click makes an animal the focal one, section
+  5's rules for mating dots, routing points and repeats); F19 (a warning above a number of animals).
+- **Measure first:** the app's drawing time at about 500, 1,000 and 2,000 animals (the contract's section 7: past 120
+  s at 2,000), for F19's number and wording (Pedixplorer: warn 300, refuse 500; nprcgenekeepr: 400 or 750, then its
+  overview); whether a click adds to the focal animals or replaces them (nprcgenekeepr replaces).
+- **Tests:** each view's animals against the function called directly (`identical()` on the ids); the click in
+  Chrome (finding 4: `testServer()` cannot see `update*Input()`).
+- **DONE:** as "every phase". **Session boundary:** one session; close out when done.
+
+### G17c -- what is drawn (one session)
+
+- **Builds:** F9 (up to four condition columns, chosen from the file's columns, each a logical column or a number
+  cut at a threshold, `conditionThresholds`, G12; how a CSV's "1", "TRUE", "Y" or a number becomes a condition is
+  this phase's picker), F11 (the marks and names passed through by name, F4's picker extended to them if the picker
+  says so), F12 (rectilinear or direct lines), F13 (a twins file read with `utils::read.csv()` and checked by
+  `checkTwinRelations()`, its problems shown).
+- **Tests:** each choice's layout against `makePedigreeMatingLayout()` called directly on the same data frame
+  (`identical()`), the twins file's problems, one drawing in Chrome with every mark.
+- **DONE:** as "every phase". **Session boundary:** one session; close out when done.
+
+### G17d -- saving, and the documents (one session)
+
+- **Builds:** F16 (SVG, PDF and PNG downloads through `savePedigreeDiagram()`; without Chrome the buttons say so),
+  F17 (the animals drawn as CSV); the documents: README.Rmd and README.md (rendered from a scratch install, S72's
+  way), `vignettes/pedkindraw.Rmd` (`:167`), `vignettes/drawing.Rmd`'s "Clicks in a Shiny application" (`:675`)
+  pointing to the app, `R/pedkindraw-package.R:59`, a `@seealso` on `drawPedigreeDiagram()` (help only: run the drift
+  tool), NEWS; the backlog items for F2, F10, F14, F20 and F21 re-read.
+- **Tests:** each download's file in Chrome (the SVG's ids counted as G16's tests count them; the CSV's rows); the
+  documents' statements beside their calls (`test_savePedigreeDiagramDocs.R`'s way, S72).
+- **DONE:** as "every phase"; G17 DONE, so the gaps plan's G1-G17 are done and 17g is next. **Session boundary:** one
+  session; close out when done.
+
+**Sessions:** 1 + 4 (S73 this plan, then G17a-G17d), a guess from the prototype and G16's pace (1 + 3, one session
+each); the gaps plan guessed 1 + 4-8.
+
+---
+
+## 8. Here be dragons (found this session)
+
+1. **The app's second process must load the code under test.** Under `test_local()` pedkindraw is loaded from source
+   by `pkgload`; under `R CMD check` it is installed; renv's library holds a stale pedkindraw 0.0.1 (backlog `:213`)
+   that a plain `library(pedkindraw)` in the child would load. The prototype's child ran `pkgload::load_all()` on the
+   repository; a test needs both ways, and any package a test names (`callr`, `pkgload`) must be in Suggests (R CMD
+   check's "unstated dependencies in tests"). G17a measures it first.
+2. **Windows and second processes.** The Windows job's check step already hangs after its tests (backlog `:11`), and
+   S71's cancel found two orphan `Rterm` processes. Every browser test kills its app process at teardown; the first
+   push after G17a is read job by job for a change in the hang.
+3. **`testServer()` has no browser** (finding 4): a click, an `update*Input()` and what the page shows are tested in
+   Chrome only, so they are not tested on CRAN.
+4. **Warnings count** (finding 2; Learning 10): a test that draws a pedigree the layout warns on must expect the
+   warning, or the suite's WARN is not 0. The sample warns ("72 same-row edge-node collision(s)").
+5. **`%||%` is base R only from 4.4.0** (finding 6); pedkindraw depends on R 4.1.0.
+6. **`shiny` in Suggests** (R148; the gaps plan's dragon 5): every use conditional, the function stops first, the
+   example guarded, every test `skip_if_not_installed("shiny")`; 17l's check without suggested packages must pass.
+7. **A fixed port collides** when two runs overlap: a test asks for a free port (`httpuv::randomPort()`, httpuv comes
+   with shiny) and waits for the app to answer, with a time limit, before Chrome opens it.
+8. **Do not run two Chrome-starting jobs at once** on the Mac (S72's gotcha): the suite, the ratchet, a check, a
+   prototype run. A `source()`d script's top-level `on.exit()` runs at once (finding 7).
+9. **The visNetwork "Duplicate input IDs" console warning** on a second render (finding 5,
+   `R/drawPedigreeDiagram.R:513`): a browser test that reads the console allows it.
+10. **A download of the drawing starts a second Chrome in the app's process** (finding 3): on GitHub the app's
+    process needs the workflow's `CHROMOTE_CHROME`. A `callr::r_bg()` child inherits the parent's environment
+    (measured: a variable set when R started and one set by `Sys.setenv()` both reached the child), so it comes
+    with it; a test that starts the child with its own `env =` must keep it.
+11. **The sample is large for a test**: 2-2.6 s to draw 375 animals; the server tests use typed pedigrees of a few
+    animals, and one browser test uses the sample.
+12. **The counts and sizes here are guesses or one machine's** (picture-files plan dragons 42-43): the session count,
+    the server tests' CRAN time and the Chrome timings are this Mac's; a test states an order, a presence or an exact
+    count, not a time.
+
+---
+
+## 9. Out of scope
+
+- **F2, F10, F14, F20, F21** (R148, pick 1): Excel files, colour pickers, a matings file, the colony overview and the
+  size settings, each a backlog item (`methodology/BACKLOG.md`), each a later ruling.
+- **Exporting the app's parts** as a module (R148, pick 4).
+- **shinytest2 and DT** (R148, picks 1 and 3).
+- **Other sources of data:** LabKey EHR (nprcgenekeepr's), PLINK ped/fam files (Pedixplorer's; R13), a database.
+- **Hosting:** the app runs on the user's computer; shinyapps.io and Shiny Server are not tried.
+- **nprcgenekeepr:** no change (R8); its Pedigree Browser stays its own.
+
+---
+
+## 10. Sources
+
+- The gap: `docs/research/pedkindraw-gaps-2026-11-18.md` A3 (`:144`), its app group (`:413`) and nprcgenekeepr's
+  column (`:446`); the G17 row, `docs/planning/gaps-and-shared-code-plan.md:386`, its dragon 5 (`:468`), CRAN's rules
+  (its section 3.5).
+- Pedixplorer 1.8.0 in renv's library: `ped_shiny()`, `ped_ui()`, `ped_server()`, `plot_all_ui()`,
+  `plot_all_server()`, `inf_sel_ui()`, `inf_sel_server()`, `read_data()`, its `DESCRIPTION` (read by `deparse()` and
+  `packageDescription()`); its app started in headless Chrome.
+- nprcgenekeepr at `3e06730c5`: `R/runGenekeepr.R`, `R/modPedigree.R`, `R/modInput.R`, its `DESCRIPTION`, and the
+  helper files named in section 2.2; its tests' file names.
+- The rulings: R7, R8, R13 (`docs/planning/pedkindraw-api-contract.md:54`), R86 (the 540 s limit), R101, R143
+  (`chromote` in Suggests), `docs/planning/standalone-pedigree-package-plan.md` section 2.
+- The prototype and its measures: `docs/planning/pedigree-app-prototype/` (section 3).
+- The precedent plan: `docs/planning/picture-files-plan.md` (S68).
