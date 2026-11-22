@@ -105,6 +105,45 @@
   list(data = data, problem = "")
 }
 
+#' What is wrong with the rows read, for the page to say
+#'
+#' @param data the rows read, or \code{NULL}.
+#' @param readProblem what went wrong reading them, or \code{""}.
+#' @return The first problem found, or \code{""}.
+#' @noRd
+.appTableProblem <- function(data, readProblem) {
+  if (nzchar(readProblem) || is.null(data)) {
+    return(readProblem)
+  }
+  if (ncol(data) < 4L) {
+    return(sprintf(paste0("The file has %d columns; the app needs at least ",
+                          "four: id, sire, dam and sex."), ncol(data)))
+  }
+  if (nrow(data) == 0L) {
+    return("The file has no animals.")
+  }
+  ""
+}
+
+#' What is wrong with the columns chosen, for the page to say
+#'
+#' @param columns the columns chosen so far: fewer than four until each of
+#'   id, sire, dam and sex has been given one.
+#' @return The problem, or \code{""}.
+#' @noRd
+.appColumnProblem <- function(columns) {
+  if (length(columns) < 4L) {
+    return("")
+  }
+  if (!all(nzchar(columns))) {
+    return("Choose a column for each of id, sire, dam and sex.")
+  }
+  if (anyDuplicated(columns) > 0L) {
+    return("Choose a different column for each of id, sire, dam and sex.")
+  }
+  ""
+}
+
 #' The pedigree the app draws, from the rows read and the columns chosen
 #'
 #' @param data the rows read.
@@ -210,12 +249,13 @@
   function(input, output, session) {
     rawData <- shiny::reactiveVal(ped)
     readProblem <- shiny::reactiveVal("")
-    open <- function(read) {
+    openRows <- function(read) {
       rawData(read$data)
       readProblem(read$problem)
     }
-    shiny::observeEvent(input$file, open(.readAppFile(input$file$datapath)))
-    shiny::observeEvent(input$sample, open(.readAppFile(.appSamplePath())))
+    shiny::observeEvent(input$file,
+                        openRows(.readAppFile(input$file$datapath)))
+    shiny::observeEvent(input$sample, openRows(.readAppFile(.appSamplePath())))
 
     columnGuess <- shiny::reactive({
       shiny::req(rawData())
@@ -238,34 +278,8 @@
                                 dam = input$damColumn,
                                 sex = input$sexColumn))
 
-    tableProblem <- shiny::reactive({
-      data <- rawData()
-      if (nzchar(readProblem()) || is.null(data)) {
-        return(readProblem())
-      }
-      if (ncol(data) < 4L) {
-        return(sprintf(paste0("The file has %d columns; the app needs at ",
-                              "least four: id, sire, dam and sex."),
-                       ncol(data)))
-      }
-      if (nrow(data) == 0L) {
-        return("The file has no animals.")
-      }
-      ""
-    })
-    columnProblem <- shiny::reactive({
-      columns <- chosen()
-      if (length(columns) < 4L) {
-        return("")
-      }
-      if (!all(nzchar(columns))) {
-        return("Choose a column for each of id, sire, dam and sex.")
-      }
-      if (anyDuplicated(columns) > 0L) {
-        return("Choose a different column for each of id, sire, dam and sex.")
-      }
-      ""
-    })
+    tableProblem <- shiny::reactive(.appTableProblem(rawData(), readProblem()))
+    columnProblem <- shiny::reactive(.appColumnProblem(chosen()))
     ready <- shiny::reactive({
       columns <- chosen()
       !is.null(rawData()) && !nzchar(tableProblem()) &&
