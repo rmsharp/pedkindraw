@@ -155,8 +155,8 @@ needs no install.
 `shiny::testServer()` ran the prototype's server through five drawings of the 375-animal sample and a download in
 **4.7 s** (the whole script 6.2 s with R's start and `load_all()`): the sample read and everyone drawn (375
 animals) 2.6 s, the largest family (343 of 5 families) 2.0 s, a focal animal's ancestors and descendants (11
-animals) 0.04 s, its relatives within 1 step (3) 0.05 s, the same with direct lines 0.02 s, the CSV download 0.00 s. **A view of a few animals takes 0.02-0.05 s**;
-the whole sample about 2 s, nearly all of it the layout.
+animals) 0.04 s, its relatives within 1 step (3) 0.05 s, the same with direct lines 0.02 s, the CSV download 0.00 s.
+**A view of a few animals takes 0.02-0.05 s**; the whole sample about 2 s, nearly all of it the layout.
 
 ### 3.3 The app in a browser (`measureBrowser.R`)
 
