@@ -202,6 +202,13 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S72
+date: 2026-11-22
+status: pending
+active_task: G16c (the whole large pedigree on one page and the documents, the largeIds case; docs/planning/picture-files-plan.md:301): strict TDD, Mark's orient pick "G16c (Recommended)". Session claimed; in PRE-RED, measuring first.
+```
+
+```handoff
 session: S71
 date: 2026-11-22
 status: complete

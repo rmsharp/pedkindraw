@@ -155,6 +155,14 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 72 Did
+**Deliverable:** Phase G16c, the whole large pedigree on one page and the documents (the `largeIds` case,
+`docs/planning/picture-files-plan.md` section 7, G16c), strict TDD (IN PROGRESS)
+**Started:** 2026-11-22 06:40 CST · **Model:** Claude Sonnet 5.5 · Mark's pick (orient): "G16c (Recommended)".
+**Status:** Session claimed. Orient found no ghost session, the ledgers at `253b2ca`, drift 91/23/0, nprcgenekeepr at
+`3e06730c5` with the same 4 commits on the copied files. In PRE-RED: measure first (the plan's list), then the pre-RED picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### What Session 71 Did
 **Deliverable:** Phase G16b, the PDF and the PNG file for `savePedigreeDiagram()` (gaps A1 and A2,
 `docs/planning/picture-files-plan.md` section 7, G16b), strict TDD. DONE.

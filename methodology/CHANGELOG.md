@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-22 · [BL-Phase G16] S72: G16c, the whole large pedigree on one page and the documents (in progress)
+- **Change:** session claimed (Mark's orient pick, "G16c (Recommended)"): gaps A1 and A2's third build session (`docs/planning/picture-files-plan.md:301`), strict TDD; in PRE-RED, measuring first. Orient found no ghost session, the ledgers at `253b2ca`, drift 91/23/0, nprcgenekeepr at `3e06730c5` (the same 4 commits on the copied files), the dashboard at 93/100.
+- **Commit/PR:** claim commit · **Session:** S72 · **Model:** Claude Sonnet 5.5 · **Verified:** n/a (claim).
+
 ### 2026-11-22 · [BL-Phase G16] S71 push 3: `master` to GitHub at close-out 2b (the notes, the receipt and the ledger of S71's last close-out)
 - **Change:** `git push origin master` (`a57246b..` close-out 2b), by Mark's standing pick (a memory); only documents changed (`docs/planning/`'s plans and `methodology/`), and the head commit's message carries `[skip ci]` (the workflows ignore only `CLAUDE.md` and `methodology/**`, so without it `docs/planning/` would have started both and a fifth Windows run to cancel); no workflow started, checked by `gh run list` after the push. S71's pushes 1 and 2 are the entries below.
 - **Commit/PR:** none (push) · **Session:** S71 · **Verified:** the push's output.
