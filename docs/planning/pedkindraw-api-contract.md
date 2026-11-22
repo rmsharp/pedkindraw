@@ -290,7 +290,10 @@ arrived in Phase 7, plan R28), Pedixplorer, `testthat`, `mockery` (the copied te
 (the copied C11 test's `with_seed()`, Phase 7, R28), `chromote`, and what the vignettes need: `knitr` and `rmarkdown`,
 with `VignetteBuilder: knitr` (Phase 16b, pedkindraw S27; both were in renv's lock already), and `shiny` and `callr` (G17a,
 pedkindraw S74, R148: the app, and its browser tests' second process; both were in renv's lock already, as Pedixplorer's
-dependencies; shiny adds 11 packages to the 32, plan section 3.1 of `docs/planning/pedigree-app-plan.md`). No circular
+dependencies; shiny adds 11 packages to the 32, plan section 3.1 of `docs/planning/pedigree-app-plan.md`), and `pkgload`
+(G17a: that second process loads pedkindraw from source with `pkgload::load_all()` when the tests run from source;
+`R CMD check --as-cran` warns on a `pkgload::` call in `tests/` not declared; in renv's lock already, and installed
+wherever testthat is, which imports it). No circular
 dependencies: each phase's slice uses only earlier slices.
 
 ---
