@@ -1008,6 +1008,10 @@ SKIP 0, WARN 0 on the Mac and in the Linux box; `lint_package()` 0; `roxygenise(
   tests, 31 expectations, 0 failed on the Mac and on the lighter-ids copy; 12 failed on the ids-dropped copy; the three files
   in the Linux box 41 tests, 275 expectations, 0 failed. Lighter ids tried: `#505050` 338 pixels, `#606060` 46, `#666666` 42,
   `#6a6a6a` 42, `#707070` 0.
+- **The repair's push (run 45046213485, `2d34a16`):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS
+  16288 ]`; macOS `SKIP 9 PASS 16299`; **Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16297 ]`, `proc.time()` 1,153 s: the repair is
+  shown on Windows** (16,297 = 16,288 + the rule test's 9); R-devel red in S4Vectors (known). The Windows step still did not
+  end (cancelled at 38 minutes, two orphan `Rterm` processes): the sixth run in a row.
 
 42. **A count from one machine is not a floor for another, and text is the case that differs most:** the same 2.8 pixel ids gave
     347, 573 and 27 differing pixels on three machines. State what does not move (an order, a presence, an exact 0) and

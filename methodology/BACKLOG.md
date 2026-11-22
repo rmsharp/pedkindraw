@@ -25,7 +25,10 @@ issues).*
       orphan `Rterm` processes each time): it does not depend on the tests, and is probably at R's exit (an inference). **A fourth reading,
       S72's push (run 45038005488):** the hang a fifth time, now with R exiting *with an error* (`[ FAIL 1 | WARN 0 | SKIP 11 |
       PASS 16287 ]`, "Error: ! Test failures. Execution halted"), so it is not at a clean exit either; the step ran until the
-      cancel at 40 minutes (2,341,479 ms), then two orphan `Rterm` processes, a `cmd` and a `conhost` were killed. First (guesses, one change at a time, iterating on GitHub since there is no Windows
+      cancel at 40 minutes (2,341,479 ms), then two orphan `Rterm` processes, a `cmd` and a `conhost` were killed. **A fifth reading,
+      S72's repair push (run 45046213485):** the tests passed (`[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16297 ]`, `proc.time()` 1,153 s
+      elapsed) and the step still did not end (cancelled at 38 minutes; two orphan `Rterm` processes): the sixth run in a row,
+      with passing tests, failing tests (twice) and tests that ended R with an error all hanging. First (guesses, one change at a time, iterating on GitHub since there is no Windows
       machine here): add `timeout-minutes` to `.github/workflows/R-CMD-check.yaml` so a hang ends as a failure with a
       log; close the test Chromes explicitly at the end of the suite (the helper's `.saveChrome$parent`, chromote's
       default one) and list the processes left (`Get-Process`) in a step after the tests.
