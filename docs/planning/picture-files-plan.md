@@ -827,7 +827,7 @@ the function's own message. 30 tests in `test_savePedigreeDiagram.R` (it was 19)
   `stroke-dasharray`), the plan's 1,038,369 B having cut the 170 repeat-animal edges only.
 - **Not tested, said so:** an absurd `dpi` (the prototype's Chrome with 20,000 dpi on a 7 x 5 in page, 140,000 x 100,000
   px, timed out after chromote's own 60 s; not measured with the real function, whose commands carry its own deadline);
-  Windows (14.4); whether GitHub's runners have `pdftotext`.
+  Windows (14.4); GitHub's `pdftotext` (14.7).
 
 ### 14.4 Windows (S70's push, run 44994050682; cancelled with Mark's pick at 07:14 UTC)
 
@@ -859,3 +859,40 @@ say nothing of `.pdf` and `.png`.
     function's message, no file and no folder (3.1 s for a limit of 3).
 34. **The Windows job's hang recurs with the tests passing** (14.4): measure a hung job from its log's `proc.time()` (the
     tests took 936 s) and its orphan processes, not from the minutes it ran.
+
+### 14.7 S71's own push (run 45000649737, `6cd865d`), read job by job, and the repair it called for
+
+- **Ubuntu release and oldrel-1:** `[ FAIL 0 | WARN 0 | SKIP 4 | PASS 16268 ]`, examples OK. **macOS:** `[ FAIL 0 | WARN 0 |
+  SKIP 2 | PASS 16279 ]`. Both are below this Mac's 16,283 by the two word tests (4 expectations) and, on Ubuntu, the 11
+  expectations of the two kinship2 and Pedixplorer tests that already skipped there: **GitHub's Ubuntu and macOS runners
+  have no `pdftotext`**, so the two PDF word tests, the guard against a PDF printed without its shapes and ids (dragon 24
+  of section 12.4), ran only on this Mac and in the Linux box. **Ubuntu R-devel:** red in "setup-r-dependencies" (known).
+  pkgdown and the Pages deploy: `success`.
+- **Windows, cancelled at 40 minutes (08:39 UTC, with the promise made at the gate): `[ FAIL 4 | WARN 2 | SKIP 1 | PASS
+  16278 ]`.** All four failures and both warnings are the two word tests: Git for Windows puts a `pdftotext` on the runner
+  (`C:\Program Files\Git\ucrt64\bin`), `.skipUnlessPdftotext()` only checked that the program exists, and the program
+  exited with status 99 on the PDF, so no words came back (`sum(words %in% ids)` 0 of 545). Every other test of the file
+  passed on Windows, among them the PNG against the live widget within its bound (so `--disable-lcd-text` works there) and
+  the PDF page checks.
+- **The hang again, with failing tests** (testthat ended "Execution halted"; two orphan `Rterm` processes, a `cmd` and a
+  `conhost` killed at clean-up): the third run in a row, so it does not depend on the tests passing (dragon 34 said it
+  did, from the two runs before).
+- **The repair (Mark's pick, strict TDD, test helper only):** RED `bbb26b8` (a test that puts a stand-in `pdftotext`
+  exiting 99 first on the path and expects the helper to skip; it failed on the old helper), GREEN `fd9c7e2`
+  (`.skipUnlessPdftotext()` tries the program on a PDF R itself writes and skips when it exits with an error), REFACTOR
+  `048a100` (the command written once, `.pdftotextXml()`; the words of both PDFs and the three outcomes of the probe
+  byte-identical before and after). The file reads 31 tests, 217 expectations, 0 failed on the Mac and in the Linux box;
+  the full suite on the Mac 83 files, 1,054 tests, 16,284 expectations, 0 failed, SKIP 0, WARN 0 (518 s). The repair is
+  not shown on Windows; the next push shows it.
+- **One unexplained error:** in 2 of 10 runs of the file in the Linux box after GREEN (the first of the runs after GREEN
+  and the first after the REFACTOR, both through `tools/linux/runTests.sh`) the file read 214 expectations and 1 error
+  (3 fewer than 217: a test with three expectations); the other 8 read 217 and 0. The error's text was not captured (the
+  script's output was filtered). Not seen on the Mac, nor on GitHub's two Ubuntu jobs, which ran the same tests; a Chrome
+  start in the container is the suspect, not shown.
+
+35. **A program's being installed is not its working: probe it on a file you made.** `Sys.which("pdftotext")` found Git
+    for Windows' on the runner, which exits 99 on a PDF; the test skipped only without the program, so it ran and failed.
+    A tool that cannot read a PDF R itself writes is skipped; one that reads it and then not ours is our fault and fails.
+36. **GitHub's runners differ in what they have installed:** no `pdftotext` on Ubuntu or macOS, Git's broken one on
+    Windows; a test that needs a tool runs, in CI, only where the tool is present and works. State beside the test which
+    machines ran it (here the Mac and the Linux box). Installing poppler in the workflow is a backlog item.

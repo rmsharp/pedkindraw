@@ -725,8 +725,9 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   who has `chromote`); a `.pdf` or `.png` starts a second Chrome for the print or the photograph. Of the 30 tests 22 start a
   browser and skip on CRAN, the 8 that need none run there (the new `dpi` check among them); the two that read a PDF's words
   skip without `pdftotext`. `R CMD check --as-cran` here with `NOT_CRAN=true` and the connection check on: 0 errors, 0
-  warnings, 1 NOTE (the new submission), tests 16,283 expectations, 581 s. Windows: the tests pass and the job did not
-  exit, open (`methodology/BACKLOG.md`).
+  warnings, 1 NOTE (the new submission), tests 16,283 expectations, 581 s. On GitHub (S71's push) the two word tests skip on Ubuntu
+  and macOS (no `pdftotext`) and failed on Windows, where Git's `pdftotext` cannot read the file: the test helper is
+  repaired (S71); the Windows job's hang is open (`methodology/BACKLOG.md`).
 
 ### Phase 17g. The timing plan (a planning session; R82)
 
