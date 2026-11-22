@@ -107,8 +107,10 @@ diagram <- drawPedigreeDiagram(layout)
 ```
 
 Print `diagram` to see the drawing, or save it as a web page with
-`htmlwidgets::saveWidget(diagram, "pedigree.html")`. This is a picture
-of it:
+`htmlwidgets::saveWidget(diagram, "pedigree.html")`. From a script,
+`savePedigreeDiagram(diagram, "pedigree.pdf")` writes it as a `.svg`,
+`.pdf` or `.png` file, as the ending says; it needs the chromote package
+and Chrome. This is a picture of it:
 
 <img src="man/figures/README-pedigree.png" alt="The example pedigree drawn by pedkindraw" width="100%" />
 
