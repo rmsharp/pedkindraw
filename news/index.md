@@ -353,6 +353,17 @@ why.
   pedigree with all seven marks 0.26% and 0.07%. It stops, saying what
   is missing, without chromote (in Suggests) or Chrome. nprcgenekeepr
   has no such function.
+- New: the 375 rhesus animals of the example pedigree, with their 3 twin
+  pairs, are one page of
+  [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)’s
+  SVG or PDF on a 14 by 7 inch page or on letter paper (8.5 by 11
+  inches), with every id written: 545 id labels, 375 distinct, and none
+  overlapping another id or label (checked in Chrome on the SVG and with
+  pdftotext on the PDF). The ids are small, under 1 point high on those
+  pages, so a reader zooms in on the SVG or PDF; in a PNG at the default
+  300 dpi an id is about 3 pixels high (a larger `dpi` makes it bigger).
+  The drawing vignette’s “Saving a drawing” and “A colony-size drawing”
+  show the files.
 
 ### Kinship and relatedness
 

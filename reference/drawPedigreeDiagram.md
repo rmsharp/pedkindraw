@@ -157,7 +157,10 @@ so a script leaves `onClick` out.
 
 ## See also
 
-[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md),
+and
+[`savePedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
+to save the drawing as an SVG, a PDF or a PNG file
 
 ## Examples
 

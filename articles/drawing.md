@@ -436,6 +436,24 @@ diagram <- drawPedigreeDiagram(layout)
 htmlwidgets::saveWidget(diagram, "pedigree.html")
 ```
 
+From a script,
+[`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
+writes the drawing as an SVG, a PDF or a PNG file, as the file’s ending
+says. `width` and `height` are the page in inches, and `dpi`, 300 unless
+you say, is the PNG’s pixels per inch of that page. A headless Chrome
+(the chromote package, and Chrome or Chromium on the computer) runs the
+same drawing the widget shows, so every mark, colour and legend row
+comes out as drawn, and every id as text. The chunk below starts Chrome,
+so it runs only when you run it yourself, not when this vignette is
+built.
+
+``` r
+
+savePedigreeDiagram(diagram, "pedigree.svg", width = 10, height = 6)
+savePedigreeDiagram(diagram, "pedigree.pdf", width = 10, height = 6)
+savePedigreeDiagram(diagram, "pedigree.png", width = 10, height = 6, dpi = 150)
+```
+
 ## Clicks in a Shiny application
 
 A click on a drawing does nothing unless `onClick` gives a JavaScript
@@ -498,6 +516,24 @@ read them, or pick an animal in the “Select by id” box: the animals and
 lines that are not near it turn grey, which shows where it is. The arcs
 are the dashed lines that join each of the 113 animals drawn more than
 once to its other places.
+
+[`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
+writes the whole colony on one page with every id written: 545 id
+labels, 375 distinct (the other 170 are the repeat appearances of those
+113 animals), and none overlapping another label. On a 14 by 7 inch
+page, the shape the layout fits, or on letter paper (8.5 by 11 inches),
+an id is under 1 point high, so in the SVG or the PDF you zoom in to
+read one. In a PNG at the default 300 dpi an id is about 3 pixels high,
+and a larger `dpi` makes it bigger. As above, the chunk runs only when
+you run it yourself.
+
+``` r
+
+diagram <- drawPedigreeDiagram(colony)
+savePedigreeDiagram(diagram, "colony.pdf", width = 14, height = 7)
+savePedigreeDiagram(diagram, "colony.svg", width = 14, height = 7)
+savePedigreeDiagram(diagram, "colony.png", width = 14, height = 7)
+```
 
 ## How large a drawing can be
 

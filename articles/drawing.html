@@ -464,6 +464,19 @@ drawing saves a picture of the drawing as you see it, as
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">diagram</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/drawPedigreeDiagram.html">drawPedigreeDiagram</a></span><span class="op">(</span><span class="va">layout</span><span class="op">)</span></span>
 <span><span class="fu">htmlwidgets</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/htmlwidgets/man/saveWidget.html" class="external-link">saveWidget</a></span><span class="op">(</span><span class="va">diagram</span>, <span class="st">"pedigree.html"</span><span class="op">)</span></span></code></pre></div>
+<p>From a script, <code><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram()</a></code> writes the drawing
+as an SVG, a PDF or a PNG file, as the file’s ending says.
+<code>width</code> and <code>height</code> are the page in inches, and
+<code>dpi</code>, 300 unless you say, is the PNG’s pixels per inch of
+that page. A headless Chrome (the chromote package, and Chrome or
+Chromium on the computer) runs the same drawing the widget shows, so
+every mark, colour and legend row comes out as drawn, and every id as
+text. The chunk below starts Chrome, so it runs only when you run it
+yourself, not when this vignette is built.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram</a></span><span class="op">(</span><span class="va">diagram</span>, <span class="st">"pedigree.svg"</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram</a></span><span class="op">(</span><span class="va">diagram</span>, <span class="st">"pedigree.pdf"</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram</a></span><span class="op">(</span><span class="va">diagram</span>, <span class="st">"pedigree.png"</span>, width <span class="op">=</span> <span class="fl">10</span>, height <span class="op">=</span> <span class="fl">6</span>, dpi <span class="op">=</span> <span class="fl">150</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="clicks-in-a-shiny-application">Clicks in a Shiny application<a class="anchor" aria-label="anchor" href="#clicks-in-a-shiny-application"></a>
@@ -472,7 +485,7 @@ drawing saves a picture of the drawing as you see it, as
 JavaScript function to run. In a Shiny application it can send the id of
 the node clicked to the server. The drawing needs 500 pixels of height,
 45 more for each condition past the first.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## In the user interface:</span></span>
 <span><span class="fu">visNetwork</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/visNetwork/man/visNetwork-shiny.html" class="external-link">visNetworkOutput</a></span><span class="op">(</span><span class="st">"pedigree"</span>, height <span class="op">=</span> <span class="st">"500px"</span><span class="op">)</span></span>
 <span></span>
@@ -498,7 +511,7 @@ into its animal’s, or a mating dot’s, which starts with
 <p>The example pedigree that comes with the package
 (<code><a href="../articles/pedkindraw.html">vignette("pedkindraw")</a></code>) has 375 rhesus macaques in nine
 generations, and three twin pairs.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pedFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"obfuscated_rhesus_mhc_ped.csv"</span>,</span>
 <span>                       package <span class="op">=</span> <span class="st">"pedkindraw"</span><span class="op">)</span></span>
 <span><span class="va">twinFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"obfuscated_rhesus_mhc_twin_relations.csv"</span>,</span>
@@ -522,6 +535,19 @@ to read them, or pick an animal in the “Select by id” box: the animals
 and lines that are not near it turn grey, which shows where it is. The
 arcs are the dashed lines that join each of the 113 animals drawn more
 than once to its other places.</p>
+<p><code><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram()</a></code> writes the whole colony on one
+page with every id written: 545 id labels, 375 distinct (the other 170
+are the repeat appearances of those 113 animals), and none overlapping
+another label. On a 14 by 7 inch page, the shape the layout fits, or on
+letter paper (8.5 by 11 inches), an id is under 1 point high, so in the
+SVG or the PDF you zoom in to read one. In a PNG at the default 300 dpi
+an id is about 3 pixels high, and a larger <code>dpi</code> makes it
+bigger. As above, the chunk runs only when you run it yourself.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">diagram</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/drawPedigreeDiagram.html">drawPedigreeDiagram</a></span><span class="op">(</span><span class="va">colony</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram</a></span><span class="op">(</span><span class="va">diagram</span>, <span class="st">"colony.pdf"</span>, width <span class="op">=</span> <span class="fl">14</span>, height <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram</a></span><span class="op">(</span><span class="va">diagram</span>, <span class="st">"colony.svg"</span>, width <span class="op">=</span> <span class="fl">14</span>, height <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram</a></span><span class="op">(</span><span class="va">diagram</span>, <span class="st">"colony.png"</span>, width <span class="op">=</span> <span class="fl">14</span>, height <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="how-large-a-drawing-can-be">How large a drawing can be<a class="anchor" aria-label="anchor" href="#how-large-a-drawing-can-be"></a>

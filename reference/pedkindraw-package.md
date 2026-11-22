@@ -14,6 +14,8 @@ matrix and layout hints, and
 draws the layout as an interactive graph.
 [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
 makes a simpler drawing's nodes and edges.
+[`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
+saves a drawing as an SVG, a PDF or a PNG file.
 
 ## Kinship and relatedness
 

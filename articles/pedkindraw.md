@@ -249,7 +249,11 @@ beside each of its two mates, and 5LDNWE and H16XSK under their sire and
 dam and again beside their mate. In the drawing you can zoom, hover over
 an animal to highlight the animals joined to it, pick an animal in the
 “Select by id” box, and save the picture with the “Export Diagram (PNG)”
-button.
+button. From a script,
+[`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
+saves the drawing as an SVG, a PDF or a PNG file;
+[`vignette("drawing")`](https://rmsharp.github.io/pedkindraw/articles/drawing.md)
+shows how.
 
 ## Shrinking a pedigree
 
