@@ -47,7 +47,9 @@ file, is done (S69, R143: `savePedigreeDiagram()`) and so is its CI repair (S70,
 file with `dpi`, is done (S71, R146), and so is G16c, the whole large pedigree on one page and the documents (S72,
 R147), so G16 is done. G17, an app, is planned (S73, R148, `docs/planning/pedigree-app-plan.md`): it opens a CSV
 file or a sample pedigree, draws it, chooses the animals to draw, follows a click and saves the drawing, with `shiny` in
-Suggests and one exported function, in four build sessions, G17a-G17d (a guess); next is G17a.
+Suggests and one exported function, in four build sessions, G17a-G17d (a guess); G17a is done (S74, R149:
+`runPedigreeApp()` starts the app, which opens a CSV or text file, the sample or a `ped` data frame and draws everyone);
+next is G17b, choosing the animals.
 
 | Phase | Slice | State |
 |---|---|---|

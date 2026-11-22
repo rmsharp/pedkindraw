@@ -48,7 +48,7 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G17a next; Effort L altogether, 15-25
+- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G17b next; Effort L altogether, 15-25
       sessions, a guess, the sum of the rows; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
       DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
@@ -65,7 +65,8 @@ issues).*
       `docs/planning/picture-files-plan.md`, three build sessions; G16a, the recording layer and the SVG file, DONE in
       S69, R143; G16a's CI repair DONE in S70, R145; G16b, the PDF and the PNG file, DONE in S71, R146; G16c, the
       whole large pedigree on one page and the documents, DONE in S72, R147, so G16 DONE; G17's plan written in S73,
-      R148, `docs/planning/pedigree-app-plan.md`, four build sessions G17a-G17d; next G17a) --
+      R148, `docs/planning/pedigree-app-plan.md`, four build sessions G17a-G17d; G17a, the app's first slice,
+      `runPedigreeApp()`, DONE in S74, R149; next G17b) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
@@ -196,6 +197,14 @@ issues).*
       or a code in the twins file as Pedixplorer's "Spouse"); **F20** a colony too large to draw shown as its
       maternal lines (the item above: copy nprcgenekeepr's colony overview first); **F21** the symbol, text and
       spacing sizes and the line width (G14's arguments). Each needs a ruling, then a session of its own.
+
+- [ ] **The app: parents with no row of their own** (DECISION NEEDED, Effort S, a guess; found S74, G17a) -- a
+      file that names a sire or dam with no row of its own cannot be drawn: `findGeneration()` leaves the offspring
+      unplaced and `makePedigreeMatingLayout()` stops ("pdepth must not be missing for any animal"); the app says
+      "could not be drawn" and its Checks tab names the parent (`rowlessParents`;
+      `docs/planning/pedigree-app-plan.md` section 11.4). Many files list founders' parents this way. Pedixplorer's
+      app and nprcgenekeepr's Input tab add such parents; pedkindraw has `addParents()`. The choice: add them in the
+      app (and say so), offer a button, or leave the file as it is; it fits G17b or G17c.
 
 - [ ] **An animal with two or more mates drawn once, between them, as kinship2 draws it** (DECISION NEEDED,
       Effort M-L, a guess; found S65, G15a) -- pedkindraw draws a founder sire with two dams at each mating,
