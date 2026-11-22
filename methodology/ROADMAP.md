@@ -43,7 +43,9 @@ and `dam`; G15a, the layout that draws them, is done (S65); G15b, `getMatings()`
 G15c, the converters returning them, is done (S67), so G15 is done. G16, picture files, is planned (S68, R142,
 `docs/planning/picture-files-plan.md`): the widget's own drawing is recorded in headless Chrome and written as
 SVG, PDF or PNG, a whole large pedigree on one page with every id written; G16a, the recording layer and the SVG
-file, is done (S69, R143: `savePedigreeDiagram()`); next is G16b, the PDF, the PNG and the page (Planned, below).
+file, is done (S69, R143: `savePedigreeDiagram()`) and so is its CI repair (S70, R145); G16b, the PDF and the PNG
+file with `dpi`, is done (S71, R146); next is G16c, the whole large pedigree on one page and the documents (Planned,
+below).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -82,8 +84,8 @@ session each unless marked. They follow the copy slices.
   width) is done, the symbol size (S60), the text size (S61), the spacing (S62) and the line width (S63);
   G15 (mates with no offspring) is done in four sessions (S64's plan, R141; G15a the layout S65, G15b
   `getMatings()` S66, G15c the converters S67); G16 (picture files) is planned (S68's plan, R142) and G16a, the
-  recording layer and the SVG, is done (S69, R143) and its CI repair too (S70, R145); G16b (the PDF, the PNG and the page) and G16c (the whole
-  large pedigree and the documents) are next; then the other large addition (an app), planned first; then 17g-17q.
+  recording layer and the SVG, is done (S69, R143) and its CI repair too (S70, R145), and G16b (the PDF and the PNG) is
+  done (S71, R146); G16c (the whole large pedigree and the documents) is next; then the other large addition (an app), planned first; then 17g-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
@@ -258,6 +260,18 @@ session each unless marked. They follow the copy slices.
   widened it from `R/` and `man/` to the README, NEWS and vignettes).
 
 ## Completed Milestones
+
+- **Phase G16b: `savePedigreeDiagram()` writes `.pdf` and `.png` files and takes `dpi` (pedkindraw S71, 2026-11-22).**
+  `savePedigreeDiagram(diagram, file, width, height, dpi = 300)` now writes the widget as an SVG, a PDF or a PNG by the
+  file's ending (R144's picks, made in S70, built here; R146, Mark's pick of `jsonlite` in Suggests to decode Chrome's
+  base64). The PDF is the recorded drawing printed on one page of the picture's size, still vector, with each dashed
+  line written as a row of short strokes (the 375 animals on 14 x 7 in: one page, 1.0 MB, 545 id words with 375
+  distinct, against 5.8 MB as Chrome writes dashes); the PNG is the page at `dpi` pixels per inch (7 x 5 in is 2100 x
+  1500 at 300) and, at 96 dpi, matches the live widget as the SVG does (the four animals 0.00% and 0.03% of ink
+  differing, the 18-animal pedigree 0.26% and 0.07%). 30 tests (it was 19), 216 expectations, 0 failed on this Mac and
+  in the Linux box; each value was run first on a throwaway reference. `R CMD check --as-cran` with GitHub's settings:
+  0 errors, 0 warnings, 1 NOTE (the new submission), tests 16,283 expectations. S70's Windows run hung again after its
+  tests passed (936 s, two orphan `Rterm` processes): Mark's pick was to go on with G16b and leave that open (backlog).
 
 - **Phase G16a's CI repair (pedkindraw S70, 2026-11-21).** S69's push was red on GitHub, and neither fault had shown
   on the Mac, because the local check ran without `NOT_CRAN` and the full suite on macOS. (1) The help example failed

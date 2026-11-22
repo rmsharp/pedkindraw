@@ -13,10 +13,15 @@ issues).*
       1 | PASS 16196 ]`) and then the check step went on "running" for 77 minutes until it was cancelled; two
       orphan `Rterm` processes were killed at clean-up. S68's run, before `savePedigreeDiagram()`, ended in under 19
       minutes. Cause not known (suspects: the stuck-page tests, and the one Chrome the function starts per call left
-      running at R's exit on Windows). First: read the Windows job of the push that follows S70 (it has the repaired
-      tests, so its 13 legend failures should be gone); if it passes 40 minutes, `gh run cancel` it and read its log; add
-      `timeout-minutes` to `.github/workflows/R-CMD-check.yaml` so a hang ends as a failure with a log. No Windows
-      machine here: iterate on GitHub.
+      running at R's exit on Windows). **Read in S71 (the push that followed S70, run 44994050682):** the repaired
+      tests passed on Windows (`[ FAIL 0 | WARN 0 | SKIP 1 | PASS 16211 ]`, `proc.time()` 936 s, about 06:50) and the
+      step still did not end (cancelled at 07:14, about 24 minutes later; two orphan `Rterm` processes, a `cmd` and a
+      `conhost` killed): the second run in a row, so not a one-off. Mark's pick (S71): go on with G16b, this stays open;
+      every push will probably hang Windows until it is repaired, so cancel the Windows run at 40 minutes (`gh run
+      cancel`) and read its log. First (guesses, one change at a time, iterating on GitHub since there is no Windows
+      machine here): add `timeout-minutes` to `.github/workflows/R-CMD-check.yaml` so a hang ends as a failure with a
+      log; close the test Chromes explicitly at the end of the suite (the helper's `.saveChrome$parent`, chromote's
+      default one) and list the processes left (`Get-Process`) in a step after the tests.
 
 - [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
       timing runs, Effort L, a guess; before the release, Phases 17g-17i of
@@ -33,7 +38,7 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G16b next; Effort L altogether, 15-25
+- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G16c next; Effort L altogether, 15-25
       sessions, a guess, the sum of the rows; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
       DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
@@ -48,7 +53,8 @@ issues).*
       G15a, the layout, DONE in S65, R141's picks; G15b, `getMatings()`, DONE in S66, R141's picks; G15c, the
       converters, DONE in S67, R141's picks, so G15 DONE; G16's plan written in S68, R142,
       `docs/planning/picture-files-plan.md`, three build sessions; G16a, the recording layer and the SVG file, DONE in
-      S69, R143; G16a's CI repair DONE in S70, R145; next G16b, the PDF, the PNG and the page) --
+      S69, R143; G16a's CI repair DONE in S70, R145; G16b, the PDF and the PNG file, DONE in S71, R146; next G16c, the
+      whole large pedigree on one page and the documents) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
