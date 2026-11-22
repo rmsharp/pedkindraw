@@ -131,6 +131,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 74 Did
+**Deliverable:** Phase G17a, the app's first slice: one exported function that starts the app, opens a file (or the
+375-animal sample), guesses the columns, draws everyone and shows the checker's table and the animals' table
+(`docs/planning/pedigree-app-plan.md:322`), strict TDD. (IN PROGRESS)
+**Started:** 2026-11-22 14:13 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G17a: the app's first slice (Recommended)"
+(orient picker).
+**Status:** Session claimed. Work beginning: the three measures before the pre-RED picker (how the second process loads
+the code under test; the function's name and shape; the server tests' time on CRAN's path).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 73 Did
 **Deliverable:** G17's planning session, the plan for gap A3 (a ready-made app): `docs/planning/pedigree-app-plan.md`.
 DONE. No package code (the prototype beside the plan is measured scratch code under `docs/`, which the build ignores).

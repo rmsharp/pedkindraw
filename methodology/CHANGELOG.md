@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-22 · [BL-Phase G17] S74 (in progress): G17a, the app's first slice, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S74's stub), `methodology/HANDOFFS.md` (S74's `status: pending` receipt) and this entry. The deliverable is G17a (`docs/planning/pedigree-app-plan.md:322`), strict TDD. Phase 3F rewrites this entry at close-out.
+- **Commit/PR:** the S74 claim commit · **Session:** S74 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, ledgers current, no ghost session).
+
 ### 2026-11-22 · [BL-Phase G17] S73 push 2: `master` to GitHub at close-out 2b (the notes' ledger sizes; documents only, `[skip ci]`)
 - **Change:** `git push origin master` (`4a2891c..` close-out 2b), by Mark's standing pick. Push 1 (`ab5dda0..4a2891c`) started no workflow: `gh run list` after it showed S72's runs as the newest.
 - **Commit/PR:** none (push) · **Session:** S73 · **Verified:** the push's output.
