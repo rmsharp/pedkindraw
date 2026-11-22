@@ -190,23 +190,28 @@
 ## status 99 (S71's push, run 45000649737). A tool that reads that PDF and then
 ## not ours is a fault of ours, and fails the word tests.
 .skipUnlessPdftotext <- function() {
-  tool <- Sys.which("pdftotext")
-  if (!nzchar(tool)) skip("pdftotext is not installed")
+  if (!nzchar(Sys.which("pdftotext"))) skip("pdftotext is not installed")
   probe <- withr::local_tempfile(fileext = ".pdf")
   grDevices::pdf(probe)
   plot.new()
   text(0.5, 0.5, "probe")
   grDevices::dev.off()
-  words <- suppressWarnings(system2(tool, c("-bbox", shQuote(probe), "-"),
-                                    stdout = TRUE, stderr = FALSE))
-  if (!is.null(attr(words, "status"))) skip("pdftotext cannot read a PDF here")
+  if (!is.null(attr(suppressWarnings(.pdftotextXml(probe)), "status"))) {
+    skip("pdftotext cannot read a PDF here")
+  }
   invisible(NULL)
+}
+
+## What pdftotext -bbox prints for a PDF's first page, one string per line;
+## when the program exits with an error the "status" attribute holds its code.
+.pdftotextXml <- function(file) {
+  system2(Sys.which("pdftotext"), c("-bbox", shQuote(file), "-"),
+          stdout = TRUE, stderr = FALSE)
 }
 
 ## The words of a PDF's first page, in the order pdftotext -bbox gives them.
 .savePdfWords <- function(file) {
-  xml <- system2(Sys.which("pdftotext"), c("-bbox", shQuote(file), "-"),
-                 stdout = TRUE, stderr = FALSE)
+  xml <- .pdftotextXml(file)
   words <- regmatches(xml, regexpr(">[^<]+</word>", xml))
   words <- gsub("^>|</word>$", "", words)
   words <- gsub("&lt;", "<", words, fixed = TRUE)
