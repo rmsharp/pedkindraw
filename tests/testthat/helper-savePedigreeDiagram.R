@@ -205,6 +205,18 @@
   )
 }
 
+## The in-page JavaScript that turns a photograph (PNG, as base64 text) into
+## its pixels: `pixels(await load(text))` is an ImageData. Put it after
+## "(async () => { " in a script run with awaitPromise = TRUE.
+.savePixelsJs <- paste0(
+  "const load = s => new Promise((ok, no) => { const i = new Image(); ",
+  "i.onload = () => ok(i); i.onerror = no; ",
+  "i.src = 'data:image/png;base64,' + s; }); ",
+  "const pixels = i => { const c = document.createElement('canvas'); ",
+  "c.width = i.width; c.height = i.height; const x = c.getContext('2d'); ",
+  "x.drawImage(i, 0, 0); return x.getImageData(0, 0, c.width, c.height); }; "
+)
+
 ## The two pictures' difference: for the drawing and the legend, the number of
 ## ink pixels and of those that differ, and the box photographed.
 .saveInkDiff <- function(diagram, file) {
@@ -239,13 +251,7 @@
   drawn <- photograph(list(x = 0, y = 0, width = box$w, height = box$h))
   session$go_to("about:blank", timeout_ = 30)
   compared <- .saveEvaluate(session, paste0(
-    "(async () => { ",
-    "const load = s => new Promise((ok, no) => { const i = new Image(); ",
-    "i.onload = () => ok(i); i.onerror = no; ",
-    "i.src = 'data:image/png;base64,' + s; }); ",
-    "const pixels = i => { const c = document.createElement('canvas'); ",
-    "c.width = i.width; c.height = i.height; const x = c.getContext('2d'); ",
-    "x.drawImage(i, 0, 0); return x.getImageData(0, 0, c.width, c.height); }; ",
+    "(async () => { ", .savePixelsJs,
     "const a = pixels(await load('", live, "')); ",
     "const b = pixels(await load('", drawn, "')); ",
     "const w = Math.min(a.width, b.width), h = Math.min(a.height, b.height); ",
@@ -269,4 +275,41 @@
     legend = c(ink = compared$legend[[1L]], differ = compared$legend[[2L]]),
     liveSize = unlist(compared$a), fileSize = unlist(compared$b)
   )
+}
+
+## The pixel comparison (.saveInkDiff() above) photographs the live widget and
+## the SVG file with one Chrome and expects their text to match. A Chrome that
+## draws the SVG's text with coloured (LCD) edges, as it does on Linux unless
+## told not to (and, the log of GitHub's Windows job shows, on Windows), makes
+## every letter differ in the colour channels while the widget's canvas text
+## stays grey: on GitHub's Ubuntu jobs 13 expectations of that test failed (the
+## legend, 1.6% against a bound of 0.5%; pedkindraw S70, plan section 13). So
+## the Chrome of these tests must photograph text in grey. Black text on white
+## has no colour in its edges when it is grey: the widest spread among a
+## pixel's three channels is 0.
+.saveTextSpread <- function(session, dir) {
+  file <- file.path(dir, "text.svg")
+  writeLines(paste0(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="60" ',
+    'viewBox="0 0 320 60"><rect width="100%" height="100%" fill="#ffffff"/>',
+    '<text x="10" y="38" font-family="arial" font-size="22" fill="#000000">',
+    "Hamburgefonstiv 0123</text></svg>"
+  ), file)
+  session$go_to(paste0("file://", file), timeout_ = 30, delay = 0.3)
+  photograph <- session$Page$captureScreenshot(
+    format = "png",
+    clip = list(x = 0, y = 0, width = 320, height = 60, scale = 1)
+  )$data
+  session$go_to("about:blank", timeout_ = 30)
+  .saveEvaluate(session, paste0(
+    "(async () => { ", .savePixelsJs,
+    "const d = pixels(await load('", photograph, "')).data; ",
+    "let ink = 0, widest = 0; ",
+    "for (let k = 0; k < d.length; k += 4) { ",
+    "if (d[k] + d[k + 1] + d[k + 2] < 740) { ink++; ",
+    "const s = Math.max(d[k], d[k + 1], d[k + 2]) - ",
+    "Math.min(d[k], d[k + 1], d[k + 2]); ",
+    "if (s > widest) { widest = s; } } } ",
+    "return {ink: ink, widest: widest}; })()"
+  ), awaitPromise = TRUE)
 }
