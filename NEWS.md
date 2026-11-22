@@ -311,6 +311,21 @@ code, `DIVERGENCE.md` in the repository says how and why.
   tab the animals read. It needs the shiny package (in Suggests).
   Pedixplorer's `ped_shiny()` is such an app; nprcgenekeepr's app is its
   whole colony application, `runGeneKeepR()`.
+* New: `runPedigreeApp()`'s app chooses the animals it draws: everyone, one
+  family (the families of two or more animals listed largest first, with
+  their sizes), focal animals with their ancestors and descendants, or focal
+  animals' near relatives (3 by default, as Pedixplorer's app). With
+  ancestors and descendants, a descendant's other parent is drawn too,
+  without its own parents, so every offspring appears with both parents; in
+  the sample pedigree 344 of the 375 animals have such a parent.
+  The focal animals are typed, or an animal is clicked in the drawing (a
+  repeated animal's symbol counts as the animal); the clicked animal becomes
+  the only focal animal, as in nprcgenekeepr's Pedigree Browser. With more
+  than 1,000 animals chosen, the app asks before drawing them (about 9
+  seconds for 1,000 animals and 50 for 2,000 on the computer measured). A
+  sire or dam with no row of its own is added with `addParents()` and named,
+  so such a file is drawn; the Checks tab still lists it. The Animals tab
+  shows the animals chosen.
 
 ## Kinship and relatedness
 
