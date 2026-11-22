@@ -21,6 +21,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-22 · [BL-Phase G17] S73 (in progress): G17's planning session claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S73's stub), `methodology/HANDOFFS.md` (S73's `status: pending` receipt) and this entry. The deliverable is the plan document for the interactive app (gap A3) in `docs/planning/`; no code. Phase 3F rewrites this entry at close-out.
+- **Commit/PR:** the S73 claim commit · **Session:** S73 · **Model:** Claude Sonnet 5.5 · **Verified:** Orient (drift 91 / 23 / 0, ledgers current, no ghost session).
+
 ### 2026-11-22 · [BL-Phase G16] S72 push 3: `master` to GitHub at close-out 2d (the notes, the receipt and the ledger after push 2's reading; documents only, the head commit carrying `[skip ci]`)
 - **Change:** `git push origin master` (`2d34a16..` close-out 2d), by Mark's standing pick; only `methodology/` and `docs/planning/` changed, and the head commit says `[skip ci]`, so no workflow starts: push 2's runs, which carried every file of the session's code, were read in full.
 - **Commit/PR:** none (push) · **Session:** S72 · **Verified:** the push's output.

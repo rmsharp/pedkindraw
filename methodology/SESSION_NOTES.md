@@ -172,6 +172,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 73 Did
+**Deliverable:** G17's planning session: the plan document for the interactive app (gap A3,
+`docs/planning/gaps-and-shared-code-plan.md:386`), written to `docs/planning/`; no code. (IN PROGRESS)
+**Started:** 2026-11-22 · **Model:** Claude Sonnet 5.5 · **Mark's pick:** "G17 planning session (Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: the evidence reads (A3, nprcgenekeepr's `runGeneKeepR()`, Pedixplorer's
+`ped_shiny()`, `tools/gapCases.R`'s `app` case), then the grep inventory, then the plan.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 72 Did
 **Deliverable:** Phase G16c, the whole large pedigree on one page and the documents (the `largeIds` case,
 `docs/planning/picture-files-plan.md` section 7, G16c), strict TDD. DONE.
