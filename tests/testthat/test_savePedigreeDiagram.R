@@ -3,14 +3,20 @@
 ## pedkindraw's own tests, not copied from nprcgenekeepr (pedkindraw S69, plan
 ## Phase G16a, gaps A1 and A2 of docs/research/pedkindraw-gaps-2026-11-18.md;
 ## rulings R142 and R143, docs/planning/picture-files-plan.md section 11).
-## savePedigreeDiagram(diagram, file, width, height) records what the widget
-## drawPedigreeDiagram() returns draws, in headless Chrome, and writes it as an
-## SVG file: this phase writes ".svg" only (".pdf" and ".png" are G16b's).
+## savePedigreeDiagram(diagram, file, width, height, dpi) records what the
+## widget drawPedigreeDiagram() returns draws, in headless Chrome, and writes it
+## as an SVG, a PDF or a PNG file by the file's ending. G16a (S69, R143) wrote
+## the ".svg"; G16b (pedkindraw S71, R144, docs/planning/picture-files-plan.md
+## section 12) adds ".pdf" and ".png" and the argument "dpi" (the PNG's pixels
+## per inch of the page).
 ##
-## Every number a test states was computed first with a scratch recording layer
-## (docs/planning/picture-files-prototype/recorder2.js), on macOS, Chrome 157,
-## and is quoted beside its bound; they are one machine's (the plan's dragon
-## 20), so read each CI job's result before trusting a bound.
+## Every number a test states was computed first with a scratch reference
+## (the prototypes of docs/planning/picture-files-prototype/ run from a scratch
+## copy of the package, S71), on macOS, Chrome 157, and is quoted beside its
+## bound; they are one machine's (the plan's dragon 20), so read each CI job's
+## result before trusting a bound. A PDF's page size and page count are read
+## from the file's own bytes, with no PDF reader; its words need poppler's
+## pdftotext, and the tests that read them skip where it is not installed.
 ##
 ## The tests that need no browser (the first eight) run everywhere, CRAN too.
 ## The ones that start Chrome skip on CRAN and where no browser is found; the
@@ -61,16 +67,18 @@ test_that("savePedigreeDiagram() stops unless the file name ends in .svg,
   expect_length(list.files(dir), 0L)
 })
 
-test_that("savePedigreeDiagram() says that .pdf and .png files are not
-           available yet (G16b)", {
+test_that("savePedigreeDiagram() stops unless 'dpi' is one positive number of
+           pixels per inch, whatever the kind of file", {
   widget <- .saveFourWidget()
   dir <- .saveTmp()
-  for (name in c("x.pdf", "x.png", "X.PDF", "X.Png")) {
-    expect_error(
-      savePedigreeDiagram(widget, file.path(dir, name)),
-      "is not available yet; use a file name ending in .svg",
-      fixed = TRUE
-    )
+  for (name in c("x.svg", "x.pdf", "x.png")) {
+    for (bad in list(0, -1, NA_real_, Inf, "300", c(96, 300), TRUE, NULL)) {
+      expect_error(
+        savePedigreeDiagram(widget, file.path(dir, name), dpi = bad),
+        "requires 'dpi' to be one positive number of pixels per inch",
+        fixed = TRUE
+      )
+    }
   }
   expect_length(list.files(dir), 0L)
 })
@@ -331,6 +339,254 @@ test_that("a page that never returns from its JavaScript stops within the
   )[["elapsed"]]
   expect_lt(elapsed, 20)
   expect_false(file.exists(file))
+  expect_length(list.files(tempdir(), pattern = "^pedkindraw-save-"), 0L)
+})
+
+## ---- G16b: the PDF and the PNG ----------------------------------------------
+
+test_that("the four animals are written as a one-page PDF of the page asked
+           for, and the path comes back invisibly", {
+  .skipUnlessBrowser()
+  widget <- .saveFourWidget()
+  dir <- .saveTmp()
+
+  file <- file.path(dir, "four.pdf")
+  result <- withVisible(savePedigreeDiagram(widget, file, width = 7, height = 5))
+  expect_false(result$visible)
+  expect_identical(result$value, file)
+  expect_identical(rawToChar(readBin(file, "raw", 5L)), "%PDF-")
+
+  ## Measured: one page of 504 x 360 pt for 7 x 5 in and 432 x 288 pt for 6 x 4
+  ## in. Bound 1 pt: Chrome rounds a paper size (the plan's dragon 25: a page
+  ## asked at 6.8 in came out 0.48 pt over).
+  for (page in list(c(7, 5), c(6, 4))) {
+    pdf <- file.path(dir, sprintf("page%dx%d.pdf", page[[1L]], page[[2L]]))
+    savePedigreeDiagram(widget, pdf, width = page[[1L]], height = page[[2L]])
+    pages <- .savePdfPages(pdf)
+    expect_identical(pages$pages, 1L)
+    expect_lte(max(abs(pages$size[1L, ] - page * 72)), 1)
+  }
+
+  ## Left out, the page is the picture's own size, as the SVG's: measured
+  ## 720 x 369.12 pt against the SVG's 10 x 5.1146 in (368.25 pt: Chrome's
+  ## rounding put 0.87 pt on the height; 0.21 pt for the 18-animal pedigree).
+  ## Bound 1.5 pt.
+  svg <- file.path(dir, "default.svg")
+  savePedigreeDiagram(widget, svg)
+  root <- .saveRoot(.saveSvgText(svg))
+  default <- file.path(dir, "default.pdf")
+  savePedigreeDiagram(widget, default)
+  pages <- .savePdfPages(default)
+  expect_identical(pages$pages, 1L)
+  expect_lte(max(abs(pages$size[1L, ] - c(root$widthIn, root$heightIn) * 72)),
+             1.5)
+})
+
+test_that("the PDF holds the animals' ids and the legend's words as text", {
+  .skipUnlessBrowser()
+  .skipUnlessPdftotext()
+  file <- file.path(.saveTmp(), "four.pdf")
+  savePedigreeDiagram(.saveFourWidget(), file, width = 7, height = 5)
+
+  ## Measured: 26 words, each of A, B, C and D once, and the legend's (Sex,
+  ## Female, Male, Hermaphrodite, Unknown, Other, /, Unrecorded, Affected,
+  ## Deceased, Same animal again, MZ, DZ, ?). A print right after the page
+  ## loads once came out without the animals' shapes and ids and 21 words in
+  ## 489 KB (the plan's dragon 24), so a size cannot say a PDF is whole.
+  words <- .savePdfWords(file)
+  expect_true(all(c("A", "B", "C", "D", "Sex", "Female", "Male", "Affected",
+                    "Deceased") %in% words))
+  expect_identical(sum(words %in% c("A", "B", "C", "D")), 4L)
+})
+
+test_that("a PNG is the page times the dpi in pixels, 300 dpi unless told", {
+  .skipUnlessBrowser()
+  widget <- .saveFourWidget()
+  dir <- .saveTmp()
+
+  ## Measured, 7 x 5 in: 672 x 480 at 96 dpi, 1050 x 750 at 150, 2100 x 1500 at
+  ## the default 300 (15,130, 26,410 and 60,761 bytes).
+  sizes <- list(`96` = c(672, 480), `150` = c(1050, 750))
+  for (dpi in names(sizes)) {
+    file <- file.path(dir, paste0("dpi", dpi, ".png"))
+    savePedigreeDiagram(widget, file, width = 7, height = 5, dpi = as.numeric(dpi))
+    expect_equal(unname(.savePngSize(file)), sizes[[dpi]])
+  }
+  file <- file.path(dir, "dpi300.png")
+  savePedigreeDiagram(widget, file, width = 7, height = 5)
+  expect_equal(unname(.savePngSize(file)), c(2100, 1500))
+
+  ## Left out, the page is the picture's own size: measured 3000 x 1534 pixels
+  ## for an SVG of 960 x 491 px (1534.375 at 300 dpi). Bound 1 pixel.
+  svg <- file.path(dir, "default.svg")
+  savePedigreeDiagram(widget, svg)
+  root <- .saveRoot(.saveSvgText(svg))
+  default <- file.path(dir, "default.png")
+  savePedigreeDiagram(widget, default)
+  expect_lte(max(abs(.savePngSize(default) - root$viewBox[3:4] * 300 / 96)), 1)
+})
+
+test_that("a PNG at 96 dpi is the live widget's picture: the four animals and
+           the feature pedigree", {
+  .skipUnlessBrowser()
+  layouts <- list(four = .saveFourLayout(), feature = .saveFeatureLayout())
+  dir <- .saveTmp()
+  compared <- 0L
+  for (name in names(layouts)) {
+    widget <- drawPedigreeDiagram(layouts[[name]])
+    file <- file.path(dir, paste0(name, ".png"))
+    savePedigreeDiagram(widget, file, dpi = 96)
+    difference <- .saveInkDiff(widget, file)
+    ## Measured, ink differing by more than 100 in a colour channel, as the
+    ## SVG's: 0 of 4,184 ink pixels (0.00%) in the drawing and 1 of 3,926
+    ## (0.03%) in the legend for the four animals (bound 0.5%); 0.26% (33 of
+    ## 12,507) and 0.07% (5 of 7,261) for the feature pedigree (bound 1.0%).
+    ## On Linux and Windows a Chrome that draws the text with coloured edges
+    ## fails this (the plan's dragon 27): the function's own Chrome must not.
+    limit <- if (identical(name, "feature")) 1.0 else 0.5
+    for (part in c("main", "legend")) {
+      ink <- difference[[part]][["ink"]]
+      expect_gt(ink, 0, label = paste(name, part, "ink pixels"))
+      expect_lte(100 * difference[[part]][["differ"]] / ink, limit,
+                 label = paste(name, part, "ink differing, percent"))
+    }
+    compared <- compared + 1L
+  }
+  expect_identical(compared, 2L)
+})
+
+test_that("the 375 animals on a 14 x 7 in page: a one-page PDF of about a
+           megabyte, a PNG of 4200 x 2100 pixels, and an SVG that keeps its
+           dashed lines", {
+  .skipUnlessBrowser()
+  widget <- drawPedigreeDiagram(.saveRhesusLayout())
+  dir <- .saveTmp()
+
+  ## Measured 1,025,349 bytes, one page of 1008 x 504 pt. Chrome writes every
+  ## dash of the 170 dashed repeat-animal edges as an outline, 5.77 MB, unless
+  ## each dash is written as a short stroke (the plan's section 12.2); the
+  ## bound is 1.5 MB.
+  pdf <- file.path(dir, "rhesus.pdf")
+  savePedigreeDiagram(widget, pdf, width = 14, height = 7)
+  pages <- .savePdfPages(pdf)
+  expect_identical(pages$pages, 1L)
+  expect_lte(max(abs(pages$size[1L, ] - c(14, 7) * 72)), 1)
+  expect_lt(pages$bytes, 1.5e6)
+
+  png <- file.path(dir, "rhesus.png")
+  savePedigreeDiagram(widget, png, width = 14, height = 7)
+  expect_equal(unname(.savePngSize(png)), c(4200, 2100))
+
+  ## The SVG is as G16a wrote it: its dashes stay dashes. Measured 179
+  ## stroke-dasharray attributes (170 repeat-animal edges and the legend's).
+  svg <- file.path(dir, "rhesus.svg")
+  savePedigreeDiagram(widget, svg, width = 14, height = 7)
+  dashes <- regmatches(.saveSvgText(svg),
+                       gregexpr("stroke-dasharray", .saveSvgText(svg),
+                                fixed = TRUE))[[1L]]
+  expect_gte(length(dashes), 170L)
+})
+
+test_that("the 375 animals' PDF has every id as a word", {
+  .skipUnlessBrowser()
+  .skipUnlessPdftotext()
+  widget <- drawPedigreeDiagram(.saveRhesusLayout())
+  ids <- .saveRhesusPed()$id
+  pdf <- file.path(.saveTmp(), "rhesus.pdf")
+  savePedigreeDiagram(widget, pdf, width = 14, height = 7)
+
+  ## Measured: 567 words, 545 of them ids and 375 distinct (the 375 animals and
+  ## 170 repeat appearances), as the SVG's texts.
+  words <- .savePdfWords(pdf)
+  expect_identical(sum(words %in% ids), 545L)
+  expect_identical(length(unique(words[words %in% ids])), 375L)
+})
+
+test_that("dpi changes the PNG only: the SVG and the PDF are as they were", {
+  .skipUnlessBrowser()
+  widget <- .saveFourWidget()
+  dir <- .saveTmp()
+  svgs <- file.path(dir, c("one.svg", "two.svg"))
+  savePedigreeDiagram(widget, svgs[[1L]])
+  savePedigreeDiagram(widget, svgs[[2L]], dpi = 50)
+  expect_identical(readLines(svgs[[1L]], warn = FALSE),
+                   readLines(svgs[[2L]], warn = FALSE))
+
+  ## Measured: two PDFs of 86,943 bytes each, the same page size and words.
+  pdfs <- file.path(dir, c("one.pdf", "two.pdf"))
+  savePedigreeDiagram(widget, pdfs[[1L]])
+  savePedigreeDiagram(widget, pdfs[[2L]], dpi = 50)
+  one <- .savePdfPages(pdfs[[1L]])
+  two <- .savePdfPages(pdfs[[2L]])
+  expect_identical(one$size, two$size)
+  expect_equal(one$bytes, two$bytes, tolerance = 0.01)
+})
+
+test_that("a PDF or PNG file name in capitals is taken", {
+  .skipUnlessBrowser()
+  widget <- .saveFourWidget()
+  dir <- .saveTmp()
+  pdf <- file.path(dir, "FOUR.PDF")
+  png <- file.path(dir, "FOUR.PNG")
+  savePedigreeDiagram(widget, pdf)
+  savePedigreeDiagram(widget, png)
+  expect_identical(.savePdfPages(pdf)$pages, 1L)
+  expect_gt(.savePngSize(png)[["width"]], 0)
+})
+
+test_that("the widget is as it was after a PDF or a PNG, and no folder of the
+           function's is left", {
+  .skipUnlessBrowser()
+  widget <- .saveFourWidget()
+  before <- widget
+  for (name in c("x.pdf", "x.png")) {
+    savePedigreeDiagram(widget, file.path(.saveTmp(), name),
+                        width = 6, height = 4)
+    expect_identical(widget, before)
+  }
+  expect_length(list.files(tempdir(), pattern = "^pedkindraw-save-"), 0L)
+})
+
+test_that("a time limit stops a PDF or a PNG with the same message and leaves
+           nothing behind", {
+  .skipUnlessBrowser()
+  withr::local_options(pedkindraw.saveTimeout = 0.01)
+  dir <- .saveTmp()
+  for (name in c("x.pdf", "x.png")) {
+    file <- file.path(dir, name)
+    expect_error(savePedigreeDiagram(.saveFourWidget(), file),
+                 "did not finish drawing within", fixed = TRUE)
+    expect_false(file.exists(file))
+  }
+  expect_length(list.files(tempdir(), pattern = "^pedkindraw-save-"), 0L)
+})
+
+test_that("a page that never returns while it is printed or photographed
+           stops within the limit", {
+  .skipUnlessBrowser()
+  skip_if_not_installed("mockery")
+  ## The recording is stubbed to an SVG whose script never returns, so it is
+  ## the printing and the photographing that wait. Measured: both stop after
+  ## 3.1 s for a limit of 3, with the message, no file and no folder.
+  stuck <- paste0(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="10in" height="5in" ',
+    'viewBox="0 0 960 480"><rect width="100%" height="100%" fill="#ffffff"/>',
+    "<script>for (;;) {}</script></svg>"
+  )
+  mockery::stub(savePedigreeDiagram, ".recordDiagramSvg",
+                list(svg = stuck, x = 0, y = 0, w = 960, h = 480))
+  withr::local_options(pedkindraw.saveTimeout = 3)
+  widget <- .saveFourWidget()
+  dir <- .saveTmp()
+  for (name in c("x.pdf", "x.png")) {
+    file <- file.path(dir, name)
+    elapsed <- system.time(
+      expect_error(savePedigreeDiagram(widget, file),
+                   "did not finish drawing within", fixed = TRUE)
+    )[["elapsed"]]
+    expect_lt(elapsed, 20)
+    expect_false(file.exists(file))
+  }
   expect_length(list.files(tempdir(), pattern = "^pedkindraw-save-"), 0L)
 })
 

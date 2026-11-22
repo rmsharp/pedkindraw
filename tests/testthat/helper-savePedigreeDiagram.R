@@ -6,7 +6,8 @@
 ## serves test_savePedigreeDiagram.R: the pedigrees the tests draw (the help
 ## example's four animals, an 18-animal pedigree with all seven marks, the 12
 ## typed shapes, the 375 rhesus animals), readers of the SVG text the function
-## writes, and the photograph-and-compare of the live widget with the file, run
+## writes and (G16b, S71) of a PDF's pages and words and a PNG's size, and the
+## photograph-and-compare of the live widget with the file (an SVG or a PNG), run
 ## in headless Chrome as docs/planning/picture-files-plan.md section 11's
 ## measures ran it.
 ##
@@ -155,6 +156,60 @@
   )
 }
 
+## ---- reading a PDF and a PNG (G16b) ------------------------------------------
+
+## The text of a PDF with its zero bytes dropped, for reading the plain-text
+## parts of the file: Chrome writes the page tree and each page's /MediaBox
+## uncompressed. Not a PDF reader: it reads files Chrome made.
+.savePdfText <- function(file) {
+  bytes <- readBin(file, "raw", file.size(file))
+  rawToChar(bytes[bytes != as.raw(0L)])
+}
+
+## The pages of a PDF: how many, and each one's width and height in points.
+.savePdfPages <- function(file) {
+  text <- .savePdfText(file)
+  found <- regmatches(text, gregexpr("/MediaBox *\\[[^]]*\\]", text,
+                                     useBytes = TRUE))[[1L]]
+  boxes <- lapply(strsplit(gsub("^/MediaBox *\\[|\\]$", "", found), " +"),
+                  as.numeric)
+  list(
+    pages = length(regmatches(text, gregexpr("/Type */Page[^s]", text,
+                                             useBytes = TRUE))[[1L]]),
+    size = do.call(rbind, lapply(boxes, function(b) {
+      c(width = b[[3L]] - b[[1L]], height = b[[4L]] - b[[2L]])
+    })),
+    bytes = file.size(file)
+  )
+}
+
+## Where poppler's pdftotext is not installed, the tests that read a PDF's
+## words skip: there is no PDF reader in R's own library (the plan's dragon 9).
+.skipUnlessPdftotext <- function() {
+  if (!nzchar(Sys.which("pdftotext"))) skip("pdftotext is not installed")
+}
+
+## The words of a PDF's first page, in the order pdftotext -bbox gives them.
+.savePdfWords <- function(file) {
+  xml <- system2(Sys.which("pdftotext"), c("-bbox", shQuote(file), "-"),
+                 stdout = TRUE, stderr = FALSE)
+  words <- regmatches(xml, regexpr(">[^<]+</word>", xml))
+  words <- gsub("^>|</word>$", "", words)
+  words <- gsub("&lt;", "<", words, fixed = TRUE)
+  words <- gsub("&gt;", ">", words, fixed = TRUE)
+  gsub("&amp;", "&", words, fixed = TRUE)
+}
+
+## A PNG's width and height in pixels, from its header (the signature, then
+## the IHDR chunk, whose first eight bytes are the two sizes).
+.savePngSize <- function(file) {
+  bytes <- readBin(file, "raw", 24L)
+  signature <- as.raw(c(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a))
+  stopifnot(identical(bytes[1:8], signature))
+  number <- function(b) sum(as.integer(b) * 256^(3:0))
+  c(width = number(bytes[17:20]), height = number(bytes[21:24]))
+}
+
 ## ---- Chrome ----------------------------------------------------------------
 
 ## The browser of these tests: its own, not the shared one, started with LCD
@@ -247,7 +302,16 @@
   }
   live <- photograph(list(x = box$x, y = box$y, width = box$w,
                           height = box$h))
-  session$go_to(paste0("file://", file), timeout_ = 30, delay = 0.3)
+  ## A PNG is shown through a page of its own, at its own size in the page's
+  ## corner, so that its pixels are photographed as they are (G16b).
+  target <- file
+  if (grepl("\\.png$", file, ignore.case = TRUE)) {
+    target <- withr::local_tempfile(fileext = ".html")
+    writeLines(sprintf(paste0('<html><body style="margin:0"><img src="file://',
+                              '%s" style="display:block"></body></html>'),
+                       file), target)
+  }
+  session$go_to(paste0("file://", target), timeout_ = 30, delay = 0.3)
   drawn <- photograph(list(x = 0, y = 0, width = box$w, height = box$h))
   session$go_to("about:blank", timeout_ = 30)
   compared <- .saveEvaluate(session, paste0(
