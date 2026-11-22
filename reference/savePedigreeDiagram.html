@@ -62,7 +62,7 @@ and each id as text that a reader can select, search and zoom to.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">savePedigreeDiagram</span><span class="op">(</span><span class="va">diagram</span>, <span class="va">file</span>, width <span class="op">=</span> <span class="cn">NULL</span>, height <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">savePedigreeDiagram</span><span class="op">(</span><span class="va">diagram</span>, <span class="va">file</span>, width <span class="op">=</span> <span class="cn">NULL</span>, height <span class="op">=</span> <span class="cn">NULL</span>, dpi <span class="op">=</span> <span class="fl">300</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,7 +75,8 @@ and each id as text that a reader can select, search and zoom to.</p>
 
 <dt id="arg-file">file<a class="anchor" aria-label="anchor" href="#arg-file"></a></dt>
 <dd><p>the file to write, one file name. Its ending, in any case,
-chooses the kind of file: <code>.svg</code>. The folder must exist.</p></dd>
+chooses the kind of file: <code>.svg</code>, <code>.pdf</code> or <code>.png</code>. The
+folder must exist.</p></dd>
 
 
 <dt id="arg-width-height">width, height<a class="anchor" aria-label="anchor" href="#arg-width-height"></a></dt>
@@ -84,6 +85,14 @@ chooses the kind of file: <code>.svg</code>. The folder must exist.</p></dd>
 The widget is drawn at <code>width * 96</code> by <code>height * 96</code> pixels, so
 the drawing fills the page, with its legend at the right.</p></dd>
 
+
+<dt id="arg-dpi">dpi<a class="anchor" aria-label="anchor" href="#arg-dpi"></a></dt>
+<dd><p>the pixels per inch of the page in a <code>.png</code> file, one
+positive number (the default is 300): a page of 7 by 5 inches is 2100 by
+1500 pixels. An <code>.svg</code> or <code>.pdf</code> file is vector and has no
+pixels, so the number does not change it; it is checked for every kind of
+file.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -91,19 +100,25 @@ the drawing fills the page, with its legend at the right.</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Only <code>.svg</code> files are written by this version; <code>.pdf</code> and
-<code>.png</code> stop with a message.</p>
+    <p>The ending of <code>file</code> chooses the kind of file: <code>.svg</code>, the
+recorded drawing as it is; <code>.pdf</code>, that drawing printed as one page of
+the picture's size, still vector, with each id as text (each dashed line is
+written as a row of short strokes, because Chrome writes every dash of a
+dashed line as an outline and a pedigree with many repeat animals would
+otherwise be a PDF of several megabytes); or <code>.png</code>, a photograph of
+the same drawing at <code>dpi</code> pixels per inch of the page.</p>
 <p>The widget on screen draws an id only when it would be 4 pixels tall, so a
 large pedigree shows no ids until a reader zooms in. A file has no zoom, so
 the function writes every id: it lowers that limit on a copy of the widget,
 and the widget <code>diagram</code> itself is not changed.</p>
 <p>The picture is the widget's size in the browser, 10 inches (960 pixels)
 wide, unless <code>width</code> or <code>height</code> say otherwise. The drawing and
-its legend are drawn for that page, and the SVG's own size is the page, so
+its legend are drawn for that page, and the file's own size is the page, so
 it prints at that size.</p>
-<p>The function starts its own headless Chrome for each call and closes it, and
-stops if the drawing is not done within 60 seconds
-(<code>options(pedkindraw.saveTimeout = seconds)</code> changes that).</p>
+<p>The function starts its own headless Chrome for each call (two for a
+<code>.pdf</code> or <code>.png</code>) and closes it, and stops if the drawing is not
+done within 60 seconds (<code>options(pedkindraw.saveTimeout = seconds)</code>
+changes that).</p>
     </div>
     <div class="section level2">
     <h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a></h2>
@@ -111,7 +126,9 @@ stops if the drawing is not done within 60 seconds
 
 <p>The <span class="pkg">chromote</span> package, and Google Chrome or Chromium on the computer
 (set <code>CHROMOTE_CHROME</code> to its path if <span class="pkg">chromote</span> cannot find
-it). Both are checked before anything is drawn.</p>
+it). Both are checked before anything is drawn. A <code>.pdf</code> or
+<code>.png</code> file also needs <span class="pkg">jsonlite</span>, which <span class="pkg">chromote</span> needs
+too.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -136,10 +153,12 @@ it). Both are checked before anything is drawn.</p>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">ped</span><span class="op">$</span><span class="va">gen</span> <span class="op">&lt;-</span> <span class="fu"><a href="findGeneration.html">findGeneration</a></span><span class="op">(</span><span class="va">ped</span><span class="op">$</span><span class="va">id</span>, <span class="va">ped</span><span class="op">$</span><span class="va">sire</span>, <span class="va">ped</span><span class="op">$</span><span class="va">dam</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="va">diagram</span> <span class="op">&lt;-</span> <span class="fu"><a href="drawPedigreeDiagram.html">drawPedigreeDiagram</a></span><span class="op">(</span><span class="fu"><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></span><span class="op">(</span><span class="va">ped</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".svg"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu">savePedigreeDiagram</span><span class="op">(</span><span class="va">diagram</span>, <span class="va">file</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw">for</span> <span class="op">(</span><span class="va">kind</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">".svg"</span>, <span class="st">".pdf"</span>, <span class="st">".png"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="va">kind</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">savePedigreeDiagram</span><span class="op">(</span><span class="va">diagram</span>, <span class="va">file</span>, width <span class="op">=</span> <span class="fl">7</span>, height <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

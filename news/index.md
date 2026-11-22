@@ -326,28 +326,33 @@ why.
   it from (a founder only where your order named it); `mate` holds your
   rows, then the layout’s own row for each other mating (none for an
   animal with three or more matings, where a row can move its mates).
-- New: `savePedigreeDiagram(diagram, file, width, height)` writes the
-  widget
+- New: `savePedigreeDiagram(diagram, file, width, height, dpi)` writes
+  the widget
   [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
-  returns as an SVG file, from a script: before, a drawing could be
-  saved only as a web page, or by clicking its “Export Diagram (PNG)”
-  button in a browser. A headless Chrome (the chromote package and
-  Chrome or Chromium on the computer) runs the same drawing the widget
-  shows and a recording layer writes it, so every mark, colour and
-  legend row comes out as drawn, the legend’s pictures as vector
-  pictures, and every id as text a reader can select and zoom to: the
-  widget draws an id only when it would be 4 pixels tall, so its 375
-  rhesus animals show none until zoomed in, and the file has all 545 id
-  labels (375 distinct, the rest repeat appearances). `width` and
-  `height` are the page in inches; left out, the widget’s own size, 10
-  inches wide. Measured against the live widget in Chrome 157 on macOS,
-  over the pixels that are not white in either: on the four animals and
-  12 typed shapes none of the drawing’s and 0.03% of the legend’s differ
-  by more than 100 in a colour channel, on an 18-animal pedigree with
-  all seven marks 0.26% and 0.07%. Only `.svg` is written so far: `.pdf`
-  and `.png` stop with a message. It stops, saying what is missing,
-  without chromote (in Suggests) or Chrome. nprcgenekeepr has no such
-  function.
+  returns as an SVG, a PDF or a PNG file (the file’s ending chooses),
+  from a script: before, a drawing could be saved only as a web page, or
+  by clicking its “Export Diagram (PNG)” button in a browser. A headless
+  Chrome (the chromote package and Chrome or Chromium on the computer)
+  runs the same drawing the widget shows and a recording layer writes
+  it, so every mark, colour and legend row comes out as drawn, the
+  legend’s pictures as vector pictures, and every id as text a reader
+  can select and zoom to: the widget draws an id only when it would be 4
+  pixels tall, so its 375 rhesus animals show none until zoomed in, and
+  the file has all 545 id labels (375 distinct, the rest repeat
+  appearances). `width` and `height` are the page in inches; left out,
+  the widget’s own size, 10 inches wide. The PDF is that drawing on one
+  page of that size, still vector with its ids as text; each dashed line
+  is written as a row of short strokes, because Chrome would otherwise
+  write every dash as an outline (the 375 animals on a 14 by 7 inch
+  page: 1.0 MB, 5.8 MB without). The PNG is the page at `dpi` pixels per
+  inch, 300 unless told (a 7 by 5 inch page is 2100 by 1500 pixels).
+  Measured against the live widget in Chrome 157 on macOS, over the
+  pixels that are not white in either, for the SVG and for the PNG at 96
+  dpi: on the four animals none of the drawing’s and 0.03% of the
+  legend’s differ by more than 100 in a colour channel, on an 18-animal
+  pedigree with all seven marks 0.26% and 0.07%. It stops, saying what
+  is missing, without chromote (in Suggests) or Chrome. nprcgenekeepr
+  has no such function.
 
 ### Kinship and relatedness
 
