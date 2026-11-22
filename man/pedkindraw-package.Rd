@@ -14,6 +14,7 @@ Draws pedigrees as interactive 'visNetwork' graphs that can be annotated, and co
 with a twins table, a kinship matrix and layout hints, and
 \code{\link[=drawPedigreeDiagram]{drawPedigreeDiagram()}} draws the layout as an interactive graph.
 \code{\link[=makePedigreeDiagramData]{makePedigreeDiagramData()}} makes a simpler drawing's nodes and edges.
+\code{\link[=savePedigreeDiagram]{savePedigreeDiagram()}} saves a drawing as an SVG, a PDF or a PNG file.
 }
 
 \section{Kinship and relatedness}{

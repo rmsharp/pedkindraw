@@ -9,6 +9,7 @@
 #' with a twins table, a kinship matrix and layout hints, and
 #' [drawPedigreeDiagram()] draws the layout as an interactive graph.
 #' [makePedigreeDiagramData()] makes a simpler drawing's nodes and edges.
+#' [savePedigreeDiagram()] saves a drawing as an SVG, a PDF or a PNG file.
 #'
 #' @section Kinship and relatedness:
 #' [kinship()] computes the kinship matrix, [ibdMatrix()] builds an IBD matrix

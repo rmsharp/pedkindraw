@@ -166,5 +166,7 @@ diagram <- drawPedigreeDiagram(layout)
 ## page with htmlwidgets::saveWidget(diagram, "pedigree.html").
 }
 \seealso{
-\code{\link{makePedigreeMatingLayout}}
+\code{\link{makePedigreeMatingLayout}}, and
+\code{\link{savePedigreeDiagram}} to save the drawing as an SVG, a PDF or
+a PNG file
 }
