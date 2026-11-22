@@ -35,8 +35,8 @@ third, the line width split off by Mark's pick; S63: the line width, `lineWidth`
 G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`); G15a DONE (S65, the layout).
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
-G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). Next: G16c (the whole large pedigree on one page and the
-documents), then G17's planning session, before 17g.
+G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
+documents say how to save a drawing), so G16 DONE. Next: G17's planning session, before 17g.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -728,6 +728,12 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   warnings, 1 NOTE (the new submission), tests 16,283 expectations, 581 s. On GitHub (S71's push) the two word tests skip on Ubuntu
   and macOS (no `pdftotext`) and failed on Windows, where Git's `pdftotext` cannot read the file: the test helper is
   repaired (S71); the Windows job's hang is open (`methodology/BACKLOG.md`).
+- **G16c (S72; R147):** no new package and no change under `R/` but two help sentences. The drawing vignette's two example chunks
+  that start Chrome (`saveFiles`, `colonyFiles`) are `eval = interactive()`, so the build on CRAN's machines starts none; its
+  hidden chunks check only what needs no browser. Three new Chrome tests skip on CRAN; the six documents' tests read the
+  README, the vignettes, `man/` and `NEWS.md` from the source tree and so skip under `R CMD check` (the check reads `SKIP 6`).
+  `R CMD check --as-cran` here with `NOT_CRAN=true` and the connection check on: 0 errors, 0 warnings, 1 NOTE (the new
+  submission), `[ FAIL 0 | WARN 0 | SKIP 6 | PASS 16306 ]`, 594 s.
 
 ### Phase 17g. The timing plan (a planning session; R82)
 

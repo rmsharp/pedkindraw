@@ -18,8 +18,8 @@ S55: the carrier mark, 2 of 6; R135; S56: the proband and consultand marks, 3 of
 declared matings); G15b DONE (pedkindraw S66, `getMatings()` lists them); G15c DONE (pedkindraw S67, the
 converters keep them), so G15 DONE. G16's plan written (pedkindraw S68; R142;
 `docs/planning/picture-files-plan.md`); G16a DONE (pedkindraw S69, the SVG file; R143); G16a's CI repair DONE (S70; R145);
-G16b DONE (S71, the PDF and the PNG file; R146). Next: G16c, the whole large pedigree on one page and the documents, in pedkindraw
-(section 5.1);
+G16b DONE (S71, the PDF and the PNG file; R146); G16c DONE (S72, the whole large pedigree on one page and the documents; R147), so G16 DONE.
+Next: G17's planning session, an app, in pedkindraw (section 5.1);
 in nprcgenekeepr N1 and
 N2 are done (its S1189 and S1190, section
 5.2).

@@ -6,7 +6,7 @@ prototype, section 10). **Governs:** Phase G16 of `docs/planning/gaps-and-shared
 row), gaps A1 and A2 of `docs/research/pedkindraw-gaps-2026-11-18.md` (section 3). **Ruling made here:** R142 (Mark's
 three picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written; G16a DONE in
 S69 (section 11, which corrects 4.3's and 4.5's legend figures and the plan's dragon 4) and its CI repair in S70
-(section 13); G16b DONE in S71 (section 14, R146); G16c next.
+(section 13); G16b DONE in S71 (section 14, R146); G16c DONE in S72 (section 15, R147), so G16 is DONE.
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0, visNetwork 2.1.4 and chromote 0.5.1 from this project's renv
 library; Google Chrome 157.0.8103.51; pedkindraw at `ec8356b` (its `R/` unchanged since `1a6092e`); nprcgenekeepr at
@@ -315,6 +315,7 @@ a print driver.
   vignette builds with its chunks guarded and the site builds; every statement the documents make is checked in a chunk.
 - **Surface:** as common; the documents are checked by building the vignettes and the site (GitHub Actions).
 - **Session boundary:** close out when DONE; G16 DONE (the gaps plan's row, the backlog item).
+- **DONE (S72):** one session; the result, the deviations from this section and the dragons found are section 15.
 
 **Sessions:** 1 (this) + 3 to 4 (a guess; the gaps plan guessed 1 + 3-6, and Mark's pick of the recorded drawing is
 the smaller way).
@@ -914,3 +915,74 @@ say nothing of `.pdf` and `.png`.
     printed when the tests have finished. What stays alive at exit is the question: Chromes the suite leaves (the shared
     `chromote` one the other Chrome tests start, the helper's own) or `websocket` and `later` threads. First tries are in
     `methodology/BACKLOG.md` (close every Chrome at the end of the suite; list the processes left).
+
+---
+
+## 15. What G16c delivered (pedkindraw S72; R147)
+
+Mark's three pre-RED picks, each the recommended option (R147, `docs/planning/standalone-pedigree-package-plan.md` section 2):
+count the ids from the SVG in Chrome and from the PDF by pdftotext where it is installed (no new package); a floor of 100
+differing pixels for the PNG's ids with the documents saying an id is about 3 pixels high at 300 dpi; a guarded example with
+the numbers checked in the tests. Strict TDD, one session: claim `8cada92`, measures `ea1eeb0`, RED `3fd1caf`, GREEN
+`c1836a1` (help and NEWS), `61370be` (README and the two vignettes), `1187457` (the `largeIds` probe), REFACTOR `6dcbf76`.
+
+### 15.1 Measured first (the three scripts are `docs/planning/picture-files-prototype/g16cMeasure1-3.R`; Mac, Chrome, poppler 26.08)
+
+The 375 animals with their 3 twin pairs through `savePedigreeDiagram()`, each PDF 567 words, 545 of them ids, **375 distinct,
+0 overlapping another word** (strict, and with a tolerance of 1% of the smaller box), whatever the page:
+
+| Page | PDF bytes | Time | An id's box, pt high |
+|---|---:|---:|---:|
+| 14 x 7 in | 1,025,352 | 3.4 s | 0.75 |
+| letter landscape, 11 x 8.5 | 990,100 | 2.5 s | 0.59 |
+| letter portrait, 8.5 x 11 | 939,619 | 2.4 s | 0.45 |
+| 7 x 5 in | 924,221 | 2.5 s | 0.37 |
+
+The SVG (14 x 7, 1.4 s, 846,685 B) writes each id at `font-size` 0.893 of a 1344-wide viewBox: 545 id texts, 375 distinct, boxes
+3.42 x 1.01 px at the median in Chrome, **0 overlapping another id** (the PDF's count again). The PNG (14 x 7, 2.4 s, 354,965
+B) is 4200 x 2100; an id is 0.89 px high at 96 dpi and 2.79 px at 300; the picture with and without its 545 id texts differs
+in 0 pixels at 96 dpi and 347 at 300 (of 271,930 ink pixels), the same 347 against the function's own PNG. `pdftools` 3.9.1
+(poppler 26.08, a scratch library, not in renv) counts the same 545 and 375 on every PDF in 0.08 s but reads whole-number
+boxes: an id's height 0.
+
+### 15.2 Where the build differs from section 7's G16c
+
+- **The code was already built:** G16b wrote the function, so the three colony tests lock it and pass at once (22
+  expectations, 0 failed). RED's failures are the six documents' tests (25 of 27 expectations); each colony test was shown
+  able to fail on two throwaway copies of the tree, the recording layer dropping every text under 2 px (12 of 22 fail) and
+  making them 30 times larger (9 fail, the PNG test still passing). The tests are in `test_savePedigreeDiagramColony.R` and
+  `test_savePedigreeDiagramDocs.R`; the PDF test runs only where `pdftotext` reads a PDF (this Mac, the Linux box).
+- **The PNG's "ids drawn at 6,200 px and wider" is the live-widget route (4.6),** not this function: the recorded PNG writes
+  every id at any size, so its test states the 4200 x 2100 size and the id ink, not a width.
+- **"Every statement the documents make is checked in a chunk"** is split as Mark picked: what needs no browser is checked in
+  hidden chunks (the argument names, `dpi`'s default 300, 170 repeat nodes and 375 + 170 = 545 ids written), the numbers a
+  browser gives by the tests; the two example chunks that start Chrome are `eval = interactive()`.
+- **The site build is read on GitHub,** not here: pkgdown is not installed in renv's library (the vignettes were built by
+  `rmarkdown::render()` in a scratch copy, hidden checks passing, and by `R CMD check`).
+- **kinship2's 517 and Pedixplorer's 472 labels** (section 7's G16c line) are 520 and 473 in `tools/gapCases.R`'s `largeIds`
+  case today (the rhesus pedigree without its twins table); not traced.
+- **`pdftools` was measured and not adopted** (R147): its boxes cannot check overlap.
+
+### 15.3 Verified on the final tree (all S72's runs)
+
+The full suite at `1187457` (GREEN 3; the REFACTOR after it changed three test files only, read below): 85 files, 1,063
+tests, **16,333 expectations, 0 failed, 0 errors, SKIP 0, WARN 0** (536 s; S71's 16,284 plus the 49 new); `R CMD check --as-cran` (scratch folder, `NOT_CRAN=true`,
+`_R_CHECK_CONNECTIONS_LEFT_OPEN_=true`) at `1187457`: 0 errors, 0 warnings, 1 NOTE (the new submission),
+`[ FAIL 0 | WARN 0 | SKIP 6 | PASS 16306 ]` (594 s; the six skips are the documents' tests, which need the source tree);
+`tools/checkExamples.sh` OK; the three `savePedigreeDiagram` files after the REFACTOR: 40 tests, 266 expectations, 0 failed,
+SKIP 0, WARN 0 on the Mac and in the Linux box; `lint_package()` 0; `roxygenise()` no change; drift 91 / 23 / 0.
+
+### 15.4 Dragons found in G16c
+
+38. **A screenshot clip wider than the browser's window is blank beyond it, again (dragon 2).** The first PNG helper photographed
+    a 1344 px page in the test Chrome's 1200 px window and read 25,188 differing pixels on every copy of the tree, the code's or
+    not; the constant, not the colony, showed the fault. Take a photograph with `captureBeyondViewport = TRUE`.
+39. **Prove a test that locks existing behaviour on a throwaway copy with the behaviour broken** (`git archive HEAD`, the new
+    files copied in, one line of `inst/js/recordCanvas.js` changed): the PNG test passed on the copy that dropped the ids until
+    it also compared with the SVG as written; a test that cannot fail says nothing.
+40. **A document's key words pass for the wrong reason:** the README's `badge.svg` and `README-pedigree.png`, the vignette's
+    other `375`s and "pixels" made 8 of 27 expectations pass before any edit. Look for the words beside the call the sentence is
+    about (`.docsAfter()` in `test_savePedigreeDiagramDocs.R`), and count what passes in RED, not only what fails.
+41. **An id is under a point high on any page the colony fits:** 0.75 pt on 14 x 7 inches, 0.45 on letter portrait, 2.8 px in a 300
+    dpi PNG. The files hold every id as text to zoom to; nothing in G16 makes them readable at print size (a colony needs a
+    page far larger than 14 x 7 inches, or a smaller drawing).
