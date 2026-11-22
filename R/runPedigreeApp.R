@@ -2,7 +2,8 @@
 ## This file is part of pedkindraw
 ## pedkindraw's own code, not copied from nprcgenekeepr (pedkindraw S74, plan
 ## Phase G17a, gap A3 of docs/research/pedkindraw-gaps-2026-11-18.md; rulings
-## R148 and R149, docs/planning/pedigree-app-plan.md sections 5, 7 and 11).
+## R148 and R149, docs/planning/pedigree-app-plan.md sections 5, 7 and 11;
+## its help on choosing the animals pedkindraw S75, G17b, R150, section 12).
 
 #' Draw a pedigree in an app, from a file, with no code
 #'
@@ -25,13 +26,27 @@
 #'     U, and the app says so; any other value is drawn as unknown. Every
 #'     other column is kept, so a column pedkindraw reads by name is drawn as
 #'     a script draws it.
-#'   \item \strong{See everyone drawn} on the Diagram tab, with
+#'   \item \strong{See the pedigree drawn} on the Diagram tab, with
 #'     \code{gen} added by \code{\link{findGeneration}}, laid out by
 #'     \code{\link{makePedigreeMatingLayout}}. What the layout says (a
 #'     warning, or an animal it leaves out) is shown under the count of
-#'     animals drawn; when a pedigree cannot be drawn, the app says so.
+#'     animals drawn; when a pedigree cannot be drawn, the app says so. A
+#'     sire or dam with no row of its own is added by
+#'     \code{\link{addParents}}, and the app names it.
+#'   \item \strong{Choose the animals to draw}: everyone; one family (from
+#'     \code{\link{findPedigreeNumber}}, the families of two or more
+#'     animals listed largest first); focal animals with their ancestors and
+#'     descendants (\code{\link{trimPedigree}} and
+#'     \code{\link{getDescendantPedigree}}), each other parent of a
+#'     descendant drawn too, without its own parents; or focal animals'
+#'     near relatives (\code{\link{getNearRelativePedigree}}, 3 by
+#'     default). Type the focal animals' ids, or click an animal in the
+#'     drawing to make it the focal animal (a repeated animal's symbol
+#'     counts as the animal). With more than 1,000 animals chosen, the app
+#'     asks before drawing them, which can take a minute or more.
 #'   \item \strong{See the records' problems} on the Checks tab, from
-#'     \code{\link{checkPedigree}}, and the animals read on the Animals tab.
+#'     \code{\link{checkPedigree}} on the whole file, and the animals chosen
+#'     on the Animals tab.
 #' }
 #'
 #' @param ped \code{NULL}, or a data frame with the columns \code{id},

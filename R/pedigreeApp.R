@@ -2,7 +2,8 @@
 ## This file is part of pedkindraw
 ## pedkindraw's own code, not copied from nprcgenekeepr (pedkindraw S74, plan
 ## Phase G17a, gap A3 of docs/research/pedkindraw-gaps-2026-11-18.md; rulings
-## R148 and R149, docs/planning/pedigree-app-plan.md sections 5, 7 and 11).
+## R148 and R149, docs/planning/pedigree-app-plan.md sections 5, 7 and 11;
+## choosing the animals pedkindraw S75, Phase G17b, R150, section 12).
 ## The app runPedigreeApp() starts: its page and its server, internal so they
 ## can change (R148). shiny is in Suggests, so every shiny call is written
 ## shiny:: and runs only after runPedigreeApp() has found shiny.
@@ -161,6 +162,108 @@
   cbind(four, data[, rest, drop = FALSE])
 }
 
+#' Add a row for each parent with no row of its own (R150)
+#'
+#' @param ped the pedigree.
+#' @return A list: \code{ped}, the pedigree with \code{addParents()}'s rows
+#'   (unchanged when every parent has a row), and \code{added}, the ids
+#'   added.
+#' @noRd
+.appAddParents <- function(ped) {
+  parents <- c(ped$sire, ped$dam)
+  if (!any(!is.na(parents) & !parents %in% ped$id)) {
+    return(list(ped = ped, added = character(0L)))
+  }
+  ped <- addParents(ped)
+  list(ped = ped, added = ped$id[ped$recordStatus == "added"])
+}
+
+#' The ids typed in the focal box
+#'
+#' @param text what was typed, or \code{NULL}.
+#' @return The ids, split at commas, semicolons, spaces, tabs and new lines,
+#'   each once, in the order typed.
+#' @noRd
+.appFocalIds <- function(text) {
+  ids <- as.character(unlist(strsplit(as.character(text), "[,;[:space:]]+")))
+  unique(ids[nzchar(ids)])
+}
+
+#' The families the app lists, for a select input
+#'
+#' @param family each animal's family, from \code{findPedigreeNumber()}.
+#' @return The families of two or more animals, largest first (the lower
+#'   number first among equals), each named "Family n: k animals".
+#' @noRd
+.appFamilyChoices <- function(family) {
+  sizes <- table(family)
+  sizes <- sizes[sizes >= 2L]
+  numbers <- as.character(names(sizes))
+  numbers <- numbers[order(-as.integer(sizes), as.numeric(numbers))]
+  stats::setNames(numbers, sprintf("Family %s: %d animals", numbers,
+                                   as.integer(sizes[numbers])))
+}
+
+#' Say how many animals the family list leaves out
+#'
+#' @param family each animal's family, from \code{findPedigreeNumber()}.
+#' @return A sentence counting the families of one animal, or \code{""}.
+#' @noRd
+.appAloneNote <- function(family) {
+  n <- sum(table(family) == 1L)
+  if (n == 0L) {
+    return("")
+  }
+  sprintf(ngettext(n,
+                   "%s animal has no relative in the file and is not listed.",
+                   paste("%s animals have no relative in the file and are not",
+                         "listed.")),
+          format(n, big.mark = ","))
+}
+
+#' Focal animals with their ancestors and descendants (F7, R150)
+#'
+#' @param ped the pedigree.
+#' @param focal the focal animals' ids, each with a row.
+#' @return The rows of \code{ped} that are the focal animals, their
+#'   ancestors and their descendants, with each other parent of theirs added,
+#'   its \code{sire} and \code{dam} set to \code{NA}; in \code{ped}'s order.
+#' @noRd
+.appLineal <- function(ped, focal) {
+  keep <- union(trimPedigree(ped, focal)$id,
+                getDescendantPedigree(ped, focal)$id)
+  kept <- ped[ped$id %in% keep, ]
+  parents <- c(kept$sire, kept$dam)
+  outside <- parents[!is.na(parents) & !parents %in% keep]
+  lineal <- ped[ped$id %in% c(keep, outside), ]
+  added <- lineal$id %in% outside
+  lineal$sire[added] <- NA
+  lineal$dam[added] <- NA
+  lineal
+}
+
+#' The JavaScript a drawing runs when clicked: it sends the clicked nodes'
+#' ids to the server's input "clicked", even when they are the same as last
+#' time
+#' @noRd
+.appClickJs <- paste0("function(n) { Shiny.setInputValue('clicked', n.nodes, ",
+                      "{priority: 'event'}); }")
+
+#' The animals a click landed on
+#'
+#' @param nodes the clicked nodes' ids, as the drawing sends them.
+#' @param duplicateToReal the drawing's repeat nodes, named by their ids, or
+#'   \code{NULL}.
+#' @return The animals' ids: a repeat node is its animal, a mating dot or a
+#'   routing point is none.
+#' @noRd
+.appClickedAnimals <- function(nodes, duplicateToReal) {
+  ids <- as.character(unlist(nodes))
+  repeats <- ids %in% names(duplicateToReal)
+  ids[repeats] <- unname(duplicateToReal[ids[repeats]])
+  unique(ids[repeats | !grepl(.reservedIdPattern, ids)])
+}
+
 #' Draw a pedigree, keeping what the functions said
 #'
 #' Adds \code{gen} with \code{findGeneration()} and draws with
@@ -169,29 +272,35 @@
 #' notes, and an error is kept instead of stopping the app.
 #'
 #' @param ped the pedigree.
+#' @param onClick passed to \code{drawPedigreeDiagram()}.
 #' @return A list: \code{widget} (\code{NULL} when the drawing failed),
-#'   \code{notes} and \code{error} (\code{NULL} or the error's message).
+#'   \code{notes}, \code{error} (\code{NULL} or the error's message) and
+#'   \code{duplicateToReal}, the layout's repeat nodes (\code{NULL} when the
+#'   drawing failed).
 #' @noRd
-.appDraw <- function(ped) {
+.appDraw <- function(ped, onClick = NULL) {
   kept <- new.env(parent = emptyenv())
   kept$notes <- character(0L)
   keep <- function(condition, restart) {
     kept$notes <- c(kept$notes, trimws(conditionMessage(condition)))
     invokeRestart(restart)
   }
-  widget <- withCallingHandlers(
+  drawn <- withCallingHandlers(
     tryCatch({
       ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
-      drawPedigreeDiagram(makePedigreeMatingLayout(ped))
+      layout <- makePedigreeMatingLayout(ped)
+      list(widget = drawPedigreeDiagram(layout, onClick = onClick),
+           duplicateToReal = layout$duplicateToReal)
     }, error = function(e) e),
     warning = function(w) keep(w, "muffleWarning"),
     message = function(m) keep(m, "muffleMessage")
   )
-  if (inherits(widget, "error")) {
+  if (inherits(drawn, "error")) {
     return(list(widget = NULL, notes = kept$notes,
-                error = conditionMessage(widget)))
+                error = conditionMessage(drawn), duplicateToReal = NULL))
   }
-  list(widget = widget, notes = kept$notes, error = NULL)
+  list(widget = drawn$widget, notes = kept$notes, error = NULL,
+       duplicateToReal = drawn$duplicateToReal)
 }
 
 #' How many animals a drawing shows
@@ -215,7 +324,31 @@
         shiny::actionButton("sample", "Use the sample pedigree"),
         shiny::hr(),
         shiny::uiOutput("columns"),
-        shiny::textOutput("sexNote")
+        shiny::textOutput("sexNote"),
+        shiny::hr(),
+        shiny::radioButtons(
+          "view", "Animals to draw",
+          c(Everyone = "all", "One family" = "family",
+            "Focal animals with their ancestors and descendants" = "lineal",
+            "Focal animals' near relatives" = "near")
+        ),
+        shiny::conditionalPanel("input.view == 'family'",
+                                shiny::uiOutput("familyChoice")),
+        shiny::textAreaInput(
+          "focal", "Focal animals: type their ids, or click one in the drawing",
+          rows = 3L
+        ),
+        shiny::textOutput("focalNote"),
+        shiny::conditionalPanel(
+          "input.view == 'near'",
+          shiny::numericInput("howClose", "How close", 3L, min = 1L,
+                              step = 1L),
+          shiny::helpText(paste(
+            "2 holds the parents, offspring and full siblings; 3 adds",
+            "grandparents, grandoffspring, half siblings, aunts, uncles,",
+            "nephews and nieces; 4 adds first cousins."
+          ))
+        )
       ),
       shiny::mainPanel(
         width = 9L,
@@ -224,10 +357,12 @@
           shiny::tabPanel(
             "Diagram",
             shiny::textOutput("drawn"),
+            shiny::textOutput("added"),
             shiny::tagAppendAttributes(shiny::textOutput("problem"),
                                        style = "color: #b00020;"),
             shiny::tagAppendAttributes(shiny::textOutput("notes"),
                                        style = "white-space: pre-wrap;"),
+            shiny::uiOutput("large"),
             visNetwork::visNetworkOutput("diagram", height = "650px")
           ),
           shiny::tabPanel("Checks", shiny::textOutput("checkSummary"),
@@ -242,10 +377,12 @@
 #' The app's server
 #'
 #' @param ped \code{NULL}, or a pedigree to open as if read from a file.
+#' @param drawLimit the most animals drawn without asking first (R150).
 #' @return A server function for \code{shiny::shinyApp()}.
 #' @noRd
-.pedigreeAppServer <- function(ped = NULL) {
+.pedigreeAppServer <- function(ped = NULL, drawLimit = 1000L) {
   force(ped)
+  force(drawLimit)
   function(input, output, session) {
     rawData <- shiny::reactiveVal(ped)
     readProblem <- shiny::reactiveVal("")
@@ -294,9 +431,79 @@
       .appPedigree(rawData(), chosen())
     })
     checks <- shiny::reactive(checkPedigree(pedigree()))
-    drawing <- shiny::reactive({
+    completed <- shiny::reactive(.appAddParents(pedigree()))
+    families <- shiny::reactive({
+      ped <- completed()$ped
+      findPedigreeNumber(ped$id, ped$sire, ped$dam)
+    })
+
+    focalText <- shiny::reactiveVal("")
+    shiny::observeEvent(input$focal, focalText(input$focal))
+    focalIds <- shiny::reactive(.appFocalIds(focalText()))
+    view <- shiny::reactive(if (is.null(input$view)) "all" else input$view)
+    howClose <- shiny::reactive(if (is.null(input$howClose)) {
+      3L
+    } else {
+      input$howClose
+    })
+
+    choice <- shiny::reactive({
       shiny::req(ready())
-      .appDraw(pedigree())
+      ped <- completed()$ped
+      focal <- intersect(focalIds(), ped$id)
+      if (view() %in% c("lineal", "near") && length(focal) == 0L) {
+        return(list(rows = NULL, problem = ""))
+      }
+      close <- howClose()
+      if (view() == "near" && !(is.numeric(close) && length(close) == 1L &&
+                                  is.finite(close) && close >= 1.0)) {
+        return(list(rows = NULL,
+                    problem = "Choose how close: a number, 1 or more."))
+      }
+      rows <- tryCatch(switch(
+        view(),
+        family = if (is.null(input$family)) {
+          NULL
+        } else {
+          ped[as.character(families()) %in% input$family, ]
+        },
+        lineal = .appLineal(ped, focal),
+        near = getNearRelativePedigree(ped, focal, close),
+        ped
+      ), error = function(e) e)
+      if (inherits(rows, "error")) {
+        return(list(rows = NULL, problem = sprintf(paste0(
+          "The animals could not be chosen (%s). The Checks tab lists the ",
+          "records' problems."), conditionMessage(rows))))
+      }
+      list(rows = rows, problem = "")
+    })
+    shown <- shiny::reactive({
+      shiny::req(choice()$rows)
+      choice()$rows
+    })
+
+    approved <- shiny::reactiveVal(NULL)
+    shiny::observeEvent(input$drawAnyway, approved(shown()$id))
+    tooLarge <- shiny::reactive({
+      rows <- choice()$rows
+      !is.null(rows) && nrow(rows) > drawLimit &&
+        !identical(approved(), rows$id)
+    })
+    drawing <- shiny::reactive({
+      if (is.null(choice()$rows) || tooLarge()) {
+        return(NULL)
+      }
+      .appDraw(shown(), onClick = .appClickJs)
+    })
+
+    shiny::observeEvent(input$clicked, {
+      ids <- .appClickedAnimals(input$clicked, drawing()$duplicateToReal)
+      if (length(ids) > 0L) {
+        text <- paste(ids, collapse = "\n")
+        focalText(text)
+        shiny::updateTextAreaInput(session, "focal", value = text)
+      }
     })
 
     output$sexNote <- shiny::renderText({
@@ -309,7 +516,13 @@
           return(problem)
         }
       }
-      if (!ready() || is.null(drawing()$error)) {
+      if (!ready()) {
+        return("")
+      }
+      if (nzchar(choice()$problem)) {
+        return(choice()$problem)
+      }
+      if (is.null(drawing()$error)) {
         return("")
       }
       sprintf(paste0("The pedigree could not be drawn (%s). The Checks tab ",
@@ -320,6 +533,51 @@
         return("")
       }
       .appDrawnCount(drawing()$widget)
+    })
+    output$added <- shiny::renderText({
+      if (!ready() || length(completed()$added) == 0L) {
+        return("")
+      }
+      sprintf(paste0("Parents with no row of their own, added so the ",
+                     "pedigree can be drawn: %s."),
+              toString(completed()$added))
+    })
+    output$focalNote <- shiny::renderText({
+      if (!ready()) {
+        return("")
+      }
+      missing <- setdiff(focalIds(), completed()$ped$id)
+      if (length(missing) > 0L) {
+        return(sprintf("Not in the pedigree: %s.", toString(missing)))
+      }
+      if (view() %in% c("lineal", "near") && length(focalIds()) == 0L) {
+        return(paste0("Type the id of a focal animal, or click one in the ",
+                      "drawing."))
+      }
+      ""
+    })
+    output$familyChoice <- shiny::renderUI({
+      shiny::req(ready())
+      shiny::tagList(
+        shiny::selectInput("family", "Family",
+                           .appFamilyChoices(families())),
+        shiny::helpText(.appAloneNote(families()))
+      )
+    })
+    output$large <- shiny::renderUI({
+      shiny::req(ready())
+      if (!tooLarge()) {
+        return(NULL)
+      }
+      shiny::tagList(
+        shiny::p(sprintf(paste0(
+          "%s animals are chosen. Drawing more than %s can take a minute or ",
+          "more, and the app waits until it is done. Choose one family or ",
+          "focal animals, or draw them all."),
+          format(nrow(shown()), big.mark = ","),
+          format(drawLimit, big.mark = ","))),
+        shiny::actionButton("drawAnyway", "Draw anyway")
+      )
     })
     output$notes <- shiny::renderText({
       if (!ready()) {
@@ -341,6 +599,6 @@
       sprintf(ngettext(n, "%d problem found.", "%d problems found."), n)
     })
     output$checks <- shiny::renderTable(checks())
-    output$table <- shiny::renderTable(pedigree())
+    output$table <- shiny::renderTable(shown())
   }
 }
