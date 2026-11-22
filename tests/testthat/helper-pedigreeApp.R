@@ -2,8 +2,9 @@
 ## This file is part of pedkindraw
 ## Helpers for the app's tests (pedkindraw S74, plan Phase G17a, gap A3 of
 ## docs/research/pedkindraw-gaps-2026-11-18.md; rulings R148 and R149,
-## docs/planning/pedigree-app-plan.md sections 4, 7 and 11). Not copied from
-## nprcgenekeepr.
+## docs/planning/pedigree-app-plan.md sections 4, 7 and 11; .appViewsPed() and
+## .appClickNode() pedkindraw S75, Phase G17b, R150, section 12). Not copied
+## from nprcgenekeepr.
 ##
 ## The server tests run shiny::testServer() on small typed pedigrees with no
 ## browser, so they run everywhere shiny is installed, CRAN too. The browser
@@ -35,6 +36,26 @@
 .appFour <- function() {
   data.frame(id = c("s1", "d1", "o1", "o2"), sire = c(NA, NA, "s1", "s1"),
              dam = c(NA, NA, "d1", "d1"), sex = c("M", "F", "F", "M"))
+}
+
+#' Fourteen animals in three families, for choosing animals (G17b, S75)
+#'
+#' s1 has offspring by two dams, d1 (o1, o2) and d2 (o3), so the whole
+#' drawing holds a repeat of s1 (`__dup_s1_1`) and of o1 (`__dup_o1_1`);
+#' o1 and m1 (whose parents are ms and md) have g1. f1 and f2 have f3. z1
+#' has no parent and no offspring. findPedigreeNumber() numbers the
+#' families 1 (the first ten animals), 2 (f1, f2, f3) and 3 (z1).
+.appViewsPed <- function() {
+  data.frame(
+    id = c("s1", "d1", "d2", "o1", "o2", "o3", "ms", "md", "m1", "g1", "f1",
+           "f2", "f3", "z1"),
+    sire = c(NA, NA, NA, "s1", "s1", "s1", NA, NA, "ms", "m1", NA, NA, "f1",
+             NA),
+    dam = c(NA, NA, NA, "d1", "d1", "d2", NA, NA, "md", "o1", NA, NA, "f2",
+            NA),
+    sex = c("M", "F", "F", "F", "M", "M", "M", "F", "M", "F", "M", "F", "M",
+            "F")
+  )
 }
 
 #' A pedigree written as the file a user uploads
@@ -131,6 +152,30 @@
     }
     Sys.sleep(0.1)
   }
+}
+
+#' Click a node of the app's drawing with the mouse, as a user does
+#'
+#' Finds the node's place on the drawing's own canvas (the first canvas in
+#' the widget is the legend's) and sends a left button press and release
+#' there through Chrome's DevTools, so vis.js's click event and the
+#' drawing's onClick code run as for a user's click (measured before RED,
+#' S75: o1, a repeat node, a mating dot and g1 each reached Shiny).
+#'
+#' @param page the page, from .appPage().
+#' @param id the node's id.
+.appClickNode <- function(page, id) {
+  where <- .appJs(page, sprintf(paste0(
+    "(function() { const n = HTMLWidgets.find('#diagram').network; ",
+    "const d = n.canvasToDOM(n.getPositions(['%1$s'])['%1$s']); ",
+    "const r = n.canvas.frame.canvas.getBoundingClientRect(); ",
+    "return [r.left + d.x, r.top + d.y]; })()"), id))
+  for (type in c("mousePressed", "mouseReleased")) {
+    page$Input$dispatchMouseEvent(type = type, x = where[[1L]],
+                                  y = where[[2L]], button = "left",
+                                  clickCount = 1L)
+  }
+  invisible(where)
 }
 
 #' Open the app's page in the shared Chrome and wait for Shiny to connect

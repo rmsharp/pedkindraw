@@ -17,6 +17,11 @@
 ## pedigrees of a few animals and load the 375-animal sample without choosing
 ## its columns, which draws nothing; the sample is drawn in the browser test
 ## (test_pedigreeAppBrowser.R).
+##
+## pedkindraw S75 (G17b, R150): a parent with no row of its own is now added
+## with addParents() and the pedigree drawn; the test of a sire with no row
+## said "could not be drawn" before. G17b's own tests are in
+## test_pedigreeAppViews.R.
 
 test_that(".guessAppColumns() recognises both apps' names, ignoring case,
            spaces, dots and underscores", {
@@ -203,8 +208,8 @@ test_that("a file with fewer than four columns, an empty file and a file with
   })
 })
 
-test_that("a sire with no row stops the drawing; the app says so, shows what
-           findGeneration() said, and the Checks tab names the sire", {
+test_that("a sire with no row is added and named and the pedigree drawn; the
+           Checks tab still names the sire (R150)", {
   skip_if_not_installed("shiny")
   ped <- .appFour()
   ped$sire[4L] <- "s9"
@@ -212,19 +217,19 @@ test_that("a sire with no row stops the drawing; the app says so, shows what
   .appTestServer(.pedigreeAppServer(), {
     session$setInputs(file = file)
     .setAppColumns(session)
-    expect_identical(output$drawn, "")
-    expect_identical(output$problem,
-                     paste0("The pedigree could not be drawn (pdepth must not ",
-                            "be missing for any animal). The Checks tab lists ",
-                            "the records' problems."))
-    expect_match(output$notes,
-                 paste0("findGeneration: 1 id(s) could not be assigned a ",
-                        "generation"), fixed = TRUE)
+    expect_identical(output$added,
+                     paste0("Parents with no row of their own, added so the ",
+                            "pedigree can be drawn: s9."))
+    expect_identical(output$drawn, "5 animals drawn")
+    expect_identical(output$problem, "")
+    expect_identical(output$notes, "")
     expect_identical(checks(),
                      data.frame(check = "rowlessParents", id = "s9",
                                 detail = "sire of o2"))
     expect_identical(output$checkSummary, "1 problem found.")
     expect_match(output$checks, "<td> rowlessParents </td>", fixed = TRUE)
+    expect_match(output$table, "<td> s9 </td>", fixed = TRUE)
+    expect_match(output$table, "<td> added </td>", fixed = TRUE)
   })
 })
 

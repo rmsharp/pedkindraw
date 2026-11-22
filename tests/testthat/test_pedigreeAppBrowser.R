@@ -14,6 +14,10 @@
 ## collisions) were measured with pedkindraw's functions before RED (plan
 ## section 11.4); the node count is compared with drawPedigreeDiagram()'s, run
 ## here on the same rows.
+##
+## pedkindraw S75 (G17b, R150): the click test sends real mouse clicks through
+## Chrome's DevTools (.appClickNode(), helper-pedigreeApp.R), as a user clicks;
+## testServer() cannot show the focal box the server writes to (finding 4).
 
 .appSkips <- function() {
   skip_on_cran()
@@ -55,6 +59,48 @@ test_that("the sample, opened in the app in Chrome, is drawn as
                           "document.getElementById('problem').innerText"), "")
   app$process$kill()
   expect_false(app$process$is_alive())
+})
+
+test_that("in Chrome, a click on a repeat or an animal makes it the focal
+           animal, written in the focal box, and a click on a mating dot does
+           nothing (G17b, R150)", {
+  .appSkips()
+  app <- .startPedigreeApp(.appViewsPed())
+  page <- .appPage(app$url)
+  animalsInPage <- paste0("HTMLWidgets.find('#diagram').network.body.data.",
+                          "nodes.get().filter(n => !n.id.startsWith('__'))",
+                          ".length")
+  .appWaitFor(page, paste0("document.getElementById('drawn').innerText === ",
+                           "'13 animals drawn'"))
+  .appWaitFor(page, paste0("(function() { const w = HTMLWidgets.find(",
+                           "'#diagram'); return !!(w && w.network && ",
+                           "w.network.body.data.nodes.length > 0); })()"))
+  .appClickNode(page, "__dup_s1_1")
+  .appWaitFor(page, "document.getElementById('focal').value === 's1'")
+  expect_identical(
+    .appJs(page, "document.querySelector('input[name=view]:checked').value"),
+    "all")
+  expect_identical(.appJs(page, "document.getElementById('drawn').innerText"),
+                   "13 animals drawn")
+  .appJs(page, paste0("document.querySelector('input[name=view]",
+                      "[value=lineal]').click(); true"))
+  .appWaitFor(page, paste0("document.getElementById('drawn').innerText === ",
+                           "'8 animals drawn'"))
+  .appWaitFor(page, paste0(animalsInPage, " === 8"))
+  .appClickNode(page, "g1")
+  .appWaitFor(page, "document.getElementById('focal').value === 'g1'")
+  .appWaitFor(page, paste0("document.getElementById('drawn').innerText === ",
+                           "'7 animals drawn'"))
+  .appWaitFor(page, paste0(animalsInPage, " === 7"))
+  dot <- .appJs(page, paste0("HTMLWidgets.find('#diagram').network.body.data.",
+                             "nodes.getIds().filter(i => ",
+                             "i.startsWith('__union_'))[0]"))
+  .appClickNode(page, dot)
+  Sys.sleep(1)
+  expect_identical(.appJs(page, "document.getElementById('focal').value"),
+                   "g1")
+  expect_identical(.appJs(page, "document.getElementById('drawn').innerText"),
+                   "7 animals drawn")
 })
 
 test_that("a 'ped' given to runPedigreeApp() is drawn when the page opens", {
