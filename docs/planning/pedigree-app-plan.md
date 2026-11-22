@@ -5,7 +5,7 @@
 beside this plan, section 3). **Governs:** Phase G17 of `docs/planning/gaps-and-shared-code-plan.md` (section 5.1,
 G17's row, `:386`), gap A3 of `docs/research/pedkindraw-gaps-2026-11-18.md` (`:144`). **Ruling made here:** R148
 (Mark's four picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written (S73);
-G17a-G17d not started (section 7), G17a next.
+G17a's picks made (S74, R149, section 11); G17a-G17d not built (section 7).
 
 **Versions:** shiny 1.14.0, Pedixplorer 1.8.0, visNetwork 2.1.4, chromote 0.5.1 and callr 3.8.0 from this project's
 renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); Google Chrome 157;
@@ -440,3 +440,90 @@ each); the gaps plan guessed 1 + 4-8.
   (`chromote` in Suggests), `docs/planning/standalone-pedigree-package-plan.md` section 2.
 - The prototype and its measures: `docs/planning/pedigree-app-prototype/` (section 3).
 - The precedent plan: `docs/planning/picture-files-plan.md` (S68).
+
+---
+
+## 11. G17a's measures and picks (pedkindraw S74)
+
+Measured before the pre-RED picker (Learning 17), on scratch copies; the scripts are beside the prototype
+(`docs/planning/pedigree-app-prototype/g17aLoading.R`, `g17aServerTime.R`, `g17aCases.R`). This Mac, R 4.6.2, shiny
+1.14.0, callr 3.8.0, pkgload 1.5.3, testthat 3.3.2. Each count covers the cases run (Learning 19).
+
+### 11.1 How the app's second process loads the code under test (dragon 1)
+
+A probe app was added to a scratch copy (`git archive HEAD`), its other tests removed, and a helper started it in a
+second process with `callr::r_bg(..., libpath = .libPaths(), supervise = TRUE)`. The helper reads where the parent
+loaded pedkindraw, `getNamespaceInfo(asNamespace("pedkindraw"), "path")`: with no `R/pedkindraw.rdb` under it the
+package came from source and the child runs `pkgload::load_all(path)`; otherwise it was installed and the child runs
+`library(pedkindraw, lib.loc = dirname(path))`. The child calls `shiny::runApp(port = NULL)`, which picks a free port
+and prints "Listening on http://127.0.0.1:<port>" to its standard error; the parent reads the port from there (no
+`httpuv` call, and no gap between choosing a port and binding it).
+
+| Run | Path the child loaded | Answered | The copy's code in the page | `kill()` |
+|---|---|---:|---|---|
+| `test_file()` after `load_all()` (as `test_local()`) | the copy's root (source) | 1.14 s | yes | ended |
+| `R CMD check`, `NOT_CRAN` unset | `pedkindraw.Rcheck/pedkindraw` (installed) | 0.75 s | yes | ended |
+
+Renv's stale pedkindraw 0.0.1 (31 exports, no `savePedigreeDiagram()`, backlog `:223`) was loaded by neither. The
+check read Status OK and its tests 2.08 s. **Found:** `R CMD check`'s "checking for unstated dependencies in 'tests'"
+does not read `tests/testthat/`: a helper calling `fakepkgxyz::foo()` passed it. Declaring `shiny` and `callr` in
+Suggests is this package's own discipline, not the check's; `pkgload` is not declared, because its one call runs only
+when `pkgload` loaded the package. **Found:** `shiny::testServer()` and `shiny::runApp()` each call `require(shiny)`,
+attaching shiny and printing "Loading required package: shiny"; the test helper hides the message and detaches shiny
+when it attached it.
+
+### 11.2 The server tests' time on CRAN's path, and what `testServer()` computes
+
+With `NOT_CRAN` unset, `testServer()` on the prototype's server with a 4-animal file (read the file, choose the
+columns, draw, the checks table, the animals table): the first 0.52 s (shiny loads), then 0.133 s each over ten.
+**`testServer()` computes every output at each flush, read or not:** setting the sample's columns ran the layout
+twice, 2.42 s, before any output was read. So the server tests load the sample without choosing its columns (nothing
+is drawn), and the sample is drawn only in the Chrome test, which skips on CRAN.
+
+### 11.3 The function's shape
+
+Both shapes ran: `testServer()` accepts an app object (0.08 s on the probe), and the child ran `shiny::runApp()` on
+one. An `app.R` file holding a call that returns the app served it; one holding a call that runs the app started a
+second server on another port (served once, refused a connection once). Hosting is out of scope (section 9).
+
+### 11.4 What the app must show: typed pedigrees, sex codes, the sample
+
+Four animals (`s1`, `d1`, their offspring `o1` and `o2`) and seven variants, each through `findGeneration()`,
+`makePedigreeMatingLayout()`, `drawPedigreeDiagram()` and `checkPedigree()`:
+
+| Case | `findGeneration()` | The layout | The drawing | `checkPedigree()` |
+|---|---|---|---|---|
+| clean | 0, 0, 1, 1 | ok | 8 nodes | no problem |
+| a sire with no row (`s9`) | warns, 1 id unplaced | stops: "pdepth must not be missing for any animal" | -- | `rowlessParents` |
+| an id twice | 0, 0, 1, 1, 1 | stops: "node stack overflow" | -- | `duplicateIds` |
+| a male dam | 0, 0, 1, 1 | ok | 8 nodes | `maleDams` |
+| an animal its own sire | warns, 1 id unplaced | stops: "missing value where TRUE/FALSE needed" | -- | `ownParent`, `femaleSires` |
+| a cycle (2 animals) | warns, 2 unplaced | stops (`.orderRootSubtrees()`) | -- | `cycle` |
+| one animal | 0 | ok, with a message: "1 individual(s) with no recorded parents, mates, or offspring suppressed" | 0 nodes | no problem |
+| every sex missing | 0, 0, 1, 1 | ok | 8 nodes | `unknownSexParents` |
+
+**Found:** the layout stops on 4 of the 8 with words meant for a programmer, so the app says the pedigree could not
+be drawn and points to the Checks tab, where `checkPedigree()` names each problem; and the layout's messages, not only
+its warnings, reach only the console (finding 2), so the app shows both. **Found, not in G17a:** a parent with no row of
+its own stops the drawing; Pedixplorer's app and nprcgenekeepr's Input tab add such parents (`addParents()` here), a
+later choice.
+
+**Sex codes:** pedkindraw reads `M`, `F`, `H` and `U` (`sexCodes`, `R/sexCodes.R:15`). A file using `m`/`f`,
+`male`/`female` or `1`/`2` draws every animal as a diamond (sex unknown) and `checkPedigree()` lists one `sexCodes`
+problem per animal (4 of 4 for each). **Column names:** Pedixplorer's app guesses `indid`, `fatherid`, `motherid` and
+`gender` (its `ped_server()`'s `col_config`); nprcgenekeepr renames `egoid`, `sireid` and `damid`
+(`R/fixColumnNames.R`).
+
+**The sample** (`inst/extdata/obfuscated_rhesus_mhc_ped.csv`): 375 rows, 248 F and 127 M; columns id, sire, dam, sex,
+gen, birth, exit, age; its `gen` equals `findGeneration()`'s; drawn, 1,460 nodes, 375 of them animals (the rest
+`__bar_`, `__drop_`, `__dup_`, `__jog_` and `__union_` points), one note (72 same-row collisions), no problem found.
+
+### 11.5 The picks (R149)
+
+Mark's four, each first time, each the recommended option: **`runPedigreeApp(ped = NULL, port = NULL,
+launch.browser = interactive())`**, which starts the app and waits until it is closed (not `pedigreeApp()`); **a `ped`
+argument**, a data frame with `id`, `sire`, `dam` and `sex` columns, others kept; **the common sex codes read**: `m`,
+`f`, `h`, `u` in any case, `male`, `female`, `hermaphrodite`, `unknown`, and `1` and `2` (kinship2's and PLINK's male and
+female) as `M`, `F`, `H` and `U`, said under the column choices, any other value left as it is; **both apps' column
+names recognised**, ignoring case, spaces, dots and underscores: id from id, ego, egoid or indid; sire from sire,
+sireid, father, fatherid or dadid; dam from dam, damid, mother, motherid or momid; sex from sex or gender.
