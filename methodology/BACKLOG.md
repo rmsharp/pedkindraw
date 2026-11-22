@@ -42,7 +42,7 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G16c next; Effort L altogether, 15-25
+- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G17's planning session next; Effort L altogether, 15-25
       sessions, a guess, the sum of the rows; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
       DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
@@ -57,8 +57,8 @@ issues).*
       G15a, the layout, DONE in S65, R141's picks; G15b, `getMatings()`, DONE in S66, R141's picks; G15c, the
       converters, DONE in S67, R141's picks, so G15 DONE; G16's plan written in S68, R142,
       `docs/planning/picture-files-plan.md`, three build sessions; G16a, the recording layer and the SVG file, DONE in
-      S69, R143; G16a's CI repair DONE in S70, R145; G16b, the PDF and the PNG file, DONE in S71, R146; next G16c, the
-      whole large pedigree on one page and the documents) --
+      S69, R143; G16a's CI repair DONE in S70, R145; G16b, the PDF and the PNG file, DONE in S71, R146; G16c, the
+      whole large pedigree on one page and the documents, DONE in S72, R147, so G16 DONE; next G17's planning session) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
@@ -113,6 +113,13 @@ issues).*
       14 px (the same names at 1.4: 16.8 and 16.3 px inside), so that every drawing at 1 stays as before. Choose
       by picker: the same points at 14 px when a label reaches past its symbol (count first the comparison cases
       with names, whose drawings would change), or say so in the help, or nothing.
+
+- [ ] **A colony's ids are under a point high on the page that holds it** (NEEDS DECISION, Effort M-L, a guess; found
+      S72, G16c, picture plan section 15.1, dragon 41) -- the 375 animals' every id is written as text, but an id is 0.75
+      pt high on 14 x 7 inches, 0.45 on letter portrait and 2.8 px in a 300 dpi PNG: the files are to zoom in on, not to
+      print. Choose by picker: say so in the help (done in the vignette and NEWS), or a way to split a large drawing across
+      pages or tiles at a readable size (a design of its own, not G16), or a larger default page for a large pedigree, or
+      nothing.
 
 - [ ] **Correct pedkindraw's `smallPed` fixture after nprcgenekeepr corrects its dataset** (READY since nprcgenekeepr's
       S1189 finished N1, R99: its `0e2bc137e` corrects `smallPed`'s generations, found at S44's Orient; Effort S) --
@@ -257,6 +264,11 @@ issues).*
       (gate `tests-no-saved-expect-condition`). And R33: that file's tests at `:2074` and `:2365` let a collision
       warning through, which pedkindraw's copy handles. For an nprcgenekeepr session, like the item above.
 
+- [ ] **Trace kinship2's and Pedixplorer's label counts in `tools/gapCases.R`'s `largeIds`** (READY, Effort S; found S72)
+      -- the picture plan's G16c line and section 2 quote kinship2's 517 and Pedixplorer's 472 labels at `cex` 0.5; the
+      case, run in S72 on the rhesus pedigree without its twins table, prints 520 (375 distinct) and 473 (357). Find which
+      input or version gives each, and correct the plan's figure or the case.
+
 ## Later
 
 - [ ] **`findPedigreeNumber()`'s speed** (READY, Effort M) -- 12.9 s for 100,000 animals, close to the square of the
@@ -267,5 +279,8 @@ issues).*
       -- GitHub's Ubuntu and macOS runners have no `pdftotext` (S71's push: Ubuntu `SKIP 4 PASS 16268`, macOS `SKIP 2
       PASS 16279`, against this Mac's `SKIP 0 PASS 16283`) and Windows has Git's, which cannot read the PDF (now skipped), so
       the two tests that read a PDF's words, the guard against a PDF printed without its shapes and ids, run only on this
-      Mac and in the Linux box. Add `poppler-utils` (Ubuntu) and `poppler` (macOS) to `.github/workflows/R-CMD-check.yaml`,
-      or take `pdftools` into Suggests; G16c's first question is how ids in a PDF are counted, so settle it there first.
+      Mac and in the Linux box. Add `poppler-utils` (Ubuntu) and `poppler` (macOS) to `.github/workflows/R-CMD-check.yaml`.
+      S72 settled the other way (R147, picture plan section 15): `pdftools` counts the colony's 545 id words and 375
+      distinct but reads whole-number boxes, so it cannot check overlap and does not replace `pdftotext`; the colony's
+      SVG test (ids and overlap read in Chrome) runs on every job, and the colony's PDF test, the third that reads a PDF's
+      words, again runs only where `pdftotext` reads a PDF.
