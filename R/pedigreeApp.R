@@ -3,7 +3,9 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (pedkindraw S74, plan
 ## Phase G17a, gap A3 of docs/research/pedkindraw-gaps-2026-11-18.md; rulings
 ## R148 and R149, docs/planning/pedigree-app-plan.md sections 5, 7 and 11;
-## choosing the animals pedkindraw S75, Phase G17b, R150, section 12).
+## choosing the animals pedkindraw S75, Phase G17b, R150, section 12; what is
+## drawn, the conditions, marks, lines and twins, pedkindraw S76, Phase G17c,
+## R151, section 13).
 ## The app runPedigreeApp() starts: its page and its server, internal so they
 ## can change (R148). shiny is in Suggests, so every shiny call is written
 ## shiny:: and runs only after runPedigreeApp() has found shiny.
@@ -83,6 +85,13 @@
 #' @noRd
 .appSamplePath <- function() {
   system.file("extdata", "obfuscated_rhesus_mhc_ped.csv",
+              package = "pedkindraw")
+}
+
+#' The sample pedigree's twins file (G17c, R151)
+#' @noRd
+.appSampleTwinsPath <- function() {
+  system.file("extdata", "obfuscated_rhesus_mhc_twin_relations.csv",
               package = "pedkindraw")
 }
 
@@ -285,6 +294,322 @@
   list(rows = rows, problem = "")
 }
 
+## What is drawn (pedkindraw S76, Phase G17c, R151; plan section 13).
+
+## The words a condition or a yes-or-no mark reads as yes and as no (R151),
+## compared in lower case with the spaces at either end removed.
+.appYesWords <- c("true", "t", "yes", "y", "1")
+.appNoWords <- c("false", "f", "no", "n", "0")
+
+#' Read a condition's or a yes-or-no mark's values (R151)
+#'
+#' @param x the column: text, as a file gives it, or a column given in R.
+#' @param numbers whether a column all of whose values are numbers is read as
+#'   numbers (a condition's, so a cut-off can apply) rather than as yes and
+#'   no.
+#' @return A list: \code{values}, \code{TRUE}, \code{FALSE} or \code{NA} for
+#'   each animal (the numbers, when \code{numbers} is \code{TRUE} and every
+#'   value is one), an empty cell \code{NA}; and \code{unread}, each value
+#'   read as neither, once, as the column holds it. A logical column, and a
+#'   number column when \code{numbers} is \code{TRUE}, are kept as they are.
+#' @noRd
+.appReadValues <- function(x, numbers = FALSE) {
+  if (is.factor(x)) x <- as.character(x)
+  if (is.logical(x) || (numbers && is.numeric(x))) {
+    return(list(values = x, unread = x[0L]))
+  }
+  if (is.numeric(x)) {
+    odd <- !is.na(x) & !x %in% c(0.0, 1.0)
+    values <- x == 1.0
+    values[odd] <- NA
+    return(list(values = values, unread = unique(x[odd])))
+  }
+  text <- trimws(as.character(x))
+  text[!is.na(text) & !nzchar(text)] <- NA
+  if (numbers) {
+    number <- suppressWarnings(as.numeric(text))
+    if (all(is.na(text) | !is.na(number))) {
+      return(list(values = number, unread = character(0L)))
+    }
+  }
+  key <- tolower(text)
+  values <- rep(NA, length(key))
+  values[key %in% .appYesWords] <- TRUE
+  values[key %in% .appNoWords] <- FALSE
+  list(values = values, unread = unique(x[!is.na(text) & is.na(values)]))
+}
+
+#' Whether a condition's column needs a cut-off: it holds numbers other than
+#' 0 and 1
+#' @noRd
+.appNeedsCutoff <- function(x) {
+  values <- .appReadValues(x, numbers = TRUE)$values
+  is.numeric(values) && any(!is.na(values) & !values %in% c(0.0, 1.0))
+}
+
+#' A cut-off as conditionThresholds takes it
+#'
+#' @param op the comparison chosen, or \code{NULL} for \code{">"}.
+#' @param value the number, or \code{NULL} or \code{NA} when none is given.
+#' @return The cut-off, such as \code{">= 126"}, or \code{NA} when there is
+#'   no number.
+#' @noRd
+.appCutoff <- function(op, value) {
+  if (is.null(value) || length(value) != 1L || !is.finite(value)) {
+    return(NA_character_)
+  }
+  paste(if (is.null(op)) ">" else op, value)
+}
+
+#' Guess a file's conditions (R151)
+#'
+#' @param columns the file's column names.
+#' @return The first four whose names begin with "affected", case, spaces,
+#'   dots and underscores ignored.
+#' @noRd
+.guessAppConditions <- function(columns) {
+  columns <- as.character(columns)
+  key <- gsub("[ ._]", "", tolower(columns))
+  utils::head(columns[startsWith(key, "affected")], 4L)
+}
+
+#' The names the drawing gives the conditions chosen (R151)
+#'
+#' A name that begins "affected" in any case keeps its rest; any other is
+#' put after "affected_". The layout then draws each and labels it
+#' "Affected (its name)" (\code{.conditionLabels()}).
+#' @param columns the columns chosen.
+#' @return The names, made unique.
+#' @noRd
+.appConditionNames <- function(columns) {
+  affected <- startsWith(tolower(columns), "affected")
+  named <- paste0("affected", ifelse(affected, substring(columns, 9L),
+                                     paste0("_", columns)))
+  make.unique(named, sep = "_")
+}
+
+## The marks the app finds by name (R151): pedkindraw's column for each, and
+## the names it is found by, compared as .guessAppColumns() compares them,
+## pedkindraw's own first, then Pedixplorer's (avail, deceased).
+.appMarkNames <- list(genotyped = c("genotyped", "avail"),
+                      carrier = "carrier", proband = "proband",
+                      consultand = "consultand", evaluated = "evaluated",
+                      fertility = "fertility", miscarriage = "miscarriage",
+                      status = c("status", "deceased"), name = "name")
+
+## What the page calls each mark.
+.appMarkWords <- c(genotyped = "genotyped", carrier = "carrier",
+                   proband = "proband", consultand = "consultand",
+                   evaluated = "evaluated", fertility = "fertility",
+                   miscarriage = "miscarriage", status = "deceased",
+                   name = "name")
+
+#' Find the marks' columns by name (R151)
+#'
+#' @param columns the columns the marks may be in.
+#' @return The columns found, named by pedkindraw's column for each mark, in
+#'   the order of \code{.appMarkNames}.
+#' @noRd
+.appFindMarks <- function(columns) {
+  key <- gsub("[ ._]", "", tolower(columns))
+  found <- vapply(.appMarkNames, function(names) {
+    for (name in names) {
+      hit <- which(key == name)
+      if (length(hit) > 0L) {
+        return(columns[[hit[[1L]]]])
+      }
+    }
+    NA_character_
+  }, character(1L))
+  found[!is.na(found)]
+}
+
+#' Say which marks the app found
+#'
+#' @param marks what \code{.appFindMarks()} returns.
+#' @return One sentence naming each mark, and its column when the column's
+#'   name is not the mark's, or \code{""} when none was found.
+#' @noRd
+.appMarkNote <- function(marks) {
+  if (length(marks) == 0L) {
+    return("")
+  }
+  words <- .appMarkWords[names(marks)]
+  shown <- ifelse(marks == words, words,
+                  sprintf("%s (column '%s')", words, marks))
+  paste0("Marks from the file: ", toString(shown), ".")
+}
+
+#' Read a deceased column (R151)
+#'
+#' @param x the column.
+#' @return \code{"DECEASED"} for \code{DECEASED}, \code{deceased}, \code{dead}
+#'   and the yes-words, in any case; \code{NA} for anything else.
+#' @noRd
+.appDeceased <- function(x) {
+  key <- tolower(trimws(as.character(x)))
+  ifelse(key %in% c("deceased", "dead", .appYesWords), "DECEASED",
+         NA_character_)
+}
+
+#' The values of a fertility or miscarriage column pedkindraw cannot read
+#'
+#' @param x the column.
+#' @param mark \code{"fertility"} or \code{"miscarriage"}.
+#' @return Each value whose key is not among pedkindraw's words for it
+#'   (\code{.fertilityWords}, \code{.miscarriageWords}), once.
+#' @noRd
+.appUnreadWords <- function(x, mark) {
+  if (is.factor(x)) x <- as.character(x)
+  key <- tolower(as.character(x))
+  if (mark == "fertility") {
+    words <- .fertilityWords
+  } else {
+    words <- .miscarriageWords
+    key <- gsub("[[:space:]]", "", key)
+  }
+  unique(x[!is.na(x) & !key %in% names(words)])
+}
+
+## The twin codes the app reads (R151), as Pedixplorer's rel_code_to_factor()
+## reads them: keyed by the code in lower case without spaces; kinship2 numbers
+## them 1 to 4.
+.appTwinCodes <- c(mztwin = "MZ twin", dztwin = "DZ twin", uztwin = "UZ twin",
+                   spouse = "Spouse", "1" = "MZ twin", "2" = "DZ twin",
+                   "3" = "UZ twin", "4" = "Spouse")
+
+#' Read a twins file's rows (R151)
+#'
+#' @param rows the file's rows, or \code{NULL}.
+#' @return A list: \code{twins}, the pairs (\code{id1}, \code{id2} and
+#'   \code{code}, its codes read by \code{.appTwinCodes}), or \code{NULL};
+#'   and \code{problem}, what is wrong with the file, or \code{""}.
+#' @noRd
+.appReadTwins <- function(rows) {
+  if (is.null(rows)) {
+    return(list(twins = NULL, problem = ""))
+  }
+  needed <- c("id1", "id2", "code")
+  at <- match(needed, gsub("[ ._]", "", tolower(names(rows))))
+  if (anyNA(at)) {
+    return(list(twins = NULL, problem = sprintf(
+      "The twins file needs the columns id1, id2 and code; missing: %s.",
+      toString(needed[is.na(at)])
+    )))
+  }
+  twins <- data.frame(id1 = as.character(rows[[at[[1L]]]]),
+                      id2 = as.character(rows[[at[[2L]]]]),
+                      code = as.character(rows[[at[[3L]]]]))
+  if (nrow(twins) == 0L) {
+    return(list(twins = NULL, problem = "The twins file has no pairs."))
+  }
+  empty <- which(Reduce(`|`, lapply(twins, function(x) {
+    is.na(x) | !nzchar(trimws(x))
+  })))
+  if (length(empty) > 0L) {
+    return(list(twins = NULL, problem = sprintf(
+      ngettext(length(empty), "The twins file has an empty cell in row %s.",
+               "The twins file has empty cells in rows %s."),
+      toString(empty)
+    )))
+  }
+  read <- .appTwinCodes[gsub("[[:space:]]", "", tolower(twins$code))]
+  twins$code <- ifelse(is.na(read), twins$code, unname(read))
+  list(twins = twins, problem = "")
+}
+
+#' The twin pairs both of whose animals are drawn
+#'
+#' @param twins the pairs, or \code{NULL}.
+#' @param ids the animals drawn.
+#' @return The pairs, or \code{NULL} when none is (the layout stops on a
+#'   twins table with no rows, plan section 13.2).
+#' @noRd
+.appTwinsInView <- function(twins, ids) {
+  if (is.null(twins)) {
+    return(NULL)
+  }
+  kept <- twins[twins$id1 %in% ids & twins$id2 %in% ids, , drop = FALSE]
+  if (nrow(kept) == 0L) {
+    return(NULL)
+  }
+  rownames(kept) <- NULL
+  kept
+}
+
+#' The data frame the app draws (R151)
+#'
+#' @param rows the animals chosen, with the file's columns.
+#' @param conditions the columns chosen as conditions, in order.
+#' @param cutoffs the cut-off of each, named by the column, \code{NA} where
+#'   none is given.
+#' @param marks the marks' columns, from \code{.appFindMarks()}.
+#' @return A list: \code{ped}, the four columns, then each condition drawn
+#'   (named by \code{.appConditionNames()}), then each mark drawn (named by
+#'   pedkindraw's column); \code{thresholds}, the cut-offs of the conditions
+#'   drawn, named by their new names, or \code{NULL}; and \code{notes}, a
+#'   sentence for each column not drawn, saying why.
+#' @noRd
+.appDrawnPedigree <- function(rows, conditions, cutoffs, marks) {
+  ped <- data.frame(id = rows$id, sire = rows$sire, dam = rows$dam,
+                    sex = rows$sex)
+  notes <- character(0L)
+  thresholds <- character(0L)
+  drawnNames <- .appConditionNames(conditions)
+  for (i in seq_along(conditions)) {
+    column <- conditions[[i]]
+    read <- .appReadValues(rows[[column]], numbers = TRUE)
+    if (length(read$unread) > 0L) {
+      notes <- c(notes, sprintf(paste0(
+        "The column '%s' is not drawn: the app cannot read %s as yes or no."
+      ), column, .oddValuesShown(read$unread)))
+      next
+    }
+    if (.appNeedsCutoff(read$values)) {
+      cut <- if (column %in% names(cutoffs)) cutoffs[[column]] else NA
+      if (is.na(cut)) {
+        notes <- c(notes, sprintf(paste0(
+          "The column '%s' is not drawn until it has a cut-off: it holds ",
+          "numbers other than 0 and 1."
+        ), column))
+        next
+      }
+      thresholds[[drawnNames[[i]]]] <- cut
+    }
+    ped[[drawnNames[[i]]]] <- read$values
+  }
+  for (mark in names(marks)) {
+    column <- marks[[mark]]
+    x <- rows[[column]]
+    how <- ""
+    unread <- NULL
+    if (mark %in% c("fertility", "miscarriage")) {
+      unread <- .appUnreadWords(x, mark)
+      value <- x
+    } else if (mark == "status") {
+      value <- .appDeceased(x)
+    } else if (mark == "name") {
+      value <- as.character(x)
+    } else {
+      read <- .appReadValues(x)
+      unread <- read$unread
+      value <- read$values
+      how <- " as yes or no"
+    }
+    if (length(unread) > 0L) {
+      notes <- c(notes, sprintf(
+        "The column '%s' is not drawn: the app cannot read %s%s.", column,
+        .oddValuesShown(unread), how
+      ))
+      next
+    }
+    ped[[mark]] <- value
+  }
+  list(ped = ped,
+       thresholds = if (length(thresholds) == 0L) NULL else thresholds,
+       notes = notes)
+}
+
 #' The JavaScript a drawing runs when clicked: it sends the clicked nodes'
 #' ids to the server's input "clicked", even when they are the same as last
 #' time
@@ -316,12 +641,17 @@
 #'
 #' @param ped the pedigree.
 #' @param onClick passed to \code{drawPedigreeDiagram()}.
+#' @param edgeStyle passed to both functions (G17c: the two must agree, plan
+#'   section 13.2).
+#' @param twinRelations,conditionThresholds passed to
+#'   \code{makePedigreeMatingLayout()} (G17c).
 #' @return A list: \code{widget} (\code{NULL} when the drawing failed),
-#'   \code{notes}, \code{error} (\code{NULL} or the error's message) and
-#'   \code{duplicateToReal}, the layout's repeat nodes (\code{NULL} when the
-#'   drawing failed).
+#'   \code{notes}, \code{error} (\code{NULL} or the error's message),
+#'   \code{duplicateToReal}, the layout's repeat nodes, and \code{layout}
+#'   (each \code{NULL} when the drawing failed).
 #' @noRd
-.appDraw <- function(ped, onClick = NULL) {
+.appDraw <- function(ped, onClick = NULL, edgeStyle = "rectilinear",
+                     twinRelations = NULL, conditionThresholds = NULL) {
   kept <- new.env(parent = emptyenv())
   kept$notes <- character(0L)
   keep <- function(condition, restart) {
@@ -331,19 +661,24 @@
   drawn <- withCallingHandlers(
     tryCatch({
       ped$gen <- findGeneration(ped$id, ped$sire, ped$dam)
-      layout <- makePedigreeMatingLayout(ped)
-      list(widget = drawPedigreeDiagram(layout, onClick = onClick),
-           duplicateToReal = layout$duplicateToReal)
+      layout <- makePedigreeMatingLayout(
+        ped, edgeStyle = edgeStyle, twinRelations = twinRelations,
+        conditionThresholds = conditionThresholds
+      )
+      list(widget = drawPedigreeDiagram(layout, edgeStyle = edgeStyle,
+                                        onClick = onClick),
+           duplicateToReal = layout$duplicateToReal, layout = layout)
     }, error = function(e) e),
     warning = function(w) keep(w, "muffleWarning"),
     message = function(m) keep(m, "muffleMessage")
   )
   if (inherits(drawn, "error")) {
     return(list(widget = NULL, notes = kept$notes,
-                error = conditionMessage(drawn), duplicateToReal = NULL))
+                error = conditionMessage(drawn), duplicateToReal = NULL,
+                layout = NULL))
   }
   list(widget = drawn$widget, notes = kept$notes, error = NULL,
-       duplicateToReal = drawn$duplicateToReal)
+       duplicateToReal = drawn$duplicateToReal, layout = drawn$layout)
 }
 
 #' How many animals a drawing shows
@@ -365,9 +700,25 @@
         shiny::fileInput("file", "Pedigree file (CSV or text)",
                          accept = c(".csv", ".txt")),
         shiny::actionButton("sample", "Use the sample pedigree"),
+        shiny::fileInput("twins", "Twins file (CSV or text): id1, id2, code",
+                         accept = c(".csv", ".txt")),
+        shiny::textOutput("twinsNote"),
+        shiny::tagAppendAttributes(shiny::textOutput("twinsProblem"),
+                                   style = "color: #b00020;"),
         shiny::hr(),
         shiny::uiOutput("columns"),
         shiny::textOutput("sexNote"),
+        shiny::hr(),
+        shiny::uiOutput("conditionChoice"),
+        shiny::uiOutput("cutoffs"),
+        shiny::textOutput("marks"),
+        shiny::tagAppendAttributes(
+          shiny::textOutput("columnNotes"),
+          style = "color: #b00020; white-space: pre-wrap;"
+        ),
+        shiny::radioButtons("lines", "Lines",
+                            c("Right angles" = "rectilinear",
+                              Straight = "direct")),
         shiny::hr(),
         shiny::radioButtons(
           "view", "Animals to draw",
@@ -429,13 +780,33 @@
   function(input, output, session) {
     rawData <- shiny::reactiveVal(ped)
     readProblem <- shiny::reactiveVal("")
+    ## G17c (R151): the conditions chosen, set to the guess when a file is
+    ## opened and by the list; the twins file read, with where it came from.
+    chosenConditions <- shiny::reactiveVal(.guessAppConditions(names(ped)))
+    twinsRead <- shiny::reactiveVal(NULL)
     openRows <- function(read) {
       rawData(read$data)
       readProblem(read$problem)
+      chosenConditions(.guessAppConditions(names(read$data)))
     }
-    shiny::observeEvent(input$file,
-                        openRows(.readAppFile(input$file$datapath)))
-    shiny::observeEvent(input$sample, openRows(.readAppFile(.appSamplePath())))
+    shiny::observeEvent(input$file, {
+      openRows(.readAppFile(input$file$datapath))
+      if (identical(twinsRead()$source, "sample")) {
+        twinsRead(NULL)
+      }
+    })
+    shiny::observeEvent(input$sample, {
+      openRows(.readAppFile(.appSamplePath()))
+      twinsRead(list(read = .readAppFile(.appSampleTwinsPath()),
+                     source = "sample"))
+    })
+    shiny::observeEvent(input$twins, {
+      twinsRead(list(read = .readAppFile(input$twins$datapath),
+                     source = input$twins$name))
+    })
+    shiny::observeEvent(input$conditions,
+                        chosenConditions(as.character(input$conditions)),
+                        ignoreNULL = FALSE, ignoreInit = TRUE)
 
     columnGuess <- shiny::reactive({
       shiny::req(rawData())
@@ -480,6 +851,53 @@
       findPedigreeNumber(ped$id, ped$sire, ped$dam)
     })
 
+    ## G17c (R151): the columns left for conditions and marks, the conditions
+    ## in use, their cut-offs, the marks found, the lines and the twins.
+    otherColumns <- shiny::reactive({
+      shiny::req(rawData())
+      setdiff(names(rawData()), c(chosen(), names(.appColumnNames)))
+    })
+    conditionColumns <- shiny::reactive(
+      utils::head(intersect(chosenConditions(), otherColumns()), 4L)
+    )
+    cutoffValues <- shiny::reactive({
+      columns <- conditionColumns()
+      stats::setNames(vapply(columns, function(column) {
+        k <- match(column, names(rawData()))
+        .appCutoff(input[[paste0("cutOp", k)]], input[[paste0("cutValue", k)]])
+      }, character(1L)), columns)
+    })
+    markColumns <- shiny::reactive(
+      .appFindMarks(setdiff(otherColumns(), conditionColumns()))
+    )
+    lineStyle <- shiny::reactive(if (is.null(input$lines)) {
+      "rectilinear"
+    } else {
+      input$lines
+    })
+    twinsChecked <- shiny::reactive({
+      read <- twinsRead()
+      if (is.null(read)) {
+        return(list(twins = NULL, problem = ""))
+      }
+      if (nzchar(read$read$problem)) {
+        return(list(twins = NULL, problem = sub("^The file", "The twins file",
+                                                read$read$problem)))
+      }
+      twins <- .appReadTwins(read$read$data)
+      if (is.null(twins$twins) || !ready()) {
+        return(twins)
+      }
+      checked <- tryCatch(checkTwinRelations(completed()$ped, twins$twins),
+                          error = function(e) e)
+      if (inherits(checked, "error")) {
+        return(list(twins = NULL, problem = sprintf(paste0(
+          "The twins file could not be used: %s The pedigree is drawn ",
+          "without twins."), conditionMessage(checked))))
+      }
+      twins
+    })
+
     focalText <- shiny::reactiveVal("")
     shiny::observeEvent(input$focal, focalText(input$focal))
     focalIds <- shiny::reactive(.appFocalIds(focalText()))
@@ -508,11 +926,19 @@
       !is.null(rows) && nrow(rows) > drawLimit &&
         !identical(approved(), rows$id)
     })
+    prepared <- shiny::reactive(
+      .appDrawnPedigree(shown(), conditionColumns(), cutoffValues(),
+                        markColumns())
+    )
     drawing <- shiny::reactive({
       if (is.null(choice()$rows) || tooLarge()) {
         return(NULL)
       }
-      .appDraw(shown(), onClick = .appClickJs)
+      drawn <- prepared()
+      .appDraw(drawn$ped, onClick = .appClickJs, edgeStyle = lineStyle(),
+               twinRelations = .appTwinsInView(twinsChecked()$twins,
+                                               drawn$ped$id),
+               conditionThresholds = drawn$thresholds)
     })
 
     shiny::observeEvent(input$clicked, {
@@ -528,6 +954,63 @@
       shiny::req(ready())
       .sexCodeNote(rawData()[[chosen()[["sex"]]]])
     })
+    output$conditionChoice <- shiny::renderUI({
+      available <- otherColumns()
+      shiny::selectizeInput(
+        "conditions", "Conditions (up to four)", available,
+        selected = shiny::isolate(intersect(chosenConditions(), available)),
+        multiple = TRUE, options = list(maxItems = 4L)
+      )
+    })
+    output$cutoffs <- shiny::renderUI({
+      needing <- Filter(function(column) .appNeedsCutoff(rawData()[[column]]),
+                        conditionColumns())
+      if (length(needing) == 0L) {
+        return(NULL)
+      }
+      shiny::tagList(lapply(needing, function(column) {
+        k <- match(column, names(rawData()))
+        value <- shiny::isolate(input[[paste0("cutValue", k)]])
+        shiny::tagList(
+          shiny::selectInput(paste0("cutOp", k),
+                             sprintf("Cut-off for %s", column),
+                             c(">" = ">", "≥" = ">=", "<" = "<",
+                               "≤" = "<="),
+                             selected = shiny::isolate(
+                               input[[paste0("cutOp", k)]]
+                             )),
+          shiny::numericInput(paste0("cutValue", k), NULL,
+                              if (is.null(value)) NA else value)
+        )
+      }))
+    })
+    output$marks <- shiny::renderText({
+      if (!ready()) {
+        return("")
+      }
+      .appMarkNote(markColumns())
+    })
+    output$columnNotes <- shiny::renderText({
+      if (!ready() || is.null(choice()$rows)) {
+        return("")
+      }
+      paste(prepared()$notes, collapse = "\n")
+    })
+    output$twinsNote <- shiny::renderText({
+      read <- twinsRead()
+      twins <- twinsChecked()$twins
+      if (is.null(read) || is.null(twins)) {
+        return("")
+      }
+      from <- if (identical(read$source, "sample")) {
+        "the sample's twins file"
+      } else {
+        read$source
+      }
+      sprintf(ngettext(nrow(twins), "%d twin pair read from %s.",
+                       "%d twin pairs read from %s."), nrow(twins), from)
+    })
+    output$twinsProblem <- shiny::renderText(twinsChecked()$problem)
     output$problem <- shiny::renderText({
       for (problem in c(tableProblem(), columnProblem())) {
         if (nzchar(problem)) {
