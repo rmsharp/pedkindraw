@@ -740,7 +740,7 @@ NOPE."); a CSV uploaded through the page's file input with a sire with no row ("
 so the pedigree can be drawn: s9.", 5 animals); 1,001 animals from `examplePedigree`: the question and "Draw anyway"
 shown (looked at in a picture), the drawing in the page 10.0 s after the click. **Not run:** another browser, a real file
 dialog, a phone-width window, a hosted server; the size question on a real file of more than 1,000 animals uploaded
-through the page (`ped` was given instead).
+through the page (`ped` was given instead). **GitHub, after the push (run 45087949474, `c00634c`):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16550 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 16561 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16559 ]`, `proc.time()` 925 s, and the hang an eighth time (cancelled at 41 minutes; two orphan `Rterm` processes, as before); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Each job's count is S74's plus G17b's 134 expectations, so the new Chrome test ran on Ubuntu, macOS and Windows.
 
 **Found for later:** the drawing vignette's "How large a drawing can be" (`vignettes/drawing.Rmd:788`) gives
 nprcgenekeepr's November times (1,000 animals in about 16 s, 2,000 not within two minutes); pedkindraw's own drawing

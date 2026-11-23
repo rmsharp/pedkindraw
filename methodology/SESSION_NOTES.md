@@ -48,8 +48,8 @@ settled by R150, and added `:108`).
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied
    from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`,
    `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr was at `3e06730c5`, tree clean, through S75.
-2. **S75's push is read in S75's close-out 2b** (see the CHANGELOG's push entry and plan section 12.6); if a job was
-   still running when S75 stopped, read it job by job (`gh run list --limit 5`, `gh run view <id>`).
+2. **S75's push was read in S75, job by job** (run 45087949474): pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16550 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 16561 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16559 ]`, `proc.time()` 925 s, and the hang an eighth time (cancelled at 41 minutes; two orphan `Rterm` processes, as before); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Each job's count is S74's plus G17b's 134 expectations, so the new Chrome test ran on Ubuntu, macOS and Windows. Nothing is left to read. The next push that
+   changes code: expect these counts plus G17c's tests, and the Windows hang.
 3. **G17c, if picked** (plan section 7, `:355`). **Measure first, before the pre-RED picker** (Learning 17): **the app
    reads every column of a file as text** (`.readAppFile()`, `R/pedigreeApp.R:96`, `colClasses = "character"`), so a
    CSV's `affected`, `genotyped`, `carrier` or `status` column reaches `makePedigreeMatingLayout()` as "TRUE", "1", "Y"
