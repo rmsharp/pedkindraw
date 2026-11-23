@@ -3,7 +3,7 @@
 **Date:** 2026-11-23 · **Session:** pedkindraw S78 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 "Planning Sessions"; failure mode #18: this session writes no package code; the code beside this plan is three
 measuring scripts, section 3.6). **Governs:** Phases 17h and 17i of `docs/planning/cran-submission-plan.md` (section 6,
-`:749` "Phase 17h. The timing runs" and `:753` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
+`:754` "Phase 17h. The timing runs" and `:761` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
 `docs/planning/standalone-pedigree-package-plan.md`. **Ruling made here:** R153 (Mark's four picks, section 2; recorded
 in the standalone plan's section 2). **Status:** plan written (S78). Next: 17h1 (section 6).
 
@@ -51,7 +51,7 @@ Put to Mark in one picker after the measurements of section 3; his pick the reco
 
 | Question | Mark's pick | The others offered |
 |---|---|---|
-| Which of the 38 exports are timed | **"All 37 (Recommended)":** every export that runs on a pedigree (section 5.1's four groups); `runPedigreeApp()` is not timed (an app; its drawing is timed through the drawing functions). Cost: about 3.5-4 hours of computation runs and 1.2-1.5 hours of drawing runs, unattended (a guess, section 3.7) | leave out the 13 pedkindraw-only functions (each under 0.25 s at 100,000 animals in one call, section 3.4; saves about 10 minutes); only the study's 11 (saves about 1.5 hours; the page could not answer for the other 26) |
+| Which of the 38 exports are timed | **"All 37 (Recommended)":** every export that runs on a pedigree (section 5.1's four groups); `runPedigreeApp()` is not timed (an app; its drawing is timed through the drawing functions). The picker said about 3 hours of computation runs and 1.2 hours of drawing runs, unattended; section 3.7's estimate, worked out after, is 3.5-4 and 1.2-1.5 hours (a guess) | leave out the 13 pedkindraw-only functions (each under 0.25 s at 100,000 animals in one call, section 3.4; saves about 10 minutes); only the study's 11 (saves about 1.5 hours; the page could not answer for the other 26) |
 | kinship2 and Pedixplorer | **"Time them again (Recommended)":** kinship2 1.9.6.2 and Pedixplorer 1.8.0, the study's versions, in the same sessions and under the same rule as pedkindraw, so every number on the page has one date; the 13 newer pairings have no November numbers anyway | reuse the November study's numbers for them (two dates and two sets of runs on one page; the newer pairings pedkindraw only) |
 | When a run may start | **"Half the CPU idle (Recommended)":** a run starts once at least half the CPU is idle, waiting at most 10 minutes; the idle share, the 1-minute load average and the free memory are recorded with it (Mark's S1123 ruling for the study, which all 587 + 84 of its runs met) | also half the memory free (the study's third record; 47% free when asked, so runs would wait); the load average below a number (the standalone plan's first wording; the study found it 3-35 with most cores idle) |
 | What the speed vignette shows | **"pedkindraw's own runs only (Recommended)":** every table pedkindraw's runs beside kinship2's and Pedixplorer's; the draft's sections "Why these times stand for pedkindraw's" and "The rewrite" dropped; one sentence says the drawing code began as nprcgenekeepr's; each computation defined on the page (section 5.8) | also a section setting pedkindraw's times beside the November study's for nprcgenekeepr's code (judged premature in S30, R82); decide the outline at 17i |
@@ -64,7 +64,7 @@ Put to Mark in one picker after the measurements of section 3; his pick the reco
 
 nprcgenekeepr timed its own code beside kinship2, Pedixplorer, BGmisc and ggpedigree in November 2026 (its S1123,
 S1125 and S1141; `docs/research/pedigree-package-comparison-2026-11.md` sections 7 and 9 in this repository). Its
-method (that document's section 7, `:424`, and 9.1, `:653`; the standalone plan's Phase 1 step 4, `:444`):
+method (that document's section 7, `:424`, and 9.1, `:653`; the standalone plan's Phase 1 step 4, `:446`):
 
 - **One measurement, one fresh `Rscript`** (`timeOne.R`), run under `/usr/bin/time -l` by `runLimited()`
   (`timingHarness.R`). The child loads only the measured package (and Matrix, so no timed call loads a package), builds
@@ -271,9 +271,10 @@ on the machine), `tools/timing/pictures/`. `tools/` is build-ignored (`.Rbuildig
 
 ### 4.4 The pointers R82 left out (17i)
 
-`R/pedkindraw-package.R:52` ("@section Getting started:", which names the two vignettes; the cran plan's 17i row and
-backlog `:36` cite `:42`, moved since), `vignettes/pedkindraw.Rmd:407` ("## Where next"),
-`vignettes/drawing.Rmd:794` ("## How large a drawing can be"; the cran plan's 17i row cites `:681`, moved since) and
+`R/pedkindraw-package.R:52` ("@section Getting started:", which names the two vignettes; backlog `:36` cited `:42`
+before S78 corrected it), `vignettes/pedkindraw.Rmd:407` ("## Where next"),
+`vignettes/drawing.Rmd:794` ("## How large a drawing can be"; the cran plan's 17i row cited `:681` before S78
+corrected it) and
 `:808` ("## Where next"). `_pkgdown.yml` has no articles list: pkgdown lists every vignette, so the site's third
 article comes with the file (17i checks the built site).
 
@@ -352,7 +353,7 @@ plan dragons 8 and 19).
 pedkindraw is built from the record's commit (`R CMD build --no-build-vignettes`) and installed into a scratch library
 (`R CMD INSTALL --library=<scratch>/pkdlib`, byte-compiled, as CRAN installs it); `PKD_LIB` puts it first on the child's
 library path, renv's library next. Each run records the folder pedkindraw was loaded from, and a run that loaded it from
-anywhere else stops the record (renv's library holds a stale pedkindraw 0.0.1, backlog `:225`, and `DESCRIPTION` reads
+anywhere else stops the record (renv's library holds a stale pedkindraw 0.0.1, backlog `:227`, and `DESCRIPTION` reads
 0.0.1 too, so the version cannot tell them apart). `record.csv` names the commit and `R/`'s tree; if `R/`,
 `DESCRIPTION` or `NAMESPACE` changes after a record, 17n lists each change and whether it can change a time (section
 6, amendments).
@@ -495,7 +496,7 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 1. **Copied tests run on testthat edition 3 here** (Learning 10): `tools/timing/tests/` sits below pedkindraw's
    `DESCRIPTION`, which names edition 3, and the study's tests were written for nprcgenekeepr's edition 2. Read RED's
    and GREEN's WARN count, not only FAIL; `expect_warning()` and `expect_message()` return the condition.
-2. **A stale pedkindraw 0.0.1 in renv's library** (backlog `:225`): a child that finds it instead of the scratch
+2. **A stale pedkindraw 0.0.1 in renv's library** (backlog `:227`): a child that finds it instead of the scratch
    install times old code with no error (it lacks every function after S25, but `kinship()` and the layout run). The
    version cannot tell them apart (both 0.0.1): check the folder (section 5.5).
 3. **Child processes inherit renv's variables** (Learning 5): `RENV_PROJECT`, `R_LIBS_USER` pass to `Rscript`
@@ -532,7 +533,7 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 ## 9. Out of scope
 
 - Any change to nprcgenekeepr (R8).
-- Speeding any function up: `findPedigreeNumber()` (backlog `:292`) and `findGeneration(alignMates = TRUE)` (S78's
+- Speeding any function up: `findPedigreeNumber()` (backlog `:294`) and `findGeneration(alignMates = TRUE)` (S78's
   close-out adds it) are backlog items; the runs measure them as they are.
 - BGmisc and ggpedigree (not in renv; R82 names kinship2 and Pedixplorer).
 - `runPedigreeApp()` (R153); another machine, browser or operating system.
@@ -541,10 +542,10 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 ## 10. Sources
 
 - pedkindraw: `docs/planning/cran-submission-plan.md` (sections 2.1, 4.4, 5, 6 rows 17g-17i, 9), 
-  `docs/planning/standalone-pedigree-package-plan.md` (Phase 1 step 4, `:444`; R77, R79, R80, R82, R84; section 6),
+  `docs/planning/standalone-pedigree-package-plan.md` (Phase 1 step 4, `:446`; R77, R79, R80, R82, R84; section 6),
   `docs/planning/pedkindraw-api-contract.md` (sections 4.4, 4.5, 7, 8), `docs/planning/pedigree-app-plan.md` (section
   12.1, dragons 8 and 19), `docs/research/pedigree-package-comparison-2026-11.md` (sections 7 and 9),
-  `docs/planning/pedigree-app-prototype/g17bSize.R`, `methodology/BACKLOG.md` (`:36`, `:225`, `:292`), the branch
+  `docs/planning/pedigree-app-prototype/g17bSize.R`, `methodology/BACKLOG.md` (`:36`, `:227`, `:294`), the branch
   `draft/speed-vignette` (`612eed9`), `CLAUDE.md` (Learnings 5, 10, 17, 18, 19).
 - nprcgenekeepr at `3e06730c5`: `tools/pedigreeComparison/` (the files of section 3.1, its `results/`), `tools/perf/
   harness.R`, `tests/testthat/test_perfHarness.R`, `.gitignore:116`-`:122`.
