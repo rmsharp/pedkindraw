@@ -3,8 +3,9 @@
 ## Helpers for the app's tests (pedkindraw S74, plan Phase G17a, gap A3 of
 ## docs/research/pedkindraw-gaps-2026-11-18.md; rulings R148 and R149,
 ## docs/planning/pedigree-app-plan.md sections 4, 7 and 11; .appViewsPed() and
-## .appClickNode() pedkindraw S75, Phase G17b, R150, section 12). Not copied
-## from nprcgenekeepr.
+## .appClickNode() pedkindraw S75, Phase G17b, R150, section 12; .appCsv()'s
+## name and .appSetFile() pedkindraw S76, Phase G17c, R151, section 13). Not
+## copied from nprcgenekeepr.
 ##
 ## The server tests run shiny::testServer() on small typed pedigrees with no
 ## browser, so they run everywhere shiny is installed, CRAN too. The browser
@@ -62,15 +63,17 @@
 #'
 #' Writes `ped` as a CSV file (an empty cell for NA), or `lines` as they are,
 #' into a temporary file removed when the calling test ends, and returns the
-#' one-row data frame shiny's fileInput() gives the server.
-.appCsv <- function(ped = NULL, lines = NULL, envir = parent.frame()) {
+#' one-row data frame shiny's fileInput() gives the server, the file's name
+#' `name` (G17c, S76: a twins file has its own).
+.appCsv <- function(ped = NULL, lines = NULL, envir = parent.frame(),
+                    name = "pedigree.csv") {
   path <- withr::local_tempfile(fileext = ".csv", .local_envir = envir)
   if (is.null(lines)) {
     utils::write.csv(ped, path, row.names = FALSE, na = "")
   } else {
     writeLines(lines, path)
   }
-  data.frame(name = "pedigree.csv", size = file.size(path),
+  data.frame(name = name, size = file.size(path),
              type = "text/csv", datapath = path, stringsAsFactors = FALSE)
 }
 
@@ -176,6 +179,22 @@
                                   clickCount = 1L)
   }
   invisible(where)
+}
+
+#' Give a file box of the app's page a file, as a user's file dialog does
+#'
+#' Sets the file on the page's file input through Chrome's DevTools
+#' (DOM.setFileInputFiles), so Shiny uploads and reads it as it reads a
+#' user's file (measured before RED, G17c, S76: plan section 13.3).
+#'
+#' @param page the page, from .appPage().
+#' @param id the file input's id.
+#' @param path the file.
+.appSetFile <- function(page, id, path) {
+  root <- page$DOM$getDocument()$root$nodeId
+  node <- page$DOM$querySelector(root, paste0("#", id))$nodeId
+  page$DOM$setFileInputFiles(files = list(normalizePath(path)), nodeId = node)
+  invisible(path)
 }
 
 #' Open the app's page in the shared Chrome and wait for Shiny to connect
