@@ -4,8 +4,9 @@
 ## docs/research/pedkindraw-gaps-2026-11-18.md; rulings R148 and R149,
 ## docs/planning/pedigree-app-plan.md sections 4, 7 and 11; .appViewsPed() and
 ## .appClickNode() pedkindraw S75, Phase G17b, R150, section 12; .appCsv()'s
-## name and .appSetFile() pedkindraw S76, Phase G17c, R151, section 13). Not
-## copied from nprcgenekeepr.
+## name and .appSetFile() pedkindraw S76, Phase G17c, R151, section 13;
+## .startPedigreeApp()'s childEnv pedkindraw S77, Phase G17d, R152, section 14).
+## Not copied from nprcgenekeepr.
 ##
 ## The server tests run shiny::testServer() on small typed pedigrees with no
 ## browser, so they run everywhere shiny is installed, CRAN too. The browser
@@ -105,21 +106,32 @@
 #' "Listening on http://127.0.0.1:<port>", which this reads from the child's
 #' output. The child is killed when the calling test ends.
 #'
+#' G17d (pedkindraw S77, R152): `childEnv`, environment variables the child
+#' sets before it starts the app, so a test can give the app's process a
+#' CHROMOTE_CHROME that names no file (plan section 14.3) while the tests'
+#' own Chrome is untouched.
+#'
 #' @param ped passed to runPedigreeApp().
+#' @param childEnv `NULL`, or a named character vector of environment
+#'   variables for the child.
 #' @return a list: `process` (the callr process) and `url`.
 .startPedigreeApp <- function(ped = NULL, envir = parent.frame(),
-                              seconds = 60) {
+                              seconds = 60, childEnv = NULL) {
   path <- getNamespaceInfo(asNamespace("pedkindraw"), "path")
   fromSource <- !file.exists(file.path(path, "R", "pedkindraw.rdb"))
   log <- withr::local_tempfile(fileext = ".txt", .local_envir = envir)
-  process <- callr::r_bg(function(path, fromSource, ped) {
+  process <- callr::r_bg(function(path, fromSource, ped, childEnv) {
+    if (length(childEnv) > 0L) {
+      do.call(Sys.setenv, as.list(childEnv))
+    }
     if (fromSource) {
       pkgload::load_all(path, quiet = TRUE)
     } else {
       library(pedkindraw, lib.loc = dirname(path))
     }
     pedkindraw::runPedigreeApp(ped, launch.browser = FALSE)
-  }, args = list(path = path, fromSource = fromSource, ped = ped),
+  }, args = list(path = path, fromSource = fromSource, ped = ped,
+                 childEnv = childEnv),
   libpath = .libPaths(), stdout = log, stderr = "2>&1", supervise = TRUE)
   withr::defer(process$kill(), envir = envir)
   start <- proc.time()[["elapsed"]]
