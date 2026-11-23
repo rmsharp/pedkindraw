@@ -3,12 +3,14 @@
 **Date:** 2026-11-23 · **Session:** pedkindraw S78 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 "Planning Sessions"; failure mode #18: this session writes no package code; the code beside this plan is three
 measuring scripts, section 3.6). **Governs:** Phases 17h and 17i of `docs/planning/cran-submission-plan.md` (section 6,
-`:754` "Phase 17h. The timing runs" and `:764` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
+`:754` "Phase 17h. The timing runs" and `:766` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
 `docs/planning/standalone-pedigree-package-plan.md`. **Ruling made here:** R153 (Mark's four picks, section 2; recorded
 in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8); R155
-(17h1b's three picks, S80: `record.csv` and each run's free memory, sections 4.2 and 5.4).
+(17h1b's three picks, S80: `record.csv` and each run's free memory, sections 4.2 and 5.4); R156 (17h1c's pick, S81:
+each run's `started` is when the run launched, section 8 dragon 24).
 **Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6); 17h1b DONE
-(S80: each run's free memory and `record.csv`, section 6). Next: 17h2, the computation runs (section 6).
+(S80: each run's free memory and `record.csv`, section 6); 17h1c DONE (S81: each run's `started` its launch, section
+6). Next: 17h2, the computation runs (section 6).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -503,6 +505,24 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 - **Surface:** this Mac. The build check's stop on uncommitted `R/` files was shown on temporary git repositories in the
   tests, not on this repository's tree.
 
+### Phase 17h1c. Each run's `started` (strict TDD; found at S80's close-out)
+
+- **Work:** dragon 24: the copied `runOnce()` made each run's row, and its `started`, after `runLimited()` returned.
+  Pre-RED picker (R156): which moment `started` records.
+- **DONE:** `test_dir("tools/timing/tests")` 0 failed, WARN 0, SKIP 0; in a trial every row's `started` plus its
+  `realSeconds` at or before the next row's `started`; lint 0; no `R/` change.
+- **Done (S81):** R156 `96a7f39`; RED `7c6e8e7` (2 new tests of `runLimited()`'s `launched`, the row test given its
+  time through the run's figures, 1 new test of `runRow()`'s arguments), GREEN `c7cff5d` (`runLimited()` returns
+  `launched`, `runRow()` writes it with `timeStamp()` and has no `started` argument), REFACTOR `df6dbca` (the copied
+  inner `started`, the time of the child's "CALL START", renamed `callStarted`). `test_dir` with `PKD_LIB` `[ FAIL 0 |
+  WARN 0 | SKIP 0 ]`, 129 tests, 1,219 expectations; a trial of the real script (`pkd_gen`, `k2_kin` at 300): 8 runs
+  `ok`, each row's `started` plus `realSeconds` before the next row's `started` (1.8-1.9 s between back-to-back
+  measured runs, the idle check's own time; 69-221 s where it waited for half the CPU idle), the last run started
+  12:57:11 and ended 12:57:12.1 by its `realSeconds`, the end note 12:57:12; lint 0; no file under `R/`,
+  `DESCRIPTION` or `NAMESPACE` changed.
+- **Surface:** this Mac, at 300 animals only, where a run lasts about 1.2 s, so `started` moved by about a second; at
+  the larger sizes it moves by each run's whole length (up to 120 s after loading).
+
 ### Phase 17h2. The computation runs (no code)
 
 - **Work:** at Orient, `git status` clean and the commit to time chosen (HEAD); build and install it (section 5.5; S79's
@@ -638,9 +658,16 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 23. **`timingRuns.csv`'s `pkdLib` is the scratch library's full path** (copied, S79): the record is committed (17h2),
     and a library in a session's scratchpad puts the home folder's name and a session id in a public file. Build
     `PKD_LIB` at a short path that names no person.
-24. **`timingRuns.csv`'s `started` is when the run ended** (copied, found S80): the row, and its time, is made after
-    `runLimited()` returns (`runOnce()`); in S80's trial the last run's `started` equals the end note's 12:01:13.
-    `record.csv`'s `started` is the record's start. Read the column so, or rename it (backlog).
+24. **`timingRuns.csv`'s `started` was when the run ended** (copied, found S80; fixed S81, R156): the copy made the
+    row, and its time, after `runLimited()` returned (in S80's trial the last run's `started` equalled the end note's
+    12:01:13). Since 17h1c it is the time `runLimited()` launched the child, so `started` plus `realSeconds` is the
+    run's end; nprcgenekeepr's `runOnce()` still writes the end (at `3e06730c5`, R8). `record.csv`'s `started` is the
+    record's start.
+25. **Other work on this Mac holds the record back** (S81): at 12:35 on 2026-11-23 the Mac was 0% idle, load average
+    43 (a virtual machine, vitest workers and Playwright's headless Chrome, none of them this project's), and
+    `runTiming.R` waits up to 10 minutes before each run while less than half the CPU is idle (a trial of 8 runs was
+    stopped after 5 minutes with none run); at 12:48, 50-74% idle, the same 8 runs took 9 minutes. Before 17h2 read
+    `top -l 2 -n 0 -s 1` and `ps -Ao pcpu,etime,comm -r`, and ask Mark about any such work still running.
 
 ---
 
