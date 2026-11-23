@@ -3,11 +3,12 @@
 **Date:** 2026-11-23 · **Session:** pedkindraw S78 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 "Planning Sessions"; failure mode #18: this session writes no package code; the code beside this plan is three
 measuring scripts, section 3.6). **Governs:** Phases 17h and 17i of `docs/planning/cran-submission-plan.md` (section 6,
-`:754` "Phase 17h. The timing runs" and `:761` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
+`:754` "Phase 17h. The timing runs" and `:764` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
 `docs/planning/standalone-pedigree-package-plan.md`. **Ruling made here:** R153 (Mark's four picks, section 2; recorded
-in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8).
-**Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6). Next: 17h2, the
-computation runs (section 6).
+in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8); R155
+(17h1b's three picks, S80: `record.csv` and each run's free memory, sections 4.2 and 5.4).
+**Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6); 17h1b DONE
+(S80: each run's free memory and `record.csv`, section 6). Next: 17h2, the computation runs (section 6).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -292,7 +293,9 @@ listed in that header.
 
 Committed: `tools/timing/results/timing.csv`, `timingRuns.csv`, `drawingTiming.csv`, `drawingTimingRuns.csv`,
 `pedigreeFiles.csv`, and `record.csv` (one row per record: its date, the pedkindraw commit installed, `git rev-parse
-<commit>:R`, the R, kinship2, Pedixplorer, chromote and Chrome versions, the machine's model, cores and memory).
+<commit>:R`, the R, kinship2, Pedixplorer, chromote and Chrome versions, the machine's model, cores and memory). R155
+(S80): `runTiming.R` appends the row when a record starts, its columns `record`, `started`, `commit`, `rTree`,
+`packaged`, `R`, `kinship2`, `Pedixplorer`, `chromote`, `chrome`, `model`, `chip`, `cores`, `memoryGb`.
 Git-ignored (new lines in `.gitignore`, which has none for `tools/` today): `tools/timing/data/synthetic_*.csv`
 (rebuilt by `savePedigrees.R`, checked by md5), `tools/timing/results/*Machine.txt` (the names of the programs running
 on the machine), `tools/timing/pictures/`. `tools/` is build-ignored (`.Rbuildignore:22`), so none of it ships.
@@ -389,9 +392,9 @@ is.
 
 The study's, section 3.1, with R153's load rule: a run starts once at least 50% of the CPU is idle, waiting at most 10
 minutes and then starting anyway with `quiet = FALSE` recorded; each run's idle share, 1-minute load average and free
-memory (`memory_pressure -Q`, recorded, not a gate) go in its row. Never two runs at once: the computation and drawing
-records run in different sessions, and nothing else runs meanwhile (no test suite, no check, no other Chrome; app
-plan dragons 8 and 19).
+memory (`memory_pressure -Q`, recorded, not a gate; the `memFree` column, read after the idle wait, R155) go in its
+row. Never two runs at once: the computation and drawing records run in different sessions, and nothing else runs
+meanwhile (no test suite, no check, no other Chrome; app plan dragons 8 and 19).
 
 ### 5.5 The code timed
 
@@ -399,7 +402,9 @@ pedkindraw is built from the record's commit (`R CMD build --no-build-vignettes`
 (`R CMD INSTALL --library=<scratch>/pkdlib`, byte-compiled, as CRAN installs it); `PKD_LIB` puts it first on the child's
 library path, renv's library next. Each run records the folder pedkindraw was loaded from, and a run that loaded it from
 anywhere else stops the record (renv's library holds a stale pedkindraw 0.0.1, backlog `:227`, and `DESCRIPTION` reads
-0.0.1 too, so the version cannot tell them apart). `record.csv` names the commit and `R/`'s tree; if `R/`,
+0.0.1 too, so the version cannot tell them apart). `record.csv` names the commit and `R/`'s tree, and the record stops
+before its first run when `R/`, `DESCRIPTION` or `NAMESPACE` has uncommitted changes or the install was packaged before
+their last commit (R155); if `R/`,
 `DESCRIPTION` or `NAMESPACE` changes after a record, 17n lists each change and whether it can change a time (section
 6, amendments).
 
@@ -481,6 +486,23 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   phase's Work were read as the package suite's own comparisons with kinship2 and Pedixplorer: the harness's
   pairing tests run on the colony and the sample, the calls the cases make.
 
+### Phase 17h1b. Each run's free memory, and `record.csv` (strict TDD; found at S79's close-out)
+
+- **Work:** section 5.4's free memory and section 4.2's `record.csv`, which 17h1's copy had no code for. Pre-RED picker
+  (R155): when the row is written, the build check, where the free memory is read.
+- **DONE:** `test_dir("tools/timing/tests")` 0 failed, WARN 0, SKIP 0; a trial writes `memFree` in every run's row and
+  one `record.csv` row; lint 0; no `R/` change.
+- **Done (S80):** RED `a2def9e` (18 tests in `test_timingHarness.R`'s last section), GREEN `c458ca4` (`runRow()` and the
+  record's functions in `timingHarness.R`; `runTiming.R` writes the row before its first run and reads
+  `currentMemoryFree()` after each idle wait), REFACTOR `5efec3d` (`timeStamp()`). `test_dir` with `PKD_LIB` `[ FAIL 0 |
+  WARN 0 | SKIP 0 ]`, 126 tests, 1,208 expectations; a trial (`pkd_gen`, `k2_kin` at 300): 8 runs `ok`, `memFree` 45-46
+  in each row, and one `record.csv` row (`a2def9e`, `R/`'s tree `ac123b7`, packaged 2026-11-23 17:39:10 UTC, R 4.6.2,
+  kinship2 1.9.6.2, Pedixplorer 1.8.0, chromote 0.5.1, Chrome 157.0.8103.51, Mac14,6, Apple M2 Max, 12, 96); with
+  `PKD_LIB` an empty folder the record stopped before writing anything; lint 0; no file under `R/`, `DESCRIPTION` or
+  `NAMESPACE` changed.
+- **Surface:** this Mac. The build check's stop on uncommitted `R/` files was shown on temporary git repositories in the
+  tests, not on this repository's tree.
+
 ### Phase 17h2. The computation runs (no code)
 
 - **Work:** at Orient, `git status` clean and the commit to time chosen (HEAD); build and install it (section 5.5; S79's
@@ -490,7 +512,10 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   git-ignored, so a clone has none);
   `uptime`, `top`, `memory_pressure` read; `Rscript tools/timing/runTiming.R` in the background (all 78 cases, all six
   sizes), watched until it ends; `summarizeTiming.R` printed; one cell of each kind re-run from a fresh shell and set
-  beside the record's (the study's two re-runs differed by 3% and 4%); `record.csv` written; the results committed.
+  beside the record's (the study's two re-runs differed by 3% and 4%); the results committed. `runTiming.R` writes
+  `record.csv`'s row itself when the record starts (R155), and stops at once unless `PKD_LIB` was built after the last
+  commit to `R/`, `DESCRIPTION` or `NAMESPACE` with those clean (dragon 22); build it at a short path that names no
+  person (dragon 23).
 - **DONE:** `timing.csv` has, for every case, a row per size up to and including its first failure, each `ok` row the
   median of 3 measured runs; every run's start met the load rule, or `timingRuns.csv` shows which did not; the
   variation across each cell's 3 runs printed for cells of 0.5 s or more (the study's largest was 7.9%); every run
@@ -604,6 +629,18 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
     100,000", true of a record over the six sizes and not of a trial at one.
 20. **The test folder takes about 3 minutes** and starts R children: run it alone, as the suite (app plan dragons 8,
     19), and never beside a record.
+21. **A scratch run of tests outside the root has no renv** (S80): run from `tools/timing/tests`, `kinship2` was not on
+    the library path, and testthat's edition 3 turns a missing package into a skip, so a check of 18 drafted tests
+    read "0 failed" while one test's version comparisons were skipped. Run checks from the root and read SKIP.
+22. **The record's build check** (R155): `runTiming.R` stops before its first run when `R/`, `DESCRIPTION` or
+    `NAMESPACE` has uncommitted changes or `PKD_LIB`'s pedkindraw was packaged before their last commit. Rebuild
+    `PKD_LIB` after any commit that changes them; a commit elsewhere (docs, `tools/`) needs none.
+23. **`timingRuns.csv`'s `pkdLib` is the scratch library's full path** (copied, S79): the record is committed (17h2),
+    and a library in a session's scratchpad puts the home folder's name and a session id in a public file. Build
+    `PKD_LIB` at a short path that names no person.
+24. **`timingRuns.csv`'s `started` is when the run ended** (copied, found S80): the row, and its time, is made after
+    `runLimited()` returns (`runOnce()`); in S80's trial the last run's `started` equals the end note's 12:01:13.
+    `record.csv`'s `started` is the record's start. Read the column so, or rename it (backlog).
 
 ---
 
