@@ -204,10 +204,17 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S79
 date: 2026-11-23
-status: pending
-active_task: Phase 17h1, the computation timing harness (docs/planning/pedkindraw-timing-plan.md:406), strict TDD, a copy of nprcgenekeepr's tools/pedigreeComparison/ into tools/timing/ with its tests. Claimed; work beginning with the reads and T1's inputs.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 7
+predecessor_score: 9
+active_task: Phase 17. 17h1 DONE in S79 (R154): the computation timing harness in tools/timing/ (copied from nprcgenekeepr's tools/pedigreeComparison/ at 3e06730c5, test-first), 78 cases, 108 tests passing. Next: 17h1b (backlog :325, free memory and record.csv), then 17h2, the computation runs.
+what_was_done: claim 6281c07; T1 probes and R154 82ead90; RED 8fc668b, df2e102 (108 failing, SKIP 0); amendments 5b42ca0, d23cbbf; GREEN cd002dc, a8390fb ([ FAIL 0 | WARN 0 | SKIP 0 | PASS 1143 ]); REFACTOR b9d5893; close-out 1 78d6070; close-out 2 (backlog :325, notes, this receipt, ledger). Details: SESSION_NOTES.md "What Session 79 Did" and CHANGELOG.md.
+next_steps: Orient as SESSION_NOTES.md "What You Must Do" (drift 91/23/0; nprcgenekeepr's harness log from 3e06730c5); build PKD_LIB and run savePedigrees.R; then the orient picker: 17h1b (recommended, backlog :325) or 17h2 (timing plan :484), every backlog item named.
+key_files: docs/planning/pedkindraw-timing-plan.md:226 (3.8), :388 (5.4), :451 (17h1 Done), :484 (17h2), :559 (dragons 1-20); tools/timing/timingHarness.R:155 (waitForQuiet), tools/timing/runTiming.R:77 (runOnce); methodology/BACKLOG.md:325.
+gotchas: PKD_LIB must be set (else SKIP and stopsRecord); the test folder takes about 3 min, run it alone; Pedixplorer's family_check stops on the colonies (R154); summarizeTiming.R says "none up to 100,000" on any trial; HANDOFFS.md is past its trimmer (backlog :316), keep receipts short.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand below; the package suite by hand on a git archive of 78d6070 (NOT_CRAN=true) [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ] (566 s); the harness's own tests and trial as what_was_done says. No package file changed.
+changelog_ref: CHANGELOG.md "2026-11-23 · [BL-Phase 17] S79: 17h1, the computation timing harness"
+commit: the close-out 2 commit (session commits 6281c07 to 78d6070 listed above)
 ```
 ```handoff
 session: S78

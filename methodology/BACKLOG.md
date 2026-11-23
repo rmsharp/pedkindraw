@@ -321,3 +321,15 @@ issues).*
       S61-S78 5,630 B each on average (S78's 5,077 B), so its 262,144 B hard refusal is about 11 sessions away.
       Choices: shorter receipts (each field a pointer to `SESSION_NOTES.md` and `CHANGELOG.md`, which hold the
       detail), or a `--force` archive by Mark's ruling, or both.
+
+- [ ] **Before the computation record (17h2): each run's free memory, and `record.csv`** (READY, Effort S, strict TDD;
+      found at S79's close-out) -- `docs/planning/pedkindraw-timing-plan.md` section 5.4 says each run's row holds its
+      idle share, 1-minute load and free memory (`memory_pressure -Q`, recorded, not a gate), and section 4.2 lists
+      `tools/timing/results/record.csv` (one row per record: date, the pedkindraw commit installed, `git rev-parse
+      <commit>:R`, the R, kinship2, Pedixplorer, chromote and Chrome versions, the machine's model, cores and memory).
+      17h1's `tools/timing/runTiming.R` (copied as section 4.1 listed, which named neither) writes idle and load only
+      (`waitForQuiet()` reads memory only when `memFloor` is above 0, `tools/timing/timingHarness.R:155`), and nothing
+      writes `record.csv`. 17h2 is "no code", so a short TDD session (17h1b) adds both before it: a `memFree` column
+      from `currentMemoryFree()` in each run's row, and a writer for `record.csv` (a function in
+      `timingHarness.R`, its tests in `tools/timing/tests/test_timingHarness.R`). Dragon 11 reads a "memory" failure at
+      30,000 or 100,000 with the free memory, so the record needs it.
