@@ -5,7 +5,8 @@
 beside this plan, section 3). **Governs:** Phase G17 of `docs/planning/gaps-and-shared-code-plan.md` (section 5.1,
 G17's row, `:386`), gap A3 of `docs/research/pedkindraw-gaps-2026-11-18.md` (`:144`). **Ruling made here:** R148
 (Mark's four picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written (S73);
-G17a DONE (S74, R149, section 11): `runPedigreeApp()`; G17b next, then G17c and G17d (section 7).
+G17a DONE (S74, R149, section 11): `runPedigreeApp()`; G17b DONE (S75, R150, section 12): choosing the animals;
+G17c next, then G17d (section 7).
 
 **Versions:** shiny 1.14.0, Pedixplorer 1.8.0, visNetwork 2.1.4, chromote 0.5.1 and callr 3.8.0 from this project's
 renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); Google Chrome 157;
@@ -80,7 +81,7 @@ It calls 12 helpers pedkindraw does not have, in 10 nprcgenekeepr files of about
 turn was not followed): `setPopulation()`,
 `isLivingAnimal()`, `isGeneratedUnknownId()`, `readWithFinalNewline()` and `readTwinRelations()` (two of R13's
 readers), `makeColonyOverview()`, `drawColonyOverview()` and `getMaternalLinePedigree()` (the colony overview:
-backlog `methodology/BACKLOG.md:185`, "Waiting on Mark"), `signalDataReady()`, `dataReadyContainer()`, `.countOf()`,
+backlog `methodology/BACKLOG.md:193`, "Waiting on Mark"), `signalDataReady()`, `dataReadyContainer()`, `.countOf()`,
 `.twinPairsWithin()`; a thirteenth, `.diagramHeight()`, pedkindraw has copied. Its tests: 9
 `test_modPedigree*.R` files with 171 tests through `shiny::testServer()`, and 4 end-to-end files through
 `shinytest2::AppDriver`.
@@ -111,7 +112,7 @@ behind it" is pedkindraw's export an app would call today.
 | F17 | save the animals drawn as a CSV file | yes | yes | `utils::write.csv()` | a download button |
 | F18 | read the animals as a table | counts only | yes (DT, searchable) | none | shiny's own table (no new package) or DT (3 more) |
 | F19 | be stopped before a drawing too large to use | warns at 300, refuses at 500 | 400 or 750 | none (`drawPedigreeDiagram()` has no limit; past 120 s at 2,000 animals, the contract's section 7) | a number, and words |
-| F20 | see a colony too large to draw as its maternal lines | no | yes | none | copy 3 functions, 526 lines (backlog `:185`) |
+| F20 | see a colony too large to draw as its maternal lines | no | yes | none | copy 3 functions, 526 lines (backlog `:193`) |
 | F21 | change symbol, text and spacing sizes and line width | symbol size, line width | no | `symbolSize`, `textSize`, `columnSpacing`, `rowSpacing`, `lineWidth` (G14) | four or five numbers |
 
 Pedixplorer's app has 17 of the 21 (all but F7, F12, F15 and F20; F18 and F21 in part); nprcgenekeepr's Browser
@@ -201,9 +202,9 @@ Mark's picks, each first time, each the recommended option:
 
 1. **What the app does: "Both apps' core".** It builds 16 of the 21: F1, F3-F9, F11-F13 and F15-F18, and F19 as a
    warning on a very large drawing (the option's preview headed its list "15" and listed these 16, F19 marked "+").
-   **Waiting, in one backlog item** (`methodology/BACKLOG.md:192`, "The app's features left for later"): F2 (Excel
+   **Waiting, in one backlog item** (`methodology/BACKLOG.md:200`, "The app's features left for later"): F2 (Excel
    files: `readxl`, 14 packages, what R13 kept out), F10 (colour pickers), F14 (a matings file), F20 (the colony
-   overview, `methodology/BACKLOG.md:185`, waiting on Mark) and F21 (the size settings). Not picked: "All 21" (6-8 build sessions, a guess; Excel reverses R13; the colony overview is
+   overview, `methodology/BACKLOG.md:193`, waiting on Mark) and F21 (the size settings). Not picked: "All 21" (6-8 build sessions, a guess; Excel reverses R13; the colony overview is
    waiting on Mark), "Smallest: open, draw, save" (8 of 21; no family, no informative animals, so Pedixplorer's app
    would still do more) and "Copy nprcgenekeepr's Browser" (about 1,940 copied lines under the drift rule, DT and
    two of R13's readers, and without Pedixplorer's column picker, family choice and informative animals).
@@ -418,13 +419,28 @@ each); the gaps plan guessed 1 + 4-8.
     the sample's columns pays for drawing 375 animals (2.4 s here) on CRAN too. G17a's server tests load the sample
     without choosing its columns, and only the Chrome test draws it. An assignment inside `testServer()`'s code lands
     in the server's environment, not the caller's: keep a result in an environment object.
+15. **Aim a click at the network's own canvas** (S75): a drawing with a legend holds two canvases, and the first in the
+    page (`#diagram canvas`) is the legend's; the probe's first clicks, aimed there, landed past the window's edge and
+    reached nothing. A node's place is `network.canvas.frame.canvas.getBoundingClientRect()` plus
+    `network.canvasToDOM()` (`.appClickNode()`, `tests/testthat/helper-pedigreeApp.R`).
+16. **What the server writes to an input, `testServer()` cannot see** (finding 4), so the server keeps what it needs
+    from an input in a `reactiveVal` that both the input and its own writes set (S75's focal text): the server tests
+    then reach a click, and the Chrome test checks the box. `update*Input()` in `testServer()` neither warns nor acts.
+17. **Changing what a test expects can leave code with no test** (S75): R150 made G17a's sire-with-no-row file
+    drawable, and that test had been the only one reaching the page's "could not be drawn"; `covr` at GREEN's DONE
+    check found it (212 of 214 statements), and an animal its own sire now tests it. After changing an existing
+    test's case, measure coverage before calling GREEN done.
+18. **A selectize list's `<select>` holds only the option chosen** (S75): read a list's choices from
+    `$('#family')[0].selectize.options`, not from the element's `options` (the by-hand script read one family of five).
+19. **Do not edit the tree while the full suite runs** (failure mode #29): S75 added a test during a run; the count
+    (16,470 + 134) showed it was read, but which tree a run read should be known, not worked out afterwards.
 
 ---
 
 ## 9. Out of scope
 
 - **F2, F10, F14, F20, F21** (R148, pick 1): Excel files, colour pickers, a matings file, the colony overview and the
-  size settings, in one backlog item (`methodology/BACKLOG.md:192`), each a later ruling.
+  size settings, in one backlog item (`methodology/BACKLOG.md:200`), each a later ruling.
 - **Exporting the app's parts** as a module (R148, pick 4).
 - **shinytest2 and DT** (R148, picks 1 and 3).
 - **Other sources of data:** LabKey EHR (nprcgenekeepr's), PLINK ped/fam files (Pedixplorer's; R13), a database.
@@ -576,8 +592,8 @@ a real file dialog (the upload went through DevTools), a phone-width window, a h
 (run 45073310658, `6a3fab2`):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16416 ]`; macOS `SKIP 9 PASS 16427` (the 2 browser tests ran and passed there: Chrome is found on GitHub's macOS too, so the plan's "browser tests skip on macOS" does not hold for them); Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16425 ]`, `proc.time()` 1,110 s, and the hang a seventh time (cancelled at 41 minutes; two orphan `Rterm` processes, as before G17a); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known).
 
 **Found for later:** a file whose parents have no row of their own cannot be drawn (section 11.4); Pedixplorer's app
-and nprcgenekeepr's Input tab add such parents. A backlog item (`methodology/BACKLOG.md:201`, "The app: parents with
-no row of their own").
+and nprcgenekeepr's Input tab add such parents. A backlog item (`methodology/BACKLOG.md:201` then, "The app: parents with
+no row of their own"; settled by R150 and removed in S75, section 12.4).
 
 ---
 
@@ -634,7 +650,7 @@ Every one of the sample's 375 animals taken as the one focal animal in turn (`g1
 and the cycle; `findPedigreeNumber()` gives `NA` to both animals of the cycle; `trimPedigree()` and
 `getDescendantPedigree()` return rows on all eight (the id twice gives `o2` twice).
 
-### 12.3 What a click lands on, and parents with no row (F15; backlog `:201`)
+### 12.3 What a click lands on, and parents with no row (F15; the backlog item "The app: parents with no row of their own")
 
 `g17bClickParents.R`. **The sample's drawing:** 1,460 nodes: 375 animals, 170 repeat nodes (`__dup_`, repeats of 113
 animals, each mapped by the layout's `duplicateToReal` to an animal with a row), and 915 points with no animal (237
@@ -668,9 +684,66 @@ read, still lists them (the others: a button; leave it as G17a does).
   `testServer()`'s tests and end to end in Chrome (finding 4).
 - **The size question** (F19): R150's words and button; the limit 1,000 is an argument of the internal server, so the
   server tests use a small one.
-- **Parents with no row** (backlog `:201`): added as R150 says; G17a's test of a sire with no row changes from "could
+- **Parents with no row** (the backlog item, removed in S75): added as R150 says; G17a's test of a sire with no row changes from "could
   not be drawn" to "added and drawn".
 - **The Animals tab** shows the animals chosen to draw (G17a: everyone read), as nprcgenekeepr's Browser's table does;
   the Checks tab still checks the whole file.
 - **A view that cannot be made** (`getNearRelativePedigree()` stopping) is said on the page as a drawing that fails
   is (G17a).
+
+### 12.6 What G17b built and measured (S75)
+
+**Commits:** claim `40c5472`; the measuring scripts `100121d`; the measures and R150 `7ab128a`; RED `5359ecd`; GREEN
+`809bee3` (the app and its help), `bdb4e05` (NEWS, the contract), `ee81dd4` (a test of a pedigree that cannot be drawn,
+found by `covr`); REFACTOR `1eec0e7`.
+
+**Built** (`R/pedigreeApp.R`, internal): "Animals to draw", four choices (Everyone, the default; One family; Focal
+animals with their ancestors and descendants; Focal animals' near relatives); the family list (families of two or more,
+largest first, "Family n: k animals", and how many animals have no relative in the file); the focal box (ids split at
+commas, semicolons, spaces, tabs and new lines; ids not in the pedigree named; a focal view with none says to type or
+click one); "How close" (3 by default, 1 at least, what 2, 3 and 4 hold); a click (`drawPedigreeDiagram(onClick = )`
+sends the clicked nodes, priority "event"; a repeat node is its animal, a mating dot or routing point nothing; the
+clicked animal replaces the focal animals, written in the box; the server keeps the focal text in a `reactiveVal` that
+the box and a click both set, so its tests see a click); over `drawLimit` (1,000) animals chosen, the question and "Draw
+anyway" (the approval kept for that set of animals); a parent with no row added by `addParents()` and named; a view that
+cannot be made said as a drawing that fails is; the Animals tab the animals chosen. The helpers `.appAddParents()`,
+`.appFocalIds()`, `.appFamilyChoices()`, `.appAloneNote()`, `.appLineal()`, `.appChooseAnimals()` (the REFACTOR),
+`.appClickJs`, `.appClickedAnimals()`; `.appDraw(ped, onClick)` also returns the layout's `duplicateToReal`. The help
+(`R/runPedigreeApp.R`), NEWS, the contract's section 4.7.
+
+**Tests:** 17 new (15 in `test_pedigreeAppViews.R`, the Chrome click test, an animal its own sire in
+`test_pedigreeAppServer.R`) and 1 changed (G17a's sire with no row: now added, named and drawn); the app's four files
+43 tests, 262 expectations. **The click in Chrome** sends real mouse events through DevTools (`.appClickNode()`): the
+first canvas in the widget is the legend's, so the click aims at the network's own (`network.canvas.frame.canvas`),
+measured on a probe before RED (an animal, a repeat, a mating dot each reached Shiny). RED: 17 failing for the right
+reason (missing functions, outputs and the `drawLimit` argument; the Chrome test timed out on a page with no focal box),
+G17a's other 26 passing, SKIP 0, WARN 0. GREEN 3 (`ee81dd4`): `covr` found that R150 had left no test reaching
+`.appDraw()`'s error return and the page's "could not be drawn" (212 of 214 statements); an animal its own sire now
+tests it.
+
+**Verified:** the full suite (`NOT_CRAN=true`) `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16604 ]` (549 s; started at
+`bdb4e05`, the GREEN 3 test read: 16,470 + 134), and again at the REFACTOR (`1eec0e7`) `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16604 ]` (542 s); `R CMD check --as-cran` from a scratch folder (`NOT_CRAN=true`, connections left open checked) at `ee81dd4`: 0
+errors, 0 warnings, 1 NOTE (the new submission), `[ FAIL 0 | WARN 0 | SKIP 6 | PASS 16577 ]` (631 s); **on CRAN's path**
+(`NOT_CRAN` unset, the checked install) the app's 40 tests that run take **5.06 s** (2.50 s the new file, 2.27 s the
+server file; S74's 24 took 1.73 s), above R148's guess of 1-3 s, and the 3 browser tests skip; coverage by the app tests
+214 of 214 statements of `R/pedigreeApp.R` and 16 of 16 of `R/runPedigreeApp.R`; `bash tools/checkExamples.sh` errors 0;
+`lint_package()` 0; `roxygenise()` no change; drift 91 / 23 / 0; fidelity 600 of 600 identical; `Rscript
+tools/gapCases.R app` the app's title. The REFACTOR proved by a record of the server over 378 cases (6 pedigrees, every
+view, 7 focal texts, 7 "how close" values, 5 family choices, a size limit of 2), taken twice on GREEN's code (identical)
+and `identical()` after.
+
+**By hand, in headless Chrome on this Mac:** the sample: everyone (375), One family (343 first; family 4, 13 animals,
+chosen in the list), a click on an animal (83U0EX: the focal box shows it, the view unchanged), ancestors and
+descendants (7 animals: 83U0EX, his three descendants and their three other parents, each drawn without its parents;
+looked at in a picture), near relatives (3 at "how close" 3, 2 at 2), an unknown id named ("Not in the pedigree:
+NOPE."); a CSV uploaded through the page's file input with a sire with no row ("Parents with no row of their own, added
+so the pedigree can be drawn: s9.", 5 animals); 1,001 animals from `examplePedigree`: the question and "Draw anyway"
+shown (looked at in a picture), the drawing in the page 10.0 s after the click. **Not run:** another browser, a real file
+dialog, a phone-width window, a hosted server; the size question on a real file of more than 1,000 animals uploaded
+through the page (`ped` was given instead).
+
+**Found for later:** the drawing vignette's "How large a drawing can be" (`vignettes/drawing.Rmd:788`) gives
+nprcgenekeepr's November times (1,000 animals in about 16 s, 2,000 not within two minutes); pedkindraw's own drawing
+now takes 9.1 s for 1,001 and 50.5 s for 2,000 (section 12.1), and the contract's section 7 the same old row: G17d,
+which edits that vignette, can bring both up to date (`methodology/BACKLOG.md`). Reading a selectize list's options in
+a page's `<select>` shows only the one chosen (a measuring script's mistake, not the app's).
