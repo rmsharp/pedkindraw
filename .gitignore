@@ -27,3 +27,11 @@ vignettes/*_files/
 pkgdown_site/
 
 scratchpad/
+
+# The timing harness (docs/planning/pedkindraw-timing-plan.md section 4.2):
+# the pedigree files savePedigrees.R rebuilds and checks by md5, the machine
+# notes (the names of the programs running), and the pictures.
+tools/timing/data/synthetic_*.csv
+tools/timing/data/rhesus375.csv
+tools/timing/results/*Machine.txt
+tools/timing/pictures/
