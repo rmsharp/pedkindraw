@@ -52,8 +52,12 @@ Suggests and one exported function, in four build sessions, G17a-G17d (a guess);
 G17b is done (S75, R150: the app chooses the animals it draws, follows a click, asks before drawing more than 1,000
 animals and adds a parent with no row); G17c is done (S76, R151: the app draws up to four conditions chosen from the
 file's columns, a column of numbers with a cut-off, the file's marks found by name in any case, lines at right angles or
-straight, and a twins file, reading a file's yes-or-no values with the common words); next is G17d, saving and the
-documents.
+straight, and a twins file, reading a file's yes-or-no values with the common words); G17d is done (S77, R152: the
+app saves the drawing as an SVG, a PDF or a PNG file through `savePedigreeDiagram()`, its buttons greyed with the reason
+when chromote or Chrome is missing, and the animals chosen as a CSV file, which it opens again to the same drawing; the
+README, the two vignettes and the help name the app; the drawing vignette gives pedkindraw's own drawing times), so G17
+is done, and with it every gap phase, G1-G17. Next is 17g, the timing plan (a planning session,
+`docs/planning/cran-submission-plan.md` section 6, "Phase 17g", `:740`).
 
 | Phase | Slice | State |
 |---|---|---|
@@ -93,7 +97,9 @@ session each unless marked. They follow the copy slices.
   G15 (mates with no offspring) is done in four sessions (S64's plan, R141; G15a the layout S65, G15b
   `getMatings()` S66, G15c the converters S67); G16 (picture files) is planned (S68's plan, R142) and G16a, the
   recording layer and the SVG, is done (S69, R143) and its CI repair too (S70, R145), and G16b (the PDF and the PNG) is
-  done (S71, R146), and G16c (the whole large pedigree and the documents) is done (S72, R147), so G16 is done; next is the other large addition (an app), planned first; then 17g-17q.
+  done (S71, R146), and G16c (the whole large pedigree and the documents) is done (S72, R147), so G16 is done; G17
+  (an app, `runPedigreeApp()`) is done in five sessions (S73's plan, R148; G17a-G17d S74-S77, R149-R152), so G1-G17
+  are done; next is 17g, then 17h-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or

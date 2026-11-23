@@ -45,32 +45,10 @@ issues).*
       on any unmarked table) can check the returning vignette's numbers against pedkindraw's own results. When it
       returns: point to it from `?pedkindraw`'s "Getting started" (`R/pedkindraw-package.R:42`), the
       getting-started vignette's "Where next" and the drawing vignette's "How large a drawing can be", which states
-      the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
-      page.
-
-- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G17d next; Effort L altogether, 15-25
-      sessions, a guess, the sum of the rows; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
-      DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
-      DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
-      DONE in S52, R129-R130, 1 session of the row's 2-3; G12 DONE in S53, R131-R132, 1 session of the row's 2-3; G13's first mark of six, genotyped, DONE in S54, R133-R134;
-      its second, carrier, DONE in S55, R135; its third, proband with consultand, DONE in S56, R136; its fourth,
-      evaluated, DONE in S57, R137; its fifth, infertile, DONE in S58, R138; its sixth and last, miscarriage,
-      DONE in S59, R139, so G13 DONE in six sessions, R133; G14's first session, the symbol size, DONE in S60,
-      R140, the four settings and their order picked there; its second, the text size, DONE in S61, R140; its
-      third, the column and row spacing, DONE in S62, R140, the line width split off as a fourth session by
-      Mark's pick; its fourth and last, the line width, DONE in S63, R140, so G14 DONE in four sessions; G15's
-      plan written in S64, R141, `docs/planning/mates-without-offspring-plan.md`, three build sessions;
-      G15a, the layout, DONE in S65, R141's picks; G15b, `getMatings()`, DONE in S66, R141's picks; G15c, the
-      converters, DONE in S67, R141's picks, so G15 DONE; G16's plan written in S68, R142,
-      `docs/planning/picture-files-plan.md`, three build sessions; G16a, the recording layer and the SVG file, DONE in
-      S69, R143; G16a's CI repair DONE in S70, R145; G16b, the PDF and the PNG file, DONE in S71, R146; G16c, the
-      whole large pedigree on one page and the documents, DONE in S72, R147, so G16 DONE; G17's plan written in S73,
-      R148, `docs/planning/pedigree-app-plan.md`, four build sessions G17a-G17d; G17a, the app's first slice,
-      `runPedigreeApp()`, DONE in S74, R149; G17b, choosing the animals, DONE in S75, R150; G17c, what is drawn, DONE in
-      S76, R151; next G17d) --
-      `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
-      commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
-      the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
+      pedkindraw's own drawing times measured in S75 since S77 (R152; before, nprcgenekeepr's November 2026 records,
+      Mark's S29 pick); the installed size has about 800 KB left for its page. S77 found that the contract's section 8
+      ("Drawing past about 1,000 animals") says `drawPedigreeDiagram()`'s help "states the measured limit": no help
+      page states a time.
 
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
       -- measured S42: of its 16 rows, only G1's say "At the switch (R98)" (`makePedigreeDiagramData()`,
@@ -106,14 +84,6 @@ issues).*
       check of the legend's label and the fills, as that section's other checks do. Mark asked in S52 whether the
       tutorials say how conditions are drawn.
 
-- [ ] **The drawing times in the drawing vignette and the contract** (READY, Effort S, documentation; found S75,
-      G17b) -- `vignettes/drawing.Rmd`'s "How large a drawing can be" (`:788`) and the contract's section 7
-      (`docs/planning/pedkindraw-api-contract.md:333`) give nprcgenekeepr's November times (1,000 animals in about
-      16 s, 2,000 not within two minutes). pedkindraw's own drawing, measured in S75
-      (`docs/planning/pedigree-app-plan.md` section 12.1), takes 9.1 s for 1,001 animals and 50.5 s for 2,000 in R
-      (16.7 s for another 1,000-animal pedigree: the structure matters as much as the count). G17d edits that vignette
-      and can bring both up to date, each time stated as measured, on which pedigrees and which computer.
-
 - [ ] **A twins table with no rows stops the layout, and an empty cell gets R's own words** (READY, Effort S; found
       S76, G17c; copied code, the same in nprcgenekeepr at `3e06730c5`) -- `makePedigreeMatingLayout(ped,
       twinRelations = <a data frame with id1, id2 and code and no rows>)` stops in `.buildTwinConnectorEdges()`
@@ -123,6 +93,15 @@ issues).*
       guards both (it passes no table when no pair is drawn, and names an empty cell itself), so this reaches only a
       script. A fix changes two copied functions: the drift rule (plan section 5) needs the same change in
       nprcgenekeepr or a `DIVERGENCE.md` row each; a test of each first.
+
+- [ ] **`savePedigreeDiagram()` takes a `CHROMOTE_CHROME` that names no file for a Chrome found** (READY, Effort S;
+      found S77, G17d; pedkindraw's own code) -- `chromote::find_chrome()` (chromote 0.5.1) returns
+      `CHROMOTE_CHROME` as it is, without looking for the file, so `savePedigreeDiagram()`'s check
+      (`R/savePedigreeDiagram.R:113`, `is.null(find_chrome())`) passes a path with nothing there and the save
+      fails later inside chromote, in chromote's words (`docs/planning/pedigree-app-plan.md` section 14.3). The
+      app's `.appPictureProblem()` (`R/pedigreeApp.R`) already asks that the path be a file or a command on the
+      path. A fix: the same test in `savePedigreeDiagram()`, its message unchanged; RED first (mockery's stub of
+      `chromote::find_chrome` returning a path with no file, as `test_pedigreeAppSave.R` does).
 
 - [ ] **A converted Pedixplorer object's `avail` is not drawn as genotyped** (NEEDS DECISION, Effort S; found S54, G13,
       R134) -- `asPedFrame()` returns Pedixplorer's `avail` under that name (`R/asPedFrame.R:315`), and
@@ -215,7 +194,10 @@ issues).*
       colour input; `colourpicker` not measured); **F14** add matings with no offspring (`matings`, G15; a third file,
       or a code in the twins file as Pedixplorer's "Spouse"); **F20** a colony too large to draw shown as its
       maternal lines (the item above: copy nprcgenekeepr's colony overview first); **F21** the symbol, text and
-      spacing sizes and the line width (G14's arguments). Each needs a ruling, then a session of its own.
+      spacing sizes and the line width (G14's arguments); and (R152, S77) **a page size for the saved pictures**
+      (width, height and dpi boxes beside the SVG, PDF and PNG buttons; G17d saves at `savePedigreeDiagram()`'s own
+      page, 10 inches wide, where the 375-animal sample's ids are 0.5 pt high, `docs/planning/pedigree-app-plan.md`
+      section 14.5). Each needs a ruling, then a session of its own.
 
 - [ ] **An animal with two or more mates drawn once, between them, as kinship2 draws it** (DECISION NEEDED,
       Effort M-L, a guess; found S65, G15a) -- pedkindraw draws a founder sire with two dams at each mating,
