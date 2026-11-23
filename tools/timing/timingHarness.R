@@ -11,7 +11,8 @@
 ## runRow() (each run's row, with the free memory read before it) and the
 ## record's row in record.csv: parseMachine(), currentMachine(),
 ## chromeVersion(), chromePath(), packageVersions(), packagedTime(),
-## gitLines(), commitFacts(), checkBuild(), recordRow(), appendRecordRow().
+## gitLines(), commitFacts(), checkBuild(), recordRow(), appendRecordRow();
+## timeStamp(), the time text those rows and machineNote()'s heading share.
 ## The Phase 1 timing harness (docs/planning/standalone-pedigree-package-
 ## plan.md, Phase 1 steps 4-5). Each measurement is one fresh Rscript
 ## (timeOne.R) run under /usr/bin/time -l: the time limit counts from the
@@ -174,11 +175,15 @@ waitForQuiet <- function(idleFloor = 50.0, maxWait = 600.0, memFloor = 0.0,
   }
 }
 
+## The time `t` as every file the harness writes gives it: the runs'
+## "started", the record's "started" and the machine notes' headings.
+timeStamp <- function(t = Sys.time()) format(t, "%Y-%m-%d %H:%M:%S")
+
 ## The busiest processes now, appended to `file` (started anew at "start").
 machineNote <- function(label, file) {
   top <- system("ps -Ao pcpu,etime,comm -r", intern = TRUE)[1L:11L]
   cat(c(
-    paste("##", label, format(Sys.time(), "%Y-%m-%d %H:%M:%S")),
+    paste("##", label, timeStamp()),
     system("uptime", intern = TRUE), paste("idle", currentIdle(), "%"),
     top, ""
   ), file = file, sep = "\n", append = !identical(label, "start"))
@@ -373,7 +378,7 @@ stopsRecord <- function(r) {
 ## before the run (`memFree`, %; docs/planning/pedkindraw-timing-plan.md
 ## section 5.4) and runLimited()'s figures (`r`).
 runRow <- function(k, n, kind, quiet, memFree, r,
-                   started = format(Sys.time(), "%Y-%m-%d %H:%M:%S")) {
+                   started = timeStamp()) {
   data.frame(
     case = k$id, computation = k$computation, package = k$package,
     size = n, kind = kind, idle = quiet$idle, load = quiet$load,
@@ -516,7 +521,7 @@ checkBuild <- function(facts, packaged) {
 ## library path (PKD_LIB, the path found, R's own), Chrome's, and the
 ## machine's model, chip, cores and memory.
 recordRow <- function(record, pkdLib, repo = ".",
-                      started = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+                      started = timeStamp(),
                       machine = currentMachine(), chrome = chromePath()) {
   if (!record %in% c("computation", "drawing")) {
     stop("a record is 'computation' or 'drawing', not '", record, "'",
