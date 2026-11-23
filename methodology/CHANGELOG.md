@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-23 · [BL-Phase 17] S78 (in progress): 17g, the timing plan, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S78's stub), `methodology/HANDOFFS.md` (S78's `status: pending` receipt) and this entry. The deliverable is 17g (`docs/planning/cran-submission-plan.md:740`), a planning session. Phase 3F rewrites this entry.
+- **Commit/PR:** the S78 claim commit · **Session:** S78 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits, ledgers current at `8a1a549`, no ghost session, the receipt's ratchet line matches the results file, 28 backlog items at the handoff's lines).
+
 ### 2026-11-23 · [BL-Phase G17] S77 push: `master` to GitHub at close-out 2, and its CI read job by job
 - **Change:** pushed `9574fc5..ad5efbd` (S77's 14 commits, the last running CI); read run 45125145050 job by job: pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 19 | PASS 16767 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 17 | PASS 16778 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 19 | PASS 16776 ]`, `proc.time()` 954 s, then the check step's hang a tenth time; the run cancelled at 41 minutes (`gh run cancel 45125145050`; two orphan `Rterm`, one `cmd`, one `conhost` terminated); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Recorded in close-out 2b: `methodology/SESSION_NOTES.md`, `methodology/HANDOFFS.md` (S77's next_steps), `methodology/BACKLOG.md:11` (the ninth reading, added to a line so no item moves), `docs/planning/pedigree-app-plan.md` section 14.8 and this entry; a second push carries them (`[skip ci]`).
 - **Commit/PR:** the push of `ad5efbd`; close-out 2b (this entry) · **Session:** S77 · **Model:** Claude Opus 5.5 · **Verified:** each count is S76's plus G17d's 60 save expectations, with G17d's 8 docs tests skipped, as predicted before the push, so the new Chrome tests ran on Ubuntu, macOS and Windows.

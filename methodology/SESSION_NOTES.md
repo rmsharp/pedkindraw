@@ -120,6 +120,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 78 Did
+**Deliverable:** Phase 17g, the timing plan (`docs/planning/cran-submission-plan.md:740`): a plan of its own under
+`docs/planning/` for pedkindraw's own timing runs (what is timed, on which pedigrees and sizes, how, where results are
+committed, how the speed vignette and `tools/checkSpeedTables.R` read them; it sets 17h's session count). A planning
+session: no code, nothing timed. (IN PROGRESS)
+**Started:** 2026-11-23 04:50 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17g: the timing plan
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: the reads S77's handoff names, then the evidence inventory.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 77 Did
 **Deliverable:** Phase G17d, saving and the documents (`docs/planning/pedigree-app-plan.md:367`, section 14), strict
 TDD. DONE; with it G17 and every gap phase G1-G17.
