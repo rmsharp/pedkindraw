@@ -974,8 +974,8 @@
         shiny::tagList(
           shiny::selectInput(paste0("cutOp", k),
                              sprintf("Cut-off for %s", column),
-                             c(">" = ">", "≥" = ">=", "<" = "<",
-                               "≤" = "<="),
+                             c(">" = ">", "\u2265" = ">=", "<" = "<",
+                               "\u2264" = "<="),
                              selected = shiny::isolate(
                                input[[paste0("cutOp", k)]]
                              )),

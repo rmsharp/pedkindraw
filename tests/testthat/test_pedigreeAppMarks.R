@@ -299,7 +299,7 @@ test_that(".appDraw() passes the lines, the twins and the cut-offs on, and
   drawn <- .appDraw(glucose,
                     conditionThresholds = c(affected_glucose = ">= 126"))
   expect_identical(drawn$layout$conditions$label,
-                   "Affected (glucose ≥ 126)")
+                   "Affected (glucose \u2265 126)")
   ownSire <- .appFour()
   ownSire$sire[3L] <- "o1"
   failed <- .appDraw(ownSire)
@@ -391,7 +391,7 @@ test_that("a column of numbers chosen as a condition is drawn once it has a
       makePedigreeMatingLayout(.withAppGen(expected), conditionThresholds =
                                  c(affected_glucose = ">= 126")))
     expect_identical(drawing()$layout$conditions$label,
-                     "Affected (glucose ≥ 126)")
+                     "Affected (glucose \u2265 126)")
     expect_identical(output$columnNotes, "")
   })
 })
