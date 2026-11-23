@@ -747,3 +747,117 @@ nprcgenekeepr's November times (1,000 animals in about 16 s, 2,000 not within tw
 now takes 9.1 s for 1,001 and 50.5 s for 2,000 (section 12.1), and the contract's section 7 the same old row: G17d,
 which edits that vignette, can bring both up to date (`methodology/BACKLOG.md`). Reading a selectize list's options in
 a page's `<select>` shows only the one chosen (a measuring script's mistake, not the app's).
+
+## 13. G17c's measures and picks (pedkindraw S76)
+
+Measured before the pre-RED picker (Learning 17); the scripts are beside the prototype
+(`docs/planning/pedigree-app-prototype/g17cValues.R`, `g17cOptions.R`, `g17cTwins.R`, `g17cBrowser.R`), each run from
+the repository root with renv's library. This Mac, R 4.6.2, shiny 1.14.0, Chrome 157, Pedixplorer 1.8.0; pedkindraw at
+`104907b`. Each count covers the cases run (Learning 19).
+
+### 13.1 What the app does today with a file's condition and mark values (F9, F11)
+
+The app reads every column as text (`.readAppFile()`, `colClasses = "character"`), so a value reaches
+`makePedigreeMatingLayout()` as text. `g17cValues.R` wrote 14 pairs of values (`TRUE`/`FALSE`, `true`/`false`,
+`T`/`F`, `1`/`0`, `Y`/`N`, `yes`/`no`, `2`/`1`, `affected`/`unaffected`, `2.5`/`0.3`, `DECEASED`/`ALIVE`,
+`deceased`/`alive`, `dead`/`alive`, `infertile`/`fertile`, `SAB`/`no`) into each column of the four animals, the first
+value for `o1`, the second for `o2` and `s1`, an empty cell for `d1`, and made the layout as the app does:
+
+- **A condition column** (`affected`): drawn right only for `TRUE`/`FALSE`, `true`/`false` and `T`/`F`. **Every other
+  pair, `1`/`0` included, draws all three animals grey, "unknown", with no message** (`as.logical("1")` is `NA`).
+- **A yes-or-no mark** (`genotyped`, `carrier`, `proband`, `evaluated`; `consultand` is read by the same function):
+  the same three pairs drawn; **every other pair stops the whole drawing**, the message saying "Give TRUE or FALSE (or
+  1 or 0)" even when the file wrote 1 and 0 (the text "1" is not the number 1).
+- **`fertility`** reads `TRUE`/`FALSE`, `1`/`0` and its own words; **`miscarriage`** `SAB`/`no` (and its words);
+  each stops on the other pairs.
+- **`status`** marks an animal deceased only for the exact text `DECEASED`: `deceased`, `dead`, `TRUE`, `1` and the rest
+  mark nobody, with no message (kinship2 writes 1 for dead; Pedixplorer's column is `deceased`, `TRUE` or 1).
+- **A cut-off** (`conditionThresholds`) on a number column read from a file stops: "requires a column with a cut-off
+  ... to hold numbers; not numbers". The same numbers given as R numbers draw right.
+- **Column names:** a file's `Affected`, `Genotyped` or `Status` column is not read (the layout matches lower-case
+  names); `affected_diabetes` is drawn "Affected (diabetes)" and `affected2` "Affected 2".
+- **A `ped` given in R** keeps its types: logical and 0/1 columns draw right; 1/2 (PLINK's coding) stops.
+- **In Chrome** (`g17cBrowser.R`): a CSV whose `carrier` column holds `Y` and `N`, uploaded to the running app, gives
+  "The pedigree could not be drawn (makePedigreeMatingLayout(): the column 'carrier' holds values other than TRUE,
+  FALSE and NA ('N', 'Y')...)".
+
+**Pedixplorer** (`vect_to_binary()`, which its `norm_ped()` uses for `deceased`, `avail`, `evaluated`, `proband` and
+`carrier`) reads `TRUE`/`FALSE` and `1`/`0` in any case and sets anything else to `NA` with no message (`T`, `Y`,
+`yes`, `dead` included).
+
+**The three ways offered** (`g17cOptions.R`, on 9 of the pairs, a condition and a mark each): as text, today: 3 of 9
+drawn right for each; typed as `read.csv()`'s defaults type them (`utils::type.convert()`): 4 of 9 (6 of 9 conditions
+once the two number pairs get a cut-off), `Y`/`N` and `yes`/`no` still grey or stopping; **the common words** (yes:
+`true`, `t`, `yes`, `y`, `1`; no: `false`, `f`, `no`, `n`, `0`; any case; a column of numbers as numbers): 6 of 9 (8 of
+9 conditions with a cut-off), `affected`/`unaffected` named on the page.
+
+### 13.2 A twins file and the lines (F13, F12)
+
+`g17cTwins.R`. **The sample's twins file** (`inst/extdata/obfuscated_rhesus_mhc_twin_relations.csv`, 3 pairs: an MZ and
+a DZ pair in family 5, a UZ pair whose animals are in families 1 and 2) passes `checkTwinRelations()` against the sample;
+the whole sample's layout with it takes 2.1 s. **A view that leaves out one animal of a pair stops the layout** ("All
+twinRelations id1/id2 values must be present in id": families 1 and 2, each holding one animal of the UZ pair); with
+only the pairs both of whose animals are in the view, all three families draw. **`checkTwinRelations()` stops at the
+first problem** (a file with an unknown id and an MZ pair of different sex names only the id) and accepts only the codes
+`MZ twin`, `DZ twin` and `UZ twin` (`MZ`, `mz twin` and kinship2's `1` each refused); **an empty cell** gives R's own
+words, "missing value where TRUE/FALSE needed"; **a file with no rows** passes the check but the layout stops on it
+("arguments imply differing number of rows: 0, 1"; copied code, found here). Pedixplorer's `rel_code_to_factor()` reads
+the codes with case and spaces ignored, and 1, 2, 3 and 4 as MZ, DZ, UZ and Spouse.
+
+**Lines:** the layout's `edgeStyle` and the drawing's both matter: the four pairings of "rectilinear" and "direct" give
+four different drawings (6 animals: 14 nodes and 13 edges rectilinear, 9 and 8 direct), so the app passes one choice to
+both.
+
+### 13.3 A file given to the page by a browser test
+
+`g17cBrowser.R`: Chrome's DevTools sets a CSV file on the page's `#file` input (`DOM.setFileInputFiles`), and Shiny
+uploads and reads it as it reads a user's file (the box shows the file's name; the page then showed the carrier problem
+of section 13.1). A Chrome test can therefore give the app a pedigree file and a twins file through the page.
+
+### 13.4 The picks (R151)
+
+Mark's four, each first time, each the recommended option: **the common words**: a condition or a yes-or-no mark reads
+`TRUE`, `T`, `yes`, `Y` and `1` as yes and `FALSE`, `F`, `no`, `N` and `0` as no, in any case, an empty cell as unknown;
+a column all of whose values are numbers is read as numbers (so a cut-off can apply); any other value is named on the
+page and the drawing is made without that column (the others: as `read.csv()` types them; keep the text, as now);
+**conditions chosen, up to four**: a list of the file's columns from which the user picks up to four, starting with
+those whose names begin with "affected" in any case, each labelled "Affected (its name)", and a chosen column of numbers
+given a cut-off (a comparison and a number) that the legend states (the others: one chosen, Pedixplorer's way; by name
+only, a script's way); **marks found by name, in any case**: each mark's column found by its name with case, spaces,
+dots and underscores ignored, and by Pedixplorer's names too (`avail` for genotyped, `deceased` beside `status`),
+deceased read from `DECEASED`, `deceased`, `dead` and the yes-words, the marks found listed on the page (the others: a
+list for each mark; exact names only); **twins with the common codes**: codes read as Pedixplorer reads them, the file
+checked against the whole pedigree with `checkTwinRelations()`, its problem shown under the file box and the pedigree
+drawn without twins until it is fixed, a pair drawn only when both its animals are in the view, and "Use the sample
+pedigree" opening the sample's twins file too (the other: the three exact codes only).
+
+### 13.5 What G17c builds (the design RED tests; Claude's, from the plan's section 5 and R151)
+
+- **The page** gains, in the sidebar: a second file box, "Twins file (CSV or text): id1, id2, code", with a line saying
+  what twins are in use and a red line for a twins problem; under the column choices, "Conditions (up to four)" (a list
+  of the file's other columns, several chosen), a cut-off for each chosen column of numbers ("Cut-off for glucose": a
+  comparison, >, ≥, < or ≤, and a number), the marks found ("Marks from the file: genotyped (column 'Avail'), carrier,
+  ..."), a line for each column not drawn and why, and "Lines": "Right angles" (rectilinear, the default) or "Straight"
+  (direct).
+- **Values** (R151): one reader for conditions and yes-or-no marks; logical and number columns given in R are kept.
+  `fertility` and `miscarriage` are passed as they are when pedkindraw's own words read every value, and otherwise not
+  drawn and named. `status` (or `deceased`) becomes `DECEASED` for the deceased words and the yes-words.
+- **Conditions:** the chosen columns are renamed for the drawing so the layout draws them and labels them: a name that
+  begins "affected" in any case keeps its rest ("Affected" becomes `affected`, "Affected Status" `affected Status`,
+  drawn "Affected (Status)"); any other becomes `affected_<name>` ("Affected (glucose)"). A column the file names
+  `affected...` but the user did not choose is not drawn. A cut-off's inputs are keyed by the column's place in the
+  file, so they keep their values when other conditions are added or removed; a column of numbers other than 0 and 1
+  without a cut-off is not drawn, and the page says to give one. The server keeps the conditions chosen in a
+  `reactiveVal` (dragon 16), set to the guess when a file is opened and by the list.
+- **The drawing's data frame** holds the four columns, the conditions and the marks only (renamed to pedkindraw's names);
+  the Animals tab keeps showing the rows as read.
+- **Twins:** columns `id1`, `id2` and `code` found with case, spaces, dots and underscores ignored; an empty cell or a
+  missing column said in the app's words; the sample's twins go with the sample (opening another pedigree file drops
+  them), a twins file the user opened stays when another pedigree file is opened; no pair in the view passes no twins
+  (section 13.2's layout stop on a table with no rows).
+- **`.appDraw()`** takes the lines, the twins and the cut-offs and passes them on, and returns the layout too, so a test
+  compares it with `makePedigreeMatingLayout()` called directly (`identical()`).
+- **Tests:** a new file, `test_pedigreeAppMarks.R`: the helpers, the server on typed files (each choice's layout
+  `identical()` to the direct call on the data frame expected), and one Chrome test uploading a pedigree file with every
+  mark and two conditions and a twins file with kinship2's code numbers through the page, a cut-off set and the lines
+  switched with the page's own controls.
