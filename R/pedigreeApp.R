@@ -242,6 +242,49 @@
   lineal
 }
 
+#' Choose the animals to draw (F6-F8, R150)
+#'
+#' @param ped the pedigree, every parent with a row of its own.
+#' @param view \code{"all"}, \code{"family"}, \code{"lineal"} or
+#'   \code{"near"}.
+#' @param focal the focal animals' ids as typed; an id with no row is left
+#'   out.
+#' @param close how close, for \code{"near"}.
+#' @param family the family chosen, or \code{NULL}.
+#' @param families each animal's family, for \code{"family"}.
+#' @return A list: \code{rows}, the animals chosen (\code{NULL} when none can
+#'   be chosen yet or they could not be chosen), and \code{problem}, what the
+#'   page says, or \code{""}.
+#' @noRd
+.appChooseAnimals <- function(ped, view, focal, close, family, families) {
+  focal <- intersect(focal, ped$id)
+  if (view %in% c("lineal", "near") && length(focal) == 0L) {
+    return(list(rows = NULL, problem = ""))
+  }
+  if (view == "near" && !(is.numeric(close) && length(close) == 1L &&
+                            is.finite(close) && close >= 1.0)) {
+    return(list(rows = NULL,
+                problem = "Choose how close: a number, 1 or more."))
+  }
+  rows <- tryCatch(switch(
+    view,
+    family = if (is.null(family)) {
+      NULL
+    } else {
+      ped[as.character(families) %in% family, ]
+    },
+    lineal = .appLineal(ped, focal),
+    near = getNearRelativePedigree(ped, focal, close),
+    ped
+  ), error = function(e) e)
+  if (inherits(rows, "error")) {
+    return(list(rows = NULL, problem = sprintf(paste0(
+      "The animals could not be chosen (%s). The Checks tab lists the ",
+      "records' problems."), conditionMessage(rows))))
+  }
+  list(rows = rows, problem = "")
+}
+
 #' The JavaScript a drawing runs when clicked: it sends the clicked nodes'
 #' ids to the server's input "clicked", even when they are the same as last
 #' time
@@ -449,34 +492,9 @@
 
     choice <- shiny::reactive({
       shiny::req(ready())
-      ped <- completed()$ped
-      focal <- intersect(focalIds(), ped$id)
-      if (view() %in% c("lineal", "near") && length(focal) == 0L) {
-        return(list(rows = NULL, problem = ""))
-      }
-      close <- howClose()
-      if (view() == "near" && !(is.numeric(close) && length(close) == 1L &&
-                                  is.finite(close) && close >= 1.0)) {
-        return(list(rows = NULL,
-                    problem = "Choose how close: a number, 1 or more."))
-      }
-      rows <- tryCatch(switch(
-        view(),
-        family = if (is.null(input$family)) {
-          NULL
-        } else {
-          ped[as.character(families()) %in% input$family, ]
-        },
-        lineal = .appLineal(ped, focal),
-        near = getNearRelativePedigree(ped, focal, close),
-        ped
-      ), error = function(e) e)
-      if (inherits(rows, "error")) {
-        return(list(rows = NULL, problem = sprintf(paste0(
-          "The animals could not be chosen (%s). The Checks tab lists the ",
-          "records' problems."), conditionMessage(rows))))
-      }
-      list(rows = rows, problem = "")
+      byFamily <- view() == "family"
+      .appChooseAnimals(completed()$ped, view(), focalIds(), howClose(),
+                        if (byFamily) input$family, if (byFamily) families())
     })
     shown <- shiny::reactive({
       shiny::req(choice()$rows)
