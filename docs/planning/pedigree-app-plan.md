@@ -6,7 +6,8 @@ beside this plan, section 3). **Governs:** Phase G17 of `docs/planning/gaps-and-
 G17's row, `:386`), gap A3 of `docs/research/pedkindraw-gaps-2026-11-18.md` (`:144`). **Ruling made here:** R148
 (Mark's four picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written (S73);
 G17a DONE (S74, R149, section 11): `runPedigreeApp()`; G17b DONE (S75, R150, section 12): choosing the animals;
-G17c DONE (S76, R151, section 13): what is drawn; G17d next (section 7).
+G17c DONE (S76, R151, section 13): what is drawn; G17d DONE (S77, R152, section 14): saving, and the documents.
+**G17 DONE**; next, 17g (`docs/planning/cran-submission-plan.md` section 6).
 
 **Versions:** shiny 1.14.0, Pedixplorer 1.8.0, visNetwork 2.1.4, chromote 0.5.1 and callr 3.8.0 from this project's
 renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); Google Chrome 157;
@@ -449,6 +450,23 @@ each); the gaps plan guessed 1 + 4-8.
     link with "Status: 503", which answered 200 three times a minute later; re-running the check on the same tarball
     with `--no-tests --no-examples --ignore-vignettes --no-manual` read the NOTE again: the Maintainer line and "New
     submission" only.
+24. **`.docsSection()` ends a section at any line starting "## "**, an R comment in a code chunk too (S77): the drawing
+    vignette's "Clicks in a Shiny application" chunk begins `## In the user interface:`, so the docs test read the
+    section only to there and missed the sentence written after the chunk (GREEN's first docs run). A statement a docs
+    test reads goes above such a chunk (`tests/testthat/helper-docs.R` says so), or the helper learns to skip chunks.
+25. **`chromote::find_chrome()` returns `CHROMOTE_CHROME` unchecked** (S77, section 14.3): a test hides Chrome from
+    the app's process by giving it a `CHROMOTE_CHROME` that names no file (`.startPedigreeApp(childEnv = )`), which
+    the app's check reads as missing; `savePedigreeDiagram()`'s own check does not (backlog `:97`).
+26. **A download button's greyed state lives in the page** (S77, section 14.1): `testServer()` sees the same HTML
+    whether or not the button's download is defined, so a server test shows "no download behind it" by reading
+    `output$<id>` (the "hasn't been defined yet" error), and only Chrome shows the button greyed (a button drawn later
+    by `renderUI()` was probed before RED: enabled, with an address, when its download is defined; greyed when not).
+27. **An output on a hidden tab is not drawn in the browser** (S77): shiny suspends it until the tab is shown, though
+    `testServer()` computes it (dragon 14); a Chrome test clicks the Animals tab before it waits for the CSV button.
+28. **Start the fidelity tool as `CLAUDE.md` says** (S77): plain `Rscript tools/compareResultsWithNprcgenekeepr.R
+    ../nprcgenekeepr` from the root, renv's `.Rprofile` active. Started with `--no-init-file` and `R_LIBS` set to
+    pedkindraw's library, its second R process in nprcgenekeepr's folder had no renv defaults to put back (Learning 5),
+    loaded pedkindraw's library and stopped (`deps_check_installed`).
 
 ---
 
@@ -1070,3 +1088,54 @@ option (`docs/planning/standalone-pedigree-package-plan.md` section 2):
   Chrome; NEWS has the bullet.
 - **No copied function's code changes:** the `@seealso` line of `drawPedigreeDiagram()` is help text, so the drift tool
   reads 91 / 23 / 0 after it.
+
+### 14.8 What G17d built and measured (S77)
+
+**Commits:** claim `7bfbcb8`; the measuring scripts `540a4aa`; the measures and R152 `dbe4c8e`; RED `9581ea6`; GREEN
+`1d2fa87` (the code), `6257a9d` (the app's help, NEWS), `09e8f45` (the help of `drawPedigreeDiagram()` and of the
+package), `b064df2` (the README, both vignettes, the drawing times), `bd5df01` and `6512521` (the contract's sections 4.7,
+7 and 8); REFACTOR `720b6e4`; close-out 1b `4f421fa`.
+
+**Built** (`R/pedigreeApp.R`, internal): `.appPictureProblem()` (`""`, or the sentence naming chromote or Chrome; the
+path `find_chrome()` gives must be a file or a command on the path, 14.3); `.appPictureDownload()`
+(`savePedigreeDiagram(drawing()$widget, file)` at its own page, `pedigree.<ending>`); the server's last argument
+`pictureProblem = .appPictureProblem()`, found once when the app is made; the outputs `saves` (above the drawing: nothing
+until a drawing is shown, then "Save the drawing:" with the SVG, PDF and PNG buttons, and the sentence in red when a
+picture cannot be saved, no download then defined, so shiny greys them), `saveSvg`, `savePdf`, `savePng`, `saveRows`
+(above the Animals tab's table: nothing until animals are chosen, then "Save these animals as a CSV file") and `saveCsv`
+(`utils::write.csv(shown(), row.names = FALSE, na = "")`, `pedigree.csv`). `runPedigreeApp()`'s help (a Save item, the
+Requirements section), a `@seealso` in `drawPedigreeDiagram()`'s help (help only: drift 91 / 23 / 0), the package help's
+"Getting started", a README bullet (README.md rendered from a scratch install, two renders identical), a paragraph in
+each vignette, the drawing vignette's "How large a drawing can be" with pedkindraw's times (R152), NEWS, the contract.
+
+**Tests:** `test_pedigreeAppSave.R`, 10 tests, 60 expectations (3 in Chrome); `test_runPedigreeAppDocs.R`, 8 tests, 41
+expectations; `helper-docs.R` (copies of S72's four docs helpers in RED; the REFACTOR removed the originals from
+`test_savePedigreeDiagramDocs.R`); `.startPedigreeApp()`'s `childEnv`. RED: the 18 new tests failing for the right
+reason, the app's other files and G16's docs file 70 tests, 446 expectations passing, SKIP 0, WARN 0. GREEN: the save
+tests passed on GREEN's first run; the docs test of "Clicks in a Shiny application" failed on the first docs run (dragon
+24), and the sentence moved above the chunk. The REFACTOR proved by a record of both docs files' 68 expectations,
+`identical()` before and after.
+
+**Verified:** the full suite (`NOT_CRAN=true`) at `6512521` `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ]` (561 s; S76's
+16,761 and G17d's 101) and at the REFACTOR (`720b6e4`) the same (566 s); `R CMD check --as-cran` at `6512521` from a
+scratch folder (`NOT_CRAN=true`, connections left open checked): 0 errors, 0 warnings, 1 NOTE (the Maintainer line and
+"New submission"), its tests `[ FAIL 0 | WARN 0 | SKIP 14 | PASS 16794 ]` (639 s), the 14 skips the docs tests, whose
+documents a check's tree does not hold; **on CRAN's path** (`NOT_CRAN` unset, the checked install) the app's 67 tests
+that run, 444 expectations, 0 failed, take **11.12 s** (the new file's 7 server tests 1.53 s; S76's 60 took 8.44 s), and
+the 7 Chrome tests skip; coverage by the app tests 417 of 417 statements of `R/pedigreeApp.R` and 16 of 16 of
+`R/runPedigreeApp.R`; `bash tools/checkExamples.sh` errors 0; `lint_package()` 0; `roxygenise()` no change; drift 91 / 23
+/ 0; fidelity 600 of 600 identical, kinship difference 0 (dragon 28); `Rscript tools/gapCases.R app` the app's title;
+`quality_ratchet`: 5/6 pass, 0 fail, 1 unmeasured (the suite gate's 300 s).
+
+**By hand, in headless Chrome on this Mac** (pictures looked at): the sample drawn, "Save the drawing: SVG PDF PNG"
+above it; each button clicked as a user clicks it and the file saved by Chrome into a folder (DevTools'
+`Browser.setDownloadBehavior`): `pedigree.svg` after 1.60 s (847,379 bytes; 545 id texts, 375 distinct),
+`pedigree.pdf` after 2.71 s (`%PDF-`), `pedigree.png` after 3.91 s (3,000 x 1,534 pixels), `pedigree.csv` from the
+Animals tab after 0.10 s (375 rows, the sample's 8 columns); that CSV, given to the page's file box, drew 375 animals with
+no problem; an app whose `CHROMOTE_CHROME` names no file: the three buttons greyed and the sentence in red under them.
+**Not run:** another browser, a real file dialog or the user's own Downloads folder (both set by DevTools), a
+phone-width window, a hosted server, a picture download of more than 375 animals.
+
+**Found for later:** `savePedigreeDiagram()` takes a `CHROMOTE_CHROME` that names no file for a Chrome found (backlog
+`:97`); the contract's section 8 says `drawPedigreeDiagram()`'s help states the measured limit, which no help page does
+(backlog `:36`'s item).
