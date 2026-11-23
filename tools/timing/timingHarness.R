@@ -7,7 +7,11 @@
 ## no comparators' library (CMP_LIB: kinship2 and Pedixplorer are in renv's
 ## library); the TIMING line ends with the folder pedkindraw was loaded from
 ## (reportTimedCall(), parseTimingLine(), runLimited()); new
-## checkPedkindrawFolder() and stopsRecord().
+## checkPedkindrawFolder() and stopsRecord(); and, in Phase 17h1b (R155),
+## runRow() (each run's row, with the free memory read before it) and the
+## record's row in record.csv: parseMachine(), currentMachine(),
+## chromeVersion(), chromePath(), packageVersions(), packagedTime(),
+## gitLines(), commitFacts(), checkBuild(), recordRow(), appendRecordRow().
 ## The Phase 1 timing harness (docs/planning/standalone-pedigree-package-
 ## plan.md, Phase 1 steps 4-5). Each measurement is one fresh Rscript
 ## (timeOne.R) run under /usr/bin/time -l: the time limit counts from the
@@ -360,4 +364,200 @@ runLimited <- function(script, args = character(), timeLimit = 120.0,
 ## the commit the record names.
 stopsRecord <- function(r) {
   identical(r$status, "error") && grepl("PKD_LIB", r$message, fixed = TRUE)
+}
+
+## ---- each run's row and the record (R155, Phase 17h1b) --------------------
+
+## The row runTiming.R writes for one run of case k at size n: the idle share
+## and load waitForQuiet() returned (`quiet`), the free memory read just
+## before the run (`memFree`, %; docs/planning/pedkindraw-timing-plan.md
+## section 5.4) and runLimited()'s figures (`r`).
+runRow <- function(k, n, kind, quiet, memFree, r,
+                   started = format(Sys.time(), "%Y-%m-%d %H:%M:%S")) {
+  data.frame(
+    case = k$id, computation = k$computation, package = k$package,
+    size = n, kind = kind, idle = quiet$idle, load = quiet$load,
+    memFree = memFree, status = r$status,
+    message = r$message, seconds = r$seconds, heapPeakMb = r$heapPeakMb,
+    preRssMb = r$preRssMb, maxRssMb = r$maxRssBytes / 1048576.0,
+    realSeconds = r$realSeconds,
+    loaded = paste(r$loaded, collapse = ","), pkdLib = r$pkdLib,
+    started = started
+  )
+}
+
+## The machine's model, chip, cores and memory (GB of 1,073,741,824 bytes)
+## from `sysctl hw.model machdep.cpu.brand_string hw.ncpu hw.memsize`, whose
+## lines are "name: value". Not system_profiler, which also prints the serial
+## number: record.csv is committed to a public repository (R155).
+parseMachine <- function(lines) {
+  keys <- c("hw.model", "machdep.cpu.brand_string", "hw.ncpu", "hw.memsize")
+  value <- sub("^[^:]*: *", "", lines)
+  names(value) <- sub(":.*$", "", lines)
+  absent <- setdiff(keys, names(value))
+  if (length(absent) > 0L) {
+    stop("no '", absent[1L], "' line in sysctl's report", call. = FALSE)
+  }
+  list(
+    model = value[["hw.model"]], chip = value[["machdep.cpu.brand_string"]],
+    cores = as.integer(value[["hw.ncpu"]]),
+    memoryGb = round(as.numeric(value[["hw.memsize"]]) / 1073741824.0, 1L)
+  )
+}
+
+currentMachine <- function() {
+  parseMachine(system(
+    "sysctl hw.model machdep.cpu.brand_string hw.ncpu hw.memsize",
+    intern = TRUE
+  ))
+}
+
+## The version of the Chrome whose program is `chrome` (inside
+## "Google Chrome.app/Contents/MacOS", as chromote::find_chrome() names it),
+## read from the app's Info.plist without starting Chrome; NA when there is
+## no Chrome or no Info.plist.
+chromeVersion <- function(chrome) {
+  if (is.null(chrome) || !nzchar(chrome)) {
+    return(NA_character_)
+  }
+  plist <- file.path(dirname(dirname(chrome)), "Info.plist")
+  if (!file.exists(plist)) {
+    return(NA_character_)
+  }
+  system2("plutil", c(
+    "-extract", "CFBundleShortVersionString", "raw", "-o", "-",
+    shQuote(plist)
+  ), stdout = TRUE)
+}
+
+## The Chrome chromote would start (CHROMOTE_CHROME, or the one it finds), or
+## NULL when chromote is not installed or finds none.
+chromePath <- function() {
+  if (!requireNamespace("chromote", quietly = TRUE)) {
+    return(NULL)
+  }
+  tryCatch(suppressMessages(chromote::find_chrome()),
+    error = function(e) NULL
+  )
+}
+
+## Each package's version, the first found along `libs`, or NA when none of
+## them holds it.
+packageVersions <- function(packages, libs) {
+  vapply(packages, function(p) {
+    d <- suppressWarnings(utils::packageDescription(p, lib.loc = libs))
+    if (is.list(d)) d$Version else NA_character_
+  }, "")
+}
+
+## When R CMD build packaged the pedkindraw in pkdLib (PKD_LIB): its
+## DESCRIPTION's Packaged field without the user name after ";".
+packagedTime <- function(pkdLib) {
+  d <- suppressWarnings(
+    utils::packageDescription("pedkindraw", lib.loc = pkdLib)
+  )
+  if (!is.list(d)) {
+    stop("no pedkindraw in PKD_LIB (", pkdLib, ")", call. = FALSE)
+  }
+  if (is.null(d$Packaged)) {
+    stop("the pedkindraw in PKD_LIB (", pkdLib, ") has no Packaged field: ",
+      "install it from a tarball R CMD build made",
+      call. = FALSE
+    )
+  }
+  trimws(sub(";.*$", "", d$Packaged))
+}
+
+## git's output lines, run in `repo`.
+gitLines <- function(repo, ...) {
+  system2("git", c("-C", shQuote(repo), ...), stdout = TRUE)
+}
+
+## The commit checked out in `repo`, R/'s tree in it, whether R/,
+## DESCRIPTION or NAMESPACE has uncommitted changes (new files too), and when
+## the last commit that changed them was made.
+commitFacts <- function(repo = ".") {
+  paths <- c("R", "DESCRIPTION", "NAMESPACE")
+  last <- gitLines(repo, "log", "-1", "--format=%ct", "--", paths)
+  list(
+    commit = gitLines(repo, "rev-parse", "HEAD"),
+    rTree = gitLines(repo, "rev-parse", "HEAD:R"),
+    dirty = length(gitLines(repo, "status", "--porcelain", "--", paths)) > 0L,
+    lastChange = as.POSIXct(as.numeric(last), tz = "UTC")
+  )
+}
+
+## Stops the record unless the pedkindraw in PKD_LIB, packaged at `packaged`,
+## was built from the commit `facts` names: R/, DESCRIPTION and NAMESPACE
+## committed, and packaged at or after their last change (R155).
+checkBuild <- function(facts, packaged) {
+  if (facts$dirty) {
+    stop("the record stops: uncommitted changes in R/, DESCRIPTION or ",
+      "NAMESPACE, so no commit names the code timed",
+      call. = FALSE
+    )
+  }
+  when <- as.POSIXct(sub(" UTC$", "", packaged), tz = "UTC")
+  if (when < facts$lastChange) {
+    stop("the record stops: the pedkindraw in PKD_LIB was packaged before ",
+      # nolint next: nonportable_path_linter.
+      "the last commit that changed R/, DESCRIPTION or NAMESPACE (",
+      packaged, " < ", format(facts$lastChange, "%Y-%m-%d %H:%M:%S UTC"),
+      "); build and install it again",
+      call. = FALSE
+    )
+  }
+  invisible(TRUE)
+}
+
+## The row record.csv gets when a record starts (R155): which record, when,
+## the commit and R/'s tree (after checkBuild()), when pedkindraw was
+## packaged, the versions of R and of the packages on the timed children's
+## library path (PKD_LIB, the path found, R's own), Chrome's, and the
+## machine's model, chip, cores and memory.
+recordRow <- function(record, pkdLib, repo = ".",
+                      started = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+                      machine = currentMachine(), chrome = chromePath()) {
+  if (!record %in% c("computation", "drawing")) {
+    stop("a record is 'computation' or 'drawing', not '", record, "'",
+      call. = FALSE
+    )
+  }
+  facts <- commitFacts(repo)
+  packaged <- packagedTime(pkdLib)
+  checkBuild(facts, packaged)
+  v <- packageVersions(
+    c("kinship2", "Pedixplorer", "chromote"),
+    # nolint next: undesirable_function_linter.
+    c(pkdLib, .libPaths(), R.home("library"))
+  )
+  data.frame(
+    record = record, started = started, commit = facts$commit,
+    rTree = facts$rTree, packaged = packaged,
+    R = paste(R.version$major, R.version$minor, sep = "."),
+    kinship2 = v[["kinship2"]], Pedixplorer = v[["Pedixplorer"]],
+    chromote = v[["chromote"]], chrome = chromeVersion(chrome),
+    model = machine$model, chip = machine$chip, cores = machine$cores,
+    memoryGb = machine$memoryGb
+  )
+}
+
+## Appends `row` to record.csv at `file`, the header first when the file is
+## new; a file whose columns differ is refused.
+appendRecordRow <- function(row, file) {
+  present <- file.exists(file)
+  if (present) {
+    columns <- names(utils::read.csv(file, nrows = 1L, check.names = FALSE))
+    if (!identical(columns, names(row))) {
+      stop(file, " has other columns than the record's row: ",
+        toString(columns),
+        call. = FALSE
+      )
+    }
+  }
+  utils::write.table(row, file,
+    sep = ",", row.names = FALSE, col.names = !present, append = present,
+    qmethod = "double"
+  )
+  invisible(file)
 }
