@@ -53,17 +53,34 @@ In the app:
   other column is kept, so a column pedkindraw reads by name is drawn as
   a script draws it.
 
-- **See everyone drawn** on the Diagram tab, with `gen` added by
+- **See the pedigree drawn** on the Diagram tab, with `gen` added by
   [`findGeneration`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md),
   laid out by
   [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md).
   What the layout says (a warning, or an animal it leaves out) is shown
   under the count of animals drawn; when a pedigree cannot be drawn, the
-  app says so.
+  app says so. A sire or dam with no row of its own is added by
+  [`addParents`](https://rmsharp.github.io/pedkindraw/reference/addParents.md),
+  and the app names it.
+
+- **Choose the animals to draw**: everyone; one family (from
+  [`findPedigreeNumber`](https://rmsharp.github.io/pedkindraw/reference/findPedigreeNumber.md),
+  the families of two or more animals listed largest first); focal
+  animals with their ancestors and descendants
+  ([`trimPedigree`](https://rmsharp.github.io/pedkindraw/reference/trimPedigree.md)
+  and
+  [`getDescendantPedigree`](https://rmsharp.github.io/pedkindraw/reference/getDescendantPedigree.md)),
+  each other parent of a descendant drawn too, without its own parents;
+  or focal animals' near relatives
+  ([`getNearRelativePedigree`](https://rmsharp.github.io/pedkindraw/reference/getNearRelativePedigree.md),
+  3 by default). Type the focal animals' ids, or click an animal in the
+  drawing to make it the focal animal (a repeated animal's symbol counts
+  as the animal). With more than 1,000 animals chosen, the app asks
+  before drawing them, which can take a minute or more.
 
 - **See the records' problems** on the Checks tab, from
-  [`checkPedigree`](https://rmsharp.github.io/pedkindraw/reference/checkPedigree.md),
-  and the animals read on the Animals tab.
+  [`checkPedigree`](https://rmsharp.github.io/pedkindraw/reference/checkPedigree.md)
+  on the whole file, and the animals chosen on the Animals tab.
 
 ## Requirements
 

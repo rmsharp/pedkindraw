@@ -96,13 +96,27 @@ female, as kinship2 and PLINK files code them) are read as M, F, H and
 U, and the app says so; any other value is drawn as unknown. Every
 other column is kept, so a column pedkindraw reads by name is drawn as
 a script draws it.</p></li>
-<li><p><strong>See everyone drawn</strong> on the Diagram tab, with
+<li><p><strong>See the pedigree drawn</strong> on the Diagram tab, with
 <code>gen</code> added by <code><a href="findGeneration.html">findGeneration</a></code>, laid out by
 <code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>. What the layout says (a
 warning, or an animal it leaves out) is shown under the count of
-animals drawn; when a pedigree cannot be drawn, the app says so.</p></li>
+animals drawn; when a pedigree cannot be drawn, the app says so. A
+sire or dam with no row of its own is added by
+<code><a href="addParents.html">addParents</a></code>, and the app names it.</p></li>
+<li><p><strong>Choose the animals to draw</strong>: everyone; one family (from
+<code><a href="findPedigreeNumber.html">findPedigreeNumber</a></code>, the families of two or more
+animals listed largest first); focal animals with their ancestors and
+descendants (<code><a href="trimPedigree.html">trimPedigree</a></code> and
+<code><a href="getDescendantPedigree.html">getDescendantPedigree</a></code>), each other parent of a
+descendant drawn too, without its own parents; or focal animals'
+near relatives (<code><a href="getNearRelativePedigree.html">getNearRelativePedigree</a></code>, 3 by
+default). Type the focal animals' ids, or click an animal in the
+drawing to make it the focal animal (a repeated animal's symbol
+counts as the animal). With more than 1,000 animals chosen, the app
+asks before drawing them, which can take a minute or more.</p></li>
 <li><p><strong>See the records' problems</strong> on the Checks tab, from
-<code><a href="checkPedigree.html">checkPedigree</a></code>, and the animals read on the Animals tab.</p></li>
+<code><a href="checkPedigree.html">checkPedigree</a></code> on the whole file, and the animals chosen
+on the Animals tab.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a></h2>
