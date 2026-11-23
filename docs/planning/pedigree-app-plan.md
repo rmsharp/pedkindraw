@@ -1136,6 +1136,8 @@ no problem; an app whose `CHROMOTE_CHROME` names no file: the three buttons grey
 **Not run:** another browser, a real file dialog or the user's own Downloads folder (both set by DevTools), a
 phone-width window, a hosted server, a picture download of more than 375 animals.
 
+**GitHub, after the push (run 45125145050, `ad5efbd`):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 19 | PASS 16767 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 17 | PASS 16778 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 19 | PASS 16776 ]`, `proc.time()` 954 s, and the hang a tenth time (cancelled at 41 minutes); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Each job's count is S76's plus G17d's 60 save expectations, with the 8 docs tests skipped, as predicted, so the new Chrome tests ran on Ubuntu, macOS and Windows.
+
 **Found for later:** `savePedigreeDiagram()` takes a `CHROMOTE_CHROME` that names no file for a Chrome found (backlog
 `:97`); the contract's section 8 says `drawPedigreeDiagram()`'s help states the measured limit, which no help page does
 (backlog `:36`'s item).

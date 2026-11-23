@@ -17,8 +17,8 @@ shows as a CSV file (`pedigree.csv`, every column of the file, which the app ope
 README, both vignettes, the help and NEWS name the app; the drawing vignette and the contract give pedkindraw's own
 drawing times (backlog `:109`, folded in by R152, closed). App plan section 14 (`docs/planning/pedigree-app-plan.md`)
 has the measures, 14.8 what was built and verified.
-**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; nine runs in a row;
-S77's push is the tenth reading, close-out 2b).
+**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; ten runs in a row,
+S77's push the tenth).
 **Next: Phase 17g, the timing plan** (`docs/planning/cran-submission-plan.md:740`), **a planning session**: a plan of
 its own under `docs/planning/` for pedkindraw's own timing runs (what is timed, on which pedigrees and sizes, how, where
 results are committed, how the speed vignette and `tools/checkSpeedTables.R` read them; it sets 17h's session count).
@@ -48,10 +48,10 @@ and name each in a preview).
    log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1
    basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr
    was at `3e06730c5`, tree clean, through S77.
-2. **S77's push and its CI:** see "After close-out 2" in S77's entry below (filled in close-out 2b). Predicted, each
-   job S76's counts plus G17d's 60 save expectations and 8 more skips (the docs tests skip in a check's tree; the
-   local check read `SKIP 14 PASS 16794`, S76's `SKIP 6 PASS 16734`): Ubuntu release and oldrel-1 `SKIP 19 PASS
-   16767`, macOS `SKIP 17 PASS 16778`, Windows `SKIP 19 PASS 16776` and the hang; R-devel red at S4Vectors (known).
+2. **S77's push was read in S77, job by job** (run 45125145050): Ubuntu release and oldrel-1 `PASS 16767` SKIP 19,
+   macOS `PASS 16778` SKIP 17, Windows `PASS 16776` SKIP 19 and the hang (cancelled at 41 minutes), all FAIL 0 WARN 0,
+   each as predicted (S76's counts, G17d's 60 save expectations, the 8 docs tests skipped in a check's tree); pkgdown
+   `success`; R-devel red at S4Vectors (known). Nothing is left to read. A planning session pushes no code.
 3. **17g, if picked** (`docs/planning/cran-submission-plan.md:740`, R82, R84): read first the plan's section 6 rows
    17g-17i (`:740`-`:760`), section 2.1 (the machine's load measured under load 5-12, the trap 17h names), the
    standalone plan's section 6 (the timing method: fresh process, warm-up, median of 3, `uptime`), the contract's
@@ -154,6 +154,7 @@ animals, the page without Chrome (three pictures looked at).
 **Found:** `savePedigreeDiagram()` takes a `CHROMOTE_CHROME` naming no file for a Chrome found (backlog `:97`); the
 contract's section 8 claimed a help page states the measured drawing limit, which none does (noted in `:36`).
 **Not run:** another browser, a real file dialog or the user's Downloads folder, a phone-width window, a hosted server.
+**After close-out 2 (its push, `9574fc5..ad5efbd`, run 45125145050, read in close-out 2b):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 19 | PASS 16767 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 17 | PASS 16778 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 19 | PASS 16776 ]`, `proc.time()` 954 s, and the hang a tenth time (cancelled at 41 minutes; two orphan `Rterm` processes, one `cmd`, one `conhost`); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Each count as predicted before the push.
 
 #### Session 76 Handoff Evaluation (by Session 77)
 **Score: 9/10.** ROI high: "What You Must Do" 3 was the session's first hour, and its four measures became the picker.
