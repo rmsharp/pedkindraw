@@ -6,7 +6,7 @@ beside this plan, section 3). **Governs:** Phase G17 of `docs/planning/gaps-and-
 G17's row, `:386`), gap A3 of `docs/research/pedkindraw-gaps-2026-11-18.md` (`:144`). **Ruling made here:** R148
 (Mark's four picks, `docs/planning/standalone-pedigree-package-plan.md` section 2). **Status:** plan written (S73);
 G17a DONE (S74, R149, section 11): `runPedigreeApp()`; G17b DONE (S75, R150, section 12): choosing the animals;
-G17c next, then G17d (section 7).
+G17c DONE (S76, R151, section 13): what is drawn; G17d next (section 7).
 
 **Versions:** shiny 1.14.0, Pedixplorer 1.8.0, visNetwork 2.1.4, chromote 0.5.1 and callr 3.8.0 from this project's
 renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); Google Chrome 157;
@@ -81,7 +81,7 @@ It calls 12 helpers pedkindraw does not have, in 10 nprcgenekeepr files of about
 turn was not followed): `setPopulation()`,
 `isLivingAnimal()`, `isGeneratedUnknownId()`, `readWithFinalNewline()` and `readTwinRelations()` (two of R13's
 readers), `makeColonyOverview()`, `drawColonyOverview()` and `getMaternalLinePedigree()` (the colony overview:
-backlog `methodology/BACKLOG.md:193`, "Waiting on Mark"), `signalDataReady()`, `dataReadyContainer()`, `.countOf()`,
+backlog `methodology/BACKLOG.md:204`, "Waiting on Mark"), `signalDataReady()`, `dataReadyContainer()`, `.countOf()`,
 `.twinPairsWithin()`; a thirteenth, `.diagramHeight()`, pedkindraw has copied. Its tests: 9
 `test_modPedigree*.R` files with 171 tests through `shiny::testServer()`, and 4 end-to-end files through
 `shinytest2::AppDriver`.
@@ -112,7 +112,7 @@ behind it" is pedkindraw's export an app would call today.
 | F17 | save the animals drawn as a CSV file | yes | yes | `utils::write.csv()` | a download button |
 | F18 | read the animals as a table | counts only | yes (DT, searchable) | none | shiny's own table (no new package) or DT (3 more) |
 | F19 | be stopped before a drawing too large to use | warns at 300, refuses at 500 | 400 or 750 | none (`drawPedigreeDiagram()` has no limit; past 120 s at 2,000 animals, the contract's section 7) | a number, and words |
-| F20 | see a colony too large to draw as its maternal lines | no | yes | none | copy 3 functions, 526 lines (backlog `:193`) |
+| F20 | see a colony too large to draw as its maternal lines | no | yes | none | copy 3 functions, 526 lines (backlog `:204`) |
 | F21 | change symbol, text and spacing sizes and line width | symbol size, line width | no | `symbolSize`, `textSize`, `columnSpacing`, `rowSpacing`, `lineWidth` (G14) | four or five numbers |
 
 Pedixplorer's app has 17 of the 21 (all but F7, F12, F15 and F20; F18 and F21 in part); nprcgenekeepr's Browser
@@ -202,9 +202,9 @@ Mark's picks, each first time, each the recommended option:
 
 1. **What the app does: "Both apps' core".** It builds 16 of the 21: F1, F3-F9, F11-F13 and F15-F18, and F19 as a
    warning on a very large drawing (the option's preview headed its list "15" and listed these 16, F19 marked "+").
-   **Waiting, in one backlog item** (`methodology/BACKLOG.md:200`, "The app's features left for later"): F2 (Excel
+   **Waiting, in one backlog item** (`methodology/BACKLOG.md:211`, "The app's features left for later"): F2 (Excel
    files: `readxl`, 14 packages, what R13 kept out), F10 (colour pickers), F14 (a matings file), F20 (the colony
-   overview, `methodology/BACKLOG.md:193`, waiting on Mark) and F21 (the size settings). Not picked: "All 21" (6-8 build sessions, a guess; Excel reverses R13; the colony overview is
+   overview, `methodology/BACKLOG.md:204`, waiting on Mark) and F21 (the size settings). Not picked: "All 21" (6-8 build sessions, a guess; Excel reverses R13; the colony overview is
    waiting on Mark), "Smallest: open, draw, save" (8 of 21; no family, no informative animals, so Pedixplorer's app
    would still do more) and "Copy nprcgenekeepr's Browser" (about 1,940 copied lines under the drift rule, DT and
    two of R13's readers, and without Pedixplorer's column picker, family choice and informative animals).
@@ -434,13 +434,28 @@ each); the gaps plan guessed 1 + 4-8.
     `$('#family')[0].selectize.options`, not from the element's `options` (the by-hand script read one family of five).
 19. **Do not edit the tree while the full suite runs** (failure mode #29): S75 added a test during a run; the count
     (16,470 + 134) showed it was read, but which tree a run read should be known, not worked out afterwards.
+20. **The edit tool turns a typed `\u2265` into the character itself** (S76): the cut-off list's names `"\u2265"` and
+    `"\u2264"`, written with the Edit tool, reached `R/pedigreeApp.R` as the characters, and `R CMD check --as-cran` gave
+    a WARNING ("checking code files for non-ASCII characters"), which cost a second 10-minute check. Before the check,
+    run `LC_ALL=C grep -n '[^ -~]'` on each R file changed; write an escape with Python (`'\\u2265'`), not the Edit tool.
+21. **A ruling that changes what an existing test sees changes that test in RED** (S76; dragon 17's sibling): R151 made
+    the sample open its twins file, so G17a's Chrome test of the sample, which expected 1,460 nodes, saw 1,466; RED had
+    not looked, and GREEN's first run found it (a RED amendment commit, `c79c51f`, proved against the RED code in a
+    scratch copy). Before RED, grep the tests for every input the ruling changes (`sample`, a column name, a default).
+22. **Count the full suite with the "check" reporter** (S76): the "summary" reporter prints no totals, and the tests'
+    own messages break its lines of dots, so a count needs a script; `testthat::test_local(reporter = "check")` prints
+    `[ FAIL | WARN | SKIP | PASS ]`.
+23. **R CMD check's URL check can meet GitHub's own outage** (S76): the second check's incoming NOTE named a README
+    link with "Status: 503", which answered 200 three times a minute later; re-running the check on the same tarball
+    with `--no-tests --no-examples --ignore-vignettes --no-manual` read the NOTE again: the Maintainer line and "New
+    submission" only.
 
 ---
 
 ## 9. Out of scope
 
 - **F2, F10, F14, F20, F21** (R148, pick 1): Excel files, colour pickers, a matings file, the colony overview and the
-  size settings, in one backlog item (`methodology/BACKLOG.md:200`), each a later ruling.
+  size settings, in one backlog item (`methodology/BACKLOG.md:211`), each a later ruling.
 - **Exporting the app's parts** as a module (R148, pick 4).
 - **shinytest2 and DT** (R148, picks 1 and 3).
 - **Other sources of data:** LabKey EHR (nprcgenekeepr's), PLINK ped/fam files (Pedixplorer's; R13), a database.
@@ -861,3 +876,55 @@ pedigree" opening the sample's twins file too (the other: the three exact codes 
   `identical()` to the direct call on the data frame expected), and one Chrome test uploading a pedigree file with every
   mark and two conditions and a twins file with kinship2's code numbers through the page, a cut-off set and the lines
   switched with the page's own controls.
+
+### 13.6 What G17c built and measured (S76)
+
+**Commits:** claim `104907b`; the measuring scripts `1902472`; the measures and R151 `6a4ef89`; RED `15efe75`; RED
+amendment `c79c51f` (dragon 21); GREEN `7dd6aa8` (the code), `55ef40f` (help, NEWS, the contract), `f7ef71a` (two
+tests found by `covr`), `cc78918` (the cut-off symbols as escapes, dragon 20); REFACTOR `8ee85f0`.
+
+**Built** (`R/pedigreeApp.R`, internal): a twins file box with a line saying what twins are in use and a red line for a
+problem; "Conditions (up to four)", a list of the file's columns other than the four, guessed from names beginning
+"affected" in any case and kept in a `reactiveVal` (dragon 16); a cut-off for each chosen column of numbers (a comparison,
+>, ≥, < or ≤, and a number; inputs `cutOp<k>` and `cutValue<k>`, k the column's place in the file, so they keep their
+values); the marks found ("Marks from the file: genotyped (column 'Avail'), ..."); a red line for each column not drawn
+and why; "Lines", "Right angles" (the default) or "Straight". The helpers `.appReadValues()` (the common words),
+`.appNeedsCutoff()`, `.appCutoff()`, `.guessAppConditions()`, `.appConditionNames()`, `.appFindMarks()`,
+`.appMarkNote()`, `.appDeceased()`, `.appUnreadWords()`, `.appReadTwins()`, `.appTwinsInView()`, `.appDrawnPedigree()`
+(the drawing's data frame: the four columns, the conditions renamed, the marks under pedkindraw's names, and the notes),
+`.appSampleTwinsPath()` and, by the REFACTOR, `.appNameKey()`; `.guessAppColumns()` takes the names looked for;
+`.appDraw()` passes the lines to both functions and the twins and cut-offs to the layout, and returns the layout. The
+help (`R/runPedigreeApp.R`), NEWS, the contract's section 4.7.
+
+**Tests:** `test_pedigreeAppMarks.R`, 21 tests, 156 expectations (19 in RED, 2 added in GREEN 3 when `covr` read 395 of
+397 statements: a factor's unread fertility words, a twins file that cannot be read); G17a's sample Chrome test changed
+(the sample with its twins: 1,466 nodes, and the page's twins line). The Chrome test gives the page its pedigree file and
+twins file through DevTools (`.appSetFile()`, section 13.3) and chooses two conditions, a cut-off and straight lines
+with the page's own controls. RED: 19 failing for the right reason (missing functions, an argument, outputs, the layout;
+the Chrome test timing out on "5 animals drawn", the file's 1/0 carrier stopping the old drawing), the other 43 passing,
+SKIP 0, WARN 0.
+
+**Verified:** the full suite (`NOT_CRAN=true`) at `55ef40f`: 90 files, 16,754 expectations, 0 failed, 0 warnings, 0
+skipped (548 s), and at the REFACTOR (`8ee85f0`) `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16761 ]` (548 s); `R CMD check
+--as-cran` from a scratch folder (`NOT_CRAN=true`, connections left open checked): at `f7ef71a` 1 WARNING (dragon 20),
+at `cc78918` 0 errors, 0 warnings, 1 NOTE, its tests `[ FAIL 0 | WARN 0 | SKIP 6 | PASS 16734 ]` (609 s), the NOTE's
+transient 503 cleared on the same tarball (dragon 23); **on CRAN's path** (`NOT_CRAN` unset, the checked install) the
+app's 60 tests that run take **8.44 s** (3.08 s the new file; S75's 40 took 5.06 s), and the 4 Chrome tests skip;
+coverage by the app tests 392 of 392 statements of `R/pedigreeApp.R` after the REFACTOR (397 of 397 before it) and 16 of
+16 of `R/runPedigreeApp.R`; `bash tools/checkExamples.sh` errors 0; `lint_package()` 0; `roxygenise()` no change;
+drift 91 / 23 / 0; fidelity 600 of 600 identical, kinship difference 0; `Rscript tools/gapCases.R app` the app's title.
+The REFACTOR proved by a record of the four name helpers over 403 column-name lists, taken twice on GREEN's code
+(identical) and `identical()` after.
+
+**By hand, in headless Chrome on this Mac** (pictures looked at): the sample with its 3 twin pairs ("3 twin pairs read
+from the sample's twins file.", 375 animals); a spreadsheet-like file uploaded through the page (columns ID, Father,
+Mother, Gender, Affected 0/1, glucose, Avail Y/N, Carrier 0/1, proband yes/no, Deceased TRUE/FALSE, mis_carriage, Name):
+its columns guessed, Affected drawn, the marks listed, glucose not drawn until its cut-off and then drawn half-filled with
+the legend's "Affected (glucose ≥ 126)", a twins file with kinship2's "2" drawn as DZ, straight lines; a twins file whose
+pair does not share parents named under the box and the pedigree drawn without twins; a carrier "maybe" named and the
+column left out. **Not run:** another browser, a real file dialog, a phone-width window, a hosted server, a cut-off on a
+pedigree of more than a few animals.
+
+**Found for later:** a twins table with no rows stops `makePedigreeMatingLayout()` in the copied
+`.buildTwinConnectorEdges()`, and `checkTwinRelations()` on an empty cell gives R's own words; both are the same in
+nprcgenekeepr (backlog, "A twins table with no rows stops the layout"). The app guards both.
