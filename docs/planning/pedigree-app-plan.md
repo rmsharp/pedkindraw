@@ -930,3 +930,143 @@ pedigree of more than a few animals.
 **Found for later:** a twins table with no rows stops `makePedigreeMatingLayout()` in the copied
 `.buildTwinConnectorEdges()`, and `checkTwinRelations()` on an empty cell gives R's own words; both are the same in
 nprcgenekeepr (backlog, "A twins table with no rows stops the layout"). The app guards both.
+
+---
+
+## 14. G17d's measures and picks (pedkindraw S77)
+
+Measured before the pre-RED picker (Learning 17) by `g17dServer.R`, `g17dBrowser.R`, `g17dCsv.R` and `g17dSizes.R` in
+`docs/planning/pedigree-app-prototype/` (committed in `540a4aa`), on G17c's code (`9574fc5`): this Mac, headless Chrome
+157, shiny 1.14.0, chromote 0.5.1. Each count covers the cases run, no more (Learning 19). The values the RED tests
+state were computed the same way, in scratch runs, before RED (Learning 18).
+
+### 14.1 A download in `testServer()` (`g17dServer.R`)
+
+- A download handler's content runs only when a test reads `output$<id>`: two input changes ran it 0 times, the read
+  once. The read returns the written file's path, named by `filename()` (`animals-7.csv` after the input `k` became
+  7); a content's error reaches the test as that error; an output the server never defined is the error "The test
+  referenced an output that hasn't been defined yet: output$never". So the server tests read a CSV download on CRAN's
+  path with no browser, and a picture download starts Chrome only in a test that reads it (dragon 14, every output
+  computed at each change, does not reach downloads).
+- `renderUI(NULL)` reads as `NULL`. A `downloadButton()` is written `class="btn btn-default shiny-download-link
+  disabled"`, `aria-disabled="true"`, `href=""`; shiny's page code enables it once the server defines its download
+  (14.2), so in `testServer()` its HTML is the same whether or not the download is defined.
+
+### 14.2 The downloads in Chrome (`g17dBrowser.R`)
+
+G17c's app in a second R process, download buttons added to its page and handlers to the end of its server; the sample
+opened with "Use the sample pedigree" (375 animals, its 3 twin pairs) and each download fetched by the page from the
+button's address, as a click asks for it:
+
+| Download | Status, file name | Bytes | Time |
+|---|---|---:|---:|
+| SVG, `savePedigreeDiagram(drawing()$widget, file)` | 200, `pedigree.svg` | 847,379 | 1.59 s |
+| PDF, the same | 200, `pedigree.pdf` | 943,969 | 2.69 s |
+| PNG, the same (3,000 x 1,534 pixels) | 200, `pedigree.png` | 238,466 | 2.46 s |
+| CSV of the rows the Animals tab shows (375 rows; id, sire, dam, sex, gen, birth, exit, age) | 200 | 17,472 | 0.01 s |
+| CSV of the drawing's data frame (375 rows; id, sire, dam, sex) | 200 | 9,665 | 0.00 s |
+
+- The app's SVG is `identical()` to `savePedigreeDiagram(drawPedigreeDiagram(layout))` called directly on the same
+  layout (545 id texts, 375 distinct, and 16 other texts, in the same order): the `onClick` code in the app's widget
+  changes nothing in the file. The same for `.appFour()`'s four animals (scratch run before RED: the SVG identical, the
+  PNG 3,000 x 1,534 pixels, the PDF beginning `%PDF-`). The app answers after the downloads.
+- **A button whose download the server defines is live from the page's first load**, before any pedigree is open: its
+  download then is a 500 with an empty message. **A button the server never defines stays greyed**: `disabled`,
+  `aria-disabled="true"`, no address.
+
+### 14.3 Without Chrome (`g17dBrowser.R`)
+
+- **`chromote::find_chrome()` returns `CHROMOTE_CHROME` as it is**, without looking for the file (chromote 0.5.1's
+  code): with `CHROMOTE_CHROME=/nonexistent/chrome` it returns that path at once. `savePedigreeDiagram()`'s check
+  (`R/savePedigreeDiagram.R:113`, `is.null(find_chrome())`) then passes and the save fails later, inside chromote.
+  Found for later (G16's code; a backlog item at close-out). The app's check also asks that the file exists.
+- With `find_chrome()` returning `NULL` in the app's process (replaced in chromote's namespace for the measure), a
+  picture download is a 500 whose page says "savePedigreeDiagram() could not find Google Chrome ...", the browser
+  reports a failed download, and the app's page says nothing; the CSV still downloads.
+- The check costs 0.11 s to load chromote once in an R session, then about 0.02 ms a call.
+
+### 14.4 Which rows the CSV holds (`g17dCsv.R`)
+
+Two candidate files, each written with `utils::write.csv(row.names = FALSE, na = "")` and opened again in a fresh
+server, as a user would, the same conditions and cut-off chosen, everyone drawn: (a) the rows the Animals tab shows
+(`shown()`) and (b) the drawing's data frame (`prepared()$ped`). On a spreadsheet-like typed file (ID, Father, Mother,
+Gender, Affected 1/0, glucose with a cut-off >= 126, Avail Y/N, Deceased TRUE/FALSE, birth; the sire x9 with no row of
+its own): everyone (11 animals drawn), the largest family (8), o1's ancestors and descendants (6), o1's near relatives
+(7); on the sample: everyone (375) and each of its 5 families (343, 13, 11, 5, 3). **The layout opened again was
+`identical()` to the first in 10 of 10 views for (a) and 10 of 10 for (b).** (a) holds the file's own columns (10 on the
+typed file: id, sire, dam, sex, Affected, glucose, Avail, Deceased, birth and `recordStatus`, which `addParents()`
+adds; the sample's 8); (b) only what the drawing reads, under pedkindraw's names (8: id, sire, dam, sex, affected,
+affected_glucose, genotyped, status; the sample's 4). The parent x9, added at the first drawing, has its row in both
+files, so the second opening adds none. Neither file holds the cut-off.
+
+### 14.5 The size of a saved picture (`g17dSizes.R`)
+
+At `savePedigreeDiagram()`'s own page (10 inches wide, the drawing's height, a PNG at 300 dpi), an id's font size in
+the SVG (user units of 1/96 inch) and what it is on the page and in the PNG:
+
+| Drawing | Page | An id | In points | In the PNG |
+|---|---|---:|---:|---:|
+| the sample, 375 animals | 10.0 x 5.1 in | 0.64 | 0.5 pt | 2.0 px |
+| family 1, 11 animals | 10.0 x 5.1 in | 11.76 | 8.8 pt | 36.8 px |
+| family 4, 13 animals | 10.0 x 5.1 in | 9.11 | 6.8 pt | 28.5 px |
+| the sample, `width = 20, height = 10` | 20.0 x 9.7 in | 1.28 | 1.0 pt | 4.0 px |
+
+### 14.6 The picks (R152)
+
+One picker, four questions, each option measured first; **R152**, Mark's picks, each first time, each the recommended
+option (`docs/planning/standalone-pedigree-package-plan.md` section 2):
+
+1. **The CSV file: "Animals tab rows".** The rows the Animals tab shows, every column of the user's file, id, sire, dam
+   and sex renamed so and sex read as M, F, H and U, with a `recordStatus` column when the app added a parent with no
+   row. Its button is on the Animals tab, so it works while a view of more than 1,000 animals waits for "Draw anyway".
+   Not picked: the drawing's columns; both, two buttons.
+2. **Without chromote or Chrome: "Grey buttons + a line".** The SVG, PDF and PNG buttons shown greyed (the server
+   defines no download for them, 14.2), with a line naming what is missing; the CSV button works. Not picked: hide
+   them and keep the line; live buttons with the reason written after a click.
+3. **The picture's size: "The default page".** `savePedigreeDiagram()`'s own page; a page-size setting joins the
+   backlog item of the app's features left for later (`methodology/BACKLOG.md:211`). Not picked: width, height and dpi
+   boxes.
+4. **The drawing times (backlog `:109`): "Fold it in".** The drawing vignette's "How large a drawing can be"
+   (`vignettes/drawing.Rmd:788`) and the contract's section 7 row (`docs/planning/pedkindraw-api-contract.md:333`)
+   get pedkindraw's own measured times (section 12.1), each said as measured; the backlog item closes. Not picked:
+   leave it for a session of its own.
+
+### 14.7 What G17d builds (the design RED tests; Claude's, from section 5 and R152)
+
+- **The check:** `.appPictureProblem()` returns `""` when chromote is installed and `chromote::find_chrome()` names a
+  file that exists, and otherwise one sentence: "Saving the drawing as a picture needs the chromote package:
+  install.packages(\"chromote\")." or "Saving the drawing as a picture needs Google Chrome or Chromium on this
+  computer; set CHROMOTE_CHROME to its path if it is not found." The server takes it as its last argument,
+  `.pedigreeAppServer(ped = NULL, drawLimit = 1000L, pictureProblem = .appPictureProblem())`, made once when the app
+  is built; the server tests give it.
+- **The Diagram tab:** an output `saves` above the drawing: nothing until a drawing is shown; then "Save the drawing:"
+  and the buttons SVG, PDF and PNG (`saveSvg`, `savePdf`, `savePng`), and the sentence when `pictureProblem` is not
+  `""`. With no problem the server defines the three downloads, each `savePedigreeDiagram(drawing()$widget, file)` at
+  its own page, named `pedigree.svg`, `pedigree.pdf` and `pedigree.png`; with a problem it defines none, so shiny greys
+  them.
+- **The Animals tab:** an output `saveRows` above the table: nothing until animals are chosen; then a button "Save
+  these animals as a CSV file" (`saveCsv`), `utils::write.csv(shown(), file, row.names = FALSE, na = "")`, named
+  `pedigree.csv`.
+- **Tests, a new file `test_pedigreeAppSave.R`:** `.appPictureProblem()` in four cases (mockery: chromote missing,
+  Chrome not found, `find_chrome()` naming no file, both found); the page's two places; the server before a pedigree
+  (both outputs `NULL`), after `.appFour()` is drawn (the three buttons, no sentence; the CSV button), with a problem
+  (the buttons and the sentence; reading each picture download is the "hasn't been defined" error; the CSV downloads);
+  the CSV of the typed file of 14.4, o1's ancestors and descendants (`pedigree.csv`, 6 rows s1, d1, o1, m1, g1, g2,
+  the 10 columns, the Animals tab's values, m1's sire empty) and that file opened again (the `identical()` layout); a
+  view of 14 animals waiting for "Draw anyway" (`drawLimit = 12L`: no picture buttons; the CSV of 14 rows); with
+  Chrome (skipped on CRAN), `.appFour()`'s SVG read from the server `identical()` to `savePedigreeDiagram()` called
+  directly; in Chrome, the sample's downloads fetched by the page (the SVG's 545 ids, 375 distinct, as G16's colony
+  test counts them; a PDF; a PNG 3,000 pixels wide; the CSV's 375 rows) and, the app's process given
+  `CHROMOTE_CHROME` naming no file, the three buttons greyed with no address, the sentence, and the CSV button live on
+  the Animals tab (its download 4 rows). `helper-pedigreeApp.R`'s `.startPedigreeApp()` gains the child's environment
+  variables.
+- **The documents, a new file `test_runPedigreeAppDocs.R`** (S72's way; its four helpers in a new `helper-docs.R`,
+  copies of `test_savePedigreeDiagramDocs.R`'s, which the REFACTOR can remove from that file): the README, both files,
+  names `runPedigreeApp(` with SVG, PDF, PNG, CSV and shiny after it; the pedkindraw vignette's "Drawing a pedigree"
+  names it; the drawing vignette's "Clicks in a Shiny application" names it and the focal animal; its "How large a
+  drawing can be" gives pedkindraw's times (9.1 seconds for 1,001 animals, 50.5 for 2,000) and not nprcgenekeepr's
+  "about 16 seconds"; `man/drawPedigreeDiagram.Rd` links it; `man/pedkindraw-package.Rd`'s "Getting started" names it;
+  `man/runPedigreeApp.Rd` says the app saves SVG, PDF, PNG and CSV files and that the pictures need chromote and
+  Chrome; NEWS has the bullet.
+- **No copied function's code changes:** the `@seealso` line of `drawPedigreeDiagram()` is help text, so the drift tool
+  reads 91 / 23 / 0 after it.
