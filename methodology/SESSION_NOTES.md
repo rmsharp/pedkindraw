@@ -110,6 +110,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 79 Did
+**Deliverable:** Phase 17h1, the computation timing harness (`docs/planning/pedkindraw-timing-plan.md:406`), strict
+TDD, a copy: nprcgenekeepr's `tools/pedigreeComparison/` harness and its tests copied into `tools/timing/` and changed
+as the plan's section 4.1 says, plus new tests for the 78 computation cases. No package code. (IN PROGRESS)
+**Started:** 2026-11-23 08:34 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17h1: timing harness
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: the plan's sections and the harness's sources, then T1's inputs measured.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 78 Did
 **Deliverable:** Phase 17g, the timing plan (`docs/planning/cran-submission-plan.md:740`): a plan of its own,
 `docs/planning/pedkindraw-timing-plan.md`. A planning session: no package code, nothing timed for the record. DONE.

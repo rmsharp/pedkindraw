@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-23 · [BL-Phase 17] S79 (in progress): 17h1, the computation timing harness, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S79's stub), `methodology/HANDOFFS.md` (S79's `status: pending` receipt) and this entry. The deliverable is 17h1 (`docs/planning/pedkindraw-timing-plan.md:406`), strict TDD, a copy. Phase 3F rewrites this entry.
+- **Commit/PR:** the S79 claim commit · **Session:** S79 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits and no harness change since `d75f07f6b`, ledgers current at `b97ef83`, no ghost session, the receipt's ratchet line matches the results file, 30 backlog items at the handoff's lines).
+
 ### 2026-11-23 · [BL-Phase 17] S78 push: `master` to GitHub at close-out
 - **Change:** pushed `8a1a549..edccc26` (S78's 7 commits: claim, measuring scripts, the plan and R153, close-outs 1, 1c, 2 and 2b), every one `[skip ci]`; no workflow started (`gh run list` shows S77's runs last). Recorded in close-out 2c (this entry).
 - **Commit/PR:** the push of `edccc26`; close-out 2c (this entry) · **Session:** S78 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` is `edccc26`; no CI run to read (docs and methodology only).
