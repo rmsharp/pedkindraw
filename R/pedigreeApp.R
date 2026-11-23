@@ -5,7 +5,8 @@
 ## R148 and R149, docs/planning/pedigree-app-plan.md sections 5, 7 and 11;
 ## choosing the animals pedkindraw S75, Phase G17b, R150, section 12; what is
 ## drawn, the conditions, marks, lines and twins, pedkindraw S76, Phase G17c,
-## R151, section 13).
+## R151, section 13; saving the drawing and the animals, pedkindraw S77, Phase
+## G17d, R152, section 14).
 ## The app runPedigreeApp() starts: its page and its server, internal so they
 ## can change (R148). shiny is in Suggests, so every shiny call is written
 ## shiny:: and runs only after runPedigreeApp() has found shiny.
@@ -697,6 +698,49 @@
   sprintf(ngettext(n, "%d animal drawn", "%d animals drawn"), n)
 }
 
+## Saving the drawing and the animals (pedkindraw S77, Phase G17d, R152; plan
+## section 14).
+
+#' Whether the drawing can be saved as a picture here (R152)
+#'
+#' \code{savePedigreeDiagram()} needs the chromote package and Google Chrome
+#' or Chromium. \code{chromote::find_chrome()} returns \code{CHROMOTE_CHROME}
+#' as it is, whether or not a file is there (plan section 14.3), so the path
+#' it names must be a file or a command on the path.
+#' @return \code{""} when both are found, or a sentence saying which is
+#'   missing.
+#' @noRd
+.appPictureProblem <- function() {
+  if (!requireNamespace("chromote", quietly = TRUE)) {
+    return(paste0("Saving the drawing as a picture needs the chromote ",
+                  "package: install.packages(\"chromote\")."))
+  }
+  chrome <- suppressMessages(chromote::find_chrome())
+  if (is.null(chrome) || !(file.exists(chrome) || nzchar(Sys.which(chrome)))) {
+    return(paste0("Saving the drawing as a picture needs Google Chrome or ",
+                  "Chromium on this computer; set CHROMOTE_CHROME to its ",
+                  "path if it is not found."))
+  }
+  ""
+}
+
+#' A download of the drawing as a picture file (R152)
+#'
+#' @param ending \code{"svg"}, \code{"pdf"} or \code{"png"}.
+#' @param drawing the server's drawing, a reactive whose \code{widget} is the
+#'   drawing shown.
+#' @return A download handler: \code{savePedigreeDiagram()} of the widget at
+#'   its own page, in a file named \code{pedigree.<ending>}.
+#' @noRd
+.appPictureDownload <- function(ending, drawing) {
+  force(ending)
+  force(drawing)
+  shiny::downloadHandler(
+    filename = paste0("pedigree.", ending),
+    content = function(file) savePedigreeDiagram(drawing()$widget, file)
+  )
+}
+
 #' The app's page
 #' @noRd
 .pedigreeAppUi <- function() {
@@ -765,11 +809,13 @@
             shiny::tagAppendAttributes(shiny::textOutput("notes"),
                                        style = "white-space: pre-wrap;"),
             shiny::uiOutput("large"),
+            shiny::uiOutput("saves"),
             visNetwork::visNetworkOutput("diagram", height = "650px")
           ),
           shiny::tabPanel("Checks", shiny::textOutput("checkSummary"),
                           shiny::tableOutput("checks")),
-          shiny::tabPanel("Animals", shiny::tableOutput("table"))
+          shiny::tabPanel("Animals", shiny::uiOutput("saveRows"),
+                          shiny::tableOutput("table"))
         )
       )
     )
@@ -780,11 +826,16 @@
 #'
 #' @param ped \code{NULL}, or a pedigree to open as if read from a file.
 #' @param drawLimit the most animals drawn without asking first (R150).
+#' @param pictureProblem \code{""} when the drawing can be saved as a
+#'   picture, or the sentence saying why not (R152), found once when the app
+#'   is made.
 #' @return A server function for \code{shiny::shinyApp()}.
 #' @noRd
-.pedigreeAppServer <- function(ped = NULL, drawLimit = 1000L) {
+.pedigreeAppServer <- function(ped = NULL, drawLimit = 1000L,
+                               pictureProblem = .appPictureProblem()) {
   force(ped)
   force(drawLimit)
+  force(pictureProblem)
   function(input, output, session) {
     rawData <- shiny::reactiveVal(ped)
     readProblem <- shiny::reactiveVal("")
@@ -1109,5 +1160,42 @@
     })
     output$checks <- shiny::renderTable(checks())
     output$table <- shiny::renderTable(shown())
+
+    ## G17d (R152): the drawing saved as a picture through
+    ## savePedigreeDiagram() at its own page; without chromote or Chrome no
+    ## download is defined, so shiny shows the buttons greyed, and the page
+    ## says why. The animals chosen saved as a CSV file: the rows the Animals
+    ## tab shows, which the app opens again to the same drawing.
+    output$saves <- shiny::renderUI({
+      if (!ready() || is.null(drawing()$widget)) {
+        return(NULL)
+      }
+      shiny::tagList(
+        shiny::tags$span("Save the drawing:"),
+        shiny::downloadButton("saveSvg", "SVG"),
+        shiny::downloadButton("savePdf", "PDF"),
+        shiny::downloadButton("savePng", "PNG"),
+        if (nzchar(pictureProblem)) {
+          shiny::tags$p(pictureProblem, style = "color: #b00020;")
+        }
+      )
+    })
+    if (!nzchar(pictureProblem)) {
+      output$saveSvg <- .appPictureDownload("svg", drawing)
+      output$savePdf <- .appPictureDownload("pdf", drawing)
+      output$savePng <- .appPictureDownload("png", drawing)
+    }
+    output$saveRows <- shiny::renderUI({
+      if (!ready() || is.null(choice()$rows)) {
+        return(NULL)
+      }
+      shiny::downloadButton("saveCsv", "Save these animals as a CSV file")
+    })
+    output$saveCsv <- shiny::downloadHandler(
+      filename = "pedigree.csv",
+      content = function(file) {
+        utils::write.csv(shown(), file, row.names = FALSE, na = "")
+      }
+    )
   }
 }
