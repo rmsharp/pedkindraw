@@ -15,7 +15,8 @@
 ## timeStamp(), the time text those rows and machineNote()'s heading share;
 ## and, in Phase 17h1c (R156), runLimited() returns the clock time it
 ## launched the child (launched), which runRow() writes as the row's
-## started (the copy wrote the time the row was made, the run's end).
+## started (the copy wrote the time the row was made, the run's end), and
+## its own time of the child's "CALL START" is callStarted (was started).
 ## The Phase 1 timing harness (docs/planning/standalone-pedigree-package-
 ## plan.md, Phase 1 steps 4-5). Each measurement is one fresh Rscript
 ## (timeOne.R) run under /usr/bin/time -l: the time limit counts from the
@@ -307,16 +308,16 @@ runLimited <- function(script, args = character(), timeLimit = 120.0,
   h <- p$as_ps_handle()
   out <- character()
   t0 <- proc.time()[["elapsed"]]
-  started <- NA_real_
+  callStarted <- NA_real_
   stopped <- NA_character_
   while (p$is_alive()) {
     p$poll_io(as.integer(poll * 1000.0))
     out <- c(out, p$read_output_lines())
     now <- proc.time()[["elapsed"]]
-    if (is.na(started) && startMarker %in% out) started <- now
-    if (!is.na(started) && now - started > timeLimit) {
+    if (is.na(callStarted) && startMarker %in% out) callStarted <- now
+    if (!is.na(callStarted) && now - callStarted > timeLimit) {
       stopped <- "time"
-    } else if (is.na(started) && now - t0 > loadLimit) {
+    } else if (is.na(callStarted) && now - t0 > loadLimit) {
       stopped <- "load"
     } else if (childRss(h) > memLimit) {
       stopped <- "memory"
