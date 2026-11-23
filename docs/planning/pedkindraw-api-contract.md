@@ -340,7 +340,7 @@ with Pedixplorer included, with a note in `kinship()`'s help and the README on t
 |---|---|---|
 | A bad pedigree into a computation function | raw R errors or NA generations with a warning (finding 9) | unchanged at copy; `checkPedigree()` names the problem first |
 | Dense kinship of many animals | 8 n^2 bytes; past about 30,000 animals on 32 GB, R runs out of memory | documented in `kinship()`'s help; no silent switch to another method |
-| Drawing past about 1,000 animals | past 120 s at 2,000; Mark judged nprcgenekeepr's drawing readable up to 1,000 zoomed in, the largest size drawn (finding 28) | `drawPedigreeDiagram()` has no cap (nprcgenekeepr's app caps at 750); its help states the measured limit |
+| Drawing past about 1,000 animals | nprcgenekeepr's code before G1-G16: past 120 s at 2,000; pedkindraw's, measured in S75: 9.1 s at 1,001 and 50.5 s at 2,000 in R (section 7); Mark judged nprcgenekeepr's drawing readable up to 1,000 zoomed in, the largest size drawn (finding 28) | `drawPedigreeDiagram()` has no cap (nprcgenekeepr's app caps at 750); its help states the measured limit; `runPedigreeApp()` asks before drawing more than 1,000 (R150) |
 | kinship2 or Pedixplorer missing | a converter cannot read the object | `asPedFrame()` stops naming the package to install |
 | The two copies drift | a fix lands in one repository only | plan section 5: mirror it or record it in `DIVERGENCE.md` |
 | The rewrite (R11) differs from nprcgenekeepr | a result that is no longer identical | the phase is not DONE until results are identical; a deliberate difference needs Mark's ruling and a `DIVERGENCE.md` row |
