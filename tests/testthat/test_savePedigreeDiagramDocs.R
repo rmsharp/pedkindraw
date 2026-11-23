@@ -15,39 +15,10 @@
 ## The documents are read from the source tree (README.Rmd, README.md,
 ## vignettes/, man/ and NEWS.md do not exist under an installed package) and the
 ## tests skip without it, as helpExampleCode() in helper-helpExample.R reads
-## man/ only from the source.
-
-.docsText <- function(...) {
-  file <- test_path("..", "..", ...)
-  if (!file.exists(file)) skip(paste0(file.path(...), " is not in this tree"))
-  paste(readLines(file, warn = FALSE, encoding = "UTF-8"), collapse = "\n")
-}
-
-## The part of an R Markdown file from its "## <heading>" line to the next
-## second-level heading.
-.docsSection <- function(text, heading) {
-  parts <- strsplit(text, "\n(?=## )", perl = TRUE)[[1L]]
-  section <- parts[startsWith(parts, paste0("## ", heading))]
-  expect_length(section, 1L)
-  section
-}
-
-## The text from the first mention of `anchor` on, `width` characters: the
-## words a statement needs are looked for beside the call it is about, since a
-## README's badge ("badge.svg") or picture ("README-pedigree.png") and a
-## vignette's other numbers hold some of them already.
-.docsAfter <- function(text, anchor, width = 900L) {
-  start <- regexpr(anchor, text, fixed = TRUE)
-  if (start < 0L) return("")
-  substr(text, start, start + width - 1L)
-}
-
-.docsSay <- function(text, words, where) {
-  for (word in words) {
-    expect_true(grepl(word, text, fixed = TRUE),
-                label = paste0(where, " says '", word, "'"))
-  }
-}
+## man/ only from the source. The four helpers that read them, .docsText(),
+## .docsSection(), .docsAfter() and .docsSay(), written here in S72, are in
+## helper-docs.R since S77's REFACTOR (G17d), which test_runPedigreeAppDocs.R
+## uses too.
 
 test_that("the README says a drawing can be saved as an SVG, a PDF or a PNG
            file, in the source and in the page made from it", {

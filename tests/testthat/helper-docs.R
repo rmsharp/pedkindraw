@@ -3,9 +3,10 @@
 ## Helpers for the tests that hold the documents' statements beside their
 ## calls (pedkindraw's own, not copied from nprcgenekeepr): written in S72
 ## (plan Phase G16c, docs/planning/picture-files-plan.md section 7, G16c) in
-## test_savePedigreeDiagramDocs.R, and copied here word for word in S77 (plan
+## test_savePedigreeDiagramDocs.R, copied here word for word in S77's RED (plan
 ## Phase G17d, R152, docs/planning/pedigree-app-plan.md section 14.7) so that
-## test_runPedigreeAppDocs.R can use them too. The documents are read from the
+## test_runPedigreeAppDocs.R could use them too, and removed from that file by
+## S77's REFACTOR, so both files use these. The documents are read from the
 ## source tree (README.Rmd, README.md, vignettes/, man/ and NEWS.md do not exist
 ## under an installed package), and a test skips without them.
 
@@ -16,7 +17,9 @@
 }
 
 ## The part of an R Markdown file from its "## <heading>" line to the next
-## second-level heading.
+## second-level heading. A line starting "## " in a code chunk, an R comment,
+## ends it too (S77: the drawing vignette's "Clicks in a Shiny application"),
+## so a statement a test reads goes above such a chunk.
 .docsSection <- function(text, heading) {
   parts <- strsplit(text, "\n(?=## )", perl = TRUE)[[1L]]
   section <- parts[startsWith(parts, paste0("## ", heading))]
