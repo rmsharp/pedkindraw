@@ -340,6 +340,13 @@ code, `DIVERGENCE.md` in the repository says how and why.
   every animal, with no message, and a mark written so stopped the drawing. A
   column with any other value is left out and named. The sample pedigree
   opens with its file of 3 twin pairs.
+* New: `runPedigreeApp()`'s app saves what it shows. On the Diagram tab, the
+  SVG, PDF and PNG buttons save the drawing through `savePedigreeDiagram()`,
+  at that function's own page (10 inches wide); on the Animals tab, a button
+  saves the animals chosen as a CSV file with every column of the file, which
+  the app opens again to the same drawing. The pictures need the chromote
+  package and Google Chrome or Chromium; without them the picture buttons are
+  greyed and the page says what is missing, and the CSV button still works.
 
 ## Kinship and relatedness
 

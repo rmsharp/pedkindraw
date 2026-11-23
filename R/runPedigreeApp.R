@@ -4,7 +4,8 @@
 ## Phase G17a, gap A3 of docs/research/pedkindraw-gaps-2026-11-18.md; rulings
 ## R148 and R149, docs/planning/pedigree-app-plan.md sections 5, 7 and 11;
 ## its help on choosing the animals pedkindraw S75, G17b, R150, section 12;
-## on what is drawn pedkindraw S76, G17c, R151, section 13).
+## on what is drawn pedkindraw S76, G17c, R151, section 13; on saving
+## pedkindraw S77, G17d, R152, section 14).
 
 #' Draw a pedigree in an app, from a file, with no code
 #'
@@ -66,6 +67,14 @@
 #'   \item \strong{See the records' problems} on the Checks tab, from
 #'     \code{\link{checkPedigree}} on the whole file, and the animals chosen
 #'     on the Animals tab.
+#'   \item \strong{Save} the drawing as an SVG, a PDF or a PNG file with the
+#'     buttons above it, through \code{\link{savePedigreeDiagram}} at its own
+#'     page (10 inches wide; a PNG at 300 dpi); and the animals chosen as a
+#'     CSV file with the button on the Animals tab: the rows that tab shows,
+#'     with every column of the file, which the app opens again to the same
+#'     drawing. The pictures need the \pkg{chromote} package and Google
+#'     Chrome or Chromium; without them the picture buttons are greyed and
+#'     the page says what is missing.
 #' }
 #'
 #' @param ped \code{NULL}, or a data frame with the columns \code{id},
@@ -80,7 +89,10 @@
 #'   invisibly.
 #' @section Requirements:
 #'   The \pkg{shiny} package (\code{install.packages("shiny")}), checked
-#'   before anything else.
+#'   before anything else. Saving the drawing as a picture also needs the
+#'   \pkg{chromote} package and Google Chrome or Chromium, as
+#'   \code{\link{savePedigreeDiagram}} does; the app looks for them once,
+#'   when it starts.
 #' @seealso \code{\link{drawPedigreeDiagram}}, which draws the pedigree, and
 #'   \code{\link{checkPedigree}}, which finds the records' problems.
 #' @examples

@@ -82,12 +82,23 @@ asks before drawing them, which can take a minute or more.
 \item \strong{See the records' problems} on the Checks tab, from
 \code{\link{checkPedigree}} on the whole file, and the animals chosen
 on the Animals tab.
+\item \strong{Save} the drawing as an SVG, a PDF or a PNG file with the
+buttons above it, through \code{\link{savePedigreeDiagram}} at its own
+page (10 inches wide; a PNG at 300 dpi); and the animals chosen as a
+CSV file with the button on the Animals tab: the rows that tab shows,
+with every column of the file, which the app opens again to the same
+drawing. The pictures need the \pkg{chromote} package and Google
+Chrome or Chromium; without them the picture buttons are greyed and
+the page says what is missing.
 }
 }
 \section{Requirements}{
 
 The \pkg{shiny} package (\code{install.packages("shiny")}), checked
-before anything else.
+before anything else. Saving the drawing as a picture also needs the
+\pkg{chromote} package and Google Chrome or Chromium, as
+\code{\link{savePedigreeDiagram}} does; the app looks for them once,
+when it starts.
 }
 
 \examples{
