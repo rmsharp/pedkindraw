@@ -48,7 +48,7 @@ issues).*
       the limit from the November 2026 records (Mark's S29 pick); the installed size has about 800 KB left for its
       page.
 
-- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G17c next; Effort L altogether, 15-25
+- [ ] **Phases G15-G17: the other gaps, before the release** (READY in order, G17d next; Effort L altogether, 15-25
       sessions, a guess, the sum of the rows; R97; G1 DONE in S42, R102-R105; G2 DONE in S43, R106-R107; G3 DONE in S44, R108-R110; G4
       DONE in S45, R111-R113; G5 DONE in S46, R114-R116; G6 DONE in S47, R117-R119; G7 DONE in S48, R120-R122; G8
       DONE in S49, R123-R124; G9 DONE in S50, R125-R126, the last size-S addition; G10 DONE in S51, R127-R128; G11
@@ -66,7 +66,8 @@ issues).*
       S69, R143; G16a's CI repair DONE in S70, R145; G16b, the PDF and the PNG file, DONE in S71, R146; G16c, the
       whole large pedigree on one page and the documents, DONE in S72, R147, so G16 DONE; G17's plan written in S73,
       R148, `docs/planning/pedigree-app-plan.md`, four build sessions G17a-G17d; G17a, the app's first slice,
-      `runPedigreeApp()`, DONE in S74, R149; G17b, choosing the animals, DONE in S75, R150; next G17c) --
+      `runPedigreeApp()`, DONE in S74, R149; G17b, choosing the animals, DONE in S75, R150; G17c, what is drawn, DONE in
+      S76, R151; next G17d) --
       `docs/planning/gaps-and-shared-code-plan.md` section 5.1, one row per phase with its case, choices, DONE,
       commands and surface: G14, the last M addition (B5's sizes), DONE; G15-G17
       the L additions (B1, A1 with A2, A3), each starting with a planning session of its own. 17g follows G17.
@@ -112,6 +113,16 @@ issues).*
       (`docs/planning/pedigree-app-plan.md` section 12.1), takes 9.1 s for 1,001 animals and 50.5 s for 2,000 in R
       (16.7 s for another 1,000-animal pedigree: the structure matters as much as the count). G17d edits that vignette
       and can bring both up to date, each time stated as measured, on which pedigrees and which computer.
+
+- [ ] **A twins table with no rows stops the layout, and an empty cell gets R's own words** (READY, Effort S; found
+      S76, G17c; copied code, the same in nprcgenekeepr at `3e06730c5`) -- `makePedigreeMatingLayout(ped,
+      twinRelations = <a data frame with id1, id2 and code and no rows>)` stops in `.buildTwinConnectorEdges()`
+      (`R/makePedigreeDiagramData.R`, "arguments imply differing number of rows: 0, 1"), though
+      `checkTwinRelations()` passes such a table; and `checkTwinRelations()` on a table with an empty `id2` or `code`
+      stops with "missing value where TRUE/FALSE needed" (`docs/planning/pedigree-app-plan.md` section 13.2). The app
+      guards both (it passes no table when no pair is drawn, and names an empty cell itself), so this reaches only a
+      script. A fix changes two copied functions: the drift rule (plan section 5) needs the same change in
+      nprcgenekeepr or a `DIVERGENCE.md` row each; a test of each first.
 
 - [ ] **A converted Pedixplorer object's `avail` is not drawn as genotyped** (NEEDS DECISION, Effort S; found S54, G13,
       R134) -- `asPedFrame()` returns Pedixplorer's `avail` under that name (`R/asPedFrame.R:315`), and

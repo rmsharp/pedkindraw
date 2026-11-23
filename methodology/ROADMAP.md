@@ -50,7 +50,10 @@ file or a sample pedigree, draws it, chooses the animals to draw, follows a clic
 Suggests and one exported function, in four build sessions, G17a-G17d (a guess); G17a is done (S74, R149:
 `runPedigreeApp()` starts the app, which opens a CSV or text file, the sample or a `ped` data frame and draws everyone);
 G17b is done (S75, R150: the app chooses the animals it draws, follows a click, asks before drawing more than 1,000
-animals and adds a parent with no row); next is G17c, what is drawn.
+animals and adds a parent with no row); G17c is done (S76, R151: the app draws up to four conditions chosen from the
+file's columns, a column of numbers with a cut-off, the file's marks found by name in any case, lines at right angles or
+straight, and a twins file, reading a file's yes-or-no values with the common words); next is G17d, saving and the
+documents.
 
 | Phase | Slice | State |
 |---|---|---|
