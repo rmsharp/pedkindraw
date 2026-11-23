@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Next: 17g, the timing plan (section 6, `:740`).
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Next: 17h1, the computation harness (that plan's section 6).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -83,7 +83,7 @@ the legend change S12 already ported; its work in progress touches no copied fun
 work, unless it changes a copied function before the submission.
 
 **How many sessions:** about 20 to 23 (a guess; section 8): 17a-17o and 17q are sessions, 17c is three (R93, S34;
-S33's guess was 18 to 22 with 17c one or two), 17h may be several, 17k is at least one reading (R86, S33; S32's
+S33's guess was 18 to 22 with 17c one or two), 17h is four (R153, S78), 17k is at least one reading (R86, S33; S32's
 guess was 17 to 22 with 17k possibly none), and 17p is Mark's action. The release follows the last of them.
 
 ---
@@ -745,17 +745,27 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   and `tools/checkSpeedTables.R` read them. It sets 17h's session count.
 - **DONE:** the plan committed with each phase's DONE, commands and surface. Nothing timed.
 - **Surface:** documents only.
+- **Done (S78, R153):** `docs/planning/pedkindraw-timing-plan.md`. Mark's picks: 37 of the 38 exports timed (all but
+  `runPedigreeApp()`), kinship2 and Pedixplorer timed again in the same runs, a run starts once half the CPU is idle,
+  and the vignette shows pedkindraw's own runs only. Measured first: the study's seven colonies rebuilt byte for byte
+  by pedkindraw's R (7 of 7), the counterparts of each export, one call of each function (`findGeneration(alignMates =
+  TRUE)` 56 s at 10,000 animals, a new backlog item).
 
-### Phase 17h. The timing runs (sessions set by 17g)
+### Phase 17h. The timing runs (four sessions, R153)
 
-- **DONE, commands and surface:** 17g's. The machine's load is the trap (section 2.1 measured under load 5-12).
+- **DONE, commands and surface:** `docs/planning/pedkindraw-timing-plan.md` section 6: 17h1 the computation harness
+  (strict TDD, a copy of nprcgenekeepr's `tools/pedigreeComparison/` into `tools/timing/`), 17h2 its runs (about 3.5-4
+  hours, a guess), 17h3 the drawing harness (strict TDD, a copy), 17h4 its runs (about 1.2-1.5 hours). The machine's
+  load is the trap (section 2.1 measured under load 5-12; R153's rule: half the CPU idle).
 
 ### Phase 17i. The speed vignette (Phase 16d returns)
 
-- **Work:** `vignettes/speed.Rmd` from the draft on `draft/speed-vignette`, its tables from 17h's results,
-  checked cell for cell by `tools/checkSpeedTables.R`; the pointers R82 left out (`?pedkindraw`'s "Getting
-  started", the getting-started vignette's "Where next", the drawing vignette's "How large a drawing can be" at
-  `vignettes/drawing.Rmd:681`); the website's third article.
+- **Work:** `vignettes/speed.Rmd` from the draft on `draft/speed-vignette`, to R153's outline, its tables from 17h's
+  results in `tools/timing/results/`, checked cell for cell by `tools/checkSpeedTables.R` (rewritten to read them, no
+  clone); the pointers R82 left out (`?pedkindraw`'s "Getting started", `R/pedkindraw-package.R:52`, the
+  getting-started vignette's "Where next", `vignettes/pedkindraw.Rmd:407`, the drawing vignette's "How large a drawing
+  can be", `vignettes/drawing.Rmd:794`); the contract's sections 7 and 8; the website's third article
+  (`docs/planning/pedkindraw-timing-plan.md` section 6).
 - **DONE:** the check tool passes and fails on a changed cell; the vignette builds with kinship2 and Pedixplorer
   absent; nothing timed during the build; installed size under 5,120 KB; `R CMD check --as-cran` R16's NOTE only;
   the site shows three articles.
@@ -810,7 +820,9 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   a `Status:` line; the CRAN-mode test time; the depends-only check; suite 0 failed, WARN 0, tallied by hand
   (the gate counts warnings only); lint 0; roxygen idempotent; coverage as 17j left it; the drift tool and the
   fidelity tool (section 4.4), nprcgenekeepr's log on the copied files; CI 5/5 and the site's run; `uptime`
-  recorded. After this, only 17o's results and 17q's version move change the tree.
+  recorded; `git diff <17h2's commit> -- R DESCRIPTION NAMESPACE` empty, or each change listed with whether it can
+  change a time on the speed vignette (`docs/planning/pedkindraw-timing-plan.md` section 6, amendments). After this,
+  only 17o's results and 17q's version move change the tree.
 - **Surface:** this Mac and GitHub Actions.
 
 ### Phase 17o. `cran-comments.md` and the cross-platform runs (two sessions and Mark's runs)
@@ -850,7 +862,7 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 | D2 | Each name change of section 2.4: change or keep | 17b | **Decided S34** (R87-R93): section 2.4's "Decided" table; 9 `DIVERGENCE.md` rows in 17c |
 | D3 | Each drawing fix: also fixed in nprcgenekeepr (a session there, Mark starts it) or a `DIVERGENCE.md` row | 17d, 17e | nprcgenekeepr has the same filter and label. **17d decided S38** (R94): port later, `DIVERGENCE.md` rows and the fidelity tool's `withoutJogSelections()` until then. **17e decided S39** (R95): port later, the `drawPedigreeDiagram()` row and the tool's `withoutLegendLineStyle()` until then |
 | D4 | Which gaps, if any, are closed before the release | 17f | **Put to a planning session S40** (R96). **Decided S41** (R97): every gap, where possible, phases G1-G17 of `docs/planning/gaps-and-shared-code-plan.md`, before 17g |
-| D5 | The timing plan's scope | 17g | R82; the draft's nine tables |
+| D5 | The timing plan's scope | 17g | **Decided S78** (R153): 37 of the 38 exports, kinship2 and Pedixplorer timed again, half the CPU idle, pedkindraw's own runs only on the page (`docs/planning/pedkindraw-timing-plan.md`) |
 | D6 | How tests are kept off CRAN: `skip_on_cran()` per file or block, or a list of slow files as nprcgenekeepr's `slowTestFiles.txt` | 17k | eight files take 81% (section 2.1) |
 | D7 | `Language` and spelling; the `Depends: R` floor; a DOI reference in `Description` | 17l | British spellings under en-US; R 4.1.0 claimed, 4.5 tested |
 | D8 | The version number: 0.1.0 or 1.0.0 | 17m | contract section 6: "0.x until the first CRAN release" and the deprecation rule after it |
@@ -874,7 +886,7 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 | 17f2 | the plan for the gaps in both repositories (R96) | 17f | 1 |
 | G1-G17 | the gaps (R97; `docs/planning/gaps-and-shared-code-plan.md` section 5.1) | 17f2 | 38-53 |
 | 17g | timing plan | G17 | 1 |
-| 17h | timing runs | 17g | set by 17g |
+| 17h | timing runs: 17h1-17h4 (R153) | 17g | 4 |
 | 17i | speed vignette | 17h | 1 |
 | 17j | full coverage | the code final (17c-17i) | 1-2 |
 | 17k | a reading, then the test cut if needed (R86) | 17j | 1-2 |

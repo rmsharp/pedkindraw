@@ -33,8 +33,8 @@ issues).*
       log; close the test Chromes explicitly at the end of the suite (the helper's `.saveChrome$parent`, chromote's
       default one) and list the processes left (`Get-Process`) in a step after the tests.
 
-- [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on a plan for pedkindraw's own
-      timing runs, Effort L, a guess; before the release, Phases 17g-17i of
+- [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on 17h's runs, planned S78
+      in `docs/planning/pedkindraw-timing-plan.md`, R153; Effort L, a guess; before the release, Phase 17i of
       `docs/planning/cran-submission-plan.md`, R84)
       -- R82 (S30): "the comparison of pedkindraw with kinship2 and Pedixplorer"
       (Mark) waits until pedkindraw has timing runs of its own installed code, under a plan of its own that
@@ -43,12 +43,14 @@ issues).*
       each computation, Mark's request) and `tools/checkSpeedTables.R`, whose design (a marker before each table,
       each table and caption built from the result files and compared cell for cell, `--print=<name>`, a failure
       on any unmarked table) can check the returning vignette's numbers against pedkindraw's own results. When it
-      returns: point to it from `?pedkindraw`'s "Getting started" (`R/pedkindraw-package.R:42`), the
+      returns: point to it from `?pedkindraw`'s "Getting started" (`R/pedkindraw-package.R:52`), the
       getting-started vignette's "Where next" and the drawing vignette's "How large a drawing can be", which states
       pedkindraw's own drawing times measured in S75 since S77 (R152; before, nprcgenekeepr's November 2026 records,
       Mark's S29 pick); the installed size has about 800 KB left for its page. S77 found that the contract's section 8
       ("Drawing past about 1,000 animals") says `drawPedigreeDiagram()`'s help "states the measured limit": no help
-      page states a time.
+      page states a time. S78 (R153): the page shows pedkindraw's own runs beside kinship2's and Pedixplorer's only, to
+      the timing plan's section 5.8 outline; its tables come from `tools/timing/results/`, which the rewritten
+      `tools/checkSpeedTables.R` reads without a clone.
 
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
       -- measured S42: of its 16 rows, only G1's say "At the switch (R98)" (`makePedigreeDiagramData()`,
@@ -292,6 +294,14 @@ issues).*
 - [ ] **`findPedigreeNumber()`'s speed** (READY, Effort M) -- 12.9 s for 100,000 animals, close to the square of the
       size (contract section 7); new work after the copy (contract section 10 item 5). A faster version here is a
       divergence from nprcgenekeepr: a `DIVERGENCE.md` row marked "at the switch" (R98, R101).
+
+- [ ] **`findGeneration(alignMates = TRUE)`'s speed** (DECISION NEEDED: before or after the release; Effort M, a
+      guess; found S78) -- one call took 56.5 s and 54.8 s at 10,000 animals and passed 60 s at 100,000, where
+      `findGeneration()` without it takes 0.009 s at 10,000 (the November study) and kinship2's `kindepth(align = TRUE)`
+      7.7-7.9 s (Pedixplorer's `kindepth(align_parents = TRUE)` passed 60 s): `docs/planning/pedkindraw-timing-plan.md`
+      section 3.4, single calls by `docs/planning/timing-plan-prototype/s78ProbePedkindraw.R`, not the timing method.
+      `alignMates` is pedkindraw's own (G8, R123-R124; nprcgenekeepr has none), so no drift row; the drawing does not
+      use it. 17h2 measures it by the method; decide with those figures.
 
 - [ ] **Install poppler in CI so the PDF word tests run there** (READY, Effort S; found S71, picture plan section 14.7)
       -- GitHub's Ubuntu and macOS runners have no `pdftotext` (S71's push: Ubuntu `SKIP 4 PASS 16268`, macOS `SKIP 2
