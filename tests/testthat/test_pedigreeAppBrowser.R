@@ -18,6 +18,11 @@
 ## pedkindraw S75 (G17b, R150): the click test sends real mouse clicks through
 ## Chrome's DevTools (.appClickNode(), helper-pedigreeApp.R), as a user clicks;
 ## testServer() cannot show the focal box the server writes to (finding 4).
+##
+## pedkindraw S76 (G17c, R151): "Use the sample pedigree" opens the sample's
+## twins file too, so the sample test expects the sample drawn with its 3 twin
+## pairs (1,466 nodes, measured; 1,460 without them) and reads the page's
+## twins line. This change belonged in RED; GREEN's first run found it.
 
 .appSkips <- function() {
   skip_on_cran()
@@ -49,9 +54,16 @@ test_that("the sample, opened in the app in Chrome, is drawn as
     colClasses = "character", na.strings = c("", "NA"))
   sample <- sample[, c("id", "sire", "dam", "sex")]
   sample$gen <- findGeneration(sample$id, sample$sire, sample$dam)
-  expect_warning(layout <- makePedigreeMatingLayout(sample),
+  twins <- utils::read.csv(
+    system.file("extdata", "obfuscated_rhesus_mhc_twin_relations.csv",
+                package = "pedkindraw"), colClasses = "character")
+  expect_warning(layout <- makePedigreeMatingLayout(sample,
+                                                    twinRelations = twins),
                  "72 same-row edge-node collision(s)", fixed = TRUE)
   expect_equal(shown, nrow(drawPedigreeDiagram(layout)$x$nodes))
+  expect_identical(.appJs(page,
+                          "document.getElementById('twinsNote').innerText"),
+                   "3 twin pairs read from the sample's twins file.")
   expect_match(.appJs(page, "document.getElementById('notes').innerText"),
                "72 same-row edge-node collision(s) could not be fully resolved",
                fixed = TRUE)
