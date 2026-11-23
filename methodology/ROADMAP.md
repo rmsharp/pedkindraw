@@ -58,8 +58,9 @@ when chromote or Chrome is missing, and the animals chosen as a CSV file, which 
 README, the two vignettes and the help name the app; the drawing vignette gives pedkindraw's own drawing times), so G17
 is done, and with it every gap phase, G1-G17. 17g, the timing plan, is done (S78, R153,
 `docs/planning/pedkindraw-timing-plan.md`: 37 of the 38 exports timed beside kinship2's and Pedixplorer's functions,
-by a copy of the November study's harness in `tools/timing/`). Next is 17h1, the computation harness (strict TDD, a
-copy; that plan's section 6), then 17h2-17h4 and 17i.
+by a copy of the November study's harness in `tools/timing/`). 17h1, the computation harness, is done (S79, R154: 78
+cases in `tools/timing/`, 108 tests passing). Next is 17h2, the computation runs (that plan's section 6), then 17h3,
+17h4 and 17i.
 
 | Phase | Slice | State |
 |---|---|---|
@@ -101,7 +102,7 @@ session each unless marked. They follow the copy slices.
   recording layer and the SVG, is done (S69, R143) and its CI repair too (S70, R145), and G16b (the PDF and the PNG) is
   done (S71, R146), and G16c (the whole large pedigree and the documents) is done (S72, R147), so G16 is done; G17
   (an app, `runPedigreeApp()`) is done in five sessions (S73's plan, R148; G17a-G17d S74-S77, R149-R152), so G1-G17
-  are done; 17g is done (S78, R153); next is 17h1-17h4, then 17i-17q.
+  are done; 17g is done (S78, R153); 17h1 is done (S79, R154); next is 17h2-17h4, then 17i-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or

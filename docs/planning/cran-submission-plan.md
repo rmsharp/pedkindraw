@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Next: 17h1, the computation harness (that plan's section 6).
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Next: 17h2, the computation runs (that plan's section 6).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -756,7 +756,9 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **DONE, commands and surface:** `docs/planning/pedkindraw-timing-plan.md` section 6: 17h1 the computation harness
   (strict TDD, a copy of nprcgenekeepr's `tools/pedigreeComparison/` into `tools/timing/`), 17h2 its runs (about 3.5-4
   hours, a guess), 17h3 the drawing harness (strict TDD, a copy), 17h4 its runs (about 1.2-1.5 hours). The machine's
-  load is the trap (section 2.1 measured under load 5-12; R153's rule: half the CPU idle).
+  load is the trap (section 2.1 measured under load 5-12; R153's rule: half the CPU idle). 17h1 DONE (S79, R154: the
+  inputs; `tools/timing/` and its tests, 108 passing; a trial at 300 animals 77 of 78 cases `ok`, Pedixplorer's
+  `family_check()` stopping as R154 recorded).
 
 ### Phase 17i. The speed vignette (Phase 16d returns)
 

@@ -5,8 +5,9 @@
 measuring scripts, section 3.6). **Governs:** Phases 17h and 17i of `docs/planning/cran-submission-plan.md` (section 6,
 `:754` "Phase 17h. The timing runs" and `:761` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
 `docs/planning/standalone-pedigree-package-plan.md`. **Ruling made here:** R153 (Mark's four picks, section 2; recorded
-in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8). **Status:**
-plan written (S78); 17h1 under way (S79). Next: 17h1's RED (section 6).
+in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8).
+**Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6). Next: 17h2, the
+computation runs (section 6).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -463,10 +464,30 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   `R/` change: `git diff --stat <claim>..HEAD -- R DESCRIPTION NAMESPACE` empty).
 - **Surface:** this Mac. It shows the harness and the cases work; it cannot show a time (the trial is one size, not
   the record).
+- **Done (S79):** `tools/timing/` holds the nine harness files and `tools/timing/tests/` its nine test files (RED
+  `8fc668b`, `df2e102`, amendments `5b42ca0`, `d23cbbf`; GREEN `cd002dc`, `a8390fb`; REFACTOR `b9d5893`), each copy's
+  header naming nprcgenekeepr's file at `3e06730c5` and every change, `diff` showing only those hunks (`measure.R`
+  byte for byte `tools/perf/harness.R:19`-`:72`). `test_dir("tools/timing/tests")` with `PKD_LIB` set `[ FAIL 0 | WARN
+  0 | SKIP 0 | PASS 1143 ]` (108 tests, about 3 minutes: Pedixplorer's `shrink()` takes about 90 s on each of the two
+  pedigrees); `savePedigrees.R` "8 of 8 files identical to the study's" (the seven colonies and the sample, whose md5
+  is the study's `rhesus375.csv`); the trial (`--sizes=300`, scratchpad): 78 cells from 309 runs, 77 `ok` and
+  Pedixplorer's `pdx_famcheck` `error` ("'dimnames' applied to non-array"), which R154 recorded, so not the 78 `ok`
+  this phase's DONE wrote before R154; all 148 pedkindraw runs loaded it from `PKD_LIB`; idle CPU 55.1-90.8% at the
+  starts; the largest spread of a cell's 3 runs 3.2%; lint 0; no file under `R/`, `tests/`, `man/`, `vignettes/`,
+  `inst/`, `DESCRIPTION` or `NAMESPACE` changed. Found after the picker and recorded by the tests under R154's rule:
+  kinship2's `makekinship()` gives 1 as the self-kinship of each animal in no family (10 in the colony), and
+  `makefamid()` puts those animals in family 0, Pedixplorer's `make_famid()` in none (`NA`); Pedixplorer's
+  `descendants()` returns `NULL` when the probands have none (the colony's 5 have none). The typed cases of this
+  phase's Work were read as the package suite's own comparisons with kinship2 and Pedixplorer: the harness's
+  pairing tests run on the colony and the sample, the calls the cases make.
 
 ### Phase 17h2. The computation runs (no code)
 
-- **Work:** at Orient, `git status` clean and the commit to time chosen (HEAD); build and install it (section 5.5);
+- **Work:** at Orient, `git status` clean and the commit to time chosen (HEAD); build and install it (section 5.5; S79's
+  commands: from a scratch folder, `R CMD build --no-build-vignettes --no-manual <repo>`, then `R CMD INSTALL
+  --library=<scratch>/pkdlib pedkindraw_*.tar.gz`, both with renv's library as `R_LIBS` and `RENV_PROJECT` unset; then
+  `PKD_LIB=<scratch>/pkdlib` for every command); `Rscript tools/timing/savePedigrees.R` (the data files are
+  git-ignored, so a clone has none);
   `uptime`, `top`, `memory_pressure` read; `Rscript tools/timing/runTiming.R` in the background (all 78 cases, all six
   sizes), watched until it ends; `summarizeTiming.R` printed; one cell of each kind re-run from a fresh shell and set
   beside the record's (the study's two re-runs differed by 3% and 4%); `record.csv` written; the results committed.
@@ -571,6 +592,18 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
     Done records and the ledger) are gone with it.
 15. **A probe is not a result** (Learning 18): section 3.4's figures are single calls under a 60 s limit, loaded from
     source; none goes on the page.
+16. **The sample file writes an unknown parent as `NA`** (S79): read with `na.strings = ""` alone, every sire is the
+    text `"NA"` and every function sees a parent without a row. `savePedigrees.R` reads it with R's default and writes
+    the comparison CSV, whose unknown parents are empty cells.
+17. **`x[[name]] <- NULL` removes the element** (S79): a case value of `NULL` (Pedixplorer's `descendants()` with no
+    descendants) vanished from a list built that way; `x[name] <- list(value)` keeps it (`helper-caseValues.R`).
+18. **kinship2 chooses among ties at random** (S79): `findAvailAffected()` chose S002886 in one run at 3,000 and S002669
+    in the next, with the same bit size; `pedigree.shrink()` and `pedigree.unrelated()` too (the study: 5 kept sets over
+    5 seeds). `timeOne.R` sets seed 1 before each call, and the tests compare counts and bit sizes, not ids.
+19. **`summarizeTiming.R` names its largest size in words** (copied): a capacity row with no failure reads "none up to
+    100,000", true of a record over the six sizes and not of a trial at one.
+20. **The test folder takes about 3 minutes** and starts R children: run it alone, as the suite (app plan dragons 8,
+    19), and never beside a record.
 
 ---
 
