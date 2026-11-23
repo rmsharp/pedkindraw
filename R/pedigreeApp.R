@@ -30,17 +30,33 @@
                   h = "H", hermaphrodite = "H",
                   u = "U", unknown = "U")
 
+#' A column's name as the app compares it: lower case, without spaces, dots
+#' and underscores
+#'
+#' S76's REFACTOR: the four helpers that find a column by its name had each
+#' written this out.
+#' @param columns the names.
+#' @return The names so compared.
+#' @noRd
+.appNameKey <- function(columns) {
+  gsub("[ ._]", "", tolower(columns))
+}
+
 #' Guess which of a file's columns are id, sire, dam and sex
 #'
+#' S76's REFACTOR: the names looked for are an argument, so the marks are
+#' found the same way (\code{.appFindMarks()}).
 #' @param columns the file's column names.
-#' @return A character vector named id, sire, dam and sex: for each, the first
-#'   column whose name is the earliest of \code{.appColumnNames}' names for it,
-#'   or \code{NA} where none matches.
+#' @param names the names looked for, a list named by what each finds, each
+#'   element its names in the order preferred.
+#' @return A character vector named as \code{names} (id, sire, dam and sex by
+#'   default): for each, the first column whose name is the earliest of its
+#'   names, or \code{NA} where none matches.
 #' @noRd
-.guessAppColumns <- function(columns) {
-  key <- gsub("[ ._]", "", tolower(columns))
-  vapply(.appColumnNames, function(names) {
-    for (name in names) {
+.guessAppColumns <- function(columns, names = .appColumnNames) {
+  key <- .appNameKey(columns)
+  vapply(names, function(wanted) {
+    for (name in wanted) {
       hit <- which(key == name)
       if (length(hit) > 0L) {
         return(columns[[hit[[1L]]]])
@@ -369,8 +385,7 @@
 #' @noRd
 .guessAppConditions <- function(columns) {
   columns <- as.character(columns)
-  key <- gsub("[ ._]", "", tolower(columns))
-  utils::head(columns[startsWith(key, "affected")], 4L)
+  utils::head(columns[startsWith(.appNameKey(columns), "affected")], 4L)
 }
 
 #' The names the drawing gives the conditions chosen (R151)
@@ -406,21 +421,14 @@
 
 #' Find the marks' columns by name (R151)
 #'
+#' S76's REFACTOR: found by \code{.guessAppColumns()}, which had the same
+#' search.
 #' @param columns the columns the marks may be in.
 #' @return The columns found, named by pedkindraw's column for each mark, in
 #'   the order of \code{.appMarkNames}.
 #' @noRd
 .appFindMarks <- function(columns) {
-  key <- gsub("[ ._]", "", tolower(columns))
-  found <- vapply(.appMarkNames, function(names) {
-    for (name in names) {
-      hit <- which(key == name)
-      if (length(hit) > 0L) {
-        return(columns[[hit[[1L]]]])
-      }
-    }
-    NA_character_
-  }, character(1L))
+  found <- .guessAppColumns(columns, .appMarkNames)
   found[!is.na(found)]
 }
 
@@ -490,7 +498,7 @@
     return(list(twins = NULL, problem = ""))
   }
   needed <- c("id1", "id2", "code")
-  at <- match(needed, gsub("[ ._]", "", tolower(names(rows))))
+  at <- match(needed, .appNameKey(names(rows)))
   if (anyNA(at)) {
     return(list(twins = NULL, problem = sprintf(
       "The twins file needs the columns id1, id2 and code; missing: %s.",
