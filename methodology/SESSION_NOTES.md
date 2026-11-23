@@ -132,6 +132,18 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 76 Did
+**Deliverable:** Phase G17c, what the app draws: up to four condition columns, each true-or-false or a number cut at
+a threshold (F9), the file's marks and names passed through (F11), rectilinear or direct lines (F12), a twins file
+checked by `checkTwinRelations()` with its problems shown (F13) (`docs/planning/pedigree-app-plan.md:355`), strict TDD.
+(IN PROGRESS)
+**Started:** 2026-11-22 19:18 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G17c: what the app draws
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: the measures before the pre-RED picker (what the layout and
+`drawPedigreeDiagram()` do with a CSV's condition and mark columns read as text: "TRUE", "1", "Y", a number).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 75 Did
 **Deliverable:** Phase G17b, choosing the animals the app draws (`docs/planning/pedigree-app-plan.md:342`), strict TDD.
 DONE.

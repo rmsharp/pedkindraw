@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-22 · [BL-Phase G17] S76 (in progress): G17c, what the app draws, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S76's stub), `methodology/HANDOFFS.md` (S76's `status: pending` receipt) and this entry. The deliverable is G17c (`docs/planning/pedigree-app-plan.md:355`), strict TDD. Phase 3F rewrites this entry.
+- **Commit/PR:** the S76 claim commit · **Session:** S76 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits, ledgers current, no ghost session, 28 backlog items at the handoff's lines).
+
 ### 2026-11-22 · [BL-Phase G17] S75 push: `master` to GitHub at close-out 2, and its CI read job by job
 - **Change:** `git push origin master` (`8c305a7..c00634c`), by Mark's standing pick; the run (45087949474) read job by job: pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16550 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 16561 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16559 ]`, `proc.time()` 925 s, and the hang an eighth time (cancelled at 41 minutes; two orphan `Rterm` processes, as before); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Each job's count is S74's plus G17b's 134 expectations, so the new Chrome test ran on Ubuntu, macOS and Windows. The run cancelled (`gh run cancel 45087949474`) at the Windows job's 41st minute, as the notes direct. A second push carries this entry and close-out 2b (`[skip ci]`).
 - **Commit/PR:** none (push, cancel) · **Session:** S75 · **Verified:** each job's log (`gh api .../actions/jobs/<id>/logs`).
