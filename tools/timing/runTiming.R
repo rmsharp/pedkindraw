@@ -9,7 +9,9 @@
 ## it (memFree, the row built by runRow()), and the record's row goes to
 ## <out>/record.csv before the first run (recordRow(), which stops the
 ## record when R/, DESCRIPTION or NAMESPACE has uncommitted changes or
-## PKD_LIB's pedkindraw was packaged before their last commit).
+## PKD_LIB's pedkindraw was packaged before their last commit). Phase 17h1c
+## (R156): each run's started is the time runLimited() launched it, not the
+## time its row was made after the run (runRow(), timingHarness.R).
 ## Phase 1 steps 4-5: timing, memory and capacity (docs/planning/
 ## standalone-pedigree-package-plan.md). For each case in timingCases.R and
 ## each synthetic size, smallest first: one warm-up run that is also the

@@ -12,7 +12,10 @@
 ## record's row in record.csv: parseMachine(), currentMachine(),
 ## chromeVersion(), chromePath(), packageVersions(), packagedTime(),
 ## gitLines(), commitFacts(), checkBuild(), recordRow(), appendRecordRow();
-## timeStamp(), the time text those rows and machineNote()'s heading share.
+## timeStamp(), the time text those rows and machineNote()'s heading share;
+## and, in Phase 17h1c (R156), runLimited() returns the clock time it
+## launched the child (launched), which runRow() writes as the row's
+## started (the copy wrote the time the row was made, the run's end).
 ## The Phase 1 timing harness (docs/planning/standalone-pedigree-package-
 ## plan.md, Phase 1 steps 4-5). Each measurement is one fresh Rscript
 ## (timeOne.R) run under /usr/bin/time -l: the time limit counts from the
@@ -282,6 +285,8 @@ childError <- function(err) {
 ## startMarker, as "memory" when its resident memory passes memLimit bytes
 ## (polled), and as "error" when it never starts within loadLimit seconds.
 ## heapCap (bytes, or NULL for none) becomes the child's R_MAX_VSIZE.
+## `launched` is the clock time just before the child starts (R156), the
+## moment its realSeconds counts from.
 runLimited <- function(script, args = character(), timeLimit = 120.0,
                        memLimit = 32.0e9, heapCap = memLimit, wd = getwd(),
                        poll = 0.1, loadLimit = 300.0,
@@ -292,6 +297,7 @@ runLimited <- function(script, args = character(), timeLimit = 120.0,
   if (!is.null(heapCap)) {
     env <- c(env, R_MAX_VSIZE = format(heapCap, scientific = FALSE))
   }
+  launched <- Sys.time()
   ## macOS's time: its -l report gives the peak resident memory in bytes.
   # nolint next: absolute_path_linter, nonportable_path_linter.
   p <- processx::process$new("/usr/bin/time",
@@ -360,7 +366,8 @@ runLimited <- function(script, args = character(), timeLimit = 120.0,
     preRssMb = if (ok) timing$preRssMb else NA_real_,
     loaded = if (ok) timing$loaded else character(),
     pkdLib = if (ok) timing$pkdLib else "",
-    maxRssBytes = report$maxRssBytes, realSeconds = report$realSeconds
+    maxRssBytes = report$maxRssBytes, realSeconds = report$realSeconds,
+    launched = launched
   )
 }
 
@@ -376,9 +383,9 @@ stopsRecord <- function(r) {
 ## The row runTiming.R writes for one run of case k at size n: the idle share
 ## and load waitForQuiet() returned (`quiet`), the free memory read just
 ## before the run (`memFree`, %; docs/planning/pedkindraw-timing-plan.md
-## section 5.4) and runLimited()'s figures (`r`).
-runRow <- function(k, n, kind, quiet, memFree, r,
-                   started = timeStamp()) {
+## section 5.4) and runLimited()'s figures (`r`), started when runLimited()
+## launched the run (R156).
+runRow <- function(k, n, kind, quiet, memFree, r) {
   data.frame(
     case = k$id, computation = k$computation, package = k$package,
     size = n, kind = kind, idle = quiet$idle, load = quiet$load,
@@ -387,7 +394,7 @@ runRow <- function(k, n, kind, quiet, memFree, r,
     preRssMb = r$preRssMb, maxRssMb = r$maxRssBytes / 1048576.0,
     realSeconds = r$realSeconds,
     loaded = paste(r$loaded, collapse = ","), pkdLib = r$pkdLib,
-    started = started
+    started = timeStamp(r$launched)
   )
 }
 
