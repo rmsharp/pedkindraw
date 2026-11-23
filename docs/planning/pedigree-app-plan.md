@@ -1045,7 +1045,7 @@ option (`docs/planning/standalone-pedigree-package-plan.md` section 2):
    backlog item of the app's features left for later (`methodology/BACKLOG.md:211`). Not picked: width, height and dpi
    boxes.
 4. **The drawing times (backlog `:109`): "Fold it in".** The drawing vignette's "How large a drawing can be"
-   (`vignettes/drawing.Rmd:788`) and the contract's section 7 row (`docs/planning/pedkindraw-api-contract.md:333`)
+   (`vignettes/drawing.Rmd:794` since G17d's edits; `:788` at the picker) and the contract's section 7 row (`docs/planning/pedkindraw-api-contract.md:333`)
    get pedkindraw's own measured times (section 12.1), each said as measured; the backlog item closes. Not picked:
    leave it for a session of its own.
 
