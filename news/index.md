@@ -400,6 +400,25 @@ why.
   [`addParents()`](https://rmsharp.github.io/pedkindraw/reference/addParents.md)
   and named, so such a file is drawn; the Checks tab still lists it. The
   Animals tab shows the animals chosen.
+- New:
+  [`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)’s
+  app chooses what it draws: up to four conditions from the file’s
+  columns (those whose names begin with “affected”, in any case, chosen
+  at first), each labelled “Affected (its name)”, and a column of
+  numbers cut at a cut-off the legend states, such as “Affected (glucose
+  \>= 126)”; the marks
+  [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  draws, found by their names in any case and by Pedixplorer’s avail and
+  deceased, and listed on the page; lines at right angles or straight;
+  and a twins file (id1, id2, code; MZ twin, DZ twin and UZ twin, or
+  kinship2’s 1, 2 and 3), checked with
+  [`checkTwinRelations()`](https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.md),
+  a pair drawn when both its animals are. A file’s yes-or-no values are
+  read as TRUE, T, yes, Y or 1 and FALSE, F, no, N or 0, in any case;
+  before, a condition written 1 and 0 was drawn as unknown for every
+  animal, with no message, and a mark written so stopped the drawing. A
+  column with any other value is left out and named. The sample pedigree
+  opens with its file of 3 twin pairs.
 
 ### Kinship and relatedness
 
