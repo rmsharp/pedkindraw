@@ -32,7 +32,9 @@ closed (press Escape or Ctrl-C in R, or stop the R session).
 In the app:
 \itemize{
 \item \strong{Open} a CSV or text file with one row per animal, or the
-sample pedigree (375 rhesus macaques), or the \code{ped} given here.
+sample pedigree (375 rhesus macaques, with its file of 3 twin pairs),
+or the \code{ped} given here; and, if you have one, a twins file
+with the columns id1, id2 and code, one pair per row.
 \item \strong{Say which columns} are the animal's id, its sire, its dam
 and its sex. The app recognises pedkindraw's names and common others
 (ego, egoid, indid; father, fatherid, dadid; mother, motherid, momid;
@@ -40,9 +42,25 @@ gender), whatever their case and with or without spaces, dots or
 underscores; the user can change each. Sex values m, f, h and u in any
 case, male, female, hermaphrodite and unknown, and 1 and 2 (male and
 female, as kinship2 and PLINK files code them) are read as M, F, H and
-U, and the app says so; any other value is drawn as unknown. Every
-other column is kept, so a column pedkindraw reads by name is drawn as
-a script draws it.
+U, and the app says so; any other value is drawn as unknown.
+\item \strong{Choose what is drawn}: up to four conditions, from a list
+of the file's columns that starts with those whose names begin with
+"affected" in any case, each drawn in its own colour and labelled
+"Affected (its name)"; a column of numbers is drawn once it has a
+cut-off (a comparison and a number, such as \code{>= 126}), which the
+legend states. The marks \code{\link{makePedigreeMatingLayout}} draws
+are found by their names in any case: genotyped (or avail), carrier,
+proband, consultand, evaluated, fertility, miscarriage, status (or
+deceased) and name, and the app lists those it found. A condition or a
+yes-or-no mark reads TRUE, T, yes, Y and 1 as yes and FALSE, F, no, N
+and 0 as no, in any case; deceased reads DECEASED, deceased, dead and
+the yes-words. A column holding any other value is not drawn, and the
+app names it and the values. Lines are drawn at right angles or
+straight. A twins file's codes may be MZ twin, DZ twin and UZ twin or
+1, 2 and 3, as kinship2 numbers them; the file is checked with
+\code{\link{checkTwinRelations}}, its problem shown and the pedigree
+drawn without twins until it is corrected, and a pair is drawn when
+both its animals are.
 \item \strong{See the pedigree drawn} on the Diagram tab, with
 \code{gen} added by \code{\link{findGeneration}}, laid out by
 \code{\link{makePedigreeMatingLayout}}. What the layout says (a
