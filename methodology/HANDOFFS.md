@@ -202,6 +202,14 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S77
+date: 2026-11-22
+status: pending
+active_task: Phase G17d, saving and the documents (docs/planning/pedigree-app-plan.md:366): F16 SVG, PDF and PNG downloads through savePedigreeDiagram() (without Chrome the buttons say so), F17 the animals drawn as CSV, README, vignettes, package help, a @seealso on drawPedigreeDiagram(), NEWS; strict TDD. Claimed; work beginning with the measures before the pre-RED picker.
+what_was_done: pending
+commit: pending
+```
+```handoff
 session: S76
 date: 2026-11-22
 status: complete

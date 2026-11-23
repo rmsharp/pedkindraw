@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-22 · [BL-Phase G17] S77 (in progress): G17d, saving and the documents, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S77's stub), `methodology/HANDOFFS.md` (S77's `status: pending` receipt) and this entry. The deliverable is G17d (`docs/planning/pedigree-app-plan.md:366`), strict TDD. Phase 3F rewrites this entry.
+- **Commit/PR:** the S77 claim commit · **Session:** S77 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits, ledgers current, no ghost session, the receipt's ratchet line matches the results file, 29 backlog items at the handoff's lines).
+
 ### 2026-11-22 · [BL-Phase G17] S76 push: `master` to GitHub at close-out 2, and its CI read job by job
 - **Change:** pushed `99734e3..d5985ce` (S76's commits, the last running CI); read run 45107545938 job by job: pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16707 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 16718 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16716 ]`, `proc.time()` 955 s, then the check step's hang a ninth time; the run cancelled at 41 minutes (`gh run cancel`; two orphan `Rterm` processes and one `cmd` ended); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Recorded in close-out 2b: `docs/planning/pedigree-app-plan.md` section 13.6, `methodology/SESSION_NOTES.md`, `methodology/HANDOFFS.md` (S76's next_steps), `methodology/BACKLOG.md:11` (the eighth reading, appended to a line so no item moves) and this entry.
 - **Commit/PR:** the push of `d5985ce`; close-out 2b (this entry) · **Session:** S76 · **Model:** Claude Opus 5.5 · **Verified:** each count is S75's plus G17c's 157 expectations, as predicted before the push, so the new Chrome test ran on Ubuntu, macOS and Windows.

@@ -136,6 +136,18 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 77 Did
+**Deliverable:** Phase G17d, saving and the documents: SVG, PDF and PNG downloads through `savePedigreeDiagram()`,
+the buttons saying so without Chrome (F16); the animals drawn as CSV (F17); README, `vignettes/pedkindraw.Rmd`,
+`vignettes/drawing.Rmd`'s "Clicks in a Shiny application", `R/pedkindraw-package.R`, a `@seealso` on
+`drawPedigreeDiagram()`, NEWS (`docs/planning/pedigree-app-plan.md:366`), strict TDD. (IN PROGRESS)
+**Started:** 2026-11-22 23:15 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G17d: saving and docs
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: the measures before the pre-RED picker (a download in Chrome; what
+`testServer()` gives for a download output; the page without Chrome; which drawing and rows are saved).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 76 Did
 **Deliverable:** Phase G17c, what the app draws (`docs/planning/pedigree-app-plan.md:355` at the start, `:766` section
 13 now), strict TDD. DONE.
