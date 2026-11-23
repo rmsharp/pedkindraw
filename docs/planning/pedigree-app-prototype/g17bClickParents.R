@@ -1,7 +1,7 @@
 # G17b, S75: what a click can land on in the app's drawing, and what
-# addParents() does to a file whose parent has no row (backlog
-# methodology/BACKLOG.md:201). Not package code. Run from the repository root
-# with renv's library:
+# addParents() does to a file whose parent has no row (the backlog item "The
+# app: parents with no row of their own", settled by R150 in S75). Not package
+# code. Run from the repository root with renv's library:
 #   Rscript --no-init-file docs/planning/pedigree-app-prototype/g17bClickParents.R
 suppressMessages(pkgload::load_all(".", quiet = TRUE))
 
