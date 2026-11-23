@@ -28,7 +28,7 @@ section 5.2 (`:324`). DONE: `testthat::test_dir("tools/timing/tests")` 0 failed,
 of 7 md5s; a trial `runTiming.R --sizes=300 --out=<scratch>` over all 78 cases, each `ok` (not committed); 
 `lintr::lint_dir("tools/timing")` 0; no `R/` change.
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker:** 17h1 (recommended), or the Windows item (`:11`) first. Also, from `methodology/BACKLOG.md` (29
+**The orient picker:** 17h1 (recommended), or the Windows item (`:11`) first. Also, from `methodology/BACKLOG.md` (30
 items, each found at its line by `grep -n '^- \[ \]'` at S78's close-out): READY, the legend's labels in a narrow
 drawing (`:73`), the drawing vignette's measured trait (`:83`), a twins table with no rows (`:89`),
 `savePedigreeDiagram()` and a `CHROMOTE_CHROME` naming no file (`:99`), the `smallPed` fixture (`:132`), rewording
@@ -37,7 +37,8 @@ in CI (`:306`), the label counts in `largeIds` (`:287`), and the seven "Ready, s
 time limit, `:227` the stale pedkindraw 0.0.1, `:234` the drift tool and copied constants, `:243` the context-budget
 tool, `:253` CI notices, `:270` report a vacuous test, `:276` tell nprcgenekeepr's edition-3 conversion); NEEDS
 DECISION, Pedixplorer's `avail` (`:108`), long names at the edges (`:116`), a colony's ids under a point high (`:125`),
-**new in S78, `findGeneration(alignMates = TRUE)`'s speed (`:298`)**; "Waiting on Mark", the dashboard and
+**new in S78, `findGeneration(alignMates = TRUE)`'s speed (`:298`) and `HANDOFFS.md`'s growth past its trimmer
+(`:316`)**; "Waiting on Mark", the dashboard and
 `methodology/BACKLOG.md` (`:178`), copying the colony overview (`:185`), the app's features left for later (`:192`),
 an animal with two mates drawn once (`:204`). BLOCKED, so not offered: `:36` (the speed vignette, on 17h's runs),
 `:64` (retire the drift tools), `:172` (N3). Name every item in the picker (memory "Picker sets: name items, include
@@ -75,7 +76,10 @@ all"; at most 4 options, so group them and name each in a preview).
   (its columns already in the object). Build each case from its help page.
 - **The study's tests source scripts by path from the root** (`helper-sourceScript.R`): run `test_dir()` from the
   repository root.
-- **Archived:** `methodology/HANDOFFS.md` at S78's close-out (see the receipt). `CHANGELOG.md` is about 111 KB.
+- **`methodology/HANDOFFS.md` was NOT archived:** its trimmer fired at S78's receipt (201,179 B) and then refused (SRF
+  RED: the last archive, S60's, given back; its rule "do not archive again"; `--force` not used). Write a short receipt
+  (S61-S78 averaged 5.6 KB; the 262,144 B hard refusal is about 11 sessions away); backlog `:316`. `CHANGELOG.md` is
+  about 112 KB.
 - **The fidelity tool needs renv active** (app plan dragon 28): `Rscript tools/compareResultsWithNprcgenekeepr.R
   ../nprcgenekeepr` from the root. The drift tool runs either way.
 - **Carried:** run Rscript from the root with `Rscript --no-init-file` and `R_LIBS`, `R_LIBS_USER` set to renv's library
@@ -116,7 +120,7 @@ correction and no tool use declined.
 **Commits:** claim `dd2d1c2`; measuring scripts `66f1bf8`; the plan and R153 `b327133`; close-out 1 `03471dd` (the cran
 plan's 17g-17i rows, 17n's amendment, D5, the session map; roadmap; backlog `:36` and the new `:298`); close-out 1c
 `ad4ad82` (the plan's citations after close-out 1, Learning 7); close-out 2 (these
-notes, the receipt, the ledger, HANDOFFS.md archived), pushed after it.
+notes, the receipt, the ledger); close-out 2b (HANDOFFS.md's trimmer refused, backlog `:316`), pushed after it.
 **Measured first** (plan section 3): the November study's method, harness files and three records (Part A 587 runs,
 76.8 min of starts; Part B 84; the Rewrite 157 over 356 min under its 80%-idle and 50%-memory rule); the study's seven
 seed-1 colonies rebuilt byte for byte under pedkindraw's R (7 of 7 md5s, twice); the 38 exports' kinship2 and

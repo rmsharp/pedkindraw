@@ -312,3 +312,12 @@ issues).*
       distinct but reads whole-number boxes, so it cannot check overlap and does not replace `pdftotext`; the colony's
       SVG test (ids and overlap read in Chrome) runs on every job, and the colony's PDF test, the third that reads a PDF's
       words, again runs only where `pdftotext` reads a PDF.
+
+- [ ] **`methodology/HANDOFFS.md` grows faster than its trimmer will archive** (DECISION NEEDED, Effort S; found S78)
+      -- at S78's close-out `python3 methodology/methodology_trim.py --file methodology/HANDOFFS.md` fired (201,179 B
+      against its 196,608 B budget) and then refused: "SRF 1.0208 (RED) against 1d571a4. The last archive has been
+      entirely given back; archiving again resets the LEVEL and not the RATE", its rule for RED "do not archive again"
+      (`--force` overrides it; not used). Since S60's archive the file grew from 92,002 B to 201,179 B, the 18 receipts
+      S61-S78 5,630 B each on average (S78's 5,077 B), so its 262,144 B hard refusal is about 11 sessions away.
+      Choices: shorter receipts (each field a pointer to `SESSION_NOTES.md` and `CHANGELOG.md`, which hold the
+      detail), or a `--force` archive by Mark's ruling, or both.
