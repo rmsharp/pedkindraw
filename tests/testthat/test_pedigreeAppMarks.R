@@ -212,6 +212,23 @@ test_that(".appReadTwins() finds id1, id2 and code in any case, reads
     list(twins = NULL, problem = "The twins file has no pairs."))
 })
 
+test_that(".appUnreadWords() names the fertility or miscarriage values
+           pedkindraw cannot read, as text when the column is a factor (GREEN
+           3, found by covr)", {
+  expect_identical(.appUnreadWords(factor(c("fertile", "x", NA, "x", "Steril")),
+                                   "fertility"), "x")
+  expect_identical(.appUnreadWords(c("S A B", "maybe", NA, "top"),
+                                   "miscarriage"), "maybe")
+  expect_identical(.appUnreadWords(c(1, 0, 2, NaN), "fertility"), 2)
+  fertility <- data.frame(id = c("s1", "d1"), sire = NA, dam = NA,
+                          sex = c("M", "F"),
+                          fertility = factor(c("x", "fertile")))
+  expect_identical(
+    .appDrawnPedigree(fertility, character(0L), character(0L),
+                      c(fertility = "fertility"))$notes,
+    "The column 'fertility' is not drawn: the app cannot read 'x'.")
+})
+
 test_that(".appTwinsInView() keeps the pairs both of whose animals are drawn,
            and gives NULL when none is", {
   twins <- data.frame(id1 = c("o1", "s1", "f1"), id2 = c("o2", "d1", "z9"),
@@ -487,6 +504,22 @@ test_that("a twins file with kinship2's code numbers is read and drawn, a
     expect_identical(output$twinsProblem,
                      "The twins file has an empty cell in row 1.")
     expect_identical(output$drawn, "13 animals drawn")
+  })
+})
+
+test_that("a twins file that cannot be read is said so, and nothing is drawn
+           from it (GREEN 3, found by covr)", {
+  skip_if_not_installed("shiny")
+  pedFile <- .appCsv(.appFour())
+  emptyFile <- .appCsv(lines = character(0L), name = "twins.csv")
+  .appTestServer(.pedigreeAppServer(), {
+    session$setInputs(file = pedFile)
+    .setAppColumns(session)
+    session$setInputs(twins = emptyFile)
+    expect_identical(output$twinsProblem,
+                     "The twins file could not be read: no lines available in input")
+    expect_identical(output$twinsNote, "")
+    expect_identical(output$drawn, "4 animals drawn")
   })
 })
 
