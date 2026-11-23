@@ -925,6 +925,8 @@ pair does not share parents named under the box and the pedigree drawn without t
 column left out. **Not run:** another browser, a real file dialog, a phone-width window, a hosted server, a cut-off on a
 pedigree of more than a few animals.
 
+**GitHub, after the push (run 45107545938, `d5985ce`):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16707 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 16718 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16716 ]`, `proc.time()` 955 s, and the hang a ninth time (cancelled at 41 minutes; two orphan `Rterm` processes and one `cmd`); Ubuntu R-devel red in "setup-r-dependencies" ("unable to load R code in package 'S4Vectors'", known). Each job's count is S75's plus G17c's 157 expectations, as predicted, so the new Chrome test ran on Ubuntu, macOS and Windows.
+
 **Found for later:** a twins table with no rows stops `makePedigreeMatingLayout()` in the copied
 `.buildTwinConnectorEdges()`, and `checkTwinRelations()` on an empty cell gives R's own words; both are the same in
 nprcgenekeepr (backlog, "A twins table with no rows stops the layout"). The app guards both.

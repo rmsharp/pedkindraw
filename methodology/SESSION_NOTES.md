@@ -21,7 +21,7 @@ common words** (TRUE, T, yes, Y, 1 / FALSE, F, no, N, 0, any case; before, a con
 unknown with no message and a mark written so stopped the drawing); a column with any other value left out and named;
 **the sample opens with its twins file** (3 pairs). Plan section 13 (`:766`) has every measure; 13.6 (`:880`) what was
 built and verified.
-**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; eight runs in a row).
+**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; nine runs in a row).
 **Next: G17d** (`docs/planning/pedigree-app-plan.md:366`), the last G17 session: F16 (SVG, PDF and PNG downloads through
 `savePedigreeDiagram()`; without Chrome the buttons say so), F17 (the animals drawn as CSV), and the documents (README.Rmd
 and README.md rendered from a scratch install, `vignettes/pedkindraw.Rmd:167`, `vignettes/drawing.Rmd:675` "Clicks in a
@@ -51,10 +51,10 @@ at its line by `grep -n '^- \[ \]'` when S76 closed out (29 items, the G item at
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied
    from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`,
    `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr was at `3e06730c5`, tree clean, through S76.
-2. **S76's push:** see "What Session 76 Did" below for what close-out read of it. A prediction, not measured: each job
-   reads S75's count plus G17c's new expectations (156 in `test_pedigreeAppMarks.R`, 7 of them in its Chrome test, and 1
-   more in the sample's Chrome test), where Chrome runs (Ubuntu and Windows set it up; macOS found it in S74); and the
-   Windows hang.
+2. **S76's push was read in S76, job by job** (run 45107545938): Ubuntu release and oldrel-1 `PASS 16707` SKIP 11, macOS
+   `PASS 16718` SKIP 9, Windows `PASS 16716` SKIP 11 and the hang (cancelled at 41 minutes), all FAIL 0 WARN 0; pkgdown
+   `success`; R-devel red at S4Vectors (known). Nothing is left to read. The next push that changes code: expect these
+   counts plus G17d's tests, and the Windows hang.
 3. **G17d, if picked** (plan section 7, `:366`). **Measure first, before the pre-RED picker** (Learning 17): a download
    from the app in Chrome (`shiny::downloadHandler()` calling `savePedigreeDiagram()`, `R/savePedigreeDiagram.R:88`;
    S73 measured an SVG in 1.82 s inside the prototype, section 3.3); what `testServer()` gives for a download output
@@ -91,7 +91,7 @@ at its line by `grep -n '^- \[ \]'` when S76 closed out (29 items, the G item at
 - **zsh:** arrays start at 1 (`t=($(cat f)); t[0]` is empty: S76's first elapsed time was nonsense; use awk); an
   unquoted `$var` is not split (use `bash -c '...'`); `rm -rf name*` with no match aborts a `&&` chain; BSD `sed -i`
   needs an argument (use python).
-- **Windows:** the check step hangs after the tests (eight runs); cancel at 40 minutes, read the log (`gh api
+- **Windows:** the check step hangs after the tests (nine runs); cancel at 40 minutes, read the log (`gh api
   --allow-escape-sequences repos/rmsharp/pedkindraw/actions/jobs/<id>/logs | sed 's/\x1b\[[0-9;]*[A-Za-z]//g'`); its
   `proc.time()` line is the tests' time. Start a watcher's clock from `date -u +%s`.
 - **Run the DONE check the way GitHub does:** `bash tools/checkExamples.sh` and `R CMD check --as-cran` with
@@ -104,9 +104,9 @@ at its line by `grep -n '^- \[ \]'` when S76 closed out (29 items, the G item at
   over its budget (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's; `NOT_CRAN=true` for the
   browser tests; scratch files go in the scratchpad; renv prints "The project is out-of-sync" on activation
   (pre-existing).
-- **Ledger sizes** (S76's close-out 2): `HANDOFFS.md` 190,888 B, about 5.7 KB under its 196,608 B
+- **Ledger sizes** (S76's close-out 2b): `HANDOFFS.md` 190,975 B, about 5.6 KB under its 196,608 B
   threshold: **archive it at the next close-out** (`python3 methodology/methodology_trim.py --file
-  methodology/HANDOFFS.md --check`, then without `--check`); `CHANGELOG.md` about 104 KB.
+  methodology/HANDOFFS.md --check`, then without `--check`); `CHANGELOG.md` 105,094 B.
 
 ### Key files
 - G17: `docs/planning/pedigree-app-plan.md` (`:89` section 2.3, F1-F21; `:298` section 7, `:366` G17d; `:383` section 8,
@@ -170,7 +170,7 @@ pair from "2", straight lines; two pictures looked at), a bad twins file named, 
 **Found:** a twins table with no rows stops the layout and an empty cell gets R's own words in `checkTwinRelations()`
 (backlog `:117`; the same in nprcgenekeepr).
 **Not run:** another browser, a real file dialog, a phone-width window, a hosted server.
-**After close-out 2 (its push):** pushed after close-out 2; close-out 2b reads its run job by job and records the reading here and in the plan's section 13.6. If no 2b commit follows, nothing was read: the next session reads the run.
+**After close-out 2 (its push, run 45107545938, read in close-out 2b):** pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16707 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 16718 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16716 ]`, `proc.time()` 955 s, and the hang a ninth time (cancelled at 41 minutes; two orphan `Rterm` processes and one `cmd`); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Each count is S75's plus G17c's 157 expectations, as predicted.
 
 #### Session 75 Handoff Evaluation (by Session 76)
 **Score: 9/10.** ROI high: "What You Must Do" 3 was the session's first hour, and its measure became the picker.
