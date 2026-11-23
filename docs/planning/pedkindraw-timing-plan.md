@@ -5,7 +5,8 @@
 measuring scripts, section 3.6). **Governs:** Phases 17h and 17i of `docs/planning/cran-submission-plan.md` (section 6,
 `:754` "Phase 17h. The timing runs" and `:761` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
 `docs/planning/standalone-pedigree-package-plan.md`. **Ruling made here:** R153 (Mark's four picks, section 2; recorded
-in the standalone plan's section 2). **Status:** plan written (S78). Next: 17h1 (section 6).
+in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8). **Status:**
+plan written (S78); 17h1 under way (S79). Next: 17h1's RED (section 6).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -221,6 +222,46 @@ From section 3.1's records and section 3.4's calls; an estimate, not a measureme
 
 So each record fills one session as a background job; the two records cannot run at once (section 5.4).
 
+### 3.8 The inputs measured for T1 (S79, R154)
+
+Before 17h1's pre-RED picker, each section 5.2 input was built on the seed-1 colony of 300 animals and the 375-animal
+sample (some also at 1,000 and 3,000) and each pairing's three calls made once, their answers compared
+(`docs/planning/timing-plan-prototype/s79T1Probe1.R`-`s79T1Probe3.R`, run as committed from an empty folder, with
+nprcgenekeepr's harness files read by `git archive` at `3e06730c5`). The sample has no animal with one known parent and
+no parent without a row (read with `NA` as unknown; an earlier read with only `""` as unknown made every sire the text
+`"NA"`); the colonies have every animal with both parents or neither and every parent with a row.
+
+- **Every pairing returns on the 300 colony and the sample**, but for two counterparts on section 5.2's inputs:
+  kinship2's `pedigree.trim()` of the 5 probands stops ("A subpedigree cannot choose only one parent of a subject")
+  where a proband is a parent (4 of 5 on the sample, 1 at 1,000, 3 at 3,000); and Pedixplorer's `family_check()` on the
+  colony's own family numbers stops ("'dimnames' applied to non-array" at 300, 1,000 and 3,000; it returns on the
+  sample). Moving every 7th animal to a family of its own makes Pedixplorer return a table different from
+  pedkindraw's, and kinship2's `familycheck()` stop ("dim(X) must have a positive length"); on the sample all three
+  agree either way. 5 seeded animals with a known sire and no offspring give the identical pedigree in all three at
+  300, 1,000, 3,000 and on the sample.
+- **The same answer:** `bitSize()`; `ibdMatrix()` (the same values, pedkindraw's ids in byte order); near relatives
+  (Pedixplorer's `useful_inds(max_dist = 3)` with the probands available and affected, `is_informative(informative =
+  "AvAf")` first); `asPedFrame()` of both objects; `addParents()`, `countOffspring()`, `recodePedigree()`,
+  `isFounder()`; `findUnrelated()`'s set size (7 at 300, 44 on the sample; kinship2's and Pedixplorer's sets are
+  random).
+- **A different answer** (R154: timed, the difference recorded): `findAvailNonInform()` 13 ids at 300 against
+  kinship2's 186 and Pedixplorer's 173, 4, 98 and 96 on the sample (R40: pedkindraw's is `shrinkPedigree()`'s second
+  trim with the cascade); `findAvailAffected()` the same bit size (208 at 300, 741 at 1,000, 2,252 at 3,000, 378 on
+  the sample, where none is removed) but pedkindraw lists every animal removed (175 at 300) and the others the one
+  chosen, kinship2's choice random among ties (S002886 in one run at 3,000, S002669 in the next); `findUnavailable()`
+  the same on the colonies (173, 595, 1,800) but 104, 97 and 96 on the sample, theirs all among pedkindraw's;
+  `findGeneration(alignMates = TRUE)` the same as kinship2's `kindepth(align = TRUE)` at 300 and 3 of 375 different on
+  the sample, and 290 of 300 and 336 of 375 different from Pedixplorer's `kindepth(align_parents = TRUE)` (its depths
+  up to 738 in a 300-animal colony; unaligned, all three agree).
+- **Nothing to fix on the colonies:** `addParents()` adds 0 rows, `getIdsWithOneParent()` finds 0,
+  `removeUnknownAnimals()` drops 0, `addBackSecondParents()` adds 0, at 300 and on the sample; kinship2's
+  `fixParents()` and Pedixplorer's `fix_parents()` add 0. On a seeded damaged copy (5% of sires blanked, 1% of
+  parents' rows removed) at 300: 14 animals with one parent, 3 parents without a row; `addParents()` adds 3 rows,
+  kinship2's and Pedixplorer's 17.
+- **Counts:** IBD pairs with both parents 852, 2,914, 8,792, 29,246, 87,602 and 292,320 at 300 to 100,000 (sires
+  only: 576 ... 196,160); full-sibling pairs born in the same year 0 at 300, 3,000 and 100,000 (a dam bears at most
+  once a year); full sibships of two or more 71 at 300, 450 at 3,000, 2,733 at 100,000.
+
 ---
 
 ## 4. Evidence inventory: what 17h and 17i read, write and change
@@ -321,17 +362,20 @@ nprcgenekeepr page; `pkd_page_direct`, the same with direct lines; `pkd_svg`, `p
 `pdx_plotly_unaligned`, as the study's. **11 cases**, on a canvas of 3,600 x 1,500 pixels (the study's); the three
 files at `savePedigreeDiagram()`'s own page.
 
-### 5.2 The inputs (built before the clock)
+### 5.2 The inputs (built before the clock; R154)
 
-The study's `timingInputs()`: 30% genotyped and 10% affected (seed 42), 5 probands with a known sire (seed 7). Claude's
-proposals for the inputs the study had no case for, put to Mark at 17h1's pre-RED picker (T1): `familyCheck()` the
-family numbers `findPedigreeNumber()` gives; `ibdMatrix()` each animal's own value 1 and each parent and offspring
-pair's 0.5 (196,160 pairs at 100,000); `getNearRelativePedigree()` `maxDist = 3` (the app's default) about the 5
-probands; `removeAnimals()` the 5 probands; `findAvailAffected()` `affstatus = TRUE`; `countOffspring()` every animal;
+The study's `timingInputs()`: 30% genotyped and 10% affected (seed 42), 5 probands with a known sire (seed 7). The
+inputs the study had no case for, as R154 ruled them (S79; section 3.8 measured them): `familyCheck()` the family
+numbers `findPedigreeNumber()` gives (Pedixplorer's `family_check()` stops on them on the colonies, recorded);
+`ibdMatrix()` each animal's own value 1 and 0.5 for each sire and each dam pair (852 pairs at 300, 292,320 at 100,000;
+S78 wrote 196,160, the sires-only count); `getNearRelativePedigree()` `maxDist = 3` (the app's default) about the 5
+probands; `removeAnimals()` 5 seeded animals with a known sire and no offspring (S78 proposed the 5 probands, on which
+kinship2's `pedigree.trim()` stops); `findAvailAffected()` `affstatus = TRUE`; `countOffspring()` every animal;
 `removeUnknownAnimals()` `addParents()`'s result; `addBackSecondParents()` `trimPedigree()`'s result;
-`checkTwinRelations()` a twins table of seeded full-sibling pairs born in the same season (the colonies have none);
-`hasBothParents()` the first proband. kinship2 and Pedixplorer get each value in their own coding
-(`comparisonFormats.R`).
+`checkTwinRelations()` 1 full-sibling pair per 100 animals, each from another sibship, seeded, coded `"DZ twin"` (S78
+proposed pairs born in the same season, which no colony has); `hasBothParents()` the first proband. The five repair
+functions run on the colonies as they are, finding nothing to fix. kinship2 and Pedixplorer get each value in their
+own coding (`comparisonFormats.R`).
 
 ### 5.3 The pedigrees and sizes
 
@@ -483,7 +527,7 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 
 | # | Question | Phase | What is known now |
 |---|---|---|---|
-| T1 | The inputs of the cases the study had none for (section 5.2), and what to do with a pairing whose answer differs from pedkindraw's (time it with a note, or leave it out) | 17h1 | Claude's proposals in section 5.2; three of section 3.4's counterpart calls stopped on the probe's inputs |
+| T1 | The inputs of the cases the study had none for (section 5.2), and what to do with a pairing whose answer differs from pedkindraw's (time it with a note, or leave it out) | 17h1 | **Decided (S79, R154):** section 5.2 with four changes; the repair functions on the colonies as they are; every pairing timed, each difference recorded by the tests (section 3.8) |
 | T2 | The drawing's canvas and the saved files' page; which pictures are kept | 17h3 | the study's canvas 3,600 x 1,500; `savePedigreeDiagram()`'s page 10 inches wide; the study kept every warm-up's picture, git-ignored |
 | T3 | None planned. If the machine does not reach 50% idle within 10 minutes for many runs, whether to go on | 17h2, 17h4 | at the picker, 85% idle (section 3.5) |
 | T4 | How large a pedkindraw drawing can still be read (Mark's judgment from 17h4's pictures), or the study's judgment of nprcgenekeepr's drawing carried with a note | 17h4 | the study: readable up to 1,000 animals, zoomed in |
