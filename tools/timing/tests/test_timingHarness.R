@@ -12,7 +12,9 @@
 ## tests for PKD_LIB (section 5.5), the 78 cases and R154's inputs; and, in
 ## Phase 17h1b (R155), each run's row with its free memory (runRow()) and
 ## the record's row in record.csv (the commit and its build check, the
-## versions, Chrome's and the machine's).
+## versions, Chrome's and the machine's); and, in Phase 17h1c (R156), the
+## clock time runLimited() launched its child (launched), which each run's
+## row gives as its started.
 ## Tests for the Phase 1 timing harness (docs/planning/
 ## standalone-pedigree-package-plan.md, Phase 1 steps 4-5): each measurement
 ## is one fresh Rscript (timeOne.R) run under /usr/bin/time -l, stopped past
@@ -346,6 +348,42 @@ test_that("an R error is 'error' with its message", {
   expect_match(r$message, "boom")
 })
 
+test_that("a run gives the clock time its child was launched, before the
+  child ran (R156)", {
+  f <- childScript(c(
+    startLine, "Sys.sleep(2)",
+    # nolint next: nonportable_path_linter.
+    "cat('TIMING seconds=2 heapPeakMb=0 preRssMb=50 loaded=\\n')"
+  ))
+  before <- Sys.time()
+  r <- timedRun(f, timeLimit = 10.0, memLimit = 8e9)
+  after <- Sys.time()
+  expect_identical(r$status, "ok")
+  expect_s3_class(r$launched, "POSIXct")
+  expect_gte(as.numeric(r$launched), as.numeric(before))
+  expect_gte(as.numeric(difftime(after, r$launched, units = "secs")), 2.0)
+})
+
+test_that("a run stopped by the time limit, or by an error, also gives its
+  launch time (R156)", {
+  before <- Sys.time()
+  stopped <- timedRun(childScript(c(startLine, "Sys.sleep(8)")),
+    timeLimit = 1.0, memLimit = 8e9
+  )
+  failed <- timedRun(childScript(c(startLine, "stop('boom')")),
+    timeLimit = 10.0, memLimit = 8e9
+  )
+  expect_identical(stopped$status, "time")
+  expect_identical(failed$status, "error")
+  expect_s3_class(stopped$launched, "POSIXct")
+  expect_s3_class(failed$launched, "POSIXct")
+  expect_gte(as.numeric(stopped$launched), as.numeric(before))
+  expect_gte(
+    as.numeric(failed$launched),
+    as.numeric(stopped$launched) + 1.0
+  )
+})
+
 ## ---- the cases ------------------------------------------------------------
 
 packages <- c("pedkindraw", "kinship2", "Pedixplorer")
@@ -596,16 +634,15 @@ test_that("familyNumbers() numbers families from 1 by their first founder", {
 runFigures <- list(
   status = "ok", message = "", seconds = 0.5, heapPeakMb = 12.5,
   preRssMb = 60.0, maxRssBytes = 2.0 * 1048576.0, realSeconds = 1.75,
-  loaded = c("kinship2", "Matrix"), pkdLib = ""
+  loaded = c("kinship2", "Matrix"), pkdLib = "",
+  launched = as.POSIXct("2026-11-23 12:00:00")
 )
 
 test_that("a run's row puts the free memory after the load, then the run's
-  figures (R155)", {
+  figures, started when the run was launched (R155, R156)", {
   k <- list(id = "k2_kin", computation = "kinship", package = "kinship2")
   quiet <- list(quiet = TRUE, idle = 72.5, memFree = NA_real_, load = 3.25)
-  row <- runRow(k, 300L, "measured", quiet, 45.0, runFigures,
-    started = "2026-11-23 12:00:00"
-  )
+  row <- runRow(k, 300L, "measured", quiet, 45.0, runFigures)
   expect_named(row, c(
     "case", "computation", "package", "size", "kind", "idle", "load",
     "memFree", "status", "message", "seconds", "heapPeakMb", "preRssMb",
@@ -621,6 +658,12 @@ test_that("a run's row puts the free memory after the load, then the run's
   expect_identical(row$maxRssMb, 2.0)
   expect_identical(row$loaded, "kinship2,Matrix")
   expect_identical(row$started, "2026-11-23 12:00:00")
+})
+
+test_that("a run's row takes its start only from the run (R156)", {
+  expect_named(
+    formals(runRow), c("k", "n", "kind", "quiet", "memFree", "r")
+  )
 })
 
 ## `sysctl hw.model machdep.cpu.brand_string hw.ncpu hw.memsize` on this Mac.
