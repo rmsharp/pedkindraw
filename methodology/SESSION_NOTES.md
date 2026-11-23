@@ -12,113 +12,117 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17f2 DONE (S33-S41); the gap
 phases G1-G17 run before 17g (R97, `docs/planning/gaps-and-shared-code-plan.md` section 5.1). G1-G16 DONE (S42-S72).
 G17 (gap A3, a ready-made app) planned in S73 (R148, `docs/planning/pedigree-app-plan.md`); G17a DONE in S74 (R149,
-`runPedigreeApp()`). **G17b DONE in S75 (R150):** the app chooses the animals it draws (Everyone; One family, the
-families of two or more listed largest first; focal animals with their ancestors and descendants, **each descendant's
-other parent drawn too, without its own parents**; focal animals' near relatives, "How close" 3 by default); focal
-animals typed, or an animal clicked (a repeat node is its animal; **the click replaces** the focal animals, written in the
-box; the view does not change); **over 1,000 animals chosen the app asks first** ("Draw anyway"); **a parent with no row
-of its own is added** with `addParents()` and named; the Animals tab shows the animals chosen. Plan section 12 (`:600`)
-has every measure; 12.6 (`:694`) what was built and verified.
-**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; seven runs in a row).
-**Next: G17c** (`docs/planning/pedigree-app-plan.md:355`): what is drawn: F9 (up to four condition columns, each a
-true-or-false column or a number cut at a threshold, `conditionThresholds`; how a CSV's "1", "TRUE", "Y" or a number
-becomes a condition is its picker), F11 (the file's marks and names passed through by name), F12 (rectilinear or direct
-lines), F13 (a twins file, `checkTwinRelations()`, its problems shown); strict TDD, one session; then G17d (`:366`), 17g.
+`runPedigreeApp()`); G17b DONE in S75 (R150, choosing the animals). **G17c DONE in S76 (R151):** the app draws up to
+four conditions chosen from the file's columns (guessed from names beginning "affected" in any case; a column of numbers
+drawn once it has a cut-off, which the legend states); the marks found by name in any case (and Pedixplorer's `avail`
+and `deceased`), listed on the page; lines at right angles or straight; a twins file (kinship2's code numbers read;
+checked with `checkTwinRelations()`; a pair drawn when both its animals are); **a file's yes-or-no values read with the
+common words** (TRUE, T, yes, Y, 1 / FALSE, F, no, N, 0, any case; before, a condition written 1/0 drew every animal
+unknown with no message and a mark written so stopped the drawing); a column with any other value left out and named;
+**the sample opens with its twins file** (3 pairs). Plan section 13 (`:766`) has every measure; 13.6 (`:880`) what was
+built and verified.
+**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; eight runs in a row).
+**Next: G17d** (`docs/planning/pedigree-app-plan.md:366`), the last G17 session: F16 (SVG, PDF and PNG downloads through
+`savePedigreeDiagram()`; without Chrome the buttons say so), F17 (the animals drawn as CSV), and the documents (README.Rmd
+and README.md rendered from a scratch install, `vignettes/pedkindraw.Rmd:167`, `vignettes/drawing.Rmd:675` "Clicks in a
+Shiny application", `R/pedkindraw-package.R:61`, a `@seealso` on the copied `drawPedigreeDiagram()`, NEWS; the backlog
+item for F2, F10, F14, F20, F21, `:211`, re-read); strict TDD, one session; then 17g.
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker:** G17c (recommended), or the Windows item (`BACKLOG.md:11`) first. Also, from `methodology/BACKLOG.md`:
-READY, the legend's labels in a narrow drawing (`:92`), the drawing vignette's measured trait (`:102`), **the drawing
-times in the vignette and the contract (`:108`, new in S75; G17d)**, the `smallPed` fixture (`:140`), rewording
-`DIVERGENCE.md`'s older rows (`:74`), tests for full coverage (`:146`), `findPedigreeNumber()`'s speed (`:299`),
-installing poppler in CI (`:303`), tracing the label counts in `largeIds` (`:292`), and the seven "Ready, small" items
-(`:220` the suite gate's time limit, `:232` the stale pedkindraw 0.0.1 in renv, `:239` the drift tool and copied
-constants, `:248` the context-budget tool, `:258` CI notices, `:275` report a vacuous test to nprcgenekeepr, `:281` tell
-nprcgenekeepr's edition-3 conversion); NEEDS DECISION, a converted Pedixplorer object's `avail` (`:116`), long names at
-the edges (`:124`), a colony's ids under a point high (`:133`); "Waiting on Mark", the dashboard not seeing
-`methodology/BACKLOG.md` (`:186`), copying nprcgenekeepr's colony overview (`:193`), the app's features left for later
-(`:200`), an animal with two or more mates drawn once (`:209`). BLOCKED, and so not offered: `:36` (the speed vignette),
-`:83` (retire the drift tools), `:180` (nprcgenekeepr imports pedkindraw). Name every item in the picker (memory "Picker
-sets: name items, include all"; max 4 options, so group them and name each in a description). Each title was found at
-its line by `grep -n '^- \[ \]'` when S75 closed out (28 items, the G item at `:51`; S75 removed "parents with no row",
-settled by R150, and added `:108`).
+**The orient picker:** G17d (recommended), or the Windows item (`BACKLOG.md:11`) first. Also, from `methodology/BACKLOG.md`:
+READY, the legend's labels in a narrow drawing (`:93`), the drawing vignette's measured trait (`:103`), the drawing
+times in the vignette and the contract (`:109`; G17d edits that vignette: ask whether G17d takes it), **a twins table
+with no rows stops the layout (`:117`, new in S76; copied code, nprcgenekeepr shares it)**, the `smallPed` fixture
+(`:151`), rewording `DIVERGENCE.md`'s older rows (`:75`), tests for full coverage (`:157`), `findPedigreeNumber()`'s speed
+(`:310`), installing poppler in CI (`:314`), tracing the label counts in `largeIds` (`:303`), and the seven "Ready,
+small" items (`:231` the suite gate's time limit, `:243` the stale pedkindraw 0.0.1 in renv, `:250` the drift tool and
+copied constants, `:259` the context-budget tool, `:269` CI notices, `:286` report a vacuous test to nprcgenekeepr,
+`:292` tell nprcgenekeepr's edition-3 conversion); NEEDS DECISION, a converted Pedixplorer object's `avail` (`:127`),
+long names at the edges (`:135`), a colony's ids under a point high (`:144`); "Waiting on Mark", the dashboard not seeing
+`methodology/BACKLOG.md` (`:197`), copying nprcgenekeepr's colony overview (`:204`), the app's features left for later
+(`:211`), an animal with two or more mates drawn once (`:220`). BLOCKED, and so not offered: `:36` (the speed vignette),
+`:84` (retire the drift tools), `:191` (nprcgenekeepr imports pedkindraw). Name every item in the picker (memory
+"Picker sets: name items, include all"; max 4 options, so group them and name each in a preview). Each title was found
+at its line by `grep -n '^- \[ \]'` when S76 closed out (29 items, the G item at `:51`; S76 added `:117`).
 **Session boundary:** one session, then close out.
-**Priority:** HIGH (G17c, G17d, then 17g).
+**Priority:** HIGH (G17d, then 17g).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**: S75 changed no copied function);
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**: S76 changed no copied function);
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied
    from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`,
-   `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr was at `3e06730c5`, tree clean, through S75.
-2. **S75's push was read in S75, job by job** (run 45087949474): pkgdown `success`; Ubuntu release and oldrel-1 `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16550 ]`; macOS `[ FAIL 0 | WARN 0 | SKIP 9 | PASS 16561 ]`; Windows `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16559 ]`, `proc.time()` 925 s, and the hang an eighth time (cancelled at 41 minutes; two orphan `Rterm` processes, as before); Ubuntu R-devel red in "setup-r-dependencies" (S4Vectors, known). Each job's count is S74's plus G17b's 134 expectations, so the new Chrome test ran on Ubuntu, macOS and Windows. Nothing is left to read. The next push that
-   changes code: expect these counts plus G17c's tests, and the Windows hang.
-3. **G17c, if picked** (plan section 7, `:355`). **Measure first, before the pre-RED picker** (Learning 17): **the app
-   reads every column of a file as text** (`.readAppFile()`, `R/pedigreeApp.R:96`, `colClasses = "character"`), so a
-   CSV's `affected`, `genotyped`, `carrier` or `status` column reaches `makePedigreeMatingLayout()` as "TRUE", "1", "Y"
-   or "DECEASED" text, not as `TRUE`; measure what the layout and `drawPedigreeDiagram()` do with each such text column
-   (and with `ped` given as logical, which the app keeps as it is) before the picker says how a value becomes a
-   condition or a mark (a guess, not measured: some will be refused or drawn as unknown). F12 needs `edgeStyle` passed to
-   both `makePedigreeMatingLayout()` and `drawPedigreeDiagram()` in `.appDraw()` (`R/pedigreeApp.R:324`); F13 a second
-   file input and `checkTwinRelations()`'s problems on the page. Pedixplorer's app picks one condition column with a
-   threshold (plan section 2.1).
+   `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr was at `3e06730c5`, tree clean, through S76.
+2. **S76's push:** see "What Session 76 Did" below for what close-out read of it. A prediction, not measured: each job
+   reads S75's count plus G17c's new expectations (156 in `test_pedigreeAppMarks.R`, 7 of them in its Chrome test, and 1
+   more in the sample's Chrome test), where Chrome runs (Ubuntu and Windows set it up; macOS found it in S74); and the
+   Windows hang.
+3. **G17d, if picked** (plan section 7, `:366`). **Measure first, before the pre-RED picker** (Learning 17): a download
+   from the app in Chrome (`shiny::downloadHandler()` calling `savePedigreeDiagram()`, `R/savePedigreeDiagram.R:88`;
+   S73 measured an SVG in 1.82 s inside the prototype, section 3.3); what `testServer()` gives for a download output
+   (a file path it can read, or nothing; a guess); what the page should say when Chrome is missing
+   (`savePedigreeDiagram()` stops naming chromote, R143); which drawing is saved (the one shown, with the conditions,
+   marks, lines and twins G17c added; `drawing()$widget`, `R/pedigreeApp.R:941`) and the animals' CSV (the rows shown,
+   `shown()`, or the drawing's data frame, `prepared()$ped`). The documents' statements are tested beside their calls,
+   `tests/testthat/test_savePedigreeDiagramDocs.R`'s way (S72). The picker may also offer folding backlog `:109` (the
+   drawing times, `vignettes/drawing.Rmd:788`) into G17d.
 4. TDD for any code session: declare the phase at the top of every response; each transition (`PRE-RED->RED`,
    `RED->GREEN`, `GREEN->REFACTOR`) is one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
-- **A click in a Chrome test aims at the network's own canvas** (plan dragon 15): the first canvas in the widget is the
-  legend's. `.appClickNode(page, id)` (`tests/testthat/helper-pedigreeApp.R:167`) sends a real mouse press and release
-  there through DevTools; S75's probe showed an animal, a repeat and a mating dot each reaching Shiny.
-- **The server keeps the focal text in `focalText`, a `reactiveVal`** (`R/pedigreeApp.R:483`) set by the box and by a
-  click, because `testServer()` cannot see `update*Input()` (dragon 16). A new input the server also writes needs the
-  same.
-- **The app's server** (`R/pedigreeApp.R:426`, `.pedigreeAppServer(ped = NULL, drawLimit = 1000L)`): `rawData()`,
-  `readProblem()`, `columnGuess()`, `chosen()`, `tableProblem()`/`columnProblem()`, `ready()`, `pedigree()` (the file as
-  read: Checks reads it), `checks()`, `completed()` (`:477`, `.appAddParents()`), `families()`, `focalText`,
-  `focalIds()`, `view()` (`NULL` means "all", so G17a's tests that never set it draw everyone), `howClose()` (`NULL`
-  means 3), `choice()` (`:493`, `.appChooseAnimals()`: `rows` and `problem`), `shown()`, `approved`, `tooLarge()`
-  (`:506`), `drawing()` (`:511`, `NULL` when nothing to draw; `.appDraw(shown(), onClick = .appClickJs)`), the click
-  observer (`:518`). Outputs: `columns`, `sexNote`, `problem`, `drawn`, `added`, `focalNote`, `familyChoice` (`:577`),
-  `large` (`:585`), `notes`, `diagram`, `checkSummary`, `checks`, `table` (the animals chosen). Tests call `rawData()`,
-  `columnGuess()`, `pedigree()`, `checks()`, `shown()`, `drawing()` by name. G17c's choices (conditions, marks, lines,
-  twins) go between `shown()` and `.appDraw()`.
-- **`testServer()` computes every output at each change** (dragon 14): the family list and the size question are
-  computed in the server tests too; the 1,001-founder test costs about 0.5 s. On CRAN's path the app's 40 tests took 5.06
-  s (R148 guessed 1-3 s); keep G17c's server tests on typed pedigrees.
-- **The typed pedigree for views** (`.appViewsPed()`, `helper-pedigreeApp.R:48`): 14 animals, families 1 (10), 2 (3), 3
-  (z1 alone); the whole drawing has repeats `__dup_s1_1` and `__dup_o1_1`.
-- **Measure a drawing's time on pedigrees with structure**: the first n animals of `examplePedigree` in generation order
-  are all founders (S75's first measure drew nothing); `g17bSize.R` takes ancestors of random animals with a parent.
-- **Do not edit the tree while the full suite runs** (dragon 19; failure mode #29), and do not run two Chrome-starting
-  jobs at once (the suite, the ratchet, a check, `checkExamples.sh`, a by-hand run).
-- **Windows:** the check step hangs after the tests (seven runs); cancel at 40 minutes, read the log (`gh api
+- **Grep the tests for every input a ruling changes, in RED** (plan dragon 21): R151 made the sample open its twins file,
+  and G17a's Chrome test of the sample saw 1,466 nodes, not 1,460; S76 found it only in GREEN (`c79c51f`). G17d's saves
+  read the same drawing: any test that counts a saved file's ids of the sample counts the twins' edges too.
+- **The Edit tool turns a typed `\u2265` into the character** (dragon 20): R code must hold the escape or `R CMD check
+  --as-cran` warns (non-ASCII). Before the check, `LC_ALL=C grep -n '[^ -~]' R/<file>`; write escapes with Python.
+- **Count the full suite with `reporter = "check"`** (dragon 22): the summary reporter prints no totals.
+- **A 503 from GitHub in the check's URL NOTE** (dragon 23): fetch the link again and re-run the check on the same
+  tarball with `--no-tests --no-examples --ignore-vignettes --no-manual` to read the NOTE.
+- **The server after G17c** (`R/pedigreeApp.R:785`): `chosenConditions` (`:793`, a `reactiveVal`, set to the guess when a
+  file opens and by `input$conditions`, `ignoreNULL = FALSE`, `ignoreInit = TRUE`), `twinsRead` (a `reactiveVal`,
+  `list(read, source)`; "sample" twins dropped when another pedigree file opens), `otherColumns()` (`:864`, the file's
+  columns but the four), `conditionColumns()`, `cutoffValues()` (inputs `cutOp<k>`, `cutValue<k>`, k the column's place
+  in the file), `markColumns()`, `lineStyle()`, `twinsChecked()` (`:886`), `prepared()` (`:937`, `.appDrawnPedigree()`:
+  the drawing's own data frame), `drawing()` (`:941`, draws `prepared()$ped`, not `shown()`). The Animals tab still
+  shows `shown()`, the rows as read. Outputs added: `conditionChoice` (`:965`), `cutoffs` (`:973`), `marks`,
+  `columnNotes`, `twinsNote` (`:1007`), `twinsProblem`.
+- **An assignment inside `testServer()`'s code lands in the server's environment** (dragon 14): a local named like a
+  server object replaces it; S76's tests name theirs `expected`, `expectedTwins`, `fresh`, `script`, `withGen`.
+- **A file in a Chrome test** goes through `.appSetFile(page, id, path)` (`tests/testthat/helper-pedigreeApp.R`, DevTools'
+  `DOM.setFileInputFiles`); the page shows the file's base name, so write it as `twins.csv` in a temporary folder.
+- **zsh:** arrays start at 1 (`t=($(cat f)); t[0]` is empty: S76's first elapsed time was nonsense; use awk); an
+  unquoted `$var` is not split (use `bash -c '...'`); `rm -rf name*` with no match aborts a `&&` chain; BSD `sed -i`
+  needs an argument (use python).
+- **Windows:** the check step hangs after the tests (eight runs); cancel at 40 minutes, read the log (`gh api
   --allow-escape-sequences repos/rmsharp/pedkindraw/actions/jobs/<id>/logs | sed 's/\x1b\[[0-9;]*[A-Za-z]//g'`); its
-  `proc.time()` line is the tests' time. Start a watcher's clock from `date -u +%s` (this shell's `date` is GNU).
+  `proc.time()` line is the tests' time. Start a watcher's clock from `date -u +%s`.
 - **Run the DONE check the way GitHub does:** `bash tools/checkExamples.sh` and `R CMD check --as-cran` with
-  `NOT_CRAN=true` and `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true` from a scratch folder (S75: 631 s, 1 NOTE, `[ FAIL 0 | WARN
-  0 | SKIP 6 | PASS 16577 ]`); the app tests' CRAN time against the checked install with `NOT_CRAN` unset.
-- **zsh:** an unquoted `$var` is not split (use `bash -c '...'`); `rm -rf name*` with no match aborts a `&&` chain;
-  BSD `sed -i` needs an argument (use python).
-- **Carried:** run Rscript from the root and a scratch copy with `Rscript --no-init-file` and `R_LIBS`, `R_LIBS_USER` set
-  to renv's library; the 5-file cap splits commits; the ratchet's suite gate times out at 300 s (run the suite by hand, 9
-  min; S75: 549 s); `CLAUDE.md` is over its budget (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked,
-  Mark's; `NOT_CRAN=true` for the browser tests; scratch files go in the scratchpad; renv prints "The project is
-  out-of-sync" on activation (pre-existing).
-- **Ledger sizes** (S75's close-out 2): `HANDOFFS.md` 184,611 B, about 12 KB under its 196,608 B threshold (one or two
-  more receipts: it will be archived soon); `CHANGELOG.md` about 100 KB. Run `python3 methodology/methodology_trim.py
-  --file methodology/HANDOFFS.md --check` at each close-out.
+  `NOT_CRAN=true` and `_R_CHECK_CONNECTIONS_LEFT_OPEN_=true` from a scratch folder, `RENV_PROJECT` unset (S76: 609 s, 1
+  NOTE, `[ FAIL 0 | WARN 0 | SKIP 6 | PASS 16734 ]`); the app tests' CRAN time against the checked install with
+  `NOT_CRAN` unset (S76: 60 tests, 8.44 s).
+- **Carried:** run Rscript from the root with `Rscript --no-init-file` and `R_LIBS`, `R_LIBS_USER` set to renv's library;
+  do not edit the tree while the full suite runs, nor run two Chrome-starting jobs at once (dragon 19); the 5-file cap
+  splits commits; the ratchet's suite gate times out at 300 s (run the suite by hand, 9 min; S76: 548 s); `CLAUDE.md` is
+  over its budget (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's; `NOT_CRAN=true` for the
+  browser tests; scratch files go in the scratchpad; renv prints "The project is out-of-sync" on activation
+  (pre-existing).
+- **Ledger sizes** (S76's close-out 2): `HANDOFFS.md` 190,888 B, about 5.7 KB under its 196,608 B
+  threshold: **archive it at the next close-out** (`python3 methodology/methodology_trim.py --file
+  methodology/HANDOFFS.md --check`, then without `--check`); `CHANGELOG.md` about 104 KB.
 
 ### Key files
-- G17: `docs/planning/pedigree-app-plan.md` (`:89` section 2.3, F1-F21; `:298` section 7, `:342` G17b, `:355` G17c,
-  `:366` G17d; `:383` section 8, dragons 1-19; `:469` section 11, G17a's measures; `:600` section 12, G17b's: `:607`
-  12.1 drawing times, `:627` 12.2 the views on the sample, `:663` 12.4 R150, `:694` 12.6 what was built);
-  `docs/planning/pedigree-app-prototype/` (`app.R`, the prototype; `g17a*.R`, S74's measures; `g17bSize.R`,
-  `g17bBrowser.R`, `g17bViews.R`, `g17bCases.R`, `g17bClickParents.R`, S75's);
-  `docs/planning/standalone-pedigree-package-plan.md:316` (R150), `:98` (G17b DONE), `:99` (Next).
-- The app: `R/runPedigreeApp.R` (the export, help); `R/pedigreeApp.R` (`:172` `.appAddParents()`, `:187`
-  `.appFocalIds()`, `:198` `.appFamilyChoices()`, `:212` `.appAloneNote()`, `:232` `.appLineal()`, `:259`
-  `.appChooseAnimals()`, `:292` `.appClickJs`, `:303` `.appClickedAnimals()`, `:324` `.appDraw()`, `:359` the page,
-  `:426` the server).
-- Tests: `tests/testthat/test_pedigreeAppViews.R` (15), `test_pedigreeAppServer.R` (16), `test_pedigreeAppBrowser.R` (3),
-  `test_runPedigreeApp.R` (9), `helper-pedigreeApp.R`.
-- Also changed: `NEWS.md` (G17b's bullet under Drawing), `docs/planning/pedkindraw-api-contract.md` section 4.7, `man/runPedigreeApp.Rd`.
+- G17: `docs/planning/pedigree-app-plan.md` (`:89` section 2.3, F1-F21; `:298` section 7, `:366` G17d; `:383` section 8,
+  dragons 1-23; `:766` section 13, G17c's measures: `:773` 13.1 the values, `:809` 13.2 twins and lines, `:832` 13.4
+  R151, `:880` 13.6 what was built); `docs/planning/pedigree-app-prototype/` (`g17cValues.R`, `g17cOptions.R`,
+  `g17cTwins.R`, `g17cBrowser.R`, S76's measures); `docs/planning/standalone-pedigree-package-plan.md:318` (R151).
+- The app: `R/runPedigreeApp.R` (the export, help); `R/pedigreeApp.R` (`:41` `.appNameKey()`, `:56` `.guessAppColumns()`,
+  `:317`-`:620` G17c's helpers: `:332` `.appReadValues()`, `:361` `.appNeedsCutoff()`, `:373` `.appCutoff()`, `:386`
+  `.guessAppConditions()`, `:399` `.appConditionNames()`, `:430` `.appFindMarks()`, `:441` `.appMarkNote()`, `:457`
+  `.appDeceased()`, `:470` `.appUnreadWords()`, `:496` `.appReadTwins()`, `:536` `.appTwinsInView()`, `:561`
+  `.appDrawnPedigree()`; `:661` `.appDraw()`, `:702` the page, `:785` the server); `R/savePedigreeDiagram.R:88`.
+- Tests: `tests/testthat/test_pedigreeAppMarks.R` (21), `test_pedigreeAppViews.R` (15), `test_pedigreeAppServer.R` (16),
+  `test_pedigreeAppBrowser.R` (3), `test_runPedigreeApp.R` (9), `helper-pedigreeApp.R` (`.appSetFile()`);
+  `test_savePedigreeDiagramDocs.R` (S72's documents' statements, the model for G17d's).
+- Also changed: `NEWS.md` (G17c's bullet under Drawing), `docs/planning/pedkindraw-api-contract.md` section 4.7,
+  `man/runPedigreeApp.Rd`.
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -133,16 +137,67 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 76 Did
-**Deliverable:** Phase G17c, what the app draws: up to four condition columns, each true-or-false or a number cut at
-a threshold (F9), the file's marks and names passed through (F11), rectilinear or direct lines (F12), a twins file
-checked by `checkTwinRelations()` with its problems shown (F13) (`docs/planning/pedigree-app-plan.md:355`), strict TDD.
-(IN PROGRESS)
-**Started:** 2026-11-22 19:18 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "G17c: what the app draws
-(Recommended)" (orient picker).
-**Status:** Session claimed. Work beginning: the measures before the pre-RED picker (what the layout and
-`drawPedigreeDiagram()` do with a CSV's condition and mark columns read as text: "TRUE", "1", "Y", a number).
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
-close-out, this line is the crash breadcrumb for the next session's reconcile.
+**Deliverable:** Phase G17c, what the app draws (`docs/planning/pedigree-app-plan.md:355` at the start, `:766` section
+13 now), strict TDD. DONE.
+**Started:** 2026-11-22 19:18 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time, all the recommended
+option):** "G17c: what the app draws (Recommended)" (orient); R151's four in one picker ("Common words (Recommended)",
+"Up to four, chosen (Recommended)", "By name, any case (Recommended)", "Common codes (Recommended)"); "Yes, proceed to
+RED"; "Yes, proceed to GREEN"; "Yes, proceed to REFACTOR (Recommended)". No correction and no tool use declined.
+**Commits:** claim `104907b`; measuring scripts `1902472`; measures and R151 `6a4ef89`; RED `15efe75`; RED amendment
+`c79c51f`; GREEN `7dd6aa8` (the code), `55ef40f` (help, NEWS, contract), `f7ef71a` (GREEN 3: two tests found by covr),
+`cc78918` (GREEN 4: the cut-off symbols as escapes); REFACTOR `8ee85f0`; close-out 1b `d330a61` (roadmap, backlog);
+close-out 1 `2b27681` (the plans, dragons 20-23); close-out 2 (these notes, the receipt, the ledger), pushed after it.
+**Measured first** (plan section 13): on 14 pairs of values in each condition and mark column, read as the app reads a
+file, a condition was drawn right only for TRUE/FALSE, true/false and T/F, **every other pair, 1/0 included, drawing all
+animals grey "unknown" with no message**, and a yes-or-no mark stopping the whole drawing (its message saying "give 1 or
+0"); a cut-off on a file's numbers always stopped; `status` marked only the exact `DECEASED`; a file's `Affected` column
+was not read; the three ways offered drew 3, 4 and 6 of 9 pairs right; a view with half a twin pair stopped the layout
+(the sample's UZ pair spans families 1 and 2); `checkTwinRelations()` stops at the first problem and reads only the three
+exact codes; a twins table with no rows stops the layout (copied code); the layout's and the drawing's `edgeStyle` both
+matter; a file set by DevTools reaches the app's file box (and showed the Y/N carrier stop in the real app).
+**Built:** conditions chosen (up to four) with cut-offs, the marks found by name, the common words, lines, a twins file,
+the sample's twins (`R/pedigreeApp.R`); 21 new tests and 1 changed (the app's files 64 tests, 419 expectations); help,
+NEWS, the contract's section 4.7.
+**Verified:** RED 19 failing for the right reason, the other 43 passing, SKIP 0, WARN 0; the full suite at `55ef40f` 90
+files, 16,754 expectations, 0 failed, 0 warnings, 0 skipped (548 s), and at `8ee85f0` `[ FAIL 0 | WARN 0 | SKIP 0 |
+PASS 16761 ]` (548 s); `R CMD check --as-cran` at `f7ef71a` 1 WARNING (non-ASCII), at `cc78918` 0 errors, 0 warnings, 1
+NOTE (new submission; a transient GitHub 503 cleared on the same tarball), `PASS 16734` SKIP 6 (609 s); CRAN path 60 app
+tests 8.44 s; coverage 392/392 after the REFACTOR (397/397 before) and 16/16; examples errors 0; lint 0; roxygen no
+change; drift 91 / 23 / 0; fidelity 600 / 600; the gap case; the REFACTOR's 403 cases `identical()`; quality_ratchet:
+5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb (the suite gate's 300 s limit; by hand
+above); by hand in Chrome: the sample with its twins, a spreadsheet-like file uploaded (marks listed, a cut-off, a DZ
+pair from "2", straight lines; two pictures looked at), a bad twins file named, a "maybe" named.
+**Found:** a twins table with no rows stops the layout and an empty cell gets R's own words in `checkTwinRelations()`
+(backlog `:117`; the same in nprcgenekeepr).
+**Not run:** another browser, a real file dialog, a phone-width window, a hosted server.
+**After close-out 2 (its push):** pushed after close-out 2; close-out 2b reads its run job by job and records the reading here and in the plan's section 13.6. If no 2b commit follows, nothing was read: the next session reads the run.
+
+#### Session 75 Handoff Evaluation (by Session 76)
+**Score: 9/10.** ROI high: "What You Must Do" 3 was the session's first hour, and its measure became the picker.
+- **What helped:** "the app reads every column of a file as text ... measure what the layout and
+  `drawPedigreeDiagram()` do with each such text column before the picker" was exactly the measure that found the silent
+  grey conditions and the stopping marks, and its guess ("some will be refused or drawn as unknown") held; "F12 needs
+  `edgeStyle` passed to both" held when measured; "G17c's choices go between `shown()` and `.appDraw()`" was where
+  `prepared()` went; dragons 14 and 16 (every output computed; a `reactiveVal` for what the server also writes) shaped
+  `chosenConditions`; drift 91/23/0, nprcgenekeepr's 4 commits at `3e06730c5` and the 28 backlog lines all held.
+- **What was missing:** that the sample has a twins file in `inst/extdata` (found by listing the folder; it became an
+  option in the picker); which reporter gives the suite's totals (the summary reporter does not; dragon 22).
+- **What was wrong:** nothing; "F13 ... `checkTwinRelations()`'s problems on the page" is one problem at a time (it
+  stops at the first), a wording, not a wrong claim.
+- **ROI:** high.
+
+**Self-assessment: 7/10.**
++ Orient in full, the claim before any work; measured before the picker (14 value pairs in 8 columns, the three ways on
+  9 pairs, twins, lines, an upload through DevTools probed in the real app), so the picker stated counts and Mark took
+  all four recommended options at once; every RED value computed first; RED failed 19 for the right reason; `covr` read
+  before calling GREEN done (two tests added); the REFACTOR proved over 403 cases; a by-hand run through the page's own
+  controls with pictures.
+- **The two slips that reached commits:** RED did not look for tests that read the sample, which R151 changed (the RED
+  amendment `c79c51f`, dragon 21, the same class as S75's slip); and the Edit tool turned my `\u2265` escapes into
+  characters, which `R CMD check` warned on (GREEN 4 and a second 10-minute check; dragon 20).
+- Other slips, none reaching a commit: the gate announced 18 tests and RED wrote 19 (one split in two); the first
+  failure-reason script printed `NA` (it matched squashed names); the first full suite used the summary reporter, so its
+  count needed a script; a zsh array read from 0 gave a nonsense elapsed time.
 
 ### What Session 75 Did
 **Deliverable:** Phase G17b, choosing the animals the app draws (`docs/planning/pedigree-app-plan.md:342`), strict TDD.
@@ -261,53 +316,3 @@ Checks tab, the corrected file drawn (pictures were in the scratchpad, not kept)
 - Other slips, none reaching a commit: a zsh `rm` glob aborted a chain (the notes warned of it); six lints at GREEN's
   first lint; the contract's section first renumbered 4.6 to 4.7, breaking a citation (moved before commit); the
   REFACTOR record's first run saved nothing (an assignment inside `testServer()`).
-
-### What Session 73 Did
-**Deliverable:** G17's planning session, the plan for gap A3 (a ready-made app): `docs/planning/pedigree-app-plan.md`.
-DONE. No package code (the prototype beside the plan is measured scratch code under `docs/`, which the build ignores).
-**Started:** 2026-11-22 12:21 CST · **Model:** Claude Sonnet 5.5 for orientation and the claim, then Claude Opus 5.5 from the
-first evidence reads on (the harness switched it; the claim commit `b1c317e` carries Sonnet's trailer, the rest Opus's) ·
-**Mark's picks (each first time, all the recommended option):** "G17 planning session (Recommended)" (orient); R148's four,
-in one picker: "Both apps' core", "Suggests", "Server tests on CRAN", "One function". No correction and no tool use declined.
-**Commits:** claim `b1c317e`; the evidence draft `0bf0019` (sections 1-3 and 6, the prototype); the plan `61c62f2` (sections
-4-5, 7-10 after the picks); close-out 1 `275037a` (R148 in the standalone plan, the gaps plan's G17 row, the Next lines);
-1b `8e78475` (roadmap, backlog; the plan's backlog citations re-found); close-out 2 (these notes, the receipt, the ledger),
-pushed after it.
-**Measured** (scripts in `docs/planning/pedigree-app-prototype/`): `shiny` adds 11 packages to pedkindraw's 32 (`bslib`
-with it), DT 3 more, readxl 14, shinytest2 6 new to renv's library; the prototype app (135 lines, pedkindraw's exports only)
-under `testServer()`: 4.7 s for five drawings of the 375-animal sample, 0.02-0.05 s a small view, a second run within 0.03
-s; in headless Chrome: answers 1.23 s, connects 1.57 s, draws the sample 2.61 s (1,460 nodes), and `savePedigreeDiagram()`
-inside the app returns an 843,620-character SVG in 1.82 s; Pedixplorer's `ped_shiny()` answers in 1.82 s (102 inputs);
-nprcgenekeepr's Pedigree Browser read (970 lines and 12 helpers pedkindraw lacks, about 970 lines; 9 testServer files with
-171 tests, 4 shinytest2 files). **Found:** the layout needs `gen`; the layout's warnings reach only the app's console (72 on
-the sample); `testServer()` cannot see `update*Input()`; `%||%` is R 4.4+; a `callr` child inherits the environment.
-**Corrected before commit:** two feature counts (17 and 14 of 21, first written 15 and 11), the helper count (12, first
-13), dragon 10 (I had written that a `callr` child inherits `CHROMOTE_CHROME` only if passed; measured, it inherits), the
-prototype's run command (an explicit `--args` broke it), the `cases$app` range (`:354`, not `:352`).
-**Verified:** no file under `R/`, `tests/`, `inst/`, `man/`, `vignettes/`, `DESCRIPTION`, `NAMESPACE`, README, NEWS,
-`_pkgdown.yml` or `.github/` changed since S72's close (`git diff --name-only ab5dda0..HEAD`: 0); drift 91 / 23 / 0 at
-orient; quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: the full suite at 8e78475 (NOT_CRAN=true), 85 files, 1,064 tests, 16,342 expectations, 0 failed, 0 errors, SKIP 0, WARN 0 (530 s). **Not run:** `R CMD check` (no package file changed since S72's check).
-
-#### Session 72 Handoff Evaluation (by Session 73)
-**Score: 9/10.** ROI high: the planning session needed no discovery the notes could have saved.
-- **What helped:** "What You Must Do" item 3 named every piece of G17's evidence and where it lives (the gap at `:144`,
-  `runGeneKeepR()`, `ped_shiny()` 1.8.0 in renv, `cases$app`, the runner's planning rules, S68's plan as the precedent):
-  the reading list was the session's first hour; drift 91/23/0 and nprcgenekeepr's 4 commits at `3e06730c5` held exactly;
-  the orient picker's 26 backlog lines all held (checked against S72's tree); the stale pedkindraw 0.0.1 gotcha became the
-  plan's dragon 1; "do not run two Chrome-starting jobs at once" shaped when I ran the ratchet.
-- **What was missing:** that pedkindraw ships no `data/` (the sample an app needs is `inst/extdata`'s 375 animals); that the
-  `app` case only reads Pedixplorer's arguments and starts nothing.
-- **What was wrong:** nothing found.
-- **ROI:** high.
-
-**Self-assessment: 8/10.**
-+ Orient in full, the claim before any work; measured before the picker (dependencies, the server and browser times, both
-  references), so the picker stated counts and Mark took each recommended option at once; the scope picker named all 21
-  items with an "all" option and the reasons against it (memory "Picker sets"); each phase has its DONE, commands, surface
-  (and what no surface here enforces) and session boundary; the inventory is grep's; every cited line re-found after the
-  last edit, including the backlog's shift.
-- **Slips:** the scope option's preview headed "BUILDS (15)" over a list of 16 (recorded in the plan's section 4, R148);
-  five wrong statements in my own draft, each caught by re-reading or by a measure before its commit (listed above), two
-  of them claims I had not run (dragon 10 and the run command), which Learning 18 says to run first; two malformed picker
-  calls cost two round trips; a measuring script's top-level `on.exit()` killed its own app on the first run.
-- The session counts (1 + 4) and the CRAN time of the server tests (1-3 s) are guesses; the timings are this Mac's.
