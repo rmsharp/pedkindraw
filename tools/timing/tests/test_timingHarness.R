@@ -371,7 +371,8 @@ test_that("each case's code names only its own package and those it loads", {
 
 ## The plan's section 6 (17h1): each case returns on the 300-animal colony
 ## and the sample, but Pedixplorer's family_check(), which stops on the
-## colony's own family numbers (R154, recorded).
+## colony's own family numbers (R154, recorded). Pedixplorer's descendants()
+## returns NULL when the probands have none, as the colony's 5 have none.
 test_that("every case runs on the 300-animal colony and the sample and
   returns a value", {
   skip_if_not(pkdLibReady(), "PKD_LIB not set")
@@ -385,6 +386,8 @@ test_that("every case runs on the 300-animal colony and the sample and
           "'dimnames' applied to non-array",
           fixed = TRUE
         )
+      } else if (identical(name, "colony") && identical(id, "pdx_desc")) {
+        expect_null(values[[id]])
       } else {
         expect_false(inherits(values[[id]], "error"),
           info = paste(name, id)

@@ -30,7 +30,7 @@ timingPedigree <- function(name) {
 ## Each case's value on pedigree `name` ("colony" or "sample"), by case id:
 ## prepare(), then the call after set.seed(1L), as timeOne.R makes it, with
 ## pedkindraw loaded from PKD_LIB (useTimingLibraries()); a call that stops
-## gives its error condition. Stops when pedkindraw was loaded from another
+## gives its error condition, and a call that returns NULL keeps its place. Stops when pedkindraw was loaded from another
 ## folder (the plan's section 8, dragon 2).
 caseValues <- local({
   cache <- list()
@@ -44,10 +44,10 @@ caseValues <- local({
       for (k in timingCases()) {
         x <- k$prepare(p)
         set.seed(1L)
-        values[[k$id]] <- tryCatch(
+        values[k$id] <- list(tryCatch(
           suppressWarnings(suppressMessages(k$call(x))),
           error = function(e) e
-        )
+        ))
       }
       checkPedkindrawFolder(
         dirname(getNamespaceInfo("pedkindraw", "path")),
