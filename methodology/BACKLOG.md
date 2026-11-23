@@ -322,13 +322,8 @@ issues).*
       Choices: shorter receipts (each field a pointer to `SESSION_NOTES.md` and `CHANGELOG.md`, which hold the
       detail), or a `--force` archive by Mark's ruling, or both.
 
-- [ ] **`timingRuns.csv`'s `started` is when each run ended** (DECISION NEEDED: before 17h2 or not; Effort S, strict
-      TDD if changed; found S80, `docs/planning/pedkindraw-timing-plan.md` dragon 24) -- `tools/timing/runTiming.R`'s
-      `runOnce()` builds each run's row after `runLimited()` returns, so its `started` (from `runRow()`'s default,
-      `timeStamp()`) is the run's end, later than its start by the run's whole length, loading included; in S80's
-      trial the last run's `started` equals the end note's time. `record.csv`'s `started` is the record's start.
-      nprcgenekeepr shares it (its `tools/pedigreeComparison/runTiming.R`, `runOnce()`, builds the row the same way,
-      at `3e06730c5`). No user sees it (`tools/` is not in the package); the speed page's records table (plan section
-      5.8) can take its date from `record.csv` and the CPU idle from each run's `idle`. Choices: take the time
-      before `waitForQuiet()` or `runLimited()` and pass it as `runRow(started = )`; rename the column `ended`; or leave
-      it and read it so (dragon 24). 17h2 commits the file, so a change belongs before it.
+- [ ] **Tell nprcgenekeepr its timing rows' `started` is each run's end** (READY, Effort S; found S80, fixed here
+      S81, R156) -- its `tools/pedigreeComparison/runTiming.R`'s `runOnce()` makes each run's row after
+      `runLimited()` returns, so `timingRuns.csv`'s `started` is the run's end (at `3e06730c5`); pedkindraw's copy now
+      writes the time `runLimited()` launched the child (`tools/timing/timingHarness.R`, `launched`; timing plan dragon
+      24). For an nprcgenekeepr session (R8), like `:270` and `:276`.

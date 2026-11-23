@@ -204,10 +204,17 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S81
 date: 2026-11-23
-status: pending
-active_task: Phase 17h1c (methodology/BACKLOG.md:325), strict TDD: timingRuns.csv's started is each run's start, not its end (timing plan dragon 24). Claimed; work beginning.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17. 17h1c DONE in S81 (R156): each timing run's started is the time runLimited() launched it (launched), so started + realSeconds is the run's end; the copy wrote the end. Next: 17h2, the computation runs, on a quiet Mac.
+what_was_done: claim e516629; R156 96a7f39; RED 7c6e8e7 (4 failing); GREEN c7cff5d; REFACTOR df6dbca (callStarted); close-out 1 19a5b43; close-out 2 (backlog :325, notes, this receipt, ledger). test_dir [ FAIL 0 | WARN 0 | SKIP 0 ] 129 tests. Details: SESSION_NOTES.md "What Session 81 Did".
+next_steps: Orient as SESSION_NOTES.md "What You Must Do" (drift 91/23/0; nprcgenekeepr's harness log from 3e06730c5); read the machine's load (dragon 25); the orient picker: 17h2 (recommended, timing plan :526) or another item, every backlog item named.
+key_files: tools/timing/timingHarness.R:291 (runLimited, launched), :389 (runRow); tools/timing/runTiming.R:90 (runOnce); docs/planning/pedkindraw-timing-plan.md:508 (17h1c), :526 (17h2), :604 (dragons 1-25); methodology/BACKLOG.md:325.
+gotchas: a busy Mac holds runTiming.R up to 10 min per run (dragon 25); PKD_LIB at a neutral path, rebuilt after an R/ commit (dragons 22-23); scratch test runs outside the root lack renv (dragon 21); HANDOFFS.md past its trimmer (backlog :316), keep receipts short.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand below; the package suite by hand on a git archive of df6dbca (NOT_CRAN=true) [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ] (1,146 tests, 600 s); a trial of runTiming.R as what_was_done's notes say. No package file changed.
+changelog_ref: CHANGELOG.md "2026-11-23 · [BL-Phase 17] S81: 17h1c, each run's started is its launch"
+commit: the close-out 2 commit (session commits e516629 to 19a5b43 listed above)
 ```
 ```handoff
 session: S80

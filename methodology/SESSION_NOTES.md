@@ -10,97 +10,93 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17g DONE (S33-S78); the gap
-phases G1-G17 DONE (S42-S77); 17h1 DONE (S79, R154: the computation timing harness in `tools/timing/`). **17h1b DONE
-in S80 (R155):** each run's row in `timingRuns.csv` holds `memFree` (`memory_pressure -Q`, read after the idle wait),
-and `runTiming.R` appends one row to `<out>/record.csv` when a record starts (record, started, commit, `R/`'s tree,
-packaged, R, kinship2, Pedixplorer, chromote, Chrome, model, chip, cores, memoryGb), first stopping the record unless
-`R/`, `DESCRIPTION` and `NAMESPACE` are committed and `PKD_LIB`'s pedkindraw was packaged after their last commit.
-`test_dir("tools/timing/tests")` with `PKD_LIB` `[ FAIL 0 | WARN 0 | SKIP 0 ]` 126 tests, 1,208 expectations. No
+phases G1-G17 DONE (S42-S77); 17h1 DONE (S79, R154: the computation timing harness in `tools/timing/`); 17h1b DONE (S80,
+R155: each run's `memFree`, and `record.csv`). **17h1c DONE in S81 (R156):** each run's `started` in `timingRuns.csv`
+is the time `runLimited()` launched the child (returned as `launched` with every outcome; `runRow()` writes it with
+`timeStamp()` and has no `started` argument), so `started` plus `realSeconds` is the run's end; the copied code wrote
+the run's end. `runLimited()`'s own time of the child's "CALL START" is now `callStarted` (was `started`).
+`test_dir("tools/timing/tests")` with `PKD_LIB` `[ FAIL 0 | WARN 0 | SKIP 0 ]` 129 tests, 1,219 expectations. No
 package file changed.
 **Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`; ten runs in a row).
-**Found in S80 (backlog `:325`, DECISION NEEDED):** `timingRuns.csv`'s `started` is when each run *ended* (the row is
-built after `runLimited()` returns; copied so; nprcgenekeepr shares it; timing plan dragon 24). 17h2 commits that file.
-**Next, recommended: decide `:325` at the orient picker.** Claude's recommendation: **17h1c, a short TDD session** that
-records each run's start (a time taken before the run, passed as `runRow(started = )`), then **17h2, the computation
-runs** (timing plan `:506`, no code, about 3.5-4 hours of background runs, a guess). The other: 17h2 now, reading the
-column as dragon 24 says.
+**Next, recommended: 17h2, the computation runs** (timing plan `:526`; no code; all 78 cases at six sizes in the
+background, about 3.5-4 hours, a guess). It needs a quiet Mac (dragon 25: at 12:35 on 2026-11-23 it was 0% idle, load
+43, from a virtual machine, vitest and Playwright, none of this project's, and the harness waits up to 10 minutes before
+each run while under half idle) and `PKD_LIB` built at a short path that names no person, outside the scratchpad
+(dragon 23; ask Mark where).
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker:** 17h1c (recommended), 17h2 now, or the Windows item (`:11`). Also, from `methodology/BACKLOG.md`
-(31 items, each found at its line by `grep -n '^- \[ \]'` at S80's close-out): READY, the legend's labels in a narrow
-drawing (`:73`), the drawing vignette's measured trait (`:83`), a twins table with no rows (`:89`),
-`savePedigreeDiagram()` and a `CHROMOTE_CHROME` naming no file (`:99`), the `smallPed` fixture (`:132`), rewording
-`DIVERGENCE.md`'s older rows (`:55`), tests for full coverage (`:138`), `findPedigreeNumber()`'s speed (`:294`),
-poppler in CI (`:306`), the label counts in `largeIds` (`:287`), and the seven "Ready, small" items (`:215` the suite
-gate's time limit, `:227` the stale pedkindraw 0.0.1, `:234` the drift tool and copied constants, `:243` the
-context-budget tool, `:253` CI notices, `:270` report a vacuous test, `:276` tell nprcgenekeepr's edition-3
-conversion); NEEDS DECISION, `started` (`:325`, above), Pedixplorer's `avail` (`:108`), long names at the edges
+**The orient picker:** 17h2 (recommended) or the Windows item (`:11`). Also, from `methodology/BACKLOG.md` (31 items,
+each found at its line by `grep -n '^- \[ \]'` at S81's close-out): READY, the legend's labels in a narrow drawing
+(`:73`), the drawing vignette's measured trait (`:83`), a twins table with no rows (`:89`), `savePedigreeDiagram()` and a
+`CHROMOTE_CHROME` naming no file (`:99`), the `smallPed` fixture (`:132`), rewording `DIVERGENCE.md`'s older rows
+(`:55`), tests for full coverage (`:138`), `findPedigreeNumber()`'s speed (`:294`), poppler in CI (`:306`), the label
+counts in `largeIds` (`:287`), and the eight "Ready, small" items (`:215` the suite gate's time limit, `:227` the stale
+pedkindraw 0.0.1, `:234` the drift tool and copied constants, `:243` the context-budget tool, `:253` CI notices, `:270`
+report a vacuous test, `:276` tell nprcgenekeepr's edition-3 conversion, `:325` tell nprcgenekeepr its timing rows'
+`started` is each run's end, new in S81); NEEDS DECISION, Pedixplorer's `avail` (`:108`), long names at the edges
 (`:116`), a colony's ids under a point high (`:125`), `findGeneration(alignMates = TRUE)`'s speed (`:298`),
 `HANDOFFS.md`'s growth past its trimmer (`:316`); "Waiting on Mark", the dashboard and `methodology/BACKLOG.md`
 (`:178`), copying the colony overview (`:185`), the app's features left for later (`:192`), an animal with two mates
 drawn once (`:204`). BLOCKED, so not offered: `:36` (the speed vignette, on 17h's runs), `:64` (retire the drift
 tools), `:172` (N3). Name every item in the picker (memory "Picker sets: name items, include all"; at most 4 options,
 so group them and name each in a preview).
-**Session boundary:** one session (17h1c, or 17h2), then close out.
+**Session boundary:** one session (17h2; if the runs cannot finish in it, commit the rows, close out, and 17h2b runs
+the rest at the same commit), then close out.
 **Priority:** HIGH (17h2-17h4, then 17i-17q).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**: S80 changed no package code);
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**: S81 changed no package code);
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l
    'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
    (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); **and the harness's**, `git -C ../nprcgenekeepr log --oneline
    3e06730c5..HEAD -- tools/pedigreeComparison tools/perf/harness.R tests/testthat/test_perfHarness.R` (none through
-   S80; nprcgenekeepr at `3e06730c5`, tree clean). A change there is read before touching `tools/timing/`.
-2. **S80's push** (every commit `[skip ci]`: `tools/` is build-ignored and no package file changed): no CI run to read.
-3. **Build `PKD_LIB` first** (S80's was in its own scratchpad; every harness test and run needs one), under `bash -c`:
-   from a scratch folder, `R CMD build --no-build-vignettes --no-manual <repo>`, then `R CMD INSTALL
-   --library=<folder>/pkdlib pedkindraw_*.tar.gz`, both with renv's library as `R_LIBS` and `R_LIBS_USER` and
-   `RENV_PROJECT` unset. For 17h2 build it at a short path that names no person (dragon 23; outside the scratchpad, so
-   ask Mark), after the last commit that changes `R/` (dragon 22: the record refuses an older install).
-4. **17h1c, if picked:** read `tools/timing/runTiming.R:88` (`runOnce()`) and `timingHarness.R:380` (`runRow()`).
-   Pre-RED: when "started" is (before the idle wait, or just before `runLimited()`), and how to test it: `runOnce()` is
-   in the script, so either move it into `timingHarness.R` with its readers and runner as arguments (as
-   `waitForQuiet()` takes them) or check it by a trial (each run's `started` plus its `realSeconds` at or before the
-   next run's). Measure first (Learning 17). The copied file's header names the change.
-5. **17h2, if picked:** the plan's 17h2 (`:506`), 5.4-5.6 (`:391`-`:411`), dragons 5, 8, 11, 18-24 (`:584`-`:644`);
-   `Rscript tools/timing/savePedigrees.R` (8 of 8), then `runTiming.R` in the background (all 78 cases, six sizes) with
-   nothing else running; it writes `results/record.csv`'s row itself; then `summarizeTiming.R`; commit the results.
-6. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
+   S81; nprcgenekeepr at `3e06730c5`, tree clean). A change there is read before touching `tools/timing/`.
+2. **S81's push** (every commit `[skip ci]`: `tools/` is build-ignored and no package file changed): no CI run to read.
+3. **Read the machine first** (dragon 25): `top -l 2 -n 0 -s 1 | grep 'CPU usage' | tail -1`, `uptime` and `ps -Ao
+   pcpu,etime,comm -r | head`. Under half idle, `runTiming.R` waits up to 10 minutes before every run; tell Mark what is
+   running before starting a record.
+4. **17h2, if picked:** the plan's 17h2 (`:526`), 5.4-5.6 (`:393`-`:418`), dragons 5, 8, 11, 18-25 (`:604`-`:670`).
+   Build `PKD_LIB` (under `bash -c`, from a folder Mark names, short and naming no person, dragon 23): `R CMD build
+   --no-build-vignettes --no-manual <repo>`, then `R CMD INSTALL --library=<folder>/pkdlib pedkindraw_*.tar.gz`, both
+   with renv's library as `R_LIBS` and `R_LIBS_USER` and `RENV_PROJECT` unset (the record refuses an install packaged
+   before the last commit to `R/`, `DESCRIPTION` or `NAMESPACE`, dragon 22; that is still S77's `09e8f45`). Then
+   `Rscript tools/timing/savePedigrees.R` (8 of 8), `runTiming.R` in the background with nothing else running (it
+   writes `results/record.csv`'s row itself), `summarizeTiming.R`, one cell of each kind re-run, the results committed.
+5. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
 - **`PKD_LIB` must be set** or every case test skips (SKIP must read 0) and `runTiming.R` stops before any run ("no
   pedkindraw in PKD_LIB"). **The record's build check** (dragon 22): uncommitted `R/`, `DESCRIPTION` or `NAMESPACE`, or
   an install packaged before their last commit, stops the record at once; rebuild after such a commit.
-- **A scratch test run outside the root has no renv** (dragon 21): from `tools/timing/tests`, testthat's edition 3
-  turned the missing `kinship2` into a SKIP part-way through a test, and S80's RED message reported that check as
-  "18 of 18 pass". Run checks from the root and read SKIP.
-- **`timingRuns.csv` records** `pkdLib`, the scratch library's full path (dragon 23), and `started`, each run's end
-  (dragon 24, backlog `:325`); `record.csv` is appended once per `runTiming.R` call in `<out>` (a trial with
-  `--out=<scratch>` leaves `results/` alone).
-- **The test folder takes about 3 minutes** (Pedixplorer's `shrink()` about 90 s on each of its two pedigrees): run
-  it from the root, alone, never beside a record or the package suite (plan dragon 20).
+- **The machine's load** (dragon 25): S81's first trial (8 runs at 300) waited 5 minutes without running one, the Mac 0%
+  idle from other work; at 50-74% idle the same 8 runs took 9 minutes. A record started on a busy Mac takes hours more.
+- **`timingRuns.csv`'s `pkdLib` is `PKD_LIB`'s full path** (dragon 23), committed by 17h2: build it at a neutral path.
+  Its `started` is now each run's launch (dragon 24, fixed); `record.csv` is appended once per `runTiming.R` call in
+  `<out>` (a trial with `--out=<scratch>` leaves `results/` alone).
+- **A scratch test run outside the root has no renv** (dragon 21): run checks from the root and read SKIP.
+- **The test folder takes about 3 minutes** (129 tests; Pedixplorer's `shrink()` about 90 s on each of its two
+  pedigrees): run it from the root, alone, never beside a record or the package suite (plan dragon 20).
 - **Pedixplorer's `family_check()` stops on the colonies** (R154); kinship2 chooses among ties at random (dragon 18);
   `summarizeTiming.R` says "none up to 100,000" whatever the sizes run (dragon 19).
-- **zsh stops a command at a glob with no match** ("no matches found": S80's `rm -rf pkdlib pedkindraw_*.tar.gz` in
-  an empty folder); run build commands under `bash -c`.
+- **zsh stops a command at a glob with no match**; run build commands under `bash -c`.
 - **`methodology/HANDOFFS.md` was not archived** (its trimmer refuses, backlog `:316`): keep the receipt short.
 - **Carried:** one-off scripts as `Rscript --no-init-file` with `R_LIBS`, `R_LIBS_USER` set to renv's library, but the
   harness's own commands (`test_dir`, `runTiming.R`, `savePedigrees.R`) as plain `Rscript` from the root, so renv
   activates; zsh does not split an unquoted variable (`bash -c`); the 5-file cap splits commits; the ratchet's suite
-  gate times out at 300 s (run the suite by hand, about 9.5 min, on a `git archive` copy); `CLAUDE.md` is over its
+  gate times out at 300 s (run the suite by hand, about 10 min, on a `git archive` copy); `CLAUDE.md` is over its
   budget (learnings go to the plans' dragons); `pedkindraw.Rproj` untracked, Mark's; `NOT_CRAN=true` for the browser
   tests; scratch files in the scratchpad; the Windows hang (cancel at 40 min).
 
 ### Key files
-- The harness: `tools/timing/timingHarness.R` (`:39` `useTimingLibraries()`, `:50` `checkPedkindrawFolder()`, `:151`
-  `currentMemoryFree()`, `:160` `waitForQuiet()`, `:180` `timeStamp()`, `:285` `runLimited()`, `:370` `stopsRecord()`,
-  `:380` `runRow()`, `:398` `parseMachine()`, `:424` `chromeVersion()`, `:440` `chromePath()`, `:451`
-  `packageVersions()`, `:460` `packagedTime()`, `:484` `commitFacts()`, `:498` `checkBuild()`, `:523` `recordRow()`,
-  `:552` `appendRecordRow()`); `runTiming.R` (`:65`-`:67` the record's row, `:88` `runOnce()`); the tests,
-  `tools/timing/tests/test_timingHarness.R:593` (S80's 18); `timingCases.R`, `timeOne.R`, `savePedigrees.R`,
-  `summarizeTiming.R`.
-- The plan: `docs/planning/pedkindraw-timing-plan.md` (`:292` 4.2, `:391` 5.4, `:399` 5.5, `:426` 5.8, `:456` 17h1,
-  `:489` 17h1b and its Done note, `:506` 17h2, `:528` 17h3, `:584` dragons 1-24); R155 in
-  `docs/planning/standalone-pedigree-package-plan.md:326`; `docs/planning/cran-submission-plan.md:754` (17h).
+- The harness: `tools/timing/timingHarness.R` (`:43` `useTimingLibraries()`, `:54` `checkPedkindrawFolder()`, `:155`
+  `currentMemoryFree()`, `:164` `waitForQuiet()`, `:184` `timeStamp()`, `:291` `runLimited()` (`launched`,
+  `callStarted`), `:378` `stopsRecord()`, `:389` `runRow()`, `:406` `parseMachine()`, `:432` `chromeVersion()`, `:448`
+  `chromePath()`, `:459` `packageVersions()`, `:468` `packagedTime()`, `:492` `commitFacts()`, `:506` `checkBuild()`,
+  `:531` `recordRow()`, `:560` `appendRecordRow()`); `runTiming.R` (`:67`-`:69` the record's row, `:90` `runOnce()`);
+  the tests, `tools/timing/tests/test_timingHarness.R:352` and `:368` (S81's `launched` tests), `:642` (the row),
+  `:663` (`runRow()`'s arguments); `timingCases.R`, `timeOne.R`, `savePedigrees.R`, `summarizeTiming.R`.
+- The plan: `docs/planning/pedkindraw-timing-plan.md` (`:294` 4.2, `:393` 5.4, `:401` 5.5, `:428` 5.8, `:458` 17h1,
+  `:491` 17h1b, `:508` 17h1c, `:526` 17h2, `:548` 17h3, `:604` dragons 1-25); R156 in
+  `docs/planning/standalone-pedigree-package-plan.md:328`; `docs/planning/cran-submission-plan.md:754` (17h).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -115,13 +111,51 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 81 Did
-**Deliverable:** Phase 17h1c (`methodology/BACKLOG.md:325`), strict TDD: each run's `started` in `timingRuns.csv` is
-the time the run began, not the time it ended (timing plan dragon 24). No package code. (IN PROGRESS)
-**Started:** 2026-11-23 12:28 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17h1c: fix 'started'
-(Recommended)" (orient picker).
-**Status:** Session claimed. Work beginning: `runOnce()` and `runRow()` read, then the pre-RED measures.
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
-close-out, this line is the crash breadcrumb for the next session's reconcile.
+**Deliverable:** Phase 17h1c (the backlog item S80 added), strict TDD: each run's `started` in `timingRuns.csv` is when
+the run launched, not when it ended (timing plan dragon 24). DONE.
+**Started:** 2026-11-23 12:28 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time, all the recommended
+option):** "17h1c: fix 'started' (Recommended)" (orient); "When the run launches (Recommended)" (R156); "Yes, proceed
+to RED"; "Yes, proceed to GREEN"; "Yes, REFACTOR (Recommended)". No correction and no tool use declined.
+**Commits:** claim `e516629`; R156 `96a7f39`; RED `7c6e8e7`; GREEN `c7cff5d`; REFACTOR `df6dbca`; close-out 1 `19a5b43`
+(the plans, roadmap); close-out 2 (the backlog, these notes, the receipt, the ledger), pushed after it.
+**Measured first:** the copied behaviour on three ~3.3 s children (each row's `started` 2.6-3.1 s after the moment
+before `runLimited()`, the run's length cut to the second); one `waitForQuiet()` pass, 2.66 s with no floor; then the
+drafted RED tests against the committed harness (4 failing, each on R156's change) and a scratch draft of GREEN (22 of
+22 expectations).
+**Built:** `launched` in `runLimited()`, `runRow()` writing it (no `started` argument), `callStarted`; 3 new tests and
+the row test changed; R156; the plans' status, a 17h1c entry, dragons 24 (fixed) and 25 (the machine's load); the
+backlog's `:325` replaced by a note for nprcgenekeepr.
+**Verified:** RED 129 tests, 4 failing for the right reason, 125 passing, WARN 0, SKIP 0; GREEN and after REFACTOR
+`[ FAIL 0 | WARN 0 | SKIP 0 ]` 129 tests, 1,219 expectations; REFACTOR 31 of 32 functions deparse identical to GREEN's
+and `runLimited()` identical with the old name put back; the trial of the real `runTiming.R` (`pkd_gen`, `k2_kin` at
+300): 8 runs `ok`, each row's `started` plus `realSeconds` before the next row's `started`, the last run's end
+12:57:12.1 against the end note's 12:57:12; lint 0; no package file changed; the package suite by hand on a `git archive` of `df6dbca` (`NOT_CRAN=true`) `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ]` (1,146 tests, 600 s); quality_ratchet 5/6 pass, 0 fail, 1 unmeasured (the suite gate's 300 s).
+**Found:** other work on this Mac (a virtual machine, vitest, Playwright; 0% idle, load 43 at 12:35) holds a record
+back (dragon 25); the timing plan's cite of the cran plan's 17i heading moved with close-out 1's own edit (`:766`).
+**Not run:** a full-size record (17h2's work).
+
+#### Session 80 Handoff Evaluation (by Session 81)
+**Score: 9/10.** ROI high: the ACTIVE TASK framed the decision, and What You Must Do 4 named both files at their lines.
+- **What helped:** `runTiming.R:88` (`runOnce()`) and `timingHarness.R:380` (`runRow()`), each where it said; "measure
+  first (Learning 17)" and the testing question (move `runOnce()` or check by a trial), which led to a third place,
+  inside `runLimited()`, needing neither; the `PKD_LIB` build commands under `bash -c`, exact; the gotchas on SKIP, the
+  folder run alone and the build check; drift 91/23/0, nprcgenekeepr's 4 commits and the 31 backlog lines all held.
+- **What was missing:** that the machine might be busy with other work (not knowable at S80's close-out; my first trial
+  waited 5 minutes without a run, now dragon 25).
+- **What was wrong:** nothing found. Its suggested fix ("a time taken before the run, passed as `runRow(started = )`")
+  was one design, offered as such.
+- **ROI:** high.
+
+**Self-assessment: 8/10.**
++ Orient in full, the claim before any work; the bug reproduced on real children before the picker, which stated
+  counts; every RED test run against the committed harness and a scratch draft before RED (Learning 18); RED for the
+  right reason with SKIP 0; a trial of the real script, not only the tests; the REFACTOR proved by machine; a stale
+  cite my own edit made, found and fixed before its commit (Learning 7).
+- **Slips, none reaching a commit:** I started the first trial without reading the machine's load (5 minutes lost,
+  stopped); GREEN first put the new clock line under the comment that describes the next line (moved before the
+  commit); the backlog's new item said "the two items above" for items 50 lines up (named by line before the commit); a
+  picker preview said "runtiming.R". Two of RED's four failing tests also stop with an error after their first
+  failure, because a later comparison reads the missing time: correct, but noisier than a failure alone.
 
 ### What Session 80 Did
 **Deliverable:** Phase 17h1b (the backlog item S79 added), strict TDD: each run's free memory and `record.csv`
@@ -229,60 +263,3 @@ package file changed; the package suite by hand (below, in the receipt).
 - Other slips, none reaching a commit: the probe read the sample with `""` only as unknown (every sire `"NA"`); R's
   `||` with text, an `ifelse()` recycling bug and a duplicate-index assignment in `familyNumbers()`, each caught in the
   scratchpad; a top-level colony build aborted RED's first run of a test file; a wrong line citation in a header.
-
-### What Session 78 Did
-**Deliverable:** Phase 17g, the timing plan (`docs/planning/cran-submission-plan.md:740`): a plan of its own,
-`docs/planning/pedkindraw-timing-plan.md`. A planning session: no package code, nothing timed for the record. DONE.
-**Started:** 2026-11-23 04:50 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time, all the recommended
-option):** "17g: the timing plan (Recommended)" (orient); R153's four in one picker ("All 37 (Recommended)", "Time
-them again (Recommended)", "Half the CPU idle (Recommended)", "pedkindraw's own runs only (Recommended)"). No
-correction and no tool use declined.
-**Commits:** claim `dd2d1c2`; measuring scripts `66f1bf8`; the plan and R153 `b327133`; close-out 1 `03471dd` (the cran
-plan's 17g-17i rows, 17n's amendment, D5, the session map; roadmap; backlog `:36` and the new `:298`); close-out 1c
-`ad4ad82` (the plan's citations after close-out 1, Learning 7); close-out 2 (these
-notes, the receipt, the ledger); close-out 2b (HANDOFFS.md's trimmer refused, backlog `:316`), pushed after it.
-**Measured first** (plan section 3): the November study's method, harness files and three records (Part A 587 runs,
-76.8 min of starts; Part B 84; the Rewrite 157 over 356 min under its 80%-idle and 50%-memory rule); the study's seven
-seed-1 colonies rebuilt byte for byte under pedkindraw's R (7 of 7 md5s, twice); the 38 exports' kinship2 and
-Pedixplorer functions (13 newer pairings, read from both namespaces and their arguments); one call of each function
-at 10,000 and 100,000 animals, twice, within 5% (`findGeneration(alignMates = TRUE)` 56.5 and 54.8 s at 10,000;
-`getNearRelativePedigree()` 6.2 s; three counterpart calls stopped on the probe's inputs); the machine (load 5.7, 85%
-idle, 47% memory free); the cost (about 3.5-4 h of computation runs, 1.2-1.5 h of drawing runs, a guess).
-**Wrote:** the plan (sections 1-10: R153; measures; the inventory of copied, written and time-stating files and the
-pointers; the design, 78 computation and 11 drawing cases; phases 17h1-17h4 and 17i with DONE, commands, surface and
-boundary; T1-T5; 15 dragons); R153 in the standalone plan; the cran plan, roadmap and backlog after 17g.
-**Verified:** every count and line in the plan re-checked against its source before its commit (section 4.6's
-searches); the three scripts re-run as committed from an empty folder; quality_ratchet 5/6 pass, 0 fail, 1 unmeasured
-(the suite gate's 300 s); by hand the full suite at `ad4ad82` (`NOT_CRAN=true`) `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ]`
-(588 s); no file under `R/`, `tests/`, `man/`, `vignettes/`, `inst/`, `DESCRIPTION` or `NAMESPACE` changed (`git diff
---stat 8a1a549..HEAD`).
-**Found:** `findGeneration(alignMates = TRUE)` takes about 56 s at 10,000 animals (backlog `:298`, pedkindraw's own).
-**Not run:** any timing by the method (17h's work); `R CMD check` (no package file changed).
-
-#### Session 77 Handoff Evaluation (by Session 78)
-**Score: 9/10.** ROI high: "What You Must Do" 3 was the evidence inventory's spine.
-- **What helped:** item 3 named every read with its line (the cran plan's 17g-17i rows and section 2.1, the contract's
-  section 7 at `:323`, backlog `:36`, the draft at `612eed9`, S75's `g17bSize.R`, the drawing vignette at `:794`, NEWS's
-  G17b bullet), each found where it said; "measure what a pick depends on before the picker" led to the colonies' md5
-  check and the probes; drift 91/23/0, nprcgenekeepr's 4 commits at `3e06730c5` and the 28 backlog lines all held; the
-  HANDOFFS.md archive warning (86 B under the threshold at Orient); the zsh gotcha (I still tripped it, my slip).
-- **What was missing:** that the study's whole harness, with tests, is in nprcgenekeepr's `tools/pedigreeComparison/`
-  and its colony generator is standalone (found from the study's section 7; it shaped the plan); that the study's load
-  rule became "half the CPU idle" (S1123, the standalone plan's Phase 1 Done note `:465`), not `uptime`; that memory
-  "Framing before filling" was written about this very vignette (S30), so the picker should carry the outline.
-- **What was wrong:** "the standalone plan's section 6 (the timing method: fresh process, warm-up, median of 3,
-  uptime)": section 6 is the Risks table, one row; the method is Phase 1 step 4 (`:446`), with S1123's idle rule. Minor.
-- **ROI:** high.
-
-**Self-assessment: 8/10.**
-+ Orient in full, the claim before any work; every named source read; measured before the picker (the colonies byte
-  for byte, every export's pairing by namespace and arguments, one call of each function twice, the machine, the
-  records' durations), so the picker stated counts and Mark took all four recommended options at once; the picker named
-  all 38 exports (memory "Picker sets") and put the vignette's outline in a preview (memory "Framing before filling");
-  the scripts committed and re-run from an empty folder before the plan cited them; a real finding (`alignMates`)
-  recorded; the plan ordered harness-then-runs per kind so each half works end to end (failure mode #25).
-- **Slips, none reaching a commit:** a zsh unquoted variable made the first verification run exit at once (the
-  handoff's own gotcha); the first draft said 79 cases (78: kinship2 has 10 newer pairings, not 11), "within 4%"
-  (4.1%), `:24`-`:75` (`:72`), "under 0.05" (0.052) and "the study's re-run differed by 3%" (3% and 4%), each found by
-  re-checking the number against its source (Learning 18); a `sed` rewrite of the probe headers turned apostrophes into
-  dots (found by `grep`). The plan was drafted while the re-run was still going, so three figures changed after.
