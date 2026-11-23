@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-23 · [BL-Phase 17] S80 (in progress): 17h1b, free memory and `record.csv`, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S80's stub), `methodology/HANDOFFS.md` (S80's `status: pending` receipt) and this entry. The deliverable is 17h1b (`methodology/BACKLOG.md:325`), strict TDD. Phase 3F rewrites this entry.
+- **Commit/PR:** the S80 claim commit · **Session:** S80 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits and no harness change, ledgers current at `a172376`, no ghost session, the receipt's ratchet line matches the results file, 31 backlog items at the handoff's lines).
+
 ### 2026-11-23 · [BL-Phase 17] S79 push: `master` to GitHub at close-out
 - **Change:** pushed `b97ef83..2cb5d38` (S79's 11 commits: claim, T1 and R154, RED 1-2, two RED amendments, GREEN 1-2, REFACTOR, close-outs 1 and 2), every one `[skip ci]` (`tools/` is build-ignored; no package file changed); no workflow started (`gh run list` shows S77's runs last). Recorded in close-out 2b (this entry).
 - **Commit/PR:** the push of `2cb5d38`; close-out 2b (this entry) · **Session:** S79 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` is `2cb5d38`; no CI run to read.

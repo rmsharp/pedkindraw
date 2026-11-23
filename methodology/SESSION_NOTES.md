@@ -108,6 +108,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 80 Did
+**Deliverable:** Phase 17h1b (`methodology/BACKLOG.md:325`), strict TDD: each run's free memory in `runTiming.R`'s
+row, and a writer for `record.csv` (timing plan sections 4.2 and 5.4). No package code. (IN PROGRESS)
+**Started:** 2026-11-23 11:37 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17h1b: memory + record
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: the plan's sections 4.2 and 5.4 and the harness's code, then the pre-RED
+measures.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 79 Did
 **Deliverable:** Phase 17h1, the computation timing harness (`docs/planning/pedkindraw-timing-plan.md:451`), strict
 TDD, a copy. DONE.
