@@ -138,6 +138,13 @@ pedixplorerObject <- function(p, i = timingInputs(p)) {
   Pedixplorer::Pedigree(q)
 }
 
+## A kinship2 object of p with the shared availability, as kinship2's
+## shrinking, unrelated-set and trimming functions take them.
+kinship2WithAvail <- function(p) {
+  i <- timingInputs(p)
+  list(ped = kinship2Object(p, i), avail = i$avail)
+}
+
 ## toKinship2() and toPedixplorer() come from comparisonFormats.R, sourced
 ## first, which lintr cannot see.
 # nolint start: object_usage_linter.
@@ -237,10 +244,7 @@ studyCases <- function() {
     ),
     timingCase(
       "k2_shrink", shrink, "kinship2",
-      function(p) {
-        i <- timingInputs(p)
-        list(ped = kinship2Object(p, i), avail = i$avail)
-      },
+      function(p) kinship2WithAvail(p),
       function(x) {
         kinship2::pedigree.shrink(x$ped, avail = x$avail, maxBits = 16L)
       }
@@ -261,10 +265,7 @@ studyCases <- function() {
     ),
     timingCase(
       "k2_unrel", unrelated, "kinship2",
-      function(p) {
-        i <- timingInputs(p)
-        list(ped = kinship2Object(p, i), avail = i$avail)
-      },
+      function(p) kinship2WithAvail(p),
       function(x) kinship2::pedigree.unrelated(x$ped, avail = x$avail)
     ),
     timingCase(
@@ -355,10 +356,7 @@ pairedCases <- function() {
     ),
     timingCase(
       "k2_unavail", unavail, "kinship2",
-      function(p) {
-        i <- timingInputs(p)
-        list(ped = kinship2Object(p, i), avail = i$avail)
-      },
+      function(p) kinship2WithAvail(p),
       function(x) kinship2::findUnavailable(x$ped, x$avail)
     ),
     timingCase(
@@ -374,10 +372,7 @@ pairedCases <- function() {
     ),
     timingCase(
       "k2_noninform", noninform, "kinship2",
-      function(p) {
-        i <- timingInputs(p)
-        list(ped = kinship2Object(p, i), avail = i$avail)
-      },
+      function(p) kinship2WithAvail(p),
       function(x) kinship2::findAvailNonInform(x$ped, x$avail)
     ),
     timingCase(
@@ -395,10 +390,7 @@ pairedCases <- function() {
     ),
     timingCase(
       "k2_availaff", availAff, "kinship2",
-      function(p) {
-        i <- timingInputs(p)
-        list(ped = kinship2Object(p, i), avail = i$avail)
-      },
+      function(p) kinship2WithAvail(p),
       function(x) kinship2::findAvailAffected(x$ped, x$avail, affstatus = 1L)
     ),
     timingCase(
