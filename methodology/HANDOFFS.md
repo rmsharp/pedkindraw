@@ -204,10 +204,17 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S80
 date: 2026-11-23
-status: pending
-active_task: Phase 17h1b (methodology/BACKLOG.md:325), strict TDD: each run's free memory in runTiming.R's row and a record.csv writer (timing plan 4.2, 5.4). Claimed; work beginning.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17. 17h1b DONE in S80 (R155): each timing run's row holds memFree; runTiming.R appends record.csv's row when a record starts, after a check that PKD_LIB holds the commit named. Next: decide backlog :325 (timingRuns.csv's started is each run's end); recommended 17h1c, then 17h2.
+what_was_done: claim b3e18f3; R155 298091c; RED a2def9e (18 tests); GREEN c458ca4; REFACTOR 5efec3d (timeStamp()); close-out 1 2a9e4b1; close-out 2 (backlog :325, notes, this receipt, ledger). test_dir [ FAIL 0 | WARN 0 | SKIP 0 ] 126 tests. Details: SESSION_NOTES.md "What Session 80 Did".
+next_steps: Orient as SESSION_NOTES.md "What You Must Do" (drift 91/23/0; nprcgenekeepr's harness log from 3e06730c5); build PKD_LIB; the orient picker: 17h1c (recommended) or 17h2 (timing plan :506), every backlog item named.
+key_files: tools/timing/timingHarness.R:380-:567 (runRow, the record's functions); tools/timing/runTiming.R:65 (record row), :88 (runOnce); docs/planning/pedkindraw-timing-plan.md:489 (17h1b), :506 (17h2), :584 (dragons 1-24); methodology/BACKLOG.md:325.
+gotchas: the record stops at once on uncommitted R/ or an older PKD_LIB build (dragon 22); scratch test runs outside the root lack renv and edition 3 skips (dragon 21); timingRuns.csv's pkdLib names the scratch path (dragon 23); HANDOFFS.md past its trimmer (backlog :316), keep receipts short.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand below; the package suite by hand on a git archive of 5efec3d (NOT_CRAN=true) [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ] (1,146 tests, 597 s); trials of runTiming.R as what_was_done's notes say. No package file changed.
+changelog_ref: CHANGELOG.md "2026-11-23 · [BL-Phase 17] S80: 17h1b, each run's free memory and record.csv"
+commit: the close-out 2 commit (session commits b3e18f3 to 2a9e4b1 listed above)
 ```
 ```handoff
 session: S79
