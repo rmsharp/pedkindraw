@@ -147,6 +147,11 @@ pick an animal in the “Select by id” box, and save the picture with the
   makes a simpler drawing’s nodes and edges: one node per animal,
   positioned by generation, and an edge from each sire and dam to its
   offspring.
+- [`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)
+  starts an app in the web browser that opens a pedigree file (CSV or
+  text) and draws it, with no code: it chooses the animals and what is
+  drawn, and saves the drawing as an SVG, a PDF or a PNG file and the
+  animals as a CSV file. It needs the shiny package.
 
 **Kinship and relatedness**
 

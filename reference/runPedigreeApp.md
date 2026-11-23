@@ -103,10 +103,23 @@ In the app:
   [`checkPedigree`](https://rmsharp.github.io/pedkindraw/reference/checkPedigree.md)
   on the whole file, and the animals chosen on the Animals tab.
 
+- **Save** the drawing as an SVG, a PDF or a PNG file with the buttons
+  above it, through
+  [`savePedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
+  at its own page (10 inches wide; a PNG at 300 dpi); and the animals
+  chosen as a CSV file with the button on the Animals tab: the rows that
+  tab shows, with every column of the file, which the app opens again to
+  the same drawing. The pictures need the chromote package and Google
+  Chrome or Chromium; without them the picture buttons are greyed and
+  the page says what is missing.
+
 ## Requirements
 
 The shiny package (`install.packages("shiny")`), checked before anything
-else.
+else. Saving the drawing as a picture also needs the chromote package
+and Google Chrome or Chromium, as
+[`savePedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
+does; the app looks for them once, when it starts.
 
 ## See also
 

@@ -158,9 +158,10 @@ so a script leaves `onClick` out.
 ## See also
 
 [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md),
-and
 [`savePedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
-to save the drawing as an SVG, a PDF or a PNG file
+to save the drawing as an SVG, a PDF or a PNG file, and
+[`runPedigreeApp`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md),
+an app that draws a pedigree file with this function, with no code
 
 ## Examples
 

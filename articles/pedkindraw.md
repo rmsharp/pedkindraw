@@ -255,6 +255,13 @@ saves the drawing as an SVG, a PDF or a PNG file;
 [`vignette("drawing")`](https://rmsharp.github.io/pedkindraw/articles/drawing.md)
 shows how.
 
+To draw a pedigree with no code,
+[`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)
+opens a CSV or text file in an app in the web browser: it draws
+everyone, one family or a few animals’ relatives, with the file’s
+conditions and marks, and saves the drawing and the animals. It needs
+the shiny package; its help page says what it does.
+
 ## Shrinking a pedigree
 
 [`shrinkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md)

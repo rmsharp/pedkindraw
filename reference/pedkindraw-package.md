@@ -108,7 +108,10 @@ Pedixplorer objects, saving a drawing, clicks in a Shiny application and
 a colony-size drawing. The README on the package's GitHub page draws a
 twelve-animal pedigree; the example of
 [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
-draws four.
+draws four. To draw a pedigree file with no code,
+[`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)
+opens it in an app in the web browser, which also saves the drawing and
+the animals.
 
 ## See also
 

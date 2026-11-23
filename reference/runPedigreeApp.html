@@ -135,13 +135,24 @@ asks before drawing them, which can take a minute or more.</p></li>
 <li><p><strong>See the records' problems</strong> on the Checks tab, from
 <code><a href="checkPedigree.html">checkPedigree</a></code> on the whole file, and the animals chosen
 on the Animals tab.</p></li>
+<li><p><strong>Save</strong> the drawing as an SVG, a PDF or a PNG file with the
+buttons above it, through <code><a href="savePedigreeDiagram.html">savePedigreeDiagram</a></code> at its own
+page (10 inches wide; a PNG at 300 dpi); and the animals chosen as a
+CSV file with the button on the Animals tab: the rows that tab shows,
+with every column of the file, which the app opens again to the same
+drawing. The pictures need the <span class="pkg">chromote</span> package and Google
+Chrome or Chromium; without them the picture buttons are greyed and
+the page says what is missing.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a></h2>
 
 
 <p>The <span class="pkg">shiny</span> package (<code>install.packages("shiny")</code>), checked
-before anything else.</p>
+before anything else. Saving the drawing as a picture also needs the
+<span class="pkg">chromote</span> package and Google Chrome or Chromium, as
+<code><a href="savePedigreeDiagram.html">savePedigreeDiagram</a></code> does; the app looks for them once,
+when it starts.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -461,6 +461,12 @@ function to run. In a Shiny application it can send the id of the node
 clicked to the server. The drawing needs 500 pixels of height, 45 more
 for each condition past the first.
 
+[`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)
+starts such an application, ready made: it draws a pedigree file, and a
+click on an animal, or on a repeat of it, makes it the focal animal, the
+one whose ancestors and descendants or near relatives the app can draw.
+To write your own, the code below sends the id clicked to the server.
+
 ``` r
 
 ## In the user interface:
@@ -538,11 +544,19 @@ savePedigreeDiagram(diagram, "colony.png", width = 14, height = 7)
 ## How large a drawing can be
 
 Most of the time a drawing takes goes to the layout, in R. In
-measurements made in November 2026 on one Mac (Apple M2 Max),
-nprcgenekeepr’s drawing, from which pedkindraw’s is copied, drew 1,000
-animals in about 16 seconds, and 2,000 animals not within two minutes.
-At 1,000 animals an animal could still be found by its id, and its lines
-followed to its parents, once zoomed in.
+measurements made in November 2026 on one Mac (Apple M2 Max), pedkindraw
+drew pedigrees of 501 to 2,000 animals, taken from nprcgenekeepr’s
+example pedigree of 3,694, in 2.0 seconds for 501 animals, 9.1 seconds
+for 1,001, 23.5 seconds for 1,500 and 50.5 seconds for 2,000, in R;
+showing a drawing in Chrome added under a second. The shape of a
+pedigree matters as much as its size: two other pedigrees of about 1,000
+animals, made of the ancestors of the last three generations only, took
+16.7 and 19.1 seconds.
+[`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)
+asks before it draws more than 1,000 animals. In nprcgenekeepr’s
+drawing, from which pedkindraw’s is copied, an animal could still be
+found by its id at 1,000 animals, and its lines followed to its parents,
+once zoomed in.
 
 ## Where next
 
