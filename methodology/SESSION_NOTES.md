@@ -114,6 +114,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 81 Did
+**Deliverable:** Phase 17h1c (`methodology/BACKLOG.md:325`), strict TDD: each run's `started` in `timingRuns.csv` is
+the time the run began, not the time it ended (timing plan dragon 24). No package code. (IN PROGRESS)
+**Started:** 2026-11-23 12:28 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17h1c: fix 'started'
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: `runOnce()` and `runRow()` read, then the pre-RED measures.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 80 Did
 **Deliverable:** Phase 17h1b (the backlog item S79 added), strict TDD: each run's free memory and `record.csv`
 (timing plan sections 4.2 and 5.4). DONE.
