@@ -110,6 +110,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 82 Did
+**Deliverable:** Phase 17h2, the computation runs (`docs/planning/pedkindraw-timing-plan.md:526`): all 78 cases at six
+sizes timed with `tools/timing/runTiming.R`, the results committed. No code. (IN PROGRESS)
+**Started:** 2026-11-23 14:10 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17h2: timing runs (Recommended)"
+(orient picker).
+**Status:** Session claimed. Work beginning: where to build `PKD_LIB` and the other work on this Mac (dragons 23, 25).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 81 Did
 **Deliverable:** Phase 17h1c (the backlog item S80 added), strict TDD: each run's `started` in `timingRuns.csv` is when
 the run launched, not when it ended (timing plan dragon 24). DONE.
