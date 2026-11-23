@@ -60,5 +60,7 @@
 #' styles, layout hints, kinship2 and Pedixplorer objects, saving a drawing,
 #' clicks in a Shiny application and a colony-size drawing. The README on the
 #' package's GitHub page draws a twelve-animal pedigree; the example of
-#' [drawPedigreeDiagram()] draws four.
+#' [drawPedigreeDiagram()] draws four. To draw a pedigree file with no code,
+#' [runPedigreeApp()] opens it in an app in the web browser, which also saves
+#' the drawing and the animals.
 "_PACKAGE"

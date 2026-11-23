@@ -183,9 +183,10 @@
 #'   each of the \dQuote{Infertile} and \dQuote{No offspring} rows, and
 #'   for each of the \dQuote{Miscarriage}, \dQuote{Termination} and
 #'   \dQuote{Ectopic} rows.
-#' @seealso \code{\link{makePedigreeMatingLayout}}, and
+#' @seealso \code{\link{makePedigreeMatingLayout}},
 #'   \code{\link{savePedigreeDiagram}} to save the drawing as an SVG, a PDF or
-#'   a PNG file
+#'   a PNG file, and \code{\link{runPedigreeApp}}, an app that draws a
+#'   pedigree file with this function, with no code
 #' @examples
 #' ## Four animals: A and B are the parents of C and D; A has died, and C
 #' ## is affected
