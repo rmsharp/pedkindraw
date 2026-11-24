@@ -464,3 +464,13 @@ code, `DIVERGENCE.md` in the repository says how and why.
   `makePedigreeMatingLayout(x$ped, hints = x$hints, matings = x$matings)`.
   Before, spouse pairs were left out, and so were mate hint rows naming
   them, with a message.
+
+## Documentation
+
+* New: `vignette("speed", package = "pedkindraw")`, "Speed and size
+  limits", gives the seconds each of pedkindraw's functions took on one
+  machine, by the number of animals from 300 to 100,000, beside the kinship2
+  and Pedixplorer functions that do the same; where each one stopped and its
+  memory there; and how large a drawing can be drawn and read. A script in the
+  repository, `tools/checkSpeedTables.R`, checks every number on the page
+  against the timing records in `tools/timing/results/`.

@@ -1,0 +1,40 @@
+# pedkindraw's own (S85, Phase 17i1, R159): checks that every table of the
+# speed vignette, vignettes/speed.Rmd, equals the one built from the timing
+# records in tools/timing/results/, and every number in its prose is in a
+# table or is one of the method's own. The check needs base R only, so this
+# runs on Linux alone, apart from R-CMD-check.yaml, and only when the page,
+# the records or the check change.
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - vignettes/speed.Rmd
+      - tools/timing/results/**
+      - tools/checkSpeedTables.R
+      - tools/timing/speedTables.R
+      - .github/workflows/speed-tables.yaml
+  pull_request:
+    paths:
+      - vignettes/speed.Rmd
+      - tools/timing/results/**
+      - tools/checkSpeedTables.R
+      - tools/timing/speedTables.R
+      - .github/workflows/speed-tables.yaml
+  workflow_dispatch:
+
+name: speed-tables.yaml
+
+permissions: read-all
+
+jobs:
+  speed-tables:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Check the speed vignette's tables against the timing records
+        run: Rscript tools/checkSpeedTables.R
