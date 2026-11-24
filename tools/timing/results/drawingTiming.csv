@@ -1,0 +1,44 @@
+"case","package","form","pedigree","size","status","message","rSeconds","browserSeconds","totalSeconds","heapPeakMb","preRssMb","maxRssMb","jsHeapMb","warmupTotalSeconds","runs"
+"pkd_page","pedkindraw","browser","synthetic_300",300,"ok","",1.087,0.129400000095367,1.21640000009537,90.8,239.9,390.140625,9.6489143371582,1.20680000019073,3
+"pkd_page","pedkindraw","browser","synthetic_1000",1000,"ok","",15.529,0.450299999952316,15.9792999999523,283.8,237.8,793.875,19.2773246765137,15.951,3
+"pkd_page","pedkindraw","browser","synthetic_2000",2000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pkd_page","pedkindraw","browser","rhesus375",375,"ok","",1.853,0.130800000190735,1.98459999990463,90.8,242.7,414.140625,11.318359375,1.95329999995232,3
+"pkd_page_direct","pedkindraw","browser","synthetic_300",300,"ok","",0.344,0.0885999999046326,0.433100000143051,82,239,325.359375,7.17949295043945,0.440200000047684,3
+"pkd_page_direct","pedkindraw","browser","synthetic_1000",1000,"ok","",7.719,0.237599999904633,7.95659999990463,229.9,239.8,597.515625,12.1004829406738,8.03269999980927,3
+"pkd_page_direct","pedkindraw","browser","synthetic_2000",2000,"ok","",105.075,0.603899999856949,105.678899999857,947.4,238.8,1611.234375,19.9259605407715,104.619600000143,3
+"pkd_page_direct","pedkindraw","browser","synthetic_3000",3000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pkd_page_direct","pedkindraw","browser","rhesus375",375,"ok","",0.849,0.0991999998092651,0.946099999904633,89.2,239,365.4375,7.11564636230469,0.966699999809265,3
+"pkd_svg","pedkindraw","static","synthetic_300",300,"ok","",1.454,NA,1.454,115.8,380.2,437.078125,NA,1.605,3
+"pkd_svg","pedkindraw","static","synthetic_1000",1000,"ok","",2.35,NA,2.35,115.5,846.5,863.140625,NA,2.414,3
+"pkd_svg","pedkindraw","static","synthetic_2000",2000,"ok","",6.036,NA,6.036,129.4,2394.9,2414.078125,NA,6.11,3
+"pkd_svg","pedkindraw","static","synthetic_3000",3000,"error","no 'CALL START' within 300 s",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pkd_svg","pedkindraw","static","rhesus375",375,"ok","",1.534,NA,1.534,114.6,400,458.515625,NA,1.707,3
+"pkd_pdf","pedkindraw","static","synthetic_300",300,"ok","",2.675,NA,2.675,119,380.2,452.171875,NA,3.106,3
+"pkd_pdf","pedkindraw","static","synthetic_1000",1000,"ok","",5.413,NA,5.413,171.4,834.4,967.34375,NA,5.153,3
+"pkd_pdf","pedkindraw","static","synthetic_2000",2000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pkd_pdf","pedkindraw","static","rhesus375",375,"ok","",2.896,NA,2.896,114.6,404.5,475.296875,NA,3.24,3
+"pkd_png","pedkindraw","static","synthetic_300",300,"ok","",2.455,NA,2.455,115.8,380,437.328125,NA,3.222,3
+"pkd_png","pedkindraw","static","synthetic_1000",1000,"ok","",3.539,NA,3.539,115.5,834.1,851.625,NA,3.597,3
+"pkd_png","pedkindraw","static","synthetic_2000",2000,"ok","",9.664,NA,9.664,129.4,2329.7,2347.203125,NA,9.41,3
+"pkd_png","pedkindraw","static","synthetic_3000",3000,"error","no 'CALL START' within 300 s",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pkd_png","pedkindraw","static","rhesus375",375,"ok","",2.448,NA,2.448,114.6,400.2,459.984375,NA,2.625,3
+"pkd_data","pedkindraw","data","synthetic_300",300,"ok","",0.002,NA,0.002,1,239.1,239.234375,NA,0.001,3
+"pkd_data","pedkindraw","data","synthetic_1000",1000,"ok","",0.002,NA,0.002,1.4,240.3,240.40625,NA,0.002,3
+"pkd_data","pedkindraw","data","synthetic_2000",2000,"ok","",0.002,NA,0.002,2.1,242,242.421875,NA,0.003,3
+"pkd_data","pedkindraw","data","synthetic_3000",3000,"ok","",0.003,NA,0.003,2.5,236.7,237.21875,NA,0.004,3
+"pkd_data","pedkindraw","data","rhesus375",375,"ok","",0.001,NA,0.001,1,237.8,237.90625,NA,0.002,3
+"k2_picture","kinship2","static","synthetic_300",300,"ok","",0.432,NA,0.432,88.5,241.1,338.03125,NA,0.44,3
+"k2_picture","kinship2","static","synthetic_1000",1000,"ok","",12.17,NA,12.17,212.5,241.3,548.34375,NA,12.208,3
+"k2_picture","kinship2","static","synthetic_2000",2000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,NA,NA,NA,1
+"k2_picture","kinship2","static","rhesus375",375,"ok","",1.475,NA,1.475,90.3,241.2,368.6875,NA,1.418,3
+"pdx_picture","Pedixplorer","static","synthetic_300",300,"error","Error in rval1$nid[lev + 1, ] : subscript out of bounds Calls: <Anonymous> -> withCanvas -> pedixplorerPlotData",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pdx_picture","Pedixplorer","static","rhesus375",375,"ok","",3.582,NA,3.582,134.6,629.1,728.234375,NA,3.486,3
+"pdx_picture_unaligned","Pedixplorer","static","synthetic_300",300,"ok","",1.24,NA,1.24,127.6,407.2,619.109375,NA,1.225,3
+"pdx_picture_unaligned","Pedixplorer","static","synthetic_1000",1000,"ok","",16.24,NA,16.24,289.9,405.7,1056.28125,NA,16.195,3
+"pdx_picture_unaligned","Pedixplorer","static","synthetic_2000",2000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pdx_picture_unaligned","Pedixplorer","static","rhesus375",375,"ok","",3.539,NA,3.539,143.7,406.5,701.015625,NA,3.57,3
+"pdx_plotly","Pedixplorer","browser","synthetic_300",300,"error","Error in rval1$nid[lev + 1, ] : subscript out of bounds Calls: <Anonymous> -> withCanvas -> pedixplorerAppCex",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pdx_plotly","Pedixplorer","browser","rhesus375",375,"ok","",31.193,0.352900000095367,31.5473000001907,226.7,800.9,886.890625,14.0673179626465,31.9855,3
+"pdx_plotly_unaligned","Pedixplorer","browser","synthetic_300",300,"ok","",29.404,0.337599999904633,29.7415999999046,241.5,402.4,760.796875,13.3196334838867,29.721,3
+"pdx_plotly_unaligned","Pedixplorer","browser","synthetic_1000",1000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,NA,NA,NA,1
+"pdx_plotly_unaligned","Pedixplorer","browser","rhesus375",375,"ok","",35.065,0.366600000143051,35.432899999857,267.3,403.9,880.21875,14.4974746704102,35.5114000000954,3
