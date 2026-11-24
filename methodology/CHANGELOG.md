@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-24 · [BL-Phase 17] S84 (in progress): 17h4, the drawing record, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S84's stub), `methodology/HANDOFFS.md` (S84's `status: pending` receipt) and this entry. The deliverable is 17h4 (timing plan `:598`), no code: `runDrawingTiming.R` over all 11 cases at 300, 1,000, 2,000, 3,000 and the sample, then the pictures for Mark (T4). Phase 3F rewrites this entry.
+- **Commit/PR:** the S84 claim commit · **Session:** S84 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits and no harness change, ledgers current at `fcb27ae`, no ghost session, the receipt's ratchet line matches the results file, 31 backlog items at the handoff's lines, `R/` tree `ac123b7`; the Mac 64% idle, load 7.1, three vitest workers at a full core each for 13-21 h; GitHub not answering, TLS timeout twice).
+
 ### 2026-11-24 · [BL-Phase 17] S83 push: `master` to GitHub at close-out
 - **Change:** pushed `4d85299..5e6515a` (S83's 8 commits: claim, R157, RED, GREEN 1 and 2, REFACTOR, close-outs 1 and 2), every one `[skip ci]` (`tools/` is build-ignored; no package file changed); no workflow started. Recorded in close-out 2b (this entry).
 - **Commit/PR:** the push of `5e6515a`; close-out 2b (this entry) · **Session:** S83 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` is `5e6515a`; no CI run to read.

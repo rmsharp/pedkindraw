@@ -113,6 +113,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 84 Did
+**Deliverable:** Phase 17h4, the drawing record (`docs/planning/pedkindraw-timing-plan.md:598`): `runDrawingTiming.R`
+over all 11 cases at 300, 1,000, 2,000, 3,000 and the sample, then the pictures opened for Mark (T4). No code. (IN PROGRESS)
+**Started:** 2026-11-24 09:38 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17h4: drawing timings (Recommended)"
+(orient picker).
+**Status:** Session claimed. Work beginning: the plan's 17h4 and section 6 read, the machine read and told to Mark, then
+the record started in the background.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 83 Did
 **Deliverable:** Phase 17h3, the drawing harness (`docs/planning/pedkindraw-timing-plan.md:564`), strict TDD: a copy of
 nprcgenekeepr's drawing-timing files into `tools/timing/`. No `R/` change. DONE.
