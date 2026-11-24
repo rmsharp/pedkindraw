@@ -14,7 +14,8 @@
 ## the record's row in record.csv (the commit and its build check, the
 ## versions, Chrome's and the machine's); and, in Phase 17h1c (R156), the
 ## clock time runLimited() launched its child (launched), which each run's
-## row gives as its started.
+## row gives as its started. Phase 17h3: colonyFile() moved to
+## helper-caseValues.R, which test_drawingTiming.R shares.
 ## Tests for the Phase 1 timing harness (docs/planning/
 ## standalone-pedigree-package-plan.md, Phase 1 steps 4-5): each measurement
 ## is one fresh Rscript (timeOne.R) run under /usr/bin/time -l, stopped past
@@ -438,18 +439,6 @@ test_that("every case runs on the 300-animal colony and the sample and
     }
   }
 })
-
-## The 300-animal colony where timeOne.R reads it (tools/timing/data, which
-## git ignores; savePedigrees.R writes the same file).
-colonyFile <- function() {
-  file <- file.path("..", "data", "synthetic_300.csv")
-  if (!file.exists(file)) {
-    dir.create(dirname(file), showWarnings = FALSE)
-    # nolint next: object_usage_linter.
-    writeComparisonPedigree(generateColonyPedigree(300L, 1L), file)
-  }
-  invisible(file)
-}
 
 ## runLimited() and projectRoot come from files lintr cannot see.
 timeOne <- function(case, ped) {

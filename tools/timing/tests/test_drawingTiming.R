@@ -388,17 +388,6 @@ test_that("a save case sets its own time limit, above the harness's 120 s,
 
 ## ---- drawOne.R: one case in a fresh process ---------------------------------
 
-## The 300-animal colony where drawOne.R reads it (savePedigrees.R writes
-## it; a clone has none until then).
-colonyFile <- function() {
-  file <- file.path("..", "data", "synthetic_300.csv")
-  if (!file.exists(file)) {
-    dir.create(dirname(file), showWarnings = FALSE)
-    writeComparisonPedigree(generateColonyPedigree(300L, 1L), file)
-  }
-  invisible(file)
-}
-
 drawOne <- function(case, ped, dir) {
   runLimited(normalizePath(file.path("..", "drawOne.R")),
     c(case, ped, dir, "1200", "800"),

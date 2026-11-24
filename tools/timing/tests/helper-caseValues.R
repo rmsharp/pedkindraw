@@ -5,7 +5,8 @@
 ## case is tried on, and each case's value on them, computed once per run of
 ## this folder's tests (Pedixplorer's shrink() alone takes about 90 s on the
 ## colony). The functions they call come from the harness's scripts, which
-## each test file sources first.
+## each test file sources first. Phase 17h3: colonyFile(), the colony where
+## timeOne.R and drawOne.R read it, from test_timingHarness.R.
 
 ## The seed-1 colony of 300 animals and the 375-animal sample, as the
 ## harness reads them: written by writeComparisonPedigree(), as
@@ -60,3 +61,16 @@ caseValues <- local({
     cache[[name]]
   }
 })
+
+## The 300-animal colony where timeOne.R and drawOne.R read it
+## (tools/timing/data, which git ignores; savePedigrees.R writes the same
+## file, and a clone has none until then).
+colonyFile <- function() {
+  file <- file.path("..", "data", "synthetic_300.csv")
+  if (!file.exists(file)) {
+    dir.create(dirname(file), showWarnings = FALSE)
+    # nolint next: object_usage_linter.
+    writeComparisonPedigree(generateColonyPedigree(300L, 1L), file)
+  }
+  invisible(file)
+}

@@ -97,6 +97,17 @@ pedkindrawDiagram <- function(p, edgeStyle) {
   pedkindraw::drawPedigreeDiagram(layout, edgeStyle = edgeStyle)
 }
 
+## pedkindraw's page case: the generations, the layout, the widget with
+## lines of `edgeStyle`, and the page, all inside the clock.
+pedkindrawPage <- function(id, edgeStyle) {
+  drawingCase(id, "pedkindraw", "browser", c("visNetwork", "htmlwidgets"),
+    prepare = function(p, width, height) p,
+    call = function(x, stem, width, height) {
+      savePage(pedkindrawDiagram(x, edgeStyle), stem, width, height)
+    }
+  )
+}
+
 ## A savePedigreeDiagram() case: the widget is built before the clock, and
 ## the file is written on the function's own page (R157), with its time
 ## limit (60 s by default) set above the harness's 120 s, so that the
@@ -119,20 +130,8 @@ pedkindrawSave <- function(id, ending) {
 
 drawingCases <- function() {
   list(
-    drawingCase("pkd_page", "pedkindraw", "browser",
-      c("visNetwork", "htmlwidgets"),
-      prepare = function(p, width, height) p,
-      call = function(x, stem, width, height) {
-        savePage(pedkindrawDiagram(x, "rectilinear"), stem, width, height)
-      }
-    ),
-    drawingCase("pkd_page_direct", "pedkindraw", "browser",
-      c("visNetwork", "htmlwidgets"),
-      prepare = function(p, width, height) p,
-      call = function(x, stem, width, height) {
-        savePage(pedkindrawDiagram(x, "direct"), stem, width, height)
-      }
-    ),
+    pedkindrawPage("pkd_page", "rectilinear"),
+    pedkindrawPage("pkd_page_direct", "direct"),
     pedkindrawSave("pkd_svg", ".svg"),
     pedkindrawSave("pkd_pdf", ".pdf"),
     pedkindrawSave("pkd_png", ".png"),
