@@ -619,3 +619,8 @@ why.
   drawing can be drawn and read. A script in the repository,
   `tools/checkSpeedTables.R`, checks every number on the page against
   the timing records in `tools/timing/results/`.
+  [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)’s
+  help gives the measured size of a drawing and points to the page, as
+  do
+  [`?pedkindraw`](https://rmsharp.github.io/pedkindraw/reference/pedkindraw-package.md)
+  and the other two vignettes.

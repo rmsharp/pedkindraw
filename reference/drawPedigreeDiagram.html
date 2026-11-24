@@ -224,6 +224,20 @@ can pass one to act on the clicked animal, which needs a live Shiny
 session, so a script leaves <code>onClick</code> out.</p>
     </div>
     <div class="section level2">
+    <h2 id="how-large-a-drawing-can-be">How large a drawing can be<a class="anchor" aria-label="anchor" href="#how-large-a-drawing-can-be"></a></h2>
+
+
+<p>On one Mac (Apple M2 Max), in November 2026, a synthetic colony of 1,000
+animals took 16 seconds from <code><a href="findGeneration.html">findGeneration</a></code> through
+<code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code> and this function to a page drawn
+in Chrome, almost all of it in R, and one of 2,000 animals more than 120
+seconds; with direct lines, 2,000 animals took 106 seconds. Judged by eye
+from those pages, a drawing can be read up to 1,000 animals, zoomed in.
+<code><a href="../articles/speed.html">vignette("speed", package = "pedkindraw")</a></code> gives these times, the
+times of the saved files and those of kinship2's and Pedixplorer's
+drawings.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>,
 <code><a href="savePedigreeDiagram.html">savePedigreeDiagram</a></code> to save the drawing as an SVG, a PDF or

@@ -155,6 +155,21 @@ A click does nothing unless `onClick` is given: a Shiny application can
 pass one to act on the clicked animal, which needs a live Shiny session,
 so a script leaves `onClick` out.
 
+## How large a drawing can be
+
+On one Mac (Apple M2 Max), in November 2026, a synthetic colony of 1,000
+animals took 16 seconds from
+[`findGeneration`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md)
+through
+[`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+and this function to a page drawn in Chrome, almost all of it in R, and
+one of 2,000 animals more than 120 seconds; with direct lines, 2,000
+animals took 106 seconds. Judged by eye from those pages, a drawing can
+be read up to 1,000 animals, zoomed in.
+[`vignette("speed", package = "pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/speed.md)
+gives these times, the times of the saved files and those of kinship2's
+and Pedixplorer's drawings.
+
 ## See also
 
 [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md),

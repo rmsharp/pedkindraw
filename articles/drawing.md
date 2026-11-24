@@ -557,6 +557,12 @@ asks before it draws more than 1,000 animals. In nprcgenekeepr’s
 drawing, from which pedkindraw’s is copied, an animal could still be
 found by its id at 1,000 animals, and its lines followed to its parents,
 once zoomed in.
+[`vignette("speed", package = "pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/speed.md)
+times pedkindraw’s drawing on synthetic colonies of 300 to 3,000
+animals, beside kinship2’s and Pedixplorer’s drawings, with the saved
+SVG, PDF and PNG files and the memory each used; judged from those
+pages, pedkindraw’s own drawing can be read up to 1,000 animals, zoomed
+in, as nprcgenekeepr’s could.
 
 ## Where next
 
@@ -570,3 +576,6 @@ kinship coefficients you have computed;
 gives each conversion, and
 [`vignette("pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/pedkindraw.md)
 the rest of the package.
+[`vignette("speed", package = "pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/speed.md)
+gives how long a drawing and each computation take, by the number of
+animals.

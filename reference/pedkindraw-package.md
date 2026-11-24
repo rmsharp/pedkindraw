@@ -105,8 +105,13 @@ shows what a drawing shows and how to change it: the symbols and the
 legend, deceased animals, conditions, twins, animals drawn twice,
 matings of relatives, the two edge styles, layout hints, kinship2 and
 Pedixplorer objects, saving a drawing, clicks in a Shiny application and
-a colony-size drawing. The README on the package's GitHub page draws a
-twelve-animal pedigree; the example of
+a colony-size drawing.
+[`vignette("speed", package = "pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/speed.md)
+gives the seconds each function took on one machine, by the number of
+animals from 300 to 100,000, beside the kinship2 and Pedixplorer
+functions that do the same, and how large a drawing can be drawn and
+read. The README on the package's GitHub page draws a twelve-animal
+pedigree; the example of
 [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
 draws four. To draw a pedigree file with no code,
 [`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)

@@ -384,7 +384,12 @@ lists every function by what it does.
 [`vignette("drawing", package = "pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/drawing.md)
 shows what a drawing shows and how to change it, one feature at a time:
 the symbols and the legend, conditions, twins, animals drawn twice, the
-two edge styles and layout hints, among others. The help pages of
+two edge styles and layout hints, among others.
+[`vignette("speed", package = "pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/speed.md)
+gives the seconds each function took on one machine, by the number of
+animals from 300 to 100,000, beside the kinship2 and Pedixplorer
+functions that do the same, and how large a drawing can be drawn and
+read. The help pages of
 [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
 and
 [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
