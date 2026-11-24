@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-24 · [BL-Phase 17] S84 push: `master` to GitHub at close-out
+- **Change:** pushed `fcb27ae..6e2a104` (S84's 4 commits: claim, results, R158 and the plans, close-out), every one `[skip ci]` (`tools/` is build-ignored; no package file changed); no workflow started (`gh run list` shows S77's runs last; GitHub answered again, after the TLS timeouts at Orient). Recorded in close-out 2b (this entry).
+- **Commit/PR:** the push of `6e2a104`; close-out 2b (this entry) · **Session:** S84 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` is `6e2a104`; no CI run to read.
+
 ### 2026-11-24 · [BL-Phase 17] S84: 17h4, the drawing record
 - **Change:** DONE, 17h DONE. The drawing record (`tools/timing/results/drawingTiming.csv`, 43 cells; `drawingTimingRuns.csv`, 142 runs; `record.csv`'s `drawing` row, `70d5021`, `R/` tree `ac123b7`): all 11 cases at 300, 1,000, 2,000, 3,000 and the sample, 33 `ok`, 10 failed sizes, 1 h 36 min; pedkindraw's page 1,000 animals within 120 s (16.0 s), its direct-line page 2,000 (106 s); `pkd_svg` and `pkd_png` not timed at 3,000 (the drawing before the save passed the harness's 300 s setup limit). R158 (Mark): readable up to 1,000 animals, zoomed in (T4); the 3,000 saves kept, explained. The timing plan's 17h4 Done note and dragons 33-35; the plans' status; `methodology/BACKLOG.md:36` (the speed vignette) READY; the roadmap.
 - **Commit/PR:** claim `70d5021`; results `a4b41da`; R158 and the plans `2134e44`; close-out (this entry) · **Session:** S84 · **Model:** Claude Opus 5.5 · **Verified:** a script over the result files, 0 problems (it found 3 of 3 planted in a changed copy); re-runs from a fresh shell -0.4%, +1.1%, +1.7%, -6.3%; quality_ratchet 5/6 pass, 0 fail, 1 unmeasured (the suite gate's 300 s); by hand the package suite on a `git archive` of `2134e44` (`NOT_CRAN=true`) `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ]` (1,146 tests, 593 s); no file under `R/`, `tests/` or `vignettes/` changed.
