@@ -106,6 +106,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 87 Did
+**Deliverable:** Phase 17j (`docs/planning/cran-submission-plan.md:793`, backlog `:119`), strict TDD: tests for full
+coverage (or its first file group, if one session cannot take every file). (IN PROGRESS)
+**Started:** 2026-11-24 15:52 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17j: coverage tests (Recommended)"
+(orient picker).
+**Status:** Session claimed. Work beginning: covr re-measured on a `git archive` copy of HEAD, then each missed statement's
+reaching input tried in a scratch copy before the pre-RED picker (Learnings 11, 17).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 86 Did
 **Deliverable:** Phase 17i2 (`docs/planning/pedkindraw-timing-plan.md:633`, R159), strict TDD: the pointers to
 `vignette("speed")`, T5's section in `?drawPedigreeDiagram`, the API contract's sections 7 and 8. DONE, so 17i DONE.

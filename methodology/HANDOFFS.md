@@ -202,6 +202,14 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S87
+date: 2026-11-24
+status: pending
+active_task: Phase 17j (cran plan :793, backlog :119): tests for full coverage, or its first file group; strict TDD. Claimed; work beginning.
+what_was_done: pending
+commit: pending
+```
+```handoff
 session: S86
 date: 2026-11-24
 status: complete
