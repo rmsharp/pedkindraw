@@ -60,7 +60,7 @@ is done, and with it every gap phase, G1-G17. 17g, the timing plan, is done (S78
 `docs/planning/pedkindraw-timing-plan.md`: 37 of the 38 exports timed beside kinship2's and Pedixplorer's functions,
 by a copy of the November study's harness in `tools/timing/`). 17h1, the computation harness, is done (S79, R154: 78
 cases in `tools/timing/`, 108 tests passing), and so are 17h1b (S80, R155: each run's free memory and `record.csv`,
-126 tests passing) and 17h1c (S81, R156: each run's `started` is when it launched, 129 tests passing). 17h2, the computation runs, is done (S82, `14145a4`: 78 cases at six sizes, 416 cells `ok`, 22 failed sizes). Next is 17h3, the drawing harness (that plan's section 6), then 17h4 and 17i.
+126 tests passing) and 17h1c (S81, R156: each run's `started` is when it launched, 129 tests passing). 17h2, the computation runs, is done (S82, `14145a4`: 78 cases at six sizes, 416 cells `ok`, 22 failed sizes). 17h3, the drawing harness, is done (S83, R157: 11 drawing cases in `tools/timing/`, 169 tests passing). Next is 17h4, the drawing runs (that plan's section 6), then 17i.
 
 | Phase | Slice | State |
 |---|---|---|
@@ -102,7 +102,7 @@ session each unless marked. They follow the copy slices.
   recording layer and the SVG, is done (S69, R143) and its CI repair too (S70, R145), and G16b (the PDF and the PNG) is
   done (S71, R146), and G16c (the whole large pedigree and the documents) is done (S72, R147), so G16 is done; G17
   (an app, `runPedigreeApp()`) is done in five sessions (S73's plan, R148; G17a-G17d S74-S77, R149-R152), so G1-G17
-  are done; 17g is done (S78, R153); 17h1 is done (S79, R154); 17h1b is done (S80, R155); 17h1c is done (S81, R156); 17h2 is done (S82); next is 17h3-17h4, then
+  are done; 17g is done (S78, R153); 17h1 is done (S79, R154); 17h1b is done (S80, R155); 17h1c is done (S81, R156); 17h2 is done (S82); 17h3 is done (S83, R157); next is 17h4, then
   17i-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and

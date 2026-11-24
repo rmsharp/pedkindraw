@@ -103,7 +103,8 @@ Phase 17h1 DONE (pedkindraw S79, R154's picks): the computation timing harness, 
 Phase 17h1b DONE (pedkindraw S80, R155's picks): each timing run's row holds the free memory read before it, and `runTiming.R` writes `record.csv`'s row (the commit, `R/`'s tree, when pedkindraw was packaged, the R, kinship2, Pedixplorer, chromote and Chrome versions, the machine) when a record starts, stopping first unless the scratch install holds that commit; 126 tests passing.
 Phase 17h1c DONE (pedkindraw S81, R156's pick): each timing run's `started` is the time `runLimited()` launched it, the moment its `realSeconds` counts from (the copy wrote the time the row was made, the run's end); 129 tests passing.
 Phase 17h2 DONE (pedkindraw S82, `14145a4`): the computation record, pedkindraw at `7f13d98` (built at `/Users/Shared/pkdtiming`) beside kinship2 1.9.6.2 and Pedixplorer 1.8.0, all 78 cases at six sizes, 416 cells `ok` and 22 failed sizes, on this Mac beside other work (7.6 hours, 2.4 of them in runs).
-**Next:** Phase 17h3, the drawing harness (`docs/planning/pedkindraw-timing-plan.md` section 6).
+Phase 17h3 DONE (pedkindraw S83, R157's picks): the drawing timing harness, copied from nprcgenekeepr's `tools/pedigreeComparison/` into `tools/timing/` test-first: 11 drawing cases on the study's 3,600 x 1,500 canvas, the saved files on `savePedigreeDiagram()`'s own page, 169 tests passing; a trial at 300 animals drew 9 of 11 (Pedixplorer's alignment refuses the colony, as R157 records) and 11 of 11 on the sample.
+**Next:** Phase 17h4, the drawing runs (`docs/planning/pedkindraw-timing-plan.md` section 6).
 In nprcgenekeepr: N1 (its two
 faults, R99) done in its S1189 (`smallPed` corrected in its `0e2bc137e`); N2 (named calls, R98) done in its S1190
 (closed at `faf6823c3`); its S1191 (a standard error for simulated kinship, no copied file) closed at `3e06730c5`.

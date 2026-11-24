@@ -3,14 +3,16 @@
 **Date:** 2026-11-23 · **Session:** pedkindraw S78 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 "Planning Sessions"; failure mode #18: this session writes no package code; the code beside this plan is three
 measuring scripts, section 3.6). **Governs:** Phases 17h and 17i of `docs/planning/cran-submission-plan.md` (section 6,
-`:754` "Phase 17h. The timing runs" and `:767` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
+`:754` "Phase 17h. The timing runs" and `:771` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
 `docs/planning/standalone-pedigree-package-plan.md`. **Ruling made here:** R153 (Mark's four picks, section 2; recorded
 in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8); R155
 (17h1b's three picks, S80: `record.csv` and each run's free memory, sections 4.2 and 5.4); R156 (17h1c's pick, S81:
-each run's `started` is when the run launched, section 8 dragon 24).
+each run's `started` is when the run launched, section 8 dragon 24); R157 (T2 and the copy's scope, Mark's four picks at
+17h3's pre-RED picker, S83: sections 4.1 and 7).
 **Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6); 17h1b DONE
 (S80: each run's free memory and `record.csv`, section 6); 17h1c DONE (S81: each run's `started` its launch, section
-6); 17h2 DONE (S82: the computation record, `14145a4`, section 6). Next: 17h3, the drawing harness (section 6).
+6); 17h2 DONE (S82: the computation record, `14145a4`, section 6); 17h3 DONE (S83: the drawing harness, R157, section
+6). Next: 17h4, the drawing runs (section 6).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -287,7 +289,7 @@ listed in that header.
 | `tools/timing/timingHarness.R` | `timingHarness.R` | `useTimingLibraries()` puts pedkindraw's scratch library first and renv's library next (no `CMP_LIB`: kinship2 and Pedixplorer are in renv's library); `reportTimedCall()` also reports where pedkindraw was loaded from (section 8, dragon 2) |
 | `tools/timing/timeOne.R`, `runTiming.R`, `summarizeTiming.R` | the same names | `NPG_LIB` becomes `PKD_LIB`; paths; `summarizeTiming.R` prints the variation across each cell's 3 runs as the study's section 7 did |
 | `tools/timing/timingCases.R` | `timingCases.R` | rewritten: section 5.1's computation cases, pedkindraw's names after 17c (`kinship(id, sire, dam, pdepth)`, `trimPedigree(ped, probands)`, `getDescendantPedigree(ped, probands)`); BGmisc's 4 cases dropped |
-| `tools/timing/drawingTiming.R`, `drawOne.R`, `runDrawingTiming.R`, `summarizeDrawingTiming.R`, `drawingCapture.R` | the same names (17h3) | ggpedigree's helpers dropped; `drawNprcgenekeepr()` becomes pedkindraw's |
+| `tools/timing/drawingTiming.R`, `drawOne.R`, `runDrawingTiming.R`, `summarizeDrawingTiming.R`, `drawingCapture.R` | the same names (17h3) | ggpedigree's helpers dropped; `drawNprcgenekeepr()` becomes pedkindraw's. **R157 (S83):** of `drawingCapture.R` only the four Pedixplorer helpers the cases call; its capture functions serve the study's parent-line comparison (`runDrawing.R`) and are not copied, nor are `drawingTrace.R`, `smallPed` and `samplePed` they would bring |
 | `tools/timing/drawingTimingCases.R` | `drawingTimingCases.R` (17h3) | rewritten: section 5.1's drawing cases; ggpedigree's two dropped |
 | `tools/timing/tests/` | `tools/pedigreeComparison/tests/` and `tests/testthat/test_perfHarness.R:79`-`:131` | the tests of the files above, changed with them; BGmisc's and ggpedigree's blocks dropped |
 
@@ -570,6 +572,28 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   `runDrawingTiming.R --sizes=300 --out=<scratch>` over the 11 cases, every case `ok` at 300 and on the sample; lint 0;
   no `R/` change.
 - **Surface:** this Mac's Chrome. Another browser is not timed.
+- **DONE amended (S83, R157):** Pedixplorer 1.8.0 with its parent alignment on refuses the 300-animal colony
+  ("subscript out of bounds", `pdx_picture` and `pdx_plotly`, here as in the study), so the trial reads 9 of 11 cases
+  `ok` at 300 and 11 of 11 on the sample, the two refusals recorded by the tests.
+- **Done (S83):** R157 `46d8a23` (T2 and the copy's scope); RED `4ed5c8e` (`test_drawingTiming.R` copied and changed,
+  `test_drawingCapture.R` new for the four helpers, `helper-checks.R`'s Chrome, PNG, SVG and PDF checks; 40 new tests
+  failing for the right reason, 35 on a missing function and 5 on the missing `drawOne.R`, the 129 before them passing,
+  SKIP 0); GREEN `c7d6f89` (`drawingTiming.R` with `drawingRunRow()` and `pedigreeSize()`, `drawingCapture.R`,
+  `drawingTimingCases.R`, `drawOne.R`) and `701d4f4` (`runDrawingTiming.R`, `summarizeDrawingTiming.R` with `--out=`);
+  REFACTOR `7d57adc` (`pedkindrawPage()`; `colonyFile()` in `helper-caseValues.R`). Each copy's header names
+  nprcgenekeepr's file at `3e06730c5` and every change, and `diff` lists only those hunks (`drawingCapture.R`'s body
+  byte for byte the source's lines 103-154). `test_dir("tools/timing/tests")` with `PKD_LIB` and `NOT_CRAN=true`
+  `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 1468 ]`, 169 tests; the drafted tests were first run against a
+  scratch draft of the code (40 of 40, 249 expectations) and without it (40 of 40 failing). The trial
+  (`runDrawingTiming.R --sizes=300 --out=<scratch> --pictures=<scratch>`, 03:44-04:02 CST on 2026-11-24, 17 minutes):
+  `record.csv` one `drawing` row (`c7d6f89`, `R/` tree `ac123b7`); 82 runs, 22 cells, 9 of 11 `ok` at 300 and 11 of 11
+  on the sample; all 48 `ok` pedkindraw runs from `PKD_LIB`; idle 51.4-67.3% at each start; each `started` plus
+  `realSeconds` at or before the next `started`; 16 cells of 0.5 s or more, spread median 2.2%, largest 6.4%; seconds
+  at 300 and on the sample: `pkd_page` 1.22 and 2.05, `pkd_page_direct` 0.447 and 0.978, `pkd_svg` 1.46 and 1.45,
+  `pkd_pdf` 2.59 and 2.60, `pkd_png` 2.42 and 2.45, `pkd_data` 0.001 and 0.001, `k2_picture` 0.443 and 1.43,
+  `pdx_picture` refused and 3.48, `pdx_picture_unaligned` 1.24 and 3.49, `pdx_plotly` refused and 31.9,
+  `pdx_plotly_unaligned` 29.7 and 35.7; 21 MB of pictures, the zoom-1 picture's ids readable; `summarizeDrawingTiming.R
+  --out` printed every table. Lint 0; no file under `R/`, `DESCRIPTION` or `NAMESPACE` changed.
 
 ### Phase 17h4. The drawing runs (no code)
 
@@ -608,7 +632,7 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 | # | Question | Phase | What is known now |
 |---|---|---|---|
 | T1 | The inputs of the cases the study had none for (section 5.2), and what to do with a pairing whose answer differs from pedkindraw's (time it with a note, or leave it out) | 17h1 | **Decided (S79, R154):** section 5.2 with four changes; the repair functions on the colonies as they are; every pairing timed, each difference recorded by the tests (section 3.8) |
-| T2 | The drawing's canvas and the saved files' page; which pictures are kept | 17h3 | the study's canvas 3,600 x 1,500; `savePedigreeDiagram()`'s page 10 inches wide; the study kept every warm-up's picture, git-ignored |
+| T2 | The drawing's canvas and the saved files' page; which pictures are kept | 17h3 | **Decided (S83, R157):** the study's canvas 3,600 x 1,500; the saved files on `savePedigreeDiagram()`'s own 10-inch page; the pictures kept as the study's, git-ignored; of `drawingCapture.R` only the four Pedixplorer helpers |
 | T3 | None planned. If the machine does not reach 50% idle within 10 minutes for many runs, whether to go on | 17h2, 17h4 | at the picker, 85% idle (section 3.5) |
 | T4 | How large a pedkindraw drawing can still be read (Mark's judgment from 17h4's pictures), or the study's judgment of nprcgenekeepr's drawing carried with a note | 17h4 | the study: readable up to 1,000 animals, zoomed in |
 | T5 | Where the measured drawing limit is stated, so the contract's section 8 is true: a sentence in `?drawPedigreeDiagram` pointing to the vignette, or the contract changed to name the vignette; and whether CI runs `tools/checkSpeedTables.R` | 17i | no help page states a time (S77); the tool needs no clone once it reads `tools/timing/results/` |
@@ -695,7 +719,19 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
     says kinship2 stops there, and a session that wants the cause reproduces it at 1,000 first (Learning 19).
 28. **`runTiming.R` rewrites `timing.csv` and `timingRuns.csv` from its own rows** (copied): a re-run into `results/`
     replaces the record. S82's re-runs went to `--out=<scratch>`; a 17h2b as section 6 wrote it would need its own
-    `--out` and a join.
+    `--out` and a join. `runDrawingTiming.R` does the same unless given `--append` (copied), which keeps the other
+    cases' rows: a 17h4 re-run of some cases uses `--append`, or `--out=<scratch>`.
+29. **`pkd_data` times `makePedigreeDiagramData()` alone** (S83): 0.001 s at 300 and on the sample (0.9 ms a call,
+    checked outside the harness), where the page's R part is 1.1-1.9 s: the layout, not the diagram data, is the cost.
+    17i's page says what each drawing row times, so the 1 ms is not read as the drawing's time.
+30. **Pedixplorer's plotly page takes about 30 s in R at 300** (S83: 29.3 s unaligned at 300, 31.6 and 35.3 s on the
+    sample; the study's 29.0 and 34.0), so it is near the 120 s limit at 1,000 (the study: "time" at 1,000) and its four
+    runs per size are the trial's longest. The drawing tests draw it too: the two drawing test files took 229 s in
+    the draft run, so the folder takes about 7 minutes where it took 3 (an estimate from the two runs).
+31. **`summarizeDrawingTiming.R`'s capacity table says "none up to 3,000"** (copied) of a case with no failure, true
+    of a record over the four sizes and not of a trial at 300 (as dragon 19 for the computation summary).
+32. **Chrome's websocket prints "got non-close frame while closing"** as a session closes (S83: in the tests and the
+    trial, a line on the console, not a test warning or a failed run): harmless; read WARN and each run's status.
 
 ---
 
