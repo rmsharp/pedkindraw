@@ -350,11 +350,16 @@ speedComputationCapacityTable <- function(src) {
   )
 }
 
+## The sizes of the synthetic colonies the drawing record drew.
+speedDrawingSizes <- function(src) {
+  sort(unique(src$drawing$size[
+    startsWith(src$drawing$pedigree, "synthetic_")]))
+}
+
 ## The drawing record's columns: the synthetic colonies by size, then the
 ## 375-animal example pedigree.
 speedDrawingColumns <- function(src) {
-  synthetic <- sort(unique(src$drawing$size[
-    startsWith(src$drawing$pedigree, "synthetic_")]))
+  synthetic <- speedDrawingSizes(src)
   list(pedigree = c(sprintf("synthetic_%d", synthetic), "rhesus375"),
        head = c(speedSize(synthetic), "The 375-animal example"))
 }
@@ -419,8 +424,7 @@ speedDrawingPartsTable <- function(src) {
 
 speedDrawingCapacityTable <- function(src) {
   cases <- speedDrawingCases()
-  sizes <- sort(unique(src$drawing$size[
-    startsWith(src$drawing$pedigree, "synthetic_")]))
+  sizes <- speedDrawingSizes(src)
   rows <- lapply(seq_len(nrow(cases)), function(i) {
     k <- src$drawing[src$drawing$case == cases$case[i] &
                        startsWith(src$drawing$pedigree, "synthetic_"), ,
@@ -553,6 +557,7 @@ speedCompare <- function(lines, tables) {
     page <- page[[1L]]
     want <- speedTableLines(name, tables[[name]])
     want <- want[3L:(length(want) - 2L)]
+    head <- speedCells(want[1L])
     if (length(page$rows) != length(want)) {
       problems <- c(problems, sprintf(
         "table '%s' (line %d): %d lines on the page, %d in the records",
@@ -561,7 +566,6 @@ speedCompare <- function(lines, tables) {
     for (j in seq_len(min(length(page$rows), length(want)))) {
       got <- speedCells(page$rows[j])
       exp <- speedCells(want[j])
-      head <- speedCells(want[1L])
       if (length(got) != length(exp)) {
         problems <- c(problems, sprintf(
           "table '%s', line %d: %d cells on the page, %d in the records",
@@ -593,9 +597,17 @@ speedCompare <- function(lines, tables) {
   list(problems = problems, equal = equal)
 }
 
+## The numbers in each element of `text`: digits with commas and points
+## inside them, not joined to a letter (so not `S84` or `ac123b7`).
+speedNumbersIn <- function(text) {
+  regmatches(text, gregexpr(
+    "(?<![A-Za-z0-9_.,])[0-9](?:[0-9,.]*[0-9])?(?![A-Za-z0-9_])", text,
+    perl = TRUE
+  ))
+}
+
 ## The numbers written in the page's prose: outside its tables, captions,
-## markers, the YAML header and code spans. A number is digits with commas
-## and points inside it, not joined to a letter (so not `S84` or `ac123b7`).
+## markers, the YAML header and code spans.
 speedProseNumbers <- function(lines) {
   keep <- rep(TRUE, length(lines))
   fences <- which(trimws(lines) == "---")
@@ -605,24 +617,18 @@ speedProseNumbers <- function(lines) {
   keep[startsWith(trimws(lines), "<!--")] <- FALSE
   out <- list()
   for (i in which(keep)) {
-    text <- gsub("`[^`]*`", " ", lines[i])
-    found <- regmatches(text, gregexpr(
-      "(?<![A-Za-z0-9_.,])[0-9](?:[0-9,.]*[0-9])?(?![A-Za-z0-9_])", text,
-      perl = TRUE))[[1L]]
+    found <- speedNumbersIn(gsub("`[^`]*`", " ", lines[i]))[[1L]]
     for (n in found) out[[length(out) + 1L]] <- list(line = i, number = n)
   }
   out
 }
 
-## Each number the tables and their captions hold, as speedProseNumbers()
-## reads one.
+## Each number the tables and their captions hold.
 speedTableNumbers <- function(tables) {
   text <- unlist(lapply(tables, function(t) {
     c(unlist(t$rows), t$header, t$caption)
   }))
-  unique(unlist(regmatches(text, gregexpr(
-    "(?<![A-Za-z0-9_.,])[0-9](?:[0-9,.]*[0-9])?(?![A-Za-z0-9_])", text,
-    perl = TRUE))))
+  unique(unlist(speedNumbersIn(text)))
 }
 
 ## The whole check of the page's lines against the records: the tables
