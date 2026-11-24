@@ -474,3 +474,5 @@ code, `DIVERGENCE.md` in the repository says how and why.
   memory there; and how large a drawing can be drawn and read. A script in the
   repository, `tools/checkSpeedTables.R`, checks every number on the page
   against the timing records in `tools/timing/results/`.
+  `drawPedigreeDiagram()`'s help gives the measured size of a drawing and
+  points to the page, as do `?pedkindraw` and the other two vignettes.

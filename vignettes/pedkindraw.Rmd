@@ -410,6 +410,9 @@ stopifnot(
 `vignette("drawing", package = "pedkindraw")` shows what a drawing shows and
 how to change it, one feature at a time: the symbols and the legend,
 conditions, twins, animals drawn twice, the two edge styles and layout
-hints, among others. The help pages of `makePedigreeMatingLayout()` and
-`drawPedigreeDiagram()` describe the twins table, the kinship matrix and the
-layout hints the drawing takes.
+hints, among others. `vignette("speed", package = "pedkindraw")` gives the
+seconds each function took on one machine, by the number of animals from 300
+to 100,000, beside the kinship2 and Pedixplorer functions that do the same,
+and how large a drawing can be drawn and read. The help pages of
+`makePedigreeMatingLayout()` and `drawPedigreeDiagram()` describe the twins
+table, the kinship matrix and the layout hints the drawing takes.
