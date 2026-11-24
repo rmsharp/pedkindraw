@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-24 · [BL-Phase 17] S85 (in progress): 17i, the speed vignette, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S85's stub), `methodology/HANDOFFS.md` (S85's `status: pending` receipt) and this entry. The deliverable is 17i (timing plan `:631`), strict TDD, or the part Mark picks at the scope picker. Phase 3F rewrites this entry.
+- **Commit/PR:** the S85 claim commit · **Session:** S85 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits and no harness change, ledgers current at `1623941`, no ghost session, S84's receipt complete, 31 backlog items at the handoff's lines, `R/` tree `ac123b7`, `origin/master` at `1623941`; dashboard 93/100, medium risk: `HANDOFFS.md`'s size, backlog `:321`).
+
 ### 2026-11-24 · [BL-Phase 17] S84 push: `master` to GitHub at close-out
 - **Change:** pushed `fcb27ae..6e2a104` (S84's 4 commits: claim, results, R158 and the plans, close-out), every one `[skip ci]` (`tools/` is build-ignored; no package file changed); no workflow started (`gh run list` shows S77's runs last; GitHub answered again, after the TLS timeouts at Orient). Recorded in close-out 2b (this entry).
 - **Commit/PR:** the push of `6e2a104`; close-out 2b (this entry) · **Session:** S84 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` is `6e2a104`; no CI run to read.

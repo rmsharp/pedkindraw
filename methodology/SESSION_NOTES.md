@@ -102,6 +102,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 85 Did
+**Deliverable:** Phase 17i, the speed vignette (`docs/planning/pedkindraw-timing-plan.md:631`), strict TDD, or the part
+of it Mark picks at the scope picker. (IN PROGRESS)
+**Started:** 2026-11-24 12:13 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17i: speed vignette (Recommended)"
+(orient picker).
+**Status:** Session claimed. Work beginning: the plan's sections read, then the installed size, the draft `612eed9` and
+the pages that state a time measured before the scope picker and T5.
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 84 Did
 **Deliverable:** Phase 17h4, the drawing record (`docs/planning/pedkindraw-timing-plan.md:599`): `runDrawingTiming.R`
 over all 11 cases at 300, 1,000, 2,000, 3,000 and the sample, the results committed, the pages opened for Mark (T4).
