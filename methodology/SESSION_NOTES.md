@@ -110,6 +110,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 86 Did
+**Deliverable:** Phase 17i2 (`docs/planning/pedkindraw-timing-plan.md:633`, R159), strict TDD: the pointers to
+`vignette("speed")`, T5's sentence in `?drawPedigreeDiagram`, the API contract's sections 7 and 8, the site. (IN PROGRESS)
+**Started:** 2026-11-24 14:30 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17i2: point to speed page
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: the plan's sections read, then each pointer's words and docs test measured in
+a scratch copy before the RED gate (Learning 17).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest. Until
+close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 85 Did
 **Deliverable:** Phase 17i1 (R159's split of 17i, `docs/planning/pedkindraw-timing-plan.md:633`), strict TDD: the
 speed vignette and its check script, its NEWS line and CI workflow. DONE.
