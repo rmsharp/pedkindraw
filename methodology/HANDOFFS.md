@@ -202,6 +202,14 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S83
+date: 2026-11-23
+status: pending
+active_task: Phase 17h3 (timing plan :562), the drawing harness, strict TDD: nprcgenekeepr's drawing-timing files copied into tools/timing/, changed as section 4.1 says. No R/ change. Claimed; work beginning.
+what_was_done: pending
+commit: pending
+```
+```handoff
 session: S82
 date: 2026-11-23
 status: complete
