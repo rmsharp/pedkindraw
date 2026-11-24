@@ -9,7 +9,8 @@ in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-
 (17h1b's three picks, S80: `record.csv` and each run's free memory, sections 4.2 and 5.4); R156 (17h1c's pick, S81:
 each run's `started` is when the run launched, section 8 dragon 24); R157 (T2 and the copy's scope, Mark's four picks at
 17h3's pre-RED picker, S83: sections 4.1 and 7); R158 (T4 and the two saves not timed at 3,000, Mark's two picks at
-17h4's results, S84: sections 6 and 7, dragon 33).
+17h4's results, S84: sections 6 and 7, dragon 33); R159 (17i's scope, T5 and CI, Mark's three picks at 17i's pre-RED
+picker, S85: sections 6 and 7).
 **Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6); 17h1b DONE
 (S80: each run's free memory and `record.csv`, section 6); 17h1c DONE (S81: each run's `started` its launch, section
 6); 17h2 DONE (S82: the computation record, `14145a4`, section 6); 17h3 DONE (S83: the drawing harness, R157, section
@@ -641,6 +642,9 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   NOTE only; the full suite 0 failed, WARN 0; the site shows three articles; the words of section 5.8's definitions
   each on the page.
 - **Surface:** this Mac, GitHub Actions, the website.
+- **Split (S85, R159):** 17i1, the check script with its tests, the page with a docs test of its words, its NEWS line
+  and the CI workflow; 17i2, the pointers (section 4.4), the help sentence (T5), the contract's sections 7 and 8 and the
+  site's third article. Each is one session.
 
 ### Amendments to later phases (recorded in the cran plan at S78's close-out)
 
@@ -658,7 +662,7 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 | T2 | The drawing's canvas and the saved files' page; which pictures are kept | 17h3 | **Decided (S83, R157):** the study's canvas 3,600 x 1,500; the saved files on `savePedigreeDiagram()`'s own 10-inch page; the pictures kept as the study's, git-ignored; of `drawingCapture.R` only the four Pedixplorer helpers |
 | T3 | None planned. If the machine does not reach 50% idle within 10 minutes for many runs, whether to go on | 17h2, 17h4 | at the picker, 85% idle (section 3.5) |
 | T4 | How large a pedkindraw drawing can still be read (Mark's judgment from 17h4's pictures), or the study's judgment of nprcgenekeepr's drawing carried with a note | 17h4 | **Decided (S84, R158):** readable up to 1,000 animals, zoomed in (Mark's judgment from 17h4's pages and zoom-1 pictures; the same as the study's of nprcgenekeepr's drawing) |
-| T5 | Where the measured drawing limit is stated, so the contract's section 8 is true: a sentence in `?drawPedigreeDiagram` pointing to the vignette, or the contract changed to name the vignette; and whether CI runs `tools/checkSpeedTables.R` | 17i | no help page states a time (S77); the tool needs no clone once it reads `tools/timing/results/` |
+| T5 | Where the measured drawing limit is stated, so the contract's section 8 is true: a sentence in `?drawPedigreeDiagram` pointing to the vignette, or the contract changed to name the vignette; and whether CI runs `tools/checkSpeedTables.R` | 17i | **Decided (S85, R159):** a sentence in `?drawPedigreeDiagram` naming the measured size and `vignette("speed")` (17i2); a small Linux-only workflow runs the script when the page, the results or the script change |
 
 ---
 
