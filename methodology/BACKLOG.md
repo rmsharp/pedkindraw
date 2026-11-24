@@ -33,7 +33,7 @@ issues).*
       log; close the test Chromes explicitly at the end of the suite (the helper's `.saveChrome$parent`, chromote's
       default one) and list the processes left (`Get-Process`) in a step after the tests.
 
-- [ ] **The speed and size-limits vignette, once pedkindraw times itself** (READY since S84: 17h DONE; planned S78
+- [ ] **The speed and size-limits vignette, once pedkindraw times itself** (READY: 17i2 left; planned S78
       in `docs/planning/pedkindraw-timing-plan.md`, R153; Effort L, a guess; before the release, Phase 17i of
       `docs/planning/cran-submission-plan.md`, R84; S82: the computation record, `14145a4`; S84: the drawing record,
       `a4b41da`, and T4, R158: readable up to 1,000 animals, zoomed in; the timing plan's dragons 33-35)
@@ -51,7 +51,12 @@ issues).*
       ("Drawing past about 1,000 animals") says `drawPedigreeDiagram()`'s help "states the measured limit": no help
       page states a time. S78 (R153): the page shows pedkindraw's own runs beside kinship2's and Pedixplorer's only, to
       the timing plan's section 5.8 outline; its tables come from `tools/timing/results/`, which the rewritten
-      `tools/checkSpeedTables.R` reads without a clone.
+      `tools/checkSpeedTables.R` reads without a clone. S85 (17i1, R159): the page,
+      `vignettes/speed.Rmd`, and its check, `tools/checkSpeedTables.R` with `tools/timing/speedTables.R`, are in, with
+      a Linux CI workflow (`.github/workflows/speed-tables.yaml`). Left for 17i2: the pointers
+      (`R/pedkindraw-package.R:52`, `vignettes/pedkindraw.Rmd:407`, `vignettes/drawing.Rmd:794` and `:808`), the help
+      sentence in `?drawPedigreeDiagram` naming the measured size (T5), the contract's sections 7 and 8, and the
+      site's third article.
 
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
       -- measured S42: of its 16 rows, only G1's say "At the switch (R98)" (`makePedigreeDiagramData()`,
