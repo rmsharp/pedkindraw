@@ -15,7 +15,8 @@ picker, S85: sections 6 and 7).
 (S80: each run's free memory and `record.csv`, section 6); 17h1c DONE (S81: each run's `started` its launch, section
 6); 17h2 DONE (S82: the computation record, `14145a4`, section 6); 17h3 DONE (S83: the drawing harness, R157, section
 6); 17h4 DONE (S84: the drawing record, `a4b41da`, R158, section 6); 17i1 DONE (S85: the check script and the speed
-vignette, R159, section 6). Next: 17i2, the pointers, the help sentence and the contract (section 6).
+vignette, R159, section 6); 17i2 DONE (S86: the pointers, the help's section, the contract, R160, section 6), so 17i
+DONE and this plan's phases done. Next: the cran plan's 17j (full coverage).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -663,11 +664,26 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   "8 tables, 1218 cells equal to the records; 66 numbers in the prose; 0 problems" on GitHub's Linux R), and
   `pkgdown.yaml` (45477442267, success): the site lists three articles, `articles/speed.html` with 8 tables.
   `R-CMD-check.yaml` has no manual start and has not run on 17i1's package changes; 17i2's push runs it.
+- **Done 17i2 (S86):** R160 `271e10f`; RED `f8bdbe3`; GREEN `4940df9` (the help) and `6931e95` (the vignettes and
+  NEWS); the contract `0c537c8`; REFACTOR `5ad8294`. `?pedkindraw`'s "Getting started", `vignettes/pedkindraw.Rmd`'s
+  "Where next", `vignettes/drawing.Rmd`'s "How large a drawing can be" (S75's times and the sentence on nprcgenekeepr's
+  drawing kept, R158's judgment added) and "Where next", and NEWS's speed bullet point to `vignette("speed")`;
+  `?drawPedigreeDiagram` has a section "How large a drawing can be" (T5: 1,000 animals 16 s, 2,000 more than 120 s,
+  direct lines 2,000 in 106 s, readable up to 1,000 zoomed in), help text only, the parsed code identical to before; the
+  contract's section 7 has a last column, "pedkindraw, measured" (30 figures, each equal to its cell by script), and
+  section 8's drawing row is true. Tests: `tests/testthat/test_speedPointersDocs.R` 6 (46 expectations; the help's
+  numbers read from the page's tables, dragon 41); RED 6 of 6 failing, 0 skipped; REFACTOR moved `.docsRdSection()` and
+  `.docsFlat()` into `helper-docs.R`. The full suite on `6931e95` `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16993 ]` (597 s);
+  `R CMD check --as-cran` on `6931e95` Status 1 NOTE (R16's), installed 4,736 KB (dragon 42); lint 0; drift 91 / 23 /
+  0; `tools/checkSpeedTables.R` 0 problems. `R/`'s tree is `3bab425` (from the timed `ac123b7`, help text only; 17n).
+  The site's third article: S85's manual pkgdown run; 17i2's push runs pkgdown and R-CMD-check (S86's close-out 2b).
 
 ### Amendments to later phases (recorded in the cran plan at S78's close-out)
 
 - **17n** (the full local gate) adds: `git diff <17h2's commit> -- R DESCRIPTION NAMESPACE` empty, or each change listed
   with whether it can change a time on the page.
+  S86 (17i2, GREEN 1 `4940df9`) moved `R/`'s tree from `ac123b7` to `3bab425`: help text in `R/drawPedigreeDiagram.R`
+  and `R/pedkindraw-package.R` only, the parsed code identical, so no time on the page can change.
 - **17j** (full coverage) and **17k** (the CRAN-mode test time) change tests only, so they do not move the timed code.
 
 ---
@@ -812,6 +828,17 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
     changes started nothing, not even the new `speed-tables.yaml`. When a push should run CI, write "the skip marker"
     in words; `gh workflow run` starts a workflow with `workflow_dispatch` (`speed-tables.yaml`, `pkgdown.yaml`), and
     `R-CMD-check.yaml` has none.
+41. **A speed figure copied into another document is checked by its cell** (S86): `test_speedPointersDocs.R` reads
+    the help's numbers from the speed page's `drawing-seconds` and `drawing-capacity` tables (`.speedTable()`), so a
+    new drawing record that changes the page fails it until `?drawPedigreeDiagram`'s section says the same. The
+    contract's 30 figures were checked by a script keyed on table, row and column: a first check that each number
+    appears somewhere in the tables would pass a figure from the wrong row (and flagged "2,000," for its comma). After
+    a new record, re-run both, and the contract's check against `tools/checkSpeedTables.R --print=all`.
+42. **The installed size is mostly the two drawing vignettes' JavaScript** (S86, Mark's question): of 4,736 KB
+    installed, `doc/` holds 3,824 KB (`drawing.html` 2,008 KB, of which 1,728 KB script, vis-network 453 KB among it;
+    `pedkindraw.html` 1,623 KB); `R/` is 492 KB and `help/` 276 KB. The tarball is 1.6 MB because gzip shrinks that
+    text about 5:1 (`drawing.html` to 410 KB) and `tests/` (1,647 KB) is in the tarball but not installed. R77's
+    5,120 KB is the installed size; a new vignette with a drawing would cost about 2 MB, `speed.html` costs 60 KB.
 
 ---
 

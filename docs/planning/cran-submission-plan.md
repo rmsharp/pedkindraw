@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. Next: 17i, the speed vignette (that plan's section 6).
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). Next: 17j, tests for full coverage.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -785,8 +785,10 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   the site shows three articles.
 - **Surface:** this Mac, GitHub Actions, the website.
 - **Split (S85, R159):** 17i1 DONE (S85: the check script, the page, its NEWS line and CI workflow; 8 tables, 1,218
-  cells; installed 4,732 KB; `R CMD check --as-cran` R16's NOTE only; the timing plan's 17i Done note). 17i2 next:
-  the pointers, the help sentence (T5), the contract's sections 7 and 8, the site's third article.
+  cells; installed 4,732 KB; `R CMD check --as-cran` R16's NOTE only; the timing plan's 17i Done note). 17i2 DONE
+  (S86, R160: the pointers, `?drawPedigreeDiagram`'s section "How large a drawing can be" (T5), the contract's sections
+  7 and 8; the full suite 16,993 passing; `R CMD check --as-cran` R16's NOTE only, installed 4,736 KB; the timing plan's
+  Done 17i2 note). 17i DONE.
 
 ### Phase 17j. Tests for full coverage (one or two sessions)
 
