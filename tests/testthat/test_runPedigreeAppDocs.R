@@ -11,14 +11,6 @@
 ## helpers are in helper-docs.R. The documents are read from the source tree,
 ## and each test skips without it.
 
-## The text of an Rd file's \section{<title>}, up to the next \section.
-.docsRdSection <- function(text, title) {
-  parts <- strsplit(text, "\n(?=\\\\section\\{)", perl = TRUE)[[1L]]
-  section <- parts[startsWith(parts, paste0("\\section{", title, "}"))]
-  expect_length(section, 1L)
-  section
-}
-
 test_that("the README says runPedigreeApp() draws a file in an app and saves
            the drawing and the animals, in the source and in the page made
            from it", {

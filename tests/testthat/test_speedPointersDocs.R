@@ -16,18 +16,6 @@
 
 .speedCall <- "vignette(\"speed\", package = \"pedkindraw\")"
 
-## A text with each run of spaces and line breaks made one space, so that a
-## phrase is found wherever the source wraps it.
-.flat <- function(text) gsub("\\s+", " ", text)
-
-## The text of an Rd file's \section{<title>}, up to the next \section.
-.rdSection <- function(text, title) {
-  parts <- strsplit(text, "\n(?=\\\\section\\{)", perl = TRUE)[[1L]]
-  section <- parts[startsWith(parts, paste0("\\section{", title, "}"))]
-  expect_length(section, 1L)
-  section
-}
-
 ## A table of the speed vignette, the one after its
 ## "<!-- speed-table: <name> -->" marker, as a data frame of its cells, named
 ## by its header.
@@ -58,8 +46,8 @@
 
 test_that("the package help's 'Getting started' names the speed vignette and
            what it gives", {
-  section <- .flat(.rdSection(.docsText("man", "pedkindraw-package.Rd"),
-                              "Getting started"))
+  rd <- .docsText("man", "pedkindraw-package.Rd")
+  section <- .docsFlat(.docsRdSection(rd, "Getting started"))
   .docsSay(section, paste0("\\code{", .speedCall, "}"), "'Getting started'")
   .docsSay(.docsAfter(section, .speedCall, 300L),
            c("seconds", "100,000", "kinship2", "Pedixplorer", "drawing"),
@@ -68,8 +56,8 @@ test_that("the package help's 'Getting started' names the speed vignette and
 
 test_that("the pedkindraw vignette's 'Where next' names the speed vignette and
            what it gives", {
-  section <- .flat(.docsSection(.docsText("vignettes", "pedkindraw.Rmd"),
-                                "Where next"))
+  text <- .docsText("vignettes", "pedkindraw.Rmd")
+  section <- .docsFlat(.docsSection(text, "Where next"))
   .docsSay(section, .speedCall, "the pedkindraw vignette's 'Where next'")
   .docsSay(.docsAfter(section, .speedCall, 300L),
            c("seconds", "100,000", "kinship2", "Pedixplorer", "drawing"),
@@ -79,8 +67,8 @@ test_that("the pedkindraw vignette's 'Where next' names the speed vignette and
 test_that("the drawing vignette's 'How large a drawing can be' keeps S75's
            times and points to the speed vignette's colonies, with pedkindraw's
            own judgment of how large a drawing can be read", {
-  section <- .flat(.docsSection(.docsText("vignettes", "drawing.Rmd"),
-                                "How large a drawing can be"))
+  text <- .docsText("vignettes", "drawing.Rmd")
+  section <- .docsFlat(.docsSection(text, "How large a drawing can be"))
   .docsSay(section, c("9.1 seconds", "50.5 seconds", .speedCall),
            "'How large a drawing can be'")
   .docsSay(.docsAfter(section, .speedCall, 500L),
@@ -90,16 +78,16 @@ test_that("the drawing vignette's 'How large a drawing can be' keeps S75's
 })
 
 test_that("the drawing vignette's 'Where next' names the speed vignette", {
-  section <- .flat(.docsSection(.docsText("vignettes", "drawing.Rmd"),
-                                "Where next"))
+  text <- .docsText("vignettes", "drawing.Rmd")
+  section <- .docsFlat(.docsSection(text, "Where next"))
   .docsSay(section, .speedCall, "the drawing vignette's 'Where next'")
 })
 
 test_that("the help of drawPedigreeDiagram() states the measured size of a
            drawing, as the speed vignette's tables give it, and names the
            vignette (T5)", {
-  section <- .flat(.rdSection(.docsText("man", "drawPedigreeDiagram.Rd"),
-                              "How large a drawing can be"))
+  rd <- .docsText("man", "drawPedigreeDiagram.Rd")
+  section <- .docsFlat(.docsRdSection(rd, "How large a drawing can be"))
   seconds <- .speedTable("drawing-seconds")
   page <- .speedRow(seconds, "web page, `drawPedigreeDiagram()`")
   direct <- .speedRow(seconds,
@@ -122,7 +110,7 @@ test_that("the help of drawPedigreeDiagram() states the measured size of a
 
 test_that("NEWS's speed vignette bullet says drawPedigreeDiagram()'s help gives
            the measured size", {
-  news <- .flat(.docsText("NEWS.md"))
+  news <- .docsFlat(.docsText("NEWS.md"))
   .docsSay(.docsAfter(news, paste0("New: `", .speedCall, "`"), 900L),
            "`drawPedigreeDiagram()`'s help", "NEWS.md")
 })

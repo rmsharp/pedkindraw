@@ -27,6 +27,21 @@
   section
 }
 
+## The text of an Rd file's \section{<title>}, up to the next \section (S77's
+## test_runPedigreeAppDocs.R, moved here by S86's REFACTOR so that
+## test_speedPointersDocs.R uses it too).
+.docsRdSection <- function(text, title) {
+  parts <- strsplit(text, "\n(?=\\\\section\\{)", perl = TRUE)[[1L]]
+  section <- parts[startsWith(parts, paste0("\\section{", title, "}"))]
+  expect_length(section, 1L)
+  section
+}
+
+## A text with each run of spaces and line breaks made one space, so that a
+## phrase is found wherever the source wraps it (S85's test_speedVignetteDocs.R,
+## moved here by S86's REFACTOR).
+.docsFlat <- function(text) gsub("\\s+", " ", text)
+
 ## The text from the first mention of `anchor` on, `width` characters: the
 ## words a statement needs are looked for beside the call it is about, since a
 ## README's badge ("badge.svg") or picture ("README-pedigree.png") and a

@@ -27,10 +27,6 @@
 }
 # nolint end
 
-## A text with each run of spaces and line breaks made one space, so that a
-## phrase is found wherever the source wraps it.
-.flat <- function(text) gsub("\\s+", " ", text)
-
 test_that("the speed vignette is titled 'Speed and size limits', is built by
            knitr and runs no code", {
   text <- .speedPage()
@@ -59,20 +55,20 @@ test_that("the opening says what the page answers, from one machine, and that
   text <- .speedPage()
   opening <- substr(text, 1L, regexpr("\n## ", text, fixed = TRUE)[[1L]])
   script <- file.path("tools", "checkSpeedTables.R")
-  .docsSay(.flat(opening), c("how large a pedigree", "one machine", script,
-                             "runs no code"),
+  .docsSay(.docsFlat(opening),
+           c("how large a pedigree", "one machine", script, "runs no code"),
            "the speed vignette's opening")
 })
 
 test_that("the method states each run's limits, its start and the median", {
-  section <- .flat(.docsSection(.speedPage(), "The machine and the method"))
+  section <- .docsFlat(.docsSection(.speedPage(), "The machine and the method"))
   .docsSay(section, c("fresh R process", "warm-up", "median", "120 seconds",
                       "32 GB", "half of the CPU", "before the clock"),
            "'The machine and the method'")
 })
 
 test_that("each computation the records time has a one-line definition", {
-  section <- .flat(.docsSection(.speedPage(), "Computation"))
+  section <- .docsFlat(.docsSection(.speedPage(), "Computation"))
   records <- utils::read.csv(
     text = .docsText("tools", "timing", "results", "timing.csv"),
     stringsAsFactors = FALSE
@@ -84,7 +80,7 @@ test_that("each computation the records time has a one-line definition", {
 
 test_that("the drawing section says what each drawing row times, the saves
            not timed at 3,000 and a save's slow run", {
-  section <- .flat(.docsSection(.speedPage(), "Drawing"))
+  section <- .docsFlat(.docsSection(.speedPage(), "Drawing"))
   .docsSay(section, c("in Chrome", "built before the clock",
                       "`makePedigreeDiagramData()` alone", "not timed",
                       "one slow run", "median"), "'Drawing'")
@@ -92,19 +88,19 @@ test_that("the drawing section says what each drawing row times, the saves
 
 test_that("the drawing section gives the judgment of how large a drawing can
            be read (R158) and says the drawing began as nprcgenekeepr's", {
-  section <- .flat(.docsSection(.speedPage(), "Drawing"))
+  section <- .docsFlat(.docsSection(.speedPage(), "Drawing"))
   .docsSay(section, c("1,000 animals", "zoomed in", "copy of nprcgenekeepr's",
                       "`runPedigreeApp()`"), "'Drawing'")
 })
 
 test_that("'What these numbers cannot tell you' names another machine, less
            memory, another browser and another pedigree's shape", {
-  section <- .flat(.docsSection(.speedPage(),
-                                "What these numbers cannot tell you"))
+  section <- .docsFlat(.docsSection(.speedPage(),
+                                    "What these numbers cannot tell you"))
   .docsSay(section, c("Another machine", "memory", "browser", "shape"),
            "'What these numbers cannot tell you'")
 })
 
 test_that("NEWS.md names the speed vignette", {
-  .docsSay(.flat(.docsText("NEWS.md")), "vignette(\"speed\"", "NEWS.md")
+  .docsSay(.docsFlat(.docsText("NEWS.md")), "vignette(\"speed\"", "NEWS.md")
 })
