@@ -784,6 +784,9 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   absent; nothing timed during the build; installed size under 5,120 KB; `R CMD check --as-cran` R16's NOTE only;
   the site shows three articles.
 - **Surface:** this Mac, GitHub Actions, the website.
+- **Split (S85, R159):** 17i1 DONE (S85: the check script, the page, its NEWS line and CI workflow; 8 tables, 1,218
+  cells; installed 4,732 KB; `R CMD check --as-cran` R16's NOTE only; the timing plan's 17i Done note). 17i2 next:
+  the pointers, the help sentence (T5), the contract's sections 7 and 8, the site's third article.
 
 ### Phase 17j. Tests for full coverage (one or two sessions)
 

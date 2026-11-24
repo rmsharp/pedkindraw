@@ -14,7 +14,8 @@ picker, S85: sections 6 and 7).
 **Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6); 17h1b DONE
 (S80: each run's free memory and `record.csv`, section 6); 17h1c DONE (S81: each run's `started` its launch, section
 6); 17h2 DONE (S82: the computation record, `14145a4`, section 6); 17h3 DONE (S83: the drawing harness, R157, section
-6); 17h4 DONE (S84: the drawing record, `a4b41da`, R158, section 6). Next: 17i, the speed vignette (section 6).
+6); 17h4 DONE (S84: the drawing record, `a4b41da`, R158, section 6); 17i1 DONE (S85: the check script and the speed
+vignette, R159, section 6). Next: 17i2, the pointers, the help sentence and the contract (section 6).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -645,6 +646,20 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 - **Split (S85, R159):** 17i1, the check script with its tests, the page with a docs test of its words, its NEWS line
   and the CI workflow; 17i2, the pointers (section 4.4), the help sentence (T5), the contract's sections 7 and 8 and the
   site's third article. Each is one session.
+- **Done 17i1 (S85):** R159 `3100482`; RED `2e40ecb`; GREEN `4a7cfe9` and `8656768`; REFACTOR `2e7dda9`.
+  `tools/timing/speedTables.R` builds the page's 8 tables from `tools/timing/results/` (records; the computations in
+  three groups, 26, 39 and 13 rows; where 22 computations stopped below 100,000; drawing seconds, a page's R and Chrome
+  parts, where each drawing stopped) and checks the page: each table after its marker, cell for cell with its caption,
+  and every number of the prose in a table or in `speedMethodNumbers()` (13, each with its reason; dragon 36);
+  `tools/checkSpeedTables.R` is the command (`--root`, `--print`), base R only. `vignettes/speed.Rmd` (435 lines, no
+  code): 1,218 cells equal to the records, 66 prose numbers; a definition of each of the 38 computations; "error" for a
+  function that stopped with an error (the draft said "refused") and "not timed" for the two saves at 3,000.
+  `.github/workflows/speed-tables.yaml` runs the check on Linux on its five paths; a NEWS "Documentation" bullet.
+  Tests: `tools/timing/tests/test_checkSpeedTables.R` 18 (151 expectations), `tests/testthat/test_speedVignetteDocs.R`
+  9 (85); RED 18 of 18 and 9 of 9 failing, 0 skipped. The full suite on `4a7cfe9` `[ FAIL 0 | WARN 0 | SKIP 0 | PASS
+  16947 ]` (1,155 tests, 592 s); `R CMD check --as-cran` on `4a7cfe9` and on `2e7dda9` Status 1 NOTE (R16's), installed
+  4,732 KB (from 4,592 before, measured at S85's start on a fresh build); lint 0. No file under `R/` changed. Not yet:
+  the CI workflow's first run (S85's push) and the site's third article (17i2 checks it).
 
 ### Amendments to later phases (recorded in the cran plan at S78's close-out)
 
@@ -774,6 +789,21 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
     median of 3 holds against one slow run; 17i's page quotes medians and says this.
 35. **The drawing record took 1 h 36 min** (S84), not the 3.5-4.5 h dragon 26 guessed: every drawing case but
     `pkd_data` stopped at 3,000 or before. Its longest runs were the saves at 2,000 (about 156 s each, dragon 33).
+36. **Every number in the speed page's prose is checked** (S85): it must be in a table or caption the script builds,
+    or in `speedMethodNumbers()` (`tools/timing/speedTables.R`), each a fact of the method with its reason (120 s,
+    32 GB, the canvas, 0 ...), never a result. A derived number (a ratio, "about 75 GB") fails the check: write it from
+    the tables or leave it out. Numbers in code spans are skipped, so a code span split over two lines is read as
+    prose. The help sentence and the pointers of 17i2 are not on that page: their numbers are the docs tests' to hold.
+37. **A docs test of a file the session writes must fail, not skip, when it is missing** (S85): `.docsText()`
+    (`tests/testthat/helper-docs.R`) skips when its file is absent, as it is under `R CMD check`, so a RED test of a
+    new vignette would read SKIP, not FAIL (CLAUDE.md Learning 14's trap). `test_speedVignetteDocs.R`'s `.speedPage()`
+    skips only when `vignettes/` itself is absent and expects the file.
+38. **Section 4.6's first search finds nothing on this Mac** (S85): `git grep -E 'seconds?\b'` reads `\b` as no word
+    boundary and printed no line, though `NEWS.md:325` and `vignettes/drawing.Rmd:799` say "seconds"; `grep -n -i -E
+    'second|minute'` finds them.
+39. **Only the drawing cases give kinship2 and Pedixplorer placeholder parents** (S85): `completeParentage()` is in
+    `drawingTimingCases.R` alone; the computation cases pass each package the pedigree in its own coding, one known
+    parent and all (section 5.3's sentence reads as if both did). The page says so in its drawing section only.
 
 ---
 
