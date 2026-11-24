@@ -20,18 +20,18 @@ holds the records (`tools/timing/results/`). The page runs no code.
 ## The machine and the method
 
 Each run was a fresh R process. It loaded the package being timed and those
-its call needs, built its input before the clock started, and timed one call. A step
-a user must run first was inside the timed call: pedkindraw's `kinship()`
-time includes `findGeneration()`, and kinship2's kinship by family includes
-`makefamid()`. For each function and size, smallest first, a warm-up run came
-first, which was also the test of whether that size fits; then three measured
-runs, and each figure on this page is their median. A run failed when it
-passed 120 seconds from the call's start or 32 GB of memory (29.8 GiB, R's
-limit on its heap or a watchdog on the process's memory), and the sizes after
-a function's first failure were not run. Each run started only once at least
-half of the CPU was idle, waiting at most 10 minutes; other work on the
-machine went on beside the runs, and the table below gives the share of the
-CPU idle as each run started.
+its call needs, built its input before the clock started, and timed one
+call. A step a user must run first was inside the timed call: pedkindraw's
+`kinship()` time includes `findGeneration()`, and kinship2's kinship by
+family includes `makefamid()`. For each function and size, smallest first, a
+warm-up run came first, which was also the test of whether that size fits;
+then three measured runs, and each figure on this page is their median. A
+run failed when it passed 120 seconds from the call's start or 32 GB of
+memory (29.8 GiB, R's limit on its heap or a watchdog on the process's
+memory), and the sizes after a function's first failure were not run. Each
+run started only once at least half of the CPU was idle, waiting at most 10
+minutes; other work on the machine went on beside the runs, and the table
+below gives the share of the CPU idle as each run started.
 
 pedkindraw was built from the commit each record names and installed as CRAN
 installs a package, and each run checked that it loaded that copy. kinship2
@@ -358,12 +358,12 @@ Table: Seconds to a drawing, the median of 3 measured runs, by the number of ani
 "time": R and the browser together passed 120 seconds. "error": the function
 stopped with an error; Pedixplorer's alignment of parents stopped with an
 error on the first colony, of 300 animals, and its own warning suggests
-turning it off, so it was also timed with alignment off. "not timed": the SVG and PNG files at 3,000 animals
-were not timed, because the drawing they save, built before the clock, took
-longer than the 300 seconds allowed for setup, so the save never started; the
-save itself did not fail. A save's three runs can differ by one slow run, in
-which one of the three took about twice as long as the other two; the median
-holds against it.
+turning it off, so it was also timed with alignment off. "not timed": the SVG
+and PNG files at 3,000 animals were not timed, because the drawing they save,
+built before the clock, took longer than the 300 seconds allowed for setup,
+so the save never started; the save itself did not fail. A save's three runs
+can differ by one slow run, at most about twice as long as the other two in
+this record; the median holds against it.
 
 Almost all of a web page's time is spent in R, before the browser draws
 anything:
