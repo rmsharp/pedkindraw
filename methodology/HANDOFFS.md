@@ -205,12 +205,12 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 session: S85
 date: 2026-11-24
 status: complete
-self_score: 8
+self_score: 7
 predecessor_score: 9
 active_task: Phase 17. 17i1 DONE in S85 (R159): vignettes/speed.Rmd (8 tables, 1,218 cells, 38 definitions, no code) checked cell for cell, captions and prose numbers included, by tools/checkSpeedTables.R (base R; a Linux CI workflow); installed 4,732 KB; R CMD check R16's NOTE only. Next: 17i2.
 what_was_done: claim 3874d69; R159 3100482; RED 2e40ecb (27 tests failing, 0 skipped); GREEN 4a7cfe9, 8656768; REFACTOR 2e7dda9 (output identical); close-out 1 a89868c (dragons 36-39); close-out 2, pushed.
-next_steps: Orient as SESSION_NOTES.md "What You Must Do"; read S85's push runs (speed-tables.yaml's first, pkgdown's); the orient picker: 17i2 (recommended: pointers, help sentence T5, contract 7-8, site; docs tests first) or the Windows item (:11) or a backlog item (31, by line).
-key_files: vignettes/speed.Rmd; tools/checkSpeedTables.R; tools/timing/speedTables.R:22, :110, :137; R/pedkindraw-package.R:52; vignettes/pedkindraw.Rmd:407; vignettes/drawing.Rmd:794, :808; R/drawPedigreeDiagram.R:178; docs/planning/pedkindraw-api-contract.md:323, :343; docs/planning/pedkindraw-timing-plan.md:633, :680, :792.
+next_steps: Orient as SESSION_NOTES.md "What You Must Do"; S85's push ran no workflow (its message quoted the skip marker; dragon 40): speed-tables and pkgdown were run by hand, green, the site lists 3 articles; R-CMD-check first runs on S85's changes at 17i2's push; the orient picker: 17i2 (recommended: pointers, help sentence T5, contract 7-8, site; docs tests first) or the Windows item (:11) or a backlog item (31, by line).
+key_files: vignettes/speed.Rmd; tools/checkSpeedTables.R; tools/timing/speedTables.R:22, :110, :137; R/pedkindraw-package.R:52; vignettes/pedkindraw.Rmd:407; vignettes/drawing.Rmd:794, :808; R/drawPedigreeDiagram.R:178; docs/planning/pedkindraw-api-contract.md:323, :343; docs/planning/pedkindraw-timing-plan.md:633, :683, :795.
 gotchas: the help sentence moves R/'s tree from ac123b7 (17n lists it); every prose number on the speed page is checked (dragon 36); a docs test of a new file must fail, not skip (dragon 37); failure words time/memory/error/crash/not timed, never refused; [skip ci] on the pushed head commit stops every workflow.
 runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: the package suite on a git archive of 4a7cfe9 (NOT_CRAN=true) [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16947 ] (1,155 tests, 592 s); R CMD check --as-cran on 2e7dda9 Status 1 NOTE (R16's); the page rendered, 8 tables; the script run with R's own library only, exit 0.
 changelog_ref: CHANGELOG.md "2026-11-24 · [BL-Phase 17] S85: 17i1, the speed vignette and its check"

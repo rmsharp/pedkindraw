@@ -658,8 +658,11 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   Tests: `tools/timing/tests/test_checkSpeedTables.R` 18 (151 expectations), `tests/testthat/test_speedVignetteDocs.R`
   9 (85); RED 18 of 18 and 9 of 9 failing, 0 skipped. The full suite on `4a7cfe9` `[ FAIL 0 | WARN 0 | SKIP 0 | PASS
   16947 ]` (1,155 tests, 592 s); `R CMD check --as-cran` on `4a7cfe9` and on `2e7dda9` Status 1 NOTE (R16's), installed
-  4,732 KB (from 4,592 before, measured at S85's start on a fresh build); lint 0. No file under `R/` changed. Not yet:
-  the CI workflow's first run (S85's push) and the site's third article (17i2 checks it).
+  4,732 KB (from 4,592 before, measured at S85's start on a fresh build); lint 0. No file under `R/` changed. S85's push
+  started no workflow (dragon 40); `gh workflow run` started `speed-tables.yaml`, its first run (45477435931, success,
+  "8 tables, 1218 cells equal to the records; 66 numbers in the prose; 0 problems" on GitHub's Linux R), and
+  `pkgdown.yaml` (45477442267, success): the site lists three articles, `articles/speed.html` with 8 tables.
+  `R-CMD-check.yaml` has no manual start and has not run on 17i1's package changes; 17i2's push runs it.
 
 ### Amendments to later phases (recorded in the cran plan at S78's close-out)
 
@@ -804,6 +807,11 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 39. **Only the drawing cases give kinship2 and Pedixplorer placeholder parents** (S85): `completeParentage()` is in
     `drawingTimingCases.R` alone; the computation cases pass each package the pedigree in its own coding, one known
     parent and all (section 5.3's sentence reads as if both did). The page says so in its drawing section only.
+40. **GitHub skips every workflow when the pushed head commit's message holds the skip marker anywhere** (S85): S85's
+    close-out 2 message listed its gotchas, one of them quoting `[skip ci]`, so the push that carried 17i1's package
+    changes started nothing, not even the new `speed-tables.yaml`. When a push should run CI, write "the skip marker"
+    in words; `gh workflow run` starts a workflow with `workflow_dispatch` (`speed-tables.yaml`, `pkgdown.yaml`), and
+    `R-CMD-check.yaml` has none.
 
 ---
 

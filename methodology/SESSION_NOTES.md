@@ -15,8 +15,11 @@ phases G1-G17 DONE (S42-S77); 17h DONE (S79-S84, R154-R158). **17i1 DONE in S85 
 computations), checked cell for cell, captions and prose numbers included, by `tools/checkSpeedTables.R` (with
 `tools/timing/speedTables.R`, base R only), which `.github/workflows/speed-tables.yaml` runs on Linux; a NEWS
 "Documentation" bullet. Installed 4,732 KB of 5,120; `R CMD check --as-cran` R16's NOTE only. No `R/` change.
-**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`); S85's push changes
-package files, so it ran (see the CHANGELOG's S85 push entry for what S85 did with it).
+**Open, not fixed:** the Windows job whose check step does not end (`methodology/BACKLOG.md:11`). **S85's push ran no
+workflow:** close-out 2's message quoted the skip marker in a sentence (timing plan dragon 40). S85 started
+`speed-tables.yaml` (its first run, success, "0 problems") and `pkgdown.yaml` (success; the site lists three articles,
+`speed.html` with 8 tables) by hand; `R-CMD-check.yaml` has no manual start, so it has not run on S85's package changes
+(the vignette, NEWS): 17i2's push is its first run on them.
 **Next, recommended: 17i2** (timing plan `:633`, the split note under it; R159 `docs/planning/standalone-pedigree-
 package-plan.md:335`; backlog `:36`), strict TDD, docs tests first: the pointers to `vignette("speed")` from
 `?pedkindraw`'s "Getting started" (`R/pedkindraw-package.R:52`), `vignettes/pedkindraw.Rmd:407` ("Where next"),
@@ -24,7 +27,7 @@ package-plan.md:335`; backlog `:36`), strict TDD, docs tests first: the pointers
 in `?drawPedigreeDiagram` naming the measured size (R159: 1,000 animals 16 s, 2,000 past 120 s; readable up to 1,000
 zoomed in) and the vignette; the contract's section 7 rows (`docs/planning/pedkindraw-api-contract.md:323`, a
 "pedkindraw, measured" figure in each from the tables) and section 8's row (`:343`, then true); the site's third
-article (pkgdown lists every vignette; check https://rmsharp.github.io/pedkindraw/articles/). Effort S-M, a guess.
+article is already listed (S85's manual pkgdown run): 17i2 confirms it after its push. Effort S-M, a guess.
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
 **The orient picker:** 17i2 (recommended) or the Windows item (`:11`). Also, from `methodology/BACKLOG.md` (31 items,
 each found at its line by `grep -n '^- \[ \]'` at S85's close-out; every item after `:36` moved 5 lines): READY, the
@@ -49,11 +52,11 @@ so group them and name each in a preview).
    nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l
    'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
    (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr at `3e06730c5`, tree clean, through S85.
-2. **S85's push** ran CI (package files changed; the close-out 2 commit has no `[skip ci]`): read `gh run list`
-   against the CHANGELOG's S85 push entry, especially `speed-tables.yaml`'s first run and pkgdown's (the site's third
-   article).
+2. **S85's push ran no workflow** (dragon 40); its two manual runs are in the CHANGELOG's S85 push entry. 17i2's push
+   changes package files: R-CMD-check then runs on S85's and 17i2's changes together; read it job by job and cancel
+   the Windows job at 40 minutes (`:11`).
 3. **17i2, if picked:** read the timing plan's 4.3 (`:310`), 4.4 (`:324`), the 17i section and its split and Done
-   notes (`:633`), T5 (`:680`) and dragons 36-39 (`:792`); R159 (standalone plan `:335`). Measure before the RED gate
+   notes (`:633`), T5 (`:683`) and dragons 36-40 (`:795`); R159 (standalone plan `:335`). Measure before the RED gate
    (Learning 17): the words each pointer and the help sentence will say, and each docs test run against a scratch copy
    both ways (S85's way: `git archive HEAD | tar -x -C <scratch>`, drafts in, the test file run with renv's library).
    The help sentence edits roxygen in `R/drawPedigreeDiagram.R` (its `@return` is at `:178`; a new paragraph before
@@ -74,7 +77,8 @@ so group them and name each in a preview).
   `tools/`), so it runs from any folder; `--print=<name>` or `--print=all` gives a table as the page must hold it.
 - **CRAN rebuilds vignettes** (dragon 6): `speed.Rmd` runs no code; a docs test checks it has no chunk.
 - **A push that changes package files runs CI**, and the Windows job hangs (`:11`). GitHub runs no workflow when the
-  pushed head commit's message says `[skip ci]`.
+  pushed head commit's message holds the skip marker anywhere, even quoted in a sentence (S85, dragon 40): when the
+  push should run CI, write "the skip marker" in words.
 - **Carried:** one-off scripts as `Rscript --no-init-file` with `R_LIBS`, `R_LIBS_USER` set to renv's library; the
   5-file cap splits commits; the ratchet's suite gate times out at 300 s (run the suite by hand, about 10 min, on a
   `git archive` copy); `CLAUDE.md` is over its budget (learnings go to the plans' dragons); `pedkindraw.Rproj`
@@ -91,7 +95,7 @@ so group them and name each in a preview).
   `:808`; T5's: `R/drawPedigreeDiagram.R:178` (`@return`); the contract `docs/planning/pedkindraw-api-contract.md:323`
   (section 7), `:343` (section 8's drawing row); the docs-test helpers `tests/testthat/helper-docs.R:13`-`:44`.
 - The plans: `docs/planning/pedkindraw-timing-plan.md` (`:310` 4.3, `:324` 4.4, `:633` 17i with its split and Done
-  17i1, `:680` T5, `:684` dragons, `:792`-`:807` dragons 36-39); R159 at
+  17i1, `:683` T5, `:687` dragons, `:795`-`:814` dragons 36-40); R159 at
   `docs/planning/standalone-pedigree-package-plan.md:335`; `docs/planning/cran-submission-plan.md:775` (17i).
 
 ### How You Will Be Evaluated
@@ -127,7 +131,9 @@ problems"; the full suite on a `git archive` of `4a7cfe9` (`NOT_CRAN=true`) `[ F
 and again on `2e7dda9` (272 s), installed 4,732 KB; the page rendered: 8 tables, 8 captions, no raw Markdown; lint_package
 0; roxygen unchanged; REFACTOR's output byte-identical on the page, `--print=all` and a copy with four planted problems;
 quality_ratchet 5/6 pass, 0 fail, 1 unmeasured (the suite gate's 300 s; the suite by hand above).
-**Not run:** the site's third article (17i2 checks it after the push's pkgdown run).
+**Not run:** `R-CMD-check.yaml` on GitHub: the push ran no workflow (close-out 2's message quoted the skip marker,
+dragon 40); `speed-tables.yaml` (first run) and `pkgdown.yaml` were started by hand, both green; the site lists
+three articles, `articles/speed.html` with 8 tables.
 
 #### Session 84 Handoff Evaluation (by Session 85)
 **Score: 9/10.** ROI high: 17i1 ran from its notes, and every cited line was where it said.
@@ -143,7 +149,7 @@ quality_ratchet 5/6 pass, 0 fail, 1 unmeasured (the suite gate's 300 s; the suit
 - **What was wrong:** nothing found in S84's own claims.
 - **ROI:** high.
 
-**Self-assessment: 8/10.**
+**Self-assessment: 7/10** (8 at close-out 2; lowered at 2b for the skip-marker slip below).
 + Orient in full, the claim before any work; the scope picker from measurements; R159 recorded in its session; every
   test run both ways in a scratch copy before RED (Learning 18), so RED and GREEN came out as predicted; four prose
   claims nothing measured taken out before RED (nprcgenekeepr's drawing "about as long", "no ids at the fitted view",
@@ -153,6 +159,9 @@ quality_ratchet 5/6 pass, 0 fail, 1 unmeasured (the suite gate's 300 s; the suit
   and two unwrapped lines, so GREEN 2 and a second `R CMD check`; before RED, three test-draft errors (a row pattern
   matching two tables, `Pedixplorer::ancestors` passed to `lapply()`, the script's root defaulting to the working
   folder) and kinship2's X-chromosome label written "x", each caught by a run.
+  Close-out 2's commit message quoted the skip marker while listing the gotchas, so the push that carried 17i1's
+  package changes started no workflow; two were started by hand, but R-CMD-check has no manual start and waits
+  for 17i2's push: a DONE surface (GitHub Actions) not reached by S85.
 
 ### What Session 84 Did
 **Deliverable:** Phase 17h4, the drawing record (`docs/planning/pedkindraw-timing-plan.md:599`): `runDrawingTiming.R`
