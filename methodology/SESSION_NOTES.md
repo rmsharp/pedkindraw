@@ -48,9 +48,10 @@ all"; at most 4 options, so group them and name each in a preview).
    after it); nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep
    -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
    (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr at `3e06730c5`, tree clean, through S86.
-2. **Read S86's push runs** (the CHANGELOG's S86 push entry, written at close-out 2b): R-CMD-check's first run on
-   17i1's and 17i2's package changes, job by job; pkgdown's site (three articles; `?drawPedigreeDiagram`'s reference
-   page with the new section).
+2. **S86's push was read** (the CHANGELOG's S86 push entry): pkgdown `success`, the site's three articles and every
+   new word on it; R-CMD-check Ubuntu release and oldrel-1 OK `[ FAIL 0 | WARN 0 | SKIP 34 | PASS 16767 ]`, macOS OK
+   (`SKIP 32 | PASS 16778`), Windows `FAIL 0 | PASS 16776` then the hang (cancelled at 40 min, `:11`), Ubuntu devel
+   failed installing S4Vectors on R-devel (`:234`, since S48). Nothing to read at Orient beyond `gh run list`.
 3. **17j, if picked:** read the cran plan's 17j (`:793`) and 17k (`:803`) and backlog `:119` (S13-S24's lists by file
    and line). Measure before the pre-RED picker (Learning 17): `covr::package_coverage(type = "tests")` on a `git
    archive` copy with renv's library (its run time unknown here; the suite alone takes about 10 minutes, so a guess of
@@ -126,7 +127,10 @@ on a `git archive` of `6931e95` (`NOT_CRAN=true`) `[ FAIL 0 | WARN 0 | SKIP 0 | 
 `Rd2txt()`; roxygen unchanged; lint 0; drift 91 / 23 / 0; `tools/checkSpeedTables.R` 0 problems; the contract's 30
 figures each equal to its cell; REFACTOR's 33 docs tests identical per test (212 expectations); quality_ratchet 5/6
 pass, 0 fail, 1 unmeasured (the suite gate's 300 s; the suite by hand above).
-**Not run here:** R-CMD-check and pkgdown on GitHub until the push (close-out 2b records them).
+**CI (close-out 2b):** pushed `dfbd587..58aa09e`; pkgdown `success`, the site's three articles and every new word on
+it; R-CMD-check Ubuntu release, oldrel-1 and macOS Status OK, `FAIL 0 | WARN 0` (SKIP 15 more than S77's run: the
+speed docs tests, which skip without `vignettes/`); Windows's tests `FAIL 0` then the hang (cancelled at 40 min);
+Ubuntu devel failed installing S4Vectors on R-devel, before pedkindraw (backlog `:234`, as since S48).
 
 #### Session 85 Handoff Evaluation (by Session 86)
 **Score: 9/10.** ROI high: 17i2 ran from its notes, and every cited line was where it said.
