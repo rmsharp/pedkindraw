@@ -1,0 +1,439 @@
+"case","computation","package","size","status","message","seconds","heapPeakMb","preRssMb","maxRssMb","warmupSeconds","runs"
+"k2_kin","Kinship, autosomal","kinship2",300,"ok","",0.002,5,241.4,243.078125,0.002,3
+"k2_kin","Kinship, autosomal","kinship2",1000,"ok","",0.019,39.5,239.9,282.34375,0.019,3
+"k2_kin","Kinship, autosomal","kinship2",3000,"ok","",0.269,138.3,238.4,411.90625,0.263,3
+"k2_kin","Kinship, autosomal","kinship2",10000,"ok","",3.039,1528.3,244.2,2254.46875,3.073,3
+"k2_kin","Kinship, autosomal","kinship2",30000,"ok","",29.325,13739.4,249.1,16047.59375,30.389,3
+"k2_kin","Kinship, autosomal","kinship2",100000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"pdx_kin","Kinship, autosomal","Pedixplorer",300,"ok","",0.004,10.2,403.1,405.515625,0.005,3
+"pdx_kin","Kinship, autosomal","Pedixplorer",1000,"ok","",0.125,58.7,405.6,479.421875,0.137,3
+"pdx_kin","Kinship, autosomal","Pedixplorer",3000,"ok","",0.771,463,403.3,904.71875,0.778,3
+"pdx_kin","Kinship, autosomal","Pedixplorer",10000,"ok","",4.97,4604.5,407.4,5930.15625,5,3
+"pdx_kin","Kinship, autosomal","Pedixplorer",30000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"pkd_kin","Kinship, autosomal","pedkindraw",300,"ok","",0.002,5.6,237.3,240.15625,0.002,3
+"pkd_kin","Kinship, autosomal","pedkindraw",1000,"ok","",0.017,43,237.8,277.640625,0.024,3
+"pkd_kin","Kinship, autosomal","pedkindraw",3000,"ok","",0.202,104.1,238.8,343.453125,0.22,3
+"pkd_kin","Kinship, autosomal","pedkindraw",10000,"ok","",2.745,1131.8,242.3,1463.078125,2.804,3
+"pkd_kin","Kinship, autosomal","pedkindraw",30000,"ok","",28.094,9926.2,246.5,10682.765625,27.899,3
+"pkd_kin","Kinship, autosomal","pedkindraw",100000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"pkd_kin_sparse","Kinship, autosomal, sparse or by family","pedkindraw",300,"ok","",0.007,14.7,245.8,252.75,0.008,3
+"pkd_kin_sparse","Kinship, autosomal, sparse or by family","pedkindraw",1000,"ok","",0.096,43.5,236.5,301.46875,0.11,3
+"pkd_kin_sparse","Kinship, autosomal, sparse or by family","pedkindraw",3000,"ok","",0.712,365.4,238.5,656.078125,0.687,3
+"pkd_kin_sparse","Kinship, autosomal, sparse or by family","pedkindraw",10000,"ok","",5.739,3454,240.4,4390.578125,5.724,3
+"pkd_kin_sparse","Kinship, autosomal, sparse or by family","pedkindraw",30000,"ok","",54.716,24491.3,247.3,20905.21875,53.273,3
+"pkd_kin_sparse","Kinship, autosomal, sparse or by family","pedkindraw",100000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"k2_makekinship","Kinship, autosomal, sparse or by family","kinship2",300,"ok","",0.011,18.6,239.3,249.03125,0.013,3
+"k2_makekinship","Kinship, autosomal, sparse or by family","kinship2",1000,"ok","",0.154,71,239.1,333.578125,0.153,3
+"k2_makekinship","Kinship, autosomal, sparse or by family","kinship2",3000,"ok","",0.779,453.5,239.9,915.53125,0.766,3
+"k2_makekinship","Kinship, autosomal, sparse or by family","kinship2",10000,"ok","",5.943,4406.7,247.5,7495.671875,5.868,3
+"k2_makekinship","Kinship, autosomal, sparse or by family","kinship2",30000,"memory","Error in h(simpleError(msg, call)) :    error in evaluating the argument 'x' in selecting a method for function 'forceSymmetric': error in evaluating the argument 'obj' in selecting a method for function 'unname': vector memory limit of 29.8 Gb reached, see mem.maxVSize() Calls: reportTimedCall ... ",NA,NA,NA,NA,NA,1
+"k2_kinX","Kinship, X chromosome","kinship2",300,"ok","",0.002,4.5,240.9,242.046875,0.002,3
+"k2_kinX","Kinship, X chromosome","kinship2",1000,"ok","",0.013,41.6,241.5,280.828125,0.012,3
+"k2_kinX","Kinship, X chromosome","kinship2",3000,"ok","",0.242,138.2,243.5,416.875,0.249,3
+"k2_kinX","Kinship, X chromosome","kinship2",10000,"ok","",2.512,1528.3,244.1,2525.421875,2.452,3
+"k2_kinX","Kinship, X chromosome","kinship2",30000,"ok","",24.035,13739.2,249.4,17684.15625,23.857,3
+"k2_kinX","Kinship, X chromosome","kinship2",100000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"pdx_kinX","Kinship, X chromosome","Pedixplorer",300,"ok","",0.004,9.6,406.3,410,0.004,3
+"pdx_kinX","Kinship, X chromosome","Pedixplorer",1000,"ok","",0.128,57.7,404.1,472.734375,0.14,3
+"pdx_kinX","Kinship, X chromosome","Pedixplorer",3000,"ok","",0.788,459,403.4,900.65625,0.792,3
+"pdx_kinX","Kinship, X chromosome","Pedixplorer",10000,"ok","",4.503,4583.6,409.3,5773.578125,4.536,3
+"pdx_kinX","Kinship, X chromosome","Pedixplorer",30000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"pkd_kinX","Kinship, X chromosome","pedkindraw",300,"ok","",0.002,4.6,241.4,243.3125,0.002,3
+"pkd_kinX","Kinship, X chromosome","pedkindraw",1000,"ok","",0.013,39.3,237.3,273.46875,0.011,3
+"pkd_kinX","Kinship, X chromosome","pedkindraw",3000,"ok","",0.196,104.1,239.3,344.21875,0.189,3
+"pkd_kinX","Kinship, X chromosome","pedkindraw",10000,"ok","",2.443,1131.8,238.4,1797.296875,2.472,3
+"pkd_kinX","Kinship, X chromosome","pedkindraw",30000,"ok","",23.532,9926.2,246.7,11615.625,23.759,3
+"pkd_kinX","Kinship, X chromosome","pedkindraw",100000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"k2_depth","Generation depth","kinship2",300,"ok","",0,0.5,239,239.0625,0.001,3
+"k2_depth","Generation depth","kinship2",1000,"ok","",0.001,0.7,240.6,240.65625,0.001,3
+"k2_depth","Generation depth","kinship2",3000,"ok","",0.001,1.5,243.5,243.671875,0.002,3
+"k2_depth","Generation depth","kinship2",10000,"ok","",0.003,4.3,243.7,244,0.004,3
+"k2_depth","Generation depth","kinship2",30000,"ok","",0.014,12,244.9,247.71875,0.014,3
+"k2_depth","Generation depth","kinship2",100000,"ok","",0.083,35.7,265.2,296.125,0.081,3
+"pdx_depth","Generation depth","Pedixplorer",300,"ok","",0.001,0.2,402.5,402.65625,0,3
+"pdx_depth","Generation depth","Pedixplorer",1000,"ok","",0,0.6,405.3,405.53125,0,3
+"pdx_depth","Generation depth","Pedixplorer",3000,"ok","",0.001,1.6,402.9,403.46875,0.001,3
+"pdx_depth","Generation depth","Pedixplorer",10000,"ok","",0.003,4.5,405.4,407.46875,0.004,3
+"pdx_depth","Generation depth","Pedixplorer",30000,"ok","",0.014,13.1,428.1,433.46875,0.015,3
+"pdx_depth","Generation depth","Pedixplorer",100000,"ok","",0.083,43.6,448.7,476.015625,0.086,3
+"pkd_gen","Generation depth","pedkindraw",300,"ok","",0.001,0.7,238.1,238.21875,0.001,3
+"pkd_gen","Generation depth","pedkindraw",1000,"ok","",0.001,1.5,241.7,241.96875,0.001,3
+"pkd_gen","Generation depth","pedkindraw",3000,"ok","",0.003,4.6,238.5,239.734375,0.003,3
+"pkd_gen","Generation depth","pedkindraw",10000,"ok","",0.009,15.8,242.2,245.84375,0.009,3
+"pkd_gen","Generation depth","pedkindraw",30000,"ok","",0.03,39.6,246.1,275.421875,0.03,3
+"pkd_gen","Generation depth","pedkindraw",100000,"ok","",0.108,36.2,265.7,296.734375,0.096,3
+"k2_fam","Family (connected component)","kinship2",300,"ok","",0.002,1.8,239.7,239.75,0.002,3
+"k2_fam","Family (connected component)","kinship2",1000,"ok","",0.005,3.2,239.2,239.515625,0.005,3
+"k2_fam","Family (connected component)","kinship2",3000,"ok","",0.016,8,240.5,242.21875,0.015,3
+"k2_fam","Family (connected component)","kinship2",10000,"ok","",0.048,23.9,246.7,251.15625,0.049,3
+"k2_fam","Family (connected component)","kinship2",30000,"ok","",0.15,49.5,247,273.25,0.15,3
+"k2_fam","Family (connected component)","kinship2",100000,"ok","",0.609,52.9,264.4,296.421875,0.592,3
+"pdx_fam","Family (connected component)","Pedixplorer",300,"ok","",0.002,1,402.5,402.6875,0.002,3
+"pdx_fam","Family (connected component)","Pedixplorer",1000,"ok","",0.004,2.3,405.3,405.53125,0.005,3
+"pdx_fam","Family (connected component)","Pedixplorer",3000,"ok","",0.014,6.3,404.2,404.984375,0.014,3
+"pdx_fam","Family (connected component)","Pedixplorer",10000,"ok","",0.045,19.4,406.6,413.125,0.046,3
+"pdx_fam","Family (connected component)","Pedixplorer",30000,"ok","",0.139,54.7,427.7,455.78125,0.135,3
+"pdx_fam","Family (connected component)","Pedixplorer",100000,"ok","",0.644,73.2,446.5,486.9375,0.676,3
+"pkd_fam","Family (connected component)","pedkindraw",300,"ok","",0.002,2.6,238,238.375,0.001,3
+"pkd_fam","Family (connected component)","pedkindraw",1000,"ok","",0.004,6.9,239.7,242.328125,0.004,3
+"pkd_fam","Family (connected component)","pedkindraw",3000,"ok","",0.016,26.7,237,254.734375,0.016,3
+"pkd_fam","Family (connected component)","pedkindraw",10000,"ok","",0.145,43.8,240.5,294.90625,0.146,3
+"pkd_fam","Family (connected component)","pedkindraw",30000,"ok","",1.261,40.6,247,319.703125,1.275,3
+"pkd_fam","Family (connected component)","pedkindraw",100000,"ok","",12.413,36.5,262.6,319.265625,12.352,3
+"k2_shrink","Shrink to 16 bits","kinship2",300,"ok","",2.517,60.6,242.5,262.046875,2.641,3
+"k2_shrink","Shrink to 16 bits","kinship2",1000,"ok","",99.287,72.7,242,332.578125,98.938,3
+"k2_shrink","Shrink to 16 bits","kinship2",3000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"pdx_shrink","Shrink to 16 bits","Pedixplorer",300,"ok","",89.44,97.9,412.3,427.421875,89.302,3
+"pdx_shrink","Shrink to 16 bits","Pedixplorer",1000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"pkd_shrink","Shrink to 16 bits","pedkindraw",300,"ok","",0.105,58.4,243.5,304.6875,0.106,3
+"pkd_shrink","Shrink to 16 bits","pedkindraw",1000,"ok","",3.526,48.4,237.1,351.625,3.585,3
+"pkd_shrink","Shrink to 16 bits","pedkindraw",3000,"ok","",89.512,44.8,243.9,388.03125,89.91,3
+"pkd_shrink","Shrink to 16 bits","pedkindraw",10000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"k2_unrel","Unrelated set","kinship2",300,"ok","",0.003,9.5,240.2,241.296875,0.003,3
+"k2_unrel","Unrelated set","kinship2",1000,"ok","",0.029,41.3,241.4,305.140625,0.028,3
+"k2_unrel","Unrelated set","kinship2",3000,"ok","",0.593,285.8,248.4,618.265625,0.588,3
+"k2_unrel","Unrelated set","kinship2",10000,"ok","",6.682,2792.7,269.4,5467.203125,6.741,3
+"k2_unrel","Unrelated set","kinship2",30000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"pdx_unrel","Unrelated set","Pedixplorer",300,"ok","",0.023,31.4,419.4,425.390625,0.026,3
+"pdx_unrel","Unrelated set","Pedixplorer",1000,"ok","",0.297,81.3,421.5,535.234375,0.299,3
+"pdx_unrel","Unrelated set","Pedixplorer",3000,"ok","",1.41,488.9,439.8,1199.890625,1.406,3
+"pdx_unrel","Unrelated set","Pedixplorer",10000,"ok","",15.661,4632.2,504.7,8159.5,15.748,3
+"pdx_unrel","Unrelated set","Pedixplorer",30000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"pkd_unrel","Unrelated set","pedkindraw",300,"ok","",0.015,14,243,243.921875,0.015,3
+"pkd_unrel","Unrelated set","pedkindraw",1000,"ok","",0.02,22.2,241.9,243.40625,0.019,3
+"pkd_unrel","Unrelated set","pedkindraw",3000,"ok","",0.066,50.4,247.3,278.703125,0.063,3
+"pkd_unrel","Unrelated set","pedkindraw",10000,"ok","",0.606,200.7,262.9,500.546875,0.59,3
+"pkd_unrel","Unrelated set","pedkindraw",30000,"ok","",3.65,1086.3,281.4,1734.5625,3.667,3
+"pkd_unrel","Unrelated set","pedkindraw",100000,"ok","",33.921,5464.5,335.8,6914.640625,33.929,3
+"pkd_anc","Probands and their ancestors","pedkindraw",300,"ok","",0,0.5,242.2,242.328125,0,3
+"pkd_anc","Probands and their ancestors","pedkindraw",1000,"ok","",0.001,0.7,238.8,238.859375,0,3
+"pkd_anc","Probands and their ancestors","pedkindraw",3000,"ok","",0.001,2.2,249.1,249.328125,0.002,3
+"pkd_anc","Probands and their ancestors","pedkindraw",10000,"ok","",0.002,4,256.9,257.03125,0.002,3
+"pkd_anc","Probands and their ancestors","pedkindraw",30000,"ok","",0.007,16.5,287.8,287.859375,0.007,3
+"pkd_anc","Probands and their ancestors","pedkindraw",100000,"ok","",0.024,40.1,343.9,347.21875,0.026,3
+"pdx_anc","Probands and their ancestors","Pedixplorer",300,"ok","",0.001,0.5,409.3,409.515625,0,3
+"pdx_anc","Probands and their ancestors","Pedixplorer",1000,"ok","",0,0.6,403.3,403.46875,0.001,3
+"pdx_anc","Probands and their ancestors","Pedixplorer",3000,"ok","",0.001,0.7,410.4,410.59375,0.001,3
+"pdx_anc","Probands and their ancestors","Pedixplorer",10000,"ok","",0,0.7,419.6,419.828125,0.001,3
+"pdx_anc","Probands and their ancestors","Pedixplorer",30000,"ok","",0.001,0.8,470.4,470.609375,0.001,3
+"pdx_anc","Probands and their ancestors","Pedixplorer",100000,"ok","",0.001,0.8,508.5,508.71875,0,3
+"pkd_desc","Probands and their descendants","pedkindraw",300,"ok","",0,0.3,238,238.140625,0,3
+"pkd_desc","Probands and their descendants","pedkindraw",1000,"ok","",0,0.4,240.8,240.875,0,3
+"pkd_desc","Probands and their descendants","pedkindraw",3000,"ok","",0,0.7,248.1,248.1875,0.001,3
+"pkd_desc","Probands and their descendants","pedkindraw",10000,"ok","",0.001,1.3,259.5,259.65625,0.001,3
+"pkd_desc","Probands and their descendants","pedkindraw",30000,"ok","",0.003,5.1,281.6,281.6875,0.003,3
+"pkd_desc","Probands and their descendants","pedkindraw",100000,"ok","",0.004,10.1,341.9,341.96875,0.005,3
+"pdx_desc","Probands and their descendants","Pedixplorer",300,"ok","",0,0.2,405.5,405.671875,0.001,3
+"pdx_desc","Probands and their descendants","Pedixplorer",1000,"ok","",0,0.4,412,412.296875,0,3
+"pdx_desc","Probands and their descendants","Pedixplorer",3000,"ok","",0.001,0.4,411.3,411.484375,0,3
+"pdx_desc","Probands and their descendants","Pedixplorer",10000,"ok","",0.001,0.8,422,422.21875,0.001,3
+"pdx_desc","Probands and their descendants","Pedixplorer",30000,"ok","",0.002,3.2,475.3,475.53125,0.003,3
+"pdx_desc","Probands and their descendants","Pedixplorer",100000,"ok","",0.004,6.2,526.3,526.53125,0.005,3
+"k2_ped","Build a pedigree object","kinship2",300,"ok","",0.001,0.6,242.6,242.625,0.001,3
+"k2_ped","Build a pedigree object","kinship2",1000,"ok","",0.001,0.7,239.8,239.859375,0.001,3
+"k2_ped","Build a pedigree object","kinship2",3000,"ok","",0.001,1.2,240.6,240.65625,0.001,3
+"k2_ped","Build a pedigree object","kinship2",10000,"ok","",0.002,2.9,246.7,247.015625,0.002,3
+"k2_ped","Build a pedigree object","kinship2",30000,"ok","",0.006,7.2,246,246.09375,0.006,3
+"k2_ped","Build a pedigree object","kinship2",100000,"ok","",0.02,23.6,265.5,285.875,0.019,3
+"pdx_ped","Build a pedigree object","Pedixplorer",300,"ok","",0.099,103.6,405.3,410.546875,0.114,3
+"pdx_ped","Build a pedigree object","Pedixplorer",1000,"ok","",0.128,122.8,405.5,419.15625,0.136,3
+"pdx_ped","Build a pedigree object","Pedixplorer",3000,"ok","",0.208,130.4,405.4,436.90625,0.215,3
+"pdx_ped","Build a pedigree object","Pedixplorer",10000,"ok","",0.645,155.8,406.3,497.890625,0.648,3
+"pdx_ped","Build a pedigree object","Pedixplorer",30000,"ok","",3.142,646,426.6,1316.5,3.129,3
+"pdx_ped","Build a pedigree object","Pedixplorer",100000,"ok","",8.058,1133.9,446.3,2022.515625,8.118,3
+"pkd_bits","Bit size","pedkindraw",300,"ok","",0.001,0.4,239.4,239.53125,0,3
+"pkd_bits","Bit size","pedkindraw",1000,"ok","",0.001,0.5,242.8,242.890625,0.001,3
+"pkd_bits","Bit size","pedkindraw",3000,"ok","",0.001,1.1,238.5,238.609375,0.001,3
+"pkd_bits","Bit size","pedkindraw",10000,"ok","",0.002,3.5,238.8,238.921875,0.002,3
+"pkd_bits","Bit size","pedkindraw",30000,"ok","",0.005,9.4,243.3,250.734375,0.005,3
+"pkd_bits","Bit size","pedkindraw",100000,"ok","",0.018,31.5,264.5,270.5625,0.016,3
+"k2_bits","Bit size","kinship2",300,"ok","",0,0,243.7,243.734375,0,3
+"k2_bits","Bit size","kinship2",1000,"ok","",0,0.1,240.7,240.78125,0,3
+"k2_bits","Bit size","kinship2",3000,"ok","",0,0.2,249.3,249.359375,0,3
+"k2_bits","Bit size","kinship2",10000,"ok","",0.001,0.1,270.8,270.875,0,3
+"k2_bits","Bit size","kinship2",30000,"ok","",0,0.3,290.4,290.421875,0,3
+"k2_bits","Bit size","kinship2",100000,"ok","",0.001,1.2,341,341.078125,0,3
+"pdx_bits","Bit size","Pedixplorer",300,"ok","",0,0.2,413.8,413.96875,0,3
+"pdx_bits","Bit size","Pedixplorer",1000,"ok","",0,0.1,424.6,424.8125,0,3
+"pdx_bits","Bit size","Pedixplorer",3000,"ok","",0,0.2,435.5,435.71875,0,3
+"pdx_bits","Bit size","Pedixplorer",10000,"ok","",0.001,0.5,503.2,503.203125,0.001,3
+"pdx_bits","Bit size","Pedixplorer",30000,"ok","",0.001,1.2,1323.5,1323.53125,0.001,3
+"pdx_bits","Bit size","Pedixplorer",100000,"ok","",0.004,3.5,2010.9,2010.9375,0.003,3
+"pkd_unavail","Unavailable animals to trim","pedkindraw",300,"ok","",0.001,0.6,239.2,239.296875,0.001,3
+"pkd_unavail","Unavailable animals to trim","pedkindraw",1000,"ok","",0.001,1.1,241.3,241.40625,0.001,3
+"pkd_unavail","Unavailable animals to trim","pedkindraw",3000,"ok","",0.002,2.6,248.1,248.359375,0.002,3
+"pkd_unavail","Unavailable animals to trim","pedkindraw",10000,"ok","",0.005,8.4,257.7,258.328125,0.004,3
+"pkd_unavail","Unavailable animals to trim","pedkindraw",30000,"ok","",0.014,23.9,287,289.78125,0.014,3
+"pkd_unavail","Unavailable animals to trim","pedkindraw",100000,"ok","",0.055,42.7,343.4,344.796875,0.049,3
+"k2_unavail","Unavailable animals to trim","kinship2",300,"ok","",0.004,5.4,240.4,240.71875,0.005,3
+"k2_unavail","Unavailable animals to trim","kinship2",1000,"ok","",0.017,26.2,243.2,249.484375,0.016,3
+"k2_unavail","Unavailable animals to trim","kinship2",3000,"ok","",0.057,66.5,247.6,286.25,0.056,3
+"k2_unavail","Unavailable animals to trim","kinship2",10000,"ok","",0.285,58.2,267.2,372.03125,0.285,3
+"k2_unavail","Unavailable animals to trim","kinship2",30000,"ok","",1.648,55.5,296.2,463.90625,1.655,3
+"k2_unavail","Unavailable animals to trim","kinship2",100000,"ok","",17.431,98.9,348.7,511.671875,16.939,3
+"pdx_unavail","Unavailable animals to trim","Pedixplorer",300,"ok","",0.108,93.8,414,415.09375,0.107,3
+"pdx_unavail","Unavailable animals to trim","Pedixplorer",1000,"ok","",0.141,98.2,424.8,430.109375,0.139,3
+"pdx_unavail","Unavailable animals to trim","Pedixplorer",3000,"ok","",0.2,117.9,438.6,456.28125,0.192,3
+"pdx_unavail","Unavailable animals to trim","Pedixplorer",10000,"ok","",0.42,132.1,504.9,537.875,0.41,3
+"pdx_unavail","Unavailable animals to trim","Pedixplorer",30000,"ok","",1.326,448.6,1341.8,1352.96875,1.29,3
+"pdx_unavail","Unavailable animals to trim","Pedixplorer",100000,"ok","",4.869,953.2,2011,2196.953125,4.9,3
+"pkd_noninform","Available, uninformative animals to trim","pedkindraw",300,"ok","",0.001,0.9,239.2,239.359375,0.001,3
+"pkd_noninform","Available, uninformative animals to trim","pedkindraw",1000,"ok","",0.001,2,239,239.15625,0.001,3
+"pkd_noninform","Available, uninformative animals to trim","pedkindraw",3000,"ok","",0.003,5,247.7,248.484375,0.002,3
+"pkd_noninform","Available, uninformative animals to trim","pedkindraw",10000,"ok","",0.011,20.4,263.3,269.75,0.01,3
+"pkd_noninform","Available, uninformative animals to trim","pedkindraw",30000,"ok","",0.043,38,279.9,306.8125,0.04,3
+"pkd_noninform","Available, uninformative animals to trim","pedkindraw",100000,"ok","",0.128,42.9,337.7,338.140625,0.128,3
+"k2_noninform","Available, uninformative animals to trim","kinship2",300,"ok","",0.005,6.3,242.2,242.34375,0.006,3
+"k2_noninform","Available, uninformative animals to trim","kinship2",1000,"error","Error in if (avail[pedData$id == fa] & avail[pedData$id == mo]) { :    argument is of length zero Calls: reportTimedCall -> measure -> <Anonymous> -> <Anonymous>",NA,NA,NA,NA,NA,1
+"pdx_noninform","Available, uninformative animals to trim","Pedixplorer",300,"ok","",0.108,93.9,413.3,414.34375,0.114,3
+"pdx_noninform","Available, uninformative animals to trim","Pedixplorer",1000,"ok","",0.145,98.4,417.3,422.671875,0.144,3
+"pdx_noninform","Available, uninformative animals to trim","Pedixplorer",3000,"ok","",0.201,117.9,439.8,457.265625,0.199,3
+"pdx_noninform","Available, uninformative animals to trim","Pedixplorer",10000,"ok","",0.393,129.2,511,534.515625,0.407,3
+"pdx_noninform","Available, uninformative animals to trim","Pedixplorer",30000,"ok","",1.304,451.2,1329.6,1373.515625,1.282,3
+"pdx_noninform","Available, uninformative animals to trim","Pedixplorer",100000,"ok","",4.884,953.2,1991.9,2125.265625,4.88,3
+"pkd_availaff","One available affected animal to trim","pedkindraw",300,"ok","",0.001,2.1,240.2,240.3125,0.001,3
+"pkd_availaff","One available affected animal to trim","pedkindraw",1000,"ok","",0.006,12.8,237.8,246.546875,0.006,3
+"pkd_availaff","One available affected animal to trim","pedkindraw",3000,"ok","",0.051,41.7,249,285.4375,0.054,3
+"pkd_availaff","One available affected animal to trim","pedkindraw",10000,"ok","",0.655,40.3,257.5,305.703125,0.629,3
+"pkd_availaff","One available affected animal to trim","pedkindraw",30000,"ok","",6.668,39.2,286.7,328.765625,6.634,3
+"pkd_availaff","One available affected animal to trim","pedkindraw",100000,"ok","",83.278,81.9,344.7,439.359375,83.424,3
+"k2_availaff","One available affected animal to trim","kinship2",300,"ok","",0.037,51.4,242,248.390625,0.035,3
+"k2_availaff","One available affected animal to trim","kinship2",1000,"ok","",0.356,74.9,241.9,262.875,0.353,3
+"k2_availaff","One available affected animal to trim","kinship2",3000,"ok","",4.087,81.9,250.4,301.984375,4.065,3
+"k2_availaff","One available affected animal to trim","kinship2",10000,"ok","",72.996,59.4,267.8,386.890625,73.555,3
+"k2_availaff","One available affected animal to trim","kinship2",30000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"pdx_availaff","One available affected animal to trim","Pedixplorer",300,"ok","",0.663,98.1,412.4,416.4375,0.667,3
+"pdx_availaff","One available affected animal to trim","Pedixplorer",1000,"ok","",2.371,115.6,422.5,434.734375,2.335,3
+"pdx_availaff","One available affected animal to trim","Pedixplorer",3000,"ok","",13.414,137.8,436.2,473.671875,13.247,3
+"pdx_availaff","One available affected animal to trim","Pedixplorer",10000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"pkd_famcheck","Family check","pedkindraw",300,"ok","",0.001,1,241.7,241.8125,0.001,3
+"pkd_famcheck","Family check","pedkindraw",1000,"ok","",0.001,2.2,239.8,239.9375,0.002,3
+"pkd_famcheck","Family check","pedkindraw",3000,"ok","",0.003,5.3,251.8,252.09375,0.004,3
+"pkd_famcheck","Family check","pedkindraw",10000,"ok","",0.01,17.6,263.1,267.609375,0.013,3
+"pkd_famcheck","Family check","pedkindraw",30000,"ok","",0.031,37.6,290.2,299.03125,0.034,3
+"pkd_famcheck","Family check","pedkindraw",100000,"ok","",0.102,45.4,339.8,344.46875,0.101,3
+"k2_famcheck","Family check","kinship2",300,"ok","",0.003,2,239.6,239.640625,0.003,3
+"k2_famcheck","Family check","kinship2",1000,"ok","",0.006,3.7,241.5,241.53125,0.006,3
+"k2_famcheck","Family check","kinship2",3000,"ok","",0.016,8.9,247.1,247.421875,0.017,3
+"k2_famcheck","Family check","kinship2",10000,"ok","",0.051,26.6,266.7,278.765625,0.05,3
+"k2_famcheck","Family check","kinship2",30000,"ok","",0.16,46.6,295.2,313.828125,0.156,3
+"k2_famcheck","Family check","kinship2",100000,"ok","",0.699,83.9,341.6,346.0625,0.674,3
+"pdx_famcheck","Family check","Pedixplorer",300,"error","Error in dimnames(tab1) <- list(dimnames(tab1)[[1]], NULL) :    'dimnames' applied to non-array Calls: reportTimedCall ... <Anonymous> -> <Anonymous> -> <Anonymous> -> .local",NA,NA,NA,NA,NA,1
+"pkd_ibd","IBD matrix from pairs","pedkindraw",300,"ok","",0.003,2.8,236.8,236.921875,0.003,3
+"pkd_ibd","IBD matrix from pairs","pedkindraw",1000,"ok","",0.003,3.4,238.3,238.484375,0.004,3
+"pkd_ibd","IBD matrix from pairs","pedkindraw",3000,"ok","",0.004,5.3,237.7,238.03125,0.003,3
+"pkd_ibd","IBD matrix from pairs","pedkindraw",10000,"ok","",0.008,11.1,241.2,241.5,0.007,3
+"pkd_ibd","IBD matrix from pairs","pedkindraw",30000,"ok","",0.017,28.5,247.3,261.515625,0.016,3
+"pkd_ibd","IBD matrix from pairs","pedkindraw",100000,"ok","",0.065,44.3,268.4,324.0625,0.064,3
+"k2_ibd","IBD matrix from pairs","kinship2",300,"ok","",0.005,5,239.5,239.640625,0.005,3
+"k2_ibd","IBD matrix from pairs","kinship2",1000,"ok","",0.013,10.8,239,239.625,0.013,3
+"k2_ibd","IBD matrix from pairs","kinship2",3000,"ok","",0.047,31.3,238.8,244.390625,0.047,3
+"k2_ibd","IBD matrix from pairs","kinship2",10000,"ok","",0.235,88.1,242.4,272.171875,0.231,3
+"k2_ibd","IBD matrix from pairs","kinship2",30000,"ok","",1.354,92,248.2,295.5625,1.364,3
+"k2_ibd","IBD matrix from pairs","kinship2",100000,"ok","",12.736,165.4,279,408.796875,12.696,3
+"pdx_ibd","IBD matrix from pairs","Pedixplorer",300,"ok","",0.005,4.7,411.3,411.671875,0.006,3
+"pdx_ibd","IBD matrix from pairs","Pedixplorer",1000,"ok","",0.012,10.5,404.4,405.15625,0.013,3
+"pdx_ibd","IBD matrix from pairs","Pedixplorer",3000,"ok","",0.045,30.9,404,408.671875,0.045,3
+"pdx_ibd","IBD matrix from pairs","Pedixplorer",10000,"ok","",0.227,91.1,406,435.4375,0.234,3
+"pdx_ibd","IBD matrix from pairs","Pedixplorer",30000,"ok","",1.363,138,431.1,470.640625,1.373,3
+"pdx_ibd","IBD matrix from pairs","Pedixplorer",100000,"ok","",12.741,163.3,456.2,553.21875,12.748,3
+"pkd_near","Near relatives (distance 3)","pedkindraw",300,"ok","",0.011,19,237.9,245.484375,0.011,3
+"pkd_near","Near relatives (distance 3)","pedkindraw",1000,"ok","",0.113,49.9,237.9,307.078125,0.109,3
+"pkd_near","Near relatives (distance 3)","pedkindraw",3000,"ok","",0.809,394.7,247.9,661.703125,0.801,3
+"pkd_near","Near relatives (distance 3)","pedkindraw",10000,"ok","",6.774,4022.7,255.1,4833.703125,6.632,3
+"pkd_near","Near relatives (distance 3)","pedkindraw",30000,"ok","",58.592,25185.5,282.6,23990.765625,68.271,3
+"pkd_near","Near relatives (distance 3)","pedkindraw",100000,"memory","Error: vector memory limit of 29.8 Gb reached, see mem.maxVSize()",NA,NA,NA,NA,NA,1
+"pdx_near","Near relatives (distance 3)","Pedixplorer",300,"ok","",0.013,23.4,415.4,418.875,0.016,3
+"pdx_near","Near relatives (distance 3)","Pedixplorer",1000,"ok","",0.15,74.9,426,499.21875,0.148,3
+"pdx_near","Near relatives (distance 3)","Pedixplorer",3000,"ok","",0.848,474.8,439,997.515625,0.87,3
+"pdx_near","Near relatives (distance 3)","Pedixplorer",10000,"ok","",5.319,4617.1,495,6750.125,5.368,3
+"pdx_near","Near relatives (distance 3)","Pedixplorer",30000,"memory","Error in h(simpleError(msg, call)) :    error in evaluating the argument 'object' in selecting a method for function 'ped': vector memory limit of 29.8 Gb reached, see mem.maxVSize() Calls: reportTimedCall ... all.equal -> all.equal.numeric -> .handleSimpleError -> h",NA,NA,NA,NA,NA,1
+"pkd_remove","Remove 5 animals","pedkindraw",300,"ok","",0,0.2,242,242.171875,0,3
+"pkd_remove","Remove 5 animals","pedkindraw",1000,"ok","",0,0.3,248.1,248.234375,0.001,3
+"pkd_remove","Remove 5 animals","pedkindraw",3000,"ok","",0,0.6,248.2,248.40625,0.001,3
+"pkd_remove","Remove 5 animals","pedkindraw",10000,"ok","",0.001,2.1,257.1,257.171875,0.001,3
+"pkd_remove","Remove 5 animals","pedkindraw",30000,"ok","",0.003,5.6,287.2,287.34375,0.003,3
+"pkd_remove","Remove 5 animals","pedkindraw",100000,"ok","",0.012,17.9,345,345.125,0.012,3
+"k2_remove","Remove 5 animals","kinship2",300,"ok","",0,0.2,241.2,241.234375,0.001,3
+"k2_remove","Remove 5 animals","kinship2",1000,"ok","",0,0.3,240.5,240.546875,0,3
+"k2_remove","Remove 5 animals","kinship2",3000,"ok","",0,0.6,246.2,246.296875,0,3
+"k2_remove","Remove 5 animals","kinship2",10000,"ok","",0.001,1.5,268.8,268.90625,0.001,3
+"k2_remove","Remove 5 animals","kinship2",30000,"ok","",0.003,3.8,294.7,294.71875,0.002,3
+"k2_remove","Remove 5 animals","kinship2",100000,"ok","",0.02,12.8,344.8,344.8125,0.021,3
+"pdx_remove","Remove 5 animals","Pedixplorer",300,"ok","",0.069,77.6,413.8,414.140625,0.069,3
+"pdx_remove","Remove 5 animals","Pedixplorer",1000,"ok","",0.078,91.8,420.9,421.46875,0.088,3
+"pdx_remove","Remove 5 animals","Pedixplorer",3000,"ok","",0.128,111.3,434.7,439.4375,0.127,3
+"pdx_remove","Remove 5 animals","Pedixplorer",10000,"ok","",0.346,142.2,488.2,525.234375,0.337,3
+"pdx_remove","Remove 5 animals","Pedixplorer",30000,"ok","",1.805,640.8,1104.1,1518.65625,1.723,3
+"pdx_remove","Remove 5 animals","Pedixplorer",100000,"ok","",5.21,1223.6,1774.3,2336.375,5.187,3
+"pkd_frame_k2","A kinship2 object as a data frame","pedkindraw",300,"ok","",0,0.4,246.2,246.34375,0,3
+"pkd_frame_k2","A kinship2 object as a data frame","pedkindraw",1000,"ok","",0,0.5,243.7,243.765625,0.001,3
+"pkd_frame_k2","A kinship2 object as a data frame","pedkindraw",3000,"ok","",0.001,0.6,253.6,253.6875,0.001,3
+"pkd_frame_k2","A kinship2 object as a data frame","pedkindraw",10000,"ok","",0.001,1.4,268.2,268.3125,0.001,3
+"pkd_frame_k2","A kinship2 object as a data frame","pedkindraw",30000,"ok","",0.002,3.7,296.1,296.15625,0.002,3
+"pkd_frame_k2","A kinship2 object as a data frame","pedkindraw",100000,"ok","",0.006,11.2,332.3,332.40625,0.007,3
+"k2_frame","A kinship2 object as a data frame","kinship2",300,"ok","",0.001,0.1,243.5,243.578125,0.001,3
+"k2_frame","A kinship2 object as a data frame","kinship2",1000,"ok","",0.001,0.3,244.8,244.890625,0.001,3
+"k2_frame","A kinship2 object as a data frame","kinship2",3000,"ok","",0.001,0.5,248.5,248.578125,0.001,3
+"k2_frame","A kinship2 object as a data frame","kinship2",10000,"ok","",0.003,0.9,275.4,275.4375,0.004,3
+"k2_frame","A kinship2 object as a data frame","kinship2",30000,"ok","",0.009,2.4,296.6,296.6875,0.01,3
+"k2_frame","A kinship2 object as a data frame","kinship2",100000,"ok","",0.031,7.8,338.4,338.4375,0.031,3
+"pkd_frame_pdx","A Pedixplorer object as a data frame","pedkindraw",300,"ok","",0.003,3.3,414.6,414.828125,0.004,3
+"pkd_frame_pdx","A Pedixplorer object as a data frame","pedkindraw",1000,"ok","",0.004,3.4,420.7,420.875,0.004,3
+"pkd_frame_pdx","A Pedixplorer object as a data frame","pedkindraw",3000,"ok","",0.004,3.8,440.6,440.8125,0.004,3
+"pkd_frame_pdx","A Pedixplorer object as a data frame","pedkindraw",10000,"ok","",0.005,5.2,519.6,519.5625,0.005,3
+"pkd_frame_pdx","A Pedixplorer object as a data frame","pedkindraw",30000,"ok","",0.007,9.3,1335.1,1335.53125,0.007,3
+"pkd_frame_pdx","A Pedixplorer object as a data frame","pedkindraw",100000,"ok","",0.013,23.4,1971.3,1971.28125,0.012,3
+"pdx_frame","A Pedixplorer object as a data frame","Pedixplorer",300,"ok","",0.001,1.1,414.8,414.953125,0.001,3
+"pdx_frame","A Pedixplorer object as a data frame","Pedixplorer",1000,"ok","",0.001,1,419.4,419.59375,0.001,3
+"pdx_frame","A Pedixplorer object as a data frame","Pedixplorer",3000,"ok","",0.001,1,436.3,436.53125,0.002,3
+"pdx_frame","A Pedixplorer object as a data frame","Pedixplorer",10000,"ok","",0.001,1.1,513.6,513.578125,0.002,3
+"pdx_frame","A Pedixplorer object as a data frame","Pedixplorer",30000,"ok","",0.002,1.4,1343.6,1347.59375,0.002,3
+"pdx_frame","A Pedixplorer object as a data frame","Pedixplorer",100000,"ok","",0.003,2,1982.5,1982.453125,0.003,3
+"pkd_addparents","Add rows for missing parents","pedkindraw",300,"ok","",0,0.4,239.1,239.203125,0,3
+"pkd_addparents","Add rows for missing parents","pedkindraw",1000,"ok","",0,0.3,242.5,242.625,0.001,3
+"pkd_addparents","Add rows for missing parents","pedkindraw",3000,"ok","",0,0.6,241.6,241.6875,0.001,3
+"pkd_addparents","Add rows for missing parents","pedkindraw",10000,"ok","",0.001,1.4,240.3,240.453125,0.001,3
+"pkd_addparents","Add rows for missing parents","pedkindraw",30000,"ok","",0.003,3.5,244.7,247.53125,0.002,3
+"pkd_addparents","Add rows for missing parents","pedkindraw",100000,"ok","",0.007,11.4,264.4,265.671875,0.006,3
+"k2_addparents","Add rows for missing parents","kinship2",300,"ok","",0.001,0.6,240.9,240.90625,0.001,3
+"k2_addparents","Add rows for missing parents","kinship2",1000,"ok","",0.001,1.1,242.5,242.515625,0.001,3
+"k2_addparents","Add rows for missing parents","kinship2",3000,"ok","",0.002,2.2,242.3,242.46875,0.003,3
+"k2_addparents","Add rows for missing parents","kinship2",10000,"ok","",0.006,6.4,241.1,241.15625,0.006,3
+"k2_addparents","Add rows for missing parents","kinship2",30000,"ok","",0.018,17.3,249.1,257.34375,0.017,3
+"k2_addparents","Add rows for missing parents","kinship2",100000,"ok","",0.069,46,267.2,288.4375,0.07,3
+"pdx_addparents","Add rows for missing parents","Pedixplorer",300,"ok","",0.002,1.7,408.8,409,0.002,3
+"pdx_addparents","Add rows for missing parents","Pedixplorer",1000,"ok","",0.006,3.5,404.7,404.953125,0.006,3
+"pdx_addparents","Add rows for missing parents","Pedixplorer",3000,"ok","",0.017,9.1,405,407.84375,0.018,3
+"pdx_addparents","Add rows for missing parents","Pedixplorer",10000,"ok","",0.059,28,408.4,417.28125,0.059,3
+"pdx_addparents","Add rows for missing parents","Pedixplorer",30000,"ok","",0.172,69.7,426.6,471.28125,0.172,3
+"pdx_addparents","Add rows for missing parents","Pedixplorer",100000,"ok","",0.687,66.2,447.6,488.296875,0.703,3
+"pkd_offspring","Count offspring","pedkindraw",300,"ok","",0.001,1,243.4,243.53125,0.001,3
+"pkd_offspring","Count offspring","pedkindraw",1000,"ok","",0.002,2.1,238.1,238.203125,0.001,3
+"pkd_offspring","Count offspring","pedkindraw",3000,"ok","",0.004,5.9,238.6,238.71875,0.004,3
+"pkd_offspring","Count offspring","pedkindraw",10000,"ok","",0.011,19,240.6,241.40625,0.011,3
+"pkd_offspring","Count offspring","pedkindraw",30000,"ok","",0.036,55.5,243.8,248.34375,0.035,3
+"pkd_offspring","Count offspring","pedkindraw",100000,"ok","",0.14,95.3,266.7,317.859375,0.144,3
+"pdx_offspring","Count offspring","Pedixplorer",300,"ok","",0.027,25.3,401.2,401.609375,0.033,3
+"pdx_offspring","Count offspring","Pedixplorer",1000,"ok","",0.031,34.4,401,403.1875,0.032,3
+"pdx_offspring","Count offspring","Pedixplorer",3000,"ok","",0.055,70.4,402.1,417.84375,0.053,3
+"pdx_offspring","Count offspring","Pedixplorer",10000,"ok","",0.293,93.9,405.5,456.71875,0.298,3
+"pdx_offspring","Count offspring","Pedixplorer",30000,"ok","",2.239,616.8,423.6,1255.25,2.226,3
+"pdx_offspring","Count offspring","Pedixplorer",100000,"ok","",5.045,985,449.3,1707.453125,5.085,3
+"pkd_recode","Recode a pedigree file's values","pedkindraw",300,"ok","",0,0.4,238,238.125,0,3
+"pkd_recode","Recode a pedigree file's values","pedkindraw",1000,"ok","",0.001,0.6,239.8,239.875,0.001,3
+"pkd_recode","Recode a pedigree file's values","pedkindraw",3000,"ok","",0.002,1.4,239,239.140625,0.003,3
+"pkd_recode","Recode a pedigree file's values","pedkindraw",10000,"ok","",0.007,4.3,241.2,243.296875,0.006,3
+"pkd_recode","Recode a pedigree file's values","pedkindraw",30000,"ok","",0.021,12.1,244.3,244.421875,0.02,3
+"pkd_recode","Recode a pedigree file's values","pedkindraw",100000,"ok","",0.071,35.7,263.5,285.828125,0.071,3
+"pdx_recode","Recode a pedigree file's values","Pedixplorer",300,"ok","",0.031,31.6,402.3,403.84375,0.032,3
+"pdx_recode","Recode a pedigree file's values","Pedixplorer",1000,"ok","",0.044,52.3,409.4,413.140625,0.044,3
+"pdx_recode","Recode a pedigree file's values","Pedixplorer",3000,"ok","",0.087,111.6,403.2,416.0625,0.089,3
+"pdx_recode","Recode a pedigree file's values","Pedixplorer",10000,"ok","",0.234,127.9,405.4,441.875,0.242,3
+"pdx_recode","Recode a pedigree file's values","Pedixplorer",30000,"ok","",0.664,160.6,426.8,502.734375,0.655,3
+"pdx_recode","Recode a pedigree file's values","Pedixplorer",100000,"ok","",2.522,202.6,445.9,699.921875,2.518,3
+"pkd_founder","Founder or not","pedkindraw",300,"ok","",0,0.2,237,237.0625,0,3
+"pkd_founder","Founder or not","pedkindraw",1000,"ok","",0,0,242.2,242.328125,0,3
+"pkd_founder","Founder or not","pedkindraw",3000,"ok","",0,0,240.2,240.296875,0,3
+"pkd_founder","Founder or not","pedkindraw",10000,"ok","",0,0.1,241.3,241.46875,0,3
+"pkd_founder","Founder or not","pedkindraw",30000,"ok","",0,0.5,245.6,245.75,0,3
+"pkd_founder","Founder or not","pedkindraw",100000,"ok","",0,1.2,265.6,265.734375,0,3
+"pdx_founder","Founder or not","Pedixplorer",300,"ok","",0,0,400.9,401.046875,0,3
+"pdx_founder","Founder or not","Pedixplorer",1000,"ok","",0,0.1,409.2,409.4375,0,3
+"pdx_founder","Founder or not","Pedixplorer",3000,"ok","",0,0.2,404,404.203125,0,3
+"pdx_founder","Founder or not","Pedixplorer",10000,"ok","",0,0.4,407.5,407.71875,0,3
+"pdx_founder","Founder or not","Pedixplorer",30000,"ok","",0.001,1.1,427.1,427.296875,0.001,3
+"pdx_founder","Founder or not","Pedixplorer",100000,"ok","",0.003,3.5,445.4,445.65625,0.003,3
+"pkd_aligned","Generation depth, mates aligned","pedkindraw",300,"ok","",0.02,36.3,236.5,256.703125,0.02,3
+"pkd_aligned","Generation depth, mates aligned","pedkindraw",1000,"ok","",0.295,57.5,237.2,343.125,0.302,3
+"pkd_aligned","Generation depth, mates aligned","pedkindraw",3000,"ok","",2.36,49.9,246.2,375.203125,2.369,3
+"pkd_aligned","Generation depth, mates aligned","pedkindraw",10000,"ok","",60.649,51.4,239.4,385.265625,60.374,3
+"pkd_aligned","Generation depth, mates aligned","pedkindraw",30000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"k2_aligned","Generation depth, mates aligned","kinship2",300,"ok","",0.005,11,242.5,248.09375,0.005,3
+"k2_aligned","Generation depth, mates aligned","kinship2",1000,"ok","",0.038,45.6,243,292.609375,0.037,3
+"k2_aligned","Generation depth, mates aligned","kinship2",3000,"ok","",0.818,41.9,240.1,348.8125,0.838,3
+"k2_aligned","Generation depth, mates aligned","kinship2",10000,"ok","",8.19,40.3,246.1,330.859375,7.865,3
+"k2_aligned","Generation depth, mates aligned","kinship2",30000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"pdx_aligned","Generation depth, mates aligned","Pedixplorer",300,"ok","",0.049,62.9,411.6,442.859375,0.045,3
+"pdx_aligned","Generation depth, mates aligned","Pedixplorer",1000,"ok","",0.304,48.3,423.2,483.59375,0.308,3
+"pdx_aligned","Generation depth, mates aligned","Pedixplorer",3000,"ok","",3.972,57.3,435.4,585.015625,3.934,3
+"pdx_aligned","Generation depth, mates aligned","Pedixplorer",10000,"ok","",67.044,53,506.6,612.375,66.455,3
+"pdx_aligned","Generation depth, mates aligned","Pedixplorer",30000,"time","over 120 s after the call started",NA,NA,NA,NA,NA,1
+"pkd_check","Check a pedigree","pedkindraw",300,"ok","",0.002,2.5,237.5,237.8125,0.002,3
+"pkd_check","Check a pedigree","pedkindraw",1000,"ok","",0.003,3.6,238,238.34375,0.003,3
+"pkd_check","Check a pedigree","pedkindraw",3000,"ok","",0.006,7.4,241.1,242.84375,0.005,3
+"pkd_check","Check a pedigree","pedkindraw",10000,"ok","",0.014,20.9,240.4,247.0625,0.014,3
+"pkd_check","Check a pedigree","pedkindraw",30000,"ok","",0.042,40.5,250.8,278.171875,0.043,3
+"pkd_check","Check a pedigree","pedkindraw",100000,"ok","",0.149,36.9,263.4,307.4375,0.146,3
+"pkd_matings","Matings","pedkindraw",300,"ok","",0.001,1,238.3,238.390625,0,3
+"pkd_matings","Matings","pedkindraw",1000,"ok","",0.002,1.9,238.2,238.34375,0.001,3
+"pkd_matings","Matings","pedkindraw",3000,"ok","",0.003,4.8,243.1,243.1875,0.003,3
+"pkd_matings","Matings","pedkindraw",10000,"ok","",0.008,15,240.7,243.890625,0.008,3
+"pkd_matings","Matings","pedkindraw",30000,"ok","",0.024,43.2,250,254.8125,0.025,3
+"pkd_matings","Matings","pedkindraw",100000,"ok","",0.108,95.2,264.6,295.140625,0.099,3
+"pkd_parentsex","Correct parents' sex","pedkindraw",300,"ok","",0,0.2,240.9,241.046875,0.001,3
+"pkd_parentsex","Correct parents' sex","pedkindraw",1000,"ok","",0,0.2,238.3,238.421875,0,3
+"pkd_parentsex","Correct parents' sex","pedkindraw",3000,"ok","",0,0.5,241.4,241.515625,0.001,3
+"pkd_parentsex","Correct parents' sex","pedkindraw",10000,"ok","",0.002,1.3,242,242.140625,0.002,3
+"pkd_parentsex","Correct parents' sex","pedkindraw",30000,"ok","",0.003,3.9,249.6,250.171875,0.002,3
+"pkd_parentsex","Correct parents' sex","pedkindraw",100000,"ok","",0.011,12.6,266.6,269.484375,0.012,3
+"pkd_addback","Add back second parents","pedkindraw",300,"ok","",0,0.2,241.2,241.28125,0,3
+"pkd_addback","Add back second parents","pedkindraw",1000,"ok","",0,0.1,242.1,242.21875,0.001,3
+"pkd_addback","Add back second parents","pedkindraw",3000,"ok","",0.001,0.1,254.9,255.015625,0.001,3
+"pkd_addback","Add back second parents","pedkindraw",10000,"ok","",0,0.1,258,258.09375,0,3
+"pkd_addback","Add back second parents","pedkindraw",30000,"ok","",0,0.1,291.1,291.21875,0,3
+"pkd_addback","Add back second parents","pedkindraw",100000,"ok","",0,0.1,342,342.109375,0,3
+"pkd_uninformative","Remove uninformative founders","pedkindraw",300,"ok","",0.001,1.1,239.8,239.859375,0.001,3
+"pkd_uninformative","Remove uninformative founders","pedkindraw",1000,"ok","",0.001,1.2,238.5,238.640625,0.001,3
+"pkd_uninformative","Remove uninformative founders","pedkindraw",3000,"ok","",0.002,1.8,242.8,242.9375,0.001,3
+"pkd_uninformative","Remove uninformative founders","pedkindraw",10000,"ok","",0.003,4.1,243,243.15625,0.003,3
+"pkd_uninformative","Remove uninformative founders","pedkindraw",30000,"ok","",0.007,10.6,247.3,249.015625,0.006,3
+"pkd_uninformative","Remove uninformative founders","pedkindraw",100000,"ok","",0.028,33.4,264.2,280.234375,0.028,3
+"pkd_unknown","Remove added animals","pedkindraw",300,"ok","",0,0,237.1,237.234375,0,3
+"pkd_unknown","Remove added animals","pedkindraw",1000,"ok","",0,0.2,240.4,240.546875,0,3
+"pkd_unknown","Remove added animals","pedkindraw",3000,"ok","",0,0.5,240.4,240.5,0,3
+"pkd_unknown","Remove added animals","pedkindraw",10000,"ok","",0,1.5,242.1,242.203125,0,3
+"pkd_unknown","Remove added animals","pedkindraw",30000,"ok","",0.002,4.2,247.5,247.59375,0.002,3
+"pkd_unknown","Remove added animals","pedkindraw",100000,"ok","",0.009,14.1,264.1,265.453125,0.009,3
+"pkd_proband","Probands' pedigree","pedkindraw",300,"ok","",0.001,0.5,240.8,240.859375,0,3
+"pkd_proband","Probands' pedigree","pedkindraw",1000,"ok","",0,0.7,243.8,243.96875,0.001,3
+"pkd_proband","Probands' pedigree","pedkindraw",3000,"ok","",0.001,2.1,249.8,250,0.001,3
+"pkd_proband","Probands' pedigree","pedkindraw",10000,"ok","",0.002,4,258.8,259.609375,0.002,3
+"pkd_proband","Probands' pedigree","pedkindraw",30000,"ok","",0.007,16.5,289.2,289.328125,0.007,3
+"pkd_proband","Probands' pedigree","pedkindraw",100000,"ok","",0.025,40.1,338.8,340.796875,0.024,3
+"pkd_parents","Parents of 5 animals","pedkindraw",300,"ok","",0,0.2,237.8,237.90625,0,3
+"pkd_parents","Parents of 5 animals","pedkindraw",1000,"ok","",0,0.1,242.1,242.25,0,3
+"pkd_parents","Parents of 5 animals","pedkindraw",3000,"ok","",0,0.2,245.7,245.8125,0,3
+"pkd_parents","Parents of 5 animals","pedkindraw",10000,"ok","",0.001,0.8,256.2,256.359375,0,3
+"pkd_parents","Parents of 5 animals","pedkindraw",30000,"ok","",0.001,2,284.3,284.484375,0,3
+"pkd_parents","Parents of 5 animals","pedkindraw",100000,"ok","",0.003,6.2,333.9,333.984375,0.002,3
+"pkd_offspringids","Offspring of 5 animals","pedkindraw",300,"ok","",0,0.2,239.2,239.34375,0,3
+"pkd_offspringids","Offspring of 5 animals","pedkindraw",1000,"ok","",0.001,0.1,239,239.125,0.001,3
+"pkd_offspringids","Offspring of 5 animals","pedkindraw",3000,"ok","",0,0.2,249.2,249.375,0,3
+"pkd_offspringids","Offspring of 5 animals","pedkindraw",10000,"ok","",0.001,0.8,258.9,258.96875,0,3
+"pkd_offspringids","Offspring of 5 animals","pedkindraw",30000,"ok","",0.001,2,284.5,284.65625,0.001,3
+"pkd_offspringids","Offspring of 5 animals","pedkindraw",100000,"ok","",0.003,6.2,347.2,347.28125,0.003,3
+"pkd_founders","Founders' ids","pedkindraw",300,"ok","",0,0.2,239.9,240,0,3
+"pkd_founders","Founders' ids","pedkindraw",1000,"ok","",0,0,237.4,237.5,0,3
+"pkd_founders","Founders' ids","pedkindraw",3000,"ok","",0,0,242.2,242.328125,0,3
+"pkd_founders","Founders' ids","pedkindraw",10000,"ok","",0,0.2,242.7,242.765625,0,3
+"pkd_founders","Founders' ids","pedkindraw",30000,"ok","",0,0.6,246.3,246.390625,0,3
+"pkd_founders","Founders' ids","pedkindraw",100000,"ok","",0,1.6,262.1,262.25,0.001,3
+"pkd_bothparents","Has both parents","pedkindraw",300,"ok","",0,0,245.2,245.296875,0,3
+"pkd_bothparents","Has both parents","pedkindraw",1000,"ok","",0,0,242.3,242.46875,0,3
+"pkd_bothparents","Has both parents","pedkindraw",3000,"ok","",0,0,248.9,249.0625,0,3
+"pkd_bothparents","Has both parents","pedkindraw",10000,"ok","",0,0.3,259.5,259.59375,0.001,3
+"pkd_bothparents","Has both parents","pedkindraw",30000,"ok","",0,0.5,279.6,279.6875,0,3
+"pkd_bothparents","Has both parents","pedkindraw",100000,"ok","",0.001,1.5,352.2,352.265625,0.001,3
+"pkd_oneparent","Animals with one parent","pedkindraw",300,"ok","",0,0.2,241.7,241.828125,0.001,3
+"pkd_oneparent","Animals with one parent","pedkindraw",1000,"ok","",0,0,238.2,238.28125,0,3
+"pkd_oneparent","Animals with one parent","pedkindraw",3000,"ok","",0,0.1,238.4,238.484375,0,3
+"pkd_oneparent","Animals with one parent","pedkindraw",10000,"ok","",0,0.4,239.8,239.953125,0,3
+"pkd_oneparent","Animals with one parent","pedkindraw",30000,"ok","",0.001,1.3,247.3,247.546875,0,3
+"pkd_oneparent","Animals with one parent","pedkindraw",100000,"ok","",0.001,3.8,262,262.125,0.001,3
+"pkd_twins","Check twin pairs","pedkindraw",300,"ok","",0,0.3,242.5,242.671875,0.001,3
+"pkd_twins","Check twin pairs","pedkindraw",1000,"ok","",0,0.2,243.1,243.234375,0.001,3
+"pkd_twins","Check twin pairs","pedkindraw",3000,"ok","",0.002,0.5,247.2,247.265625,0.002,3
+"pkd_twins","Check twin pairs","pedkindraw",10000,"ok","",0.017,1.3,257,257.09375,0.017,3
+"pkd_twins","Check twin pairs","pedkindraw",30000,"ok","",0.164,3.1,285.4,285.53125,0.163,3
+"pkd_twins","Check twin pairs","pedkindraw",100000,"ok","",1.476,9.7,337,337.15625,1.478,3
