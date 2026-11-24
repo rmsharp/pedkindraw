@@ -322,15 +322,17 @@ with Pedixplorer included, with a note in `kinship()`'s help and the README on t
 
 ## 7. Performance budget (this Mac: Apple M2 Max, 96 GiB, R 4.6.2; comparison doc sections 7 and 9)
 
-| Operation | Measured, nprcgenekeepr's code | Next size failed on | Target for pedkindraw |
-|---|---|---|---|
-| Kinship, autosomal, dense | 30,000 animals 29.2 s, process peak 12.96 GiB | memory at 100,000 | the same or better (the rewrite included) |
-| Kinship, X chromosome | 30,000 animals 23.6 s | memory at 100,000 | the same or better |
-| Generation depth | 100,000 animals 0.101 s | -- | the same |
-| Family numbers | 100,000 animals 12.9 s (close to the square of the size) | -- | the same at copy; a faster version is new work under the drift rule |
-| Shrink to 16 bits | 1,000 animals 21.0 s; the copied rewrite (nprcgenekeepr S1141, `d280dc8e8`, 2026-11-09): 1,000 animals 3.69 s, 3,000 in 92.0 s | past 120 s at 3,000 (the rewrite: 10,000 not run) | the same or better (rewrite) |
-| Unrelated set | none (kinship2 10,000 in 6.5 s) | -- | 10,000 animals |
-| Drawing, layout plus browser | 1,000 animals 16.3 s (15.5 s in R) | past 120 s at 2,000 | the same; **pedkindraw, measured (S75, `docs/planning/pedigree-app-plan.md` section 12.1, this Mac, November 2026; R152):** `findGeneration()`, `makePedigreeMatingLayout()` and `drawPedigreeDiagram()` in R on pedigrees taken from nprcgenekeepr's `examplePedigree`: 501 animals 2.0 s, 1,001 9.1 s, 1,500 23.5 s, 2,000 50.5 s; Chrome adds under a second; two other pedigrees of about 1,000 (the ancestors of the last three generations only) 16.7 s and 19.1 s. The app asks before drawing more than 1,000 (R150) |
+| Operation | Measured, nprcgenekeepr's code | Next size failed on | Target for pedkindraw | pedkindraw, measured (pedkindraw's `vignette("speed")`) |
+|---|---|---|---|---|
+| Kinship, autosomal, dense | 30,000 animals 29.2 s, process peak 12.96 GiB | memory at 100,000 | the same or better (the rewrite included) | 30,000 animals 28.1 s, process peak 10.43 GiB; memory at 100,000 (kinship2 in the same record: 29.3 s, 15.67 GiB) |
+| Kinship, X chromosome | 30,000 animals 23.6 s | memory at 100,000 | the same or better | 30,000 animals 23.5 s, process peak 11.34 GiB; memory at 100,000 (kinship2: 24 s, 17.27 GiB) |
+| Generation depth | 100,000 animals 0.101 s | -- | the same | 100,000 animals 0.108 s |
+| Family numbers | 100,000 animals 12.9 s (close to the square of the size) | -- | the same at copy; a faster version is new work under the drift rule | 100,000 animals 12.4 s (kinship2 0.609 s, Pedixplorer 0.644 s) |
+| Shrink to 16 bits | 1,000 animals 21.0 s; the copied rewrite (nprcgenekeepr S1141, `d280dc8e8`, 2026-11-09): 1,000 animals 3.69 s, 3,000 in 92.0 s | past 120 s at 3,000 (the rewrite: 10,000 not run) | the same or better (rewrite) | 1,000 animals 3.53 s, 3,000 89.5 s; time at 10,000 (kinship2 time at 3,000, Pedixplorer at 1,000) |
+| Unrelated set | none (kinship2 10,000 in 6.5 s) | -- | 10,000 animals | 10,000 animals 0.606 s, 100,000 33.9 s (kinship2 10,000 in 6.68 s, time at 30,000) |
+| Drawing, layout plus browser | 1,000 animals 16.3 s (15.5 s in R) | past 120 s at 2,000 | the same; **pedkindraw, measured (S75, `docs/planning/pedigree-app-plan.md` section 12.1, this Mac, November 2026; R152):** `findGeneration()`, `makePedigreeMatingLayout()` and `drawPedigreeDiagram()` in R on pedigrees taken from nprcgenekeepr's `examplePedigree`: 501 animals 2.0 s, 1,001 9.1 s, 1,500 23.5 s, 2,000 50.5 s; Chrome adds under a second; two other pedigrees of about 1,000 (the ancestors of the last three generations only) 16.7 s and 19.1 s. The app asks before drawing more than 1,000 (R150) | 1,000 animals 16 s (15.5 s in R, 0.45 s in Chrome), time at 2,000; direct lines 2,000 in 106 s, time at 3,000; readable up to 1,000 zoomed in (R158) |
+
+**The last column** (pedkindraw S86, Phase 17i2, R160): pedkindraw's own installed code on the study's synthetic colonies (the same files, byte for byte), from pedkindraw's two records: the computations of 2026-11-23 (pedkindraw `7f13d98`) and the drawings of 2026-11-24 (`70d5021`), on this Mac. Each figure is the median of 3 measured runs as pedkindraw's `vignette("speed")` gives it, kinship2's and Pedixplorer's from the same record where they are named; "time" is past 120 s, "memory" past 32 GB. The second column is the study's record of nprcgenekeepr's code, made at another time, so the two columns are not compared (pedkindraw's `docs/planning/pedkindraw-timing-plan.md`, dragon 5).
 
 ---
 
@@ -340,7 +342,7 @@ with Pedixplorer included, with a note in `kinship()`'s help and the README on t
 |---|---|---|
 | A bad pedigree into a computation function | raw R errors or NA generations with a warning (finding 9) | unchanged at copy; `checkPedigree()` names the problem first |
 | Dense kinship of many animals | 8 n^2 bytes; past about 30,000 animals on 32 GB, R runs out of memory | documented in `kinship()`'s help; no silent switch to another method |
-| Drawing past about 1,000 animals | nprcgenekeepr's code before G1-G16: past 120 s at 2,000; pedkindraw's, measured in S75: 9.1 s at 1,001 and 50.5 s at 2,000 in R (section 7); Mark judged nprcgenekeepr's drawing readable up to 1,000 zoomed in, the largest size drawn (finding 28) | `drawPedigreeDiagram()` has no cap (nprcgenekeepr's app caps at 750); its help states the measured limit; `runPedigreeApp()` asks before drawing more than 1,000 (R150) |
+| Drawing past about 1,000 animals | nprcgenekeepr's code before G1-G16: past 120 s at 2,000; pedkindraw's, measured in S75: 9.1 s at 1,001 and 50.5 s at 2,000 in R (section 7); Mark judged nprcgenekeepr's drawing readable up to 1,000 zoomed in, the largest size drawn (finding 28); on the study's synthetic colonies (pedkindraw S84, 17h4): 16 s at 1,000 and past 120 s at 2,000, 106 s at 2,000 with direct lines, and Mark judged pedkindraw's own drawing readable up to 1,000 zoomed in (R158) | `drawPedigreeDiagram()` has no cap (nprcgenekeepr's app caps at 750); its help states the measured limit, in its section "How large a drawing can be", and names pedkindraw's `vignette("speed")` (pedkindraw S86, 17i2, R159-R160); `runPedigreeApp()` asks before drawing more than 1,000 (R150) |
 | kinship2 or Pedixplorer missing | a converter cannot read the object | `asPedFrame()` stops naming the package to install |
 | The two copies drift | a fix lands in one repository only | plan section 5: mirror it or record it in `DIVERGENCE.md` |
 | The rewrite (R11) differs from nprcgenekeepr | a result that is no longer identical | the phase is not DONE until results are identical; a deliberate difference needs Mark's ruling and a `DIVERGENCE.md` row |
