@@ -204,10 +204,17 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S82
 date: 2026-11-23
-status: pending
-active_task: Phase 17h2 (timing plan :526), the computation runs: all 78 cases at six sizes timed by tools/timing/runTiming.R, the results committed. No code. Claimed; work beginning.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17. 17h2 DONE in S82: the computation record (tools/timing/results/record.csv, timing.csv, timingRuns.csv), pedkindraw at 7f13d98 from /Users/Shared/pkdtiming/pkdlib, 78 cases at 300-100,000, 416 cells ok, 22 failed sizes. Next: 17h3, the drawing harness (strict TDD, a copy; picker T2).
+what_was_done: claim 7f13d98; results 14145a4 (1,686 runs, 14:42-22:17, every DONE criterion checked by script; re-runs +7.7%, -2.6%, +2.1%); close-out 1 3a9832c (plans, roadmap, dragons 26-28); close-out 2 (backlog :36/:295/:301 figures, notes, this receipt, ledger). Details: SESSION_NOTES.md "What Session 82 Did".
+next_steps: Orient as SESSION_NOTES.md "What You Must Do" (drift 91/23/0; nprcgenekeepr's harness log from 3e06730c5, which 17h3 copies from); the orient picker: 17h3 (recommended, timing plan :562; measure T2's canvas and page first) or another item, every backlog item named.
+key_files: tools/timing/results/timing.csv, timingRuns.csv, record.csv; tools/timing/runTiming.R:90 (runOnce); docs/planning/pedkindraw-timing-plan.md:526 (17h2 Done), :562 (17h3), :574 (17h4), :606 (T2), :685 (dragons 26-28); methodology/BACKLOG.md:301 (alignMates figures).
+gotchas: a record here takes about 3x its process time (dragon 26); keep R/ at tree ac123b7 until 17h4 or both records say which they timed; PKD_LIB=/Users/Shared/pkdtiming/pkdlib; runTiming.R rewrites its results (dragon 28); HANDOFFS.md past its trimmer (backlog :321), keep receipts short.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand below; the package suite by hand on a git archive of 3a9832c (NOT_CRAN=true) [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ] (1,146 tests, 589 s); the record itself ran the installed package 852 times. No package file changed.
+changelog_ref: CHANGELOG.md "2026-11-23 · [BL-Phase 17] S82: 17h2, the computation record"
+commit: the close-out 2 commit (session commits 7f13d98 to 3a9832c listed above)
 ```
 ```handoff
 session: S81

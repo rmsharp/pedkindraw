@@ -35,7 +35,8 @@ issues).*
 
 - [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on 17h's runs, planned S78
       in `docs/planning/pedkindraw-timing-plan.md`, R153; Effort L, a guess; before the release, Phase 17i of
-      `docs/planning/cran-submission-plan.md`, R84)
+      `docs/planning/cran-submission-plan.md`, R84; S82: the computation record is in, `14145a4`; the drawing record,
+      17h3-17h4, is not)
       -- R82 (S30): "the comparison of pedkindraw with kinship2 and Pedixplorer"
       (Mark) waits until pedkindraw has timing runs of its own installed code, under a plan of its own that
       replaces R79's summary of nprcgenekeepr's records. A draft built to R79 is on the branch
@@ -293,7 +294,9 @@ issues).*
 
 - [ ] **`findPedigreeNumber()`'s speed** (READY, Effort M) -- 12.9 s for 100,000 animals, close to the square of the
       size (contract section 7); new work after the copy (contract section 10 item 5). A faster version here is a
-      divergence from nprcgenekeepr: a `DIVERGENCE.md` row marked "at the switch" (R98, R101).
+      divergence from nprcgenekeepr: a `DIVERGENCE.md` row marked "at the switch" (R98, R101). S82's record
+      (`tools/timing/results/timing.csv`, case `pkd_fam`): 12.4 s at 100,000 and 1.26 s at 30,000, where kinship2's
+      `makefamid()` takes 0.609 s and 0.150 s and Pedixplorer's `make_famid()` 0.644 s and 0.139 s.
 
 - [ ] **`findGeneration(alignMates = TRUE)`'s speed** (DECISION NEEDED: before or after the release; Effort M, a
       guess; found S78) -- one call took 56.5 s and 54.8 s at 10,000 animals and passed 60 s at 100,000, where
@@ -301,7 +304,9 @@ issues).*
       7.7-7.9 s (Pedixplorer's `kindepth(align_parents = TRUE)` passed 60 s): `docs/planning/pedkindraw-timing-plan.md`
       section 3.4, single calls by `docs/planning/timing-plan-prototype/s78ProbePedkindraw.R`, not the timing method.
       `alignMates` is pedkindraw's own (G8, R123-R124; nprcgenekeepr has none), so no drift row; the drawing does not
-      use it. 17h2 measures it by the method; decide with those figures.
+      use it. 17h2 measures it by the method; decide with those figures. S82's record (`timing.csv`, the median of 3
+      runs): pedkindraw 0.295 s at 1,000, 2.36 s at 3,000, 60.6 s at 10,000; kinship2 0.038, 0.818, 8.19 s;
+      Pedixplorer 0.304, 3.97, 67.0 s; all three over 120 s at 30,000.
 
 - [ ] **Install poppler in CI so the PDF word tests run there** (READY, Effort S; found S71, picture plan section 14.7)
       -- GitHub's Ubuntu and macOS runners have no `pdftotext` (S71's push: Ubuntu `SKIP 4 PASS 16268`, macOS `SKIP 2
