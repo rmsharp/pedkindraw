@@ -33,10 +33,10 @@ issues).*
       log; close the test Chromes explicitly at the end of the suite (the helper's `.saveChrome$parent`, chromote's
       default one) and list the processes left (`Get-Process`) in a step after the tests.
 
-- [ ] **The speed and size-limits vignette, once pedkindraw times itself** (BLOCKED on 17h's runs, planned S78
+- [ ] **The speed and size-limits vignette, once pedkindraw times itself** (READY since S84: 17h DONE; planned S78
       in `docs/planning/pedkindraw-timing-plan.md`, R153; Effort L, a guess; before the release, Phase 17i of
-      `docs/planning/cran-submission-plan.md`, R84; S82: the computation record is in, `14145a4`; S83: the drawing
-      harness is in (17h3, R157); the drawing record, 17h4, is not)
+      `docs/planning/cran-submission-plan.md`, R84; S82: the computation record, `14145a4`; S84: the drawing record,
+      `a4b41da`, and T4, R158: readable up to 1,000 animals, zoomed in; the timing plan's dragons 33-35)
       -- R82 (S30): "the comparison of pedkindraw with kinship2 and Pedixplorer"
       (Mark) waits until pedkindraw has timing runs of its own installed code, under a plan of its own that
       replaces R79's summary of nprcgenekeepr's records. A draft built to R79 is on the branch

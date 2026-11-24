@@ -204,10 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S84
 date: 2026-11-24
-status: pending
-active_task: Phase 17h4 (timing plan :598), the drawing record: runDrawingTiming.R over all 11 cases at 300, 1,000, 2,000, 3,000 and the sample, at R/ tree ac123b7; the pictures for Mark's judgment (T4). No code. Claimed; work beginning.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17. 17h4 DONE in S84 (R158): the drawing record a4b41da, 11 cases at 300-3,000 and the sample, 43 cells, 33 ok; pedkindraw's page 1,000 within 120 s (16.0 s), direct lines 2,000 (106 s); readable up to 1,000, zoomed in (T4). 17h DONE. Next: 17i, the speed vignette.
+what_was_done: claim 70d5021; results a4b41da (the record 09:38:53-11:14:27, checked by script, 0 problems; re-runs -0.4% to -6.3%); R158 and the plans 2134e44 (dragons 33-35); close-out (backlog :36 READY, these notes, receipt, ledger), pushed.
+next_steps: Orient as SESSION_NOTES.md "What You Must Do"; the orient picker: 17i (recommended, timing plan :631; measure the installed size and the draft 612eed9 first, then a scope picker and T5) or the Windows item (:11) or a backlog item (31, named by line).
+key_files: tools/timing/results/drawingTiming.csv, drawingTimingRuns.csv, record.csv; docs/planning/pedkindraw-timing-plan.md:599 (17h4 Done), :631 (17i), :431 (5.8 outline), :661 (T5), :758-:772 (dragons 33-35); standalone plan :333 (R158); contract :343.
+gotchas: saves time savePedigreeDiagram() only (widget built before the clock); pkd_svg and pkd_png at 3,000 not timed, never print "refused" (dragon 33); saves can have one slow run (dragon 34); an R/ change in 17i moves R/'s tree from ac123b7 (17n lists it); HANDOFFS.md over its trimmer, keep receipts short.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: the package suite on a git archive of 2134e44 (NOT_CRAN=true) [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ] (1,146 tests, 593 s); the record ran the installed package in 92 pedkindraw drawings. No package file changed.
+changelog_ref: CHANGELOG.md "2026-11-24 · [BL-Phase 17] S84: 17h4, the drawing record"
 ```
 ```handoff
 session: S83
