@@ -167,6 +167,17 @@
 #' can pass one to act on the clicked animal, which needs a live Shiny
 #' session, so a script leaves \code{onClick} out.
 #'
+#' @section How large a drawing can be:
+#' On one Mac (Apple M2 Max), in November 2026, a synthetic colony of 1,000
+#' animals took 16 seconds from \code{\link{findGeneration}} through
+#' \code{\link{makePedigreeMatingLayout}} and this function to a page drawn
+#' in Chrome, almost all of it in R, and one of 2,000 animals more than 120
+#' seconds; with direct lines, 2,000 animals took 106 seconds. Judged by eye
+#' from those pages, a drawing can be read up to 1,000 animals, zoomed in.
+#' \code{vignette("speed", package = "pedkindraw")} gives these times, the
+#' times of the saved files and those of kinship2's and Pedixplorer's
+#' drawings.
+#'
 #' @param layout the list returned by \code{\link{makePedigreeMatingLayout}}.
 #' @param edgeStyle the \code{edgeStyle} the layout was made with,
 #'   \code{"rectilinear"} (the default) or \code{"direct"}. It sets how far

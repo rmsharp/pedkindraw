@@ -75,7 +75,11 @@ animals. \code{vignette("drawing", package = "pedkindraw")} shows what a drawing
 shows and how to change it: the symbols and the legend, deceased animals,
 conditions, twins, animals drawn twice, matings of relatives, the two edge
 styles, layout hints, kinship2 and Pedixplorer objects, saving a drawing,
-clicks in a Shiny application and a colony-size drawing. The README on the
+clicks in a Shiny application and a colony-size drawing.
+\code{vignette("speed", package = "pedkindraw")} gives the seconds each function
+took on one machine, by the number of animals from 300 to 100,000, beside
+the kinship2 and Pedixplorer functions that do the same, and how large a
+drawing can be drawn and read. The README on the
 package's GitHub page draws a twelve-animal pedigree; the example of
 \code{\link[=drawPedigreeDiagram]{drawPedigreeDiagram()}} draws four. To draw a pedigree file with no code,
 \code{\link[=runPedigreeApp]{runPedigreeApp()}} opens it in an app in the web browser, which also saves
