@@ -3,14 +3,14 @@
 **Date:** 2026-11-23 · **Session:** pedkindraw S78 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 "Planning Sessions"; failure mode #18: this session writes no package code; the code beside this plan is three
 measuring scripts, section 3.6). **Governs:** Phases 17h and 17i of `docs/planning/cran-submission-plan.md` (section 6,
-`:754` "Phase 17h. The timing runs" and `:766` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
+`:754` "Phase 17h. The timing runs" and `:767` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
 `docs/planning/standalone-pedigree-package-plan.md`. **Ruling made here:** R153 (Mark's four picks, section 2; recorded
 in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8); R155
 (17h1b's three picks, S80: `record.csv` and each run's free memory, sections 4.2 and 5.4); R156 (17h1c's pick, S81:
 each run's `started` is when the run launched, section 8 dragon 24).
 **Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6); 17h1b DONE
 (S80: each run's free memory and `record.csv`, section 6); 17h1c DONE (S81: each run's `started` its launch, section
-6). Next: 17h2, the computation runs (section 6).
+6); 17h2 DONE (S82: the computation record, `14145a4`, section 6). Next: 17h3, the drawing harness (section 6).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -544,6 +544,20 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   memory limits; the page says so.
 - **Session boundary:** one session (about 3.5-4 hours of runs, a guess). If the runs cannot finish in it, the session
   commits the rows it has, closes out, and 17h2b runs the rest at the same commit (`runTiming.R <case ids>`).
+- **Done (S82):** results `14145a4`. `PKD_LIB` at `/Users/Shared/pkdtiming/pkdlib` (Mark's pick), pedkindraw built
+  from `7f13d98`, packaged 20:41:40 UTC (`R/` tree `ac123b7`, unchanged since `09e8f45`); `savePedigrees.R` 8 of 8
+  identical to the study's. The record 14:42:24-22:17:43 CST, exit 0, started with vitest workers and a remote-desktop
+  agent running (Mark's pick: start, the load recorded). `timing.csv` 438 cells, 78 of 78 cases each with every size up
+  to and including its first failure; 416 `ok`, each the median of its 3 measured runs (416 of 416 checked); 22 failed:
+  11 `memory` (R's 29.8 GiB vector limit), 9 `time`, 2 `error` (kinship2's `findAvailNonInform()` at 1,000, dragon 27;
+  Pedixplorer's `family_check()` at 300, R154). `timingRuns.csv` 1,686 runs; idle at start 48.0-77.8% (median 57.5), one
+  under 50% (`pdx_desc` 10,000 warm-up, 47.98%, after the full 10-minute wait); load 5.0-82.2 (median 7.9); `memFree`
+  42-51%; 852 pedkindraw runs loaded it from `PKD_LIB`, its other 6 (its failed warm-ups) stopped before reporting, no
+  kinship2 or Pedixplorer run loaded it. 74 cells of 0.5 s or more: spread across 3 runs median 1.6%, largest 13.2%
+  (Pedixplorer's `kinship()` at 10,000; 10.9% at 3,000). Re-runs from a fresh shell (`--sizes=10000 --out=<scratch>`,
+  the autosomal kinship cell of each package): kinship2 3.272 s against the record's 3.039 (+7.7%), Pedixplorer 4.841
+  against 4.970 (-2.6%), pedkindraw 2.802 against 2.745 (+2.1%). The record's wall time 7.6 h, 2.4 h of it in runs
+  (dragon 26). No file under `R/`, `tests/` or `vignettes/` changed.
 
 ### Phase 17h3. The drawing harness (strict TDD, a copy)
 
@@ -668,6 +682,20 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
     `runTiming.R` waits up to 10 minutes before each run while less than half the CPU is idle (a trial of 8 runs was
     stopped after 5 minutes with none run); at 12:48, 50-74% idle, the same 8 runs took 9 minutes. Before 17h2 read
     `top -l 2 -n 0 -s 1` and `ps -Ao pcpu,etime,comm -r`, and ask Mark about any such work still running.
+26. **On this Mac as it is used, a record takes about three times its process time** (S82): 17h2's record took 7.6 h,
+    2.4 h of it in runs (section 3.7 guessed 2.7 h of process time and 3.5-4 h in all); about 48 min were the idle
+    check's own gaps (about 1.9 s a run) and about 4.4 h waits for half the CPU idle, 283 of them, one the full 10
+    minutes. The load average was low (median 7.9) but vitest workers (up to three at about 95% each, all evening) and
+    macOS's photo analysis kept the idle share at the 50% line. 17h4's 1.2-1.5 h guess becomes about 3.5-4.5 h unless
+    that work stops; the times themselves are sound (each run started at half idle or after the full wait, its row
+    says).
+27. **kinship2's `findAvailNonInform()` stops at 1,000** (S82): "argument is of length zero" in its own `if
+    (avail[pedData$id == fa] & avail[pedData$id == mo])`, on the case's input as R154 prepares it; it returns at 300
+    (0.005 s), the only size S79 checked. The cause was not looked for (nothing may run beside a record); 17i's page
+    says kinship2 stops there, and a session that wants the cause reproduces it at 1,000 first (Learning 19).
+28. **`runTiming.R` rewrites `timing.csv` and `timingRuns.csv` from its own rows** (copied): a re-run into `results/`
+    replaces the record. S82's re-runs went to `--out=<scratch>`; a 17h2b as section 6 wrote it would need its own
+    `--out` and a join.
 
 ---
 
