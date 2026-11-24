@@ -204,10 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S86
 date: 2026-11-24
-status: pending
-active_task: Phase 17i2 (timing plan :633, R159): the pointers to vignette("speed"), T5's help sentence, the contract's sections 7 and 8, the site; strict TDD. Claimed; work beginning.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17. 17i2 DONE in S86 (R160), so 17i DONE: ?pedkindraw, the two vignettes and NEWS point to vignette("speed"); ?drawPedigreeDiagram's section "How large a drawing can be" (T5), its numbers held by a test to the page's tables; the contract's sections 7 and 8. Next: 17j.
+what_was_done: claim 88ce5b5; R160 271e10f; RED f8bdbe3 (6 tests failing, 0 skipped); GREEN 4940df9, 6931e95; contract 0c537c8 (30 figures checked by cell); REFACTOR 5ad8294 (helpers to helper-docs.R); close-out 1 113572b (dragons 41-42); close-out 2, pushed.
+next_steps: Orient as SESSION_NOTES.md "What You Must Do"; read S86's push runs (R-CMD-check's first on 17i's package changes; the site); the orient picker: 17j (recommended: re-measure covr, then tests in pedkindraw's own files) or the Windows item (:11) or a backlog item (30, by line).
+key_files: R/drawPedigreeDiagram.R:170; tests/testthat/test_speedPointersDocs.R:22, :86; tests/testthat/helper-docs.R:33, :43; docs/planning/pedkindraw-api-contract.md:323, :335, :345; docs/planning/cran-submission-plan.md:793; docs/planning/pedkindraw-timing-plan.md:667, :831; methodology/BACKLOG.md:119.
+gotchas: the help's numbers are held to the speed page's tables (dragon 41); docs-test helpers are in helper-docs.R; installed 4,736 of 5,120 KB, a drawing vignette costs about 2 MB (dragon 42); 17j's statements are in copied files, tests go in pedkindraw's own; the skip marker in a pushed head's message stops every workflow.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: the package suite on a git archive of 6931e95 (NOT_CRAN=true) [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16993 ] (597 s); R CMD check --as-cran on 6931e95 Status 1 NOTE (R16's), installed 4,736 KB; the help section rendered by Rd2txt.
+changelog_ref: CHANGELOG.md "2026-11-24 · [BL-Phase 17] S86: 17i2, the pointers to the speed vignette"
 ```
 ```handoff
 session: S85
