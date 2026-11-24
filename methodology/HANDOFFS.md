@@ -203,11 +203,17 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ```handoff
 session: S83
-date: 2026-11-23
-status: pending
-active_task: Phase 17h3 (timing plan :562), the drawing harness, strict TDD: nprcgenekeepr's drawing-timing files copied into tools/timing/, changed as section 4.1 says. No R/ change. Claimed; work beginning.
-what_was_done: pending
-commit: pending
+date: 2026-11-24
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17. 17h3 DONE in S83 (R157): the drawing harness in tools/timing/ (11 cases, drawOne.R, the browser timer, runDrawingTiming.R, summarizeDrawingTiming.R), 169 tests passing; a trial at 300 drew 9 of 11 cases (Pedixplorer's alignment refuses the colony) and 11 of 11 on the sample. Next: 17h4, the drawing record (no code).
+what_was_done: claim 95c75ff; R157 46d8a23 (T2 and the copy's scope, measured first); RED 4ed5c8e (40 failing for the right reason); GREEN c7d6f89, 701d4f4; REFACTOR 7d57adc (pedkindrawPage(), colonyFile() shared); close-out 1 2499b6e; close-out 2 (backlog :36, notes, this receipt, ledger). Details: SESSION_NOTES.md "What Session 83 Did".
+next_steps: Orient as SESSION_NOTES.md "What You Must Do" (drift 91/23/0; nprcgenekeepr's harness log from 3e06730c5); the orient picker: 17h4 (recommended, timing plan :598: R/ tree still ac123b7, read the machine and tell Mark, runDrawingTiming.R in the background, pictures opened for T4) or another item, every backlog item named.
+key_files: tools/timing/runDrawingTiming.R:114 (runOnce), tools/timing/drawingTimingCases.R:131 (drawingCases), tools/timing/drawingTiming.R:249 (drawingRunRow); docs/planning/pedkindraw-timing-plan.md:564 (17h3 Done), :598 (17h4), :637 (T4), :724 (dragons 29-32).
+gotchas: pdx_picture and pdx_plotly refuse the 300 colony (expected, R157); runDrawingTiming.R rewrites its results unless --append (dragon 28); a record here takes about 3x its process time (dragon 26); the test folder about 7 min now, run alone; HANDOFFS.md past its trimmer (backlog :321), keep receipts short.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand below; the package suite by hand on a git archive of 2499b6e (NOT_CRAN=true) [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16862 ] (1,146 tests, 596 s); the trial ran the installed package in 48 pedkindraw drawings. No package file changed.
+changelog_ref: CHANGELOG.md "2026-11-24 · [BL-Phase 17] S83: 17h3, the drawing harness"
 ```
 ```handoff
 session: S82
