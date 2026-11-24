@@ -3,16 +3,17 @@
 **Date:** 2026-11-23 · **Session:** pedkindraw S78 · **Type:** planning session (`methodology/SESSION_RUNNER.md`
 "Planning Sessions"; failure mode #18: this session writes no package code; the code beside this plan is three
 measuring scripts, section 3.6). **Governs:** Phases 17h and 17i of `docs/planning/cran-submission-plan.md` (section 6,
-`:754` "Phase 17h. The timing runs" and `:771` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
+`:754` "Phase 17h. The timing runs" and `:775` "Phase 17i. The speed vignette"), under rulings R82 and R84 of
 `docs/planning/standalone-pedigree-package-plan.md`. **Ruling made here:** R153 (Mark's four picks, section 2; recorded
 in the standalone plan's section 2); R154 (T1, Mark's three picks at 17h1's pre-RED picker, S79; section 3.8); R155
 (17h1b's three picks, S80: `record.csv` and each run's free memory, sections 4.2 and 5.4); R156 (17h1c's pick, S81:
 each run's `started` is when the run launched, section 8 dragon 24); R157 (T2 and the copy's scope, Mark's four picks at
-17h3's pre-RED picker, S83: sections 4.1 and 7).
+17h3's pre-RED picker, S83: sections 4.1 and 7); R158 (T4 and the two saves not timed at 3,000, Mark's two picks at
+17h4's results, S84: sections 6 and 7, dragon 33).
 **Status:** plan written (S78); 17h1 DONE (S79: the computation harness in `tools/timing/`, section 6); 17h1b DONE
 (S80: each run's free memory and `record.csv`, section 6); 17h1c DONE (S81: each run's `started` its launch, section
 6); 17h2 DONE (S82: the computation record, `14145a4`, section 6); 17h3 DONE (S83: the drawing harness, R157, section
-6). Next: 17h4, the drawing runs (section 6).
+6); 17h4 DONE (S84: the drawing record, `a4b41da`, R158, section 6). Next: 17i, the speed vignette (section 6).
 
 **Versions:** kinship2 1.9.6.2, Pedixplorer 1.8.0 (Bioconductor 3.23), chromote 0.5.1, processx 3.9.0 and ps 1.9.3 from
 this project's renv library (the lock's dated repository, `https://packagemanager.posit.co/cran/2026-10-31`); R 4.6.2;
@@ -604,6 +605,28 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 - **DONE:** as 17h2's, for `drawingTiming.csv` and `drawingTimingRuns.csv`; a drawing counts only when R and Chrome
   together finish within 120 s; Mark's judgment recorded (a ruling).
 - **Surface:** this Mac and its Chrome.
+- **Done (S84):** results `a4b41da`; R158 (T4, and the two saves not timed at 3,000). The record 09:38:53-11:14:27 CST
+  (1 h 36 min, dragon 35), exit 0, at `70d5021` (`R/` tree `ac123b7` and `PKD_LIB` packaged 20:41:40 UTC, both as
+  17h2's), three vitest workers each at a full core (shown to Mark at the orient picker). `drawingTiming.csv` 43 cells:
+  every case a row per size up to and including its first failure, then the sample; 33 `ok`, each the median of its 3
+  measured `ok` runs after an `ok` warm-up; 10 failed: 6 `time` (over 120 s after the call started), Pedixplorer's 2
+  refusals at 300 (R157), 2 saves not timed at 3,000 (R158, dragon 33). `drawingTimingRuns.csv` 142 runs (43 warm-up,
+  99 measured); idle at each start 50.2-68.4% (median 61.4), none under 50; load 5.1-21.8 (median 7.5); `memFree`
+  46-50%; 92 `ok` pedkindraw runs all from `PKD_LIB`, its 5 failed runs stopped before they reported, no other run
+  loaded pedkindraw; each `started` plus `realSeconds` at or before the next `started` (smallest gap 0.92 s); 40 of 40
+  `ok` page runs with browser seconds; no private path. All checked by a script over the files, 0 problems; the same
+  script found 3 of 3 problems planted in a changed copy. Capacity within 120 s, median seconds at the largest size
+  drawn: `pkd_page` 1,000 (16.0; `time` at 2,000), `pkd_page_direct` 2,000 (106; `time` at 3,000), `pkd_svg` 2,000
+  (6.04), `pkd_pdf` 1,000 (5.41; `time` at 2,000), `pkd_png` 2,000 (9.66), `pkd_data` 3,000 (0.003), `k2_picture`
+  1,000 (12.2), `pdx_picture` refused at 300, `pdx_picture_unaligned` 1,000 (16.2), `pdx_plotly` refused at 300,
+  `pdx_plotly_unaligned` 300 (29.7; `time` at 1,000); all 11 drew the sample. 26 cells of 0.5 s or more: spread median
+  1.9%; 3 over 10%, each a `savePedigreeDiagram()` save with one slow run (dragon 34). Re-runs from a fresh shell
+  (`--sizes=1000 --out=<scratch> pkd_page pkd_svg`): `pkd_page` 15.92 against the record's 15.98 s (-0.4%), on the
+  sample 2.01 against 1.98 (+1.1%); `pkd_svg` 2.39 against 2.35 (+1.7%), on the sample 1.44 against 1.53 (-6.3%). The
+  study's nprcgenekeepr page (`npg_widget`, the same code) took 15.46 s in R at 1,000 and `time` at 2,000; pedkindraw's
+  15.5 s and `time`. T4: Mark judged pedkindraw's pages readable up to 1,000 animals, zoomed in, from the pages
+  (rectilinear at 300, 1,000 and the sample; direct at 2,000) and the zoom-1 pictures (R158). No file under `R/`,
+  `tests/` or `vignettes/` changed.
 
 ### Phase 17i. The speed vignette (Phase 16d returns; updated by this plan)
 
@@ -634,7 +657,7 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
 | T1 | The inputs of the cases the study had none for (section 5.2), and what to do with a pairing whose answer differs from pedkindraw's (time it with a note, or leave it out) | 17h1 | **Decided (S79, R154):** section 5.2 with four changes; the repair functions on the colonies as they are; every pairing timed, each difference recorded by the tests (section 3.8) |
 | T2 | The drawing's canvas and the saved files' page; which pictures are kept | 17h3 | **Decided (S83, R157):** the study's canvas 3,600 x 1,500; the saved files on `savePedigreeDiagram()`'s own 10-inch page; the pictures kept as the study's, git-ignored; of `drawingCapture.R` only the four Pedixplorer helpers |
 | T3 | None planned. If the machine does not reach 50% idle within 10 minutes for many runs, whether to go on | 17h2, 17h4 | at the picker, 85% idle (section 3.5) |
-| T4 | How large a pedkindraw drawing can still be read (Mark's judgment from 17h4's pictures), or the study's judgment of nprcgenekeepr's drawing carried with a note | 17h4 | the study: readable up to 1,000 animals, zoomed in |
+| T4 | How large a pedkindraw drawing can still be read (Mark's judgment from 17h4's pictures), or the study's judgment of nprcgenekeepr's drawing carried with a note | 17h4 | **Decided (S84, R158):** readable up to 1,000 animals, zoomed in (Mark's judgment from 17h4's pages and zoom-1 pictures; the same as the study's of nprcgenekeepr's drawing) |
 | T5 | Where the measured drawing limit is stated, so the contract's section 8 is true: a sentence in `?drawPedigreeDiagram` pointing to the vignette, or the contract changed to name the vignette; and whether CI runs `tools/checkSpeedTables.R` | 17i | no help page states a time (S77); the tool needs no clone once it reads `tools/timing/results/` |
 
 ---
@@ -732,6 +755,21 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
     of a record over the four sizes and not of a trial at 300 (as dragon 19 for the computation summary).
 32. **Chrome's websocket prints "got non-close frame while closing"** as a session closes (S83: in the tests and the
     trial, a line on the console, not a test warning or a failed run): harmless; read WARN and each run's status.
+33. **`pkd_svg` and `pkd_png` were not timed at 3,000** (S84, R158): the drawing they save is built before the clock
+    (`pedkindrawSave()`'s `prepare`, the rectilinear layout), and `runLimited()` allows 300 s for loading and setup
+    before "CALL START" (`tools/timing/timingHarness.R:287`). At 2,000 that build took about 150 s (156 s a run, 6 s of
+    it the save); at 3,000 it took more than 300, so the record reads `error`, "no 'CALL START' within 300 s", and
+    `summarizeDrawingTiming.R` prints "refused". The save itself did not fail: 17i prints these two as not timed (the
+    drawing before the save took over 300 s), never "refused". `pkd_pdf` reached its save at 2,000 and ran out of time
+    in it (its warm-up 271.9 s in all), a time of the save.
+34. **A save's three runs can differ by one slow run** (S84): of 26 cells of 0.5 s or more, the 3 over 10% are all
+    `savePedigreeDiagram()` saves with one slow run (`pkd_svg` at 1,000: 4.75 against 2.35 and 2.33 s, 103%; `pkd_png`
+    at 2,000: 12.4 against 9.41 and 9.66, 31%; `pkd_pdf` at 1,000: 6.48 against 5.41 and 4.97, 28%); every page and
+    picture cell is within 8%. The re-run of `pkd_svg` at 1,000 had one slow run again (5.78 against 2.39 and 2.31) and
+    a median within 1.7%. Cause not known (a guess: the Chrome `savePedigreeDiagram()` starts for each call). The
+    median of 3 holds against one slow run; 17i's page quotes medians and says this.
+35. **The drawing record took 1 h 36 min** (S84), not the 3.5-4.5 h dragon 26 guessed: every drawing case but
+    `pkd_data` stopped at 3,000 or before. Its longest runs were the saves at 2,000 (about 156 s each, dragon 33).
 
 ---
 
