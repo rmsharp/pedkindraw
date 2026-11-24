@@ -607,3 +607,34 @@ test_that("the browser that photographs the pictures draws text in grey, not
   expect_gt(spread[["ink"]], 500)
   expect_lte(spread[["widest"]], 20)
 })
+
+test_that("a PDF or a PNG that headless Chrome refuses stops with Chrome's
+           error, not the time limit's, and leaves nothing behind", {
+  .skipUnlessBrowser()
+  skip_if_not_installed("mockery")
+  ## pedkindraw S87 (Phase 17j, R161): the recording is stubbed to a page of no
+  ## size, which Chrome refuses to print or photograph at once, with time left;
+  ## the function passes Chrome's own error on (R/savePedigreeDiagram.R, the
+  ## last stop of .renderPicture()). Measured: "paper width is zero or negative"
+  ## and "Cannot take screenshot with 0 width." (Chrome 157 on macOS), each in
+  ## chromote's form for an error Chrome answers, "code: <n>\n  message: <text>"
+  ## (chromote 0.5.1, Chromote$send_command()); the test reads that form, not
+  ## Chrome's words, which change between versions. Without the stop, the
+  ## function still stops, later, with jsonlite's "is.raw(input) is not TRUE".
+  blank <- paste0(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="10in" height="5in" ',
+    'viewBox="0 0 960 480"><rect width="100%" height="100%" fill="#ffffff"/>',
+    "</svg>"
+  )
+  mockery::stub(savePedigreeDiagram, ".recordDiagramSvg",
+                list(svg = blank, x = 0, y = 0, w = 0, h = 0))
+  widget <- .saveFourWidget()
+  dir <- .saveTmp()
+  for (name in c("x.pdf", "x.png")) {
+    file <- file.path(dir, name)
+    expect_error(savePedigreeDiagram(widget, file),
+                 "^code: -32[0-9]+\n  message: ")
+    expect_false(file.exists(file))
+  }
+  expect_length(list.files(tempdir(), pattern = "^pedkindraw-save-"), 0L)
+})
