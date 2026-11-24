@@ -1,0 +1,459 @@
+# Speed and size limits
+
+How long do pedkindraw’s computations and drawings take, and how large a
+pedigree can each one handle? This page answers from two timing records
+made on one machine in November 2026, which timed pedkindraw’s own
+installed code beside the kinship2 and Pedixplorer functions that do the
+same. Each table says which record it comes from: its date, the
+pedkindraw commit timed, the versions of kinship2 and Pedixplorer and
+the machine. Every number on the page was checked against the records’
+result files by a script, `tools/checkSpeedTables.R` in pedkindraw’s
+GitHub repository, which also holds the records
+(`tools/timing/results/`). The page runs no code.
+
+## The machine and the method
+
+Each run was a fresh R process. It loaded the package being timed and
+those its call needs, built its input before the clock started, and
+timed one call. A step a user must run first was inside the timed call:
+pedkindraw’s
+[`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md)
+time includes
+[`findGeneration()`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md),
+and kinship2’s kinship by family includes `makefamid()`. For each
+function and size, smallest first, a warm-up run came first, which was
+also the test of whether that size fits; then three measured runs, and
+each figure on this page is their median. A run failed when it passed
+120 seconds from the call’s start or 32 GB of memory (29.8 GiB, R’s
+limit on its heap or a watchdog on the process’s memory), and the sizes
+after a function’s first failure were not run. Each run started only
+once at least half of the CPU was idle, waiting at most 10 minutes;
+other work on the machine went on beside the runs, and the table below
+gives the share of the CPU idle as each run started.
+
+pedkindraw was built from the commit each record names and installed as
+CRAN installs a package, and each run checked that it loaded that copy.
+kinship2 and Pedixplorer were the versions each record names, from CRAN
+and Bioconductor.
+
+The pedigrees are synthetic colonies of 300 to 100,000 animals, made by
+one seeded generator that grows a colony a year at a time, and, for the
+drawings, the 375-animal example pedigree that comes with pedkindraw
+(`system.file("extdata", "obfuscated_rhesus_mhc_ped.csv", package = "pedkindraw")`).
+The functions that shrink a pedigree or find an unrelated set use a
+seeded 30% of the animals as genotyped and 10% as affected; those that
+start from probands use 5 seeded animals with a known sire.
+
+| Record | Started | Runs (measured) | CPU idle at each run’s start (%) | pedkindraw commit timed | kinship2 | Pedixplorer | Chrome |
+|----|----|---:|---:|----|----|----|----|
+| computation | 2026-11-23 14:42 | 1,686 (1,248) | 48.0-77.8 | `7f13d98` | 1.9.6.2 | 1.8.0 | 157.0.8103.51 |
+| drawing | 2026-11-24 09:38 | 142 (99) | 50.2-68.4 | `70d5021` | 1.9.6.2 | 1.8.0 | 157.0.8103.51 |
+
+The two records, on one machine: Apple M2 Max (Mac14,6), 12 cores, 96
+GiB, R 4.6.2. Both timed the same pedkindraw R code, git tree `ac123b7`.
+{.table}
+
+“Runs” counts every run, warm-ups and the runs of failed sizes included.
+
+## Computation
+
+The tables give the seconds each function took, by the number of
+animals, with pedkindraw’s function first and then kinship2’s and
+Pedixplorer’s that do the same. A figure is the median of three measured
+runs, to three significant figures, and “\<0.001” is under a
+millisecond. A failed size says how it failed: “time”, past 120 seconds;
+“memory”, past 32 GB; “error”, the function stopped with an error. The
+sizes after a failure were not run and are empty. kinship2 and
+Pedixplorer were given each input in their own coding.
+
+### The computations the packages share
+
+What each computation is:
+
+- **Kinship, autosomal**: the kinship coefficient of every pair of
+  animals, the chance that a gene drawn at random from each of the two
+  is the same copy inherited from a common ancestor, as a matrix with a
+  row and a column for each animal.
+- **Kinship, autosomal, sparse or by family**: the same values stored as
+  a sparse matrix, which keeps only the pairs above 0; kinship2’s
+  nearest is its kinship within each family, `makekinship()`, after
+  `makefamid()`, and Pedixplorer has none.
+- **Kinship, X chromosome**: the kinship of genes on the X chromosome,
+  which needs each animal’s sex.
+- **Generation depth**: each animal’s generation, 0 for a founder (both
+  parents unknown) and otherwise one more than the later of its parents.
+- **Family (connected component)**: a family number for each animal,
+  shared by every animal linked to it through sires, dams and offspring.
+- **Shrink to 16 bits**: animals removed until the pedigree’s bit size
+  (see “Bit size” below) is 16 or less, keeping the genotyped and
+  affected animals that carry the most information; each step tries
+  every animal that could go and removes the one that lowers the bit
+  size most, so the time grows much faster than the pedigree.
+- **Unrelated set**: as many genotyped animals as can be found of which
+  no two are related.
+- **Probands and their ancestors**: a chosen group of animals (the
+  probands) and all of their ancestors, the rest dropped.
+- **Probands and their descendants**: the probands and all of their
+  descendants.
+- **Build a pedigree object**: kinship2’s `pedigree()` and Pedixplorer’s
+  `Pedigree()` turn a table of animals into the object their other
+  functions take; pedkindraw works on the data frame itself and has no
+  such step.
+
+| Computation | Package | Function | 300 | 1,000 | 3,000 | 10,000 | 30,000 | 100,000 |
+|----|----|----|---:|---:|---:|---:|---:|---:|
+| Kinship, autosomal | pedkindraw | [`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md) | 0.002 | 0.017 | 0.202 | 2.74 | 28.1 | memory |
+| Kinship, autosomal | kinship2 | [`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md) | 0.002 | 0.019 | 0.269 | 3.04 | 29.3 | memory |
+| Kinship, autosomal | Pedixplorer | [`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md) | 0.004 | 0.125 | 0.771 | 4.97 | memory |  |
+| Kinship, autosomal, sparse or by family | pedkindraw | `kinship(sparse = TRUE)` | 0.007 | 0.096 | 0.712 | 5.74 | 54.7 | memory |
+| Kinship, autosomal, sparse or by family | kinship2 | `makekinship()` | 0.011 | 0.154 | 0.779 | 5.94 | memory |  |
+| Kinship, X chromosome | pedkindraw | `kinship(chrtype = "x")` | 0.002 | 0.013 | 0.196 | 2.44 | 23.5 | memory |
+| Kinship, X chromosome | kinship2 | `kinship(chrtype = "X")` | 0.002 | 0.013 | 0.242 | 2.51 | 24 | memory |
+| Kinship, X chromosome | Pedixplorer | `kinship(chrtype = "X")` | 0.004 | 0.128 | 0.788 | 4.5 | memory |  |
+| Generation depth | pedkindraw | [`findGeneration()`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md) | 0.001 | 0.001 | 0.003 | 0.009 | 0.03 | 0.108 |
+| Generation depth | kinship2 | `kindepth()` | \<0.001 | 0.001 | 0.001 | 0.003 | 0.014 | 0.083 |
+| Generation depth | Pedixplorer | `kindepth()` | 0.001 | \<0.001 | 0.001 | 0.003 | 0.014 | 0.083 |
+| Family (connected component) | pedkindraw | [`findPedigreeNumber()`](https://rmsharp.github.io/pedkindraw/reference/findPedigreeNumber.md) | 0.002 | 0.004 | 0.016 | 0.145 | 1.26 | 12.4 |
+| Family (connected component) | kinship2 | `makefamid()` | 0.002 | 0.005 | 0.016 | 0.048 | 0.15 | 0.609 |
+| Family (connected component) | Pedixplorer | `make_famid()` | 0.002 | 0.004 | 0.014 | 0.045 | 0.139 | 0.644 |
+| Shrink to 16 bits | pedkindraw | [`shrinkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md) | 0.105 | 3.53 | 89.5 | time |  |  |
+| Shrink to 16 bits | kinship2 | `pedigree.shrink()` | 2.52 | 99.3 | time |  |  |  |
+| Shrink to 16 bits | Pedixplorer | `shrink()` | 89.4 | time |  |  |  |  |
+| Unrelated set | pedkindraw | [`findUnrelated()`](https://rmsharp.github.io/pedkindraw/reference/findUnrelated.md) | 0.015 | 0.02 | 0.066 | 0.606 | 3.65 | 33.9 |
+| Unrelated set | kinship2 | `pedigree.unrelated()` | 0.003 | 0.029 | 0.593 | 6.68 | time |  |
+| Unrelated set | Pedixplorer | `unrelated()` | 0.023 | 0.297 | 1.41 | 15.7 | memory |  |
+| Probands and their ancestors | pedkindraw | [`trimPedigree()`](https://rmsharp.github.io/pedkindraw/reference/trimPedigree.md) | \<0.001 | 0.001 | 0.001 | 0.002 | 0.007 | 0.024 |
+| Probands and their ancestors | Pedixplorer | `ancestors()` | 0.001 | \<0.001 | 0.001 | \<0.001 | 0.001 | 0.001 |
+| Probands and their descendants | pedkindraw | [`getDescendantPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getDescendantPedigree.md) | \<0.001 | \<0.001 | \<0.001 | 0.001 | 0.003 | 0.004 |
+| Probands and their descendants | Pedixplorer | `descendants()` | \<0.001 | \<0.001 | 0.001 | 0.001 | 0.002 | 0.004 |
+| Build a pedigree object | kinship2 | `pedigree()` | 0.001 | 0.001 | 0.001 | 0.002 | 0.006 | 0.02 |
+| Build a pedigree object | Pedixplorer | `Pedigree()` | 0.099 | 0.128 | 0.208 | 0.645 | 3.14 | 8.06 |
+
+Seconds, the median of 3 measured runs, by the number of animals. The
+computation record, 2026-11-23: pedkindraw `7f13d98`, kinship2 1.9.6.2,
+Pedixplorer 1.8.0; Apple M2 Max, 12 cores, 96 GiB, R 4.6.2. {.table}
+
+### The other functions kinship2 or Pedixplorer also has
+
+- **Bit size**: kinship2’s measure of a pedigree’s size, twice the
+  number of animals with a known parent less the number of founders.
+- **Unavailable animals to trim**: the animals shrinking removes first:
+  those not genotyped with no genotyped descendant, and the founders
+  their removal leaves of no use.
+- **Available, uninformative animals to trim**: the genotyped animals
+  that add no information: no animal’s parent, not affected, and both
+  parents known and genotyped.
+- **One available affected animal to trim**: one step of shrinking’s
+  last trim, the genotyped animal of a chosen affected status, no
+  animal’s parent, whose removal leaves the smallest bit size.
+- **Family check**: each animal’s family number compared with the family
+  trees its parent links form, family by family.
+- **IBD matrix from pairs**: identity-by-descent values written one line
+  per pair of animals, as programs such as SOLAR write them, made into a
+  sparse matrix with a row and a column for each animal.
+- **Near relatives (distance 3)**: the animals within a distance of 3 of
+  the probands (a grandparent, half sibling, uncle or aunt is at 3) and
+  the parents that join their families.
+- **Remove 5 animals**: 5 listed animals, each with a known sire and no
+  offspring, removed from the pedigree.
+- **A kinship2 object as a data frame**: a kinship2 `pedigree` object
+  turned back into a table of animals, pedkindraw’s by
+  [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md).
+- **A Pedixplorer object as a data frame**: the same for a Pedixplorer
+  `Pedigree` object.
+- **Add rows for missing parents**: a row added for each sire or dam
+  that has none of its own.
+- **Count offspring**: the number of offspring of each animal.
+- **Recode a pedigree file’s values**: other programs’ codes for an
+  unknown parent and for sex rewritten into the package’s own.
+- **Founder or not**: for each animal, whether it is a founder.
+- **Generation depth, mates aligned**: the generation depth with, where
+  it can be done, an offspring’s sire and dam in the same generation, as
+  a drawing needs; the three packages align by rules of their own.
+
+| Computation | Package | Function | 300 | 1,000 | 3,000 | 10,000 | 30,000 | 100,000 |
+|----|----|----|---:|---:|---:|---:|---:|---:|
+| Bit size | pedkindraw | [`bitSize()`](https://rmsharp.github.io/pedkindraw/reference/bitSize.md) | 0.001 | 0.001 | 0.001 | 0.002 | 0.005 | 0.018 |
+| Bit size | kinship2 | [`bitSize()`](https://rmsharp.github.io/pedkindraw/reference/bitSize.md) | \<0.001 | \<0.001 | \<0.001 | 0.001 | \<0.001 | 0.001 |
+| Bit size | Pedixplorer | `bit_size()` | \<0.001 | \<0.001 | \<0.001 | 0.001 | 0.001 | 0.004 |
+| Unavailable animals to trim | pedkindraw | [`findUnavailable()`](https://rmsharp.github.io/pedkindraw/reference/findUnavailable.md) | 0.001 | 0.001 | 0.002 | 0.005 | 0.014 | 0.055 |
+| Unavailable animals to trim | kinship2 | [`findUnavailable()`](https://rmsharp.github.io/pedkindraw/reference/findUnavailable.md) | 0.004 | 0.017 | 0.057 | 0.285 | 1.65 | 17.4 |
+| Unavailable animals to trim | Pedixplorer | `find_unavailable()` | 0.108 | 0.141 | 0.2 | 0.42 | 1.33 | 4.87 |
+| Available, uninformative animals to trim | pedkindraw | [`findAvailNonInform()`](https://rmsharp.github.io/pedkindraw/reference/findAvailNonInform.md) | 0.001 | 0.001 | 0.003 | 0.011 | 0.043 | 0.128 |
+| Available, uninformative animals to trim | kinship2 | [`findAvailNonInform()`](https://rmsharp.github.io/pedkindraw/reference/findAvailNonInform.md) | 0.005 | error |  |  |  |  |
+| Available, uninformative animals to trim | Pedixplorer | `find_avail_noninform()` | 0.108 | 0.145 | 0.201 | 0.393 | 1.3 | 4.88 |
+| One available affected animal to trim | pedkindraw | [`findAvailAffected()`](https://rmsharp.github.io/pedkindraw/reference/findAvailAffected.md) | 0.001 | 0.006 | 0.051 | 0.655 | 6.67 | 83.3 |
+| One available affected animal to trim | kinship2 | [`findAvailAffected()`](https://rmsharp.github.io/pedkindraw/reference/findAvailAffected.md) | 0.037 | 0.356 | 4.09 | 73 | time |  |
+| One available affected animal to trim | Pedixplorer | `find_avail_affected()` | 0.663 | 2.37 | 13.4 | time |  |  |
+| Family check | pedkindraw | [`familyCheck()`](https://rmsharp.github.io/pedkindraw/reference/familyCheck.md) | 0.001 | 0.001 | 0.003 | 0.01 | 0.031 | 0.102 |
+| Family check | kinship2 | `familycheck()` | 0.003 | 0.006 | 0.016 | 0.051 | 0.16 | 0.699 |
+| Family check | Pedixplorer | `family_check()` | error |  |  |  |  |  |
+| IBD matrix from pairs | pedkindraw | [`ibdMatrix()`](https://rmsharp.github.io/pedkindraw/reference/ibdMatrix.md) | 0.003 | 0.003 | 0.004 | 0.008 | 0.017 | 0.065 |
+| IBD matrix from pairs | kinship2 | [`ibdMatrix()`](https://rmsharp.github.io/pedkindraw/reference/ibdMatrix.md) | 0.005 | 0.013 | 0.047 | 0.235 | 1.35 | 12.7 |
+| IBD matrix from pairs | Pedixplorer | `ibd_matrix()` | 0.005 | 0.012 | 0.045 | 0.227 | 1.36 | 12.7 |
+| Near relatives (distance 3) | pedkindraw | [`getNearRelativePedigree()`](https://rmsharp.github.io/pedkindraw/reference/getNearRelativePedigree.md) | 0.011 | 0.113 | 0.809 | 6.77 | 58.6 | memory |
+| Near relatives (distance 3) | Pedixplorer | `useful_inds(max_dist = 3)` | 0.013 | 0.15 | 0.848 | 5.32 | memory |  |
+| Remove 5 animals | pedkindraw | [`removeAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeAnimals.md) | \<0.001 | \<0.001 | \<0.001 | 0.001 | 0.003 | 0.012 |
+| Remove 5 animals | kinship2 | `pedigree.trim()` | \<0.001 | \<0.001 | \<0.001 | 0.001 | 0.003 | 0.02 |
+| Remove 5 animals | Pedixplorer | [`subset()`](https://rdrr.io/r/base/subset.html) | 0.069 | 0.078 | 0.128 | 0.346 | 1.8 | 5.21 |
+| A kinship2 object as a data frame | pedkindraw | [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md) | \<0.001 | \<0.001 | 0.001 | 0.001 | 0.002 | 0.006 |
+| A kinship2 object as a data frame | kinship2 | [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) | 0.001 | 0.001 | 0.001 | 0.003 | 0.009 | 0.031 |
+| A Pedixplorer object as a data frame | pedkindraw | [`asPedFrame()`](https://rmsharp.github.io/pedkindraw/reference/asPedFrame.md) | 0.003 | 0.004 | 0.004 | 0.005 | 0.007 | 0.013 |
+| A Pedixplorer object as a data frame | Pedixplorer | `ped()` | 0.001 | 0.001 | 0.001 | 0.001 | 0.002 | 0.003 |
+| Add rows for missing parents | pedkindraw | [`addParents()`](https://rmsharp.github.io/pedkindraw/reference/addParents.md) | \<0.001 | \<0.001 | \<0.001 | 0.001 | 0.003 | 0.007 |
+| Add rows for missing parents | kinship2 | `fixParents()` | 0.001 | 0.001 | 0.002 | 0.006 | 0.018 | 0.069 |
+| Add rows for missing parents | Pedixplorer | `fix_parents()` | 0.002 | 0.006 | 0.017 | 0.059 | 0.172 | 0.687 |
+| Count offspring | pedkindraw | [`countOffspring()`](https://rmsharp.github.io/pedkindraw/reference/countOffspring.md) | 0.001 | 0.002 | 0.004 | 0.011 | 0.036 | 0.14 |
+| Count offspring | Pedixplorer | `num_child()` | 0.027 | 0.031 | 0.055 | 0.293 | 2.24 | 5.04 |
+| Recode a pedigree file’s values | pedkindraw | [`recodePedigree()`](https://rmsharp.github.io/pedkindraw/reference/recodePedigree.md) | \<0.001 | 0.001 | 0.002 | 0.007 | 0.021 | 0.071 |
+| Recode a pedigree file’s values | Pedixplorer | `norm_ped()` | 0.031 | 0.044 | 0.087 | 0.234 | 0.664 | 2.52 |
+| Founder or not | pedkindraw | [`isFounder()`](https://rmsharp.github.io/pedkindraw/reference/isFounder.md) | \<0.001 | \<0.001 | \<0.001 | \<0.001 | \<0.001 | \<0.001 |
+| Founder or not | Pedixplorer | `is_founder()` | \<0.001 | \<0.001 | \<0.001 | \<0.001 | 0.001 | 0.003 |
+| Generation depth, mates aligned | pedkindraw | `findGeneration(alignMates = TRUE)` | 0.02 | 0.295 | 2.36 | 60.6 | time |  |
+| Generation depth, mates aligned | kinship2 | `kindepth(align = TRUE)` | 0.005 | 0.038 | 0.818 | 8.19 | time |  |
+| Generation depth, mates aligned | Pedixplorer | `kindepth(align_parents = TRUE)` | 0.049 | 0.304 | 3.97 | 67 | time |  |
+
+Seconds, the median of 3 measured runs, by the number of animals. The
+computation record, 2026-11-23: pedkindraw `7f13d98`, kinship2 1.9.6.2,
+Pedixplorer 1.8.0; Apple M2 Max, 12 cores, 96 GiB, R 4.6.2. {.table}
+
+### The functions only pedkindraw has
+
+- **Check a pedigree**: every problem found in a pedigree, one row per
+  problem, such as an animal that is its own ancestor or a parent with
+  no row.
+- **Matings**: each sire and dam with offspring together, once, with the
+  number of offspring they share.
+- **Correct parents’ sex**: the sex of each animal listed as a sire made
+  male and as a dam made female.
+- **Add back second parents**: the known parent an animal lost in
+  trimming put back.
+- **Remove uninformative founders**: founders that appear only once
+  removed, until none is left.
+- **Remove added animals**: the placeholder rows added for unknown
+  parents removed.
+- **Probands’ pedigree**: the probands and all of their ancestors.
+- **Parents of 5 animals**: the sire and dam of each of 5 animals.
+- **Offspring of 5 animals**: the offspring of 5 animals.
+- **Founders’ ids**: the ids of the founders.
+- **Has both parents**: whether one animal has both parents known.
+- **Animals with one parent**: the ids of the animals with only one
+  known parent.
+- **Check twin pairs**: a table of twin pairs checked against the
+  pedigree: both ids in it, twins with the same sire and dam, identical
+  twins of one sex.
+
+| Computation | Package | Function | 300 | 1,000 | 3,000 | 10,000 | 30,000 | 100,000 |
+|----|----|----|---:|---:|---:|---:|---:|---:|
+| Check a pedigree | pedkindraw | [`checkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/checkPedigree.md) | 0.002 | 0.003 | 0.006 | 0.014 | 0.042 | 0.149 |
+| Matings | pedkindraw | [`getMatings()`](https://rmsharp.github.io/pedkindraw/reference/getMatings.md) | 0.001 | 0.002 | 0.003 | 0.008 | 0.024 | 0.108 |
+| Correct parents’ sex | pedkindraw | [`correctParentSex()`](https://rmsharp.github.io/pedkindraw/reference/correctParentSex.md) | \<0.001 | \<0.001 | \<0.001 | 0.002 | 0.003 | 0.011 |
+| Add back second parents | pedkindraw | [`addBackSecondParents()`](https://rmsharp.github.io/pedkindraw/reference/addBackSecondParents.md) | \<0.001 | \<0.001 | 0.001 | \<0.001 | \<0.001 | \<0.001 |
+| Remove uninformative founders | pedkindraw | [`removeUninformativeFounders()`](https://rmsharp.github.io/pedkindraw/reference/removeUninformativeFounders.md) | 0.001 | 0.001 | 0.002 | 0.003 | 0.007 | 0.028 |
+| Remove added animals | pedkindraw | [`removeUnknownAnimals()`](https://rmsharp.github.io/pedkindraw/reference/removeUnknownAnimals.md) | \<0.001 | \<0.001 | \<0.001 | \<0.001 | 0.002 | 0.009 |
+| Probands’ pedigree | pedkindraw | [`getProbandPedigree()`](https://rmsharp.github.io/pedkindraw/reference/getProbandPedigree.md) | 0.001 | \<0.001 | 0.001 | 0.002 | 0.007 | 0.025 |
+| Parents of 5 animals | pedkindraw | [`getParents()`](https://rmsharp.github.io/pedkindraw/reference/getParents.md) | \<0.001 | \<0.001 | \<0.001 | 0.001 | 0.001 | 0.003 |
+| Offspring of 5 animals | pedkindraw | [`getOffspring()`](https://rmsharp.github.io/pedkindraw/reference/getOffspring.md) | \<0.001 | 0.001 | \<0.001 | 0.001 | 0.001 | 0.003 |
+| Founders’ ids | pedkindraw | [`getFounders()`](https://rmsharp.github.io/pedkindraw/reference/getFounders.md) | \<0.001 | \<0.001 | \<0.001 | \<0.001 | \<0.001 | \<0.001 |
+| Has both parents | pedkindraw | [`hasBothParents()`](https://rmsharp.github.io/pedkindraw/reference/hasBothParents.md) | \<0.001 | \<0.001 | \<0.001 | \<0.001 | \<0.001 | 0.001 |
+| Animals with one parent | pedkindraw | [`getIdsWithOneParent()`](https://rmsharp.github.io/pedkindraw/reference/getIdsWithOneParent.md) | \<0.001 | \<0.001 | \<0.001 | \<0.001 | 0.001 | 0.001 |
+| Check twin pairs | pedkindraw | [`checkTwinRelations()`](https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.md) | \<0.001 | \<0.001 | 0.002 | 0.017 | 0.164 | 1.48 |
+
+Seconds, the median of 3 measured runs, by the number of animals. The
+computation record, 2026-11-23: pedkindraw `7f13d98`, kinship2 1.9.6.2,
+Pedixplorer 1.8.0; Apple M2 Max, 12 cores, 96 GiB, R 4.6.2. {.table}
+
+What this means for pedkindraw’s users:
+
+- Its kinship is as fast as kinship2’s: a dense kinship matrix of 30,000
+  animals took 28.1 seconds, against kinship2’s 29.3, and no kinship
+  finished 100,000 animals within the 32 GB allowed.
+- [`findPedigreeNumber()`](https://rmsharp.github.io/pedkindraw/reference/findPedigreeNumber.md)
+  is the one function much slower than its counterparts at the largest
+  size: 12.4 seconds at 100,000 animals, against 0.609 for kinship2’s
+  and 0.644 for Pedixplorer’s.
+- [`shrinkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md)
+  shrank 3,000 animals in 89.5 seconds; kinship2’s and Pedixplorer’s
+  passed 120 seconds at 3,000 and 1,000 animals.
+- [`findUnrelated()`](https://rmsharp.github.io/pedkindraw/reference/findUnrelated.md)
+  finished 100,000 animals in 33.9 seconds; kinship2’s and Pedixplorer’s
+  stopped after 10,000.
+- [`findAvailAffected()`](https://rmsharp.github.io/pedkindraw/reference/findAvailAffected.md)
+  took 83.3 seconds at 100,000 animals, and
+  `findGeneration(alignMates = TRUE)` 60.6 seconds at 10,000 and more
+  than 120 at 30,000, as the other two packages’ alignments did.
+- pedkindraw takes a data frame, so it has no pedigree object to build;
+  kinship2’s and Pedixplorer’s functions need theirs first.
+
+Where each computation stopped, and the memory it used at the largest
+size it finished; every computation not in this table finished all six
+sizes, up to 100,000 animals:
+
+| Computation | Package | Function | Largest size within the limits | Next size | Process peak there (GiB) | R heap peak there (GiB) |
+|----|----|----|---:|----|---:|---:|
+| Kinship, autosomal | pedkindraw | [`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md) | 30,000 | memory at 100,000 | 10.43 | 9.69 |
+| Kinship, autosomal | kinship2 | [`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md) | 30,000 | memory at 100,000 | 15.67 | 13.42 |
+| Kinship, autosomal | Pedixplorer | [`kinship()`](https://rmsharp.github.io/pedkindraw/reference/kinship.md) | 10,000 | memory at 30,000 | 5.79 | 4.50 |
+| Kinship, autosomal, sparse or by family | pedkindraw | `kinship(sparse = TRUE)` | 30,000 | memory at 100,000 | 20.42 | 23.92 |
+| Kinship, autosomal, sparse or by family | kinship2 | `makekinship()` | 10,000 | memory at 30,000 | 7.32 | 4.30 |
+| Kinship, X chromosome | pedkindraw | `kinship(chrtype = "x")` | 30,000 | memory at 100,000 | 11.34 | 9.69 |
+| Kinship, X chromosome | kinship2 | `kinship(chrtype = "X")` | 30,000 | memory at 100,000 | 17.27 | 13.42 |
+| Kinship, X chromosome | Pedixplorer | `kinship(chrtype = "X")` | 10,000 | memory at 30,000 | 5.64 | 4.48 |
+| Shrink to 16 bits | pedkindraw | [`shrinkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/shrinkPedigree.md) | 3,000 | time at 10,000 | 0.38 | 0.04 |
+| Shrink to 16 bits | kinship2 | `pedigree.shrink()` | 1,000 | time at 3,000 | 0.32 | 0.07 |
+| Shrink to 16 bits | Pedixplorer | `shrink()` | 300 | time at 1,000 | 0.42 | 0.10 |
+| Unrelated set | kinship2 | `pedigree.unrelated()` | 10,000 | time at 30,000 | 5.34 | 2.73 |
+| Unrelated set | Pedixplorer | `unrelated()` | 10,000 | memory at 30,000 | 7.97 | 4.52 |
+| Available, uninformative animals to trim | kinship2 | [`findAvailNonInform()`](https://rmsharp.github.io/pedkindraw/reference/findAvailNonInform.md) | 300 | error at 1,000 | 0.24 | 0.01 |
+| One available affected animal to trim | kinship2 | [`findAvailAffected()`](https://rmsharp.github.io/pedkindraw/reference/findAvailAffected.md) | 10,000 | time at 30,000 | 0.38 | 0.06 |
+| One available affected animal to trim | Pedixplorer | `find_avail_affected()` | 3,000 | time at 10,000 | 0.46 | 0.13 |
+| Family check | Pedixplorer | `family_check()` | below 300 | error at 300 |  |  |
+| Near relatives (distance 3) | pedkindraw | [`getNearRelativePedigree()`](https://rmsharp.github.io/pedkindraw/reference/getNearRelativePedigree.md) | 30,000 | memory at 100,000 | 23.43 | 24.60 |
+| Near relatives (distance 3) | Pedixplorer | `useful_inds(max_dist = 3)` | 10,000 | memory at 30,000 | 6.59 | 4.51 |
+| Generation depth, mates aligned | pedkindraw | `findGeneration(alignMates = TRUE)` | 10,000 | time at 30,000 | 0.38 | 0.05 |
+| Generation depth, mates aligned | kinship2 | `kindepth(align = TRUE)` | 10,000 | time at 30,000 | 0.32 | 0.04 |
+| Generation depth, mates aligned | Pedixplorer | `kindepth(align_parents = TRUE)` | 10,000 | time at 30,000 | 0.60 | 0.05 |
+
+Where each computation stopped, and its memory at the largest size it
+finished. The computation record, 2026-11-23: pedkindraw `7f13d98`,
+kinship2 1.9.6.2, Pedixplorer 1.8.0; Apple M2 Max, 12 cores, 96 GiB, R
+4.6.2. {.table style="width:100%;"}
+
+“Process peak”: the process’s largest resident memory there. “R heap
+peak”: the most R’s heap held above its starting point, read at its
+garbage collections. macOS’s resident figure leaves out compressed
+memory, so near the limit the two can disagree, as for the sparse
+kinship at 30,000.
+
+## Drawing
+
+Seconds from a pedigree to a drawing, on a canvas of 3,600 by 1,500
+pixels for the web pages and pictures. The rows time different things:
+
+- **web page**:
+  [`findGeneration()`](https://rmsharp.github.io/pedkindraw/reference/findGeneration.md),
+  [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
+  and
+  [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
+  in R, the page saved, then the page opened in Chrome until its first
+  drawn frame: R’s and the browser’s time together. The lines are
+  rectilinear, the default, or direct.
+- **SVG, PDF and PNG file**:
+  [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)
+  of a drawing built before the clock, so these rows time only what
+  saving adds, on the function’s own page.
+- **diagram data**:
+  [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
+  alone, the nodes and edges of a simpler drawing, without the layout
+  that takes most of a drawing’s time.
+- **picture** and **plotly page**: kinship2’s and Pedixplorer’s
+  drawings, timed the same way as pedkindraw’s page; Pedixplorer’s
+  plotly page is drawn by the call its own app makes. kinship2 and
+  Pedixplorer were given a placeholder for the missing parent of an
+  animal with one known parent, which they need; pedkindraw drew each
+  pedigree as it is.
+
+| Package | Drawing | 300 | 1,000 | 2,000 | 3,000 | The 375-animal example |
+|----|----|---:|---:|---:|---:|---:|
+| pedkindraw | web page, [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md) | 1.22 | 16 | time |  | 1.98 |
+| pedkindraw | web page, [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md), direct lines | 0.433 | 7.96 | 106 | time | 0.946 |
+| pedkindraw | SVG file, [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md) | 1.45 | 2.35 | 6.04 | not timed | 1.53 |
+| pedkindraw | PDF file, [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md) | 2.68 | 5.41 | time |  | 2.9 |
+| pedkindraw | PNG file, [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md) | 2.46 | 3.54 | 9.66 | not timed | 2.45 |
+| pedkindraw | diagram data, [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md) | 0.002 | 0.002 | 0.002 | 0.003 | 0.001 |
+| kinship2 | picture, `plot.pedigree()` | 0.432 | 12.2 | time |  | 1.48 |
+| Pedixplorer | picture, [`plot()`](https://rdrr.io/r/graphics/plot.default.html) | error |  |  |  | 3.58 |
+| Pedixplorer | picture, [`plot()`](https://rdrr.io/r/graphics/plot.default.html), alignment off | 1.24 | 16.2 | time |  | 3.54 |
+| Pedixplorer | plotly page, its app’s call | error |  |  |  | 31.5 |
+| Pedixplorer | plotly page, its app’s call, alignment off | 29.7 | time |  |  | 35.4 |
+
+Seconds to a drawing, the median of 3 measured runs, by the number of
+animals. The drawing record, 2026-11-24: pedkindraw `70d5021`, kinship2
+1.9.6.2, Pedixplorer 1.8.0, Chrome 157.0.8103.51; Apple M2 Max, 12
+cores, 96 GiB, R 4.6.2. {.table}
+
+“time”: R and the browser together passed 120 seconds. “error”: the
+function stopped with an error; Pedixplorer’s alignment of parents
+stopped with an error on the first colony, of 300 animals, and its own
+warning suggests turning it off, so it was also timed with alignment
+off. “not timed”: the SVG and PNG files at 3,000 animals were not timed,
+because the drawing they save, built before the clock, took longer than
+the 300 seconds allowed for setup, so the save never started; the save
+itself did not fail. A save’s three runs can differ by one slow run, at
+most about twice as long as the other two in this record; the median
+holds against it.
+
+Almost all of a web page’s time is spent in R, before the browser draws
+anything:
+
+| Package | Drawing | Part | 300 | 1,000 | 2,000 | 3,000 | The 375-animal example |
+|----|----|----|---:|---:|---:|---:|---:|
+| pedkindraw | web page, [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md) | in R | 1.09 | 15.5 | time |  | 1.85 |
+| pedkindraw | web page, [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md) | in Chrome | 0.129 | 0.45 | time |  | 0.131 |
+| pedkindraw | web page, [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md), direct lines | in R | 0.344 | 7.72 | 105 | time | 0.849 |
+| pedkindraw | web page, [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md), direct lines | in Chrome | 0.0886 | 0.238 | 0.604 | time | 0.0992 |
+| Pedixplorer | plotly page, its app’s call | in R | error |  |  |  | 31.2 |
+| Pedixplorer | plotly page, its app’s call | in Chrome | error |  |  |  | 0.353 |
+| Pedixplorer | plotly page, its app’s call, alignment off | in R | 29.4 | time |  |  | 35.1 |
+| Pedixplorer | plotly page, its app’s call, alignment off | in Chrome | 0.338 | time |  |  | 0.367 |
+
+Seconds of each web page, in R and in Chrome, the median of 3 measured
+runs. The drawing record, 2026-11-24: pedkindraw `70d5021`, kinship2
+1.9.6.2, Pedixplorer 1.8.0, Chrome 157.0.8103.51; Apple M2 Max, 12
+cores, 96 GiB, R 4.6.2. {.table style="width:100%;"}
+
+The largest size each drawing finished, and its memory there:
+
+| Package | Drawing | Largest size drawn within 120 s | Next size | Process peak there (GiB) | R heap peak there (MiB) | JavaScript heap there (MiB) |
+|----|----|---:|----|---:|---:|---:|
+| pedkindraw | web page, [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md) | 1,000 | time at 2,000 | 0.78 | 284 | 19.3 |
+| pedkindraw | web page, [`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md), direct lines | 2,000 | time at 3,000 | 1.57 | 947 | 19.9 |
+| pedkindraw | SVG file, [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md) | 2,000 | not timed at 3,000 | 2.36 | 129 |  |
+| pedkindraw | PDF file, [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md) | 1,000 | time at 2,000 | 0.94 | 171 |  |
+| pedkindraw | PNG file, [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md) | 2,000 | not timed at 3,000 | 2.29 | 129 |  |
+| pedkindraw | diagram data, [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md) | 3,000 | none up to 3,000 | 0.23 | 2 |  |
+| kinship2 | picture, `plot.pedigree()` | 1,000 | time at 2,000 | 0.54 | 212 |  |
+| Pedixplorer | picture, [`plot()`](https://rdrr.io/r/graphics/plot.default.html) | below 300 | error at 300 |  |  |  |
+| Pedixplorer | picture, [`plot()`](https://rdrr.io/r/graphics/plot.default.html), alignment off | 1,000 | time at 2,000 | 1.03 | 290 |  |
+| Pedixplorer | plotly page, its app’s call | below 300 | error at 300 |  |  |  |
+| Pedixplorer | plotly page, its app’s call, alignment off | 300 | time at 1,000 | 0.74 | 242 | 13.3 |
+
+Where each drawing stopped on the synthetic colonies, and its memory at
+the largest size it drew. The drawing record, 2026-11-24: pedkindraw
+`70d5021`, kinship2 1.9.6.2, Pedixplorer 1.8.0, Chrome 157.0.8103.51;
+Apple M2 Max, 12 cores, 96 GiB, R 4.6.2. {.table}
+
+The JavaScript heap is the page’s heap in use once it had drawn: a
+reading at one moment, not a peak.
+
+Can a reader use a drawing that large? Judged by eye by the package’s
+author from the record’s pages, a pedkindraw drawing can be read up to
+1,000 animals, zoomed in: an animal found by its id, by zooming or with
+“Select by id”, and its lines followed to its parents. A drawing of
+1,000 animals took 16 seconds; with direct lines, 2,000 animals took
+106. pedkindraw’s drawing code began as a copy of nprcgenekeepr’s.
+[`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)
+asks before it draws more than 1,000 animals.
+
+## What these numbers cannot tell you
+
+- Another machine’s times: these are one Mac’s, with other work running
+  beside the runs.
+- A smaller machine’s limits: the runs were allowed 32 GB of memory, and
+  the kinship matrices of the largest sizes need most of that; on a
+  machine with less memory they stop at a smaller size.
+- Another browser’s drawing time: the browser’s part was timed in
+  Chrome.
+- A real pedigree’s times: these pedigrees are synthetic colonies, and
+  the shape of a pedigree matters as much as its size: the drawing
+  vignette’s times for pedigrees taken from nprcgenekeepr’s example
+  pedigree differ from these at the same size.
+
+## Where next
+
+[`vignette("pedkindraw", package = "pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/pedkindraw.md)
+takes the 375-animal example pedigree from its records to a drawing, and
+[`vignette("drawing", package = "pedkindraw")`](https://rmsharp.github.io/pedkindraw/articles/drawing.md)
+shows what a drawing shows and how to change it.
+[`?pedkindraw`](https://rmsharp.github.io/pedkindraw/reference/pedkindraw-package.md)
+lists every function by what it does.
