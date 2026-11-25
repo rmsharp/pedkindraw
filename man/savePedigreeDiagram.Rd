@@ -56,9 +56,10 @@ its legend are drawn for that page, and the file's own size is the page, so
 it prints at that size.
 
 The function starts its own headless Chrome for each call (two for a
-\code{.pdf} or \code{.png}) and closes it, and stops if the drawing is not
-done within 60 seconds (\code{options(pedkindraw.saveTimeout = seconds)}
-changes that).
+\code{.pdf} or \code{.png}), waits up to 60 seconds for each to start
+(\pkg{chromote}'s own wait is 10; a larger \code{chromote.timeout} option is
+kept), closes it, and stops if the drawing is not done within 60 seconds
+(\code{options(pedkindraw.saveTimeout = seconds)} changes that).
 }
 \section{Requirements}{
 

@@ -286,7 +286,10 @@ code, `DIVERGENCE.md` in the repository says how and why.
   pedigree with all seven marks 0.26% and 0.07%. It stops, saying what is
   missing, without chromote (in Suggests) or Chrome. It ends every process of
   the Chrome it starts, on Windows too, where the renderer of a page that never
-  finishes drawing outlives its browser's close. nprcgenekeepr has no such
+  finishes drawing outlives its browser's close. It waits up to 60 seconds for
+  each Chrome it starts to open its port, as it waits for Chrome's answers:
+  chromote's own 10 seconds can pass for a fresh Chrome on a busy computer; a
+  larger `chromote.timeout` option is kept. nprcgenekeepr has no such
   function.
 * New: the 375 rhesus animals of the example pedigree, with their 3 twin pairs,
   are one page of `savePedigreeDiagram()`'s SVG or PDF on a 14 by 7 inch page or

@@ -36,9 +36,10 @@
 #' it prints at that size.
 #'
 #' The function starts its own headless Chrome for each call (two for a
-#' \code{.pdf} or \code{.png}) and closes it, and stops if the drawing is not
-#' done within 60 seconds (\code{options(pedkindraw.saveTimeout = seconds)}
-#' changes that).
+#' \code{.pdf} or \code{.png}), waits up to 60 seconds for each to start
+#' (\pkg{chromote}'s own wait is 10; a larger \code{chromote.timeout} option is
+#' kept), closes it, and stops if the drawing is not done within 60 seconds
+#' (\code{options(pedkindraw.saveTimeout = seconds)} changes that).
 #'
 #' @param diagram the widget \code{\link{drawPedigreeDiagram}} returns.
 #' @param file the file to write, one file name. Its ending, in any case,
@@ -171,11 +172,18 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
                                        package = "pedkindraw"),
                            warn = FALSE), collapse = "\n")
 
-  chrome <- chromote::Chromote$new()
+  # A fresh Chrome on a slow or busy machine can take longer than chromote's
+  # 10 s to open its port (3 of 80 CI jobs, pedkindraw S93): the start waits
+  # 60 s, as the commands below do, and the caller's option is put back after.
+  # nolint start: undesirable_function_linter. withr is only in Suggests, and
+  # `finally` puts the option back whether the start succeeds or fails.
+  startup <- options(chromote.timeout = max(getOption("chromote.timeout",
+                                                      10.0), 60.0))
+  chrome <- tryCatch(chromote::Chromote$new(), finally = options(startup))
+  # nolint end
   # The browser closes first, then the folder it reads goes.
   on.exit(.closeChrome(chrome), add = TRUE, after = FALSE)
-  # chromote's first launch can take longer than its 10 s default allows on a
-  # slow machine (a fresh Chrome on a CI runner).
+  # Chrome's answers to the commands below get 60 s too, not chromote's 10 s.
   chrome$default_timeout <- max(chrome$default_timeout, 60.0)
   # A window with room round the widget.
   windowWidth <- max(1200L, as.integer(.widgetPixels(diagram$width, 960.0)) +
@@ -299,9 +307,17 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
   picture <- file.path(folder, "picture.svg")
   writeLines(recorded$svg, picture, useBytes = TRUE)
 
-  chrome <- chromote::Chromote$new(browser = chromote::Chrome$new(
-    args = unique(c(chromote::default_chrome_args(), "--disable-lcd-text"))
-  ))
+  # The start waits 60 s, as .recordDiagramSvg()'s does.
+  # nolint start: undesirable_function_linter. As in .recordDiagramSvg().
+  startup <- options(chromote.timeout = max(getOption("chromote.timeout",
+                                                      10.0), 60.0))
+  chrome <- tryCatch(
+    chromote::Chromote$new(browser = chromote::Chrome$new(
+      args = unique(c(chromote::default_chrome_args(), "--disable-lcd-text"))
+    )),
+    finally = options(startup)
+  )
+  # nolint end
   on.exit(.closeChrome(chrome), add = TRUE, after = FALSE)
   chrome$default_timeout <- max(chrome$default_timeout, 60.0)
   session <- chromote::ChromoteSession$new(
