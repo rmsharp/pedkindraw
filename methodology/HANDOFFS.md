@@ -202,6 +202,14 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S89
+date: 2026-11-24
+status: pending
+active_task: Backlog :11 (R162, before 17k): makePedigreeMatingLayout() stops with R's or an internal message on a pedigree with a parent id that has no row, and on a repeated id; strict TDD, each fix measured on a rebuilt 2,000-pedigree search first. Claimed; work beginning.
+what_was_done: pending
+commit: pending
+```
+```handoff
 session: S88
 date: 2026-11-24
 status: complete

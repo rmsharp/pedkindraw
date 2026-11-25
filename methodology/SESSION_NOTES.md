@@ -109,6 +109,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 89 Did
+**Deliverable:** backlog `:11` (R162, before 17k), strict TDD: `makePedigreeMatingLayout()` stops with R's or an
+internal message on a pedigree with a parent id that has no row, and on a repeated id. (IN PROGRESS)
+**Started:** 2026-11-24 22:30 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Fix the layout crash
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: the 2,000-pedigree search rebuilt (dragon 32), each fix measured on it,
+then the pre-RED picker (Learning 17).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 88 Did
 **Deliverable:** Phase 17j2 (R161's split of 17j, `docs/planning/cran-submission-plan.md:826`), strict TDD: the 29
 statements of `R/makePedigreeDiagramData.R` no test ran, each reached by a test or recorded unreachable. DONE, so 17j
