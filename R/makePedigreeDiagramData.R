@@ -862,10 +862,10 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   if (nUnits > 0L) {
     unitOfRow[hasBoth] <- matingUnits$id[match(pairKey[hasBoth], uniqueKeys)]
   }
-  oneParent <- xor(hasSire, hasDam) & ifelse(hasSire, sire, dam) %in% ids
+  knownParent <- ifelse(hasSire, sire, dam)
+  oneParent <- xor(hasSire, hasDam) & knownParent %in% ids
   childEdges <- data.frame(
-    from = c(unitOfRow[hasBoth],
-             ifelse(hasSire[oneParent], sire[oneParent], dam[oneParent])),
+    from = c(unitOfRow[hasBoth], knownParent[oneParent]),
     to = c(ids[hasBoth], ids[oneParent]),
     stringsAsFactors = FALSE
   )
