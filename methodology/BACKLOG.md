@@ -116,34 +116,24 @@ issues).*
       `smallPed` (8 of 17 differ from `findGeneration()`, measured S41); S35 made the one test that used them compute
       `gen` instead. Replace the fixture from nprcgenekeepr's corrected dataset (R21's provenance) and run the suite.
 
-- [ ] **Tests for full coverage** (READY, Effort M; before the release, Phase 17j, R84)
-      -- Mark's request (S13, after its close-out): add tests until
-      the test suite reaches every statement in `R/`. Measured S13 with `covr::package_coverage(type = "tests")` on
-      the code of `82f2ef3`: 97.16%, 45 of 1,811 statements missed, in 7 files (covr's first line of each
-      statement). Re-measured S14 on `dff6509`: 97.32%, 44 of 1,872 (Phase 11's 61 statements all reached, and its
-      tests reach `R/shrinkPedigree.R:97`, the `affected` length error): `R/makePedigreeDiagramData.R` 31 (at S23's
-      `ffe042f`: 587, 774, 1005, 1307, 1356, 2321, 2342, 2383, 2393, 2394, 2398, 2410, 2411, 2413, 2414, 2415, 2420,
-      2434, 2446, 2477, 2478, 2479, 2480, 2481, 2485, 2502, 2519, 2620, 2788, 3117, 3118; S22 measured them 12 to 42
-      lower, before Phase 15b's lines, and S14-S21 5 to 32 lower than S22); `R/positionTreeApportion.R` 6 (388, 392,
-      395, 427, 431, 434); `R/orderRootSubtrees.R` 2 (118, 131); `R/rbindFill.R` 2 (30, 35); `R/shrinkPedigree.R` 1
-      (278); `R/comparePedigreeStructure.R` 1 (160); `R/kinship.R` 1 (135). The results tool's cases reach 3 of
-      them (`kinship.R:135`, `rbindFill.R:35`, `shrinkPedigree.R:278`), but cases are not tests. All 7 files are
-      copied from nprcgenekeepr and stay as copied (drift rule, plan section 5), so the new tests go in pedkindraw's
-      own test files, not into the copied ones, whose headers list every change (or as a pre-RED picker rules).
-      Before calling a line unreachable, work out what input reaches it (Learning 11; S10 called
-      `comparePedigreeStructure.R:160` "a defensive return"). Re-measure first; split by file if one session cannot
-      take all 44. S15 on `b314273`: 97.38%, 44 of 1,929, the same 44 (since `dff6509` only new files changed;
-      `R/familyCheck.R` 57 of 57). S16 on `b8ade6e`: 97.46%, 44 of 2,006, the same 44 (since `b314273` only
-      `R/ibdMatrix.R` changed in `R/`, 77 of 77). S17 on `60a87a7`: 97.57%, 44 of 2,089, the same 44 (since `b8ade6e` only
-      `R/checkPedigree.R` was added in `R/`, 83 of 83). S18 on `4bcfe00`: 97.69%, 43 of 2,178: `R/rbindFill.R:30` (a Date
-      column `addParents()` fills) is now reached by `test_findUnrelated.R`'s pedSix test, so `R/rbindFill.R` has 1
-      left (35); `R/findUnrelated.R` 88 of 88, `R/checkPedigree.R` 84 of 84. S19 on `58deb0a`: 97.74%, 43 of 2,227,
-      the same 43 (since `4bcfe00` only `R/asPedFrame.R` was added in `R/`, 49 of 49). S20 on `ccc12ca`: 97.79%, 43 of 2,284, the
-      same 43 (since `58deb0a` only `R/asPedFrame.R` changed in `R/`, 106 of 106). S22 on `b9567bd`: 97.83%, 43 of
-      2,341, the same 43 (`R/layoutHints.R` added, 52 of 52; `R/makePedigreeDiagramData.R`'s lines moved, above). S23 on `ffe042f`:
-      97.91%, 43 of 2,445, the same 43 (`R/layoutHints.R` 174 of 174 lines; `R/makePedigreeDiagramData.R`'s lines
-      moved, above). S24 on `bcdc1b0`: 97.96%, 43 of 2,501, the same 43 (`R/asPedFrame.R` 158 of 158 statements,
-      `R/layoutHints.R` 149 of 149; `R/makePedigreeDiagramData.R` unchanged, its lines as at `ffe042f`)). S25 changed nothing in `R/` (a planning session), and S26 only added `R/pedkindraw-package.R`, the package help page's source (no function); not re-measured.
+- [ ] **Tests for full coverage** (READY, Effort M; before the release, Phase 17j, R84, R161) -- Mark's request (S13):
+      add tests until the test suite reaches every statement in `R/`, or show a statement unreachable and record why.
+      S87 (17j1, R161) measured `covr::package_coverage(type = "tests")` with `NOT_CRAN=true` on `a423bcf`: 40 of
+      3,772 statements never run (98.94%; S24's 43 on `bcdc1b0` less `R/rbindFill.R:35`, `R/kinship.R:159` and two of
+      `R/makePedigreeDiagramData.R`'s, plus `R/savePedigreeDiagram.R:338`), and reached 9 of the 11 outside the layout
+      file with new tests in pedkindraw's own files; on `af4f23b`, 31 of 3,772 (99.18%). **Left, 17j2 (one session, a
+      guess):** `R/makePedigreeDiagramData.R`'s 29, copied from nprcgenekeepr and kept as copied, so their tests go in
+      pedkindraw's own files: `:809` (`.buildMatingUnitForest()`), `:996` (`.packComponents()`), `:1227`, `:1529`,
+      `:1581` (`.positionMatingUnitForest()`), `:2960`, `:2981`, `:3022`, `:3032`, `:3033`, `:3037`, `:3049`, `:3050`,
+      `:3052`, `:3053`, `:3054`, `:3059`, `:3073`, `:3085`, `:3116`-`:3120`, `:3141` (`.addRectilinearWaypoints()`),
+      `:3259` (`.arcDiscHitCount()`), `:3427`, `:3756`, `:3757` (`.resolveEdgeNodeCollisions()`). 16 of them (`:1581`,
+      `:2981`, the dogleg's `:3032`-`:3059` and `:3116`-`:3120`) the comment at `:1517` or S87's reading calls
+      unreachable from a drawing, not yet proved (cran plan dragon 30); work out what input reaches each before
+      calling it unreachable (Learning 11). **Recorded unreachable, kept as copied (R161):**
+      `R/orderRootSubtrees.R:118` (no input reaches it: every root is a child of the super-root, so each root's own id
+      is placed, in `tier1X` and in `m`) and `:131` (no layout reaches it: a connector joining two roots has both ends
+      placed, so `usable` equals `crossRoot`, already true; only a `childrenOf` that answers differently after its
+      first calls does, measured). The new tests' CRAN-mode time (for 17k): about 0.2 s.
 
 ## nprcgenekeepr sessions (Mark starts them there; R8, R98-R101)
 
