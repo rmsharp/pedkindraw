@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-25 · [BL-windows-hang] S91 push 4: close-out to GitHub, no CI run
+- **Change:** pushed `e6e2e1a..7b8c9dc` (close-out 1 and 2), documents only, the head commit carrying the skip marker, so no workflow ran; the package's code and CI were read at `e6e2e1a` (push 3).
+- **Commit/PR:** the push of `7b8c9dc`; close-out 2b (this entry) · **Session:** S91 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `7b8c9dc`; `gh run list` showed no new run.
+
 ### 2026-11-25 · [BL-windows-hang] S91 push 3: the REFACTOR to GitHub, CI read job by job
 - **Change:** pushed `3adbd4e..e6e2e1a` (the REFACTOR, a workflow change, no skip marker). R-CMD-check 45687837833: Windows Status OK `[ FAIL 0 | WARN 0 | SKIP 36 | PASS 17006 ]`, its check step 18.9 min (`proc.time()` 1,012 s), the second reading of the repair without the diagnostic step; macOS OK `PASS 17008` at the first attempt; Ubuntu release and oldrel-1 OK `PASS 16997`; Ubuntu devel failed loading S4Vectors before pedkindraw was checked (backlog `:197`). pkgdown 45687838308 `success`.
 - **Commit/PR:** the push of `e6e2e1a`; run 45687837833 · **Session:** S91 · **Model:** Claude Opus 5.5 · **Verified:** each job's lines read through the jobs API.
