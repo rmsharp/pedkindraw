@@ -588,6 +588,34 @@ test_that("a page that never returns while it is printed or photographed
   expect_length(list.files(tempdir(), pattern = "^pedkindraw-save-"), 0L)
 })
 
+## Backlog item "A Windows job that does not end after its tests finish"
+## (pedkindraw S91): on GitHub's Windows machine the renderer of a page that
+## never returns, and its crash reporter, outlived their browser after the two
+## tests above, so R CMD check waited for them until the step was stopped.
+## .closeChrome() closes the browser and ends each of its processes the close
+## leaves running. On macOS Chrome leaves none (measured, S91), so there this
+## test passes with a plain close as well; the difference shows on Windows.
+test_that(".closeChrome() leaves none of the browser's processes running, even
+           with a page that never returns", {
+  .skipUnlessBrowser()
+  skip_if_not_installed("ps")
+  chrome <- chromote::Chromote$new()
+  withr::defer(if (chrome$is_alive()) chrome$close())
+  chrome$default_timeout <- max(chrome$default_timeout, 60.0)
+  session <- chromote::ChromoteSession$new(parent = chrome)
+  page <- file.path(.saveTmp(), "stuck.html")
+  writeLines("<script>setTimeout(function () { for (;;) {} }, 50);</script>",
+             page)
+  session$Page$navigate(paste0("file://", page))
+  Sys.sleep(0.5)
+  browser <- ps::ps_handle(chrome$get_browser()$get_process()$get_pid())
+  children <- ps::ps_children(browser, recursive = TRUE)
+  expect_gt(length(children), 0L)
+  .closeChrome(chrome)
+  expect_false(ps::ps_is_running(browser))
+  expect_false(any(vapply(children, ps::ps_is_running, logical(1L))))
+})
+
 ## The pixel comparison above photographs the live widget and the SVG file
 ## with one Chrome and expects their text to match; this test is that Chrome's
 ## own: it must photograph text in grey (.saveTextSpread(), the helper's).
