@@ -9,7 +9,8 @@
 ## writes and (G16b, S71) of a PDF's pages and words and a PNG's size, and the
 ## photograph-and-compare of the live widget with the file (an SVG or a PNG), run
 ## in headless Chrome as docs/planning/picture-files-plan.md section 11's
-## measures ran it.
+## measures ran it; and (pedkindraw S93) a stand-in Chrome whose port opens
+## late.
 ##
 ## The comparison (section 11, "Method"): the live widget is photographed over
 ## the box of its two canvases, its select box, button and labels hidden; the
@@ -552,4 +553,37 @@
 .pngHoldsIds <- function(ink) {
   ink$removed > 0L && ink$withoutIds$differ > 0L &&
     ink$withoutIds$differ > ink$withIds$differ
+}
+
+## A stand-in for Chrome (pedkindraw S93, backlog item "A CI job fails now and
+## then while Chrome starts"): a shell script in `dir` that counts the starts
+## and, at start number `slowAt`, waits `wait` seconds before it runs the
+## Chrome chromote finds, so that Chrome's port opens late. It returns the
+## script's path and a function that reads the number of starts so far.
+.saveSlowChrome <- function(dir, slowAt, wait = 11L) {
+  real <- suppressMessages(chromote::find_chrome())
+  script <- file.path(dir, "slow-chrome.sh")
+  count <- file.path(dir, "starts")
+  writeLines(c(
+    "#!/bin/sh",
+    sprintf("n=$(( $(cat '%s' 2>/dev/null || echo 0) + 1 ))", count),
+    sprintf("echo \"$n\" > '%s'", count),
+    sprintf("if [ \"$n\" -eq %d ]; then sleep %d; fi", slowAt, wait),
+    sprintf("exec '%s' \"$@\"", real)
+  ), script)
+  Sys.chmod(script, "0755")
+  list(path = script, starts = function() as.integer(readLines(count)))
+}
+
+## The ids of the processes this R process started that are still running,
+## processx's supervisor aside (it stays for the whole R session).
+.saveRunningChildren <- function() {
+  children <- ps::ps_children(ps::ps_handle(), recursive = TRUE)
+  name <- vapply(children, function(child) {
+    tryCatch(ps::ps_name(child), error = function(e) "")
+  }, character(1L))
+  running <- vapply(children, ps::ps_is_running, logical(1L))
+  vapply(children, ps::ps_pid, integer(1L))[
+    running & !grepl("supervisor", name, fixed = TRUE)
+  ]
 }

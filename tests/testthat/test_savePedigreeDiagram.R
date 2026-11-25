@@ -656,3 +656,50 @@ test_that("a PDF or a PNG that headless Chrome refuses stops with Chrome's
   }
   expect_length(list.files(tempdir(), pattern = "^pedkindraw-save-"), 0L)
 })
+
+## pedkindraw S93 (backlog item "A CI job fails now and then while Chrome
+## starts"): 3 of the 80 CI jobs since S71 failed at a browser's start, 2 of
+## them with "Chrome debugging port not open after 10 seconds", chromote's own
+## wait (getOption("chromote.timeout", 10)). The function waits 60 s for
+## Chrome's answers once it runs; these tests require the same 60 s for its
+## start, with the caller's chromote.timeout as it was afterwards. Measured with
+## the stand-in 11 s slow (macOS, Chrome 157): without the wait, each save
+## stopped with that error (10.2 s at the first start, 11.6 s at the second)
+## and the slow Chrome went on starting, 11 processes running until R's
+## garbage collector ran; with it, the SVG took 12.6 s and the PNG 14.0 s and
+## none was left. The stand-in is a shell script, so not on Windows.
+test_that("a Chrome that takes 11 seconds to open its port is waited for: the
+           recording's browser", {
+  .skipUnlessBrowser()
+  skip_on_os("windows")
+  skip_if_not_installed("ps")
+  withr::local_options(list(chromote.timeout = 10))
+  dir <- .saveTmp()
+  slow <- .saveSlowChrome(dir, slowAt = 1L)
+  withr::local_envvar(CHROMOTE_CHROME = slow$path)
+  before <- .saveRunningChildren()
+  file <- file.path(dir, "slow.svg")
+  expect_no_error(savePedigreeDiagram(.saveFourWidget(), file))
+  expect_true(file.exists(file))
+  expect_identical(slow$starts(), 1L)
+  expect_identical(getOption("chromote.timeout"), 10)
+  expect_length(setdiff(.saveRunningChildren(), before), 0L)
+})
+
+test_that("a Chrome that takes 11 seconds to open its port is waited for: the
+           picture's browser", {
+  .skipUnlessBrowser()
+  skip_on_os("windows")
+  skip_if_not_installed("ps")
+  withr::local_options(list(chromote.timeout = 10))
+  dir <- .saveTmp()
+  slow <- .saveSlowChrome(dir, slowAt = 2L)
+  withr::local_envvar(CHROMOTE_CHROME = slow$path)
+  before <- .saveRunningChildren()
+  file <- file.path(dir, "slow.png")
+  expect_no_error(savePedigreeDiagram(.saveFourWidget(), file))
+  expect_true(file.exists(file))
+  expect_identical(slow$starts(), 2L)
+  expect_identical(getOption("chromote.timeout"), 10)
+  expect_length(setdiff(.saveRunningChildren(), before), 0L)
+})
