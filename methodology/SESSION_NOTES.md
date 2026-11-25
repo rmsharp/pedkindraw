@@ -49,9 +49,11 @@ all"; at most 4 options, so group them and name each in a preview).
    baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed
    's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr at
    `3e06730c5`, tree clean, through S87.
-2. **Read S87's push** (the CHANGELOG's S87 push entry, written at close-out 2b): `tests/` changed, so CI ran;
-   expect `FAIL 0 | WARN 0` on Linux and macOS (PASS about 33 more than S86's runs where the browser tests run) and
-   Windows's hang (`:11`).
+2. **S87's push was read** (the CHANGELOG's S87 push entry): pkgdown `success`; R-CMD-check Ubuntu release and
+   oldrel-1 OK `[ FAIL 0 | WARN 0 | SKIP 34 | PASS 16800 ]` (33 more than S86's), Windows `FAIL 0 | PASS 16809` then
+   the hang (cancelled at 40 min, `:11`), Ubuntu devel failed building S4Vectors (`:224`); macOS failed once on
+   `test_pedigreeAppBrowser.R:103` (a 60 s wait for a click to set the focal animal; untouched by S87; passing twice
+   here) and its rerun, Mark's pick, passed (`PASS 16811`). Nothing to read at Orient beyond `gh run list`.
 3. **17j2, if picked:** read backlog `:119`, the cran plan's 17j split note and dragons 29-30, and R161
    (`docs/planning/standalone-pedigree-package-plan.md:339`). No covr re-run is needed first while `R/` is unchanged
    since `af4f23b` (check with `git diff --stat af4f23b HEAD -- R/`). For each of the 29: read the comment beside it,
@@ -89,6 +91,8 @@ all"; at most 4 options, so group them and name each in a preview).
   `git archive` copy); `CLAUDE.md` is over its budget (learnings go to the plans' dragons; the cran plan's section 9
   now ends at 30); `pedkindraw.Rproj` untracked, Mark's; `methodology/HANDOFFS.md` past its trimmer (`:291`): keep
   the receipt short.
+- **The app's browser test can time out once on the macOS runner** (S87's push: `test_pedigreeAppBrowser.R:103`, a
+  60 s wait; the rerun passed, and the file takes 13 s here). If it fails again, it becomes a backlog item (Mark).
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
@@ -122,7 +126,8 @@ three in one picker ("Prove on broken copies", "Keep, record why", "Hand-edited 
 RED"; "Yes, proceed to GREEN"; "Yes, REFACTOR (Recommended)". No correction and no tool use declined.
 **Commits:** claim `a423bcf`; R161 `5bb45cb`; RED `af4f23b`; GREEN `b93f508` (empty: the measurements); REFACTOR
 `d1414b9`; close-out 1 `0564a34` (the plans, roadmap, dragons 29-30); close-out 2 (the backlog, these notes, the
-receipt, the ledger), pushed after it.
+receipt, the ledger), pushed after it (`0a98b69..3e600c9`); close-out 2b (the push entry; these notes and the
+receipt corrected to CI's results).
 **Measured first:** covr on a `git archive` of `a423bcf` (40 of 3,772, 12.3 min); each of the 40 read and sorted;
 for the 11 in scope, each input tried in a scratch copy, the reach confirmed by covr running only the drafts, and each
 draft broken three ways where it mattered (`:338`'s first draft passed with the error swallowed, so it was tightened
