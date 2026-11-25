@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S90
 date: 2026-11-25
-status: pending
-active_task: Phase 17k (cran-submission-plan.md:857; R85, R86): one win-builder R-devel reading of the tree after 17j, its tests' elapsed time against 540 s; Mark approves the upload. Claimed; work beginning.
-what_was_done: pending
+status: complete
+self_score: 6
+predecessor_score: 8
+active_task: Phase 17k IN PROGRESS: the tarball (package as at 89f39e7, SHA-256 323e6a8b...4505cfdf46) checked here (1 NOTE, R16's; tests 188 s) and uploaded to win-builder R-devel 14:17 UTC 2026-11-25 (Mark's pick); at 16:13 UTC still in win-builder's R-devel queue, so no reading. Mark closed S90 to wait.
+what_was_done: claim ad23242; tarball built, contents proved, checked here; FTP upload (226); queue listed (15 ahead, dragon 34); close-out 1 7b38852 (cran plan 17k notes, dragon 34, standalone plan, roadmap); close-out 2 (notes, receipt, ledger). No package file changed.
+next_steps: If Mark's email has come, finish 17k (read the logs, decide against 540 s; results folder lasts ~72 h). Else the Windows CI hang (BACKLOG.md:11), Mark's pick. List the queue first: curl -sS ftp://win-builder.r-project.org/R-devel/.
+key_files: docs/planning/cran-submission-plan.md:857, :868, :871, :130, :1124; standalone plan :265-:266 (R85, R86); methodology/BACKLOG.md:11; .github/workflows/R-CMD-check.yaml; tests/testthat/helper-savePedigreeDiagram.R:262.
+gotchas: no email means the check has not run (dragon 34); the 540 s is the email's check time, not the tests'; a rebuilt tarball has a new SHA-256; "a new session" means after close-out (memory).
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: no package file changed since 89f39e7 (S89's full suite WARN 0); R CMD check --as-cran of the tarball here, tests [ FAIL 0 | WARN 0 | SKIP 94 | PASS 13836 ] (CRAN mode).
+changelog_ref: CHANGELOG.md "2026-11-25 · [BL-Phase 17] S90: Phase 17k under way" and "S90 upload"
 commit: pending
 ```
 ```handoff
