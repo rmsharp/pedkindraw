@@ -88,7 +88,14 @@ separate function.</p>
 <dl><dt id="arg-ped">ped<a class="anchor" aria-label="anchor" href="#arg-ped"></a></dt>
 <dd><p>data frame with <code>id</code>, <code>sire</code>, <code>dam</code>,
 <code>sex</code>, and <code>gen</code> columns, same contract as
-<code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData</a></code>. An optional <code>status</code>
+<code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData</a></code>. Each <code>id</code> is on one row:
+an id on more than one row stops, naming it. A <code>sire</code> or
+<code>dam</code> with no row of its own is not drawn: its mating with a
+drawn animal is drawn at that animal (alone when neither parent has a
+row), and an animal whose other parent is unknown is drawn as a
+founder is, with no line up, so two such siblings stand side by side,
+not joined. <code><a href="addParents.html">addParents</a></code> adds a row for each, so that it
+is drawn. An optional <code>status</code>
 column marks deceased animals: see the <code>deceased</code> column of the
 returned <code>nodes</code>. Every column whose name starts
 <code>affected</code> is an affected condition, in the order the data

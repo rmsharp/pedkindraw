@@ -37,13 +37,21 @@ makePedigreeMatingLayout(
   data frame with `id`, `sire`, `dam`, `sex`, and `gen` columns, same
   contract as
   [`makePedigreeDiagramData`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md).
-  An optional `status` column marks deceased animals: see the `deceased`
-  column of the returned `nodes`. Every column whose name starts
-  `affected` is an affected condition, in the order the data frame holds
-  them, the first four drawn (see `conditions` in the return value). A
-  lone one fills the symbol, in the first of `conditionColors` (pink by
-  default) where the animal is affected and grey where its status is
-  unknown (`NA`); two or more split it into sections, one colour each.
+  Each `id` is on one row: an id on more than one row stops, naming it.
+  A `sire` or `dam` with no row of its own is not drawn: its mating with
+  a drawn animal is drawn at that animal (alone when neither parent has
+  a row), and an animal whose other parent is unknown is drawn as a
+  founder is, with no line up, so two such siblings stand side by side,
+  not joined.
+  [`addParents`](https://rmsharp.github.io/pedkindraw/reference/addParents.md)
+  adds a row for each, so that it is drawn. An optional `status` column
+  marks deceased animals: see the `deceased` column of the returned
+  `nodes`. Every column whose name starts `affected` is an affected
+  condition, in the order the data frame holds them, the first four
+  drawn (see `conditions` in the return value). A lone one fills the
+  symbol, in the first of `conditionColors` (pink by default) where the
+  animal is affected and grey where its status is unknown (`NA`); two or
+  more split it into sections, one colour each.
   ([`makePedigreeDiagramData`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
   reads the column `affected` alone.) A condition drawn reads as
   [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)'s
