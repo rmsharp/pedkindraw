@@ -105,8 +105,9 @@ session each unless marked. They follow the copy slices.
   are done; 17g is done (S78, R153); 17h1 is done (S79, R154); 17h1b is done (S80, R155); 17h1c is done (S81, R156); 17h2 is done (S82); 17h3 is done (S83, R157); 17h4 is done (S84, R158); 17i1 is done (S85, R159); 17i2 is done
   (S86, R160), so 17i is done; 17j1 is done (S87, R161: 9 statements reached by new tests, 2 recorded
   unreachable); 17j2 is done (S88, R162: 24 of the layout file's 29 reached by new tests, 5 recorded unreachable;
-  7 of 3,772 left), so 17j is done; next is 17k, then 17l-17q. Found by 17j2: `makePedigreeMatingLayout()` stops on
-  a pedigree with a parent id that has no row (a backlog item before 17k, Mark's decision).
+  7 of 3,772 left), so 17j is done. Found by 17j2 and done before 17k (S89, R163): `makePedigreeMatingLayout()`
+  draws a pedigree with a parent id that has no row, without that parent, and stops on a repeated id, naming it.
+  Next is 17k, then 17l-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
