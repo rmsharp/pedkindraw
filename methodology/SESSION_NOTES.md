@@ -99,11 +99,13 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 91 Did
-**Deliverable:** finish Phase 17k (`docs/planning/cran-submission-plan.md:857`; R85, R86): read win-builder's R-devel
-results for S90's upload and decide against 540 s. (IN PROGRESS)
-**Started:** 2026-11-25 10:57 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Finish 17k (Recommended)" (orient
-picker; the email "Not yet" at that moment, the upload gone from win-builder's R-devel queue at 16:49 UTC).
-**Status:** Session claimed. Waiting on win-builder's email for the results link.
+**Deliverable:** the Windows CI hang (`methodology/BACKLOG.md:11`): the Windows job's check step does not end after
+its tests finish. (IN PROGRESS)
+**Started:** 2026-11-25 10:57 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** the orient picker read "Finish 17k
+(Recommended)" with the email "Not yet"; the label was Claude's slip (the handoff recommended the Windows item while no
+email had come). Mark, rejecting the next picker: "We discussed this at the end of the last session and agreed to work
+on the Windows hang problem this session." Claim corrected (17k stays in progress, waiting on the email).
+**Status:** Session claimed. Work beginning.
 **Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
 
 ### What Session 90 Did

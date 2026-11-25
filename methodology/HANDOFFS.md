@@ -205,7 +205,7 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 session: S91
 date: 2026-11-25
 status: pending
-active_task: finish Phase 17k (cran-submission-plan.md:857; R85, R86): read win-builder's R-devel results for S90's upload and decide against 540 s. Claimed; waiting on the email.
+active_task: the Windows CI hang (methodology/BACKLOG.md:11): the Windows job's check step does not end after its tests finish. Claimed (corrected from 17k at Mark's word); work beginning. 17k stays in progress, waiting on win-builder's email.
 what_was_done: pending
 commit: pending
 ```
