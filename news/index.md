@@ -351,8 +351,10 @@ why.
   dpi: on the four animals none of the drawing’s and 0.03% of the
   legend’s differ by more than 100 in a colour channel, on an 18-animal
   pedigree with all seven marks 0.26% and 0.07%. It stops, saying what
-  is missing, without chromote (in Suggests) or Chrome. nprcgenekeepr
-  has no such function.
+  is missing, without chromote (in Suggests) or Chrome. It ends every
+  process of the Chrome it starts, on Windows too, where the renderer of
+  a page that never finishes drawing outlives its browser’s close.
+  nprcgenekeepr has no such function.
 - New: the 375 rhesus animals of the example pedigree, with their 3 twin
   pairs, are one page of
   [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)’s
