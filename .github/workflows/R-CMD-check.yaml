@@ -101,7 +101,47 @@ jobs:
           }
         shell: Rscript {0}
 
+      # Backlog item "A Windows job that does not end after its tests finish"
+      # (S69 on): the Windows job's tests finish (proc.time() printed) and R
+      # never exits, so the step ran until cancelled. The limit ends such a
+      # hang as a failure, and the next step still runs (S91).
       - uses: r-lib/actions/check-r-package@v2
+        timeout-minutes: ${{ matrix.config.os == 'windows-latest' && 35 || 360 }}
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+
+      # Diagnostics for the same item (S91): what is still running after the
+      # check step, with each process's parent and command line, and each R
+      # process's thread stacks, read by Microsoft's console debugger (cdb)
+      # and by Rtools' gdb where each is found. Changes nothing.
+      - name: Show what is still running (Windows)
+        if: ${{ always() && matrix.config.os == 'windows-latest' }}
+        timeout-minutes: 10
+        shell: pwsh
+        run: |
+          $names = '^(Rterm|Rcmd|Rscript|R|cmd|conhost|chrome|supervisor|px)\.exe$'
+          $procs = Get-CimInstance Win32_Process |
+            Where-Object { $_.Name -match $names } |
+            Sort-Object CreationDate
+          $procs | Format-Table -AutoSize -Wrap ProcessId, ParentProcessId, Name, CreationDate, CommandLine | Out-String -Width 400
+          $env:_NT_SYMBOL_PATH = 'srv*C:\sym*https://msdl.microsoft.com/download/symbols'
+          $cdb = Join-Path ${env:ProgramFiles(x86)} 'Windows Kits\10\Debuggers\x64\cdb.exe'
+          $gdb = Get-ChildItem C:\rtools45 -Recurse -Filter gdb.exe -ErrorAction SilentlyContinue |
+            Select-Object -First 1
+          foreach ($p in ($procs | Where-Object { $_.Name -eq 'Rterm.exe' })) {
+            "==== Rterm $($p.ProcessId): $($p.CommandLine)"
+            if (Test-Path $cdb) {
+              & $cdb -pv -p $p.ProcessId -c 'lm; ~*k 60; q' 2>&1 | Out-String -Width 400
+            } else {
+              "cdb.exe not found at $cdb"
+            }
+            if ($gdb) {
+              & $gdb.FullName -p $p.ProcessId -batch -ex 'info threads' -ex 'thread apply all bt 40' 2>&1 |
+                Out-String -Width 400
+            } else {
+              'gdb.exe not found under C:\rtools45'
+            }
+          }
+          Get-ChildItem check -Recurse -Filter 00check.log -ErrorAction SilentlyContinue |
+            ForEach-Object { "==== $($_.FullName)"; Get-Content $_.FullName -Tail 30 }
