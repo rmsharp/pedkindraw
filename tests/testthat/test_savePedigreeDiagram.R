@@ -571,13 +571,8 @@ test_that("a page that never returns while it is printed or photographed
   ## The recording is stubbed to an SVG whose script never returns, so it is
   ## the printing and the photographing that wait. Measured: both stop after
   ## 3.1 s for a limit of 3, with the message, no file and no folder.
-  stuck <- paste0(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="10in" height="5in" ',
-    'viewBox="0 0 960 480"><rect width="100%" height="100%" fill="#ffffff"/>',
-    "<script>for (;;) {}</script></svg>"
-  )
   mockery::stub(savePedigreeDiagram, ".recordDiagramSvg",
-                list(svg = stuck, x = 0, y = 0, w = 960, h = 480))
+                .saveStubRecording("<script>for (;;) {}</script>"))
   withr::local_options(pedkindraw.saveTimeout = 3)
   widget <- .saveFourWidget()
   dir <- .saveTmp()
@@ -621,13 +616,8 @@ test_that("a PDF or a PNG that headless Chrome refuses stops with Chrome's
   ## (chromote 0.5.1, Chromote$send_command()); the test reads that form, not
   ## Chrome's words, which change between versions. Without the stop, the
   ## function still stops, later, with jsonlite's "is.raw(input) is not TRUE".
-  blank <- paste0(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="10in" height="5in" ',
-    'viewBox="0 0 960 480"><rect width="100%" height="100%" fill="#ffffff"/>',
-    "</svg>"
-  )
   mockery::stub(savePedigreeDiagram, ".recordDiagramSvg",
-                list(svg = blank, x = 0, y = 0, w = 0, h = 0))
+                .saveStubRecording(w = 0, h = 0))
   widget <- .saveFourWidget()
   dir <- .saveTmp()
   for (name in c("x.pdf", "x.png")) {

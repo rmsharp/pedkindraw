@@ -58,6 +58,18 @@
 
 .saveFourWidget <- function() drawPedigreeDiagram(.saveFourLayout())
 
+## What a test stubs in for .recordDiagramSvg(): a white page of 10 by 5 inches
+## holding `inside`, recorded as `w` by `h` pixels (pedkindraw S87, written for
+## the stuck page's test and the refused page's).
+.saveStubRecording <- function(inside = "", w = 960, h = 480) {
+  svg <- paste0(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="10in" height="5in" ',
+    'viewBox="0 0 960 480"><rect width="100%" height="100%" fill="#ffffff"/>',
+    inside, "</svg>"
+  )
+  list(svg = svg, x = 0, y = 0, w = w, h = h)
+}
+
 ## A pedigree with every feature the drawing has: both sexes, a hermaphrodite,
 ## two conditions with an unknown status, deceased, genotyped, carrier,
 ## proband, consultand, evaluated, infertile, a miscarriage of three kinds, an
