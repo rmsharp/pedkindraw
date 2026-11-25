@@ -25,17 +25,18 @@ direct call with a hand-built input (as R161 chose for `:160`) may reach the dog
 pre-RED picker, with counts. DONE: every statement reached or recorded unreachable with its reason; the new tests'
 CRAN-mode time recorded for 17k. Then 17k (a win-builder reading; Mark approves the upload).
 **Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker:** 17j2 (recommended) or the Windows item (`:11`). Also, from `methodology/BACKLOG.md` (30 items,
-each found at its line by `grep -n '^- \[ \]'` at S87's close-out; S87 shortened the 17j item, so every item after
-`:119` moved up 10 lines): READY, rewording `DIVERGENCE.md`'s older rows (`:36`), the legend's labels in a narrow
-drawing (`:54`), the drawing vignette's measured trait (`:64`), a twins table with no rows (`:70`),
-`savePedigreeDiagram()` and a `CHROMOTE_CHROME` naming no file (`:80`), the `smallPed` fixture (`:113`),
-`findPedigreeNumber()`'s speed (`:265`), poppler in CI (`:281`), the label counts in `largeIds` (`:258`), and the eight
-"Ready, small" items (`:186` the suite gate's time limit, `:198` the stale pedkindraw 0.0.1, `:205` the drift tool and
-copied constants, `:214` the context-budget tool, `:224` CI notices, `:241` report a vacuous test, `:247` tell
-nprcgenekeepr's edition-3 conversion, `:300` tell nprcgenekeepr its timing rows' `started` is each run's end); NEEDS
+**The orient picker:** 17j2 (recommended) or the Windows item (`:11`). Also, from `methodology/BACKLOG.md` (31 items,
+each found at its line by `grep -n '^- \[ \]'` after S87's close-out; S87 shortened the 17j item, so the items after
+`:119` moved up 10 lines, and then added `:263`, so the five after it moved down 10): READY, rewording
+`DIVERGENCE.md`'s older rows (`:36`), the legend's labels in a narrow drawing (`:54`), the drawing vignette's measured
+trait (`:64`), a twins table with no rows (`:70`), `savePedigreeDiagram()` and a `CHROMOTE_CHROME` naming no file
+(`:80`), the `smallPed` fixture (`:113`), `findPedigreeNumber()`'s speed (`:275`), poppler in CI (`:291`), the label
+counts in `largeIds` (`:258`), and the nine "Ready, small" items (`:186` the suite gate's time limit, `:198` the stale
+pedkindraw 0.0.1, `:205` the drift tool and copied constants, `:214` the context-budget tool, `:224` CI notices,
+`:241` report a vacuous test, `:247` tell nprcgenekeepr's edition-3 conversion, `:310` tell nprcgenekeepr its timing
+rows' `started` is each run's end, `:263` the gaps plan's stale cells, added after close-out at Mark's request); NEEDS
 DECISION, Pedixplorer's `avail` (`:89`), long names at the edges (`:97`), a colony's ids under a point high (`:106`),
-`findGeneration(alignMates = TRUE)`'s speed (`:271`), `HANDOFFS.md`'s growth past its trimmer (`:291`); "Waiting on
+`findGeneration(alignMates = TRUE)`'s speed (`:281`), `HANDOFFS.md`'s growth past its trimmer (`:301`); "Waiting on
 Mark", the dashboard and `methodology/BACKLOG.md` (`:149`), copying the colony overview (`:156`), the app's features
 left for later (`:163`), an animal with two mates drawn once (`:175`). `:119` is 17j itself. BLOCKED, so not offered:
 `:45` (retire the drift tools), `:143` (N3). Name every item in the picker (memory "Picker sets: name items, include
@@ -89,7 +90,7 @@ all"; at most 4 options, so group them and name each in a preview).
 - **Carried:** one-off scripts as `Rscript --no-init-file` with `R_LIBS` and `R_LIBS_USER` set to renv's library; the
   5-file cap splits commits; the ratchet's suite gate times out at 300 s (run the suite by hand, about 10 min, on a
   `git archive` copy); `CLAUDE.md` is over its budget (learnings go to the plans' dragons; the cran plan's section 9
-  now ends at 30); `pedkindraw.Rproj` untracked, Mark's; `methodology/HANDOFFS.md` past its trimmer (`:291`): keep
+  now ends at 30); `pedkindraw.Rproj` untracked, Mark's; `methodology/HANDOFFS.md` past its trimmer (`:301`): keep
   the receipt short.
 - **The app's browser test can time out once on the macOS runner** (S87's push: `test_pedigreeAppBrowser.R:103`, a
   60 s wait; the rerun passed, and the file takes 13 s here). If it fails again, it becomes a backlog item (Mark).

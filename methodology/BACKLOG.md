@@ -260,6 +260,16 @@ issues).*
       case, run in S72 on the rhesus pedigree without its twins table, prints 520 (375 distinct) and 473 (357). Find which
       input or version gives each, and correct the plan's figure or the case.
 
+- [ ] **Bring the gaps plan's stale cells up to date** (READY, Effort S, documentation only; Mark's request, S87) --
+      `docs/planning/gaps-and-shared-code-plan.md` section 5.1's table still reads as if G15-G17 were open, though
+      each is DONE (that plan's own status block, the cran plan's status block and section 6's Done notes; close-out
+      commits `2066715` S67, `fc73f5b` S72, `4f93a52` S77): the G15 row's sessions cell (`:388`) ends at "(S64 the
+      plan)", with no G15a-c (S65-S67); the G16 row's (`:389`) names "S69 G16a DONE, S71 G16b DONE" but not G16a's CI
+      repair (S70) or G16c (S72); the G17 row's (`:390`) ends at "(S73 the plan)", with no G17a-d (S74-S77). And the
+      status block (`:15`) says "G14 under way (...), so G14 DONE". Record each as the G13 row does ("DONE in 6 (S54
+      the first, ...)"), each with its phase "DONE" in its row; find each cell by its words, since edits move lines
+      (Learning 7). No package file changes.
+
 ## Later
 
 - [ ] **`findPedigreeNumber()`'s speed** (READY, Effort M) -- 12.9 s for 100,000 animals, close to the square of the
