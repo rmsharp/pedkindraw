@@ -881,6 +881,28 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   next: Windows hang (Recommended)"). S33's ratio of 1.9 would put the check near 490 s: a guess, not a reading.
   **Left:** read the email's check time and the result folder's logs, record them here and in section 2.1, and
   decide 17k against 540 s (dragon 8: a reading near 540 s is uploaded again before it decides anything).
+- **Read (S92, 2026-11-25): 980 s, so the cut is needed (R86).** The email (Mark pasted it): results at
+  `https://win-builder.r-project.org/9ObRnQYtbA8V/` (removed about 72 hours after the check), R-devel 2026-11-17
+  r90926 ucrt, Windows Server 2022, check started 18:03:51 UTC (3 h 47 min after the upload), **check time 980 s**,
+  installation 18 s, `Status: 1 NOTE` (R16's lines only). Its steps: incoming feasibility 10 s, R code for possible
+  problems 34 s, examples 16 s, tests 13 min, re-building vignettes 30 s, PDF manual 29 s. The tests'
+  `proc.time()`: 788.1 s elapsed for 784.2 s of CPU (718.1 user, 66.0 system), so they never waited for a
+  processor; `[ FAIL 0 | WARN 0 | SKIP 96 | PASS 13834 ]` (this Mac's 95 skips plus `test_savePedigreeDiagram.R:499`,
+  skipped on Windows). 980 s is 440 s over 540 s, not near it, so dragon 8's second upload does not apply.
+  **The same check here** (HEAD's tarball at `a657d3a`; its package files differ from `89f39e7` only by S91's
+  `.closeChrome()` and one browser test, skipped on CRAN): 295 s; tests 219 s elapsed for 203 s CPU (load 10.8 at
+  the start, 24.2 at the end); vignettes 13 s; every other step under 10 s. **win-builder against this Mac:** the
+  whole check 3.3× (17a: 1.9×), the tests 3.6× (17a: 2.1×), the vignettes 2.3× (17a: 1.8×). Elapsed equal to CPU
+  says the tests did not wait; it cannot say how fast win-builder's processor ran that day, and every step ran
+  slower against this Mac than at 17a, the tests most. **The CRAN-mode tests file by file** (section 2.1's method:
+  one `test_dir()` on the installed package, `NOT_CRAN` unset, a reporter timing each file; load 7.1 to 11.7): 103
+  files, 197.0 s, `PASS 13836`, `SKIP 95`, 0 failed; win-builder's 788 s is 4.0× that. The ten slowest:
+  `test_findGenerationAligned.R` 16.2 s, `test_positionMatingUnitForest.R` 16.1, `test_asPedFramePedixplorer.R`
+  15.7, `test_makePedigreeMatingLayout.R` 13.0, `test_resolveEdgeNodeCollisions.R` 12.5, `test_removeAnimals.R`
+  10.2, `test_getNearRelativePedigree.R` 9.3, `test_asPedFrameHints.R` 8.0, `test_maleLeftDuplicateMate.R` 7.5,
+  `test_addRectilinearWaypoints.R` 6.6 (the ten 115.1 s, 59%). The 38 exports' own files (`test_<export>.R`, one
+  for each) take 59.2 s here. Estimates below scale each file by the one 4.0, a guess per file: win-builder's
+  per-file times are not measured.
 
 ### Phase 17l. Static hygiene and noSuggests
 
