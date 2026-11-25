@@ -29,25 +29,22 @@ test_that("an orphan mating gets its sibship bar and no dogleg", {
 
 test_that("an orphan mating does not end the dogleg check of the matings
            after it", {
-  ped <- orphanPed()
-  layout <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
-  forest <- .buildMatingUnitForest(ped)
-  expect_identical(forest$matingUnits$anchor, c(NA, "C"))
-  pos <- .positionMatingUnitForest(ped, forest)
+  inputs <- .directStyleInputs(orphanPed())
+  expect_identical(inputs$forest$matingUnits$anchor, c(NA, "C"))
+  pos <- inputs$pos
   pos$gen[pos$id == "C"] <- 0L
-  result <- .addRectilinearWaypoints(layout$nodes, layout$edges, forest, pos)
+  result <- .addRectilinearWaypoints(inputs$nodes, inputs$edges, inputs$forest,
+                                     pos)
   expect_true("__proj_C___union_2" %in% result$nodes$id)
 })
 
 sibshipInputs <- function() {
-  ped <- data.frame(id = c("P1", "P2", "C1", "C2"),
-                    sire = c(NA, NA, "P1", "P1"), dam = c(NA, NA, "P2", "P2"),
-                    sex = c("M", "F", "M", "F"), gen = c(0L, 0L, 1L, 1L),
-                    stringsAsFactors = FALSE)
-  layout <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
-  forest <- .buildMatingUnitForest(ped)
-  list(nodes = layout$nodes, edges = layout$edges, forest = forest,
-       pos = .positionMatingUnitForest(ped, forest))
+  .directStyleInputs(data.frame(id = c("P1", "P2", "C1", "C2"),
+                                sire = c(NA, NA, "P1", "P1"),
+                                dam = c(NA, NA, "P2", "P2"),
+                                sex = c("M", "F", "M", "F"),
+                                gen = c(0L, 0L, 1L, 1L),
+                                stringsAsFactors = FALSE))
 }
 
 test_that("tables without the colour columns get them, NA for what they

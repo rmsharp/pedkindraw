@@ -16,15 +16,12 @@
 doglegInputs <- function() {
   ## S x D have M and F; the full sibs M x F have C, a consanguineous mating
   ## whose two mate lines are marked. F anchors it; M is drawn as __dup_M_1.
-  ped <- data.frame(id = c("S", "D", "M", "F", "C"),
-                    sire = c(NA, NA, "S", "S", "M"),
-                    dam = c(NA, NA, "D", "D", "F"),
-                    sex = c("M", "F", "M", "F", "M"),
-                    gen = c(0L, 0L, 1L, 1L, 2L), stringsAsFactors = FALSE)
-  layout <- makePedigreeMatingLayout(ped, edgeStyle = "direct")
-  forest <- .buildMatingUnitForest(ped)
-  list(nodes = layout$nodes, edges = layout$edges, forest = forest,
-       pos = .positionMatingUnitForest(ped, forest))
+  .directStyleInputs(data.frame(id = c("S", "D", "M", "F", "C"),
+                                sire = c(NA, NA, "S", "S", "M"),
+                                dam = c(NA, NA, "D", "D", "F"),
+                                sex = c("M", "F", "M", "F", "M"),
+                                gen = c(0L, 0L, 1L, 1L, 2L),
+                                stringsAsFactors = FALSE))
 }
 
 edgeRow <- function(edges, from, to) {
