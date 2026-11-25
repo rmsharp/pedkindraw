@@ -1,0 +1,96 @@
+## Test files a CRAN check leaves out (tests/testthat.R, helper-slowTestFiles.R).
+## CRAN rejects a package whose whole check takes more than 10 minutes on its
+## Windows check machine, and win-builder R-devel read 980 s for this tree, 788 s
+## of it the tests (S92; plan R165, target 540 s). This names every test file
+## except those a CRAN check needs so that a test it runs calls each export: a
+## run-time trace of every export over the CRAN-mode tests of the installed
+## package chose them, slowest file first, a file named only while every export
+## is still called by a file not named (an export counts for a file when the
+## trace saw it called there and the file's own code calls it).
+## test_slowTestFilesExports.R checks that by reading the code. CI and local runs
+## set NOT_CRAN to "true" and still run every file. A test file added later runs
+## on CRAN until it is named here. One name a line; `#` starts a comment.
+test_addIdRecords.R
+test_addParents.R
+test_addRectilinearWaypoints.R
+test_addRectilinearWaypointsDogleg.R
+test_addRectilinearWaypointsInputs.R
+test_asPedFrame.R
+test_asPedFrameHints.R
+test_asPedFrameMatings.R
+test_asPedFramePedixplorer.R
+test_bitSize.R
+test_buildMatingUnitForest.R
+test_carrierMark.R
+test_checkPedigree.R
+test_comparePedigreeStructure.R
+test_comparePedigreeStructureOneMate.R
+test_conditionColors.R
+test_conditionLegendImage.R
+test_conditionThresholds.R
+test_correctParentSex.R
+test_diagramSolverEquivalence.R
+test_drawPedigreeDiagram.R
+test_drawPedigreeDiagramLegendLines.R
+test_evaluatedMark.R
+test_findAvailAffected.R
+test_findAvailNonInform.R
+test_findGeneration.R
+test_findGenerationAligned.R
+test_findIsolatedIds.R
+test_findPedigreeNumber.R
+test_findUnavailable.R
+test_genotypedMark.R
+test_getDescendantPedigree.R
+test_getMatings.R
+test_getNearRelativePedigree.R
+test_getOffspring.R
+test_infertileMark.R
+test_isFounder.R
+test_kinship.R
+test_kinshipHasBothParentsHelp.R
+test_kinshipMemoryEquivalence.R
+test_kinshipPdepthOrder.R
+test_layoutHintsMate.R
+test_layoutHintsOrder.R
+test_layoutHintsReturned.R
+test_lineWidth.R
+test_makePedigreeDiagramData.R
+test_makePedigreeMatingLayout.R
+test_makePedigreeMatingLayoutNoRowParent.R
+test_makePedigreeMatingLayoutNoRowParentDocs.R
+test_maleLeftDuplicateMate.R
+test_maleLeftSweepSurvival.R
+test_matesNoOffspring.R
+test_maxNameChars.R
+test_miscarriageMark.R
+test_orderRootSubtrees.R
+test_package.R
+test_packComponentsSeparateRows.R
+test_pedigreeAppBrowser.R
+test_pedigreeAppMarks.R
+test_pedigreeAppSave.R
+test_pedigreeAppServer.R
+test_positionMatingUnitForest.R
+test_positionTreeApportion.R
+test_positionTreeApportionChecks.R
+test_probandMark.R
+test_removeUnknownAnimals.R
+test_resolveEdgeNodeCollisions.R
+test_resolveEdgeNodeCollisionsCases.R
+test_runPedigreeAppDocs.R
+test_savePedigreeDiagramColony.R
+test_savePedigreeDiagramDocs.R
+test_sexCodes.R
+test_shrinkPedigree.R
+test_shrinkPedigreeExample.R
+test_shrinkPedigreeLoop.R
+test_solveJointQP.R
+test_spacing.R
+test_speedPointersDocs.R
+test_speedVignetteDocs.R
+test_symbolSize.R
+test_textSize.R
+test_trimPedigree.R
+test_unknownAffected.R
+test_walkPedigree.R
