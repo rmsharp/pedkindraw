@@ -849,9 +849,10 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   WARN 0; `R CMD check --as-cran` R16's NOTE only. **CRAN-mode time (for 17k):** the four new files run in full,
   0.78-0.83 s over three runs (`test_packComponentsSeparateRows.R` 0.63-0.67 s of it); with 17j1's about 0.2 s, 17j
   adds about 1 s. **Found while measuring (a backlog item before 17k, R162):** `makePedigreeMatingLayout()` stops
-  with R's or an internal check's message on 430 of 1,135 random pedigrees with a parent id that has no row (one
-  animal whose sire has no row and whose dam is unknown is enough), and on 81 of 90 with a repeated id; 0 of 739
-  complete ones; nprcgenekeepr's copy the same.
+  with R's or an internal check's message on 430 of 1,171 random pedigrees with a parent id that has no row (one
+  animal whose sire has no row and whose dam is unknown is enough; 36 more refused by `kinship()`'s designed depth
+  check, 705 returned), and on 81 of 90 with a repeated id; 0 of 739 complete ones (27 refused by the depth check);
+  nprcgenekeepr's copy the same. (S88's picker said "430 of 1,135", leaving out the 36; corrected at close-out.)
 
 ### Phase 17k. The CRAN-mode test time (a reading after 17j; a cut only if it requires one, R86)
 
@@ -1092,8 +1093,8 @@ pedkindraw's own:
     with `.hit("<line>")` added on the line itself (line numbers kept, so covr's and the plan's citations still
     match) ran 2,000 seeded random pedigrees in one run, where `covr::function_coverage()` takes a few seconds a
     case. It confirmed the readings (5 statements never run) and found what reading had not: 577 of the 2,000
-    stopped, 430 of them pedigrees with a parent id that has no row, so `makePedigreeMatingLayout()` stops on a
-    common kind of data (R162, backlog). Tally the stops by kind beside the lines reached, and check a generator's
+    stopped, 430 of them, not counting `kinship()`'s refusals, pedigrees with a parent id that has no row, so
+    `makePedigreeMatingLayout()` stops on a common kind of data (R162, backlog). Tally the stops by kind beside the lines reached, and check a generator's
     output is mostly valid input first (S88's first trial stopped on 26 of 30, 10 of them at `kinship()`'s refusal
     of the generator's own made-up depths; parents now come from earlier rows and `gen` from their depth).
 
