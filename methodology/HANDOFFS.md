@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S92
 date: 2026-11-25
-status: pending
-active_task: finish Phase 17k (cran-submission-plan.md:857; R85, R86): read win-builder's R-devel results for S90's upload (email: check time 980 s, 1 NOTE) and decide against 540 s. Claimed.
-what_was_done: pending
+status: complete
+self_score: 7
+predecessor_score: 9
+active_task: Phase 17k IN PROGRESS: the first reading read 980 s (win-builder R-devel, 9ObRnQYtbA8V; tests 788 s), so the cut was made (R165: a CRAN check runs 21 of 105 test files); the second reading (package at 23a6186) uploaded 21:36 UTC, waiting in win-builder's queue.
+what_was_done: claim a657d3a; reading recorded 80c3d86; R165 9985f92 (Mark: only what each export needs, by a trace; one list copied from nprcgenekeepr); RED e2cd4a2; GREEN 23a6186 (helper copy, slowTestFiles.txt 84 names, tests/testthat.R filter); REFACTOR skipped; upload; push, CI run 45705867740 (one rerun); close-out 1 f23d00c (plans, roadmap, dragon 36, backlog :214).
+next_steps: ask Mark for win-builder's second email; if in, finish 17k (cran plan :857, :884, :906): 540 s or less closes it; if not, a backlog item by Mark's pick (32 items, lines in SESSION_NOTES.md; Claude's suggestion :214).
+key_files: docs/planning/cran-submission-plan.md:857, :884, :906, :1183; standalone plan :345 (R165); tests/testthat.R:4-:8; tests/testthat/slowTestFiles.txt:1; tests/testthat/test_slowTestFilesExports.R:17, :65; methodology/BACKLOG.md:214.
+gotchas: a CRAN check runs only 21 test files, and a new test file runs on CRAN until listed; leaving win-builder's FTP queue is not the check's start; win-builder's speed against this Mac changed 1.9x to 3.3x between readings; a browser test can fail once while Chrome starts (rerun the job).
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: GREEN's full suite (NOT_CRAN=true) 17,258 expectations, WARN 0 (10.2 min)
+changelog_ref: CHANGELOG.md "2026-11-25 · [BL-Phase 17] S92: Phase 17k's first reading 980 s, the cut made (R165), the second reading uploaded" and its upload and push entries
 commit: pending
 ```
 ```handoff
