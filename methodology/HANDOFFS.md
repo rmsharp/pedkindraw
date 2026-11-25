@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S91
 date: 2026-11-25
-status: pending
-active_task: the Windows CI hang (methodology/BACKLOG.md:11): the Windows job's check step does not end after its tests finish. Claimed (corrected from 17k at Mark's word); work beginning. 17k stays in progress, waiting on win-builder's email.
-what_was_done: pending
+status: complete
+self_score: 7
+predecessor_score: 9
+active_task: the Windows CI hang DONE (R164): the Windows job ends, Status OK, twice. 17k still IN PROGRESS (S90's upload checked by win-builder between 16:13 and 16:49 UTC; the email not in at S91's Orient; folder kept ~72 h).
+what_was_done: claim 61e4796, corrected f252d2d (Mark: the Windows item, as agreed); diagnostics 89e28f1 (step limit + process list + cdb stacks): the stuck-page tests' Chrome renderers outlived their browsers and R CMD check waited; RED 487657b; GREEN 3adbd4e (.closeChrome() in R/savePedigreeDiagram.R, ps in Suggests, NEWS, contract); REFACTOR e6e2e1a (the diagnostic step removed, the 35-min limit kept); close-out 1 ee9a4d9 (R164, dragons 30, 35); close-out 2.
+next_steps: ask Mark whether win-builder's email has come; if so finish 17k (cran plan :857-:883); if not, a backlog item by Mark's pick (31 items, lines in SESSION_NOTES.md; Claude's suggestion :55).
+key_files: R/savePedigreeDiagram.R:358-:383, :176, :305; tests/testthat/test_savePedigreeDiagram.R:591-:617; .github/workflows/R-CMD-check.yaml:104-:114; docs/planning/cran-submission-plan.md:857, :1131; standalone plan :344 (R164).
+gotchas: Windows R CMD check waits for every process the tests start (a hang now fails at 35 min; the diagnostic step is at 89e28f1); macOS can fail once on Chrome's start-up (rerun); S90's tarball predates .closeChrome (no CRAN-mode test added); orient "(Recommended)" follows Mark's recorded pick.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: GREEN's full suite (NOT_CRAN=true) 17,233 expectations, WARN 0 (12.2 min)
+changelog_ref: CHANGELOG.md "2026-11-25 · [BL-windows-hang] S91: the Windows CI hang found and repaired (R164)" and S91 pushes 1-3
 commit: pending
 ```
 ```handoff

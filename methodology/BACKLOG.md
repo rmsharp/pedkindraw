@@ -8,31 +8,6 @@ issues).*
 
 ## Up Next
 
-- [ ] **A Windows job that does not end after its tests finish** (READY, Effort M, a guess; found S70, dragon 30 of
-      `docs/planning/picture-files-plan.md`) -- S69's Windows job ran the tests to the end (`[ FAIL 13 | WARN 0 | SKIP
-      1 | PASS 16196 ]`) and then the check step went on "running" for 77 minutes until it was cancelled; two
-      orphan `Rterm` processes were killed at clean-up. S68's run, before `savePedigreeDiagram()`, ended in under 19
-      minutes. Cause not known (suspects: the stuck-page tests, and the one Chrome the function starts per call left
-      running at R's exit on Windows). **Read in S71 (the push that followed S70, run 44994050682):** the repaired
-      tests passed on Windows (`[ FAIL 0 | WARN 0 | SKIP 1 | PASS 16211 ]`, `proc.time()` 936 s, about 06:50) and the
-      step still did not end (cancelled at 07:14, about 24 minutes later; two orphan `Rterm` processes, a `cmd` and a
-      `conhost` killed): the second run in a row, so not a one-off. Mark's pick (S71): go on with G16b, this stays open;
-      every push will probably hang Windows until it is repaired, so cancel the Windows run at 40 minutes (`gh run
-      cancel`) and read its log. **A second and a third reading, S71's two pushes (runs 45000649737 and
-      45011132429):** the same hang, first with failing tests (`FAIL 4`, the two PDF word tests, repaired in S71), then with
-      every test passing (`[ FAIL 0 | WARN 0 | SKIP 4 | PASS 16278 ]`, `proc.time()` 1,041 s printed, so R finished its
-      script and did not exit; the log's "Running 'testthat.R'" and "Execution halted" appear only at the cancel; two
-      orphan `Rterm` processes each time): it does not depend on the tests, and is probably at R's exit (an inference). **A fourth reading,
-      S72's push (run 45038005488):** the hang a fifth time, now with R exiting *with an error* (`[ FAIL 1 | WARN 0 | SKIP 11 |
-      PASS 16287 ]`, "Error: ! Test failures. Execution halted"), so it is not at a clean exit either; the step ran until the
-      cancel at 40 minutes (2,341,479 ms), then two orphan `Rterm` processes, a `cmd` and a `conhost` were killed. **A fifth reading,
-      S72's repair push (run 45046213485):** the tests passed (`[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16297 ]`, `proc.time()` 1,153 s
-      elapsed) and the step still did not end (cancelled at 38 minutes; two orphan `Rterm` processes): the sixth run in a row,
-      with passing tests, failing tests (twice) and tests that ended R with an error all hanging. **A sixth reading, S74's push (run 45073310658, G17a):** `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16425 ]`, `proc.time()` 1,110 s, the step cancelled at 41 minutes, two orphan `Rterm` processes as before: the seventh run, and the app's browser tests (a second R process each, killed at each test's end) added no third. **A seventh reading, S75's push (run 45087949474, G17b):** `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16559 ]`, `proc.time()` 925 s, cancelled at 41 minutes, two orphan `Rterm` processes again: the eighth run. **An eighth reading, S76's push (run 45107545938, G17c):** `[ FAIL 0 | WARN 0 | SKIP 11 | PASS 16716 ]`, `proc.time()` 955 s, cancelled at 41 minutes, two orphan `Rterm` processes and one `cmd`: the ninth run; G17c's Chrome test, which uploads two files, added no third `Rterm`. **A ninth reading, S77's push (run 45125145050, G17d):** `[ FAIL 0 | WARN 0 | SKIP 19 | PASS 16776 ]`, `proc.time()` 954 s, cancelled at 41 minutes, two orphan `Rterm` processes, one `cmd` and one `conhost`: the tenth run; G17d's Chrome tests (two more apps in second processes) added no third `Rterm`. First (guesses, one change at a time, iterating on GitHub since there is no Windows
-      machine here): add `timeout-minutes` to `.github/workflows/R-CMD-check.yaml` so a hang ends as a failure with a
-      log; close the test Chromes explicitly at the end of the suite (the helper's `.saveChrome$parent`, chromote's
-      default one) and list the processes left (`Get-Process`) in a step after the tests.
-
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
       -- measured S42: of its 16 rows, only G1's say "At the switch (R98)" (`makePedigreeDiagramData()`,
       `.checkShrinkInput()`, and the G1 sentence of `makePedigreeMatingLayout()`'s row; S43 added three G2 rows and

@@ -10,79 +10,81 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17j DONE (S33-S88); the gap
-phases G1-G17 DONE (S42-S77); the crash item before 17k DONE (S89, R163). **17k IN PROGRESS (S90):** the tarball (the
-package as at `89f39e7`, built from `ad23242`, SHA-256 `323e6a8b...4505cfdf46`) was checked here (`Status: 1 NOTE`,
-R16's; tests 188 s) and uploaded by FTP to win-builder R-devel at 14:17 UTC on 2026-11-25 (Mark's pick). At 16:13 UTC
-it still sat in win-builder's R-devel queue, 15 packages ahead, the oldest there since 11:34 UTC (dragon 34), so no
-email had come. Mark closed S90 to wait.
-**Next, by Mark's pick ("Close; next: Windows hang (Recommended)"):** if win-builder's email has reached Mark, finish
-17k first: its results folder is removed about 72 hours after the check. Otherwise the Windows CI hang
-(`methodology/BACKLOG.md:11`): 17l's and 17n's DONE need all five CI jobs passing.
-**Status:** 17k waits on win-builder; no other work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's).
-Pushed at close-out 2.
-**The orient picker:** ask first whether the email has come (and list the queue, What You Must Do 2). Then: finish 17k
-(if the email is in), the Windows item `:11` (recommended otherwise), and the rest grouped and named as S89's notes
-did (32 items, each at its line by `grep -n '^- \[ \]'`; S90 changed no backlog line): READY `:36`, `:54`, `:64`,
-`:70`, `:80`, `:113`, `:256`, `:273`, `:289`, and the nine small ones `:184`, `:196`, `:203`, `:212`, `:222`, `:239`,
-`:245`, `:261`, `:308`; NEEDS DECISION `:89`, `:97`, `:106`, `:119`, `:279`, `:299`; "Waiting on Mark" `:147`, `:154`,
-`:161`, `:173`. Not offered: `:130` (a session Mark starts in nprcgenekeepr), `:45` and `:141` (BLOCKED). Name every
-item (memory "Picker sets: name items, include all").
-**Session boundary:** one session (finishing 17k, or one backlog item), then close out. A session running when the
-email arrives does not take 17k on as a second deliverable.
+phases G1-G17 DONE (S42-S77); the crash item DONE (S89, R163); **the Windows CI hang DONE (S91, R164)**: the Windows
+job ends again, Status OK. **17k IN PROGRESS (S90):** the tarball (the package as at `89f39e7`) was uploaded to
+win-builder R-devel at 14:17 UTC on 2026-11-25; S91 found it gone from the R-devel queue at 16:49 UTC (it was there
+at 16:13), so its check ran then; the email had not reached Mark at S91's Orient (about 17:00 UTC). win-builder
+removes the results folder about 72 hours after the check: by about 16:00 UTC on 2026-11-28.
+**Next:** ask Mark first whether win-builder's email has come. If it has, finish 17k (What You Must Do 3). If not,
+Mark has picked no next item: offer the backlog (31 items, listed below) in the orient picker. Claude's suggestion,
+not Mark's pick: `:55` (`savePedigreeDiagram()` and a `CHROMOTE_CHROME` that names no file; READY, Effort S; the file
+S91 changed).
+**Status:** no work in progress but 17k's wait. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed at close-out 2.
+**The orient picker:** the email first; then finish 17k (if the email is in) and the rest grouped and named as S89's
+notes did (31 items, each at its line by `grep -n '^- \[ \]' methodology/BACKLOG.md`; S91 removed the Windows item,
+so every line below moved up 25): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:231`, `:248`, `:264`, and the
+nine small ones `:159`, `:171`, `:178`, `:187`, `:197`, `:214`, `:220`, `:236`, `:283`; NEEDS DECISION `:64`, `:72`,
+`:81`, `:94`, `:254`, `:274`; "Waiting on Mark" `:122`, `:129`, `:136`, `:148`. Not offered: `:105` (a session Mark
+starts in nprcgenekeepr), `:20` and `:116` (BLOCKED). Name every item (memory "Picker sets: name items, include
+all"); put "(Recommended)" where the condition Mark set says (memory "Orient picker follows the handoff pick").
+**Session boundary:** one session (finishing 17k, or one backlog item), then close out.
 **Priority:** HIGH (17k-17q).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**); nprcgenekeepr's log on the copied files,
-   `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R
-   tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`,
-   `392dd347e`, `471589138`); nprcgenekeepr at `3e06730c5`, tree clean (both rechecked at S90's close-out).
-2. **Where 17k's upload is:** `curl -sS ftp://win-builder.r-project.org/R-devel/` lists the files not yet started
-   (server clock UTC+1; ours `pedkindraw_0.0.1.tar.gz`, 1,697,606 B, listed "03:17PM"). Gone from the list means the
-   check started; Mark's email follows it, carrying the results link and "Check time in seconds".
-3. **Finishing 17k (if the email is in):** read `:857`-`:883` (17k, what its 540 s is, the In progress note), dragon 8,
-   section 2.1's 17a table (`:130`). Fetch the results folder's logs into the scratchpad (`00check.log`,
-   `examples_and_tests/tests/testthat.Rout` for `proc.time()`); record the check time, each step's time, the tests'
-   elapsed against CPU and the NOTEs beside 17a's; decide against 540 s. A reading near 540 s is uploaded again before
-   it decides anything (dragon 8); over 540 s, a picker on the test files to skip on CRAN (section 2.1's table,
-   re-measured), in TDD. If the folder is gone or no email came, rebuild and upload again (Mark approves).
-4. **The Windows item (otherwise):** read `:11` (eleven readings); `.github/workflows/R-CMD-check.yaml` (107 lines; the
-   matrix `:27`-`:33`, the Chrome steps `:55`-`:102`, the check step `:104`); `tests/testthat/helper-savePedigreeDiagram.R:262`-`:276`
-   (`.saveChrome`, the shared Chrome). One change per push (no Windows machine here), each run cancelled at 40 min if
-   it hangs (`gh run cancel`). CI runs on a push to master or a pull request, not on a push that changes only
-   `methodology/**` or `CLAUDE.md`.
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**; S91 changed no copied file:
+   `R/savePedigreeDiagram.R` is pedkindraw's own); nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr
+   log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1
+   basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr
+   at `3e06730c5`, tree clean (both rechecked at S91's close-out).
+2. **The email:** ask Mark (it carries the results link and "Check time in seconds"; only he has it).
+   `curl -sS ftp://win-builder.r-project.org/R-devel/` lists uploads not yet started; ours had left by 16:49 UTC.
+3. **Finishing 17k (if the email is in):** read `docs/planning/cran-submission-plan.md:857`-`:883` (17k, what its
+   540 s is, S90's In progress note), dragon 8 (`:1013`), section 2.1's 17a table (`:130`). Fetch the folder's logs into
+   the scratchpad (`00check.log`, `examples_and_tests/tests/testthat.Rout` for `proc.time()`); record the check time,
+   each step's time, the tests' elapsed against CPU and the NOTEs beside 17a's; decide against 540 s. Near 540 s:
+   upload again before deciding (dragon 8); over: a picker on the test files to skip on CRAN (section 2.1's table,
+   re-measured), in TDD. Folder gone or no email by the 28th: rebuild and upload again (Mark approves).
+4. **CI on every push:** five jobs. Windows now ends (check step 14.6 and 18.9 min in S91's two runs; a 35-minute
+   limit fails a hang instead of running until cancelled, `.github/workflows/R-CMD-check.yaml:104`-`:114`). Ubuntu
+   devel fails loading S4Vectors before pedkindraw is checked (`methodology/BACKLOG.md:197`). Read each job's lines
+   through the jobs API (`curl -sSL -H "Authorization: Bearer $(gh auth token)"
+   https://api.github.com/repos/rmsharp/pedkindraw/actions/jobs/<id>/logs`): `gh run view --log` waits for the whole run.
 5. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
-- **win-builder's R-devel queue can hold an upload for hours** (dragon 34): no email means the check has not run, not
-  that the upload failed. List the queue first.
-- **A rebuilt tarball is a new file:** `R CMD build` writes the build time into DESCRIPTION's `Packaged` field, so
-  its SHA-256 differs from `323e6a8b...` (R's behaviour, not measured here). S90's tarball sits at
-  `/private/tmp/claude-501/-Users-rmsharp-Development-pedkindraw/6466c3d5-e987-43b3-b126-a66136537018/scratchpad/b17k/build/pedkindraw_0.0.1.tar.gz`
-  until the scratchpad is cleared.
-- **Picker labels in Mark's voice:** S90's "You upload it by FTP" beside "I upload it myself" meant Claude uploads;
-  S33's "I upload it via FTP" meant the same in Claude's voice. Say who acts in the description too.
-- **"In a new session" means after close-out** (Mark, S90): when he asks what a new session could do while waiting,
-  answer with the next session's work, not a parallel session or worktree.
+- **On Windows, R CMD check waits for every process the tests start** (S91, dragon 35 of the cran plan): a test
+  that leaves a child process running (a Chrome renderer, a `callr` R) hangs the Windows job after its tests; it now
+  fails at 35 minutes with the log. To see what is left, put back the diagnostic step of `89e28f1` (`git show
+  89e28f1:.github/workflows/R-CMD-check.yaml`, the last step: the process list and each `Rterm`'s stacks by cdb).
+- **macOS can fail once on Chrome's start-up:** S91's GREEN run failed `test_savePedigreeDiagram.R:426` at
+  `R/savePedigreeDiagram.R:302` (`/json/version` not answered in 60 s); its rerun and the next run passed. Rerun a
+  browser test's job once before reading it as a defect (also Ubuntu's "port not open after 10 s", S89).
+- **S90's tarball predates `.closeChrome()`:** 17k reads the package as at `89f39e7`. S91's change adds no test that
+  runs in CRAN mode (the new test is a browser test: `R CMD check --as-cran` here read SKIP 95 for S90's 94, PASS
+  13836 both), so it changes the CRAN-mode test time by nothing measurable; 17o re-reads before submission anyway.
+- **Picker labels:** "(Recommended)" on the orient picker follows Mark's recorded next pick and its condition (S91's
+  slip: 17k recommended while the email was "Not yet"; memory). Labels in Mark's voice: say who acts (S90).
 - **The 540 s is the email's check time** (R85), not the tests' time; the tests' elapsed against CPU says whether
-  win-builder was busy (17k, `:868`). S89's notes and S90's claim said "its tests' elapsed time against 540 s".
-- **Carried:** a test that repeats rows now stops at the repeated-id check (`R/makePedigreeDiagramData.R:2266`); the
-  layout's collision warning comes from random layouts (S89's random test muffles it alone); `rm -rf "$VAR/..."` is
-  refused (write `"${VAR:?}"` or make new folders); backslashes in `Rscript -e` (put such code in a file); the
-  fidelity and drift tools run from the repository root; one-off scripts as `Rscript --no-init-file` with `R_LIBS` and
-  `R_LIBS_USER` set to renv's library; the 5-file cap splits commits; the ratchet's suite gate times out at 300 s;
-  `testthat::test_file()` can leave `tests/testthat/_problems/` (never commit it); `CLAUDE.md` is over its budget
-  (learnings go to the plans' dragons; the cran plan's section 9 now ends at 34); `methodology/HANDOFFS.md` past its
-  trimmer (`:299`): keep the receipt short; a push whose head commit's message holds the skip marker anywhere runs no
-  workflow (write it in words); a browser test can fail once when Chrome's port is not open within 10 s: rerun that
-  job once before reading it as a defect.
+  win-builder was busy (17k, `:868`).
+- **Carried:** a test that repeats rows stops at the repeated-id check (`R/makePedigreeDiagramData.R:2266`); the
+  layout's collision warning comes from random layouts; `rm -rf "$VAR/..."` is refused (write `"${VAR:?}"` or make
+  new folders); backslashes in `Rscript -e` (put such code in a file); a draft test run from outside
+  `tests/testthat/` cannot find the fixtures: run it in a `git archive` copy (Learning 17); the fidelity and drift
+  tools run from the repository root; one-off scripts as `Rscript --no-init-file` with `R_LIBS` and `R_LIBS_USER` set
+  to renv's library; the 5-file cap splits commits; the ratchet's suite gate times out at 300 s (the full suite takes
+  12 min); `testthat::test_file()` can leave `tests/testthat/_problems/` (never commit it); `CLAUDE.md` is over its
+  budget (learnings go to the plans' dragons; the cran plan's section 9 now ends at 35); `methodology/HANDOFFS.md`
+  past its trimmer (backlog `:274`): keep the receipt short; a push whose head commit's message holds the skip marker
+  anywhere runs no workflow (write it in words).
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
 - 17k: `docs/planning/cran-submission-plan.md:857` (the phase), `:868` (what the 540 s is), `:871` (S90's In progress
-  note: the tarball, the local check, the upload, the queue), `:130` (17a's win-builder table, where the reading goes
-  beside it), `:1124` (dragon 34); R85 and R86 at `docs/planning/standalone-pedigree-package-plan.md:265`-`:266`.
-- The Windows item: `methodology/BACKLOG.md:11`; `.github/workflows/R-CMD-check.yaml`;
-  `tests/testthat/helper-savePedigreeDiagram.R:262`.
+  note), `:130` (17a's win-builder table), `:1124` (dragon 34), `:1131` (dragon 35); R85, R86 at
+  `docs/planning/standalone-pedigree-package-plan.md:265`-`:266`; R164 at `:344`.
+- S91's repair: `R/savePedigreeDiagram.R:358`-`:383` (`.closeChrome()`), its two uses `:176` and `:305`;
+  `tests/testthat/test_savePedigreeDiagram.R:591`-`:617` (its test); `.github/workflows/R-CMD-check.yaml:104`-`:114`
+  (the limit); `DESCRIPTION` Suggests (`ps`); NEWS.md, savePedigreeDiagram()'s entry.
 - S33's win-builder notes (the upload command, the email, the result folder): `git show
   15c7627:methodology/SESSION_NOTES.md`, its Gotchas.
 
@@ -99,14 +101,53 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 91 Did
-**Deliverable:** the Windows CI hang (`methodology/BACKLOG.md:11`): the Windows job's check step does not end after
-its tests finish. (IN PROGRESS)
-**Started:** 2026-11-25 10:57 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** the orient picker read "Finish 17k
-(Recommended)" with the email "Not yet"; the label was Claude's slip (the handoff recommended the Windows item while no
-email had come). Mark, rejecting the next picker: "We discussed this at the end of the last session and agreed to work
-on the Windows hang problem this session." Claim corrected (17k stays in progress, waiting on the email).
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+**Deliverable:** the backlog item "A Windows job that does not end after its tests finish" (S69-S90), strict TDD.
+DONE (R164): the Windows job ends, Status OK, twice.
+**Started:** 2026-11-25 10:57 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** the orient picker's "Finish 17k
+(Recommended)" with the email "Not yet"; Mark then stopped the next picker ("We discussed this at the end of the last
+session and agreed to work on the Windows hang problem this session"), and the claim was corrected (`f252d2d`); then,
+each the recommended option: "Find where R stops"; "In savePedigreeDiagram"; "Yes, proceed to RED"; "Yes, proceed to
+GREEN"; "Yes, REFACTOR".
+**Commits:** claim `61e4796`; claim corrected `f252d2d`; diagnostics `89e28f1` (pushed: run 45667512215); RED
+`487657b`; GREEN `3adbd4e` (pushed with RED: run 45680687657, its macOS job rerun once); REFACTOR `e6e2e1a` (pushed:
+run 45687837833); close-out 1 `ee9a4d9` (R164, the plans, roadmap, dragons 30 and 35); close-out 2 (the backlog, these
+notes, the receipt, the ledger), pushed after it; close-out 2b (the push entry).
+**Measured first:** S89's Windows log (the tests ended 14 minutes before the cancel); the websocket and processx code
+(the suspects named in the approach picker, all three disproved by the diagnostics); the diagnostic run: R CMD check's
+test runner (`Rterm` 7952, no package DLL loaded) waiting in `runcmd_timeout` on Windows' job wait, the test process
+gone, six Chrome renderers and crash reporters of the three stuck-page browsers alive, their browsers dead; on this
+Mac the stuck page leaves no Chrome process; processx's marker reaches none of Chrome's 12 children, `ps_children()`
+by parent all 12; the draft test in three scratch copies (missing: error; plain close: passes; the repair: passes).
+**Verified:** RED: the file 33 tests, 223 expectations, 1 error (the missing function), WARN 0. GREEN: the file 225
+expectations, 0 failed, WARN 0; the full suite (`NOT_CRAN=true`) 103 files, 1,192 tests, 17,233 expectations, 0
+failed, 0 skipped, WARN 0 (12.2 min); lint 0; roxygen unchanged; `R CMD check --as-cran` Status 1 NOTE (R16's), tests
+`[ FAIL 0 | WARN 0 | SKIP 95 | PASS 13836 ]` 197 s; CI run 45680687657: Windows Status OK `PASS 17006` (S89's 17,003
+plus 3), check step 14.6 min, no process left; Ubuntu release and oldrel-1 OK `PASS 16997`; macOS failed once on
+Chrome's start-up, its rerun OK `PASS 17008`; Ubuntu devel S4Vectors. REFACTOR: run 45687837833 the same counts,
+Windows 18.9 min, macOS OK at the first attempt. Drift 91 / 23 / 0. quality_ratchet at close-out (the receipt).
+
+#### Session 90 Handoff Evaluation (by Session 91)
+**Score: 9/10.** ROI high: Orient and the Windows item ran from its notes, and every cited line was where it said.
+- **What helped:** the ACTIVE TASK's "Next, by Mark's pick" with its condition (the email), which was right and
+  which S91's orient picker failed to follow; What You Must Do 2 (the queue command, which showed the check had
+  started); 4 (the Windows item's files by line, the matrix `:27`-`:33`, the Chrome steps, the check step `:104`,
+  `.saveChrome` at `:262`; "one change per push", "cancel at 40 min"); the gotcha on rerunning a browser test's job
+  once, used on macOS.
+- **What was missing:** nothing S90 could have known; the backlog item's own inference ("probably at R's exit") was
+  wrong, which the diagnostics, not a handoff, could show.
+- **What was wrong:** nothing found.
+- **ROI:** high.
+
+**Self-assessment: 7/10.**
++ Orient in full, the claim before any work; one diagnostic push found what eleven readings over 22 sessions had
+  only guessed at, by reading the runner (process list, thread stacks) rather than the code; each picker stated
+  measured facts (the macOS leaves-none run, the marker and parent counts, the draft in three copies); the repair in
+  the function, so users on Windows gain too; GREEN and REFACTOR read on all five jobs; a second Windows reading.
+- **A slip that reached Mark:** the orient picker put "(Recommended)" on 17k against the handoff's recorded pick,
+  while the email was "Not yet"; it cost Mark a rejected picker and a correcting claim commit (memory saved).
+- **Limits stated, not hidden:** RED could show only the missing function on this Mac (Chrome cleans up here); the
+  behaviour was shown on Windows CI. The approach picker's three suspects were each wrong; the diagnostic step was
+  the option that did not depend on them. macOS failed once on Chrome's start-up (rerun passed).
 
 ### What Session 90 Did
 **Deliverable:** Phase 17k (`docs/planning/cran-submission-plan.md:857`; R85, R86): one win-builder R-devel reading of
@@ -200,54 +241,3 @@ quality_ratchet 5/6 pass, 0 fail, 1 unmeasured (the suite gate's 300 s; the suit
 - **Slips caught before a commit:** a draft drew a parent with `sample(m, 1L)`, which samples `1:m` when `m` is one
   number; a draft raised 5 warnings (the layout's collision warning, now muffled alone); two `Rscript -e` escapes; a
   monitor that fired on any log line; an `rm -rf` the safety check refused.
-
-### What Session 88 Did
-**Deliverable:** Phase 17j2 (R161's split of 17j, `docs/planning/cran-submission-plan.md:826`), strict TDD: the 29
-statements of `R/makePedigreeDiagramData.R` no test ran, each reached by a test or recorded unreachable. DONE, so 17j
-DONE.
-**Started:** 2026-11-24 20:38 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time, each the
-recommended option):** "17j2: layout coverage (Recommended)" (orient); R162's three in one picker ("Test by direct
-calls", "Keep as copied, record why", "Backlog, before 17k"); "Yes, proceed to RED"; "Yes, proceed to GREEN"; "Yes,
-REFACTOR (Recommended)". No correction and no tool use declined.
-**Commits:** claim `c48cde4`; R162 `7464409`; RED `4955fa5`; GREEN `cd7b162` (empty: the measurements); REFACTOR
-`ee637d0`; close-out 1 `bade5c8` (the plans, roadmap, dragons 31-32); close-out 2 (the count corrected in R162 and the
-plan, the backlog, these notes, the receipt, the ledger), pushed after it (`d09b672..c03c96b`); close-out 2b (the push
-entry; these notes and the receipt to CI's results).
-**Measured first:** covr on a `git archive` of `c48cde4` (31 of 3,772, 13.1 min, each with its column); each of the 29
-read beside its comment and its input tried in a scratch copy (`covr::function_coverage()` per function); a copy
-counting each target line run over 2,000 seeded random pedigrees (the 5 never reached but `:1529`, always followed
-by a stop; the crash found and tallied, and checked on nprcgenekeepr's HEAD); the drafts' expected values computed
-first; the drafts broken 72 ways (5 uncaught at first: 3 inputs tightened, 2 removals that change no output); covr
-on the drafts alone (24 of 24 reached); CRAN-mode time; then the pickers.
-**Verified:** RED's four files 13 tests, 47 expectations, 0 failed, 0 skipped, WARN 0; 70 of 72 broken copies of the
-RED tree failing; covr on `4955fa5` 7 of 3,772 (99.81%), the 24 reached; the full suite on a `git archive` of
-`4955fa5` (`NOT_CRAN=true`) 101 files, 1,182 tests, 17,073 expectations, 0 failed, 0 skipped, WARN 0 (10.0 min); `R
-CMD check --as-cran` on `4955fa5` Status 1 NOTE (R16's), tests 197 s in CRAN mode; the new files 0.78-0.83 s in CRAN
-mode; REFACTOR per-test identical, 70 of 72 still; lint 0; roxygen unchanged; no saved expect condition; drift 91 / 23
-/ 0; quality_ratchet at close-out 2 (the receipt).
-
-#### Session 87 Handoff Evaluation (by Session 88)
-**Score: 9/10.** ROI high: 17j2 ran from its notes, and every cited line and count was where it said.
-- **What helped:** What You Must Do 1 (drift 91/23/0, nprcgenekeepr's 4 commits and `3e06730c5`, each as stated); 3's
-  methods in words (the whole-suite covr command, the quick reach check, the broken-copy recipe) and "break each
-  statement three ways" (dragon 29), which found the three weak test inputs; the key files by line (`:656`, `:986`,
-  `:1109`, the comment `:1515`-`:1521`, `:2911`, the dogleg `:3017`-`:3062`, `:3257`, `:3393`), all exact; the
-  backlog item's 29 by line and function; "16 ... not proved", labelled as a reading, which it was.
-- **What was missing:** that `makePedigreeMatingLayout()` takes the caller's `gen`, the key to `:996`; that a mating
-  with both parents missing reaches `:3022` through a drawing; that some statements' removal changes no output, so
-  dragon 29's three breaks cannot all fail. Each found by reading or measuring, none costly.
-- **What was wrong:** nothing found.
-- **ROI:** high.
-
-**Self-assessment: 7/10.**
-+ Orient in full, the claim before any work; every reach measured, every "unreachable" read and then checked over
-  2,000 random pedigrees, every expected value computed and every test broken before the first picker (Learnings
-  17-20, dragon 29); R162 recorded in its session; GREEN's counts as predicted (7 of 3,772, 17,073); the crash found
-  by the search, tallied by kind and checked on nprcgenekeepr; the REFACTOR measured before its gate.
-- **A slip that reached Mark:** the R162 picker said the crash hit "430 of 1,135" pedigrees with a missing parent;
-  1,135 left out 36 refused by `kinship()`'s check, while the "739" beside it counted its refusals. Found re-reading
-  the table at close-out; R162 (`7464409`) and the cran plan corrected in close-out 2, which says so.
-- **Slips caught before a commit:** a draft test expected `150` where the function gives `150L`; three draft inputs
-  where right and wrong answers agreed (dragon 31); the first random generator mostly made invalid pedigrees; a
-  `\\b` pattern without `perl = TRUE` read 0 for 67; plan text said 66 stops were in `.penaltyMatrix()` (traced for
-  2) and that the search took "3 minutes" (not timed).
