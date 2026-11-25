@@ -118,6 +118,17 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 88 Did
+**Deliverable:** Phase 17j2 (R161's split of 17j, `docs/planning/cran-submission-plan.md:793`, backlog `:119`), strict
+TDD: the 29 statements of `R/makePedigreeDiagramData.R` no test runs, each reached by a test or recorded unreachable
+with its reason. (IN PROGRESS)
+**Started:** 2026-11-24 20:38 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17j2: layout coverage
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: each of the 29 read with the comment beside it, its reaching input tried
+in a scratch copy and confirmed by covr, before the pre-RED picker (Learnings 11, 17; dragon 29).
+**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 87 Did
 **Deliverable:** Phase 17j1 (R161's split of 17j, `docs/planning/cran-submission-plan.md:793`), strict TDD: tests for
 the statements no test ran outside `R/makePedigreeDiagramData.R`. DONE.

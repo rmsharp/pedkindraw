@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-24 · [BL-Phase 17] S88 (in progress): 17j2, the layout file's coverage tests, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S88's stub), `methodology/HANDOFFS.md` (S88's `status: pending` receipt) and this entry. The deliverable is 17j2 (R161; cran plan `:793`, backlog `:119`): the 29 statements of `R/makePedigreeDiagramData.R` no test runs, strict TDD. Phase 3F rewrites this entry.
+- **Commit/PR:** the S88 claim commit · **Session:** S88 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits and a clean tree, ledgers current at `d09b672`, no ghost session, S87's receipt complete and its quality-gate citation equal to the results file `534fea217641`, 31 backlog items at the handoff's lines, `R/` tree `3bab425` and unchanged since `af4f23b`, `origin/master` at `d09b672`; dashboard 93/100, medium risk).
+
 ### 2026-11-24 · [ad hoc] S87, after close-out: a backlog item for the gaps plan's stale cells (Mark's request)
 - **Change:** `methodology/BACKLOG.md`: a READY item, "Bring the gaps plan's stale cells up to date" (`:263`, in "Ready, small"): `docs/planning/gaps-and-shared-code-plan.md` section 5.1's sessions cells for G15 (`:388`, ends at "(S64 the plan)"), G16 (`:389`, no G16a's CI repair or G16c) and G17 (`:390`, ends at "(S73 the plan)"), and its status block's "G14 under way (...), so G14 DONE" (`:15`), though G14-G17 are DONE. Mark asked whether G13-G16 were left undone; the answer: done, by the cran plan's status block (`:26`-`:39`), its section 6 Done notes, the code and NEWS, and only these cells are stale. `methodology/SESSION_NOTES.md`: the orient picker's list gains the item (31 items), the five after it at their new lines. Pushed after this commit.
 - **Commit/PR:** this commit · **Session:** S87 · **Model:** Claude Opus 5.5 · **Verified:** each of the four cells read in the plan; all 31 backlog lines the notes cite are items (`grep -n '^- \[ \]'`); every new line within 118 columns.
