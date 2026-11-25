@@ -100,6 +100,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 92 Did
+**Deliverable:** finish Phase 17k (`docs/planning/cran-submission-plan.md:857`; R85, R86): read win-builder's R-devel
+results for S90's upload and decide against 540 s. (IN PROGRESS)
+**Started:** 2026-11-25 14:45 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "It came: finish 17k (Recommended if
+it came)" (orient picker). The email (pasted by Mark): results at `https://win-builder.r-project.org/9ObRnQYtbA8V`,
+installation 18 s, check time 980 s, Status 1 NOTE, R-devel 2026-11-17 r90926 ucrt.
+**Status:** Session claimed. Fetching the logs.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### What Session 91 Did
 **Deliverable:** the backlog item "A Windows job that does not end after its tests finish" (S69-S90), strict TDD.
 DONE (R164): the Windows job ends, Status OK, twice.

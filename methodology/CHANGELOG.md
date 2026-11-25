@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-25 · [BL-Phase 17] S92 (in progress): finishing Phase 17k, the win-builder R-devel reading, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S92's stub), `methodology/HANDOFFS.md` (S92's `status: pending` receipt) and this entry. The deliverable is finishing Phase 17k (`docs/planning/cran-submission-plan.md:857`; R85, R86): read win-builder's R-devel results for S90's upload and decide against 540 s. The email, pasted by Mark: check time 980 s, Status 1 NOTE, installation 18 s. Phase 3F rewrites this entry.
+- **Commit/PR:** the S92 claim commit · **Session:** S92 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0, nprcgenekeepr at `3e06730c5` with the same 4 commits and a clean tree, ledgers current at `caab10d`, no ghost session, no merge, S91's receipt complete and its quality-gate citation equal to the results file `534fea217641`, 31 backlog items at the handoff's lines; dashboard 93/100, medium risk; no open issue).
+
 ### 2026-11-25 · [BL-windows-hang] S91 push 4: close-out to GitHub, no CI run
 - **Change:** pushed `e6e2e1a..7b8c9dc` (close-out 1 and 2), documents only, the head commit carrying the skip marker, so no workflow ran; the package's code and CI were read at `e6e2e1a` (push 3).
 - **Commit/PR:** the push of `7b8c9dc`; close-out 2b (this entry) · **Session:** S91 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `7b8c9dc`; `gh run list` showed no new run.
