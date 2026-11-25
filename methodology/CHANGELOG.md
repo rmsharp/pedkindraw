@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-25 · [BL-Phase 17] S92 push 2: close-out to GitHub, no CI run
+- **Change:** pushed `23a6186..d968d5f` (close-out 1 and 2), documents only, each commit carrying the skip marker, so no workflow ran; the package's tests and CI were read at `23a6186` (push 1).
+- **Commit/PR:** the push of `d968d5f`; close-out 2b (this entry) · **Session:** S92 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `d968d5f`; `gh run list` showed no new run.
+
 ### 2026-11-25 · [BL-Phase 17] S92 push 1: claim to GREEN to GitHub, CI read job by job, one job rerun
 - **Change:** pushed `caab10d..23a6186` (claim, the reading, R165, RED, GREEN; GREEN without the skip marker). R-CMD-check 45705867740: Windows OK `[ FAIL 0 | WARN 0 | SKIP 36 | PASS 17031 ]`, macOS OK `PASS 17033`, Ubuntu oldrel-1 OK `PASS 17022` (each S91's plus the new tests' 25); Ubuntu release failed one browser test while Chrome started (`test_savePedigreeDiagram.R:426`, "Chrome debugging port not open after 10 seconds"), so the job was rerun once (`gh run rerun 45705867740 --job 139527557126`): Status OK `PASS 17022`; Ubuntu devel failed loading S4Vectors before pedkindraw was checked (backlog `:197`). pkgdown `success`. The start-up failures recorded as backlog `:214`.
 - **Commit/PR:** the push of `23a6186`; run 45705867740 (attempts 1 and 2) · **Session:** S92 · **Model:** Claude Opus 5.5 · **Verified:** each job's lines read through the jobs API, by attempt.
