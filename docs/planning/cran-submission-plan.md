@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stopped on a pedigree with a parent id that has no row (R162); DONE (S89, R163: the layout repaired, such a parent not drawn and its offspring with no line up, every one of 1,181 random pedigrees drawn, the 505 that drew unchanged in the rectilinear style; a repeated id stops, naming it). Next: 17k (one win-builder reading; Mark approves the upload).
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stopped on a pedigree with a parent id that has no row (R162); DONE (S89, R163: the layout repaired, such a parent not drawn and its offspring with no line up, every one of 1,181 random pedigrees drawn, the 505 that drew unchanged in the rectilinear style; a repeated id stops, naming it). 17k under way (S90): the tarball (the package as at `89f39e7`) uploaded to win-builder R-devel at 14:17 UTC on 2026-11-25 (Mark's pick), its local check `Status: 1 NOTE` (R16's), tests 188 s; the reading waits in win-builder's R-devel queue (17k's In progress note; dragon 34). Next: the session that has Mark's email reads it and finishes 17k (the results folder lasts about 72 hours); until it arrives, the Windows CI hang (backlog `:11`; Mark's pick, S90).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -865,6 +865,22 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   list of skipped files and why, and each export called by a test that runs in CRAN mode (a check that fails
   otherwise).
 - **Surface:** win-builder R-devel; one reading again.
+- **The 540 s** is R85's target for win-builder's "Check time in seconds" (in the email, not in `00check.log`), as
+  17a's 398 s was; the tests' elapsed time against their CPU time (`examples_and_tests/tests/testthat.Rout`,
+  `proc.time()`) says whether the machine was busy (dragon 8).
+- **In progress (S90, 2026-11-25):** the tarball built from `ad23242` (the package's files as at `89f39e7`, S89's
+  REFACTOR; a `git archive` into the scratchpad, then CLAUDE.md's recipe), 1,697,606 B, SHA-256
+  `323e6a8b1c1bda434b48cae036505b95f74f8091355d627fc8ae2a4505cfdf46`; its files the 265 tracked ones
+  `.Rbuildignore` keeps, less `.Rbuildignore`, plus 9 built (three vignettes), compared by machine. Checked here
+  first (`R CMD check --as-cran --timings`, load average 8.1 at the start, 6.8 at the end): `Status: 1 NOTE`
+  (R16's lines only), tests `[ FAIL 0 | WARN 0 | SKIP 94 | PASS 13836 ]` 188 s elapsed for 187.7 s CPU, the check
+  258 s on the clock (17a's tarball: 136 s and 208 s, at load 10-13). Uploaded by FTP to
+  `ftp://win-builder.r-project.org/R-devel/` at 14:17 UTC (reply 226; Mark's pick, "You upload it by FTP
+  (Recommended)"). At 16:13 UTC the R-devel queue still held it with 18 others, 15 ahead, the oldest there since
+  11:34 UTC, while R-release's held 3 from the last 40 minutes: no email yet. Mark closed S90 to wait ("Close;
+  next: Windows hang (Recommended)"). S33's ratio of 1.9 would put the check near 490 s: a guess, not a reading.
+  **Left:** read the email's check time and the result folder's logs, record them here and in section 2.1, and
+  decide 17k against 540 s (dragon 8: a reading near 540 s is uploaded again before it decides anything).
 
 ### Phase 17l. Static hygiene and noSuggests
 
@@ -1105,6 +1121,13 @@ pedkindraw's own:
     in GREEN 3, R163 corrected in `c1631d2`). Before a picker states how many tests a change breaks, run the whole
     suite on that change exactly as the gate will commit it, every part together, and read each failure's message
     before naming its cause.
+34. **win-builder's R-devel queue can hold an upload for hours** (S90, 17k): uploaded at 14:17 UTC, it was still
+    waiting at 16:13 UTC, with 15 packages ahead, the oldest there since 11:34 UTC; nothing left the queue in the
+    5 minutes watched, while R-release's queue held 3, none older than 41 minutes. The email comes only after the
+    check, so no email says nothing about the upload. A file in `ftp://win-builder.r-project.org/R-devel/` has not
+    started (`curl -sS ftp://win-builder.r-project.org/R-devel/` lists it; the server's clock is UTC+1); list the
+    queue before uploading and while waiting. For 17o, upload early in the session, or close it and read the email
+    in the next one: the result folder lasts about 72 hours.
 
 ---
 

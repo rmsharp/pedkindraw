@@ -107,7 +107,8 @@ session each unless marked. They follow the copy slices.
   unreachable); 17j2 is done (S88, R162: 24 of the layout file's 29 reached by new tests, 5 recorded unreachable;
   7 of 3,772 left), so 17j is done. Found by 17j2 and done before 17k (S89, R163): `makePedigreeMatingLayout()`
   draws a pedigree with a parent id that has no row, without that parent, and stops on a repeated id, naming it.
-  Next is 17k, then 17l-17q.
+  17k is under way (S90: the tarball uploaded to win-builder R-devel, its reading waiting in win-builder's queue);
+  the session with Mark's email finishes it, the Windows CI hang (backlog `:11`) until then; then 17l-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
