@@ -49,8 +49,10 @@ name each in a preview).
    baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed
    's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr at
    `3e06730c5`, tree clean, through S88.
-2. **S88's push:** read the CHANGELOG's S88 push entry (close-out 2b) and `gh run list`; the push carries 17j2's test
-   files, so R-CMD-check runs (the Windows job hangs, `:30`; cancel it at 40 minutes).
+2. **S88's push was read** (the CHANGELOG's S88 push entry): pkgdown `success`; R-CMD-check Ubuntu release and
+   oldrel-1 OK `[ FAIL 0 | WARN 0 | SKIP 34 | PASS 16847 ]` (S87's plus 47), macOS OK `PASS 16858`, Windows `FAIL 0 |
+   PASS 16856` then the hang (cancelled at 40 min, `:30`), Ubuntu devel failed loading S4Vectors (`:224`). Nothing to
+   read at Orient beyond `gh run list`.
 3. **The crash item, if picked:** read `:11`, R162 and dragons 31-32 (`docs/planning/cran-submission-plan.md:1083`,
    `:1092`). The stops: `R/orderRootSubtrees.R:62` (no roots: every animal of a component has a parent edge or is a
    mate drawn beside its partner), `R/makePedigreeDiagramData.R:1689` (`.penaltyMatrix()`, after `:1529` skips an
@@ -117,7 +119,8 @@ calls", "Keep as copied, record why", "Backlog, before 17k"); "Yes, proceed to R
 REFACTOR (Recommended)". No correction and no tool use declined.
 **Commits:** claim `c48cde4`; R162 `7464409`; RED `4955fa5`; GREEN `cd7b162` (empty: the measurements); REFACTOR
 `ee637d0`; close-out 1 `bade5c8` (the plans, roadmap, dragons 31-32); close-out 2 (the count corrected in R162 and the
-plan, the backlog, these notes, the receipt, the ledger), pushed after it.
+plan, the backlog, these notes, the receipt, the ledger), pushed after it (`d09b672..c03c96b`); close-out 2b (the push
+entry; these notes and the receipt to CI's results).
 **Measured first:** covr on a `git archive` of `c48cde4` (31 of 3,772, 13.1 min, each with its column); each of the 29
 read beside its comment and its input tried in a scratch copy (`covr::function_coverage()` per function); a copy
 counting each target line run over 2,000 seeded random pedigrees (the 5 never reached but `:1529`, always followed
