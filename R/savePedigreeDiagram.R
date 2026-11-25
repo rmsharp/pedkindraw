@@ -4,7 +4,8 @@
 ## Phase G16a, gaps A1 and A2 of docs/research/pedkindraw-gaps-2026-11-18.md;
 ## rulings R142 and R143, docs/planning/picture-files-plan.md section 11; the
 ## .pdf and .png files and dpi: pedkindraw S71, Phase G16b, ruling R144,
-## section 12).
+## section 12; .closeChrome(): pedkindraw S91, backlog item "A Windows job
+## that does not end after its tests finish").
 
 #' Save a pedigree diagram as a picture file
 #'
@@ -172,7 +173,7 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
 
   chrome <- chromote::Chromote$new()
   # The browser closes first, then the folder it reads goes.
-  on.exit(chrome$close(), add = TRUE, after = FALSE)
+  on.exit(.closeChrome(chrome), add = TRUE, after = FALSE)
   # chromote's first launch can take longer than its 10 s default allows on a
   # slow machine (a fresh Chrome on a CI runner).
   chrome$default_timeout <- max(chrome$default_timeout, 60.0)
@@ -301,7 +302,7 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
   chrome <- chromote::Chromote$new(browser = chromote::Chrome$new(
     args = unique(c(chromote::default_chrome_args(), "--disable-lcd-text"))
   ))
-  on.exit(chrome$close(), add = TRUE, after = FALSE)
+  on.exit(.closeChrome(chrome), add = TRUE, after = FALSE)
   chrome$default_timeout <- max(chrome$default_timeout, 60.0)
   session <- chromote::ChromoteSession$new(
     parent = chrome, width = as.integer(ceiling(pageWidth * 96.0)) + 50L,
@@ -352,6 +353,33 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
 .stopTooSlow <- function(timeout) {
   stop("savePedigreeDiagram() did not finish drawing within ",
        format(timeout), " seconds.", call. = FALSE)
+}
+
+#' Close a browser and end each of its processes the close leaves running
+#'
+#' On Windows the renderer of a page whose script never returns, and its
+#' crash reporter, outlive their browser's close (pedkindraw S91: R CMD check
+#' then waited for them until stopped). The browser's child processes are
+#' listed while it runs, by their parent (processx's own marker reaches none
+#' of Chrome's), and each one still running after the close is ended.
+#'
+#' @param chrome the \code{chromote::Chromote} that started the browser.
+#' @return \code{NULL}, invisibly.
+#' @noRd
+.closeChrome <- function(chrome) {
+  children <- tryCatch(
+    ps::ps_children(ps::ps_handle(chrome$get_browser()$get_process()$get_pid()),
+                    recursive = TRUE),
+    error = function(e) list()
+  )
+  chrome$close()
+  for (child in children) {
+    if (ps::ps_is_running(child)) {
+      try(ps::ps_kill(child), silent = TRUE)
+      try(ps::ps_wait(child, timeout = 5000L), silent = TRUE)
+    }
+  }
+  invisible(NULL)
 }
 
 #' The seconds left to a deadline

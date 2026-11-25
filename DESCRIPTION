@@ -33,6 +33,7 @@ Suggests:
     mockery,
     Pedixplorer,
     pkgload,
+    ps,
     rmarkdown,
     shiny,
     testthat (>= 3.0.0),
