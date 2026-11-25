@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-25 · [BL-Phase 17] S90 push: `master` to GitHub at close-out, no CI run
+- **Change:** pushed `deb25c1..e84ce57` (S90's 3 commits: claim, close-out 1, close-out 2), documents only, each carrying the skip marker, so no workflow ran (no package file changed since `89f39e7`, which S89's push ran CI on). Recorded in close-out 2b (this entry), pushed after it.
+- **Commit/PR:** the push of `e84ce57`; close-out 2b (this entry) · **Session:** S90 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `e84ce57`; `gh run list` showed no new run.
+
 ### 2026-11-25 · [BL-Phase 17] S90 upload: the 17k tarball sent to win-builder R-devel by FTP
 - **Change:** a non-commit action with Mark's approval ("You upload it by FTP (Recommended)"): `pedkindraw_0.0.1.tar.gz` (the package as at `89f39e7`, built from `ad23242`; 1,697,606 B; SHA-256 `323e6a8b1c1bda434b48cae036505b95f74f8091355d627fc8ae2a4505cfdf46`) uploaded by `curl -T` to `ftp://win-builder.r-project.org/R-devel/` at 14:17 UTC, reply 226. The results go to the maintainer's email. At 16:13 UTC it still waited in the R-devel queue, 15 packages ahead (dragon 34); no reading yet.
 - **Commit/PR:** none (recorded in close-out 2) · **Session:** S90 · **Model:** Claude Opus 5.5 · **Verified:** curl's FTP replies (226 Transfer complete); the queue listing showed the file at 1,697,606 B, "03:17PM" server time (UTC+1).
