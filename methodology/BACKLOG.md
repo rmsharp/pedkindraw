@@ -8,6 +8,25 @@ issues).*
 
 ## Up Next
 
+- [ ] **`makePedigreeMatingLayout()` stops on a pedigree with a parent id that has no row** (DECISION NEEDED, Effort
+      S-M, a guess; before 17k, Mark's pick, R162; found S88) -- S88's search, 2,000 seeded random pedigrees of 4 to
+      40 animals (cran plan dragon 32): of the 1,171 with a sire or dam id that has no row of its own (and no repeated
+      id), 430 stopped with R's or an internal check's message, nothing a user can act on: "`.orderRootSubtrees()`
+      requires 'rootIds' to be a non-empty character vector with no NA." (344), "NAs are not allowed in subscripted
+      assignments" (64), "subscript out of bounds" (22); 36 were refused by `kinship()`'s designed depth check and 705
+      returned. Of the 90 with a repeated id, 81 stopped with "node stack overflow". Of the 739 with every parent
+      present and unique ids, none stopped this way (27 refused by the depth check). Smallest: one animal whose sire
+      has no row and whose dam is unknown, `data.frame(id = "A", sire = "X", dam = NA, sex = "F", gen = 1L)`, alone
+      or beside a complete family (`.orderRootSubtrees()`); founders `G`, `F`, their `H`, and `A` (sire `X`, no row)
+      mated to `H` with offspring `K` (`R/makePedigreeDiagramData.R:1529` skips `A`, never placed, and
+      `.penaltyMatrix()`, `:1689`, stops); two rows with id `A` (`node stack overflow`). A mating whose sire and dam
+      both have no row returns (tested, `test_addRectilinearWaypointsInputs.R`). nprcgenekeepr 3.0.0.9000 at
+      `3e06730c5` stops the same way on the same inputs. `@param ped` (`:1843`) does not say every parent needs a
+      row, the code's comments treat a missing parent as supported (issues #154, S461, S682), and the app adds the
+      missing parents first (`R/pedigreeApp.R:203`, `addParents()`). **Decide:** stop at once with a clear message
+      naming the ids (pointing to `addParents()`), or add them as the app does; refuse a repeated id; and whether
+      nprcgenekeepr is told (R8). Either changes copied code: a `DIVERGENCE.md` row unless nprcgenekeepr changes too.
+
 - [ ] **A Windows job that does not end after its tests finish** (READY, Effort M, a guess; found S70, dragon 30 of
       `docs/planning/picture-files-plan.md`) -- S69's Windows job ran the tests to the end (`[ FAIL 13 | WARN 0 | SKIP
       1 | PASS 16196 ]`) and then the check step went on "running" for 77 minutes until it was cancelled; two
@@ -115,25 +134,6 @@ issues).*
       `tests/testthat/fixtures/smallPed.rds` stores the same wrong generations as nprcgenekeepr's
       `smallPed` (8 of 17 differ from `findGeneration()`, measured S41); S35 made the one test that used them compute
       `gen` instead. Replace the fixture from nprcgenekeepr's corrected dataset (R21's provenance) and run the suite.
-
-- [ ] **Tests for full coverage** (READY, Effort M; before the release, Phase 17j, R84, R161) -- Mark's request (S13):
-      add tests until the test suite reaches every statement in `R/`, or show a statement unreachable and record why.
-      S87 (17j1, R161) measured `covr::package_coverage(type = "tests")` with `NOT_CRAN=true` on `a423bcf`: 40 of
-      3,772 statements never run (98.94%; S24's 43 on `bcdc1b0` less `R/rbindFill.R:35`, `R/kinship.R:159` and two of
-      `R/makePedigreeDiagramData.R`'s, plus `R/savePedigreeDiagram.R:338`), and reached 9 of the 11 outside the layout
-      file with new tests in pedkindraw's own files; on `af4f23b`, 31 of 3,772 (99.18%). **Left, 17j2 (one session, a
-      guess):** `R/makePedigreeDiagramData.R`'s 29, copied from nprcgenekeepr and kept as copied, so their tests go in
-      pedkindraw's own files: `:809` (`.buildMatingUnitForest()`), `:996` (`.packComponents()`), `:1227`, `:1529`,
-      `:1581` (`.positionMatingUnitForest()`), `:2960`, `:2981`, `:3022`, `:3032`, `:3033`, `:3037`, `:3049`, `:3050`,
-      `:3052`, `:3053`, `:3054`, `:3059`, `:3073`, `:3085`, `:3116`-`:3120`, `:3141` (`.addRectilinearWaypoints()`),
-      `:3259` (`.arcDiscHitCount()`), `:3427`, `:3756`, `:3757` (`.resolveEdgeNodeCollisions()`). 16 of them (`:1581`,
-      `:2981`, the dogleg's `:3032`-`:3059` and `:3116`-`:3120`) the comment at `:1517` or S87's reading calls
-      unreachable from a drawing, not yet proved (cran plan dragon 30); work out what input reaches each before
-      calling it unreachable (Learning 11). **Recorded unreachable, kept as copied (R161):**
-      `R/orderRootSubtrees.R:118` (no input reaches it: every root is a child of the super-root, so each root's own id
-      is placed, in `tier1X` and in `m`) and `:131` (no layout reaches it: a connector joining two roots has both ends
-      placed, so `usable` equals `crossRoot`, already true; only a `childrenOf` that answers differently after its
-      first calls does, measured). The new tests' CRAN-mode time (for 17k): about 0.2 s.
 
 ## nprcgenekeepr sessions (Mark starts them there; R8, R98-R101)
 

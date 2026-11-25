@@ -204,10 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S88
 date: 2026-11-24
-status: pending
-active_task: Phase 17j2 (cran plan :793, backlog :119, R161): the 29 never-run statements of R/makePedigreeDiagramData.R, each reached by a test or recorded unreachable; strict TDD. Claimed; work beginning.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 7
+predecessor_score: 9
+active_task: Phase 17. 17j2 DONE in S88 (R162), so 17j DONE: of R/makePedigreeDiagramData.R's 29 unrun statements, 24 reached by new tests (2 through a drawing, 22 by direct calls), 5 recorded unreachable; 7 of 3,772 left. Found: makePedigreeMatingLayout() stops on a pedigree with a parent id that has no row (backlog :11, before 17k). Next: that item, then 17k.
+what_was_done: claim c48cde4; R162 7464409; RED 4955fa5 (4 files, 13 tests passing at once; 70 of 72 broken copies failing, the 2 others removals that change no output); GREEN cd7b162 (empty: covr 7 of 3,772, suite 17,073, R CMD check R16's NOTE); REFACTOR ee637d0 (.directStyleInputs()); close-out 1 bade5c8 (dragons 31-32); close-out 2 (the 1,135 count corrected to 1,171), pushed.
+next_steps: Orient as SESSION_NOTES.md "What You Must Do"; read S88's push; the orient picker: the crash item (recommended, backlog :11: a picker on a clear message or adding the missing parents, each measured on a rebuilt 2,000-pedigree search first; a DIVERGENCE.md row), 17k, the Windows item (:30), the rest grouped and named.
+key_files: tests/testthat/test_packComponentsSeparateRows.R; tests/testthat/test_addRectilinearWaypointsDogleg.R; tests/testthat/test_addRectilinearWaypointsInputs.R; tests/testthat/test_resolveEdgeNodeCollisionsCases.R; tests/testthat/helper-addRectilinearWaypoints.R:11; R/orderRootSubtrees.R:62; R/makePedigreeDiagramData.R:1529, :1689, :1843, :2236; R/pedigreeApp.R:203; docs/planning/cran-submission-plan.md:826, :1083, :1092; docs/planning/standalone-pedigree-package-plan.md:341; methodology/BACKLOG.md:11
+gotchas: a break no test catches is a statement nothing needs or an input that hides it (dragon 31); test_file() leaves tests/testthat/_problems/ after a failure; grepl("\\b") needs perl = TRUE; kinship()'s depth refusals in a random search are its designed check; state what a count's denominator includes (S88's 1,135); covr reach checks take seconds here, the whole suite 12-13 min.
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: the package suite on a git archive of 4955fa5 (NOT_CRAN=true) 1,182 tests, 17,073 expectations, 0 failed, WARN 0 (10.0 min); R CMD check --as-cran on 4955fa5 Status 1 NOTE (R16's). Tests only; no R/ change.
+changelog_ref: CHANGELOG.md "2026-11-24 · [BL-Phase 17] S88: 17j2, tests for the layout file's statements no test ran"
 ```
 ```handoff
 session: S87
