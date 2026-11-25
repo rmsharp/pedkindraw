@@ -8,25 +8,6 @@ issues).*
 
 ## Up Next
 
-- [ ] **`makePedigreeMatingLayout()` stops on a pedigree with a parent id that has no row** (DECISION NEEDED, Effort
-      S-M, a guess; before 17k, Mark's pick, R162; found S88) -- S88's search, 2,000 seeded random pedigrees of 4 to
-      40 animals (cran plan dragon 32): of the 1,171 with a sire or dam id that has no row of its own (and no repeated
-      id), 430 stopped with R's or an internal check's message, nothing a user can act on: "`.orderRootSubtrees()`
-      requires 'rootIds' to be a non-empty character vector with no NA." (344), "NAs are not allowed in subscripted
-      assignments" (64), "subscript out of bounds" (22); 36 were refused by `kinship()`'s designed depth check and 705
-      returned. Of the 90 with a repeated id, 81 stopped with "node stack overflow". Of the 739 with every parent
-      present and unique ids, none stopped this way (27 refused by the depth check). Smallest: one animal whose sire
-      has no row and whose dam is unknown, `data.frame(id = "A", sire = "X", dam = NA, sex = "F", gen = 1L)`, alone
-      or beside a complete family (`.orderRootSubtrees()`); founders `G`, `F`, their `H`, and `A` (sire `X`, no row)
-      mated to `H` with offspring `K` (`R/makePedigreeDiagramData.R:1529` skips `A`, never placed, and
-      `.penaltyMatrix()`, `:1689`, stops); two rows with id `A` (`node stack overflow`). A mating whose sire and dam
-      both have no row returns (tested, `test_addRectilinearWaypointsInputs.R`). nprcgenekeepr 3.0.0.9000 at
-      `3e06730c5` stops the same way on the same inputs. `@param ped` (`:1843`) does not say every parent needs a
-      row, the code's comments treat a missing parent as supported (issues #154, S461, S682), and the app adds the
-      missing parents first (`R/pedigreeApp.R:203`, `addParents()`). **Decide:** stop at once with a clear message
-      naming the ids (pointing to `addParents()`), or add them as the app does; refuse a repeated id; and whether
-      nprcgenekeepr is told (R8). Either changes copied code: a `DIVERGENCE.md` row unless nprcgenekeepr changes too.
-
 - [ ] **A Windows job that does not end after its tests finish** (READY, Effort M, a guess; found S70, dragon 30 of
       `docs/planning/picture-files-plan.md`) -- S69's Windows job ran the tests to the end (`[ FAIL 13 | WARN 0 | SKIP
       1 | PASS 16196 ]`) and then the check step went on "running" for 77 minutes until it was cancelled; two
@@ -135,10 +116,27 @@ issues).*
       `smallPed` (8 of 17 differ from `findGeneration()`, measured S41); S35 made the one test that used them compute
       `gen` instead. Replace the fixture from nprcgenekeepr's corrected dataset (R21's provenance) and run the suite.
 
+- [ ] **`makePedigreeDiagramData()` returns two nodes with one id for a repeated id** (DECISION NEEDED, Effort S;
+      found S89) -- `makePedigreeDiagramData(data.frame(id = c("A", "A"), sire = NA, dam = NA, sex = "M", gen =
+      0L))` returns 2 nodes, both `A`; what visNetwork then draws was not measured. R163 made
+      `makePedigreeMatingLayout()` stop on a repeated id, naming it; the same stop here would change copied code (a
+      `DIVERGENCE.md` row). It draws a parent with no row: S89's three typed cases each drew every animal.
+
 ## nprcgenekeepr sessions (Mark starts them there; R8, R98-R101)
 
 *Not pedkindraw sessions: listed so they are not lost. Each runs under nprcgenekeepr's own protocol and checks;
 `docs/planning/gaps-and-shared-code-plan.md` section 5.2 gives the work, DONE and order.*
+
+- [ ] **Tell nprcgenekeepr: its layout stops on a parent id with no row, and on a repeated id** (READY, Effort
+      S-M, a guess; R163; found S88, repaired here S89) -- nprcgenekeepr's `makePedigreeMatingLayout()` (at
+      `3e06730c5`) stops with R's or an internal check's message when an animal's only recorded parent has no row:
+      `data.frame(id = "A", sire = "X", dam = NA, sex = "F", gen = 1L)` alone (`.orderRootSubtrees()`'s check);
+      such an animal mated to a drawn one (`.penaltyMatrix()`, "NAs are not allowed in subscripted assignments");
+      or beside others (`.addRectilinearWaypoints()`, "subscript out of bounds"): 676 of 1,181 random pedigrees
+      with a parent that has no row. A repeated id gives "node stack overflow". pedkindraw's repair, `22fa0a4` and
+      REFACTOR `89f39e7` (the `DIVERGENCE.md` rows of `makePedigreeMatingLayout()`, `.buildMatingUnitForest()` and
+      `.positionMatingUnitForest()`): no line from a parent with no row, every animal with no line in a root, a
+      repeated id stopped. A session there ports it (Learning 16's patch) or leaves it to the switch (R98).
 
 - [ ] **N3: nprcgenekeepr imports pedkindraw** (BLOCKED on CRAN accepting pedkindraw; Effort M, 2 sessions, a guess;
       R98, R100) -- `Imports: pedkindraw`; the 22 shared exports re-exported; its 82 copied definitions and 43 copied

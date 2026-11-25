@@ -10,92 +10,87 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17j DONE (S33-S88); the gap
-phases G1-G17 DONE (S42-S77). **17j DONE (S87-S88, R161-R162):** covr (`type = "tests"`, `NOT_CRAN=true`) reads 7 of
-3,772 statements never run at `4955fa5` (99.81%), each recorded unreachable with its reason (the cran plan's 17j note,
-`:826`; R162 at `docs/planning/standalone-pedigree-package-plan.md:341`). S88 added 4 test files (13 tests, 47
-expectations) and a helper; no `R/` file changed. **Found by S88, open:** `makePedigreeMatingLayout()` stops with R's
-or an internal message on a pedigree with a parent id that has no row (430 of 1,171 random ones; one animal whose
-sire has no row and whose dam is unknown is enough), and on a repeated id; nprcgenekeepr the same
-(`methodology/BACKLOG.md:11`, DECISION NEEDED, before 17k by Mark's pick). Also open: the Windows job that does not
-end (`:30`).
-**Next, recommended: the crash item (`:11`)**, a picker first: stop at once with a clear message naming the ids (and
-pointing to `addParents()`), or add the missing parents as the app does (`R/pedigreeApp.R:203`); refuse a repeated
-id; tell nprcgenekeepr or not. Measure each option's effect on the 2,000-pedigree search before the picker (Learning
-17; the search's method is in dragon 32, the scripts are gone). A code change to copied code: a `DIVERGENCE.md` row
-(drift rule). Then 17k (one win-builder reading; Mark approves the upload).
-**Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's).
-**The orient picker:** the crash item (recommended), 17k, or the Windows item (`:30`). Also, from
-`methodology/BACKLOG.md` (31 items, each at its line by `grep -n '^- \[ \]'` after S88's close-out; S88 added `:11`
-and removed the 17j item, so the items from `:30` to `:132` moved down 19 lines and the rest kept theirs): READY,
-rewording `DIVERGENCE.md`'s older rows (`:55`), the legend's labels in a narrow drawing (`:73`), the drawing
-vignette's measured trait (`:83`), a twins table with no rows (`:89`), `savePedigreeDiagram()` and a `CHROMOTE_CHROME`
-naming no file (`:99`), the `smallPed` fixture (`:132`), `findPedigreeNumber()`'s speed (`:275`), poppler in CI
-(`:291`), the label counts in `largeIds` (`:258`), and the nine "Ready, small" items (`:186` the suite gate's time
-limit, `:198` the stale pedkindraw 0.0.1, `:205` the drift tool and copied constants, `:214` the context-budget tool,
-`:224` CI notices, `:241` report a vacuous test, `:247` tell nprcgenekeepr's edition-3 conversion, `:263` the gaps
-plan's stale cells, `:310` tell nprcgenekeepr its timing rows' `started`); NEEDS DECISION, Pedixplorer's `avail`
-(`:108`), long names at the edges (`:116`), a colony's ids under a point high (`:125`), `findGeneration(alignMates =
-TRUE)`'s speed (`:281`), `HANDOFFS.md`'s growth past its trimmer (`:301`); "Waiting on Mark", the dashboard and
-`methodology/BACKLOG.md` (`:149`), copying the colony overview (`:156`), the app's features left for later (`:163`),
-an animal with two mates drawn once (`:175`). BLOCKED, so not offered: `:64` (retire the drift tools), `:143` (N3).
-Name every item in the picker (memory "Picker sets: name items, include all"; at most 4 options, so group them and
-name each in a preview).
-**Session boundary:** one session (the crash item, or 17k), then close out.
-**Priority:** HIGH (the crash item, then 17k-17q).
+phases G1-G17 DONE (S42-S77). **The crash item before 17k DONE (S89, R163,
+`docs/planning/standalone-pedigree-package-plan.md:343`):** `makePedigreeMatingLayout()` draws a pedigree with a
+parent id that has no row, without that parent (an animal whose other parent is unknown drawn with no line up, as a
+founder), where 676 of 1,181 random such pedigrees stopped with R's messages; the 505 that drew are unchanged in the
+rectilinear style; a repeated id stops before any other check, naming it. Code `22fa0a4`, REFACTOR `89f39e7`; 9 new
+tests; one existing test's input changed (`40436a1`, Mark's pick); `DIVERGENCE.md` rows; NEWS; the contract.
+**Next, recommended: 17k** (`docs/planning/cran-submission-plan.md:857`): one win-builder R-devel reading of the tree
+(Mark approves the upload; R86; S33 uploaded by FTP, D1), its tests' elapsed time against 540 s (R85). Nothing is
+skipped if it reads 540 s or less.
+**Status:** READY. No work in progress; the tree is clean but `pedkindraw.Rproj` (Mark's). Pushed at close-out 2.
+**The orient picker:** 17k (recommended), or the Windows item (`methodology/BACKLOG.md:11`). Also (32 items, each at
+its line by `grep -n '^- \[ \]'` after S89's close-out; S89 removed the crash item, so the items from `:30` to `:132`
+moved up 19 lines, added `:119` and `:130`, and the items after `:132` moved up 2): READY, rewording `DIVERGENCE.md`'s
+older rows (`:36`), the legend's labels in a narrow drawing (`:54`), the drawing vignette's measured trait (`:64`), a
+twins table with no rows (`:70`), `savePedigreeDiagram()` and a `CHROMOTE_CHROME` naming no file (`:80`), the
+`smallPed` fixture (`:113`), the label counts in `largeIds` (`:256`), `findPedigreeNumber()`'s speed (`:273`), poppler
+in CI (`:289`), and the nine "Ready, small" items (`:184` the suite gate's time limit, `:196` the stale pedkindraw
+0.0.1, `:203` the drift tool and copied constants, `:212` the context-budget tool, `:222` CI notices, `:239` report a
+vacuous test, `:245` tell nprcgenekeepr's edition-3 conversion, `:261` the gaps plan's stale cells, `:308` tell
+nprcgenekeepr its timing rows' `started`); NEEDS DECISION, Pedixplorer's `avail` (`:89`), long names at the edges
+(`:97`), a colony's ids under a point high (`:106`), **new:** `makePedigreeDiagramData()`'s two nodes for a repeated
+id (`:119`), `findGeneration(alignMates = TRUE)`'s speed (`:279`), `HANDOFFS.md`'s growth past its trimmer (`:299`);
+"Waiting on Mark", the dashboard and `methodology/BACKLOG.md` (`:147`), copying the colony overview (`:154`), the
+app's features left for later (`:161`), an animal with two mates drawn once (`:173`). Not offered: `:130` (**new**,
+tell nprcgenekeepr of R163's crash, a session Mark starts there), `:45` and `:141` (BLOCKED). Name every item in the
+picker (memory "Picker sets: name items, include all"; at most 4 options, so group them and name each in a preview).
+**Session boundary:** one session (17k, or one backlog item), then close out.
+**Priority:** HIGH (17k-17q).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**: S88 changed tests only; `git diff c48cde4
-   HEAD -- R/` is empty); nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline
-   baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed
-   's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr at
-   `3e06730c5`, tree clean, through S88.
-2. **S88's push was read** (the CHANGELOG's S88 push entry): pkgdown `success`; R-CMD-check Ubuntu release and
-   oldrel-1 OK `[ FAIL 0 | WARN 0 | SKIP 34 | PASS 16847 ]` (S87's plus 47), macOS OK `PASS 16858`, Windows `FAIL 0 |
-   PASS 16856` then the hang (cancelled at 40 min, `:30`), Ubuntu devel failed loading S4Vectors (`:224`). Nothing to
-   read at Orient beyond `gh run list`.
-3. **The crash item, if picked:** read `:11`, R162 and dragons 31-32 (`docs/planning/cran-submission-plan.md:1083`,
-   `:1092`). The stops: `R/orderRootSubtrees.R:62` (no roots: every animal of a component has a parent edge or is a
-   mate drawn beside its partner), `R/makePedigreeDiagramData.R:1689` (`.penaltyMatrix()`, after `:1529` skips an
-   anchor tier 1 never placed), "subscript out of bounds" (22, not traced), `node stack overflow` (a repeated id).
-   `makePedigreeMatingLayout()`'s checks are at `R/makePedigreeDiagramData.R:2236`-`:2265`; `@param ped` at `:1843`.
-   Rebuild the search (dragon 32: a copy with `.hit("<line>")` on the line itself; seeded pedigrees whose parents come
-   from earlier rows and whose `gen` is their depth; a share with sires `X1`-`X3` and dams `Y1`-`Y3` that have no
-   row; tally the stops by message) and measure each option on it before the pre-RED picker.
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**: S89 changed three functions that already
+   had rows); nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD --
+   $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4
+   commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr at `3e06730c5`, tree clean, through
+   S89. The fidelity tool read 600 of 600 identical on `22fa0a4`'s code.
+2. **Read S89's push** (`gh run list --limit 6`, then `gh run view <id> --log` for each R-CMD-check job's `FAIL n |
+   WARN n | SKIP n | PASS n`): expect `PASS` 157 more than S88's per platform (Ubuntu release and oldrel-1 16,847 +
+   157 = 17,004 if every new test runs there; the random test skips only in CRAN mode); Windows ends its tests then
+   hangs (cancel at 40 minutes, `:11`); Ubuntu devel may fail before pedkindraw (`:222`). Record the push entry in the
+   CHANGELOG if S89's close-out 2b did not.
+3. **17k, if picked:** read `:857`, R85, R86 and section 2.1. Build the tarball as CLAUDE.md's full check does, then
+   ask Mark (picker) before any upload. S88 measured the CRAN-mode time of 17j's files (0.78-0.83 s); S89's new files
+   take 0.8 s in CRAN mode (the random test skips). `R CMD check --as-cran` on `40436a1` ran its tests in 202 s here.
 4. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
-- **A break no test catches** (dragon 31): read each one. Removing `:3022`'s `next` or `:3427`'s early return
-  changes no output (recorded); 3 other misses in S88's drafts were inputs where the right and wrong answers agreed.
-- **`testthat::test_file()` leaves `tests/testthat/_problems/`** when a test fails; S88 saw it in a scratch copy.
-  Never commit it.
-- **R's `grepl("\\b...")` needs `perl = TRUE`**: without it S88's first tally read 0 for a line reached 67 times.
-- **The random search's `kinship()` refusals** ("pdepth must be greater ...") are its designed check, not a crash:
-  made-up `gen` values. Count them apart.
-- **A count's denominator:** S88's picker said "430 of 1,135", which left out 36 refusals; R162, the plan and the
-  backlog say 1,171. State what each count includes.
-- **covr reach checks are fast here:** `covr::package_coverage(type = "none", code = <the test files>)` on four small
-  files took 8 s; `covr::function_coverage(fn, env = asNamespace("pedkindraw"), code = ...)` a few seconds a case.
-  The whole-suite run took 12.4-13.1 min.
+- **A prototype carrying two changes** (dragon 33, S89): the picker and R163 said the repeated-id stop broke no test,
+  because the suite that measured the repair ran without it and the two other prototypes' failure of
+  `test_infertileMark.R` was put down to their parent change unread. Run the whole suite on the exact change the gate
+  commits before a picker gives a count, and read each failure's message.
+- **A test that builds its input by repeating rows** now stops at `makePedigreeMatingLayout()`'s repeated-id check
+  (`R/makePedigreeDiagramData.R:2266`), before every other check: give the repeated value to distinct animals.
+- **The layout's warning "edge-node collision(s) could not be fully resolved"** comes from random layouts; S89's
+  random test muffles that warning alone (`test_makePedigreeMatingLayoutNoRowParent.R:131`-`:141`). WARN must stay 0.
+- **`rm -rf "$VAR/..."` is refused** by Claude Code's safety check: write `"${VAR:?}"` or a literal path, or make new
+  folders instead.
+- **A backslash in `Rscript -e '...'`:** R read the `"\\s"` and `"\\("` S89 typed there as `"\s"` and `"\("`
+  ("unrecognized escape", twice). Put such code in a file.
+- **The fidelity and drift tools run from the repository root** (renv sets up both libraries, Learning 5), not from a
+  scratch copy: there nprcgenekeepr's child stops on "openxlsx is required".
 - **Carried:** one-off scripts as `Rscript --no-init-file` with `R_LIBS` and `R_LIBS_USER` set to renv's library; the
   5-file cap splits commits; the ratchet's suite gate times out at 300 s (run the suite by hand, about 10 min, on a
-  `git archive` copy); `CLAUDE.md` is over its budget (learnings go to the plans' dragons; the cran plan's section 9
-  now ends at 32); `pedkindraw.Rproj` untracked, Mark's; `methodology/HANDOFFS.md` past its trimmer (`:301`): keep
-  the receipt short; the browser tests print `got non-close frame while closing` on stderr (not a warning); a push
-  whose head commit's message holds the skip marker anywhere runs no workflow (write it in words); the app's browser
-  test can time out once on the macOS runner (S87).
+  `git archive` copy); `testthat::test_file()` can leave `tests/testthat/_problems/` (never commit it); `CLAUDE.md` is
+  over its budget (learnings go to the plans' dragons; the cran plan's section 9 now ends at 33);
+  `pedkindraw.Rproj` untracked, Mark's; `methodology/HANDOFFS.md` past its trimmer (`:299`): keep the receipt
+  short; the browser tests print `got non-close frame while closing` on stderr (not a warning); a push whose head
+  commit's message holds the skip marker anywhere runs no workflow (write it in words); state what a count's
+  denominator includes.
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
-- 17j2's tests: `tests/testthat/test_packComponentsSeparateRows.R` (`:27`, `:37`),
-  `tests/testthat/test_addRectilinearWaypointsDogleg.R` (`:31`-`:88`),
-  `tests/testthat/test_addRectilinearWaypointsInputs.R` (`:20`, `:30`, `:50`, `:71`),
-  `tests/testthat/test_resolveEdgeNodeCollisionsCases.R` (`:18`, `:27`, `:41`);
-  `tests/testthat/helper-addRectilinearWaypoints.R:11` (`.directStyleInputs()`, S88's REFACTOR).
-- The crash: `R/orderRootSubtrees.R:62`; `R/makePedigreeDiagramData.R:1529` (the skip), `:1671` (`.penaltyMatrix()`),
-  `:1689` (the stop), `:2222` (`makePedigreeMatingLayout()`), `:2236`-`:2265` (its checks), `:1843` (`@param ped`);
-  `R/pedigreeApp.R:203` (`addParents()` before the layout).
-- The plans: `docs/planning/cran-submission-plan.md:826` (17j2's note), `:857` (17k), `:1083`, `:1092` (dragons
-  31-32); R162 at `docs/planning/standalone-pedigree-package-plan.md:341`; backlog `:11`.
+- The repair: `R/makePedigreeDiagramData.R:865` (`knownParent`; no line from a parent with no row), `:1272`
+  (`noLineInIds`, the roots), `:2266` (the repeated-id stop), `:1855` (`@param ped`), `:115`-`:120` (the header);
+  `man/makePedigreeMatingLayout.Rd`; NEWS.md's Drawing section (the last "New:" line).
+- The tests: `tests/testthat/test_makePedigreeMatingLayoutNoRowParent.R` (`:27`, `:37`, `:51`, `:69`, `:80`, `:93` the
+  random one, `:158` the repeated id), `tests/testthat/test_makePedigreeMatingLayoutNoRowParentDocs.R` (`:10`, `:24`),
+  `tests/testthat/test_infertileMark.R:232`-`:238` (the input changed).
+- The records: R163 at `docs/planning/standalone-pedigree-package-plan.md:343`; `DIVERGENCE.md` (the rows of
+  `makePedigreeMatingLayout()`, `.positionMatingUnitForest()`, `.buildMatingUnitForest()`); the contract's row for
+  `makePedigreeMatingLayout()` (`docs/planning/pedkindraw-api-contract.md:135`); dragon 33 at
+  `docs/planning/cran-submission-plan.md:1100`; 17k at `:857`; backlog `:119`, `:130`.
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -110,14 +105,55 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 89 Did
-**Deliverable:** backlog `:11` (R162, before 17k), strict TDD: `makePedigreeMatingLayout()` stops with R's or an
-internal message on a pedigree with a parent id that has no row, and on a repeated id. (IN PROGRESS)
-**Started:** 2026-11-24 22:30 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Fix the layout crash
-(Recommended)" (orient picker).
-**Status:** Session claimed. Work beginning: the 2,000-pedigree search rebuilt (dragon 32), each fix measured on it,
-then the pre-RED picker (Learning 17).
-**Ledger:** `CHANGELOG: pending` — the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
-Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+**Deliverable:** backlog item "`makePedigreeMatingLayout()` stops on a pedigree with a parent id that has no row"
+(R162, before 17k), strict TDD. DONE (R163).
+**Started:** 2026-11-24 22:30 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time, each the
+recommended option):** "Fix the layout crash (Recommended)" (orient); R163's three in one picker ("Repair the layout",
+"Stop, naming the ids", "Tell it: a backlog item"); "Yes, proceed to RED"; "Yes, proceed to GREEN"; in GREEN, after
+the repeated-id stop broke an existing test, "Change that test's input"; "Yes, REFACTOR". No tool use declined; one
+`rm -rf` on shell variables was refused by Claude Code's safety check (new folders made instead).
+**Commits:** claim `c5053b7`; R163 `413b075`; RED `63f072f`; GREEN 1 `22fa0a4` (code, help, NEWS); GREEN 2 `d13fa62`
+(`DIVERGENCE.md`, the contract); GREEN 3 `40436a1` (`test_infertileMark.R`'s input); R163 corrected `c1631d2`;
+REFACTOR `89f39e7`; close-out 1 `0ca28d3` (the plans, roadmap, dragon 33); close-out 2 (the backlog, these notes, the
+receipt, the ledger), pushed after it.
+**Measured first:** the search rebuilt (2,000 seeded pedigrees; another generator than S88's): 676 of 1,181 with a
+parent that has no row stopped, 78 of 81 with a repeated id; the stops traced to one cause (an animal whose only
+recorded parent has no row is never reached, and gets a line from no node); three prototypes (repair, add the
+parents, stop at once), each run on the search and through the whole suite; every repaired layout compared with
+today's in both line styles and drawn by `drawPedigreeDiagram()`; kinship2's and Pedixplorer's handling; the drafts'
+expected values computed on a GREEN prototype and the drafts run on three broken copies.
+**Verified:** RED 9 of 9 failing on the tree, 0 skipped, WARN 0; GREEN on `40436a1`: the full suite (`NOT_CRAN=true`)
+103 files, 1,191 tests, 17,230 expectations, 0 failed, 0 skipped, WARN 0 (612 s); `R CMD check --as-cran` Status 1
+NOTE (R16's), its tests `[ FAIL 0 | WARN 0 | SKIP 94 | PASS 13836 ]` in 202 s; the fidelity tool 600 of 600 identical;
+drift 91 / 23 / 0; lint 0; roxygen unchanged; REFACTOR: 2,000 of 2,000 forests and layouts identical, the 16 layout
+test files identical test by test; two repaired drawings saved as PNG through Chrome and looked at (both styles);
+quality_ratchet 5/6 pass, 0 fail, 1 unmeasured (the suite gate's 300 s; the suite by hand above).
+
+#### Session 88 Handoff Evaluation (by Session 89)
+**Score: 9/10.** ROI high: the crash item ran from its notes, and every cited line was where it said.
+- **What helped:** What You Must Do 3, the stops by line (`R/orderRootSubtrees.R:62`, `:1529`, `:1689`, the checks
+  `:2236`-`:2265`, `@param ped` `:1843`, `R/pedigreeApp.R:203`), all exact; the search's method in words (dragon 32),
+  rebuilt in minutes; the backlog item's smallest inputs, which became the trace's and the tests' cases; "the code's
+  comments treat a missing parent as supported", which pointed to a third option; the gotchas on a count's
+  denominator and on `kinship()`'s refusals.
+- **What was missing:** that the three stops of a missing parent share one cause (S88 traced 2 of the kinds;
+  "subscript out of bounds" was "not traced"); that repairing the layout was an option beside stopping and adding
+  the parents. Both found by tracing, not costly.
+- **What was wrong:** nothing found (S89's counts differ from S88's because its generator differs, as R163 says).
+- **ROI:** high.
+
+**Self-assessment: 6/10.**
++ Orient in full, the claim before any work; the cause traced to two lines of copied code before any picker; a third
+  option found and measured beside the two the handoff named; each option run through the search and the suite;
+  every repaired layout compared with today's and drawn; the drafts proved on broken copies; R163 recorded in its
+  session; the drawings looked at in Chrome.
+- **A slip that reached Mark twice:** the R163 picker said the repeated-id stop changed no existing test, and the
+  GREEN gate expected 17,073 + 157 expectations. The suite that measured the repair ran without the stop, and the two
+  other prototypes' failure of `test_infertileMark.R` was put down to their parent change without reading it. `R CMD
+  check` on GREEN 1 found it; it cost Mark one more picker, GREEN 3 and a correcting commit (`c1631d2`); dragon 33.
+- **Slips caught before a commit:** a draft drew a parent with `sample(m, 1L)`, which samples `1:m` when `m` is one
+  number; a draft raised 5 warnings (the layout's collision warning, now muffled alone); two `Rscript -e` escapes; a
+  monitor that fired on any log line; an `rm -rf` the safety check refused.
 
 ### What Session 88 Did
 **Deliverable:** Phase 17j2 (R161's split of 17j, `docs/planning/cran-submission-plan.md:826`), strict TDD: the 29
@@ -217,55 +253,3 @@ above).
   my own broken copy; dragon 29); a draft comment named Chrome 158 where this Mac has 157; the RED gate's preview
   said the headers name R161 when the drafts did not (fixed before the copy); a first layout trial left out the `gen`
   column; `as.data.frame()` of a saved covr result without `library(covr)`.
-
-### What Session 86 Did
-**Deliverable:** Phase 17i2 (`docs/planning/pedkindraw-timing-plan.md:633`, R159), strict TDD: the pointers to
-`vignette("speed")`, T5's section in `?drawPedigreeDiagram`, the API contract's sections 7 and 8. DONE, so 17i DONE.
-**Started:** 2026-11-24 14:30 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each first time, each the
-recommended option):** "17i2: point to speed page (Recommended)" (orient); R160's four in one picker ("Own section",
-"Keep it, add ours", "New last column", "Add one sentence"); "Yes, proceed to RED"; "Yes, proceed to GREEN"; "Yes,
-REFACTOR (Recommended)". No correction and no tool use declined. Mark asked mid-session why the installed size
-(4,736 KB) differs from the tarball (1.6 MB): answered from measurements (dragon 42).
-**Commits:** claim `88ce5b5`; R160 `271e10f`; RED `f8bdbe3`; GREEN `4940df9` (help), `6931e95` (vignettes, NEWS); the
-contract `0c537c8`; REFACTOR `5ad8294`; close-out 1 `113572b` (the plans, roadmap, dragons 41-42); close-out 2 (the
-backlog, these notes, the receipt, the ledger), pushed after it.
-**Measured first:** every word drafted in a scratch copy (`git archive HEAD`), roxygen run there, the 6 new tests
-run on `dfbd587`'s files (6 of 6 failing, 0 skipped) and on the drafts (6 of 6 passing), the 27 existing docs tests
-passing, lint 0; then the pre-RED picker. The REFACTOR the same way before its gate.
-**Verified:** RED 6 of 6 failing, 0 skipped, each on its missing words; GREEN 46 expectations passing; the full suite
-on a `git archive` of `6931e95` (`NOT_CRAN=true`) `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 16993 ]` (597 s); `R CMD check
---as-cran` on `6931e95` Status 1 NOTE (R16's), installed 4,736 KB, the built `drawing.html` holding the pointer;
-`drawPedigreeDiagram.R`'s parsed code identical to before; `tools::checkRd()` clean, the section rendered by
-`Rd2txt()`; roxygen unchanged; lint 0; drift 91 / 23 / 0; `tools/checkSpeedTables.R` 0 problems; the contract's 30
-figures each equal to its cell; REFACTOR's 33 docs tests identical per test (212 expectations); quality_ratchet 5/6
-pass, 0 fail, 1 unmeasured (the suite gate's 300 s; the suite by hand above).
-**CI (close-out 2b):** pushed `dfbd587..58aa09e`; pkgdown `success`, the site's three articles and every new word on
-it; R-CMD-check Ubuntu release, oldrel-1 and macOS Status OK, `FAIL 0 | WARN 0` (SKIP 15 more than S77's run: the
-speed docs tests, which skip without `vignettes/`); Windows's tests `FAIL 0` then the hang (cancelled at 40 min);
-Ubuntu devel failed installing S4Vectors on R-devel, before pedkindraw (backlog `:234`, as since S48).
-
-#### Session 85 Handoff Evaluation (by Session 86)
-**Score: 9/10.** ROI high: 17i2 ran from its notes, and every cited line was where it said.
-- **What helped:** What You Must Do 1 (drift 91/23/0 and nprcgenekeepr's 4 commits, each as stated); 3's reading
-  list by line (4.3 `:310`, 4.4 `:324`, 17i `:633`, T5 `:683`, dragons `:795`) and the pointer places by line
-  (`R/pedkindraw-package.R:52`, `vignettes/pedkindraw.Rmd:407`, `vignettes/drawing.Rmd:794` and `:808`, the contract
-  `:323` and `:343`), all exact; "measure before the RED gate, S85's way", which became R160's picker; the gotchas
-  "the help sentence moves `R/`'s tree" (17n's amendment) and the skip marker (applied at the push).
-- **What was missing:** that `test_runPedigreeAppDocs.R` already holds the drawing vignette's "How large a drawing
-  can be" and forbids "about 16 seconds" there (a pointer quoting the speed page's 16 s that way would fail it); that
-  `.docsRdSection()` lived in a test file, not `helper-docs.R`; that the cran plan's status still read "Next: 17i".
-  Each found by grep, none costly.
-- **What was wrong:** nothing found ("a new paragraph before `@return`" was labelled a guess; a section before
-  `@param` was chosen).
-- **ROI:** high.
-
-**Self-assessment: 8/10.**
-+ Orient in full, the claim before any work; every word and test drafted and run both ways in a scratch copy before
-  the first picker (Learning 17), so RED, GREEN and REFACTOR each came out as predicted; R160 recorded in its
-  session; the help's numbers held to the page by the test, not typed; the contract's figures proved cell by cell;
-  the full suite and `R CMD check` on the GREEN commit; Mark's size question answered from measurements, not memory.
-- **Slips, none reaching a commit:** a draft edit joined two roxygen lines into one of 119 columns (caught by a
-  length check in the scratch copy); the first contract script asserted on a separator that is not unique (it wrote
-  nothing; rerun); my failure-reason script stopped on passing tests; one `Rscript --no-init-file` run without renv's
-  library; the first check of the contract's numbers (each anywhere in the tables) was too weak, replaced by a
-  cell-keyed check before the commit; the REFACTOR's rename misaligned continuation lines (fixed in the scratch copy).
