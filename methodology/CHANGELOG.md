@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-25 · [BL-chrome-start] S93 (in progress): the CI jobs that fail while Chrome starts, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S93's stub), `methodology/HANDOFFS.md` (S93's `status: pending` receipt) and this entry. The deliverable is the backlog item "A CI job fails now and then while Chrome starts" (`methodology/BACKLOG.md:214`), strict TDD. Mark's pick: "Chrome start-up failures (Recommended)" (orient picker), while 17k's second upload waits first in win-builder's R-devel queue (listed 22:35 UTC).
+- **Commit/PR:** the S93 claim commit · **Session:** S93 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits, nothing on S92's copies, a clean tree; ledgers current at `b2f2e91`, no ghost session, no merge; S92's receipt complete, its gate citation equal to the results file `534fea217641`; 32 backlog items at the handoff's lines; dashboard 93/100).
+
 ### 2026-11-25 · [BL-Phase 17] S92 push 2: close-out to GitHub, no CI run
 - **Change:** pushed `23a6186..d968d5f` (close-out 1 and 2), documents only, each commit carrying the skip marker, so no workflow ran; the package's tests and CI were read at `23a6186` (push 1).
 - **Commit/PR:** the push of `d968d5f`; close-out 2b (this entry) · **Session:** S92 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `d968d5f`; `gh run list` showed no new run.

@@ -202,6 +202,14 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S93
+date: 2026-11-25
+status: pending
+active_task: the backlog item "A CI job fails now and then while Chrome starts" (BACKLOG.md:214), strict TDD; 17k waits on win-builder's queue. Claimed.
+what_was_done: pending
+commit: pending
+```
+```handoff
 session: S92
 date: 2026-11-25
 status: complete

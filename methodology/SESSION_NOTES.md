@@ -106,6 +106,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 93 Did
+**Deliverable:** the backlog item "A CI job fails now and then while Chrome starts" (`methodology/BACKLOG.md:214`;
+found S89, S91, S92), strict TDD. (IN PROGRESS)
+**Started:** 2026-11-25 16:40 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Chrome start-up failures
+(Recommended)" (orient picker; S92's suggestion). 17k waits: S92's second upload was still first in win-builder's
+R-devel queue at 22:35 UTC, so its check had not begun.
+**Status:** Session claimed. Measuring the failures before the approach picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### What Session 92 Did
 **Deliverable:** finish Phase 17k (`docs/planning/cran-submission-plan.md:857`; R85, R86). IN PROGRESS: the first
 reading read 980 s, so the cut was made (R165) and the second reading uploaded; it waits in win-builder's queue.
