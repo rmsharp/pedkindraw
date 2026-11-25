@@ -751,6 +751,9 @@ nothing for that Chrome: other files (`test_carrierMark.R` to `test_symbolSize.R
     reproduced and not fixed (outside the two picked faults): suspects are the stuck-page tests (a Chrome whose page never
     returns) and the one Chrome the function starts per call, left running at R's exit on Windows. The push after this
     repair shows whether it recurs: if the Windows job passes 40 minutes, cancel the run (`gh run cancel`) and read its log.
+    **Found and repaired (pedkindraw S91, R164):** it recurred in every Windows run through S90. The test R process
+    ended; R CMD check waited for every process the tests had started, and the renderers of the stuck-page tests'
+    Chromes outlived their browsers (a page stuck in a script cannot obey the shutdown). `.closeChrome()` ends them.
 
 ### 13.5 What the repair delivered (S70)
 
