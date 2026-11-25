@@ -106,6 +106,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 90 Did
+**Deliverable:** Phase 17k (`docs/planning/cran-submission-plan.md:857`; R85, R86): one win-builder R-devel reading
+of the tree after 17j, its tests' elapsed time against 540 s. (IN PROGRESS)
+**Started:** 2026-11-25 06:13 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17k: time tests on win-builder
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning: build the tarball, then a picker before any upload.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest.
+
 ### What Session 89 Did
 **Deliverable:** backlog item "`makePedigreeMatingLayout()` stops on a pedigree with a parent id that has no row"
 (R162, before 17k), strict TDD. DONE (R163).
