@@ -211,6 +211,15 @@ issues).*
       r90935 of 2026-11-18 (a `transform` method's formals); S47's run passed that job a day earlier. Not
       pedkindraw's code; watch whether it clears before acting.
 
+- [ ] **A CI job fails now and then while Chrome starts** (DECISION NEEDED, Effort S; found S89, S91, S92) -- three
+      of the last four sessions' runs failed one browser test in one job while chromote started Chrome, and each
+      job passed when rerun: S89 Ubuntu ("Chrome debugging port not open after 10 seconds"); S91 macOS
+      (`/json/version` not answered in 60 s, run 45680687657); S92 Ubuntu release, run 45705867740,
+      `test_savePedigreeDiagram.R:426`, the port not open after 10 s, raised in `chromote::Chrome$new()` at
+      `R/savePedigreeDiagram.R:302`. Each costs a rerun and a reading. Choices: a longer start-up wait on CI
+      (chromote's own `chromote.timeout` option, which its port search reads, set in the workflow or a test helper),
+      one retry of the start inside `savePedigreeDiagram()` (users would gain too), or leave it and rerun.
+
 - [ ] **Report a vacuous test to nprcgenekeepr** (READY, Effort S) -- the first expectation of
       `test_findPedigreeNumber.R` checks the ids containing "1", and the Lacy pedigree's ids are letters, so it
       checks nothing (0 ids match; found S3, rechecked S6). pedkindraw copied the file unchanged

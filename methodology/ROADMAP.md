@@ -107,8 +107,9 @@ session each unless marked. They follow the copy slices.
   unreachable); 17j2 is done (S88, R162: 24 of the layout file's 29 reached by new tests, 5 recorded unreachable;
   7 of 3,772 left), so 17j is done. Found by 17j2 and done before 17k (S89, R163): `makePedigreeMatingLayout()`
   draws a pedigree with a parent id that has no row, without that parent, and stops on a repeated id, naming it.
-  17k is under way (S90: the tarball uploaded to win-builder R-devel, its reading waiting in win-builder's queue);
-  the session with Mark's email finishes it; then 17l-17q. The Windows CI hang is done (S91, R164: the stuck-page
+  17k is under way: the first reading read 980 s (S92), over 540 s, so a CRAN check now runs only the 21 test
+  files a trace of the 38 exports needs (S92, R165); the second reading waits in win-builder's queue, and the
+  session with Mark's second email finishes 17k; then 17l-17q. The Windows CI hang is done (S91, R164: the stuck-page
   tests' Chrome renderers outlived their browsers and R CMD check waited for them; `.closeChrome()` ends them).
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
