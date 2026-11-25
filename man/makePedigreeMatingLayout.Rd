@@ -24,7 +24,14 @@ makePedigreeMatingLayout(
 \arguments{
 \item{ped}{data frame with \code{id}, \code{sire}, \code{dam},
 \code{sex}, and \code{gen} columns, same contract as
-\code{\link{makePedigreeDiagramData}}. An optional \code{status}
+\code{\link{makePedigreeDiagramData}}. Each \code{id} is on one row:
+an id on more than one row stops, naming it. A \code{sire} or
+\code{dam} with no row of its own is not drawn: its mating with a
+drawn animal is drawn at that animal (alone when neither parent has a
+row), and an animal whose other parent is unknown is drawn as a
+founder is, with no line up, so two such siblings stand side by side,
+not joined. \code{\link{addParents}} adds a row for each, so that it
+is drawn. An optional \code{status}
 column marks deceased animals: see the \code{deceased} column of the
 returned \code{nodes}. Every column whose name starts
 \code{affected} is an affected condition, in the order the data

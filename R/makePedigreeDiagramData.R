@@ -112,7 +112,12 @@
 ## .buildMatingUnitForest() adds a mating unit for each declared pair with no
 ## offspring together, after the units built from offspring; in
 ## .positionMatingUnitForest() a unit with no offspring takes the sex rule
-## for its mate's side; and the help (DIVERGENCE.md rows).
+## for its mate's side; and the help (DIVERGENCE.md rows). A parent with no
+## row and a repeated id (pedkindraw S89, R163): .buildMatingUnitForest()
+## draws no line from a parent with no row of its own;
+## .positionMatingUnitForest() starts at every animal with no line in, as
+## at a founder; makePedigreeMatingLayout() stops on an id on more than one
+## row, naming it; and the help (DIVERGENCE.md rows).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -850,12 +855,14 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   # D1 step 3 / D5: re-parent children with both parents known to their
   # mating unit (single edge); children with exactly one known parent
   # keep today's direct one-edge fallback; a 0-parent founder gets no
-  # incoming edge.
+  # incoming edge. pedkindraw S89 (R163): nor does a child whose one known
+  # parent has no row of its own, since no node stands for that parent
+  # (S682's reason for minting no duplicate of one).
   unitOfRow <- rep(NA_character_, length(ids))
   if (nUnits > 0L) {
     unitOfRow[hasBoth] <- matingUnits$id[match(pairKey[hasBoth], uniqueKeys)]
   }
-  oneParent <- xor(hasSire, hasDam)
+  oneParent <- xor(hasSire, hasDam) & ifelse(hasSire, sire, dam) %in% ids
   childEdges <- data.frame(
     from = c(unitOfRow[hasBoth],
              ifelse(hasSire[oneParent], sire[oneParent], dam[oneParent])),
@@ -1259,7 +1266,12 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   } else {
     character(0L)
   }
-  rootIds <- union(setdiff(founderIds, b1Ids), orphanChildIds)
+  ## pedkindraw S89 (R163): an animal whose only known parent has no row of
+  ## its own has no line in (.buildMatingUnitForest()), so nothing above
+  ## reaches it; it starts a line of its own, as a founder does.
+  noLineInIds <- setdiff(realIds, c(founderIds, childEdges$to))
+  rootIds <- union(union(setdiff(founderIds, b1Ids), orphanChildIds),
+                   noLineInIds)
 
   ## Root-subtree ordering pass (Shape A, S690 -- docs/planning/
   ## pedigree-diagram-root-subtree-ordering-plan.md): permute rootIds so
@@ -1842,7 +1854,14 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'
 #' @param ped data frame with \code{id}, \code{sire}, \code{dam},
 #'   \code{sex}, and \code{gen} columns, same contract as
-#'   \code{\link{makePedigreeDiagramData}}. An optional \code{status}
+#'   \code{\link{makePedigreeDiagramData}}. Each \code{id} is on one row:
+#'   an id on more than one row stops, naming it. A \code{sire} or
+#'   \code{dam} with no row of its own is not drawn: its mating with a
+#'   drawn animal is drawn at that animal (alone when neither parent has a
+#'   row), and an animal whose other parent is unknown is drawn as a
+#'   founder is, with no line up, so two such siblings stand side by side,
+#'   not joined. \code{\link{addParents}} adds a row for each, so that it
+#'   is drawn. An optional \code{status}
 #'   column marks deceased animals: see the \code{deceased} column of the
 #'   returned \code{nodes}. Every column whose name starts
 #'   \code{affected} is an affected condition, in the order the data
@@ -2241,6 +2260,13 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   if (length(missingCols) > 0L) {
     stop("makePedigreeMatingLayout() requires 'ped' to have columns: ",
          toString(required), ". Missing: ", toString(missingCols))
+  }
+  # pedkindraw S89 (R163): an id on more than one row stops here, before
+  # the layout's recursion ("node stack overflow").
+  repeatedIds <- unique(as.character(ped$id[duplicated(ped$id)]))
+  if (length(repeatedIds) > 0L) {
+    stop("makePedigreeMatingLayout() requires each id in 'ped' once: ",
+         "on more than one row: ", toString(repeatedIds))
   }
   .checkMaxNameChars(maxNameChars, "makePedigreeMatingLayout")
   # pedkindraw Phase G14 (R140): each size setting one positive number.

@@ -347,6 +347,13 @@ code, `DIVERGENCE.md` in the repository says how and why.
   the app opens again to the same drawing. The pictures need the chromote
   package and Google Chrome or Chromium; without them the picture buttons are
   greyed and the page says what is missing, and the CSV button still works.
+* New: `makePedigreeMatingLayout()` draws a pedigree with a sire or dam that
+  has no row of its own, without that parent: an animal whose other parent
+  is unknown is drawn with no line up, as a founder is. It stopped with R's
+  own messages on many such pedigrees (676 of 1,181 random ones), as
+  nprcgenekeepr's still does; `addParents()` adds the missing rows. It also
+  stops on an id on more than one row, naming it, where it stopped with
+  "node stack overflow".
 
 ## Kinship and relatedness
 
