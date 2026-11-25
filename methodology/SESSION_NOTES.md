@@ -45,11 +45,12 @@ picker (memory "Picker sets: name items, include all"; at most 4 options, so gro
    $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4
    commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr at `3e06730c5`, tree clean, through
    S89. The fidelity tool read 600 of 600 identical on `22fa0a4`'s code.
-2. **Read S89's push** (`gh run list --limit 6`, then `gh run view <id> --log` for each R-CMD-check job's `FAIL n |
-   WARN n | SKIP n | PASS n`): expect `PASS` 157 more than S88's per platform (Ubuntu release and oldrel-1 16,847 +
-   157 = 17,004 if every new test runs there; the random test skips only in CRAN mode); Windows ends its tests then
-   hangs (cancel at 40 minutes, `:11`); Ubuntu devel may fail before pedkindraw (`:222`). Record the push entry in the
-   CHANGELOG if S89's close-out 2b did not.
+2. **S89's push was read** (the CHANGELOG's S89 push entry): pkgdown `success`; R-CMD-check run 45562065295: oldrel-1
+   OK `[ FAIL 0 | WARN 0 | SKIP 36 | PASS 16994 ]`, macOS OK `SKIP 34 | PASS 17005`, Windows `FAIL 0 | PASS 17003`
+   then the hang (cancelled at 40 min, `:11`), each S88's count plus 147 (S89's 157 less the docs tests' 10, which
+   skip on CI: no `man/` or NEWS in an installed package, so SKIP is 2 more); Ubuntu release failed once, Chrome's
+   debugging port not open after 10 s in `test_savePedigreeDiagram.R:458`, and its rerun read OK `PASS 16994`; Ubuntu
+   devel failed loading S4Vectors (`:222`). Nothing to read at Orient beyond `gh run list`.
 3. **17k, if picked:** read `:857`, R85, R86 and section 2.1. Build the tarball as CLAUDE.md's full check does, then
    ask Mark (picker) before any upload. S88 measured the CRAN-mode time of 17j's files (0.78-0.83 s); S89's new files
    take 0.8 s in CRAN mode (the random test skips). `R CMD check --as-cran` on `40436a1` ran its tests in 202 s here.
@@ -77,7 +78,8 @@ picker (memory "Picker sets: name items, include all"; at most 4 options, so gro
   `pedkindraw.Rproj` untracked, Mark's; `methodology/HANDOFFS.md` past its trimmer (`:299`): keep the receipt
   short; the browser tests print `got non-close frame while closing` on stderr (not a warning); a push whose head
   commit's message holds the skip marker anywhere runs no workflow (write it in words); state what a count's
-  denominator includes.
+  denominator includes; a browser test can fail once on a runner when Chrome's port is not open within 10 s (S87
+  macOS, S89 Ubuntu release): rerun that job once (`gh run rerun <run> --job <job>`) before reading it as a defect.
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
@@ -114,8 +116,9 @@ the repeated-id stop broke an existing test, "Change that test's input"; "Yes, R
 `rm -rf` on shell variables was refused by Claude Code's safety check (new folders made instead).
 **Commits:** claim `c5053b7`; R163 `413b075`; RED `63f072f`; GREEN 1 `22fa0a4` (code, help, NEWS); GREEN 2 `d13fa62`
 (`DIVERGENCE.md`, the contract); GREEN 3 `40436a1` (`test_infertileMark.R`'s input); R163 corrected `c1631d2`;
-REFACTOR `89f39e7`; close-out 1 `0ca28d3` (the plans, roadmap, dragon 33); close-out 2 (the backlog, these notes, the
-receipt, the ledger), pushed after it.
+REFACTOR `89f39e7`; close-out 1 `0ca28d3` (the plans, roadmap, dragon 33); close-out 2 `0328615` (the backlog, these
+notes, the receipt, the ledger), pushed after it (`5c5914d..0328615`); close-out 2b (the push entry; these notes and
+the receipt to CI's results).
 **Measured first:** the search rebuilt (2,000 seeded pedigrees; another generator than S88's): 676 of 1,181 with a
 parent that has no row stopped, 78 of 81 with a repeated id; the stops traced to one cause (an animal whose only
 recorded parent has no row is never reached, and gets a line from no node); three prototypes (repair, add the
