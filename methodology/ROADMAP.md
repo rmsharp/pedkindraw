@@ -60,7 +60,7 @@ is done, and with it every gap phase, G1-G17. 17g, the timing plan, is done (S78
 `docs/planning/pedkindraw-timing-plan.md`: 37 of the 38 exports timed beside kinship2's and Pedixplorer's functions,
 by a copy of the November study's harness in `tools/timing/`). 17h1, the computation harness, is done (S79, R154: 78
 cases in `tools/timing/`, 108 tests passing), and so are 17h1b (S80, R155: each run's free memory and `record.csv`,
-126 tests passing) and 17h1c (S81, R156: each run's `started` is when it launched, 129 tests passing). 17h2, the computation runs, is done (S82, `14145a4`: 78 cases at six sizes, 416 cells `ok`, 22 failed sizes). 17h3, the drawing harness, is done (S83, R157: 11 drawing cases in `tools/timing/`, 169 tests passing). 17h4, the drawing runs, is done (S84, `a4b41da`, R158: 43 cells, 33 `ok`; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in). 17i1, the speed vignette and its check, is done (S85, R159: 8 tables from the two records, checked cell for cell by `tools/checkSpeedTables.R`). 17i2, the pointers to it, `?drawPedigreeDiagram`'s measured size and the contract, is done (S86, R160), so 17i is done. Next is 17j, tests for full coverage.
+126 tests passing) and 17h1c (S81, R156: each run's `started` is when it launched, 129 tests passing). 17h2, the computation runs, is done (S82, `14145a4`: 78 cases at six sizes, 416 cells `ok`, 22 failed sizes). 17h3, the drawing harness, is done (S83, R157: 11 drawing cases in `tools/timing/`, 169 tests passing). 17h4, the drawing runs, is done (S84, `a4b41da`, R158: 43 cells, 33 `ok`; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in). 17i1, the speed vignette and its check, is done (S85, R159: 8 tables from the two records, checked cell for cell by `tools/checkSpeedTables.R`). 17i2, the pointers to it, `?drawPedigreeDiagram`'s measured size and the contract, is done (S86, R160), so 17i is done. 17j, tests for full coverage, is done (S87-S88, R161-R162: 7 of 3,772 statements left, each recorded unreachable). Next is 17k.
 
 | Phase | Slice | State |
 |---|---|---|
@@ -104,7 +104,9 @@ session each unless marked. They follow the copy slices.
   (an app, `runPedigreeApp()`) is done in five sessions (S73's plan, R148; G17a-G17d S74-S77, R149-R152), so G1-G17
   are done; 17g is done (S78, R153); 17h1 is done (S79, R154); 17h1b is done (S80, R155); 17h1c is done (S81, R156); 17h2 is done (S82); 17h3 is done (S83, R157); 17h4 is done (S84, R158); 17i1 is done (S85, R159); 17i2 is done
   (S86, R160), so 17i is done; 17j1 is done (S87, R161: 9 statements reached by new tests, 2 recorded
-  unreachable); next is 17j2 (the layout file's 29), then 17k-17q.
+  unreachable); 17j2 is done (S88, R162: 24 of the layout file's 29 reached by new tests, 5 recorded unreachable;
+  7 of 3,772 left), so 17j is done; next is 17k, then 17l-17q. Found by 17j2: `makePedigreeMatingLayout()` stops on
+  a pedigree with a parent id that has no row (a backlog item before 17k, Mark's decision).
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or

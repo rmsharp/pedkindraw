@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). Next: 17j2, `R/makePedigreeDiagramData.R`'s 29.
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Next: 17k (one win-builder reading; Mark approves the upload). Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stops on a pedigree with a parent id that has no row (R162).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -823,6 +823,35 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   `:3141`, `:3259`, `:3427`, `:3756`, `:3757`), 20 of them in `.addRectilinearWaypoints()`; 16 of the 29
   (`:1581`, `:2981`, `:3032`-`:3059`'s 9, `:3116`-`:3120`'s 5) the code's own comment or S87's reading calls
   unreachable from a drawing, not yet proved (dragon 30).
+- **17j2 DONE (S88, R162), so 17j DONE.** covr on `c48cde4` read the same 31 of 3,772 (13.1 min). Each of the 29
+  read beside its comment, its input tried in a scratch copy, the reach confirmed by covr running only the drafts
+  (24 of 24), each reached statement broken three ways (dragon 29: 70 of 72 broken copies fail the tests), and the
+  "unreachable" readings checked against 2,000 seeded random pedigrees on a copy counting each line (dragon 32).
+  **Through a drawing (2):** `:996` (`test_packComponentsSeparateRows.R`: two families whose caller-given rows do not
+  overlap are one column apart) and `:3022` (`test_addRectilinearWaypointsInputs.R`: an orphan mating; reached in
+  218 of the 2,000). **By direct calls (22),** the layout's own tables with one thing changed by hand or a small
+  hand-built table: the D2 dogleg's 14 (`test_addRectilinearWaypointsDogleg.R`: a node's row moved in `pos`), the
+  colour-column guards `:3073`, `:3085`, `:3141` and an unknown row `:2960` (`test_addRectilinearWaypointsInputs.R`),
+  and `:3427`, `:3259`, `:3756`, `:3757` (`test_resolveEdgeNodeCollisionsCases.R`: no edges; a curved line with
+  nothing to clear, no warning; obstacles stacked under every jog, one residual). The tests' shared build is
+  `.directStyleInputs()` (`tests/testthat/helper-addRectilinearWaypoints.R`, S88's REFACTOR). The 2 breaks no test
+  catches remove `:3022`'s `next` and `:3427`'s early return: the code after each gives the same output without it
+  (dragon 31). **Unreachable, kept as copied (R162):** `:809` (`isB2Shaped()`'s one call, `:827`, follows `:826`,
+  which skips any parent the same `match(p, ids)` finds no row for); `:1227` (`qualifies()` is called only for
+  anchored units, `:1354` and `:1550`, and only a unit with no anchor has no non-anchor, `:747`-`:765`); `:2981` (a
+  sibship's bar points are its drop and one bar per child, and every `fromId` has a child); `:1581` (a non-anchor
+  drawn as itself, with no duplicate, is B1-shaped and never an anchor, so tier 3 places it, not tier 1; reached only
+  by a forest whose duplicates were removed by hand, measured); `:1529` (an anchor tier 1 never placed: 67 of the
+  2,000 reached it and every one then stopped, 66 with "NAs are not allowed in subscripted assignments", the
+  stop `.penaltyMatrix()` (`:1689`) gave on the two typed cases traced, and 1 in `.orderRootSubtrees()`). None of
+  the 5 ran in the 2,000 except `:1529`. **Re-measured on `4955fa5`:** covr 7 of 3,772 never run (99.81% by statement, 99.85% by line):
+  these 5 and `R/orderRootSubtrees.R:118`, `:131` (R161). The full suite 17,073 passing (101 files, 1,182 tests),
+  WARN 0; `R CMD check --as-cran` R16's NOTE only. **CRAN-mode time (for 17k):** the four new files run in full,
+  0.78-0.83 s over three runs (`test_packComponentsSeparateRows.R` 0.63-0.67 s of it); with 17j1's about 0.2 s, 17j
+  adds about 1 s. **Found while measuring (a backlog item before 17k, R162):** `makePedigreeMatingLayout()` stops
+  with R's or an internal check's message on 430 of 1,135 random pedigrees with a parent id that has no row (one
+  animal whose sire has no row and whose dam is unknown is enough), and on 81 of 90 with a repeated id; 0 of 739
+  complete ones; nprcgenekeepr's copy the same.
 
 ### Phase 17k. The CRAN-mode test time (a reading after 17j; a cut only if it requires one, R86)
 
@@ -1050,6 +1079,23 @@ pedkindraw's own:
     Read the comment beside each statement first, then prove it as R161 did for `R/orderRootSubtrees.R`: by reading,
     by covr's counts of the code around it (`library(covr)` before `as.data.frame()` of a saved result), and by a
     scratch call where a direct call could reach it.
+31. **A break no test catches may be a statement nothing needs, or a test whose input hides it** (S88, 17j2): of
+    72 broken copies, 5 passed the first drafts. 2 were removals of a statement whose removal changes no output
+    (`:3022`'s `next`: the side lookups after it skip a side with no row; `:3427`'s early return: the loop over no
+    edges returns the same empty set), and are recorded as such. 3 were tests whose input gave the same answer
+    right or wrong: the dogleg test moved the anchor's row in `pos` but not in `nodes`, so the projection node's `y`
+    was the same from either node; both mate lines of a marked mating carry one marker, so reading any line to the
+    mating passed; an orphan mating with nothing after it could not tell `next` from `break`. Each was fixed by an
+    input where the two answers differ (the node moved in both tables; the other line unmarked by hand; a mating
+    needing a dogleg after the orphan). Read each uncaught break before calling the test sufficient.
+32. **Count a claim of "unreachable" over many inputs on a copy that counts each line** (S88, 17j2): a scratch copy
+    with `.hit("<line>")` added on the line itself (line numbers kept, so covr's and the plan's citations still
+    match) ran 2,000 seeded random pedigrees in one run, where `covr::function_coverage()` takes a few seconds a
+    case. It confirmed the readings (5 statements never run) and found what reading had not: 577 of the 2,000
+    stopped, 430 of them pedigrees with a parent id that has no row, so `makePedigreeMatingLayout()` stops on a
+    common kind of data (R162, backlog). Tally the stops by kind beside the lines reached, and check a generator's
+    output is mostly valid input first (S88's first trial stopped on 26 of 30, 10 of them at `kinship()`'s refusal
+    of the generator's own made-up depths; parents now come from earlier rows and `gen` from their depth).
 
 ---
 
