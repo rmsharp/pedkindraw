@@ -103,7 +103,8 @@ session each unless marked. They follow the copy slices.
   done (S71, R146), and G16c (the whole large pedigree and the documents) is done (S72, R147), so G16 is done; G17
   (an app, `runPedigreeApp()`) is done in five sessions (S73's plan, R148; G17a-G17d S74-S77, R149-R152), so G1-G17
   are done; 17g is done (S78, R153); 17h1 is done (S79, R154); 17h1b is done (S80, R155); 17h1c is done (S81, R156); 17h2 is done (S82); 17h3 is done (S83, R157); 17h4 is done (S84, R158); 17i1 is done (S85, R159); 17i2 is done
-  (S86, R160), so 17i is done; next is 17j-17q.
+  (S86, R160), so 17i is done; 17j1 is done (S87, R161: 9 statements reached by new tests, 2 recorded
+  unreachable); next is 17j2 (the layout file's 29), then 17k-17q.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or

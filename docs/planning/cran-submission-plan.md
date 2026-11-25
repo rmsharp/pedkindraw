@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). Next: 17j, tests for full coverage.
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). Next: 17j2, `R/makePedigreeDiagramData.R`'s 29.
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -799,6 +799,30 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **DONE:** every statement in `R/` reached by the tests, or one shown unreachable with its reason recorded; the
   new tests' CRAN-mode time recorded for 17k.
 - **Surface:** this Mac (covr).
+- **Measured (S87, `a423bcf`, `type = "tests"`, `NOT_CRAN=true`, 12.3 min):** 40 of 3,772 statements never run
+  (98.94%): S24's 43 less `R/rbindFill.R:35`, `R/kinship.R:159` and two of `R/makePedigreeDiagramData.R`'s (S24's
+  `:2485` and `:2519`, now `:3124` and `:3158`), plus `R/savePedigreeDiagram.R:338`.
+- **Split (S87, R161):** 17j1 DONE (S87): the 11 outside `R/makePedigreeDiagramData.R`. New tests in pedkindraw's
+  own files reach 9: `test_positionTreeApportionChecks.R` (`R/positionTreeApportion.R:388`, `:392`, `:395`, `:427`,
+  `:431`, `:434`, argument checks, by direct calls), `test_shrinkPedigreeLoop.R` (`R/shrinkPedigree.R:306`, two
+  animals each the other's sire), `test_comparePedigreeStructureOneMate.R` (`R/comparePedigreeStructure.R:160`, a
+  layout with one mate line taken out by hand) and one test in `test_savePedigreeDiagram.R`
+  (`R/savePedigreeDiagram.R:338`, the recording stubbed to a page of no size, which Chrome refuses). They pass at once
+  (R161); each was shown to fail on a throwaway copy with its statement broken, 11 of 11 (dragon 29). Re-measured on
+  `af4f23b`: 31 of 3,772 never run (99.18%). The full suite 17,026 passing; `R CMD check --as-cran` R16's NOTE only.
+  **Unreachable, kept as copied (R161):** `R/orderRootSubtrees.R:118` (`if (length(m) == 0L)`, a root with no
+  placed member): no input reaches it, since every root is a child of the super-root, so each root's own id is in
+  `tier1X` and in `m`. `R/orderRootSubtrees.R:131` (`return(rootIds)` when no connector is usable): no layout reaches
+  it, since a connector joining two roots has each end in a root's subtree, so in `tier1X`, making `usable` the same
+  as `crossRoot`, already true; only a direct call whose `childrenOf` answers differently after its first calls
+  reaches it (measured). The suite runs the line before `:118` 11,929 times and the cross-root branch 1,385 times.
+  **CRAN-mode time (for 17k):** the three new files run in full, 0.04-0.09 s each (three runs; one 0.42 s); the
+  browser test skips: about 0.2 s added.
+  17j2: `R/makePedigreeDiagramData.R`'s 29 (`:809`, `:996`, `:1227`, `:1529`, `:1581`, `:2960`, `:2981`, `:3022`,
+  `:3032`, `:3033`, `:3037`, `:3049`, `:3050`, `:3052`, `:3053`, `:3054`, `:3059`, `:3073`, `:3085`, `:3116`-`:3120`,
+  `:3141`, `:3259`, `:3427`, `:3756`, `:3757`), 20 of them in `.addRectilinearWaypoints()`; 16 of the 29
+  (`:1581`, `:2981`, `:3032`-`:3059`'s 9, `:3116`-`:3120`'s 5) the code's own comment or S87's reading calls
+  unreachable from a drawing, not yet proved (dragon 30).
 
 ### Phase 17k. The CRAN-mode test time (a reading after 17j; a cut only if it requires one, R86)
 
@@ -1013,6 +1037,19 @@ pedkindraw's own:
 28. **Pedixplorer writes `Rplots.pdf` into the working folder** (S40): `ped_to_plotdf()` measures text on the open
     graphics device and opens R's default one, a file, when none is open. Open `grDevices::pdf(NULL)` first (the
     same 7 by 7 inches, so the same results: S40's two runs agreed line for line).
+29. **Break a statement more than one way before trusting a test that locks it** (S87, 17j1): the first draft of
+    `R/savePedigreeDiagram.R:338`'s test checked "an error, not the time limit's, and no file", and it failed on a
+    copy whose handler stopped with the time limit's message but passed on one whose handler returned `NULL`:
+    `jsonlite::base64_dec()` then stopped later ("is.raw(input) is not TRUE") before any file was written. Break each
+    statement replaced, swallowed and made another error, and check the error's form (here chromote's
+    `code: <n>\n  message: <text>`, `Chromote$send_command()`), not only its absence of another message.
+30. **The layout file names its own unreachable branches** (S87, for 17j2): `R/makePedigreeDiagramData.R:1517` calls
+    the same-row mate's union (`:1581`) "structurally unreachable while Decision 2 (S678) duplicates every
+    B2-shaped non-anchor, kept for robustness exactly like the D2 dogleg it parallels" (`:3032`-`:3059`,
+    `:3116`-`:3120`); and `:2981` cannot run, since a sibship's bar points are its drop and at least one child.
+    Read the comment beside each statement first, then prove it as R161 did for `R/orderRootSubtrees.R`: by reading,
+    by covr's counts of the code around it (`library(covr)` before `as.data.frame()` of a saved result), and by a
+    scratch call where a direct call could reach it.
 
 ---
 
