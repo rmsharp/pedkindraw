@@ -17,7 +17,10 @@
 ## alone, before "Deceased", 45 px each. The looks were measured in headless
 ## Chrome at 500 px before the picker, and every expected value here was
 ## computed on a prototype of the change first (Learning 18). nprcgenekeepr
-## has no such mark; DIVERGENCE.md records it "at the switch" (R98).
+## has no such mark; DIVERGENCE.md records it "at the switch" (R98). S89
+## (R163): the check that each value is named once gives the repeated value
+## to two more animals, where it repeated D's row, since a repeated id now
+## stops makePedigreeMatingLayout() first.
 library(testthat)
 
 ## Four animals: A (a male) and B (a female) are the parents of C (a male) and
@@ -226,9 +229,11 @@ test_that(
     fixed = TRUE
   )
   expect_error(
-    makePedigreeMatingLayout(.infertilePed(
-      fertility = c("a", "b", "c", "d")
-    )[c(1L, 2L, 3L, 4L, 4L, 4L), ]),
+    makePedigreeMatingLayout(rbind(
+      .infertilePed(fertility = c("a", "b", "c", "d")),
+      data.frame(id = c("E", "F"), sire = "A", dam = "B", sex = "M",
+                 gen = 1L, fertility = "d")
+    )),
     "cannot read ('a', 'b', 'c', 'd')",
     fixed = TRUE
   )
