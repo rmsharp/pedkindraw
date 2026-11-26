@@ -22,10 +22,13 @@ test_that("DESCRIPTION names the package, its license, encoding and edition", {
   expect_identical(fieldValue(description, "Config/testthat/edition"), "3")
 })
 
-test_that("the version is below 1.0.0 and CRAN's check would not flag it", {
+test_that("the version is the first CRAN release's or later and CRAN's check
+  would not flag it", {
   version <- fieldValue(readPackageFile("DESCRIPTION"), "Version")
-  ## API contract section 6: 0.x until the first CRAN release.
-  expect_true(package_version(version) < "1.0.0")
+  ## API contract section 6: 0.x until the first CRAN release, which is 1.0.0
+  ## (plan R168, pedkindraw S96, Mark's pick for D8); a version never goes
+  ## down. S2's test held the 0.x before it (version below 1.0.0).
+  expect_true(package_version(version) >= "1.0.0")
   ## R's CRAN incoming check notes a part of 1234 or more ("large
   ## components", e.g. 0.0.0.9000) and a part with a leading zero.
   expect_true(all(unlist(package_version(version)) < 1234L))
