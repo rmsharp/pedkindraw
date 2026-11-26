@@ -1,7 +1,7 @@
 Package: pedkindraw
 Type: Package
 Title: Interactive Pedigree Drawings and Kinship
-Version: 0.0.1
+Version: 1.0.0
 Authors@R:
     person("R. Mark", "Sharp", email = "rmsharp@me.com",
     role = c("aut", "cre", "cph"),

@@ -1,9 +1,10 @@
-# pedkindraw 0.0.1 (development version)
+# pedkindraw 1.0.0
 
-The first version, not yet on CRAN. Most of its code is a copy of
-nprcgenekeepr's at nprcgenekeepr's commit `baef1e12c`; the items marked "New"
-were written for pedkindraw. Where the copy now differs from nprcgenekeepr's
-code, `DIVERGENCE.md` in the repository says how and why.
+The first release. About half of its code is in files copied from
+nprcgenekeepr at nprcgenekeepr's commit `baef1e12c` (`drawPedigreeDiagram()`'s
+at the later `4283e3502`); the items marked "New" were written for pedkindraw.
+Where the copy now differs from nprcgenekeepr's code, `DIVERGENCE.md` in the
+repository says how and why.
 
 ## Drawing
 
@@ -23,14 +24,16 @@ code, `DIVERGENCE.md` in the repository says how and why.
   lists the routing points (ids starting `__jog_`) a drawing adds to step a
   line around an animal: 196 of the 571 entries in the drawing vignette's
   colony drawing.
-* New: `makePedigreeMatingLayout()` stops on an animal id that starts with
-  `__jog_`, as for the other prefixes it keeps for its own nodes;
+* New: `makePedigreeMatingLayout()` stops on the id of an animal it draws
+  that starts with `__jog_`, as for the other prefixes it keeps for its own
+  nodes;
   nprcgenekeepr accepts one, and its drawing can then have two nodes with that
   id.
-* New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` stop when
-  a condition column (`affected`, `affected2`, ...) holds a number other than
-  0 and 1, naming the column and the numbers. A measured trait (2.5, 0.3, 9)
-  was drawn affected wherever it was not 0, with no message, as it still is in
+* New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` stop when a
+  condition column they draw (the layout's up to four, `affected`, `affected2`,
+  ...; `makePedigreeDiagramData()`'s `affected`) holds a number other than 0
+  and 1, naming the column and the numbers. A measured trait (2.5, 0.3, 9) was
+  drawn affected wherever it was not 0, with no message, as it still is in
   nprcgenekeepr. `TRUE`, `FALSE`, `NA`, 0 and 1 (kinship2's codes, which
   `asPedFrame()` writes) and text read as before.
 * New: an animal whose affected status is unknown (`NA`) is filled gray
@@ -59,8 +62,9 @@ code, `DIVERGENCE.md` in the repository says how and why.
   agree; before, colors edited in that table reached the legend but not the
   sections. A color R does not know, a number, a transparent color, white,
   the gray of an unknown status, a color given twice, or fewer colors than
-  conditions drawn stops, with a message naming them. nprcgenekeepr's colors
-  are fixed.
+  conditions drawn stops, with a message naming them; a value that is not
+  text stops with a message saying what `conditionColors` takes.
+  nprcgenekeepr's colors are fixed.
 * New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` take
   `conditionThresholds`, cut-offs for measured traits. A condition column of
   numbers is drawn by its cut-off, a comparison and a number, such as
@@ -70,7 +74,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   condition's name, so the legend reads "Affected (glucose ≥ 126)" and the
   hover text "Affected (glucose ≥ 126): Yes (140)". `>` and `<` decide as
   Pedixplorer's `threshold` does. Without a cut-off a number other than 0 and
-  1 still stops, and the message now names `conditionThresholds`.
+  1 still stops, with a message that names `conditionThresholds`.
   nprcgenekeepr has no cut-off.
 * New: `makePedigreeMatingLayout()` reads a column `genotyped` (`TRUE`,
   `FALSE`, `NA`, 1, 0, or text such as "TRUE"): each genotyped animal's symbol
@@ -112,7 +116,8 @@ code, `DIVERGENCE.md` in the repository says how and why.
 * New: `makePedigreeMatingLayout()` reads a column `evaluated` (`TRUE`,
   `FALSE`, `NA`, 1, 0, or text such as "TRUE"), for animals with a documented
   evaluation: each is drawn with a black "\*" to the right of the upper-right
-  corner of its symbol, clear of the deceased slash and the lines, and its
+  corner of its symbol, clear of the deceased slash and, in the rectilinear
+  style, of the lines, and its
   hover text says "Evaluated: Yes", "No" or "Unknown"; any other value stops,
   naming the column. `drawPedigreeDiagram()`'s legend then has a row
   "Evaluated", the "\*", and the drawing is 45 px taller; the view takes in
@@ -170,8 +175,9 @@ code, `DIVERGENCE.md` in the repository says how and why.
 * New: `makePedigreeMatingLayout(symbolSize = )` sets the size of the
   animals' symbols as a multiple of the size drawn before (1, the default),
   as kinship2's and Pedixplorer's `symbolsize` does: each animal and each
-  repeat appearance is drawn 25 times it units across, rounded to a whole
-  unit, and the mating points keep theirs. The layout works out its lines'
+  repeat appearance gets a size of 25 times it, rounded to a whole unit
+  (vis.js draws a symbol twice its size across, 50 units at 1), and the
+  mating points keep theirs. The layout works out its lines'
   detours around the symbols from it, and an infertile animal's and a
   miscarriage's id moves down in proportion. Since the drawing zooms to
   fit, a larger symbol leaves less room between the symbols: measured at
@@ -182,23 +188,22 @@ code, `DIVERGENCE.md` in the repository says how and why.
   id starting `__size_` is now refused, as the other reserved prefixes are.
   Anything but one positive number stops. nprcgenekeepr has no such
   argument. At 1 every layout and drawing is as before.
-* New: `makePedigreeMatingLayout(textSize = )` sets the size of the
-  animals' ids and names as a multiple of the 14 px written before (1, the
-  default), as kinship2's and Pedixplorer's `cex` does: every node gets 14
-  times it as its `font.size`, rounded to a whole pixel. The marks' own words
-  (a proband's "P", an ectopic pregnancy's "ECT"), the twins' labels and the
-  symbols keep their sizes, and the layout's places and lines are the same at
-  every text size. With text larger than before, `drawPedigreeDiagram()`
-  keeps room for the outermost labels, so a long id at the edge is not cut
-  off (measured at 500 px: without that room the 10-character ids at the
-  edges lost 8-10 px at 1.4 and 27-29 px at 2), and an infertile animal's
-  and a miscarriage's moved id keeps its room below its mark. Since the
-  drawing zooms to fit, larger text leaves less room between the ids: an id
-  of 10 characters is 118 units wide at 1.4 and 165 at 2, and the animals in
-  a row are 120 apart. An id starting `__text_` is now refused, as the other
-  reserved prefixes are. Anything but one positive number stops.
-  nprcgenekeepr has no such argument. At 1 every layout and drawing is as
-  before.
+* New: `makePedigreeMatingLayout(textSize = )` sets the size of the animals'
+  ids and names as a multiple of the 14 px written before (1, the default), as
+  kinship2's and Pedixplorer's `cex` does: every node gets 14 times it as its
+  `font.size`, rounded to a whole pixel. The marks' own words (a proband's "P",
+  an ectopic pregnancy's "ECT"), the twins' labels and the symbols keep their
+  sizes, and the layout's places and lines are the same at every text size.
+  With text larger than before, `drawPedigreeDiagram()` keeps room for the
+  outermost labels, so a long id at the edge is not cut off (measured at 500
+  px: without that room the 10-character ids at the edges lost 8-10 px at 1.4
+  and 27-29 px at 2), and an infertile animal's and a miscarriage's moved id
+  keeps its room below its mark. Since the drawing zooms to fit, larger text
+  leaves less room between the ids: the 10-character ids measured are 117 to
+  119 units wide at 1.4 and 163 to 167 at 2, and the animals in a row are 120
+  apart. An id starting `__text_` is now refused, as the other reserved
+  prefixes are. Anything but one positive number stops. nprcgenekeepr has no
+  such argument. At 1 every layout and drawing is as before.
 * New: `makePedigreeMatingLayout(columnSpacing = , rowSpacing = )` set the
   distance between neighboring animals in a row and between generations as
   multiples of the 120 and 150 units used before (1, the defaults), each
@@ -208,7 +213,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   lines' steps and curves are worked out at the spacing given. Since the
   drawing zooms to fit, wider spacing leaves the symbols and text smaller
   beside the distances. Larger text needs wider columns: at `textSize = 2`
-  an id of 10 characters is up to 167 units wide, so neighbors' ids run
+  the 10-character ids measured are up to 167 units wide, so neighbors' ids run
   together at `columnSpacing = 1` and stand apart at 1.4. Measured at 500
   px, columns at 0.5 lay long ids over their neighbors' and rows at 0.5 run
   the lines from parents to their offspring through the parents' ids.
@@ -253,49 +258,49 @@ code, `DIVERGENCE.md` in the repository says how and why.
   and 700 px wide.
 * New: layout hints, `makePedigreeMatingLayout(hints = )`: the left-to-right
   `order` of animals and, with `mate`, the side of a mating each mate is drawn
-  on, in the form kinship2 and Pedixplorer give their hints.
+  on: the two kinds of hint kinship2 and Pedixplorer take.
 * New: `makePedigreeMatingLayout()` returns the hints it used as `hints`, in
   the form its `hints` argument takes, so that
   `makePedigreeMatingLayout(ped, hints = layout$hints)` gives the same layout
   and an edit can start from the layout's own: `order` numbers each animal
   with a parent by the row the layout drew it from (a founder only where your
   order named it); `mate` holds your rows, then the layout's own row for each
-  other mating (none for an animal with three or more matings, where a row
-  can move its mates).
+  other mating, except the matings of an animal that anchors three or more
+  matings or that your rows place, where a row can move its mates.
 * New: `savePedigreeDiagram(diagram, file, width, height, dpi)` writes the
   widget `drawPedigreeDiagram()` returns as an SVG, a PDF or a PNG file (the
   file's ending chooses), from a script: before, a drawing could be saved only
-  as a web page, or by clicking its "Export Diagram (PNG)" button in a
-  browser. A headless Chrome (the chromote package and Chrome or Chromium on
-  the computer) runs the same drawing the widget shows and a recording layer
-  writes it, so every mark, color and legend row comes out as drawn, the
-  legend's pictures as vector pictures, and every id as text a reader can
-  select and zoom to: the widget draws an id only when it would be 4 pixels
-  tall, so its 375 rhesus animals show none until zoomed in, and the file has
-  all 545 id labels (375 distinct, the rest repeat appearances). `width` and
-  `height` are the page in inches; left out, the widget's own size, 10 inches
-  wide. The PDF is that drawing on one page of that size, still vector with
-  its ids as text; each dashed line is written as a row of short strokes,
-  because Chrome would otherwise write every dash as an outline (the 375
-  animals on a 14 by 7 inch page: 1.0 MB, 5.8 MB without). The PNG is the
-  page at `dpi` pixels per inch, 300 unless told (a 7 by 5 inch page is 2100
-  by 1500 pixels). Measured against the live widget in Chrome 157 on macOS,
-  over the pixels that are not white in either, for the SVG and for the PNG
-  at 96 dpi: on the four animals none of the drawing's and 0.03% of the
-  legend's differ by more than 100 in a color channel, on an 18-animal
-  pedigree with all seven marks 0.26% and 0.07%. It stops, saying what is
-  missing, without chromote (in Suggests) or Chrome. It ends every process of
-  the Chrome it starts, on Windows too, where the renderer of a page that never
-  finishes drawing outlives its browser's close. It waits up to 60 seconds for
-  each Chrome it starts to open its port, as it waits for Chrome's answers:
-  chromote's own 10 seconds can pass for a fresh Chrome on a busy computer; a
-  larger `chromote.timeout` option is kept. nprcgenekeepr has no such
-  function.
+  as a web page, or by clicking its "Export Diagram (PNG)" button in a browser.
+  A headless Chrome (the chromote package and Chrome or Chromium on the
+  computer) runs the same drawing the widget shows and a recording layer writes
+  it, so every mark, color and legend row comes out as drawn, the legend's
+  pictures as vector pictures, and every id as text a reader can select and
+  zoom to: the widget draws an id only when it would be 4 pixels tall, so its
+  375 rhesus animals show none until zoomed in, and the file has all 545 id
+  labels (375 distinct, the rest repeat appearances). `width` and `height` are
+  the page in inches; left out, 10 inches wide and the widget's own height. The
+  PDF is that drawing on one page of that size, still vector with its ids as
+  text; each dashed line is written as a row of short strokes, because Chrome
+  would otherwise write every dash as an outline (the 375 animals on a 14 by 7
+  inch page: 1.0 MB, 5.8 MB without). The PNG is the page at `dpi` pixels per
+  inch, 300 unless told (a 7 by 5 inch page is 2100 by 1500 pixels). Measured
+  against the live widget in Chrome 157 on macOS, over the pixels that are not
+  white in either, for the SVG and for the PNG at 96 dpi: on the four animals
+  none of the drawing's and 0.03% of the legend's differ by more than 100 in a
+  color channel, on an 18-animal pedigree with all seven marks 0.26% and 0.07%.
+  It stops, saying what is missing, without chromote (in Suggests) or Chrome.
+  It ends every process of the Chrome it starts, on Windows too, where the
+  renderer of a page that never finishes drawing outlives its browser's close.
+  It waits up to 60 seconds for each Chrome it starts to open its port, as it
+  waits for Chrome's answers: chromote's own 10 seconds can pass for a fresh
+  Chrome on a busy computer; a larger `chromote.timeout` option is kept.
+  nprcgenekeepr has no such function.
 * New: the 375 rhesus animals of the example pedigree, with their 3 twin pairs,
   are one page of `savePedigreeDiagram()`'s SVG or PDF on a 14 by 7 inch page or
   on letter paper (8.5 by 11 inches), with every id written: 545 id labels, 375
-  distinct, and none overlapping another id or label (checked in Chrome on the
-  SVG and with pdftotext on the PDF). The ids are small, under 1 point high on
+  distinct, and none overlapping another id or label (checked with pdftotext
+  on the PDF on both pages, and in Chrome on the SVG of the 14 by 7 inch page,
+  id against id). The ids are small, under 1 point high at the median on
   those pages, so a reader zooms in on the SVG or PDF; in a PNG at the default
   300 dpi an id is about 3 pixels high (a larger `dpi` makes it bigger). The
   drawing vignette's "Saving a drawing" and "A colony-size drawing" show the
@@ -313,7 +318,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   `gen`; and draws everyone. What the layout says (a warning, an animal it
   leaves out) is shown on the page, and a pedigree that cannot be drawn is
   said so. The Checks tab lists `checkPedigree()`'s problems and the Animals
-  tab the animals read. It needs the shiny package (in Suggests).
+  tab the animals chosen. It needs the shiny package (in Suggests).
   Pedixplorer's `ped_shiny()` is such an app; nprcgenekeepr's app is its
   whole colony application, `runGeneKeepR()`.
 * New: `runPedigreeApp()`'s app chooses the animals it draws: everyone, one
@@ -321,13 +326,15 @@ code, `DIVERGENCE.md` in the repository says how and why.
   their sizes), focal animals with their ancestors and descendants, or focal
   animals' near relatives (3 by default, as Pedixplorer's app). With
   ancestors and descendants, a descendant's other parent is drawn too,
-  without its own parents, so every offspring appears with both parents; in
-  the sample pedigree 344 of the 375 animals have such a parent.
+  without its own parents, so every offspring appears with both parents;
+  with each of the sample pedigree's 375 animals as the focal animal in turn,
+  344 of the drawings have such a parent.
   The focal animals are typed, or an animal is clicked in the drawing (a
   repeated animal's symbol counts as the animal); the clicked animal becomes
   the only focal animal, as in nprcgenekeepr's Pedigree Browser. With more
-  than 1,000 animals chosen, the app asks before drawing them (about 9
-  seconds for 1,000 animals and 50 for 2,000 on the computer measured). A
+  than 1,000 animals chosen, the app asks before drawing them (on the
+  computer measured, 9 to 19 seconds for about 1,000 animals, by the
+  pedigree's shape, and 50 for 2,000). A
   sire or dam with no row of its own is added with `addParents()` and named,
   so such a file is drawn; the Checks tab still lists it. The Animals tab
   shows the animals chosen.
@@ -335,15 +342,15 @@ code, `DIVERGENCE.md` in the repository says how and why.
   from the file's columns (those whose names begin with "affected", in any
   case, chosen at first), each labeled "Affected (its name)", and a column
   of numbers cut at a cut-off the legend states, such as "Affected (glucose
-  >= 126)"; the marks `makePedigreeMatingLayout()` draws, found by their
+  ≥ 126)"; the marks `makePedigreeMatingLayout()` draws, found by their
   names in any case and by Pedixplorer's avail and deceased, and listed on the
   page; lines at right angles or straight; and a twins file (id1, id2, code;
   MZ twin, DZ twin and UZ twin, or kinship2's 1, 2 and 3), checked with
   `checkTwinRelations()`, a pair drawn when both its animals are. A file's
   yes-or-no values are read as TRUE, T, yes, Y or 1 and FALSE, F, no, N or 0,
-  in any case; before, a condition written 1 and 0 was drawn as unknown for
-  every animal, with no message, and a mark written so stopped the drawing. A
-  column with any other value is left out and named. The sample pedigree
+  in any case. A condition or mark column with any other value is left out
+  and named, except the deceased mark, which reads any other value as not
+  deceased. The sample pedigree
   opens with its file of 3 twin pairs.
 * New: `runPedigreeApp()`'s app saves what it shows. On the Diagram tab, the
   SVG, PDF and PNG buttons save the drawing through `savePedigreeDiagram()`,
@@ -370,7 +377,8 @@ code, `DIVERGENCE.md` in the repository says how and why.
   the animal. Before, kinship2's call form `kinship(id, dadid, momid, sex)`
   gave a wrong matrix with no error, taking the sex codes for generation
   numbers. `makePedigreeMatingLayout()`, unless given a `kinshipMatrix`,
-  passes the pedigree's `gen` column to `kinship()`, so it stops the same way.
+  passes the pedigree's `gen` column to `kinship()` when it draws a mating,
+  and so stops the same way.
   The help page and the README name the functions kinship2 and Pedixplorer
   also export.
 * New: `ibdMatrix()` builds an IBD matrix from pairs of ids and their values,
@@ -411,10 +419,8 @@ code, `DIVERGENCE.md` in the repository says how and why.
   in the table's order, with `offspring` 0, so its rows are the matings the
   drawing draws, in its order. In both functions a row naming a pair that
   has offspring together is set aside without a message, so `getMatings()`'s
-  result can be passed back; before, the layout said it left out such a row
-  when one of the pair had no row of its own, and stopped on an animal
-  recorded as both sire and dam of one offspring. Without `matings`, the
-  result is as before.
+  result can be passed back. Without `matings`, `getMatings()` lists only the
+  matings built from offspring.
 
 ## Checking and repair
 
@@ -445,8 +451,8 @@ code, `DIVERGENCE.md` in the repository says how and why.
   number other than 0 and 1, which they counted as affected; `bitSize()` and
   `findUnavailable()`, which do not use the status, do not read the column.
 * New: `removeAnimals()` removes the listed animals and sets to `NA` each sire
-  or dam entry that names one of them, so no animal is left with a parent that
-  has no row; an offspring keeps its other parent. kinship2's
+  or dam entry that names one of them, so none of them is left as a parent
+  with no row; an offspring keeps its other parent. kinship2's
   `pedigree.trim()` stops when an offspring would keep only one parent, and
   Pedixplorer's `subset(del_parents = "one")` clears that parent too.
 * New: `getNearRelativePedigree(ped, probands, maxDist)` keeps the animals
@@ -474,25 +480,44 @@ code, `DIVERGENCE.md` in the repository says how and why.
   the sire, else the female is the dam, else the two are in the object's
   order. A mate hint row naming such a pair is kept. Draw with
   `makePedigreeMatingLayout(x$ped, hints = x$hints, matings = x$matings)`.
-  Before, spouse pairs were left out, and so were mate hint rows naming
-  them, with a message.
 
 ## Requirements
 
-* pedkindraw needs R 4.5.0 or later, the oldest R its checks run on.
+* pedkindraw needs R 4.5.0 or later. Its checks run on R 4.5 and later; no
+  older R is checked.
 
 ## Documentation
 
+* New: the README draws a pedigree of twelve animals in four generations (a
+  death, a condition, identical twins and a mating of first cousins),
+  computes their kinship, says what each mark of the drawing means, lists the
+  functions by what they do, and says how pedkindraw began as a copy of
+  nprcgenekeepr's code.
+* New: `vignette("pedkindraw", package = "pedkindraw")`, "Getting started
+  with pedkindraw", takes one pedigree from its records to a drawing: it
+  checks the example pedigree, numbers its generations and family trees,
+  computes kinship, trims it and draws it, then shrinks it and finds a set of
+  unrelated animals; its last section converts a kinship2 pedigree.
+* New: `vignette("drawing", package = "pedkindraw")`, "Drawing pedigrees",
+  shows the drawing part by part: the symbols and the legend, conditions,
+  twins, animals drawn twice, matings of relatives, the two line styles,
+  animals with no relative, layout hints, kinship2 and Pedixplorer objects,
+  saving a drawing, clicks in a Shiny application, a colony-size drawing and
+  how large a drawing can be.
+* New: `vignette("speed", package = "pedkindraw")`, "Speed and size
+  limits", gives the seconds pedkindraw's functions took on one
+  machine, by the number of animals from 300 to 100,000, beside the kinship2
+  and Pedixplorer functions that do the same; where each one stopped and its
+  memory there; and how large a drawing can be drawn and read. A script in the
+  repository, `tools/checkSpeedTables.R`, checks every number in the page's
+  tables against the timing records in `tools/timing/results/`, and that each
+  number in its text is a table's or one of the method's own.
+  `drawPedigreeDiagram()`'s help gives the measured size of a drawing and
+  points to the page, as do `?pedkindraw` and the other two vignettes.
+* New: the website, <https://rmsharp.github.io/pedkindraw/>, has every help
+  page, in the groups of `?pedkindraw`, the three vignettes as articles, and
+  this NEWS.
 * The help pages, vignettes, README and NEWS use US spelling throughout
   (color, gray, center, labeled), as the package's `Language: en-US` says; so
   do the messages `makePedigreeMatingLayout()` and `makePedigreeDiagramData()`
   stop with when `conditionColors` is wrong.
-* New: `vignette("speed", package = "pedkindraw")`, "Speed and size
-  limits", gives the seconds each of pedkindraw's functions took on one
-  machine, by the number of animals from 300 to 100,000, beside the kinship2
-  and Pedixplorer functions that do the same; where each one stopped and its
-  memory there; and how large a drawing can be drawn and read. A script in the
-  repository, `tools/checkSpeedTables.R`, checks every number on the page
-  against the timing records in `tools/timing/results/`.
-  `drawPedigreeDiagram()`'s help gives the measured size of a drawing and
-  points to the page, as do `?pedkindraw` and the other two vignettes.
