@@ -6,7 +6,7 @@
 \alias{pedkindraw-package}
 \title{pedkindraw: Interactive Pedigree Drawings and Kinship}
 \description{
-Draws pedigrees as interactive 'visNetwork' graphs that can be annotated, and computes kinship coefficients. It also trims and shrinks pedigrees, checks pedigree records, finds sets of unrelated individuals, and converts 'kinship2' 'pedigree' and 'Pedixplorer' 'Pedigree' objects.
+Draws pedigrees as interactive 'visNetwork' graphs that can be annotated, and computes kinship coefficients. It also trims and shrinks pedigrees, checks pedigree records, finds sets of unrelated individuals, and converts 'kinship2' 'pedigree' and 'Pedixplorer' 'Pedigree' objects. Its X-chromosome kinship, bit size, pedigree shrinking, family-id check and IBD matrix follow the methods of Sinnwell, Therneau and Schaid (2014) \doi{10.1159/000363105}.
 }
 \section{Drawing}{
 
