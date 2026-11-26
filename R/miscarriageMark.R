@@ -165,7 +165,7 @@
 #' pixels wide and black, a line from the lower-left to the upper-right
 #' corner of the triangle of every node whose \code{miscarriage} field is
 #' \code{"TOP"} or \code{"ECT"} (vis.js's triangle of size \code{s} is
-#' \code{2.3 s} wide, its apex \code{1.0117 s} above its centre and its base
+#' \code{2.3 s} wide, its apex \code{1.0117 s} above its center and its base
 #' \code{0.9802 s} below, the path \code{.conditionSectionsHandler()}
 #' traces), and writes \dQuote{ECT} under an ectopic pregnancy's. A
 #' spontaneous abortion is the triangle alone. The text uses single quotes

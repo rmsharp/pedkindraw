@@ -11,7 +11,7 @@
 
 #' The distance, in units, between two columns at columnSpacing 1
 #'
-#' Phase G14 (R140). The distance between neighbouring animals in a row
+#' Phase G14 (R140). The distance between neighboring animals in a row
 #' before Phase G14, chosen in nprcgenekeepr by drawing a loop pedigree and
 #' a wide sibship in a browser.
 #' @noRd

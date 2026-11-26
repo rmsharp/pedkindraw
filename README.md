@@ -1,7 +1,7 @@
 
 <!-- README.md is made from README.Rmd: edit README.Rmd, install the current
 package, then run rmarkdown::render("README.Rmd"). The picture is made by
-Rscript tools/makeReadmePicture.R from the chunk labelled "pedigree". -->
+Rscript tools/makeReadmePicture.R from the chunk labeled "pedigree". -->
 
 # pedkindraw
 
@@ -116,7 +116,7 @@ and Chrome. This is a picture of it:
 
 Squares are males and circles females. The slash marks A as dead, and
 the filled symbols are E and K, which have the condition. The green line
-labelled MZ joins the twins I and J. The mating of the first cousins H
+labeled MZ joins the twins I and J. The mating of the first cousins H
 and I is drawn in orange, because their kinship coefficient is above 0.
 I is drawn twice, under her sire and dam beside her twin, and beside her
 mate H; the dashed line joins her two places. In the drawing itself you

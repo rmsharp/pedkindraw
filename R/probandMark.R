@@ -19,7 +19,7 @@
 
 #' Where the arrow of a proband or a consultand is drawn
 #'
-#' Phase G13 (R136). In units of the node's \code{size}, from its centre (x
+#' Phase G13 (R136). In units of the node's \code{size}, from its center (x
 #' to the right, y down): the arrow's tip (\code{tipX}, \code{tipY}), just
 #' outside the lower-left corner of the symbol's square; the arrow rises
 #' from its tail at the lower left at \code{angle} degrees above the
@@ -33,7 +33,7 @@
 .probandArrow <- list(tipX = -1.1, tipY = 0.55, angle = 30.0, length = 0.96,
                       head = 0.3)
 
-#' The tail of the arrow, from a node's centre
+#' The tail of the arrow, from a node's center
 #'
 #' Phase G13 (R136). In units of the node's \code{size}, as
 #' \code{.probandArrow}'s tip.
