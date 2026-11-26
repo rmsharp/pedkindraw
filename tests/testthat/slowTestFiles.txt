@@ -75,6 +75,7 @@ test_positionMatingUnitForest.R
 test_positionTreeApportion.R
 test_positionTreeApportionChecks.R
 test_probandMark.R
+test_releaseTextDocs.R
 test_removeUnknownAnimals.R
 test_resolveEdgeNodeCollisions.R
 test_resolveEdgeNodeCollisionsCases.R
