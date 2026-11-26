@@ -37,7 +37,7 @@ Returns an interactive pedigree diagram, as a \code{visNetwork} widget,
 for a layout made by \code{\link{makePedigreeMatingLayout}}. The diagram
 has the sex symbols at the layout's fixed positions, the legend (the
 five sex symbols, one row per affected condition or a single
-\dQuote{Affected} row, a grey \dQuote{Affected status unknown} row when an
+\dQuote{Affected} row, a gray \dQuote{Affected status unknown} row when an
 animal's status is unknown, a \dQuote{Genotyped} row when an animal is
 genotyped, a \dQuote{Carrier} row when an animal is a carrier,
 \dQuote{Proband} and \dQuote{Consultand} rows when an animal is one,
@@ -61,16 +61,16 @@ two is the left half), and each condition's legend row shows a circle cut
 the same way with that condition's section filled in its color, so the
 legend says which section is which.
 
-The colours of the conditions are set by
+The colors of the conditions are set by
 \code{\link{makePedigreeMatingLayout}}'s \code{conditionColors}: the layout
 fills the symbols with them, and the drawing paints the sections and the
 legend's rows from the layout's \code{conditions} table, so all three
 agree.
 
-An animal whose affected status is unknown (\code{NA}) is filled grey,
-with one condition, or has that condition's section grey, with two or more,
-so it does not look unaffected; the legend's grey hexagon
-\dQuote{Affected status unknown} then says what the grey is, and the
+An animal whose affected status is unknown (\code{NA}) is filled gray,
+with one condition, or has that condition's section gray, with two or more,
+so it does not look unaffected; the legend's gray hexagon
+\dQuote{Affected status unknown} then says what the gray is, and the
 canvas is 45 pixels taller for that row.
 
 An animal whose \code{genotyped} column is \code{TRUE} (see
@@ -83,7 +83,7 @@ canvas is 45 pixels taller for that row.
 
 An animal whose \code{carrier} column is \code{TRUE} (see
 \code{\link{makePedigreeMatingLayout}}) is drawn with a black dot at the
-centre of its symbol, on top of its fill, its sections and the slash; the
+center of its symbol, on top of its fill, its sections and the slash; the
 legend's \dQuote{Carrier} row, a circle with the dot, then says what the
 dot is, and the canvas is 45 pixels taller for that row.
 

@@ -36,7 +36,7 @@ sample pedigree (375 rhesus macaques, with its file of 3 twin pairs),
 or the \code{ped} given here; and, if you have one, a twins file
 with the columns id1, id2 and code, one pair per row.
 \item \strong{Say which columns} are the animal's id, its sire, its dam
-and its sex. The app recognises pedkindraw's names and common others
+and its sex. The app recognizes pedkindraw's names and common others
 (ego, egoid, indid; father, fatherid, dadid; mother, motherid, momid;
 gender), whatever their case and with or without spaces, dots or
 underscores; the user can change each. Sex values m, f, h and u in any
@@ -45,7 +45,7 @@ female, as kinship2 and PLINK files code them) are read as M, F, H and
 U, and the app says so; any other value is drawn as unknown.
 \item \strong{Choose what is drawn}: up to four conditions, from a list
 of the file's columns that starts with those whose names begin with
-"affected" in any case, each drawn in its own colour and labelled
+"affected" in any case, each drawn in its own color and labeled
 "Affected (its name)"; a column of numbers is drawn once it has a
 cut-off (a comparison and a number, such as \code{>= 126}), which the
 legend states. The marks \code{\link{makePedigreeMatingLayout}} draws
@@ -88,7 +88,7 @@ page (10 inches wide; a PNG at 300 dpi); and the animals chosen as a
 CSV file with the button on the Animals tab: the rows that tab shows,
 with every column of the file, which the app opens again to the same
 drawing. The pictures need the \pkg{chromote} package and Google
-Chrome or Chromium; without them the picture buttons are greyed and
+Chrome or Chromium; without them the picture buttons are grayed and
 the page says what is missing.
 }
 }
