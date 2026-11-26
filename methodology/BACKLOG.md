@@ -211,14 +211,34 @@ issues).*
       r90935 of 2026-11-18 (a `transform` method's formals); S47's run passed that job a day earlier. Not
       pedkindraw's code; watch whether it clears before acting.
 
-- [ ] **A CI job fails now and then while Chrome starts** (DECISION NEEDED, Effort S; found S89, S91, S92) -- three
-      of the last four sessions' runs failed one browser test in one job while chromote started Chrome, and each
-      job passed when rerun: S89 Ubuntu ("Chrome debugging port not open after 10 seconds"); S91 macOS
-      (`/json/version` not answered in 60 s, run 45680687657); S92 Ubuntu release, run 45705867740,
-      `test_savePedigreeDiagram.R:426`, the port not open after 10 s, raised in `chromote::Chrome$new()` at
-      `R/savePedigreeDiagram.R:302`. Each costs a rerun and a reading. Choices: a longer start-up wait on CI
-      (chromote's own `chromote.timeout` option, which its port search reads, set in the workflow or a test helper),
-      one retry of the start inside `savePedigreeDiagram()` (users would gain too), or leave it and rerun.
+- [ ] **A Chrome at a PDF or PNG save's second start hangs now and then on CI** (READY: the diagnostic, by Mark's
+      pick; Effort M, a guess; found S89, S91, S92; S93 R166) -- every start failure CI has shown since S71 is at
+      `.renderPicture()`'s start (`.startChrome()` with LCD text off, `R/savePedigreeDiagram.R:301`), 27 of the 109
+      starts a trace of the tests counts: S89 (`:458`) and S92 (`:426`) Ubuntu release, "port not open after 10
+      seconds"; S91 macOS, port open, `/json/version` unanswered for 60 s; S93 Ubuntu release twice on the REFACTOR
+      push (run 45737321097, attempts 1 and 2, `:366` and `:653`), "port not open after **60** seconds", each leaving
+      an `org.chromium.Chromium.*` folder (a detritus NOTE). `:653` stubs the recording, so no browser had just
+      closed. 4 of the 5 on Ubuntu with R release, 0 on oldrel-1 (the same Chrome for Testing 158.0.8127.88).
+      S93 added a 60 s start wait (R166): an 11-s-slow stand-in passes, a hung Chrome does not. **Next (Mark's
+      pick):** a diagnostic push, as S91's for the Windows hang (`89e28f1`; dragon 35): on the runners, many starts
+      of each kind (with and without `--disable-lcd-text`, right after a close and alone), on release and oldrel-1,
+      counting hangs and keeping each hung Chrome's stderr (chromote writes it to a temp file); then one fix by
+      Mark's pick: one browser per save, a retry of a hung start, or the arguments the count points to.
+
+- [ ] **A PDF or PNG can come out blank: `.renderPicture()` prints after `Page$navigate()` without waiting for
+      the load** (DECISION NEEDED, Effort S, a guess; found S93) -- run 45721768010's Windows job (attempt 1)
+      failed `test_savePedigreeDiagram.R:525`: the first of two PDFs of the four animals was 1,093 bytes, the
+      second 83,451 (a blank page against a drawn one); the rerun passed (PASS 17031), and none of the 80 jobs
+      before failed there. `.renderPicture()` calls `session$Page$navigate()`, then waits two animation frames, then
+      prints or photographs; chromote 0.5.1's own vignette (`commands-and-events.Rmd:67`-`:68`) says navigate and a
+      load wait "will not work 100% of the time" and to use `$go_to()`. Whether that race made this blank page is
+      not shown (one reading). Choices: wait for the SVG document's `readyState` "complete" (or `go_to()`) before
+      the two frames, with a test that delays the load; or leave it. Related: picture plan dragon 16.
+
+- [ ] **The app's click test times out on macOS now and then** (DECISION NEEDED, Effort S, a guess; found S88,
+      S93) -- `test_pedigreeAppBrowser.R:103` ("a click on a repeat or an animal makes it the focal animal"):
+      `.appWaitFor()` waited 60 s for the focal box to read `g1`, on macOS only: run 45519040454 (S88) and both
+      attempts of run 45737321097 (S93). The browser had started; the click did not take. Not read further.
 
 - [ ] **Report a vacuous test to nprcgenekeepr** (READY, Effort S) -- the first expectation of
       `test_findPedigreeNumber.R` checks the ids containing "1", and the Lacy pedigree's ids are letters, so it

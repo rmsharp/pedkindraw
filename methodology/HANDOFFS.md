@@ -204,11 +204,19 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S93
 date: 2026-11-25
-status: pending
-active_task: the backlog item "A CI job fails now and then while Chrome starts" (BACKLOG.md:214), strict TDD; 17k waits on win-builder's queue. Claimed.
-what_was_done: pending
+status: complete
+self_score: 5
+predecessor_score: 9
+active_task: backlog item "A CI job fails now and then while Chrome starts" NOT DONE: a 60 s Chrome start wait added (R166), but CI showed the failures are hangs it does not cure; the item rewritten (BACKLOG.md:214), READY for a diagnostic by Mark's pick. 17k still waits on win-builder's second email (the upload left the queue list by 23:16 UTC).
+what_was_done: claim fc3dc5c; RED 9fbfb3a (two tests with an 11-s-slow stand-in Chrome); GREEN d79dbed (60 s port wait at both starts, help and NEWS); REFACTOR b0b9556 (.startChrome()); close-out 1 3093e82 (R166, dragon 37); CI runs 45721768010 and 45737321097, failed jobs rerun once each; backlog items :228 (blank PDF) and :238 (macOS app click) added.
+next_steps: ask Mark for win-builder's second email; if in, finish 17k (cran plan :857, :884, :906); if not, the Chrome start diagnostic on GitHub's runners (BACKLOG.md:214; SESSION_NOTES.md What You Must Do 4), then a picker on the fix.
+key_files: R/savePedigreeDiagram.R:367, :301, :312; tests/testthat/test_savePedigreeDiagram.R:671; tests/testthat/helper-savePedigreeDiagram.R:563; docs/planning/standalone-pedigree-package-plan.md:346; docs/planning/cran-submission-plan.md:1192; methodology/BACKLOG.md:214.
+gotchas: all 5 CI start failures are at .renderPicture()'s start (27 of 109 starts), 4 on Ubuntu release, 0 on oldrel-1; CI on master is red (Ubuntu release :214, macOS :238); chromote's port wait is chromote.timeout, not default_timeout; HANDOFFS.md's trim trigger fires (backlog :303).
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: REFACTOR's full suite (NOT_CRAN=true) 17,268 expectations, WARN 0 (10.5 min)
+changelog_ref: CHANGELOG.md "2026-11-25 · [BL-chrome-start] S93: a 60 s Chrome start wait added (R166); the CI start failures are hangs, the item stays open" and its push and rerun entries
 commit: pending
 ```
+The fix Mark picked works on a slow Chrome and not on a hung one, which CI showed after REFACTOR. -: the approach picker recommended it on an unmeasured "if only slow" though the counts pointed at a hang; +: each gate measured first, CI read job by job, Mark told at once.
 ```handoff
 session: S92
 date: 2026-11-25
