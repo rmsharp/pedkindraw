@@ -33,14 +33,14 @@ code, `DIVERGENCE.md` in the repository says how and why.
   was drawn affected wherever it was not 0, with no message, as it still is in
   nprcgenekeepr. `TRUE`, `FALSE`, `NA`, 0 and 1 (kinship2's codes, which
   `asPedFrame()` writes) and text read as before.
-* New: an animal whose affected status is unknown (`NA`) is filled grey
-  (`#BEBEBE`, R's "grey", as Pedixplorer fills it), with one condition, or has
-  that condition's section grey, with two to four, so it no longer looks
-  unaffected; `makePedigreeDiagramData()` fills it grey too. The legend then
-  has a grey row "Affected status unknown" after the condition rows, and the
+* New: an animal whose affected status is unknown (`NA`) is filled gray
+  (`#BEBEBE`, R's `"grey"`, as Pedixplorer fills it), with one condition, or has
+  that condition's section gray, with two to four, so it no longer looks
+  unaffected; `makePedigreeDiagramData()` fills it gray too. The legend then
+  has a gray row "Affected status unknown" after the condition rows, and the
   drawing is 45 px taller for it. nprcgenekeepr still fills an unknown status
   white. Text in a condition column that `as.logical()` cannot read (such as
-  "yes", or "1" read as text) is unknown, so it is now drawn grey.
+  "yes", or "1" read as text) is unknown, so it is now drawn gray.
 * New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` take
   `maxNameChars`, the most characters of the `name` column written under an
   animal's id, 15 by default as before: a longer name is cut and ends in
@@ -49,24 +49,24 @@ code, `DIVERGENCE.md` in the repository says how and why.
   Pedixplorer write their labels; a long name can then run into the labels of
   the animals beside it. nprcgenekeepr cuts every name after 15 characters.
 * New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` take
-  `conditionColors`, the colours of the affected conditions, by default the
+  `conditionColors`, the colors of the affected conditions, by default the
   four drawn before (pink, orange, sky blue and bluish green). Each is a name
   R knows, such as "orange", or a code, such as "#E69F00", and is written as
-  its "#RRGGBB" code, the colour R means by it: a browser reads most of R's
-  colour names as no colour, and "grey" as a darker grey. The layout fills the
+  its "#RRGGBB" code, the color R means by it: a browser reads most of R's
+  color names as no color, and `"grey"` as a darker gray. The layout fills the
   symbols with them and keeps them in its `conditions` table, from which
   `drawPedigreeDiagram()` now paints the sections and the legend, so all three
-  agree; before, colours edited in that table reached the legend but not the
-  sections. A colour R does not know, a number, a transparent colour, white,
-  the grey of an unknown status, a colour given twice, or fewer colours than
-  conditions drawn stops, with a message naming them. nprcgenekeepr's colours
+  agree; before, colors edited in that table reached the legend but not the
+  sections. A color R does not know, a number, a transparent color, white,
+  the gray of an unknown status, a color given twice, or fewer colors than
+  conditions drawn stops, with a message naming them. nprcgenekeepr's colors
   are fixed.
 * New: `makePedigreeMatingLayout()` and `makePedigreeDiagramData()` take
   `conditionThresholds`, cut-offs for measured traits. A condition column of
   numbers is drawn by its cut-off, a comparison and a number, such as
   `conditionThresholds = c(affected_glucose = ">= 126", affected_hb = "< 13")`:
   an animal whose number passes is affected, one whose number does not is
-  unaffected, and one with no number is unknown (grey). The rule goes into the
+  unaffected, and one with no number is unknown (gray). The rule goes into the
   condition's name, so the legend reads "Affected (glucose ≥ 126)" and the
   hover text "Affected (glucose ≥ 126): Yes (140)". `>` and `<` decide as
   Pedixplorer's `threshold` does. Without a cut-off a number other than 0 and
@@ -84,7 +84,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
 * New: `makePedigreeMatingLayout()` reads a column `carrier` (`TRUE`, `FALSE`,
   `NA`, 1, 0, or text such as "TRUE"), for animals that have the genetic
   trait but are not expected to show the disease: each carrier's symbol is
-  drawn with a black dot at its centre, on top of its fill, its sections and
+  drawn with a black dot at its center, on top of its fill, its sections and
   the deceased slash, and its hover text says "Carrier: Yes", "No" or
   "Unknown"; any other value stops, naming the column.
   `drawPedigreeDiagram()`'s legend then has a row "Carrier", a circle with the
@@ -95,7 +95,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
 * New: `makePedigreeMatingLayout()` reads the columns `proband` and
   `consultand` (`TRUE`, `FALSE`, `NA`, 1, 0, or text such as "TRUE"): the
   proband, an affected animal through whom the family came to attention, and
-  the consultand, an animal for whom counselling or testing is sought. Each
+  the consultand, an animal for whom counseling or testing is sought. Each
   is drawn with a black arrow pointing at its symbol from the lower left, a
   proband's with "P" beside its tail, and the hover text says "Proband:" and
   "Consultand:" "Yes", "No" or "Unknown"; any other value stops, naming the
@@ -134,7 +134,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   offspring by choice or for an unknown reason" or "Unknown"; any other value
   stops, naming the column (Pedixplorer reads such a value as fertile). An
   animal with offspring is marked as recorded, since a colony animal can be
-  sterilised after it has bred (Pedixplorer refuses it).
+  sterilized after it has bred (Pedixplorer refuses it).
   `drawPedigreeDiagram()`'s legend then has a row "Infertile" and a row "No
   offspring", each its mark, 45 px each; the view takes in each moved id, so
   one at the bottom edge is not cut off. An id starting `__fert_` is now
@@ -200,7 +200,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   nprcgenekeepr has no such argument. At 1 every layout and drawing is as
   before.
 * New: `makePedigreeMatingLayout(columnSpacing = , rowSpacing = )` set the
-  distance between neighbouring animals in a row and between generations as
+  distance between neighboring animals in a row and between generations as
   multiples of the 120 and 150 units used before (1, the defaults), each
   rounded to a whole unit, so a drawing can be made wider or deeper, as
   kinship2's distances follow the width and height of its page. Every place
@@ -208,9 +208,9 @@ code, `DIVERGENCE.md` in the repository says how and why.
   lines' steps and curves are worked out at the spacing given. Since the
   drawing zooms to fit, wider spacing leaves the symbols and text smaller
   beside the distances. Larger text needs wider columns: at `textSize = 2`
-  an id of 10 characters is up to 167 units wide, so neighbours' ids run
+  an id of 10 characters is up to 167 units wide, so neighbors' ids run
   together at `columnSpacing = 1` and stand apart at 1.4. Measured at 500
-  px, columns at 0.5 lay long ids over their neighbours' and rows at 0.5 run
+  px, columns at 0.5 lay long ids over their neighbors' and rows at 0.5 run
   the lines from parents to their offspring through the parents' ids.
   Anything but one positive number stops. nprcgenekeepr has no such
   arguments. At 1 every layout and drawing is as before.
@@ -268,7 +268,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   as a web page, or by clicking its "Export Diagram (PNG)" button in a
   browser. A headless Chrome (the chromote package and Chrome or Chromium on
   the computer) runs the same drawing the widget shows and a recording layer
-  writes it, so every mark, colour and legend row comes out as drawn, the
+  writes it, so every mark, color and legend row comes out as drawn, the
   legend's pictures as vector pictures, and every id as text a reader can
   select and zoom to: the widget draws an id only when it would be 4 pixels
   tall, so its 375 rhesus animals show none until zoomed in, and the file has
@@ -282,7 +282,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   by 1500 pixels). Measured against the live widget in Chrome 157 on macOS,
   over the pixels that are not white in either, for the SVG and for the PNG
   at 96 dpi: on the four animals none of the drawing's and 0.03% of the
-  legend's differ by more than 100 in a colour channel, on an 18-animal
+  legend's differ by more than 100 in a color channel, on an 18-animal
   pedigree with all seven marks 0.26% and 0.07%. It stops, saying what is
   missing, without chromote (in Suggests) or Chrome. It ends every process of
   the Chrome it starts, on Windows too, where the renderer of a page that never
@@ -304,7 +304,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   browser that draws a pedigree from a CSV or text file, with no code, for
   someone who keeps a pedigree in a spreadsheet. It opens the file, the 375
   rhesus animals of the sample pedigree, or a `ped` data frame from R;
-  recognises the id, sire, dam and sex columns by pedkindraw's names and
+  recognizes the id, sire, dam and sex columns by pedkindraw's names and
   common others (ego, egoid, indid; father, fatherid, dadid; mother,
   motherid, momid; gender), in any case and with or without spaces, dots or
   underscores, and lets you choose each; reads the sex codes m, f, h and u,
@@ -333,7 +333,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   shows the animals chosen.
 * New: `runPedigreeApp()`'s app chooses what it draws: up to four conditions
   from the file's columns (those whose names begin with "affected", in any
-  case, chosen at first), each labelled "Affected (its name)", and a column
+  case, chosen at first), each labeled "Affected (its name)", and a column
   of numbers cut at a cut-off the legend states, such as "Affected (glucose
   >= 126)"; the marks `makePedigreeMatingLayout()` draws, found by their
   names in any case and by Pedixplorer's avail and deceased, and listed on the
@@ -351,7 +351,7 @@ code, `DIVERGENCE.md` in the repository says how and why.
   saves the animals chosen as a CSV file with every column of the file, which
   the app opens again to the same drawing. The pictures need the chromote
   package and Google Chrome or Chromium; without them the picture buttons are
-  greyed and the page says what is missing, and the CSV button still works.
+  grayed and the page says what is missing, and the CSV button still works.
 * New: `makePedigreeMatingLayout()` draws a pedigree with a sire or dam that
   has no row of its own, without that parent: an animal whose other parent
   is unknown is drawn with no line up, as a founder is. It stopped with R's
@@ -477,8 +477,16 @@ code, `DIVERGENCE.md` in the repository says how and why.
   Before, spouse pairs were left out, and so were mate hint rows naming
   them, with a message.
 
+## Requirements
+
+* pedkindraw needs R 4.5.0 or later, the oldest R its checks run on.
+
 ## Documentation
 
+* The help pages, vignettes, README and NEWS use US spelling throughout
+  (color, gray, center, labeled), as the package's `Language: en-US` says; so
+  do the messages `makePedigreeMatingLayout()` and `makePedigreeDiagramData()`
+  stop with when `conditionColors` is wrong.
 * New: `vignette("speed", package = "pedkindraw")`, "Speed and size
   limits", gives the seconds each of pedkindraw's functions took on one
   machine, by the number of animals from 300 to 100,000, beside the kinship2

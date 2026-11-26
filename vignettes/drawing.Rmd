@@ -140,7 +140,7 @@ line that joins two places of the same animal, and the three twin lines.
 Hover over an animal to see its id, sex, generation, sire and dam, and each
 condition; hover over a mating dot to see how many offspring it has. While
 you hover, the animals and lines that are not near the one under the pointer
-turn grey.
+turn gray.
 
 ```{r symbolsClaims, include = FALSE}
 kidsAnimals <- animalsOf(kidsLayout)
@@ -182,8 +182,8 @@ stopifnot(
 
 A column whose name starts with `affected` is a condition. With one such
 column, an animal whose value is `TRUE` (or 1) is filled pink, `FALSE` (or 0)
-leaves it white, and `NA` fills it grey, so that an animal whose status is not
-known does not look unaffected; the legend then has a grey row "Affected status
+leaves it white, and `NA` fills it gray, so that an animal whose status is not
+known does not look unaffected; the legend then has a gray row "Affected status
 unknown". Hovering over an animal says Yes, No or Unknown. Here D and G are
 affected, and whether H is affected is not known.
 
@@ -195,15 +195,15 @@ drawPedigreeDiagram(layout1)
 ```
 
 With two to four condition columns, each symbol is cut into one section per
-condition, filled in that condition's colour where the animal is affected,
+condition, filled in that condition's color where the animal is affected,
 and each condition's row in the legend shows the sections with its own
-filled; a section whose status is not known is grey. The sections go
+filled; a section whose status is not known is gray. The sections go
 counter-clockwise from the top, in the order of the columns. The column's name
 gives the label: `affected_diabetes` becomes "Affected (diabetes)". The drawing
 grows 45 pixels taller for each condition past the first, and for the "Affected
 status unknown" row, to make room in the legend. Here C has diabetes, B and E
 are obese, and A has arthritis; G has diabetes and is obese, and whether H is
-obese is not known, so H's obesity section is grey.
+obese is not known, so H's obesity section is gray.
 
 ```{r threeConditions}
 fam3 <- fam
@@ -276,8 +276,8 @@ Twins are listed in a table of their own, one pair per row: `id1`, `id2` and
 fraternal or unknown). `checkTwinRelations()` stops if a pair is not
 possible: MZ and DZ twins must have the same sire and dam, and MZ twins the
 same sex. The layout takes the table as `twinRelations` and draws a green
-line between the two animals of each pair: solid and labelled "MZ", dashed
-and labelled "DZ", or with long dashes and labelled "?".
+line between the two animals of each pair: solid and labeled "MZ", dashed
+and labeled "DZ", or with long dashes and labeled "?".
 
 ```{r twins}
 litter <- data.frame(
@@ -643,7 +643,7 @@ From a script, `savePedigreeDiagram()` writes the drawing as an SVG, a PDF or a
 PNG file, as the file's ending says. `width` and `height` are the page in
 inches, and `dpi`, 300 unless you say, is the PNG's pixels per inch of that
 page. A headless Chrome (the chromote package, and Chrome or Chromium on the
-computer) runs the same drawing the widget shows, so every mark, colour and
+computer) runs the same drawing the widget shows, so every mark, color and
 legend row comes out as drawn, and every id as text. The chunk below starts
 Chrome, so it runs only when you run it yourself, not when this vignette is
 built.
@@ -741,7 +741,7 @@ from the drawing; all 375 animals are in it.
 
 Fitted to the page, the drawing is too small to read its ids. Zoom in to read
 them, or pick an animal in the "Select by id" box: the animals and lines that
-are not near it turn grey, which shows where it is. The arcs are the dashed
+are not near it turn gray, which shows where it is. The arcs are the dashed
 lines that join each of the 113 animals drawn more than once to its other
 places.
 
