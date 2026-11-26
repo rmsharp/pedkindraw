@@ -357,6 +357,10 @@ the smaller way).
     its first probe, Windows once reported the debugging port not open. A session the new function starts needs its own
     time limit and its own close; the shared default session (`helper-live-render-positions.R`) closes at the suite's
     end and is not the function's to reuse.
+    **Still open (pedkindraw S93, R166):** every one of the 5 start failures CI has shown since S71 was at
+    `.renderPicture()`'s start ("port not open", 10 s and then 60 s; once `/json/version` unanswered for 60 s). The
+    start now waits 60 s (`.startChrome()`), which a slow Chrome passes and a hung one does not; the next session
+    measures on the runners (`docs/planning/cran-submission-plan.md` dragon 37).
 12. **The prototype's numbers are one machine's and one Chrome's** (157, Apple M2 Max). Sizes and counts of files are
     kept in the DONE criteria as floors or as measured at RED, not as equalities; Chrome's PDF writer can change
     between versions.

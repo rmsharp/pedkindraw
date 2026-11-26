@@ -111,6 +111,9 @@ session each unless marked. They follow the copy slices.
   files a trace of the 38 exports needs (S92, R165); the second reading waits in win-builder's queue, and the
   session with Mark's second email finishes 17k; then 17l-17q. The Windows CI hang is done (S91, R164: the stuck-page
   tests' Chrome renderers outlived their browsers and R CMD check waited for them; `.closeChrome()` ends them).
+  The CI jobs that fail while Chrome starts are still open (S93, R166): a 60 s start wait added
+  (`.startChrome()`), but Chromes at a PDF or PNG save's second start still hang on Ubuntu; next, a diagnostic on
+  GitHub's runners, then one fix.
   Before the release, by Mark's picks (R84):
   the argument-name review (contract section 6; ruled S34, its changes 17c1-17c3), the "Select by id" and
   legend-label fixes, a document of what kinship2 or
