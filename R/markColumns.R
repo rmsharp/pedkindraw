@@ -241,7 +241,7 @@
 #' @param prefix the start of each point's id, which its node's id follows; a
 #'   prefix the layout reserves (\code{.reservedIdPrefixes}).
 #' @param at where each point goes, \code{x} and \code{y} (y down), in units
-#'   of its node's \code{size} from the node's centre.
+#'   of its node's \code{size} from the node's center.
 #' @param shift a further shift of each point, \code{x} and \code{y}, in
 #'   units.
 #' @param down a further move of each point below its node, in units: one

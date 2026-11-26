@@ -12,7 +12,7 @@
 
 #' The radius of a carrier's dot, as a fraction of its symbol's size
 #'
-#' Phase G13 (R135). A carrier's symbol has a black dot at its centre, its
+#' Phase G13 (R135). A carrier's symbol has a black dot at its center, its
 #' radius this fraction of the node's \code{size} (6 of 25). Measured in
 #' headless Chrome in a 500-pixel drawing (S55): 67 to 82 pixels change
 #' around a carrier, the same in greyscale, on a white or a pink symbol,
@@ -25,7 +25,7 @@
 #' The afterDrawing handler that paints a carrier's dot
 #'
 #' Phase G13 (R135). visNetwork has no shape with a dot inside, so after
-#' each draw this fills a black circle at the centre of every node whose
+#' each draw this fills a black circle at the center of every node whose
 #' \code{carrier} field is \code{TRUE}, its radius \code{ratio} of the
 #' node's own \code{size}. The text uses single quotes only: it travels
 #' inside a JSON string.
@@ -59,7 +59,7 @@
 #' diagram's handler, so its \dQuote{Carrier} row is an inline SVG image, as
 #' the \dQuote{Deceased} row is: that row's circle (radius 22 in a 50-pixel
 #' square, white, outlined in the diagram's blue) with a black dot at its
-#' centre, \code{ratio} of the radius.
+#' center, \code{ratio} of the radius.
 #' @param ratio see \code{.carrierDotRatio}.
 #' @return A \code{data:} URI, as a character string.
 #' @noRd

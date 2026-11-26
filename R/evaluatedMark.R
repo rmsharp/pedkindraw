@@ -16,9 +16,9 @@
 #' Where the evaluated star is drawn
 #'
 #' Phase G13 (R137). An animal with a documented evaluation has a black
-#' \dQuote{*} beside its symbol, drawn as three strokes through its centre.
-#' In units of the node's \code{size}, from the node's centre (x to the
-#' right, y down): the centre of the \dQuote{*} (\code{x}, \code{y}), to the
+#' \dQuote{*} beside its symbol, drawn as three strokes through its center.
+#' In units of the node's \code{size}, from the node's center (x to the
+#' right, y down): the center of the \dQuote{*} (\code{x}, \code{y}), to the
 #' right of the upper-right corner of the symbol's square, and its radius
 #' \code{r}. Measured in headless Chrome in a 500-pixel drawing (S57): in 8
 #' pedigrees it lies on no line, outline or deceased slash in the
@@ -32,7 +32,7 @@
 #'
 #' Phase G13 (R137). visNetwork has no mark beside a node, so after each draw
 #' this strokes a black \dQuote{*}, three lines 2 pixels wide through one
-#' centre, beside every node whose \code{evaluated} field is \code{TRUE},
+#' center, beside every node whose \code{evaluated} field is \code{TRUE},
 #' placed by \code{star} in units of the node's own \code{size}. The text
 #' uses single quotes only: it travels inside a JSON string.
 #' @param star see \code{.evaluatedStar}.
@@ -97,7 +97,7 @@
 #' Phase G13 (R137). The legend is its own vis.Network and cannot run the
 #' diagram's handler, so its \dQuote{Evaluated} row is an inline SVG image,
 #' as the \dQuote{Deceased} row is: the \dQuote{*} alone, three strokes 3
-#' wide and 24 long through the centre of a 50-pixel square. Measured S57 at
+#' wide and 24 long through the center of a 50-pixel square. Measured S57 at
 #' 500 pixels: 32 dark pixels, as many as the \dQuote{Deceased} picture's
 #' 31; a small circle with the \dQuote{*} at its upper right showed 11.
 #' @return A \code{data:} URI, as a character string.

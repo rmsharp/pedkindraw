@@ -37,22 +37,22 @@
 #' The colors of the affected conditions, in order
 #'
 #' S1029. Condition 1 keeps the pink a lone \code{affected} column has always
-#' had (\code{.affectedColor()}); the other three are the colour-blind-safe
+#' had (\code{.affectedColor()}); the other three are the color-blind-safe
 #' Okabe-Ito orange, sky blue and bluish green. kinship2 allows four
 #' conditions, so the length of this vector is the most the Diagram draws.
 #' pedkindraw S45 (plan Phase G4, R111): the default of the builders'
-#' \code{conditionColors}, and the colours of the section painter after the
+#' \code{conditionColors}, and the colors of the section painter after the
 #' conditions a layout draws.
 #' @noRd
 .conditionColors <- c("#CC79A7", "#E69F00", "#56B4E9", "#009E73")
 
 #' The fill of an unknown affected status
 #'
-#' pedkindraw S43 (plan Phase G2, R106). R's \dQuote{grey}, as Pedixplorer
+#' pedkindraw S43 (plan Phase G2, R106). R's \code{"grey"}, as Pedixplorer
 #' fills an animal whose affected status is \code{NA}: the whole symbol with
 #' one condition, the condition's section with two to four. Measured apart from
 #' white and from the four \code{.conditionColors}, in greyscale and under
-#' three simulated colour blindnesses.
+#' three simulated color blindnesses.
 #' @noRd
 .unknownColor <- "#BEBEBE"
 
@@ -268,7 +268,7 @@
 #'   out otherwise.
 #' @param colors the fill of each condition's sections, passed to
 #'   \code{.conditionSectionsHandler()} (pedkindraw S45, plan Phase G4:
-#'   \code{drawPedigreeDiagram()} passes the layout's colours, the defaults
+#'   \code{drawPedigreeDiagram()} passes the layout's colors, the defaults
 #'   after them).
 #' @param carrier \code{TRUE} when some node is a carrier's (pedkindraw S55,
 #'   plan Phase G13, R135): \code{.carrierDotHandler()} then runs after the

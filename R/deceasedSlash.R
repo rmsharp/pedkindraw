@@ -10,13 +10,13 @@
 
 # The deceased-animal slash of the Pedigree Browser's Diagram (S1028)
 
-#' How far the deceased slash reaches past a symbol's centre
+#' How far the deceased slash reaches past a symbol's center
 #'
-#' S1028. The distance from the centre of a circle to each end of the slash,
+#' S1028. The distance from the center of a circle to each end of the slash,
 #' along each axis, as a fraction of the circle's radius. One number for the
 #' slash the diagram draws and the slash in the legend's picture, so the two
 #' overhang a circle by the same amount (the legend's amount: the line runs
-#' 19 out from the centre of a circle of radius 22, 1.22 times the circle's
+#' 19 out from the center of a circle of radius 22, 1.22 times the circle's
 #' outline along the diagonal). The diagram scales it by each shape's outline
 #' (\code{.deceasedOutlineFactors}) so every shape is overhung by that same
 #' amount.
@@ -25,7 +25,7 @@
 
 #' Each node shape's outline distance along the slash diagonal
 #'
-#' S1028. How far a shape's outline is from its centre along the diagonal of
+#' S1028. How far a shape's outline is from its center along the diagonal of
 #' the slash, in units of the node \code{size}: a circle 1, a square its
 #' corner (the square root of 2), a diamond its edge (1 over the square root
 #' of 2), a triangle its base corner, a star about 0.66 (measured on the
@@ -83,7 +83,7 @@
 #' S1028. The legend is its own vis.Network and cannot share the diagram's
 #' handler, so its \dQuote{Deceased} row is an inline SVG image: a circle of
 #' radius 22 with the slash drawn \code{reach} of that radius out from the
-#' centre along each axis.
+#' center along each axis.
 #' @param reach see \code{.deceasedSlashReach}.
 #' @return A \code{data:} URI, as a character string.
 #' @noRd
