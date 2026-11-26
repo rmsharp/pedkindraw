@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-25 · [BL-chrome-start] S93 push 3: close-out to GitHub, no CI run
+- **Change:** pushed `b0b9556..6cea441` (close-out 1 and 2), documents only, each commit carrying the skip marker, so no workflow ran; the package's tests and CI were read at `b0b9556` (push 2).
+- **Commit/PR:** the push of `6cea441`; close-out 2b (this entry) · **Session:** S93 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `6cea441`; `gh run list` showed no new R-CMD-check run.
+
 ### 2026-11-25 · [BL-chrome-start] S93 push 2: REFACTOR to GitHub, CI read job by job, its failed jobs rerun once
 - **Change:** pushed `d79dbed..b0b9556` (REFACTOR, without the skip marker). R-CMD-check 45737321097: Windows OK `[ FAIL 0 | WARN 0 | SKIP 38 | PASS 17031 ]`, Ubuntu oldrel-1 OK `PASS 17032`; Ubuntu release failed at `test_savePedigreeDiagram.R:366`, "Chrome debugging port not open after 60 seconds" at `.renderPicture()`'s `.startChrome()`, with a detritus NOTE (`org.chromium.Chromium.OK3zsB`); macOS failed at `test_pedigreeAppBrowser.R:103` (the focal box not `g1` after 60 s); Ubuntu devel S4Vectors. The failed jobs rerun once (`gh run rerun 45737321097 --failed`): Ubuntu release failed again at `:653` (the recording stubbed), "after 60 seconds", another detritus NOTE; macOS again at `:103`. So the 60 s wait does not cure these starts (R166).
 - **Commit/PR:** the push of `b0b9556`; run 45737321097 (attempts 1 and 2) · **Session:** S93 · **Model:** Claude Opus 5.5 · **Verified:** each job's lines read through the jobs API, by attempt; every job's Chrome for Testing 158.0.8127.88.
