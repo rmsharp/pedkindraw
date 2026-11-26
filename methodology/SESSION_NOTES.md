@@ -123,6 +123,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 94 Did
+**Deliverable:** finish Phase 17k (`docs/planning/cran-submission-plan.md:857`; R85, R86): read win-builder's second
+check (the package as at `23a6186`, after R165's cut) and record its times against the 540 s. (IN PROGRESS)
+**Started:** 2026-11-25 21:35 CST · **Model:** Claude Opus 5.5 · **Mark's picks:** the email "Yes, it came"; "S93's
+pick, by the email (Recommended)" (orient picker). Win-builder's R-devel queue was empty at 03:25 UTC.
+**Status:** Session claimed. Mark pasted the email: folder `ZYsFyCy5GM5z`, installation 19 s, check 321 s, Status 1
+NOTE, R-devel 2026-11-17 r90926 ucrt. Fetching the folder's logs to record each step's time.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### What Session 93 Did
 **Deliverable:** the backlog item "A CI job fails now and then while Chrome starts" (`methodology/BACKLOG.md:214`),
 strict TDD. NOT DONE: the fix Mark picked (a 60 s start wait, R166) is in and tested, but CI then showed the

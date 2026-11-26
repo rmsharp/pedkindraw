@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-25 · [BL-Phase 17] S94 (in progress): finishing 17k, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S94's stub), `methodology/HANDOFFS.md` (S94's `status: pending` receipt) and this entry. The deliverable is finishing Phase 17k (`docs/planning/cran-submission-plan.md:857`): win-builder's second check, of the package as at `23a6186`, read against the 540 s. Mark's picks: the email "Yes, it came"; "S93's pick, by the email (Recommended)" (orient picker).
+- **Commit/PR:** the S94 claim commit · **Session:** S94 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits, nothing on S92's copies, a clean tree; ledgers current at `f3f2009`, no ghost session, no merge; S93's receipt complete, its gate citation equal to the results file `534fea217641`; 34 backlog items at the handoff's lines; dashboard 93/100; win-builder's R-devel queue empty at 03:25 UTC).
+
 ### 2026-11-25 · [BL-chrome-start] S93 push 3: close-out to GitHub, no CI run
 - **Change:** pushed `b0b9556..6cea441` (close-out 1 and 2), documents only, each commit carrying the skip marker, so no workflow ran; the package's tests and CI were read at `b0b9556` (push 2).
 - **Commit/PR:** the push of `6cea441`; close-out 2b (this entry) · **Session:** S93 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `6cea441`; `gh run list` showed no new R-CMD-check run.
