@@ -22,9 +22,9 @@
 
 test_that("hiddenSuggests() leaves out testthat, the vignette builder and their dependencies", {
   hidden <- hiddenSuggests()
-  suggests <- trimws(sub("\\(.*$", "", strsplit(read.dcf(
+  suggests <- .descriptionPackages(
     system.file("DESCRIPTION", package = "pedkindraw"), "Suggests"
-  ), ",")[[1L]]))
+  )
   expect_true(all(hidden %in% suggests))
   expect_false(any(c("testthat", "knitr", "withr", "callr") %in% hidden))
   expect_true(all(c("mockery", "kinship2", "Pedixplorer") %in% hidden))

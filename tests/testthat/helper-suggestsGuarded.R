@@ -10,6 +10,17 @@
 ## packages failed 4 blocks, all calling mockery with no guard
 ## (test_suggestsGuarded.R).
 
+## The package names a DESCRIPTION field lists, without their version
+## requirements; none when the field is absent.
+.descriptionPackages <- function(descFile, field) {
+  x <- read.dcf(descFile, fields = field)[1L, 1L]
+  if (is.na(x)) {
+    return(character(0L))
+  }
+  names <- trimws(sub("\\(.*$", "", strsplit(x, ",")[[1L]]))
+  names[nzchar(names)]
+}
+
 ## The suggested packages a check run with _R_CHECK_DEPENDS_ONLY_ hides from
 ## the tests: those in Suggests but testthat and the VignetteBuilder packages,
 ## which R CMD check keeps (tools:::setRlibs()), and their own hard
@@ -17,17 +28,11 @@
 hiddenSuggests <- function(descFile = system.file("DESCRIPTION",
                                                   package = "pedkindraw"),
                            db = utils::installed.packages()) {
-  desc <- read.dcf(descFile, fields = c("Suggests", "VignetteBuilder"))
-  field <- function(x) {
-    if (is.na(x)) {
-      return(character(0L))
-    }
-    names <- trimws(sub("\\(.*$", "", strsplit(x, ",")[[1L]]))
-    names[nzchar(names)]
-  }
-  suggests <- field(desc[1L, "Suggests"])
-  kept <- intersect(c("testthat", field(desc[1L, "VignetteBuilder"])),
-                    rownames(db))
+  suggests <- .descriptionPackages(descFile, "Suggests")
+  kept <- intersect(
+    c("testthat", .descriptionPackages(descFile, "VignetteBuilder")),
+    rownames(db)
+  )
   deps <- unlist(tools::package_dependencies(
     kept, db = db, which = c("Depends", "Imports", "LinkingTo"),
     recursive = TRUE
