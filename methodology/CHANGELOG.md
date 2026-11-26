@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-26 · [BL-Phase 17] S97 (in progress): backlog :186, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S97's stub), `methodology/HANDOFFS.md` (S97's `status: pending` receipt) and this entry. The deliverable is backlog `:186`: what 17m's check of NEWS found outside NEWS (five sub-items; 1, 4 and 5 Mark's decisions). Mark's pick: ":186 NEWS findings (Recommended)" (orient picker).
+- **Commit/PR:** the S97 claim commit · **Session:** S97 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `0201a46`, no ghost session, no merge; S96's receipt complete, its gate citation equal to the results file `dd3bb45ce615`; 34 backlog items at the handoff's lines; dashboard 93/100; 0 open issues).
+
 ### 2026-11-26 · [BL-Phase 17] S96 push 2: the close-out to GitHub, no CI run
 - **Change:** pushed `b0eb2e7..0ca8154` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `b0eb2e7` (push 1).
 - **Commit/PR:** the push of `0ca8154`; close-out 2b (this entry) · **Session:** S96 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `0ca8154`; `gh run list` showed no new run.

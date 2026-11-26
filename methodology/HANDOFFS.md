@@ -202,6 +202,14 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S97
+date: 2026-11-26
+status: pending
+active_task: backlog :186, what 17m's check of NEWS found outside NEWS (five sub-items). Claimed.
+what_was_done: pending
+commit: pending
+```
+```handoff
 session: S96
 date: 2026-11-26
 status: complete
