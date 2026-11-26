@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-26 · [BL-Phase 17] S96 push 2: the close-out to GitHub, no CI run
+- **Change:** pushed `b0eb2e7..0ca8154` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `b0eb2e7` (push 1).
+- **Commit/PR:** the push of `0ca8154`; close-out 2b (this entry) · **Session:** S96 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `0ca8154`; `gh run list` showed no new run.
+
 ### 2026-11-26 · [BL-Phase 17] S96 push 1: the 17m work to GitHub, CI run and one rerun
 - **Change:** pushed `e7b5d55..b0eb2e7` (claim, RED 1-3, GREEN 1-3, close-out 1), the head without the skip marker: R-CMD-check run 45888606992, pkgdown 45888607044, speed-tables 45888606960; the Ubuntu release job rerun once (attempt 1 failed `test_savePedigreeDiagram.R:184`, the feature pedigree's legend 50.2% differing, bound 1.0%; backlog `:232`).
 - **Commit/PR:** the push of `b0eb2e7`; the Ubuntu release job's rerun (job 140154238582) · **Session:** S96 · **Model:** Claude Opus 5.5 · **Verified:** each job's log through the jobs API: Windows `PASS 17044`, macOS `17056`, Ubuntu oldrel-1 `17045`, Ubuntu release `17045` at its rerun, each Status OK; Ubuntu devel "unable to load R code in package 'S4Vectors'"; pkgdown and speed-tables success; the site's NEWS page shows 1.0.0.
