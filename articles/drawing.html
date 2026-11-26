@@ -159,7 +159,7 @@ dashed line that joins two places of the same animal, and the three twin
 lines. Hover over an animal to see its id, sex, generation, sire and
 dam, and each condition; hover over a mating dot to see how many
 offspring it has. While you hover, the animals and lines that are not
-near the one under the pointer turn grey.</p>
+near the one under the pointer turn gray.</p>
 </div>
 <div class="section level2">
 <h2 id="conditions">Conditions<a class="anchor" aria-label="anchor" href="#conditions"></a>
@@ -167,8 +167,8 @@ near the one under the pointer turn grey.</p>
 <p>A column whose name starts with <code>affected</code> is a condition.
 With one such column, an animal whose value is <code>TRUE</code> (or 1)
 is filled pink, <code>FALSE</code> (or 0) leaves it white, and
-<code>NA</code> fills it grey, so that an animal whose status is not
-known does not look unaffected; the legend then has a grey row “Affected
+<code>NA</code> fills it gray, so that an animal whose status is not
+known does not look unaffected; the legend then has a gray row “Affected
 status unknown”. Hovering over an animal says Yes, No or Unknown. Here D
 and G are affected, and whether H is affected is not known.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -178,17 +178,16 @@ and G are affected, and whether H is affected is not known.</p>
 <span><span class="fu"><a href="../reference/drawPedigreeDiagram.html">drawPedigreeDiagram</a></span><span class="op">(</span><span class="va">layout1</span><span class="op">)</span></span></code></pre></div>
 <div id="htmlwidget-36aa3d2a04d42bbc2145" style="width:100%;height:545px;" class="visNetwork html-widget"></div>
 <script type="application/json" data-for="htmlwidget-36aa3d2a04d42bbc2145">{"x":{"nodes":{"id":["A","B","C","D","E","F","G","H","__union_1","__union_2","__drop___union_1","__bar_C","__bar_D","__bar_E","__drop___union_2","__bar_G","__bar_H"],"label":["A","B","C","D","E","F","G","H","","","","","","","","",""],"shape":["square","dot","square","dot","dot","dot","dot","square","dot","dot","dot","dot","dot","dot","dot","dot","dot"],"title":["<b>ID:<\/b> A<br><b>Sex:<\/b> Male<br><b>Generation:<\/b> 0<br><b>Sire:<\/b> Unknown<br><b>Dam:<\/b> Unknown<br><b>Affected:<\/b> No","<b>ID:<\/b> B<br><b>Sex:<\/b> Female<br><b>Generation:<\/b> 0<br><b>Sire:<\/b> Unknown<br><b>Dam:<\/b> Unknown<br><b>Affected:<\/b> No","<b>ID:<\/b> C<br><b>Sex:<\/b> Male<br><b>Generation:<\/b> 1<br><b>Sire:<\/b> A<br><b>Dam:<\/b> B<br><b>Affected:<\/b> No","<b>ID:<\/b> D<br><b>Sex:<\/b> Female<br><b>Generation:<\/b> 1<br><b>Sire:<\/b> A<br><b>Dam:<\/b> B<br><b>Affected:<\/b> Yes","<b>ID:<\/b> E<br><b>Sex:<\/b> Female<br><b>Generation:<\/b> 1<br><b>Sire:<\/b> A<br><b>Dam:<\/b> B<br><b>Affected:<\/b> No","<b>ID:<\/b> F<br><b>Sex:<\/b> Female<br><b>Generation:<\/b> 0<br><b>Sire:<\/b> Unknown<br><b>Dam:<\/b> Unknown<br><b>Affected:<\/b> No","<b>ID:<\/b> G<br><b>Sex:<\/b> Female<br><b>Generation:<\/b> 2<br><b>Sire:<\/b> C<br><b>Dam:<\/b> F<br><b>Affected:<\/b> Yes","<b>ID:<\/b> H<br><b>Sex:<\/b> Male<br><b>Generation:<\/b> 2<br><b>Sire:<\/b> C<br><b>Dam:<\/b> F<br><b>Affected:<\/b> Unknown","3 offspring","2 offspring",null,null,null,null,null,null,null],"size":[25,25,25,25,25,25,25,25,6,6,0,0,0,0,0,0,0],"color.background":["#FFFFFF","#FFFFFF","#FFFFFF","#CC79A7","#FFFFFF","#FFFFFF","#CC79A7","#BEBEBE",null,null,"rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)"],"deceased":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"x":[-9.850154562669232,110.1498454373308,-149.8501519568066,90.14984804319339,210.1498480431934,-29.8501519568066,-149.8501494154607,-29.85014941546066,50.14984543733077,-89.85015195680658,50.14984543733077,-149.8501519568066,90.14984804319339,210.1498480431934,-89.85015195680658,-149.8501494154607,-29.85014941546066],"y":[0,0,150,150,150,150,300,300,0,150,90,90,90,90,240,240,240],"color.border":[null,null,null,null,null,null,null,null,null,null,"rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)","rgba(0,0,0,0)"]},"edges":{"from":["A","C","B","F","__union_1","__bar_C","__bar_D","__bar_E","__bar_C","__drop___union_1","__bar_D","__union_2","__bar_G","__bar_H","__bar_G","__drop___union_2"],"to":["__union_1","__union_2","__union_1","__union_2","__drop___union_1","C","D","E","__drop___union_1","__bar_D","__bar_E","__drop___union_2","G","H","__drop___union_2","__bar_H"],"dashes":[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],"smooth.enabled":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"smooth.type":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"smooth.roundness":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"color":[null,null,null,null,"#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9","#2B7CE9"],"width":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"physics":{"enabled":false},"edges":{"smooth":false},"interaction":{"hover":true,"zoomSpeed":1}},"groups":null,"width":null,"height":"545px","idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":false,"main":"Select by id","values":["A","B","C","D","E","F","G","H"]},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","events":{"afterDrawing":"function(ctx) {\n  var net = this;\n  var reach = 0.8636;\n  var outline = {dot: 1.0000, square: 1.4142, diamond: 0.7071, triangle: 1.3860, star: 0.6600};\n  var marked = net.body.data.nodes.get({filter: function(n) { return n.deceased === true; }});\n  if (marked.length === 0) { return; }\n  ctx.save();\n  ctx.lineWidth = 3;\n  ctx.lineCap = 'round';\n  ctx.strokeStyle = '#000000';\n  marked.forEach(function(n) {\n    var p = net.getPosition(n.id);\n    var r = (n.size || 25) * reach * (outline[n.shape] || 1);\n    ctx.beginPath();\n    ctx.moveTo(p.x - r, p.y + r);\n    ctx.lineTo(p.x + r, p.y - r);\n    ctx.stroke();\n  });\n  ctx.restore();\n}"},"export":{"type":"png","css":"float:right;-webkit-border-radius: 10;\n                  -moz-border-radius: 10;\n                  border-radius: 10px;\n                  font-family: Arial;\n                  color: #ffffff;\n                  font-size: 12px;\n                  background: #090a0a;\n                  padding: 4px 8px 4px 4px;\n                  text-decoration: none;","background":"#fff","name":"pedigree_diagram.png","label":"Export Diagram (PNG)"},"legend":{"width":0.28,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":60,"zoom":true,"edges":{"label":["Same animal, again","MZ","DZ","?"],"color":[null,"#009E73","#009E73","#009E73"],"dashes":[true,false,[4,4],[14,8]],"arrows":["","","",""],"font.background":["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF"]},"edgesToDataframe":true,"nodes":{"label":["Female","Male","Hermaphrodite","Unknown","Other / Unrecorded","Affected","Affected status unknown","Deceased"],"shape":["dot","square","star","triangle","diamond","hexagon","hexagon","image"],"color.background":["#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#FFFFFF","#CC79A7","#BEBEBE",null],"image":[null,null,null,null,null,null,null,"data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2750%27%20height%3D%2750%27%3E%3Ccircle%20cx%3D%2725%27%20cy%3D%2725%27%20r%3D%2722%27%20fill%3D%27white%27%20stroke%3D%27%232B7CE9%27%20stroke-width%3D%272%27%2F%3E%3Cline%20x1%3D%276.0%27%20y1%3D%2744.0%27%20x2%3D%2744.0%27%20y2%3D%276.0%27%20stroke%3D%27black%27%20stroke-width%3D%274%27%20stroke-linecap%3D%27round%27%2F%3E%3C%2Fsvg%3E"],"size":[14,14,14,14,14,14,14,14]},"nodesToDataframe":true,"main":{"text":"Sex","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:14px;text-align:center;"}},"tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":true,"degree":6,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"}},"evals":["events.afterDrawing"],"jsHooks":[]}</script><p>With two to four condition columns, each symbol is cut into one
-section per condition, filled in that condition’s colour where the
-animal is affected, and each condition’s row in the legend shows the
-sections with its own filled; a section whose status is not known is
-grey. The sections go counter-clockwise from the top, in the order of
-the columns. The column’s name gives the label:
-<code>affected_diabetes</code> becomes “Affected (diabetes)”. The
-drawing grows 45 pixels taller for each condition past the first, and
-for the “Affected status unknown” row, to make room in the legend. Here
-C has diabetes, B and E are obese, and A has arthritis; G has diabetes
-and is obese, and whether H is obese is not known, so H’s obesity
-section is grey.</p>
+section per condition, filled in that condition’s color where the animal
+is affected, and each condition’s row in the legend shows the sections
+with its own filled; a section whose status is not known is gray. The
+sections go counter-clockwise from the top, in the order of the columns.
+The column’s name gives the label: <code>affected_diabetes</code>
+becomes “Affected (diabetes)”. The drawing grows 45 pixels taller for
+each condition past the first, and for the “Affected status unknown”
+row, to make room in the legend. Here C has diabetes, B and E are obese,
+and A has arthritis; G has diabetes and is obese, and whether H is obese
+is not known, so H’s obesity section is gray.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fam3</span> <span class="op">&lt;-</span> <span class="va">fam</span></span>
 <span><span class="va">fam3</span><span class="op">$</span><span class="va">affected_diabetes</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>,</span>
@@ -227,8 +226,8 @@ names them in <code>conditionsNotDrawn</code>.</p>
 stops if a pair is not possible: MZ and DZ twins must have the same sire
 and dam, and MZ twins the same sex. The layout takes the table as
 <code>twinRelations</code> and draws a green line between the two
-animals of each pair: solid and labelled “MZ”, dashed and labelled “DZ”,
-or with long dashes and labelled “?”.</p>
+animals of each pair: solid and labeled “MZ”, dashed and labeled “DZ”,
+or with long dashes and labeled “?”.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">litter</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S1"</span>, <span class="st">"D1"</span>, <span class="st">"A1"</span>, <span class="st">"A2"</span>, <span class="st">"B1"</span>, <span class="st">"B2"</span>, <span class="st">"C1"</span>, <span class="st">"C2"</span><span class="op">)</span>,</span>
@@ -471,7 +470,7 @@ as an SVG, a PDF or a PNG file, as the file’s ending says.
 <code>dpi</code>, 300 unless you say, is the PNG’s pixels per inch of
 that page. A headless Chrome (the chromote package, and Chrome or
 Chromium on the computer) runs the same drawing the widget shows, so
-every mark, colour and legend row comes out as drawn, and every id as
+every mark, color and legend row comes out as drawn, and every id as
 text. The chunk below starts Chrome, so it runs only when you run it
 yourself, not when this vignette is built.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -538,7 +537,7 @@ around an animal in its way, and these it could not fully clear. Nothing
 is missing from the drawing; all 375 animals are in it.</p>
 <p>Fitted to the page, the drawing is too small to read its ids. Zoom in
 to read them, or pick an animal in the “Select by id” box: the animals
-and lines that are not near it turn grey, which shows where it is. The
+and lines that are not near it turn gray, which shows where it is. The
 arcs are the dashed lines that join each of the 113 animals drawn more
 than once to its other places.</p>
 <p><code><a href="../reference/savePedigreeDiagram.html">savePedigreeDiagram()</a></code> writes the whole colony on one

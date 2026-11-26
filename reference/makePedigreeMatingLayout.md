@@ -50,8 +50,8 @@ makePedigreeMatingLayout(
   condition, in the order the data frame holds them, the first four
   drawn (see `conditions` in the return value). A lone one fills the
   symbol, in the first of `conditionColors` (pink by default) where the
-  animal is affected and grey where its status is unknown (`NA`); two or
-  more split it into sections, one colour each.
+  animal is affected and gray where its status is unknown (`NA`); two or
+  more split it into sections, one color each.
   ([`makePedigreeDiagramData`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)
   reads the column `affected` alone.) A condition drawn reads as
   [`makePedigreeDiagramData()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeDiagramData.md)'s
@@ -67,11 +67,11 @@ makePedigreeMatingLayout(
   animal is left out. An optional `carrier` column marks the carriers,
   animals that have the genetic trait but are not expected to show the
   disease, in the same values: a carrier's symbol is drawn with a black
-  dot at its centre (see `carrier` in the returned `nodes`), and its
+  dot at its center (see `carrier` in the returned `nodes`), and its
   hover text says “Carrier: Yes”, “No” or “Unknown”, after the genotyped
   line. Optional `proband` and `consultand` columns, in the same values,
   mark the proband (an affected animal through whom the family came to
-  attention) and the consultand (an animal for whom counselling or
+  attention) and the consultand (an animal for whom counseling or
   testing is sought): each is drawn with a black arrow pointing at its
   symbol from the lower left, a proband's with “P” beside it (see
   `proband` and `consultand` in the returned `nodes`), and the hover
@@ -200,25 +200,25 @@ makePedigreeMatingLayout(
 
 - conditionColors:
 
-  the colours of the affected conditions, in the order they are drawn: 1
-  to 4 colours, at least one for each condition drawn, each a name R
+  the colors of the affected conditions, in the order they are drawn: 1
+  to 4 colors, at least one for each condition drawn, each a name R
   knows (such as `"orange"` or `"steelblue3"`) or a code (such as
-  `"#E69F00"`). Each is written as its `"#RRGGBB"` code, the colour R
-  means by it: a browser reads most of R's names as no colour, and
+  `"#E69F00"`). Each is written as its `"#RRGGBB"` code, the color R
+  means by it: a browser reads most of R's names as no color, and
   `"grey"`, `"gray"`, `"green"`, `"maroon"` and `"purple"` as other
-  colours. The default is the four colours drawn before this argument:
+  colors. The default is the four colors drawn before this argument:
   pink, orange, sky blue and bluish green, the last three Okabe and
-  Ito's colour-blind-safe ones. They fill the symbols here and go into
+  Ito's color-blind-safe ones. They fill the symbols here and go into
   the returned `conditions` table, from which
   [`drawPedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
   paints the sections and the legend, so all three agree. With no
-  condition column nothing is coloured, and the drawing's one “Affected”
-  legend row keeps the default pink. Stops on anything but 1 to 4
-  colours as text, on `NA`, on a colour R does not know, on a number (it
-  picks from R's palette, which can be changed), on a transparent
-  colour, on white and on the grey `"#BEBEBE"` (they mark an unaffected
-  animal and an unknown status), on a colour given twice, and on fewer
-  colours than conditions drawn.
+  condition column nothing is colored, and the drawing's one “Affected”
+  legend row keeps the default pink. Stops on anything but 1 to 4 colors
+  as text, on `NA`, on a color R does not know, on a number (it picks
+  from R's palette, which can be changed), on a transparent color, on
+  white and on the gray `"#BEBEBE"` (they mark an unaffected animal and
+  an unknown status), on a color given twice, and on fewer colors than
+  conditions drawn.
 
 - conditionThresholds:
 
@@ -275,7 +275,7 @@ makePedigreeMatingLayout(
 
 - columnSpacing:
 
-  the distance between neighbouring animals in a row, as a multiple of
+  the distance between neighboring animals in a row, as a multiple of
   the 120 units used before this argument (1, the default): the columns
   are 120 times it apart, rounded to a whole unit and at least 1. With
   `rowSpacing` it sets the drawing's proportions, as the width and
@@ -285,7 +285,7 @@ makePedigreeMatingLayout(
   lines' detours out at the spacing given. Larger text needs wider
   columns: at `textSize` 2 an id of 10 characters is up to 167 units
   wide, and at 1.4 the columns are 168 apart. Measured at 500 pixels, at
-  0.5 long ids run over their neighbours'. Stops unless it is one
+  0.5 long ids run over their neighbors'. Stops unless it is one
   positive number.
 
 - rowSpacing:
@@ -359,7 +359,7 @@ added under `edgeStyle = "rectilinear"`; `affectedSections` is added
 when there are two or more conditions: a character string with one
 character per condition, `"1"` where the animal is affected, `"0"` where
 it is unaffected and `"?"` where it is unknown (the drawing fills that
-section grey), the same for a repeat-appearance node as for its animal,
+section gray), the same for a repeat-appearance node as for its animal,
 `""` for a node that is not an animal, never `NA`; with two or more
 conditions the animals' `color.background` is white, the sections
 carrying the color; `borderWidth` is added when `ped` has a `genotyped`
@@ -383,7 +383,7 @@ one), `edges` (`from`, `to`, `dashes`, `smooth.enabled`, `smooth.type`,
 `smooth.roundness`, `color`, `width`; the `color` and `width` columns
 are always present once any mating unit exists: a consanguineous mating
 unit's (`kinship(sire, dam) > 0`) 2 spouse-to-union edges get
-`"#D55E00"`/`4`, an Okabe-Ito colorblind-safe vermillion in kinship2's
+`"#D55E00"`/`4`, an Okabe-Ito colorblind-safe vermilion in kinship2's
 doubled/thickened mate-line convention, and every other edge gets `NA`
 (at a `lineWidth` other than 1, that width, the consanguineous edges' 4
 times it, and each dash pattern times it, `TRUE` as vis.js's 5 and 5);

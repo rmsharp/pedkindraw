@@ -7,7 +7,7 @@ JavaScript, and nothing else in R can turn it into a file. A headless
 Chrome (through the chromote package) runs the very drawing the widget
 shows, a small recording layer writes every line, shape and word it
 draws, and the result is an SVG file: the same drawing, with every mark,
-colour and legend row, and each id as text that a reader can select,
+color and legend row, and each id as text that a reader can select,
 search and zoom to.
 
 ## Usage

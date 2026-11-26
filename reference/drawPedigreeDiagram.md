@@ -5,7 +5,7 @@ layout made by
 [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md).
 The diagram has the sex symbols at the layout's fixed positions, the
 legend (the five sex symbols, one row per affected condition or a single
-“Affected” row, a grey “Affected status unknown” row when an animal's
+“Affected” row, a gray “Affected status unknown” row when an animal's
 status is unknown, a “Genotyped” row when an animal is genotyped, a
 “Carrier” row when an animal is a carrier, “Proband” and “Consultand”
 rows when an animal is one, an “Evaluated” row when an animal is
@@ -67,16 +67,16 @@ of two is the left half), and each condition's legend row shows a circle
 cut the same way with that condition's section filled in its color, so
 the legend says which section is which.
 
-The colours of the conditions are set by
+The colors of the conditions are set by
 [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)'s
 `conditionColors`: the layout fills the symbols with them, and the
 drawing paints the sections and the legend's rows from the layout's
 `conditions` table, so all three agree.
 
-An animal whose affected status is unknown (`NA`) is filled grey, with
-one condition, or has that condition's section grey, with two or more,
-so it does not look unaffected; the legend's grey hexagon “Affected
-status unknown” then says what the grey is, and the canvas is 45 pixels
+An animal whose affected status is unknown (`NA`) is filled gray, with
+one condition, or has that condition's section gray, with two or more,
+so it does not look unaffected; the legend's gray hexagon “Affected
+status unknown” then says what the gray is, and the canvas is 45 pixels
 taller for that row.
 
 An animal whose `genotyped` column is `TRUE` (see
@@ -89,7 +89,7 @@ for that row.
 
 An animal whose `carrier` column is `TRUE` (see
 [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md))
-is drawn with a black dot at the centre of its symbol, on top of its
+is drawn with a black dot at the center of its symbol, on top of its
 fill, its sections and the slash; the legend's “Carrier” row, a circle
 with the dot, then says what the dot is, and the canvas is 45 pixels
 taller for that row.

@@ -3,7 +3,7 @@
 for a layout made by makePedigreeMatingLayout. The diagram
 has the sex symbols at the layout's fixed positions, the legend (the
 five sex symbols, one row per affected condition or a single
-&amp;#8220;Affected&amp;#8221; row, a grey &amp;#8220;Affected status unknown&amp;#8221; row when an
+&amp;#8220;Affected&amp;#8221; row, a gray &amp;#8220;Affected status unknown&amp;#8221; row when an
 animal's status is unknown, a &amp;#8220;Genotyped&amp;#8221; row when an animal is
 genotyped, a &amp;#8220;Carrier&amp;#8221; row when an animal is a carrier,
 &amp;#8220;Proband&amp;#8221; and &amp;#8220;Consultand&amp;#8221; rows when an animal is one,
@@ -22,7 +22,7 @@ with htmlwidgets::saveWidget()."><meta property="og:description" content="Return
 for a layout made by makePedigreeMatingLayout. The diagram
 has the sex symbols at the layout's fixed positions, the legend (the
 five sex symbols, one row per affected condition or a single
-&amp;#8220;Affected&amp;#8221; row, a grey &amp;#8220;Affected status unknown&amp;#8221; row when an
+&amp;#8220;Affected&amp;#8221; row, a gray &amp;#8220;Affected status unknown&amp;#8221; row when an
 animal's status is unknown, a &amp;#8220;Genotyped&amp;#8221; row when an animal is
 genotyped, a &amp;#8220;Carrier&amp;#8221; row when an animal is a carrier,
 &amp;#8220;Proband&amp;#8221; and &amp;#8220;Consultand&amp;#8221; rows when an animal is one,
@@ -82,7 +82,7 @@ with htmlwidgets::saveWidget()."></head><body>
 for a layout made by <code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>. The diagram
 has the sex symbols at the layout's fixed positions, the legend (the
 five sex symbols, one row per affected condition or a single
-“Affected” row, a grey “Affected status unknown” row when an
+“Affected” row, a gray “Affected status unknown” row when an
 animal's status is unknown, a “Genotyped” row when an animal is
 genotyped, a “Carrier” row when an animal is a carrier,
 “Proband” and “Consultand” rows when an animal is one,
@@ -148,15 +148,15 @@ sections, one per condition, counter-clockwise from the top (the first of
 two is the left half), and each condition's legend row shows a circle cut
 the same way with that condition's section filled in its color, so the
 legend says which section is which.</p>
-<p>The colours of the conditions are set by
+<p>The colors of the conditions are set by
 <code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>'s <code>conditionColors</code>: the layout
 fills the symbols with them, and the drawing paints the sections and the
 legend's rows from the layout's <code>conditions</code> table, so all three
 agree.</p>
-<p>An animal whose affected status is unknown (<code>NA</code>) is filled grey,
-with one condition, or has that condition's section grey, with two or more,
-so it does not look unaffected; the legend's grey hexagon
-“Affected status unknown” then says what the grey is, and the
+<p>An animal whose affected status is unknown (<code>NA</code>) is filled gray,
+with one condition, or has that condition's section gray, with two or more,
+so it does not look unaffected; the legend's gray hexagon
+“Affected status unknown” then says what the gray is, and the
 canvas is 45 pixels taller for that row.</p>
 <p>An animal whose <code>genotyped</code> column is <code>TRUE</code> (see
 <code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>) is drawn with its outline 4 pixels
@@ -167,7 +167,7 @@ a square with that outline, then says what the thick outline is, and the
 canvas is 45 pixels taller for that row.</p>
 <p>An animal whose <code>carrier</code> column is <code>TRUE</code> (see
 <code><a href="makePedigreeMatingLayout.html">makePedigreeMatingLayout</a></code>) is drawn with a black dot at the
-centre of its symbol, on top of its fill, its sections and the slash; the
+center of its symbol, on top of its fill, its sections and the slash; the
 legend's “Carrier” row, a circle with the dot, then says what the
 dot is, and the canvas is 45 pixels taller for that row.</p>
 <p>An animal whose <code>proband</code> or <code>consultand</code> column is <code>TRUE</code>

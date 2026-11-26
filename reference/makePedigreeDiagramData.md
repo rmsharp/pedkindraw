@@ -29,7 +29,7 @@ makePedigreeDiagramData(
   Two optional columns are used when present: a logical `affected`
   column, which adds an affected-status line to `title` and sets
   `color.background`: the first of `conditionColors` (`"#CC79A7"`, pink,
-  by default) for an affected node, `"#BEBEBE"` (grey) for a node whose
+  by default) for an affected node, `"#BEBEBE"` (gray) for a node whose
   status is unknown (`NA`) and `"#FFFFFF"` (white) for an unaffected one
   (every node is white without the column); and a character `name`
   column, which is shown in `label` (cut after `maxNameChars`
@@ -59,13 +59,13 @@ makePedigreeDiagramData(
 
 - conditionColors:
 
-  the colours of the affected conditions, as
+  the colors of the affected conditions, as
   [`makePedigreeMatingLayout`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
   takes them: this function draws the column `affected` alone, so it
-  fills an affected animal with the first colour, written as its
+  fills an affected animal with the first color, written as its
   `"#RRGGBB"` code. It stops as
   [`makePedigreeMatingLayout()`](https://rmsharp.github.io/pedkindraw/reference/makePedigreeMatingLayout.md)
-  does, except that one colour is always enough.
+  does, except that one color is always enough.
 
 - conditionThresholds:
 

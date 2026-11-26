@@ -102,8 +102,8 @@ returned <code>nodes</code>. Every column whose name starts
 frame holds them, the first four drawn (see <code>conditions</code> in the
 return value). A lone one fills the symbol, in the first of
 <code>conditionColors</code> (pink by default) where the animal is affected
-and grey where its status is unknown (<code>NA</code>); two or more split it
-into sections, one colour each.
+and gray where its status is unknown (<code>NA</code>); two or more split it
+into sections, one color each.
 (<code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData</a></code> reads the column
 <code>affected</code> alone.) A condition drawn reads as
 <code><a href="makePedigreeDiagramData.html">makePedigreeDiagramData()</a></code>'s <code>affected</code> does: a number other
@@ -118,13 +118,13 @@ says “Genotyped: Yes”, “No” or “Unknown”; any other
 value stops, naming the column, before any animal is left out. An
 optional <code>carrier</code> column marks the carriers, animals that have
 the genetic trait but are not expected to show the disease, in the same
-values: a carrier's symbol is drawn with a black dot at its centre (see
+values: a carrier's symbol is drawn with a black dot at its center (see
 <code>carrier</code> in the returned <code>nodes</code>), and its hover text says
 “Carrier: Yes”, “No” or “Unknown”, after the
 genotyped line. Optional <code>proband</code> and <code>consultand</code> columns,
 in the same values, mark the proband (an affected animal through whom
 the family came to attention) and the consultand (an animal for whom
-counselling or testing is sought): each is drawn with a black arrow
+counseling or testing is sought): each is drawn with a black arrow
 pointing at its symbol from the lower left, a proband's with
 “P” beside it (see <code>proband</code> and <code>consultand</code> in the
 returned <code>nodes</code>), and the hover text says “Proband:” and
@@ -259,25 +259,25 @@ Stops unless it is one whole number of 1 or more, or <code>Inf</code>.</p></dd>
 
 
 <dt id="arg-conditioncolors">conditionColors<a class="anchor" aria-label="anchor" href="#arg-conditioncolors"></a></dt>
-<dd><p>the colours of the affected conditions, in the
-order they are drawn: 1 to 4 colours, at least one for each condition
+<dd><p>the colors of the affected conditions, in the
+order they are drawn: 1 to 4 colors, at least one for each condition
 drawn, each a name R knows (such as <code>"orange"</code> or
 <code>"steelblue3"</code>) or a code (such as <code>"#E69F00"</code>). Each is
-written as its <code>"#RRGGBB"</code> code, the colour R means by it: a
-browser reads most of R's names as no colour, and <code>"grey"</code>,
+written as its <code>"#RRGGBB"</code> code, the color R means by it: a
+browser reads most of R's names as no color, and <code>"grey"</code>,
 <code>"gray"</code>, <code>"green"</code>, <code>"maroon"</code> and
-<code>"purple"</code> as other colours. The default is the four colours
+<code>"purple"</code> as other colors. The default is the four colors
 drawn before this argument: pink, orange, sky blue and bluish green,
-the last three Okabe and Ito's colour-blind-safe ones. They fill the
+the last three Okabe and Ito's color-blind-safe ones. They fill the
 symbols here and go into the returned <code>conditions</code> table, from
 which <code><a href="drawPedigreeDiagram.html">drawPedigreeDiagram</a></code> paints the sections and the
 legend, so all three agree. With no condition column nothing is
-coloured, and the drawing's one “Affected” legend row keeps the
-default pink. Stops on anything but 1 to 4 colours as text, on
-<code>NA</code>, on a colour R does not know, on a number (it picks from R's
-palette, which can be changed), on a transparent colour, on white and
-on the grey <code>"#BEBEBE"</code> (they mark an unaffected animal and an
-unknown status), on a colour given twice, and on fewer colours than
+colored, and the drawing's one “Affected” legend row keeps the
+default pink. Stops on anything but 1 to 4 colors as text, on
+<code>NA</code>, on a color R does not know, on a number (it picks from R's
+palette, which can be changed), on a transparent color, on white and
+on the gray <code>"#BEBEBE"</code> (they mark an unaffected animal and an
+unknown status), on a color given twice, and on fewer colors than
 conditions drawn.</p></dd>
 
 
@@ -335,7 +335,7 @@ positive number.</p></dd>
 
 
 <dt id="arg-columnspacing">columnSpacing<a class="anchor" aria-label="anchor" href="#arg-columnspacing"></a></dt>
-<dd><p>the distance between neighbouring animals in a row,
+<dd><p>the distance between neighboring animals in a row,
 as a multiple of the 120 units used before this argument (1, the
 default): the columns are 120 times it apart, rounded to a whole unit
 and at least 1. With <code>rowSpacing</code> it sets the drawing's
@@ -346,7 +346,7 @@ drawing. The layout works the lines' detours out at the spacing given.
 Larger text needs wider columns: at <code>textSize</code> 2 an id of 10
 characters is up to 167 units wide, and at 1.4 the columns are 168
 apart. Measured at 500 pixels, at 0.5 long ids run over their
-neighbours'. Stops unless it is one positive number.</p></dd>
+neighbors'. Stops unless it is one positive number.</p></dd>
 
 
 <dt id="arg-rowspacing">rowSpacing<a class="anchor" aria-label="anchor" href="#arg-rowspacing"></a></dt>
@@ -423,7 +423,7 @@ them when <code>ped</code> has no <code>status</code> column), <code>x</code>,
 when there are two or more conditions: a character string with one
 character per condition, <code>"1"</code> where the animal is affected,
 <code>"0"</code> where it is unaffected and <code>"?"</code> where it is unknown
-(the drawing fills that section grey), the same for a
+(the drawing fills that section gray), the same for a
 repeat-appearance node as for its animal, <code>""</code> for a node that
 is not an animal, never <code>NA</code>; with two or more conditions the
 animals' <code>color.background</code> is white, the sections carrying the
@@ -454,7 +454,7 @@ ordinary one and <code>lineWidth + 3</code> for a genotyped one),
 and <code>width</code> columns are always present once any mating unit
 exists: a consanguineous mating unit's (<code>kinship(sire, dam) &gt; 0</code>)
 2 spouse-to-union edges get <code>"#D55E00"</code>/<code>4</code>, an Okabe-Ito
-colorblind-safe vermillion in kinship2's doubled/thickened mate-line
+colorblind-safe vermilion in kinship2's doubled/thickened mate-line
 convention, and every other edge gets <code>NA</code> (at a
 <code>lineWidth</code> other than 1, that width, the consanguineous edges' 4
 times it, and each dash pattern times it, <code>TRUE</code> as vis.js's 5
