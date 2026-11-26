@@ -38,8 +38,8 @@ returned \code{nodes}. Every column whose name starts
 frame holds them, the first four drawn (see \code{conditions} in the
 return value). A lone one fills the symbol, in the first of
 \code{conditionColors} (pink by default) where the animal is affected
-and grey where its status is unknown (\code{NA}); two or more split it
-into sections, one colour each.
+and gray where its status is unknown (\code{NA}); two or more split it
+into sections, one color each.
 (\code{\link{makePedigreeDiagramData}} reads the column
 \code{affected} alone.) A condition drawn reads as
 \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
@@ -54,13 +54,13 @@ says \dQuote{Genotyped: Yes}, \dQuote{No} or \dQuote{Unknown}; any other
 value stops, naming the column, before any animal is left out. An
 optional \code{carrier} column marks the carriers, animals that have
 the genetic trait but are not expected to show the disease, in the same
-values: a carrier's symbol is drawn with a black dot at its centre (see
+values: a carrier's symbol is drawn with a black dot at its center (see
 \code{carrier} in the returned \code{nodes}), and its hover text says
 \dQuote{Carrier: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
 genotyped line. Optional \code{proband} and \code{consultand} columns,
 in the same values, mark the proband (an affected animal through whom
 the family came to attention) and the consultand (an animal for whom
-counselling or testing is sought): each is drawn with a black arrow
+counseling or testing is sought): each is drawn with a black arrow
 pointing at its symbol from the lower left, a proband's with
 \dQuote{P} beside it (see \code{proband} and \code{consultand} in the
 returned \code{nodes}), and the hover text says \dQuote{Proband:} and
@@ -183,25 +183,25 @@ Pedixplorer write their labels; a long name can then run into the
 labels of the animals beside it. It changes nothing but the labels.
 Stops unless it is one whole number of 1 or more, or \code{Inf}.}
 
-\item{conditionColors}{the colours of the affected conditions, in the
-order they are drawn: 1 to 4 colours, at least one for each condition
+\item{conditionColors}{the colors of the affected conditions, in the
+order they are drawn: 1 to 4 colors, at least one for each condition
 drawn, each a name R knows (such as \code{"orange"} or
 \code{"steelblue3"}) or a code (such as \code{"#E69F00"}). Each is
-written as its \code{"#RRGGBB"} code, the colour R means by it: a
-browser reads most of R's names as no colour, and \code{"grey"},
+written as its \code{"#RRGGBB"} code, the color R means by it: a
+browser reads most of R's names as no color, and \code{"grey"},
 \code{"gray"}, \code{"green"}, \code{"maroon"} and
-\code{"purple"} as other colours. The default is the four colours
+\code{"purple"} as other colors. The default is the four colors
 drawn before this argument: pink, orange, sky blue and bluish green,
-the last three Okabe and Ito's colour-blind-safe ones. They fill the
+the last three Okabe and Ito's color-blind-safe ones. They fill the
 symbols here and go into the returned \code{conditions} table, from
 which \code{\link{drawPedigreeDiagram}} paints the sections and the
 legend, so all three agree. With no condition column nothing is
-coloured, and the drawing's one \dQuote{Affected} legend row keeps the
-default pink. Stops on anything but 1 to 4 colours as text, on
-\code{NA}, on a colour R does not know, on a number (it picks from R's
-palette, which can be changed), on a transparent colour, on white and
-on the grey \code{"#BEBEBE"} (they mark an unaffected animal and an
-unknown status), on a colour given twice, and on fewer colours than
+colored, and the drawing's one \dQuote{Affected} legend row keeps the
+default pink. Stops on anything but 1 to 4 colors as text, on
+\code{NA}, on a color R does not know, on a number (it picks from R's
+palette, which can be changed), on a transparent color, on white and
+on the gray \code{"#BEBEBE"} (they mark an unaffected animal and an
+unknown status), on a color given twice, and on fewer colors than
 conditions drawn.}
 
 \item{conditionThresholds}{\code{NULL} (the default), or the cut-offs of
@@ -251,7 +251,7 @@ animals in a row are 120 apart at \code{columnSpacing} 1, so larger
 text needs wider columns (168 apart at 1.4). Stops unless it is one
 positive number.}
 
-\item{columnSpacing}{the distance between neighbouring animals in a row,
+\item{columnSpacing}{the distance between neighboring animals in a row,
 as a multiple of the 120 units used before this argument (1, the
 default): the columns are 120 times it apart, rounded to a whole unit
 and at least 1. With \code{rowSpacing} it sets the drawing's
@@ -262,7 +262,7 @@ drawing. The layout works the lines' detours out at the spacing given.
 Larger text needs wider columns: at \code{textSize} 2 an id of 10
 characters is up to 167 units wide, and at 1.4 the columns are 168
 apart. Measured at 500 pixels, at 0.5 long ids run over their
-neighbours'. Stops unless it is one positive number.}
+neighbors'. Stops unless it is one positive number.}
 
 \item{rowSpacing}{the distance between generations, as a multiple of the
 150 units used before this argument (1, the default): the rows are 150
@@ -331,7 +331,7 @@ them when \code{ped} has no \code{status} column), \code{x},
 when there are two or more conditions: a character string with one
 character per condition, \code{"1"} where the animal is affected,
 \code{"0"} where it is unaffected and \code{"?"} where it is unknown
-(the drawing fills that section grey), the same for a
+(the drawing fills that section gray), the same for a
 repeat-appearance node as for its animal, \code{""} for a node that
 is not an animal, never \code{NA}; with two or more conditions the
 animals' \code{color.background} is white, the sections carrying the
@@ -362,7 +362,7 @@ ordinary one and \code{lineWidth + 3} for a genotyped one),
 and \code{width} columns are always present once any mating unit
 exists: a consanguineous mating unit's (\code{kinship(sire, dam) > 0})
 2 spouse-to-union edges get \code{"#D55E00"}/\code{4}, an Okabe-Ito
-colorblind-safe vermillion in kinship2's doubled/thickened mate-line
+colorblind-safe vermilion in kinship2's doubled/thickened mate-line
 convention, and every other edge gets \code{NA} (at a
 \code{lineWidth} other than 1, that width, the consanguineous edges' 4
 times it, and each dash pattern times it, \code{TRUE} as vis.js's 5

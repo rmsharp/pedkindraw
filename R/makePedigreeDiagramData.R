@@ -134,7 +134,7 @@
 #'   used when present: a logical \code{affected} column, which adds an
 #'   affected-status line to \code{title} and sets \code{color.background}:
 #'   the first of \code{conditionColors} (\code{"#CC79A7"}, pink, by
-#'   default) for an affected node, \code{"#BEBEBE"} (grey)
+#'   default) for an affected node, \code{"#BEBEBE"} (gray)
 #'   for a node whose status is unknown (\code{NA}) and \code{"#FFFFFF"}
 #'   (white) for an unaffected one (every node is white without the column);
 #'   and a character \code{name} column, which is shown
@@ -156,11 +156,11 @@
 #'   whole, as kinship2 and Pedixplorer write their labels; a long name can
 #'   then run into the labels of the animals beside it. Stops unless it is
 #'   one whole number of 1 or more, or \code{Inf}.
-#' @param conditionColors the colours of the affected conditions, as
+#' @param conditionColors the colors of the affected conditions, as
 #'   \code{\link{makePedigreeMatingLayout}} takes them: this function draws
 #'   the column \code{affected} alone, so it fills an affected animal with
-#'   the first colour, written as its \code{"#RRGGBB"} code. It stops as
-#'   \code{makePedigreeMatingLayout()} does, except that one colour is always
+#'   the first color, written as its \code{"#RRGGBB"} code. It stops as
+#'   \code{makePedigreeMatingLayout()} does, except that one color is always
 #'   enough.
 #' @param conditionThresholds \code{NULL} (the default), or the cut-off of a
 #'   measured trait in the column \code{affected}, as
@@ -365,7 +365,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #' same sharing precedent as \code{.escapeHtml()} above).
 #'
 #' pedkindraw S43 (plan Phase G2, R106): \code{NA} gets \code{unknown}, white
-#' unless the caller passes \code{.unknownColor}, grey, so that an unknown
+#' unless the caller passes \code{.unknownColor}, gray, so that an unknown
 #' status no longer looks like an unaffected one. pedkindraw S45 (plan Phase
 #' G4, R111): \code{TRUE} gets \code{affectedFill}, which both callers pass
 #' the first of their \code{conditionColors}.
@@ -1868,8 +1868,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   frame holds them, the first four drawn (see \code{conditions} in the
 #'   return value). A lone one fills the symbol, in the first of
 #'   \code{conditionColors} (pink by default) where the animal is affected
-#'   and grey where its status is unknown (\code{NA}); two or more split it
-#'   into sections, one colour each.
+#'   and gray where its status is unknown (\code{NA}); two or more split it
+#'   into sections, one color each.
 #'   (\code{\link{makePedigreeDiagramData}} reads the column
 #'   \code{affected} alone.) A condition drawn reads as
 #'   \code{makePedigreeDiagramData()}'s \code{affected} does: a number other
@@ -1884,13 +1884,13 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   value stops, naming the column, before any animal is left out. An
 #'   optional \code{carrier} column marks the carriers, animals that have
 #'   the genetic trait but are not expected to show the disease, in the same
-#'   values: a carrier's symbol is drawn with a black dot at its centre (see
+#'   values: a carrier's symbol is drawn with a black dot at its center (see
 #'   \code{carrier} in the returned \code{nodes}), and its hover text says
 #'   \dQuote{Carrier: Yes}, \dQuote{No} or \dQuote{Unknown}, after the
 #'   genotyped line. Optional \code{proband} and \code{consultand} columns,
 #'   in the same values, mark the proband (an affected animal through whom
 #'   the family came to attention) and the consultand (an animal for whom
-#'   counselling or testing is sought): each is drawn with a black arrow
+#'   counseling or testing is sought): each is drawn with a black arrow
 #'   pointing at its symbol from the lower left, a proband's with
 #'   \dQuote{P} beside it (see \code{proband} and \code{consultand} in the
 #'   returned \code{nodes}), and the hover text says \dQuote{Proband:} and
@@ -2007,25 +2007,25 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   Pedixplorer write their labels; a long name can then run into the
 #'   labels of the animals beside it. It changes nothing but the labels.
 #'   Stops unless it is one whole number of 1 or more, or \code{Inf}.
-#' @param conditionColors the colours of the affected conditions, in the
-#'   order they are drawn: 1 to 4 colours, at least one for each condition
+#' @param conditionColors the colors of the affected conditions, in the
+#'   order they are drawn: 1 to 4 colors, at least one for each condition
 #'   drawn, each a name R knows (such as \code{"orange"} or
 #'   \code{"steelblue3"}) or a code (such as \code{"#E69F00"}). Each is
-#'   written as its \code{"#RRGGBB"} code, the colour R means by it: a
-#'   browser reads most of R's names as no colour, and \code{"grey"},
+#'   written as its \code{"#RRGGBB"} code, the color R means by it: a
+#'   browser reads most of R's names as no color, and \code{"grey"},
 #'   \code{"gray"}, \code{"green"}, \code{"maroon"} and
-#'   \code{"purple"} as other colours. The default is the four colours
+#'   \code{"purple"} as other colors. The default is the four colors
 #'   drawn before this argument: pink, orange, sky blue and bluish green,
-#'   the last three Okabe and Ito's colour-blind-safe ones. They fill the
+#'   the last three Okabe and Ito's color-blind-safe ones. They fill the
 #'   symbols here and go into the returned \code{conditions} table, from
 #'   which \code{\link{drawPedigreeDiagram}} paints the sections and the
 #'   legend, so all three agree. With no condition column nothing is
-#'   coloured, and the drawing's one \dQuote{Affected} legend row keeps the
-#'   default pink. Stops on anything but 1 to 4 colours as text, on
-#'   \code{NA}, on a colour R does not know, on a number (it picks from R's
-#'   palette, which can be changed), on a transparent colour, on white and
-#'   on the grey \code{"#BEBEBE"} (they mark an unaffected animal and an
-#'   unknown status), on a colour given twice, and on fewer colours than
+#'   colored, and the drawing's one \dQuote{Affected} legend row keeps the
+#'   default pink. Stops on anything but 1 to 4 colors as text, on
+#'   \code{NA}, on a color R does not know, on a number (it picks from R's
+#'   palette, which can be changed), on a transparent color, on white and
+#'   on the gray \code{"#BEBEBE"} (they mark an unaffected animal and an
+#'   unknown status), on a color given twice, and on fewer colors than
 #'   conditions drawn.
 #' @param conditionThresholds \code{NULL} (the default), or the cut-offs of
 #'   measured traits: a character vector named by condition columns, each a
@@ -2071,7 +2071,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   animals in a row are 120 apart at \code{columnSpacing} 1, so larger
 #'   text needs wider columns (168 apart at 1.4). Stops unless it is one
 #'   positive number.
-#' @param columnSpacing the distance between neighbouring animals in a row,
+#' @param columnSpacing the distance between neighboring animals in a row,
 #'   as a multiple of the 120 units used before this argument (1, the
 #'   default): the columns are 120 times it apart, rounded to a whole unit
 #'   and at least 1. With \code{rowSpacing} it sets the drawing's
@@ -2082,7 +2082,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   Larger text needs wider columns: at \code{textSize} 2 an id of 10
 #'   characters is up to 167 units wide, and at 1.4 the columns are 168
 #'   apart. Measured at 500 pixels, at 0.5 long ids run over their
-#'   neighbours'. Stops unless it is one positive number.
+#'   neighbors'. Stops unless it is one positive number.
 #' @param rowSpacing the distance between generations, as a multiple of the
 #'   150 units used before this argument (1, the default): the rows are 150
 #'   times it apart, rounded to a whole unit and at least 1. In the
@@ -2146,7 +2146,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   when there are two or more conditions: a character string with one
 #'   character per condition, \code{"1"} where the animal is affected,
 #'   \code{"0"} where it is unaffected and \code{"?"} where it is unknown
-#'   (the drawing fills that section grey), the same for a
+#'   (the drawing fills that section gray), the same for a
 #'   repeat-appearance node as for its animal, \code{""} for a node that
 #'   is not an animal, never \code{NA}; with two or more conditions the
 #'   animals' \code{color.background} is white, the sections carrying the
@@ -2177,7 +2177,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   and \code{width} columns are always present once any mating unit
 #'   exists: a consanguineous mating unit's (\code{kinship(sire, dam) > 0})
 #'   2 spouse-to-union edges get \code{"#D55E00"}/\code{4}, an Okabe-Ito
-#'   colorblind-safe vermillion in kinship2's doubled/thickened mate-line
+#'   colorblind-safe vermilion in kinship2's doubled/thickened mate-line
 #'   convention, and every other edge gets \code{NA} (at a
 #'   \code{lineWidth} other than 1, that width, the consanguineous edges' 4
 #'   times it, and each dash pattern times it, \code{TRUE} as vis.js's 5
@@ -3204,8 +3204,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
 #' The painted ink is a single \code{quadraticCurveTo(via, to)} along
 #' this control point (\code{_bezierCurve()}, same bundle).
 #'
-#' @param x1,y1 the edge's from-node centre.
-#' @param x2,y2 the edge's to-node centre.
+#' @param x1,y1 the edge's from-node center.
+#' @param x2,y2 the edge's to-node center.
 #' @param roundness the edge's \code{smooth.roundness}.
 #' @return \code{c(x = , y = )} -- the quadratic Bezier control point.
 #' @noRd
@@ -3238,7 +3238,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
 #' cubic; those in (0, 1) plus both endpoints are evaluated -- exact, not
 #' sampled (the census's own \code{c-arc-inside} method, S714).
 #'
-#' @param cx,cy the query point (a disc centre).
+#' @param cx,cy the query point (a disc center).
 #' @param p0,v,p1 length-2 numerics: endpoints and control point.
 #' @return the minimum Euclidean distance.
 #' @noRd
@@ -3357,7 +3357,7 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
 #' row's own largest disc radius (\code{nodes$size}) and capped -- as a
 #' whole per-row level ladder, compressed uniformly on overflow -- above
 #' the nearest disc row below, so a corridor clears the \emph{discs} it
-#' detours around, not merely their centre line (census Finding #3,
+#' detours around, not merely their center line (census Finding #3,
 #' S685). When a flagged edge's endpoint is an \emph{invisible} point
 #' (size 0/NA) whose only surviving edge is a single vertical descent to
 #' a node below -- a sibship bar point whose bar-level ink is entirely

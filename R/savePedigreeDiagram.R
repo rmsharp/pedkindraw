@@ -15,7 +15,7 @@
 #' else in R can turn it into a file. A headless Chrome (through the
 #' \pkg{chromote} package) runs the very drawing the widget shows, a small
 #' recording layer writes every line, shape and word it draws, and the result
-#' is an SVG file: the same drawing, with every mark, colour and legend row,
+#' is an SVG file: the same drawing, with every mark, color and legend row,
 #' and each id as text that a reader can select, search and zoom to.
 #'
 #' The ending of \code{file} chooses the kind of file: \code{.svg}, the
@@ -269,7 +269,7 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
 #'
 #' Writes \code{recorded$svg} to a folder of its own, opens it in a headless
 #' Chrome of its own (started with LCD text off, so that a PNG's text has no
-#' coloured edges on Linux and Windows), waits until the page is painted (two
+#' colored edges on Linux and Windows), waits until the page is painted (two
 #' animation frames: a print right after the load event can come out without
 #' the shapes and ids), and writes the page: \code{Page.printToPDF} with the
 #' paper the page's size and no margins, or \code{Page.captureScreenshot}

@@ -20,7 +20,7 @@ produced by \code{\link{findGeneration}}). Two optional columns are
 used when present: a logical \code{affected} column, which adds an
 affected-status line to \code{title} and sets \code{color.background}:
 the first of \code{conditionColors} (\code{"#CC79A7"}, pink, by
-default) for an affected node, \code{"#BEBEBE"} (grey)
+default) for an affected node, \code{"#BEBEBE"} (gray)
 for a node whose status is unknown (\code{NA}) and \code{"#FFFFFF"}
 (white) for an unaffected one (every node is white without the column);
 and a character \code{name} column, which is shown
@@ -45,11 +45,11 @@ whole, as kinship2 and Pedixplorer write their labels; a long name can
 then run into the labels of the animals beside it. Stops unless it is
 one whole number of 1 or more, or \code{Inf}.}
 
-\item{conditionColors}{the colours of the affected conditions, as
+\item{conditionColors}{the colors of the affected conditions, as
 \code{\link{makePedigreeMatingLayout}} takes them: this function draws
 the column \code{affected} alone, so it fills an affected animal with
-the first colour, written as its \code{"#RRGGBB"} code. It stops as
-\code{makePedigreeMatingLayout()} does, except that one colour is always
+the first color, written as its \code{"#RRGGBB"} code. It stops as
+\code{makePedigreeMatingLayout()} does, except that one color is always
 enough.}
 
 \item{conditionThresholds}{\code{NULL} (the default), or the cut-off of a
