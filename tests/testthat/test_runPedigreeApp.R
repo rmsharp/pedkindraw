@@ -8,11 +8,15 @@
 ## shiny::runApp() is replaced by a stand-in that returns what it was given,
 ## and each call runs under a time limit, so a replacement that did not take
 ## fails instead of waiting for ever. They need shiny, not a browser, and run
-## on CRAN.
+## on CRAN. Each makes its replacements with mockery, so the file skips when
+## mockery is not installed (pedkindraw S95, CRAN plan Phase 17l: testthat
+## skips a missing package only on CRAN; test_suggestsGuarded.R).
 
 .runStandIn <- function(appDir, port, launch.browser) {
   list(app = appDir, port = port, launch.browser = launch.browser)
 }
+
+skip_if_not_installed("mockery")
 
 test_that("runPedigreeApp() stops, naming shiny, when shiny is not
            installed", {

@@ -6,7 +6,10 @@
 ## pedkindraw has neither function. They are the source's lines 113-141
 ## ("convertDate asks isAddedRecord which rows to set aside", "removeDuplicates
 ## asks isAddedRecord which rows to leave out"). The comments below still name
-## all four callers nprcgenekeepr has.
+## all four callers nprcgenekeepr has. pedkindraw S95 (CRAN plan Phase 17l):
+## skip_if_not_installed("mockery") before the first mockery call of the three
+## tests that use it, since testthat skips a missing package only on CRAN
+## (test_suggestsGuarded.R); nprcgenekeepr's copy has no such guard.
 library(testthat)
 
 ## isAddedRecord() is the one place that says which records are "added": only
@@ -124,6 +127,7 @@ test_that("removeUnknownAnimals asks isAddedRecord which rows to remove", {
   )
   ## Control: the real rule removes nothing.
   expect_identical(removeUnknownAnimals(ped), ped)
+  skip_if_not_installed("mockery")
   helper <- mockery::mock(c(FALSE, TRUE, FALSE))
   mockery::stub(removeUnknownAnimals, "isAddedRecord", helper)
   result <- removeUnknownAnimals(ped)
@@ -141,6 +145,7 @@ test_that("correctParentSex asks isAddedRecord which parents to leave out", {
   ## Control: "b" sires "c" but is female, and the real rule reports her.
   control <- correctParentSex(id, sire, dam, sex, status, reportErrors = TRUE)
   expect_identical(control$femaleSires, "b")
+  skip_if_not_installed("mockery")
   helper <- mockery::mock(c(FALSE, TRUE, FALSE))
   mockery::stub(correctParentSex, "isAddedRecord", helper)
   result <- correctParentSex(id, sire, dam, sex, status, reportErrors = TRUE)
@@ -153,6 +158,7 @@ test_that(paste0(
   "correctParentSex gives isAddedRecord the row count for a NULL status"
 ), {
   id <- c("a", "b", "c")
+  skip_if_not_installed("mockery")
   helper <- mockery::mock(rep(FALSE, 3L))
   mockery::stub(correctParentSex, "isAddedRecord", helper)
   result <- correctParentSex(
