@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S96
 date: 2026-11-26
-status: pending
-active_task: Phase 17m (cran plan :1016): the release text and the version (D8). Claimed.
-what_was_done: pending
+status: complete
+self_score: 7
+predecessor_score: 9
+active_task: Phase 17m DONE (R168): version 1.0.0; NEWS's 54 items checked against the code (12 corrected, 4 reworded, Documentation completed); the README's install text and three articles; test_releaseTextDocs.R. Next by Mark's pick: backlog :186, then :178, then 17n.
+what_was_done: claim cd1369a; RED 949842c, 70ea1ec; GREEN d4e8637, e4fc598, f90ddac; RED 3 87fae59 (S2's version test); close-out 1 b0eb2e7 (pushed: run 45888606992, Ubuntu release rerun once).
+next_steps: BACKLOG :186's five sub-items (1, 4 and 5 Mark's decisions, measured first; 2 drawn first); SESSION_NOTES.md What You Must Do 2.
+key_files: methodology/BACKLOG.md:186; R/pedigreeApp.R:124, :752, :458; R/makePedigreeDiagramData.R:2189, :3027; R/savePedigreeDiagram.R:124; docs/planning/cran-submission-plan.md:1020, :1052.
+gotchas: read a search whole before a picker states it (dragon 40); six test files hold NEWS's words; test_package.R's 1234 rule fails on 1.0.0.9000 (17q); HANDOFFS.md about 24 KB under the 262,144 B limit (:318).
+runtime_smoke: quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1
+changelog_ref: CHANGELOG.md "2026-11-26 · [BL-Phase 17] S96: Phase 17m DONE" and its action entries
 commit: pending
 ```
 ```handoff

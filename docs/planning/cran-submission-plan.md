@@ -1046,7 +1046,8 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   expectations, 1 failed (S2's version test), WARN 0 (10.4 min); after it, 17,244, 0 failed, 1 error in
   `test_savePedigreeDiagram.R`'s live-widget test at load average 9-10 (that file alone 235 of 235), WARN 0 (10.9
   min). Lint 0; roxygen unchanged but `man/removeAnimals.Rd`; spelling 0; `tools/checkSpeedTables.R` 0 problems;
-  `git grep 0.0.1` the 4 lines of section 2.5 only.
+  `git grep 0.0.1` the 4 lines of section 2.5 only. quality_ratchet 7/7 at `b0eb2e7` (results `dd3bb45ce615`).
+  **CI and the site** (close-out 1 `b0eb2e7`, pushed without the skip marker): run 45888606992: Windows, macOS and Ubuntu oldrel-1 Status OK (`PASS 17044`, `17056`, `17045`); Ubuntu release failed `test_savePedigreeDiagram.R:184` at attempt 1 (the feature pedigree's legend 50.2% differing, bound 1%; backlog `:232`) and read Status OK at its rerun (`PASS 17045`); Ubuntu devel failed building S4Vectors (`:178`). pkgdown and speed-tables passed; the site's NEWS page shows 1.0.0 and its home page the new install text.
 
 ### Phase 17n. The full local gate (the tree freezes)
 

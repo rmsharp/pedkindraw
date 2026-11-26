@@ -241,7 +241,11 @@ issues).*
       Windows-only picture fault, at the SVG's comparison: run 45760561429's Windows job (attempt 1) failed
       `test_savePedigreeDiagram.R:184`, 45.4% of the `matesNoOffspring` legend's ink differing between the saved SVG
       and the live widget (bound 0.5%; the other 13 shapes and the feature pedigree within it); the rerun passed
-      (PASS 17044). Not shown whether the SVG or the live widget's photograph was the one drawn short.
+      (PASS 17044). Not shown whether the SVG or the live widget's photograph was the one drawn short. S96, the
+      same comparison on Ubuntu release: run 45888606992's attempt 1 failed `:184` with the feature pedigree's
+      legend 50.2% differing (bound 1.0%), its rerun passed (PASS 17045); and S96's second local full run had 1
+      error in the same test at load average 9-10 (the file alone 235 of 235; its message not kept). So it is not
+      Windows-only.
 
 - [ ] **The app's click test times out on macOS now and then** (DECISION NEEDED, Effort S, a guess; found S88,
       S93) -- `test_pedigreeAppBrowser.R:103` ("a click on a repeat or an animal makes it the focal animal"):
