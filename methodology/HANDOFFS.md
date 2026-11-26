@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S94
 date: 2026-11-25
-status: pending
-active_task: finish Phase 17k (cran plan :857): win-builder's second check of 23a6186's package against the 540 s. Claimed.
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17k DONE: win-builder R-devel's second reading (23a6186's package, R165's cut) read 321 s, 219 s under 540 s. Next by Mark's pick: Phase 17l.
+what_was_done: claim 5bd91b8; the reading d77c569 (cran plan 17k, section 2.1's table, dragon 36, status; standalone plan status and Next; roadmap); the email's folder ZYsFyCy5GM5z read; 17l's inputs re-measured.
+next_steps: Phase 17l (cran plan :970): re-measure sections 2.2 and 2.3 first (Suggests 13, not 9; mockery in 7 files, withr in 51), then D7's picker (:1041), strict TDD where tests change; SESSION_NOTES.md What You Must Do 2.
+key_files: docs/planning/cran-submission-plan.md:970, :1041, :192, :210, :949, :169; DESCRIPTION:27; methodology/.quality-gates.json:43; methodology/BACKLOG.md:159, :171, :197.
+gotchas: the plan's 2.2 and 2.3 counts are S32's; CI on master red since S93 (:214, :238, Ubuntu devel); HANDOFFS.md 27.6 KB under the 262,144 B hard limit (backlog :303).
+runtime_smoke: quality_ratchet: 5/6 pass · 0 fail · 1 unmeasured · results 534fea217641 · manifest f447be95addb; unmeasured: test-suite-warnings-zero (timeout 300 s) — by hand: not rerun, S94 changed no package file (R/, tests/, man/ identical to b0b9556, whose full suite read WARN 0, S93)
+changelog_ref: CHANGELOG.md "2026-11-25 · [BL-Phase 17] S94: Phase 17k DONE, win-builder's second reading 321 s" and its push entry
 commit: pending
 ```
 ```handoff
