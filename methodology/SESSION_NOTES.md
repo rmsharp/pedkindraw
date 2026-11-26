@@ -106,6 +106,14 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 96 Did
+**Deliverable:** Phase 17m (`docs/planning/cran-submission-plan.md:1016`): the release text and the version (D8)
+(IN PROGRESS)
+**Started:** 2026-11-26 09:15 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 17m (Recommended)" (orient).
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 95 Did
 **Deliverable:** Phase 17l (`docs/planning/cran-submission-plan.md:981`), strict TDD where tests changed. DONE: the
 spelling check 0 words, the check without suggested packages passing in CRAN mode and with the full suite, the

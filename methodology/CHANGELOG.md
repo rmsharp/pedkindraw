@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-26 · [BL-Phase 17] S96 (in progress): Phase 17m, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S96's stub), `methodology/HANDOFFS.md` (S96's `status: pending` receipt) and this entry. The deliverable is Phase 17m (`docs/planning/cran-submission-plan.md:1016`): the release text and the version (D8). Mark's pick: "Phase 17m (Recommended)" (orient picker).
+- **Commit/PR:** the S96 claim commit · **Session:** S96 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `e7b5d55`, no ghost session, no merge; S95's receipt complete, its gate citation equal to the results file `dd3bb45ce615`; 33 backlog items at the handoff's lines; dashboard 93/100; 0 open issues).
+
 ### 2026-11-26 · [BL-Phase 17] S95 push 2: the close-out to GitHub, no CI run
 - **Change:** pushed `39b5da9..67d084e` (close-out 1 and 2), documents only, each commit carrying the skip marker, so no workflow ran; the package's CI was read at `39b5da9` (push 1).
 - **Commit/PR:** the push of `67d084e`; close-out 2b (this entry) · **Session:** S95 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `67d084e`; `gh run list` showed no new R-CMD-check run.
