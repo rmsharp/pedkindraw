@@ -12,6 +12,11 @@
 ## that starts Chrome leaves two pipes open (the gaps plan's dragon 26), and
 ## the check that builds the vignettes runs where no browser is found.
 ##
+## pedkindraw S97 (backlog item "What 17m's check of NEWS found outside NEWS",
+## its fifth finding; Mark's pick "Use the widget's width"): the help and NEWS
+## say a width left out is the widget's own when it is a number of pixels.
+## Spaces and line breaks are made one space before the phrase is looked for.
+##
 ## The documents are read from the source tree (README.Rmd, README.md,
 ## vignettes/, man/ and NEWS.md do not exist under an installed package) and the
 ## tests skip without it, as helpExampleCode() in helper-helpExample.R reads
@@ -69,4 +74,15 @@ test_that("the help of drawPedigreeDiagram() and of the package points to
 test_that("NEWS says the colony's files fit one page, on letter paper too, with
            no id over another", {
   .docsSay(.docsText("NEWS.md"), c("letter paper", "overlap"), "NEWS.md")
+})
+
+test_that("the help of savePedigreeDiagram() and NEWS say a width left out is
+           the widget's own when it is a number of pixels (S97)", {
+  text <- gsub("\\s+", " ", .docsText("man", "savePedigreeDiagram.Rd"))
+  .docsSay(text, "the widget's own width", "savePedigreeDiagram.Rd")
+  news <- gsub("\\s+", " ", .docsText("NEWS.md"))
+  .docsSay(.docsAfter(news,
+                      "`savePedigreeDiagram(diagram, file, width, height, dpi)`",
+                      1200L),
+           "the widget's own width", "NEWS.md's savePedigreeDiagram() item")
 })

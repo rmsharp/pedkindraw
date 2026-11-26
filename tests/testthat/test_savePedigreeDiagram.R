@@ -18,7 +18,13 @@
 ## from the file's own bytes, with no PDF reader; its words need poppler's
 ## pdftotext, and the tests that read them skip where it is not installed.
 ##
-## The tests that need no browser (the first eight) run everywhere, CRAN too.
+## pedkindraw S97 (backlog item "What 17m's check of NEWS found outside NEWS",
+## its fifth finding; Mark's pick "Use the widget's width"): with width left
+## out, the page is the widget's own width when that is a number of pixels, as
+## the height is, and 10 inches (960 px) otherwise; drawPedigreeDiagram() sets
+## no width. Its test stubs Chrome and the recording, so it needs no browser.
+##
+## The tests that need no browser (the first nine) run everywhere, CRAN too.
 ## The ones that start Chrome skip on CRAN and where no browser is found; the
 ## function starts its own Chrome for each call, so these take a second or two
 ## each.
@@ -124,6 +130,29 @@ test_that("savePedigreeDiagram() stops when Chrome is not found", {
   expect_error(savePedigreeDiagram(widget, file),
                "could not find Google Chrome", fixed = TRUE)
   expect_false(file.exists(file))
+})
+
+test_that("with width left out, the page is the widget's own width when that
+           is a number of pixels, as the height is, and 10 inches otherwise
+           (S97)", {
+  skip_if_not_installed("mockery")
+  skip_if_not_installed("chromote")
+  seen <- numeric(0L)
+  mockery::stub(savePedigreeDiagram, "chromote::find_chrome", "chrome")
+  mockery::stub(savePedigreeDiagram, ".recordDiagramSvg",
+                function(diagram, ...) {
+                  seen[[length(seen) + 1L]] <<- diagram$width
+                  .saveStubRecording()
+                })
+  widget <- .saveFourWidget()
+  file <- file.path(.saveTmp(), "x.svg")
+  for (width in list(NULL, "1400px", "100%", 700)) {
+    widget$width <- width
+    savePedigreeDiagram(widget, file)
+  }
+  savePedigreeDiagram(widget, file, width = 7)
+  expect_identical(seen, c(960, 1400, 960, 700, 672))
+  expect_null(.saveFourWidget()$width)
 })
 
 test_that("the four animals are written as an SVG document Chrome loads, 10

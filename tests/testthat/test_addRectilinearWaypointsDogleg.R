@@ -12,6 +12,13 @@
 ## "#144's fix"), so these tests call the function with the layout's own
 ## tables and one node's row moved in 'pos'. Every expected value was computed
 ## with the function before this file was written (Learning 18).
+##
+## pedkindraw S97 (backlog item "What 17m's check of NEWS found outside NEWS",
+## its second finding): the help of makePedigreeMatingLayout() said a marked
+## mate line re-routed this way "currently falls back to the generic routing
+## color and width", which the tests above show it does not (the copy's code
+## keeps them, nprcgenekeepr's S563 fix); the last test holds the help to what
+## they show. nprcgenekeepr's help has the same sentence.
 
 doglegInputs <- function() {
   ## S x D have M and F; the full sibs M x F have C, a consanguineous mating
@@ -98,4 +105,11 @@ test_that("an unmarked mate line's dogleg takes the waypoint colour and no
   expect_equal(edgeRow(result$edges, "__proj_D___union_1", "__union_1"),
                plain, ignore_attr = TRUE)
   expect_identical(nrow(edgeRow(result$edges, "D", "__union_1")), 0L)
+})
+
+test_that("the help of makePedigreeMatingLayout() says what the tests above
+           show: a re-routed marked mate line keeps its colour and width (S97)", {
+  text <- gsub("\\s+", " ", .docsText("man", "makePedigreeMatingLayout.Rd"))
+  expect_false(grepl("falls back to the generic", text, fixed = TRUE))
+  .docsSay(text, "re-routed", "makePedigreeMatingLayout.Rd")
 })
