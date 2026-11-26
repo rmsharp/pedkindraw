@@ -6,9 +6,10 @@ made on one machine in November 2026, which timed pedkindraw’s own
 installed code beside the kinship2 and Pedixplorer functions that do the
 same. Each table says which record it comes from: its date, the
 pedkindraw commit timed, the versions of kinship2 and Pedixplorer and
-the machine. Every number on the page was checked against the records’
-result files by a script, `tools/checkSpeedTables.R` in pedkindraw’s
-GitHub repository, which also holds the records
+the machine. Every number in the page’s tables was checked against the
+records’ result files, and each number in its text against the tables
+and the method’s own, by a script, `tools/checkSpeedTables.R` in
+pedkindraw’s GitHub repository, which also holds the records
 (`tools/timing/results/`). The page runs no code.
 
 ## The machine and the method

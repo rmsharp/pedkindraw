@@ -15,14 +15,16 @@ drawing of
 [nprcgenekeepr](https://CRAN.R-project.org/package=nprcgenekeepr).
 
 The package’s website, <https://rmsharp.github.io/pedkindraw/>, has
-every help page and two articles: [Getting
-started](https://rmsharp.github.io/pedkindraw/articles/pedkindraw.html)
-and [Drawing
-pedigrees](https://rmsharp.github.io/pedkindraw/articles/drawing.html).
+every help page and three articles: [Getting
+started](https://rmsharp.github.io/pedkindraw/articles/pedkindraw.html),
+[Drawing
+pedigrees](https://rmsharp.github.io/pedkindraw/articles/drawing.html)
+and [Speed and size
+limits](https://rmsharp.github.io/pedkindraw/articles/speed.html).
 
 ## Installation
 
-pedkindraw is not on CRAN yet. Install it from GitHub:
+Install the development version from GitHub:
 
 ``` r
 

@@ -1,10 +1,9 @@
 # Remove listed animals from a pedigree
 
 `removeAnimals()` removes the rows of the listed animals and sets to
-`NA` each `sire` or `dam` entry that names one of them, so that no
-animal is left with a parent that has no row. An offspring of a removed
-animal keeps its other parent: one known parent is legal here.
-Afterwards
+`NA` each `sire` or `dam` entry that names one of them, so that none of
+them is left as a parent with no row. An offspring of a removed animal
+keeps its other parent: one known parent is legal here. Afterwards
 [`checkPedigree`](https://rmsharp.github.io/pedkindraw/reference/checkPedigree.md)
 reports none of the removed animals as `rowlessParents`, a parent with
 no row, which
