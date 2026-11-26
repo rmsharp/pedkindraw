@@ -272,7 +272,7 @@ test_that(
     for (bad in .notColourVectors) {
       expect_error(
         do.call(fn, list(ped, conditionColors = bad)),
-        paste0(fn, "() requires 'conditionColors' to be 1 to 4 colours, each ",
+        paste0(fn, "() requires 'conditionColors' to be 1 to 4 colors, each ",
                "a name R knows, such as \"orange\", or a code such as ",
                "\"#E69F00\"."),
         fixed = TRUE, info = paste(fn, deparse(bad))
@@ -288,19 +288,19 @@ test_that(
   ped <- .kConditions(1L)
   cases <- list(
     list(c("red", "notacolour", "blue2x", ""),
-         "to be colours R knows. Not known: \"notacolour\", \"blue2x\", \"\"."),
+         "to be colors R knows. Not known: \"notacolour\", \"blue2x\", \"\"."),
     list(c("red", "2"),
-         paste0("to name each colour, not give a number: \"2\" (a number ",
+         paste0("to name each color, not give a number: \"2\" (a number ",
                 "picks from R's palette, which can be changed).")),
     list(c("#FF000080", "transparent", "red"),
-         paste0("to be opaque colours. Transparent: \"#FF000080\", ",
+         paste0("to be opaque colors. Transparent: \"#FF000080\", ",
                 "\"transparent\".")),
     list(c("white", "gray", "#bebebe", "#FFF"),
          paste0("to differ from white, which marks an unaffected animal, and ",
-                "from grey #BEBEBE, which marks an unknown status: \"white\", ",
+                "from gray #BEBEBE, which marks an unknown status: \"white\", ",
                 "\"gray\", \"#bebebe\", \"#FFF\".")),
     list(c("red", "gold", "#FF0000"),
-         paste0("to give each condition its own colour: \"red\", ",
+         paste0("to give each condition its own color: \"red\", ",
                 "\"#FF0000\" are the same."))
   )
   for (fn in .bothBuilders) {
@@ -321,13 +321,13 @@ test_that(
     makePedigreeMatingLayout(.kConditions(3L),
                              conditionColors = c("red", "blue")),
     paste0("makePedigreeMatingLayout() requires 'conditionColors' to give a ",
-           "colour for each condition drawn: 2 colours for the 3 conditions ",
+           "color for each condition drawn: 2 colors for the 3 conditions ",
            "\"affected\", \"affected2\", \"affected3\"."),
     fixed = TRUE
   )
   expect_error(
     makePedigreeMatingLayout(.kConditions(5L), conditionColors = "red"),
-    "1 colour for the 4 conditions", fixed = TRUE
+    "1 color for the 4 conditions", fixed = TRUE
   )
   ## makePedigreeDiagramData draws only the column affected.
   expect_no_error(makePedigreeDiagramData(.kConditions(3L),

@@ -89,6 +89,7 @@ test_solveJointQP.R
 test_spacing.R
 test_speedPointersDocs.R
 test_speedVignetteDocs.R
+test_suggestsGuarded.R
 test_symbolSize.R
 test_textSize.R
 test_trimPedigree.R
