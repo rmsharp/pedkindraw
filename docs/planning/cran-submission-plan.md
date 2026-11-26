@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stopped on a pedigree with a parent id that has no row (R162); DONE (S89, R163: the layout repaired, such a parent not drawn and its offspring with no line up, every one of 1,181 random pedigrees drawn, the 505 that drew unchanged in the rectilinear style; a repeated id stops, naming it). 17k under way (S90, S92): the first reading, of the package as at `89f39e7`, read 980 s on win-builder R-devel (S92; its tests 788 s), over 540 s, so the cut was made (S92, R165): a CRAN check runs 21 of the 105 test files, those a run-time trace of the 38 exports needs, CRAN-mode tests 29.8 s here instead of about 200 s, about 312 s estimated there; the second reading, of the package as at `23a6186`, uploaded at 21:36 UTC on 2026-11-25 (Mark's pick), waits in win-builder's R-devel queue (17k's notes; dragons 34, 36). The Windows CI hang (backlog, S69-S90) DONE (S91, R164): R CMD check on Windows waited for every process the tests started, and the stuck-page tests' Chrome renderers outlived their browsers; `.closeChrome()` in `savePedigreeDiagram()` ends them, and the Windows job reads Status OK (twice: runs 45680687657 and 45687837833). The CI jobs that fail while Chrome starts (backlog, S89-S92) still open (S93, R166): `savePedigreeDiagram()` now waits 60 s for each Chrome's port, which an 11-s-slow stand-in passes, but on CI a Chrome at `.renderPicture()`'s start hung past 60 s twice more, so all 5 start failures are at that start; the next session measures on the runners (dragon 37). Next: the session that has Mark's second email reads it and finishes 17k against 540 s (the results folder lasts about 72 hours after the check); until it arrives, a backlog item by Mark's pick. 17l's and 17n's five CI jobs still need Ubuntu devel's S4Vectors failure (backlog).
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stopped on a pedigree with a parent id that has no row (R162); DONE (S89, R163: the layout repaired, such a parent not drawn and its offspring with no line up, every one of 1,181 random pedigrees drawn, the 505 that drew unchanged in the rectilinear style; a repeated id stops, naming it). 17k DONE (S90, S92, S94): the first reading, of the package as at `89f39e7`, read 980 s on win-builder R-devel (S92; its tests 788 s), over 540 s, so the cut was made (S92, R165): a CRAN check runs 21 of the 105 test files, those a run-time trace of the 38 exports needs, CRAN-mode tests 29.8 s here instead of about 200 s, about 312 s estimated there; the second reading, of the package as at `23a6186`, read 321 s (S94, `ZYsFyCy5GM5z`; its tests 125 s), 219 s under 540 s (17k's notes, section 2.1). The Windows CI hang (backlog, S69-S90) DONE (S91, R164): R CMD check on Windows waited for every process the tests started, and the stuck-page tests' Chrome renderers outlived their browsers; `.closeChrome()` in `savePedigreeDiagram()` ends them, and the Windows job reads Status OK (twice: runs 45680687657 and 45687837833). The CI jobs that fail while Chrome starts (backlog, S89-S92) still open (S93, R166): `savePedigreeDiagram()` now waits 60 s for each Chrome's port, which an 11-s-slow stand-in passes, but on CI a Chrome at `.renderPicture()`'s start hung past 60 s twice more, so all 5 start failures are at that start; the next session measures on the runners (dragon 37). Next: Phase 17l, static hygiene and noSuggests. 17l's and 17n's five CI jobs still need Ubuntu devel's S4Vectors failure (backlog).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -165,6 +165,29 @@ earlier (`R CMD check --as-cran --timings`, load average 13.3 at the start, 10.0
   410-440 s on an idle machine and 480-590 s on a busy one. So 17k opens with one more win-builder reading of the
   tree after 17j (Mark approves the upload) and skips slow tests on CRAN only if that reading is over 540 s. 17o's
   reading of 540 s or less still gates the submission.
+
+**Measured on win-builder R-devel (Phase 17k, S92 and S94, 2026-11-25).** Two readings, before and after R165's
+cut (a CRAN check runs 21 of the 105 test files), beside the cut package's files checked on this Mac (17k has
+each tarball, folder and email):
+
+| Step | 1st reading, `89f39e7` (all files) | 2nd reading, `23a6186` (21 files) | This Mac, `23a6186` (S92, load 6.6-5.5) | Ratio, 2nd |
+|---|---:|---:|---:|---:|
+| tests, elapsed (`proc.time()`) | 788.1 s | 125.4 s | 29.8 s | 4.2 |
+| tests, CPU (user + system) | 784.2 s | 124.2 s | | |
+| R code for possible problems | 34 s | 35 s | | |
+| examples | 16 s | 17 s | | |
+| re-building vignettes | 30 s | 30 s | | |
+| PDF manual | 29 s | 29 s | | |
+| incoming feasibility | 10 s | 10 s | | |
+| installation | 18 s | 19 s | | |
+| the steps under 10 s (not timed) | about 55 s | about 56 s | | |
+| **check time** | **980 s** | **321 s** | **100 s** (wall) | **3.2** |
+
+- Both `Status: 1 NOTE`, R16's lines only, and both with the tests' elapsed equal to their CPU (no waiting). The
+  first reading against this Mac (the tarball at `a657d3a`, load 10.8-24.2: the check 295 s, the tests 219 s) was
+  3.3× and 3.6×.
+- 321 s is 219 s under R85's 540 s, so 17k is DONE with no further cut (R86); 17o's reading still gates the
+  submission.
 
 ### 2.2 Static checks
 
@@ -922,9 +945,27 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   archive` of `23a6186`, 1,702,566 B, SHA-256 `1515e145e3f43c9f27a2d76a6038446bd5868d3eb4c926984ea20d91f11d42ae`,
   the same files as the tarball checked here but the `Packaged:` line and two vignettes' widget ids; uploaded by
   FTP at 21:36:03 UTC (reply 226; Mark's pick "Claude uploads it now"), first in an otherwise empty R-devel
-  queue, still there 26 minutes later with four newer uploads behind it. **Left:** read the second email's check
-  time and folder, record them here and in section 2.1, and close 17k if it reads 540 s or less (DONE's list of
-  skipped files and the check that each export keeps a CRAN-run test are in place).
+  queue, still there 26 minutes later with four newer uploads behind it. Read in S94 (below).
+- **Read (S94, 2026-11-25): 321 s, so 17k is DONE.** The email (Mark pasted it): results at
+  `https://win-builder.r-project.org/ZYsFyCy5GM5z/` (removed about 72 hours after the check), R-devel 2026-11-17
+  r90926 ucrt, Windows Server 2022, check started 23:11:00 UTC (1 h 35 min after the upload), **check time 321 s**,
+  installation 19 s, `Status: 1 NOTE` (R16's lines only). Its steps: incoming feasibility 10 s, R code for possible
+  problems 35 s, examples 17 s, tests 126 s, re-building vignettes 30 s, PDF manual 29 s; the steps of under 10 s,
+  which the log does not time, about 56 s. The tests' `proc.time()`: 125.4 s elapsed for 124.2 s of CPU (115.0
+  user, 9.2 system), so they never waited for a processor; `[ FAIL 0 | WARN 0 | SKIP 25 | PASS 2694 ]`, this Mac's
+  24 skips at `23a6186` plus `test_savePedigreeDiagram.R:499` (skipped on Windows; its one expectation passes here,
+  2,695). The cut took 663 s off the tests and 659 s off the check; the rest of the check, 196 s, is as at the first
+  reading (192 s). **Against this Mac** (the same package files, checked in S92's GREEN at load 6.6-5.5: the check
+  100 s, the tests 29.8 s): the whole check 3.2× (the first reading 3.3×, 17a 1.9×), the tests 4.2× (3.6×, 2.1×).
+  R165's estimate, about 312 s, was 3% under the reading. **The margin:** 219 s under 540 s; a reading over 540 s
+  needs a check 1.68× this one. A slower day like nprcgenekeepr's (its one tarball read 520 s and 617 s; its slower
+  reading's tests ran 1.54 s elapsed per CPU second) would read about 381-389 s. 321 s is not near 540 s, so dragon
+  8's second upload does not apply. **For HEAD:** the package's files differ from `23a6186`'s only by S93's Chrome
+  start wait (5 files: `R/savePedigreeDiagram.R`, its help page, its `NEWS.md` sentence, a test helper, and two
+  tests that skip on CRAN); HEAD's CRAN-mode tests read 29.2 s here (S93). **DONE's list:** the 84 files `tests/testthat/slowTestFiles.txt` names (unchanged since
+  `23a6186`) and why (R165); `test_slowTestFilesExports.R` fails if no CRAN-run file calls an export (at HEAD: 3
+  tests, 6 expectations, 0 failed; `test_slowTestFiles.R` 7 tests, 19 expectations, 0 failed). 17o's reading of
+  540 s or less still gates the submission (R86) and shows any creep from test files added later (R165).
 
 ### Phase 17l. Static hygiene and noSuggests
 
@@ -1188,7 +1229,9 @@ pedkindraw's own:
     a r-package-devel report on secr (2026) found the same. Estimate a cut from this Mac's CRAN-mode per-file times
     (one `test_dir()` on the installed package with a reporter that times each file, `NOT_CRAN` unset) scaled by
     the latest reading's ratio, and leave room for a slower day. And a trace of the exports counts the package's
-    own calls: count an export for a test file only where the file's own code calls it.
+    own calls: count an export for a test file only where the file's own code calls it. S94's reading of the cut
+    package: 3.2× (tests 4.2×), and S92's estimate by that method, about 312 s, came within 3% of it (321 s); the
+    steps outside the tests took 192 s and 196 s at the two readings, so a cut moves only the tests' share.
 37. **A fix for a CI flake is a guess until CI has run it, and where each failure happened is evidence** (S93,
     R166): 2 of the 3 Chrome start failures in 80 jobs read "port not open after 10 seconds", and a 60 s wait,
     which an 11-s-slow stand-in Chrome (a shell script) passed here and on Linux CI, met "after 60 seconds" twice
