@@ -156,25 +156,6 @@ issues).*
 
 ## Ready, small
 
-- [ ] **The suite gate's time limit is below the suite's time** (READY, Effort S; Phase 17l)
-      -- `test-suite-warnings-zero`
-      in `methodology/.quality-gates.json` sets `timeout_seconds: 300`, and the suite took 261 s alone in S29
-      (`test_local()`, 684 tests), 268-271 s in S28; S29's `quality_ratchet.py --run` read the gate UNMEASURED,
-      "timeout (300 s)", 4/5 pass (results `42b564bc4c70`), so its receipt names it unmeasured with the suite run by
-      hand (WARN 0). The manifest's own note says to set the limit above the slowest honest run; the tool's default
-      is 600 s. Raising it is not a loosening (the threshold stays 0); the ratchet prints a changed
-      `timeout_seconds` as a warning and the dashboard notes a changed gate, so make the change in a commit of its
-      own with the reason in the ledger, then run the gates again. S50: the suite took 304-317 s (67 files, 820
-      tests), so the gate timed out again (4/5, results `42b564bc4c70`) and S50's receipt names it with the suite
-      run by hand (WARN 0); S49's run had just passed. Every later session will meet this until the limit moves.
-
-- [ ] **A stale pedkindraw 0.0.1 in renv's library** (READY, Effort S; Phase 17l) -- renv's library
-      (`Rscript -e 'cat(renv::paths$library())'`) holds a pedkindraw 0.0.1 built 2026-11-12, before `asPedFrame()`
-      existed (S25). Anything that calls `library(pedkindraw)` without installing first runs it: a trial pkgdown
-      build with `install = FALSE` stopped on "could not find function asPedFrame" (the documentation plan's M3).
-      Remove it (`remove.packages("pedkindraw", lib = renv::paths$library())`; `renv.lock` does not name it, S25)
-      or reinstall it at each use; the site session builds with the package installed either way.
-
 - [ ] **The drift tool does not watch copied constants** (READY, Effort S) -- `tools/compareWithNprcgenekeepr.R`
       compares only functions assigned at the top level, so `R/sexCodes.R` (a named character vector, R25) is
       copied but unwatched: it reports "21 copied functions in 21 files" with 22 copied files (S7). The results
@@ -194,22 +175,19 @@ issues).*
       S18's Learning 21; `context_budget.py --check` exits 2): move, archive or delete rows as the tool lists, or
       raise the ceiling only by plan-mode approval.
 
-- [ ] **CI notices: `actions/checkout@v5` and Ubuntu 26** (READY, Effort S; Phase 17l, if still shown)
-      -- warnings, not failures, on run
-      `42960032938`: Node 20 is deprecated under `actions/checkout@v4`, and `ubuntu-latest` moves to Ubuntu 26
-      (from 2026-10-19). `.github/workflows/R-CMD-check.yaml:39` (`actions/checkout@v4`) and `:30-32` (the three
-      `ubuntu-latest` jobs). S7: the move has happened (the runners are Ubuntu 26.04, "resolute"), and in run
-      `43052891573` attempt 1 all three Ubuntu jobs failed installing R, unable to resolve Ubuntu's package servers
-      for an hour; re-running them passed (attempt 2). Watch whether it recurs before pinning a runner image. S8: run
-      `43106941979` passed on all five jobs at the first attempt, Ubuntu 26.04 included (the same two notices). S10:
-      run `43260600901` likewise (the same two, and a third: macOS arm64 queues may be longer). S11: run
-      `43278560876` likewise, plus a warning from the Chrome step S11 copied: `browser-actions/setup-chrome`'s
-      `install-dependencies` is for Linux only, so the Windows job notes it (`.github/workflows/R-CMD-check.yaml:78`;
-      nprcgenekeepr's workflow has the same line). Harmless; an `if:` per runner would silence it. S49: run
-      `44481480808` (S48's push) failed on its Ubuntu R-devel job only, installing dependencies before pedkindraw
-      was checked: Bioconductor's S4Vectors 0.50.3, which Pedixplorer (Suggests) imports, does not build on R-devel
-      r90935 of 2026-11-18 (a `transform` method's formals); S47's run passed that job a day earlier. Not
-      pedkindraw's code; watch whether it clears before acting.
+- [ ] **Ubuntu devel's CI job fails building S4Vectors before pedkindraw is checked** (DECISION NEEDED before 17n,
+      Effort S; found S49; moved here S95 from the CI-notices item, done) -- Bioconductor's S4Vectors 0.50.3, which
+      Pedixplorer (Suggests) imports, does not build on R-devel: "unable to load R code in package 'S4Vectors'" (S95,
+      run 45760561429, job 139709282740; first S49, run 44481480808, R-devel r90935 of 2026-11-18, a `transform`
+      method's formals). Not pedkindraw's code, and every R-CMD-check run since S49 has it. 17n needs CI 5/5: wait for
+      a Bioconductor release that builds, or leave Pedixplorer out of that one job's install (its matrix entry),
+      which skips the converter tests there.
+
+- [ ] **The Windows CI job warns that `install-dependencies` is for Linux only** (READY, Effort S; found S11; moved
+      here S95 from the CI-notices item, done) -- `browser-actions/setup-chrome@v2`'s `install-dependencies: true`
+      (`.github/workflows/R-CMD-check.yaml:78`) is a Linux option, so the Windows job notes it (run 45760561429, S95).
+      Harmless; `install-dependencies: ${{ runner.os == 'Linux' }}` would silence it. nprcgenekeepr's workflow has
+      the same line.
 
 - [ ] **A Chrome at a PDF or PNG save's second start hangs now and then on CI** (READY: the diagnostic, by Mark's
       pick; Effort M, a guess; found S89, S91, S92; S93 R166) -- every start failure CI has shown since S71 is at
@@ -233,7 +211,11 @@ issues).*
       prints or photographs; chromote 0.5.1's own vignette (`commands-and-events.Rmd:67`-`:68`) says navigate and a
       load wait "will not work 100% of the time" and to use `$go_to()`. Whether that race made this blank page is
       not shown (one reading). Choices: wait for the SVG document's `readyState` "complete" (or `go_to()`) before
-      the two frames, with a test that delays the load; or leave it. Related: picture plan dragon 16.
+      the two frames, with a test that delays the load; or leave it. Related: picture plan dragon 16. S95, a second
+      Windows-only picture fault, at the SVG's comparison: run 45760561429's Windows job (attempt 1) failed
+      `test_savePedigreeDiagram.R:184`, 45.4% of the `matesNoOffspring` legend's ink differing between the saved SVG
+      and the live widget (bound 0.5%; the other 13 shapes and the feature pedigree within it); the rerun passed
+      (PASS 17044). Not shown whether the SVG or the live widget's photograph was the one drawn short.
 
 - [ ] **The app's click test times out on macOS now and then** (DECISION NEEDED, Effort S, a guess; found S88,
       S93) -- `test_pedigreeAppBrowser.R:103` ("a click on a repeat or an animal makes it the focal animal"):
@@ -255,7 +237,10 @@ issues).*
       tests that save `expect_message()`'s value (`tests/testthat/test_makePedigreeMatingLayout.R:1622`, `:1644`,
       `:1662`, `:1678`, `:1950` at `baef1e12c`; edition 3 returns the message); pedkindraw's copy assigns inside
       (gate `tests-no-saved-expect-condition`). And R33: that file's tests at `:2074` and `:2365` let a collision
-      warning through, which pedkindraw's copy handles. For an nprcgenekeepr session, like the item above.
+      warning through, which pedkindraw's copy handles. S95: `tests/testthat/test_isAddedRecord.R`'s three tests that
+      use mockery have no `skip_if_not_installed("mockery")`, so off CRAN without mockery they error (testthat skips
+      a missing package only on CRAN); pedkindraw's copy guards them (S95, R167). For an nprcgenekeepr session, like
+      the item above.
 
 - [ ] **Trace kinship2's and Pedixplorer's label counts in `tools/gapCases.R`'s `largeIds`** (READY, Effort S; found S72)
       -- the picture plan's G16c line and section 2 quote kinship2's 517 and Pedixplorer's 472 labels at `cex` 0.5; the

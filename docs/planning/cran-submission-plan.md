@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stopped on a pedigree with a parent id that has no row (R162); DONE (S89, R163: the layout repaired, such a parent not drawn and its offspring with no line up, every one of 1,181 random pedigrees drawn, the 505 that drew unchanged in the rectilinear style; a repeated id stops, naming it). 17k DONE (S90, S92, S94): the first reading, of the package as at `89f39e7`, read 980 s on win-builder R-devel (S92; its tests 788 s), over 540 s, so the cut was made (S92, R165): a CRAN check runs 21 of the 105 test files, those a run-time trace of the 38 exports needs, CRAN-mode tests 29.8 s here instead of about 200 s, about 312 s estimated there; the second reading, of the package as at `23a6186`, read 321 s (S94, `ZYsFyCy5GM5z`; its tests 125 s), 219 s under 540 s (17k's notes, section 2.1). The Windows CI hang (backlog, S69-S90) DONE (S91, R164): R CMD check on Windows waited for every process the tests started, and the stuck-page tests' Chrome renderers outlived their browsers; `.closeChrome()` in `savePedigreeDiagram()` ends them, and the Windows job reads Status OK (twice: runs 45680687657 and 45687837833). The CI jobs that fail while Chrome starts (backlog, S89-S92) still open (S93, R166): `savePedigreeDiagram()` now waits 60 s for each Chrome's port, which an 11-s-slow stand-in passes, but on CI a Chrome at `.renderPicture()`'s start hung past 60 s twice more, so all 5 start failures are at that start; the next session measures on the runners (dragon 37). Next: Phase 17l, static hygiene and noSuggests. 17l's and 17n's five CI jobs still need Ubuntu devel's S4Vectors failure (backlog).
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stopped on a pedigree with a parent id that has no row (R162); DONE (S89, R163: the layout repaired, such a parent not drawn and its offspring with no line up, every one of 1,181 random pedigrees drawn, the 505 that drew unchanged in the rectilinear style; a repeated id stops, naming it). 17k DONE (S90, S92, S94): the first reading, of the package as at `89f39e7`, read 980 s on win-builder R-devel (S92; its tests 788 s), over 540 s, so the cut was made (S92, R165): a CRAN check runs 21 of the 105 test files, those a run-time trace of the 38 exports needs, CRAN-mode tests 29.8 s here instead of about 200 s, about 312 s estimated there; the second reading, of the package as at `23a6186`, read 321 s (S94, `ZYsFyCy5GM5z`; its tests 125 s), 219 s under 540 s (17k's notes, section 2.1). The Windows CI hang (backlog, S69-S90) DONE (S91, R164): R CMD check on Windows waited for every process the tests started, and the stuck-page tests' Chrome renderers outlived their browsers; `.closeChrome()` in `savePedigreeDiagram()` ends them, and the Windows job reads Status OK (twice: runs 45680687657 and 45687837833). The CI jobs that fail while Chrome starts (backlog, S89-S92) still open (S93, R166): `savePedigreeDiagram()` now waits 60 s for each Chrome's port, which an 11-s-slow stand-in passes, but on CI a Chrome at `.renderPicture()`'s start hung past 60 s twice more, so all 5 start failures are at that start; the next session measures on the runners (dragon 37). 17l DONE (S95, R167): US spelling and `inst/WORDLIST` (the spelling check 0 words), `Depends: R (>= 4.5.0)`, the methods' DOI in `Description` with a package `.aspell` list, and every test that calls a package a check without suggested packages hides guarded; that check passes in CRAN mode and with the full suite (17l's DONE paragraph). Next: Phase 17m, the release text and the version. 17n's five CI jobs still need Ubuntu devel's S4Vectors failure (backlog).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -206,6 +206,9 @@ each tarball, folder and email):
 - `DESCRIPTION` cites no reference; the methods' paper (Sinnwell, Therneau and Schaid 2014) is in eight help pages'
   `@references`.
 - `Depends: R (>= 4.1.0)`; the oldest R that CI checks is oldrel-1 (4.5).
+- **Re-measured S95, for 17l:** `spelling::spell_check_package()` 97 words (13 British or variant forms, 84 names,
+  terms, ids and units); no `inst/WORDLIST`; renv's Matrix 1.7-6 needs R 4.4; R's own library holds 256 packages,
+  29 of them base and recommended. 17l's results are in its DONE paragraph.
 
 ### 2.3 Suggests packages in the tests
 
@@ -218,6 +221,12 @@ the vignettes run their chunks only when each is installed (`eval = requireNames
 17l's measurement. **R's own library holds 7 of the 9** (all but kinship2 and Pedixplorer; 242 non-base packages in
 `.Library`), so `_R_CHECK_DEPENDS_ONLY_=true` on this Mac would hide only kinship2 and Pedixplorer (nprcgenekeepr's
 dragon 9): 17l needs a library without them.
+**Re-measured S95, for 17l:** 13 Suggests (`callr`, `chromote`, `jsonlite`, `kinship2`, `knitr`, `mockery`,
+`Pedixplorer`, `pkgload`, `ps`, `rmarkdown`, `shiny`, `testthat`, `withr`; `htmlwidgets` moved to Imports); R's own
+library holds 11 of them (all but kinship2 and Pedixplorer); `mockery::` in 7 test files, `withr::` in 51. A check
+with `_R_CHECK_DEPENDS_ONLY_` keeps testthat and the `VignetteBuilder` (knitr) with their hard dependencies
+(`tools:::setRlibs()`), so `withr`, `callr`, `jsonlite`, `pkgload` and `ps` stay; it hides `chromote`, `kinship2`,
+`mockery`, `Pedixplorer`, `rmarkdown` and `shiny` (dragon 38).
 
 ### 2.4 Names (for 17b)
 
@@ -281,6 +290,8 @@ nprcgenekeepr's own callers outside each function's file, for such a session (a 
 - The site (`.github/workflows/pkgdown.yaml`) rebuilds on each push to master that touches more than `CLAUDE.md`
   and `methodology/**`, and by hand; not on a release or tag. `.Rbuildignore` has no line for `cran-comments.md`
   or `CRAN-SUBMISSION`.
+- **Since S95 (17l):** both workflows use `actions/checkout@v5` (no Node 20 notice), and `.Rbuildignore` has both
+  lines. The version is still `0.0.1` in `DESCRIPTION:4` and `NEWS.md:1`.
 - Release tools: `devtools`, `rhub`, `rcmdcheck`, `urlchecker` and `usethis` are installed neither in renv nor in R's
   own library; `spelling` and `pkgdown` are in R's own library.
 
@@ -978,6 +989,29 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   Pedixplorer, `mockery` and `withr` absent; `quality_ratchet.py --run` 5/5 with the suite gate measured; the
   stale copy gone; CI 5/5 without the notices or with them explained.
 - **Surface:** this Mac in a scratch library; CRAN's own noSuggests check runs only after publication.
+- **DONE (S95, R167; Mark's picks, each the recommended option).** Claim `4f35b4c`; RED `41e45a9`; GREEN `dd3a13f`,
+  `c51b6eb`, `314a291`, `01f6b9f`, `ee4d680`, `8194375`, `1366d59`, `6a68b99`; the suite gate's limit `84c8587`;
+  checkout v5 `51b1361`; REFACTOR `39b5da9`. **Spelling:** `spelling::spell_check_package()` 0 words (97 at the
+  claim): the 13 British or variant forms to US in 111 lines of prose and `conditionColors()`'s 8 message lines;
+  `inst/WORDLIST` 85 words; gate `spelling-words-zero`. **The depends-only check** (`_R_CHECK_DEPENDS_ONLY_=true`)
+  under a scratch R home whose `library` holds only R's 29 standard packages (dragon 6; symlinks to `R.home()`'s
+  entries, a copy of `bin/R` with `R_HOME_DIR` changed; nprcgenekeepr S1098), `R_LIBS` naming renv's library:
+  Status 1 NOTE (R16's lines only), CRAN-mode tests `[ FAIL 0 | WARN 0 | SKIP 57 | PASS 1343 ]`; with
+  `NOT_CRAN=true`, `[ FAIL 0 | WARN 0 | SKIP 211 | PASS 11780 ]` (4 failed before the guards). Hidden: chromote,
+  kinship2, mockery, Pedixplorer, rmarkdown, shiny; `withr` is not and cannot be (testthat imports it; R167,
+  dragon 38). **`Depends: R (>= 4.5.0)`** (was 4.1.0). **Description** cites Sinnwell, Therneau and Schaid (2014)
+  `<doi:10.1159/000363105>`, with `.aspell/` for CRAN's DESCRIPTION spell check (dragon 39). `.Rbuildignore`:
+  `cran-comments.md`, `CRAN-SUBMISSION`. **The backlog's three:** the suite gate's limit 1200 s, and
+  `quality_ratchet.py --run` read `7/7 pass · 0 fail · 0 unmeasured` at `39b5da9` (results `dd3bb45ce615`), the
+  suite gate measured for the first time since S50; the stale pedkindraw 0.0.1 removed from renv's library; the
+  Node 20 notice gone with `actions/checkout@v5`. **Here:** full suite (`NOT_CRAN=true`) 106 files, 1,213 tests,
+  17,281 expectations, 0 failed, 0 skipped, WARN 0 (10.6 min); lint 0; roxygen unchanged; `R CMD check --as-cran`
+  Status 1 NOTE (R16's), CRAN-mode tests `[ FAIL 0 | WARN 0 | SKIP 26 | PASS 2695 ]`, the check 98.5 s; drift
+  91 / 23 / 0. **CI** (run 45760561429): Ubuntu release, macOS and Ubuntu oldrel-1 Status OK (`PASS 17045`, `17056`,
+  `17045`, each S93's plus 13); Ubuntu devel failed building S4Vectors, as on every run since S49 (backlog);
+  Windows failed once at `test_savePedigreeDiagram.R:184` (45.4% of one shape's legend ink differing between the saved SVG and the live widget, bound 0.5%; backlog, the blank-picture item), and its rerun read Status OK, `PASS 17044`. So the four jobs that reach pedkindraw pass, and pkgdown's run passed. Notices left: GitHub's macOS queue notice and the Windows job's `setup-chrome` Linux-only
+  option (backlog, harmless). **For 17o:** win-builder's incoming NOTE shows whether CRAN reads `.aspell/`
+  (IBD, Schaid, Sinnwell, Therneau listed if not).
 
 ### Phase 17m. The release text and the version
 
@@ -1038,7 +1072,7 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 | D4 | Which gaps, if any, are closed before the release | 17f | **Put to a planning session S40** (R96). **Decided S41** (R97): every gap, where possible, phases G1-G17 of `docs/planning/gaps-and-shared-code-plan.md`, before 17g |
 | D5 | The timing plan's scope | 17g | **Decided S78** (R153): 37 of the 38 exports, kinship2 and Pedixplorer timed again, half the CPU idle, pedkindraw's own runs only on the page (`docs/planning/pedkindraw-timing-plan.md`) |
 | D6 | How tests are kept off CRAN: `skip_on_cran()` per file or block, or a list of slow files as nprcgenekeepr's `slowTestFiles.txt` | 17k | eight files take 81% (section 2.1). **Decided S92** (R165): one list, `tests/testthat/slowTestFiles.txt`, copied from nprcgenekeepr; the files a trace of the 38 exports needs run on CRAN |
-| D7 | `Language` and spelling; the `Depends: R` floor; a DOI reference in `Description` | 17l | British spellings under en-US; R 4.1.0 claimed, 4.5 tested |
+| D7 | `Language` and spelling; the `Depends: R` floor; a DOI reference in `Description` | 17l | British spellings under en-US; R 4.1.0 claimed, 4.5 tested. **Decided S95** (R167): US spelling throughout, with `inst/WORDLIST`; `Depends: R (>= 4.5.0)`; the DOI sentence, with a package aspell list for CRAN's DESCRIPTION spell check |
 | D8 | The version number: 0.1.0 or 1.0.0 | 17m | contract section 6: "0.x until the first CRAN release" and the deprecation rule after it |
 | D9 | Who runs the cross-platform checks | 17o | R-hub needs Mark's GitHub token; the emails go to Mark |
 | D10 | Which badges the README shows | 17q | none before acceptance (section 6, 17m) |
@@ -1244,6 +1278,20 @@ pedkindraw's own:
     search tries no second port and leaves that Chrome running until R's garbage collector ends it (11 processes
     here; on Linux its `org.chromium.Chromium.*` folder stays in the temp directory, a NOTE); `Page$navigate()` does
     not wait for the load (its vignette `commands-and-events.Rmd:67`), which may explain S93's one blank PDF.
+38. **A check without suggested packages can pass on CRAN for a reason that does not hold off CRAN, and a run
+    shows fewer gaps than the code holds** (S95, 17l, R167): testthat 3.3.2 turns "there is no package called"
+    into a skip only on CRAN (`test_code()`: `if (on_cran()) skip(...)`), so the CRAN-mode check passed with 4
+    unguarded mockery blocks, which the same check with `NOT_CRAN=true` failed. That run showed 4; reading the code
+    found 12, because a block guarded for shiny, which was missing too, never reached its mockery call. Faithful
+    only under a scratch R home whose `library` holds R's 29 standard packages (dragon 6, nprcgenekeepr S1098);
+    `withr` cannot be hidden while testthat is installed, which imports it.
+39. **CRAN's spelling step is not the spelling package's** (S95, 17l, R167): the incoming check spells only
+    `DESCRIPTION`, with aspell, `--master=en_US --add-extra-dicts=en_GB` (British spellings pass there) and R's
+    `en_stats`, ignoring single-quoted words, `f()` calls and `<doi:...>` markup; it reads a package's `.aspell/`
+    list, never `inst/WORDLIST`. This Mac has no aspell: run its call, `utils:::aspell_package_description()`, with
+    `program = "hunspell"`, `control = "-d en_US,en_GB"` and `DICPATH` set to the hunspell package's `dict`
+    folder. A reference added to `Description` brings authors' names into it (4 words, 0 with the `.aspell` list);
+    whether CRAN honours a package list is shown only by win-builder (17o).
 
 ---
 
