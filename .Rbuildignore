@@ -27,6 +27,9 @@
 ^_pkgdown\.yml$
 ^pkgdown_site$
 ^pkgdown$
+# The CRAN submission's notes and the file devtools writes at submission.
+^cran-comments\.md$
+^CRAN-SUBMISSION$
 # Build and check output, and testthat debris from interactive runs.
 ^pedkindraw_.*\.tar\.gz$
 ^pedkindraw\.Rcheck$
