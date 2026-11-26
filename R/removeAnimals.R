@@ -7,7 +7,7 @@
 #'
 #' \code{removeAnimals()} removes the rows of the listed animals and sets to
 #' \code{NA} each \code{sire} or \code{dam} entry that names one of them, so
-#' that no animal is left with a parent that has no row. An offspring of a
+#' that none of them is left as a parent with no row. An offspring of a
 #' removed animal keeps its other parent: one known parent is legal here.
 #' Afterwards \code{\link{checkPedigree}} reports none of the removed animals
 #' as \code{rowlessParents}, a parent with no row, which
