@@ -320,6 +320,10 @@ probands)`, `getDescendantPedigree(ped, probands)`, `trimPedigree(ped, probands,
 with Pedixplorer included, with a note in `kinship()`'s help and the README on the kinship2 and Pedixplorer names
 (R91). After the first CRAN release, the deprecation rule above governs any further change.
 
+**pedkindraw S96 (Phase 17m, plan R168, D8):** the first CRAN release is 1.0.0, which ends the 0.x; the
+deprecation rule above governs from it. After acceptance the development version is 1.0.0.9000 (cran plan Phase
+17q).
+
 ---
 
 ## 7. Performance budget (this Mac: Apple M2 Max, 96 GiB, R 4.6.2; comparison doc sections 7 and 9)

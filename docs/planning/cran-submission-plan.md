@@ -36,7 +36,7 @@ G15's plan written (S64; R141; `docs/planning/mates-without-offspring-plan.md`);
 G15b DONE (S66, `getMatings()`). G15c DONE (S67, the converters), so G15 DONE. G16's plan written (S68; R142;
 `docs/planning/picture-files-plan.md`). G16a DONE (S69, R143: `savePedigreeDiagram()` writes an SVG); its CI repair DONE (S70, R145).
 G16b DONE (S71, R146: it writes `.pdf` and `.png` and takes `dpi`). G16c DONE (S72, R147: the 375 animals' files hold every id, and the
-documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stopped on a pedigree with a parent id that has no row (R162); DONE (S89, R163: the layout repaired, such a parent not drawn and its offspring with no line up, every one of 1,181 random pedigrees drawn, the 505 that drew unchanged in the rectilinear style; a repeated id stops, naming it). 17k DONE (S90, S92, S94): the first reading, of the package as at `89f39e7`, read 980 s on win-builder R-devel (S92; its tests 788 s), over 540 s, so the cut was made (S92, R165): a CRAN check runs 21 of the 105 test files, those a run-time trace of the 38 exports needs, CRAN-mode tests 29.8 s here instead of about 200 s, about 312 s estimated there; the second reading, of the package as at `23a6186`, read 321 s (S94, `ZYsFyCy5GM5z`; its tests 125 s), 219 s under 540 s (17k's notes, section 2.1). The Windows CI hang (backlog, S69-S90) DONE (S91, R164): R CMD check on Windows waited for every process the tests started, and the stuck-page tests' Chrome renderers outlived their browsers; `.closeChrome()` in `savePedigreeDiagram()` ends them, and the Windows job reads Status OK (twice: runs 45680687657 and 45687837833). The CI jobs that fail while Chrome starts (backlog, S89-S92) still open (S93, R166): `savePedigreeDiagram()` now waits 60 s for each Chrome's port, which an 11-s-slow stand-in passes, but on CI a Chrome at `.renderPicture()`'s start hung past 60 s twice more, so all 5 start failures are at that start; the next session measures on the runners (dragon 37). 17l DONE (S95, R167): US spelling and `inst/WORDLIST` (the spelling check 0 words), `Depends: R (>= 4.5.0)`, the methods' DOI in `Description` with a package `.aspell` list, and every test that calls a package a check without suggested packages hides guarded; that check passes in CRAN mode and with the full suite (17l's DONE paragraph). Next: Phase 17m, the release text and the version. 17n's five CI jobs still need Ubuntu devel's S4Vectors failure (backlog).
+documents say how to save a drawing), so G16 DONE. G17's plan written (S73, R148, `docs/planning/pedigree-app-plan.md`); G17a DONE (S74, R149, `runPedigreeApp()`); G17b DONE (S75, R150, choosing the animals); G17c DONE (S76, R151, what is drawn); G17d DONE (S77, R152, saving and the documents), so G17 DONE and every gap phase G1-G17 done. Phase 17g DONE (S78, R153: `docs/planning/pedkindraw-timing-plan.md`; 17h in four sessions, 17h1-17h4). Phase 17h1 DONE (S79, R154: the computation harness in `tools/timing/`, 78 cases, its 108 tests passing; that plan's section 6). Phase 17h1b DONE (S80, R155: each run's free memory and `record.csv`, its 126 tests passing). Phase 17h1c DONE (S81, R156: each run's `started` is when it launched, not when it ended; 129 tests passing). Phase 17h2 DONE (S82, `14145a4`: the computation record, 78 cases at six sizes). 17h3 DONE (S83, R157: the drawing harness, 11 cases, 169 tests passing). 17h4 DONE (S84, `a4b41da`, R158: the drawing record; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in), so 17h DONE. 17i DONE (S85-S86, R159-R160: the speed vignette, `vignette("speed")`, checked cell for cell by `tools/checkSpeedTables.R`; the pointers to it; `?drawPedigreeDiagram`'s measured size; the contract's sections 7 and 8). 17j in two (S87, R161): 17j1 DONE (S87: of the 11 statements no test ran outside `R/makePedigreeDiagramData.R`, 9 reached by new tests and 2 recorded unreachable; 31 of 3,772 left). 17j2 DONE (S88, R162: of `R/makePedigreeDiagramData.R`'s 29, 24 reached by new tests, 2 through a drawing and 22 by direct calls, and 5 recorded unreachable; 7 of 3,772 left, each with its reason), so 17j DONE. Found by 17j2, a backlog item before 17k: `makePedigreeMatingLayout()` stopped on a pedigree with a parent id that has no row (R162); DONE (S89, R163: the layout repaired, such a parent not drawn and its offspring with no line up, every one of 1,181 random pedigrees drawn, the 505 that drew unchanged in the rectilinear style; a repeated id stops, naming it). 17k DONE (S90, S92, S94): the first reading, of the package as at `89f39e7`, read 980 s on win-builder R-devel (S92; its tests 788 s), over 540 s, so the cut was made (S92, R165): a CRAN check runs 21 of the 105 test files, those a run-time trace of the 38 exports needs, CRAN-mode tests 29.8 s here instead of about 200 s, about 312 s estimated there; the second reading, of the package as at `23a6186`, read 321 s (S94, `ZYsFyCy5GM5z`; its tests 125 s), 219 s under 540 s (17k's notes, section 2.1). The Windows CI hang (backlog, S69-S90) DONE (S91, R164): R CMD check on Windows waited for every process the tests started, and the stuck-page tests' Chrome renderers outlived their browsers; `.closeChrome()` in `savePedigreeDiagram()` ends them, and the Windows job reads Status OK (twice: runs 45680687657 and 45687837833). The CI jobs that fail while Chrome starts (backlog, S89-S92) still open (S93, R166): `savePedigreeDiagram()` now waits 60 s for each Chrome's port, which an 11-s-slow stand-in passes, but on CI a Chrome at `.renderPicture()`'s start hung past 60 s twice more, so all 5 start failures are at that start; the next session measures on the runners (dragon 37). 17l DONE (S95, R167): US spelling and `inst/WORDLIST` (the spelling check 0 words), `Depends: R (>= 4.5.0)`, the methods' DOI in `Description` with a package `.aspell` list, and every test that calls a package a check without suggested packages hides guarded; that check passes in CRAN mode and with the full suite (17l's DONE paragraph). 17m DONE (S96, R168): version 1.0.0; NEWS readied for the release, each item checked against the code (12 statements corrected, 4 comparisons with behavior no release had reworded, the Documentation section completed); the README's install section and its three articles; `?removeAnimals` and the speed vignette's opening corrected with NEWS; `tests/testthat/test_releaseTextDocs.R` holds the release text to the version (17m's DONE paragraph). Next: Phase 17n, the full local gate; before it, Ubuntu devel's S4Vectors failure (17n's five CI jobs) and the findings 17m left outside NEWS (both backlog).
 **Mark's direction (S32):** "It looks the a plan for a CRAN release should include, at least, consideration of the
 other options listed, examination of possible impact of recent and ongoing changes in nprcgenekeepr on pedkindraw,
 and the comparison of pedkindraw with kinship2 and Pedixplorer." The options listed were the orient picker's:
@@ -292,6 +292,10 @@ nprcgenekeepr's own callers outside each function's file, for such a session (a 
   or `CRAN-SUBMISSION`.
 - **Since S95 (17l):** both workflows use `actions/checkout@v5` (no Node 20 notice), and `.Rbuildignore` has both
   lines. The version is still `0.0.1` in `DESCRIPTION:4` and `NEWS.md:1`.
+- **Since S96 (17m, R168):** the version is `1.0.0` in `DESCRIPTION:4` and `NEWS.md:1`; `README.Rmd`'s install
+  section says "Install the development version from GitHub:". Outside `renv.lock`, `methodology/` and `docs/`,
+  `0.0.1` is left on 4 lines by Mark's pick: a comment on a past event (`tests/testthat/helper-pedigreeApp.R:104`,
+  renv's stale copy) and three made-up libraries (`tools/timing/tests/test_timingHarness.R:742`, `:751`, `:853`).
 - Release tools: `devtools`, `rhub`, `rcmdcheck`, `urlchecker` and `usethis` are installed neither in renv nor in R's
   own library; `spelling` and `pkgdown` are in R's own library.
 
@@ -1021,6 +1025,28 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 - **DONE:** `R CMD check --as-cran` R16's NOTE only, its NEWS step reading the release's entries; `git grep` of the
   old version finds none outside history; the README rendered twice the same.
 - **Surface:** this Mac; the site after the push.
+- **DONE (S96, R168; Mark's picks, each the recommended option).** Claim `cd1369a`; RED `949842c`, `70ea1ec`;
+  GREEN `d4e8637` (version, NEWS), `e4fc598` (README), `f90ddac` (`?removeAnimals`, the speed vignette); RED 3
+  `87fae59` (S2's version test, by Mark's pick after the full suite failed it; dragon 40); no REFACTOR (Mark's
+  pick). **Version** `1.0.0` (D8). **NEWS:** the heading `# pedkindraw 1.0.0`, the opening "The first release"
+  with "about half of its code is in files copied from nprcgenekeepr" (3,269 of `R/`'s 6,576 code lines, 49.7%;
+  `drawPedigreeDiagram()`'s file at `4283e3502`); its 54 items and opening checked against the code by three read-only
+  reviews, each finding re-checked here: 12 statements corrected, the 4 comparisons with behavior no release had
+  reworded (`NEWS.md` as at `cd1369a`, `:73`, `:344`, `:414`, `:477`), the Documentation section given the README,
+  `vignette("pedkindraw")`, `vignette("drawing")` and the website (dragon 41); "CSV or text", the app's own words
+  in 6 places though it reads only comma-separated files, left with four other findings to a backlog item before
+  17n. **README:** "Install the development version from GitHub:"; the website's three articles (it said two);
+  rendered with pedkindraw 1.0.0 installed in a scratch library, twice, byte-identical. **Test:**
+  `tests/testthat/test_releaseTextDocs.R` (3 tests, 12 expectations; RED 8 failed): NEWS's first heading names
+  `DESCRIPTION`'s version, "(development version)" only for a `.9000` one; a release's NEWS and README do not say
+  "not on CRAN"; NEWS's Documentation section names the README, the three vignettes and the website. **Here:**
+  `R CMD check --as-cran` Status 1 NOTE, R16's lines only, CRAN-mode tests `[ FAIL 0 | WARN 0 | SKIP 26 | PASS
+  2695 ]`, the check 112 s; its log has no step named for NEWS, and `utils::news()` on the installed copy reads 9
+  sections, all 1.0.0, none bad. Full suite (`NOT_CRAN=true`), 107 files, 1,216 tests: before RED 3, 17,293
+  expectations, 1 failed (S2's version test), WARN 0 (10.4 min); after it, 17,244, 0 failed, 1 error in
+  `test_savePedigreeDiagram.R`'s live-widget test at load average 9-10 (that file alone 235 of 235), WARN 0 (10.9
+  min). Lint 0; roxygen unchanged but `man/removeAnimals.Rd`; spelling 0; `tools/checkSpeedTables.R` 0 problems;
+  `git grep 0.0.1` the 4 lines of section 2.5 only.
 
 ### Phase 17n. The full local gate (the tree freezes)
 
@@ -1054,7 +1080,8 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 ### Phase 17q. After acceptance
 
 - **Work:** tag the release at the submitted commit and publish a GitHub release from NEWS; the development
-  version (`.9000`) and a heading-only NEWS block; the README's install section with CRAN first and the badges
+  version (`.9000`) and a heading-only NEWS block (`tests/testthat/test_package.R`'s "no part of 1234 or more"
+  fails on `1.0.0.9000` and changes then, test-first; S96); the README's install section with CRAN first and the badges
   (D10), re-rendered; `methodology/ROADMAP.md`; a push, which rebuilds the site (it does not build on a tag). A
   few days later, read CRAN's check page: every flavor and the additional checks, noSuggests among them.
 - **DONE:** the tag and release exist; the site shows the release; the check page read and recorded.
@@ -1073,7 +1100,7 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
 | D5 | The timing plan's scope | 17g | **Decided S78** (R153): 37 of the 38 exports, kinship2 and Pedixplorer timed again, half the CPU idle, pedkindraw's own runs only on the page (`docs/planning/pedkindraw-timing-plan.md`) |
 | D6 | How tests are kept off CRAN: `skip_on_cran()` per file or block, or a list of slow files as nprcgenekeepr's `slowTestFiles.txt` | 17k | eight files take 81% (section 2.1). **Decided S92** (R165): one list, `tests/testthat/slowTestFiles.txt`, copied from nprcgenekeepr; the files a trace of the 38 exports needs run on CRAN |
 | D7 | `Language` and spelling; the `Depends: R` floor; a DOI reference in `Description` | 17l | British spellings under en-US; R 4.1.0 claimed, 4.5 tested. **Decided S95** (R167): US spelling throughout, with `inst/WORDLIST`; `Depends: R (>= 4.5.0)`; the DOI sentence, with a package aspell list for CRAN's DESCRIPTION spell check |
-| D8 | The version number: 0.1.0 or 1.0.0 | 17m | contract section 6: "0.x until the first CRAN release" and the deprecation rule after it |
+| D8 | The version number: 0.1.0 or 1.0.0 | 17m | contract section 6: "0.x until the first CRAN release" and the deprecation rule after it. **Decided S96** (R168): 1.0.0 |
 | D9 | Who runs the cross-platform checks | 17o | R-hub needs Mark's GitHub token; the emails go to Mark |
 | D10 | Which badges the README shows | 17q | none before acceptance (section 6, 17m) |
 
@@ -1292,6 +1319,20 @@ pedkindraw's own:
     `program = "hunspell"`, `control = "-d en_US,en_GB"` and `DICPATH` set to the hunspell package's `dict`
     folder. A reference added to `Description` brings authors' names into it (4 words, 0 with the `.aspell` list);
     whether CRAN honours a package list is shown only by win-builder (17o).
+40. **Count a search's matches before reading a sample of them** (S96, 17m, R168): the pre-RED search for a test
+    that reads the version ended in `| head`, which cut `tests/testthat/test_package.R:28` (S2's
+    `package_version(version) < "1.0.0"`) from its output; the full suite found it after GREEN, and the session
+    went back to RED for it (RED 3), one more gate. A search whose answer a picker states is read whole, or counted
+    with `grep -c` first.
+41. **A first release's NEWS, checked item by item against the code, held 12 statements the code contradicts**
+    (S96, 17m, R168): three read-only reviews of its 54 items, each finding re-checked, found among them
+    `symbolSize` "25 units across" (vis.js's `size` is half a symbol's width: 50), R 4.5.0 "the oldest R its
+    checks run on" (CI's oldest is 4.5.3), `removeAnimals()` leaving "no animal" with a rowless parent (it clears
+    only the removed ids), the app's legend ">=" (it writes "≥"); and 4 comparisons with states no release had
+    ("before", "now"). Two of the claims were also in a help page and a vignette, corrected with NEWS; one, "CSV
+    or text", is the app's own wording in 6 places and waits for a decision. CRAN's package page links the
+    tarball's README and NEWS ("Materials: README, NEWS" on visNetwork's page), so what they say at submission is
+    what CRAN shows until the next release.
 
 ---
 

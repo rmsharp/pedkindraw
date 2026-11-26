@@ -183,6 +183,32 @@ issues).*
       a Bioconductor release that builds, or leave Pedixplorer out of that one job's install (its matrix entry),
       which skips the converter tests there.
 
+- [ ] **What 17m's check of NEWS found outside NEWS** (DECISION NEEDED for 1 and 4-5, READY for 2-3; before 17n,
+      which freezes the tree; Effort S each; found S96 by three read-only reviews of NEWS against the code, each
+      finding re-checked) -- 17m corrected NEWS and the two places with its claims (`?removeAnimals`, the speed
+      vignette's opening); these were left:
+      1. **The app reads only comma-separated files** (`utils::read.csv`, `R/pedigreeApp.R:124`), while its file
+         buttons (`R/pedigreeApp.R:752`, `:755`; pinned by `tests/testthat/test_pedigreeAppMarks.R:320`),
+         `?runPedigreeApp` (`R/runPedigreeApp.R:19`), `README.Rmd:156`, the Getting started vignette
+         (`vignettes/pedkindraw.Rmd:191`) and NEWS say "CSV or text": a tab-separated `.txt` is read as one
+         column ("The file has 1 columns; the app needs at least four"). Read tab-separated text too, or say
+         comma-separated everywhere.
+      2. **A help sentence that may be stale, found by reading only:** `?makePedigreeMatingLayout`
+         (`R/makePedigreeDiagramData.R:2189`-`:2191`) and the comment at `:3105`-`:3109` say a marked mate line
+         replaced by a right-angle projection falls back to the generic color and width; the code at about
+         `:3027`-`:3035` and `:3137`-`:3143` (comments at `:3028` and `:3137`: "fixed S563", a session of
+         nprcgenekeepr's before the copy) looks as if it keeps them. Draw one (a consanguineous mating whose mate
+         line is re-routed) before changing the words (Learning 18).
+      3. **`inst/js/recordCanvas.js:12`-`:14`'s comment** gives 0.4% (drawing) and 0.2% (legend) for the
+         18-animal pedigree; NEWS and the picture plan (`docs/planning/picture-files-plan.md`) say 0.26% and
+         0.07%.
+      4. **The app's deceased mark names no column it cannot read** (`.appDeceased()`, `R/pedigreeApp.R:458`):
+         a value other than deceased, dead or a yes-word is not deceased, with no note, while the other marks
+         leave such a column out and name it. NEWS now says so. Keep, or name it as the others.
+      5. **`savePedigreeDiagram(width = NULL)` draws 960 px (10 inches) whatever width the widget was given**
+         (`R/savePedigreeDiagram.R:124`), while `height = NULL` keeps the widget's. NEWS now says so. Keep, or
+         read the widget's width.
+
 - [ ] **The Windows CI job warns that `install-dependencies` is for Linux only** (READY, Effort S; found S11; moved
       here S95 from the CI-notices item, done) -- `browser-actions/setup-chrome@v2`'s `install-dependencies: true`
       (`.github/workflows/R-CMD-check.yaml:78`) is a Linux option, so the Windows job notes it (run 45760561429, S95).
