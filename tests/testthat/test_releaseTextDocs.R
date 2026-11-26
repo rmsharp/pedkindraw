@@ -58,14 +58,19 @@ test_that("a release's NEWS and README do not say it is not on CRAN", {
   }
 })
 
-## "The README" starts the README's own item: the US spelling item names the
-## README among the documents it covers ("The help pages, vignettes, README
-## and NEWS").
+## The README has an item of its own, one whose first words are "the README"
+## after NEWS's "New: " or none: the US spelling item names the README among
+## the documents it covers ("The help pages, vignettes, README and NEWS").
 test_that("NEWS's Documentation section names the README, the vignettes and
   the website", {
-  docs <- .docsFlat(.docsSection(paste(.firstNewsSection(), collapse = "\n"),
-                                 "Documentation"))
-  .docsSay(docs, c("The README", "vignette(\"pedkindraw\"",
-                   "vignette(\"drawing\"", "vignette(\"speed\"",
-                   "https://rmsharp.github.io/pedkindraw/"), "NEWS.md")
+  section <- .docsSection(paste(.firstNewsSection(), collapse = "\n"),
+                          "Documentation")
+  items <- grep("^\\* ", strsplit(section, "\n", fixed = TRUE)[[1L]],
+                value = TRUE)
+  expect_true(any(grepl("^\\* (New: )?[Tt]he README", items)),
+              label = "NEWS.md has an item that begins with the README")
+  .docsSay(.docsFlat(section), c("vignette(\"pedkindraw\"",
+                                 "vignette(\"drawing\"", "vignette(\"speed\"",
+                                 "https://rmsharp.github.io/pedkindraw/"),
+           "NEWS.md")
 })
