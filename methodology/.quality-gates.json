@@ -40,8 +40,8 @@
       "unit": "warnings",
       "command": "Rscript -e 'Sys.setenv(NOT_CRAN = \"true\"); df <- as.data.frame(testthat::test_local(\".\", reporter = \"silent\", stop_on_failure = FALSE)); cat(\"test warnings:\", sum(df$warning), \"\\n\")'",
       "extract": "test warnings: (\\d+)",
-      "timeout_seconds": 300,
-      "why": "S8 (2026-11-11): nprcgenekeepr's tests run on testthat edition 2 and pedkindraw's on edition 3 (plan R29, Learning 10), so a copied test can pass yet leak a warning (S8: hasBothParents() warns twice, edition 3's expect_warning() catches one). Measured 0 after expecting both."
+      "timeout_seconds": 1200,
+      "why": "S8 (2026-11-11): nprcgenekeepr's tests run on testthat edition 2 and pedkindraw's on edition 3 (plan R29, Learning 10), so a copied test can pass yet leak a warning (S8: hasBothParents() warns twice, edition 3's expect_warning() catches one). Measured 0 after expecting both. S95 (CRAN plan Phase 17l, backlog 'The suite gate's time limit is below the suite's time'): timeout_seconds 300 -> 1200, since the full suite now takes 10.2-10.7 min (S92-S93: 105 files) and read UNMEASURED at 300 s in every close-out since S50; the threshold stays 0."
     },
     {
       "name": "tests-no-saved-expect-condition",
