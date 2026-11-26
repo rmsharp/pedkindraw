@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-26 · [BL-Phase 17] S95 push 2: the close-out to GitHub, no CI run
+- **Change:** pushed `39b5da9..67d084e` (close-out 1 and 2), documents only, each commit carrying the skip marker, so no workflow ran; the package's CI was read at `39b5da9` (push 1).
+- **Commit/PR:** the push of `67d084e`; close-out 2b (this entry) · **Session:** S95 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `67d084e`; `gh run list` showed no new R-CMD-check run.
+
 ### 2026-11-26 · [BL-Phase 17] S95 push 1: the 17l work to GitHub, CI run and one rerun
 - **Change:** pushed `a2c3de5..39b5da9` (claim, RED, GREEN 1-8, the gate limit, checkout v5, REFACTOR); R-CMD-check run 45760561429: Ubuntu release, macOS and Ubuntu oldrel-1 Status OK; Windows failed once at `test_savePedigreeDiagram.R:184` (one SVG legend's ink 45.4% different, bound 0.5%) and its rerun (attempt 2, job 139718873297) read Status OK; Ubuntu devel failed building S4Vectors as on every run since S49; pkgdown run 45760561433 OK.
 - **Commit/PR:** the push of `39b5da9`; the Windows job's rerun · **Session:** S95 · **Model:** Claude Opus 5.5 · **Verified:** each job's log through the jobs API: `PASS 17045`, `17056`, `17045`, `17044` (S93's plus 13); the Node 20 notice on no job.
