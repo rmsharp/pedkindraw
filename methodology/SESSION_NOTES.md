@@ -9,102 +9,90 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17k DONE (S33-S94); the gap
-phases G1-G17 DONE (S42-S77); the crash item DONE (S89, R163); the Windows CI hang DONE (S91, R164). **17k DONE
-(S94):** win-builder R-devel's second reading, of the package as at `23a6186` (R165's cut: a CRAN check runs 21
-of the 105 test files), read **321 s**, 219 s under 540 s (`ZYsFyCy5GM5z`). The CI Chrome start item (backlog
-`:214`, R166) stays open, READY for a diagnostic.
-**Next, by Mark's pick:** Phase 17l, static hygiene and noSuggests (`docs/planning/cran-submission-plan.md:970`;
-Mark's pick at S94's close, "Phase 17l next (Recommended)", over the Chrome diagnostic first).
-**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed at close-out 2 (documents
-only, no CI run). CI on master is red as S93 left it: REFACTOR `b0b9556`, run 45737321097: Windows and Ubuntu
-oldrel-1 OK; Ubuntu release failed both attempts on a hung Chrome start (`:214`), macOS both on the app's click
-test (`:238`); Ubuntu devel S4Vectors (`:197`).
-**The orient picker:** "(Recommended)" on 17l (Mark's pick; it holds the three small items `:159`, `:171`, `:197`);
-the Chrome diagnostic `:214` beside it; the rest grouped and named (34 items, lines unchanged by S94, `grep -n
-'^- \[ \]' methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:260`, `:277`, `:293`, and
-the small ones `:178`, `:187`, `:243`, `:249`, `:265`, `:312`; NEEDS DECISION `:64`, `:72`, `:81`, `:94`, `:228`,
-`:238`, `:283`, `:303`; "Waiting on Mark" `:122`, `:129`, `:136`, `:148`. Not offered: `:105` (a session Mark
-starts in nprcgenekeepr), `:20` and `:116` (BLOCKED). Name every item (memory "Picker sets: name items, include all").
-**Session boundary:** one session (17l), then close out.
-**Priority:** HIGH (17l-17q).
+**Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17l DONE (S33-S95); the gap
+phases G1-G17 DONE (S42-S77); the crash item DONE (S89, R163); the Windows CI hang DONE (S91, R164). **17l DONE
+(S95, R167):** US spelling throughout with `inst/WORDLIST` (the spelling check 0 words, gate
+`spelling-words-zero`), `Depends: R (>= 4.5.0)`, the methods' DOI in `Description` with a package `.aspell` list,
+and every test that calls a package a check without suggested packages hides guarded (that check passes in CRAN
+mode and with the full suite, under a scratch R home); the suite gate's limit 1200 s (7/7 pass, measured).
+**Next, by Mark's pick:** Phase 17m, the release text and the version (`docs/planning/cran-submission-plan.md:1016`;
+Mark's pick at S95's close, "Phase 17m next (Recommended)", over the S4Vectors decision and the Chrome diagnostic).
+**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed `39b5da9` (run
+45760561429): Ubuntu release, macOS, Ubuntu oldrel-1 OK; Windows OK at its rerun (attempt 1 failed one SVG-legend
+comparison, backlog `:206`); Ubuntu devel fails building S4Vectors (`:178`, a decision due before 17n); pkgdown OK.
+Close-out pushed after it (documents only, no CI run).
+**The orient picker:** "(Recommended)" on 17m (Mark's pick); beside it the S4Vectors decision `:178` and the Chrome
+diagnostic `:192`; the rest grouped and named (33 items, `grep -n '^- \[ \]' methodology/BACKLOG.md`): READY `:11`,
+`:29`, `:39`, `:45`, `:55`, `:88`, `:159`, `:168`, `:186`, `:225`, `:231`, `:245`, `:250`, `:262`, `:278`, `:297`;
+NEEDS DECISION `:64`, `:72`, `:81`, `:94`, `:206`, `:220`, `:268`, `:288`; "Waiting on Mark" `:122`, `:129`, `:136`,
+`:148`. Not offered: `:105` (a session Mark starts in nprcgenekeepr), `:20` and `:116` (BLOCKED). Name every item.
+**Session boundary:** one session (17m), then close out.
+**Priority:** HIGH (17m-17q).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**; S94 changed no code); nprcgenekeepr's
-   log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from
-   nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
-   (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); S92's copies, `git -C ../nprcgenekeepr log --oneline
-   3e06730c5..HEAD -- tests/testthat/test_slowTestFiles.R tests/testthat/helper-slowTestFiles.R tests/testthat.R`:
-   nothing; nprcgenekeepr at `3e06730c5`, tree clean.
-2. **17l** (`docs/planning/cran-submission-plan.md:970`): read it, D7 (`:1041`: `Language` and spelling, the
-   `Depends: R` floor, a DOI in `Description`; a pre-RED picker), sections 2.2 (`:192`) and 2.3 (`:210`), dragon 6
-   (`:1096`), and the three backlog items it holds: `:159` (the suite gate's 300 s, `methodology/.quality-gates.json:43`;
-   raising `timeout_seconds` is not a loosening, the threshold stays 0: its own commit, the reason in the ledger),
-   `:171` (a stale pedkindraw 0.0.1 in renv's library), `:197` (CI notices). **Sections 2.2 and 2.3 are S32's counts
-   (2026-11-16), now out of date** (measured S94): `Suggests` is 13 packages, not 9 (`DESCRIPTION:27`: callr,
-   chromote, jsonlite, kinship2, knitr, mockery, Pedixplorer, pkgload, ps, rmarkdown, shiny, testthat, withr);
-   `mockery::` is in 7 test files (2.3: 4), `withr::` in 51 (2.3: up to 19); there is no `inst/WORDLIST`; spelling
-   2.3.2 is in R's own library, not renv's. Re-measure each before the picker (Learnings 8, 17). 17l's DONE names
-   kinship2, Pedixplorer, mockery and withr absent; which packages CRAN's no-Suggests check leaves out (testthat is
-   a Suggests too) is not measured here: find it in CRAN's documentation before the picker. R's own library holds
-   most Suggests, so the check needs a scratch library with only the Imports and their dependencies (dragon 6).
-   DONE also asks `quality_ratchet.py --run` "5/5" (the manifest now has 6 gates) with the suite gate measured, and
-   CI 5/5 or each failure explained (master is red: `:214`, `:238`, Ubuntu devel). Strict TDD where tests change.
-3. **The Chrome diagnostic (`:214`), if Mark picks it instead:** its design is in the item and in S93's notes
-   (`git show 6cea441:methodology/SESSION_NOTES.md`, What You Must Do 4): a `ci:` push modelled on `89e28f1`, Chrome
-   started with processx to keep a hung start's handle and stderr.
-4. **CI on every push:** five jobs. Ubuntu devel fails loading S4Vectors before pedkindraw is checked
-   (`methodology/BACKLOG.md:197`). Known flakes: `:214` (a hung start, Ubuntu release), `:228` (a blank PDF,
-   Windows once), `:238` (the app's click, macOS). Rerun a failed job once (`gh run rerun <run> --job <id>`, after
-   the run ends; `--failed` reruns Ubuntu devel too). `gh run watch` can return before a rerun's job starts: wait on
-   the job (`gh api repos/rmsharp/pedkindraw/actions/jobs/<id> -q .status`). Read each job's lines through the jobs
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**; S95 changed help text in 4 copied
+   files, no code); nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline
+   baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed
+   's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); nprcgenekeepr at
+   `3e06730c5`, tree clean.
+2. **17m** (`docs/planning/cran-submission-plan.md:1016`): read it, D8 (`:1076`: 0.1.0 or 1.0.0; the API contract's
+   section 6, "0.x until the first CRAN release", and its deprecation rule after it; a pre-RED picker with what
+   each version means for users), section 2.5 (`:282`; the version is `0.0.1` in `DESCRIPTION:4` and `NEWS.md:1`;
+   `README.Rmd:42` says "not on CRAN yet"). Work: NEWS's heading `# pedkindraw 0.0.1 (development version)` becomes
+   the release's, each NEWS item checked against the code as 17b-17l left it (NEWS.md has `## Requirements` and `##
+   Documentation` sections since S95); the README's install section (no CRAN link before acceptance: a 404 the
+   incoming check reports, dragon 10), rendered twice the same; `?pedkindraw` if it names the version. DONE:
+   `R CMD check --as-cran` R16's NOTE only; `git grep` of the old version finds none outside history. Measure each
+   choice before its picker (Learning 17); TDD where tests change (a version test, if any).
+3. **CI on every push:** five jobs. Ubuntu devel fails building S4Vectors (`:178`). Known flakes: `:192` (a hung
+   Chrome start, Ubuntu release), `:206` (a blank PDF, and S95's SVG-legend fault, Windows), `:220` (the app's click,
+   macOS). Rerun a failed job once (`gh run rerun <run> --job <id>`, after the run ends), then list the rerun's jobs
+   by attempt (`gh api repos/rmsharp/pedkindraw/actions/runs/<run>/attempts/2/jobs`); read logs through the jobs
    API (`curl -sSL -H "Authorization: Bearer $(gh auth token)"
-   https://api.github.com/repos/rmsharp/pedkindraw/actions/jobs/<id>/logs`); after a rerun, list jobs by attempt
-   (`.../runs/<run>/attempts/<n>/jobs`).
-5. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
+   https://api.github.com/repos/rmsharp/pedkindraw/actions/jobs/<id>/logs`). S95 waited with a Monitor loop on
+   `gh run view <run> --json status,jobs` (45 s) instead of checking by hand.
+4. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
-- **A plan's section can be older than its phase:** 17l rests on sections 2.2 and 2.3, measured at S32; three of
-  their counts no longer hold (What You Must Do 2). And a plan's "record here and in section 2.1" can be half done:
-  S92 recorded the first 17k reading in 17k only; S94 added both readings to section 2.1.
-- **renv installs** (if 17l adds spelling or another package): the dated repository before `renv::install()`,
-  `rebuild = TRUE` for each package and its dependencies by name, `renv::snapshot(dev = TRUE)`, then the gate
-  `renv-lock-no-latest-repository` (Learning 3).
-- **A CRAN check runs only 21 test files** (R165): a new test file runs on CRAN until it is listed in
-  `tests/testthat/slowTestFiles.txt`; `test_slowTestFilesExports.R` fails if no CRAN-run file's own code calls an
-  export. **The 540 s is the email's check time** (R85); 17o's reading still gates the submission (R86); win-builder's
-  speed against this Mac changes (dragon 36: 1.9×, 3.3×, 3.2× for the whole check).
-- **The Chrome start hang** (`:214`, dragon 37): a CI-flake fix is a guess until CI runs it; chromote 0.5.1's port
-  wait is `chromote.timeout`, not `default_timeout`; S93's two slow-Chrome tests take about 27 s and skip on Windows
-  and CRAN.
-- **Picker labels:** "(Recommended)" on the orient picker follows Mark's recorded next pick and its condition
-  (memory); measure outside material against pedkindraw before answering it.
+- **The README render needs pedkindraw installed, and none is** (S95 removed renv's stale 0.0.1, backlog item done):
+  `README.Rmd:57` calls `library(pedkindraw)`. Install the tree into a scratch library (`R CMD INSTALL
+  --library=<scratch> .`) and render with it first on `R_LIBS`; installing into renv's library brings back the
+  stale-copy problem. `tools/makeReadmePicture.R` says the same for the picture.
+- **The check without suggested packages** (17n repeats it): only under a scratch R home whose `library` holds R's
+  29 standard packages (17l's DONE paragraph has the recipe; S95's is in the scratchpad, gone next session);
+  `_R_CHECK_DEPENDS_ONLY_` alone hides nothing in this Mac's R library of 256 packages (dragon 6). testthat skips a
+  missing package only on CRAN (dragon 38), so run it with `NOT_CRAN=true` too.
+- **CRAN's DESCRIPTION spell check** (dragon 39) reads `.aspell/`, not `inst/WORDLIST`; a new word in `Description`
+  needs `.aspell/pedkindraw.rds` too (`.aspell/defaults.R` says how). A version or NEWS change does not touch it.
+- **zsh does not split an unquoted variable into words:** `perl script.pl $FILES` passed one long name (S95's first
+  dry run converted nothing); pipe the list through `xargs`.
+- **A CRAN check runs only 21 test files** (R165): a new test file runs on CRAN until listed in
+  `tests/testthat/slowTestFiles.txt` (S95 listed `test_suggestsGuarded.R`); the 540 s is the email's check time
+  (R85); 17o's reading still gates the submission (R86).
+- **roxygen builds `?pedkindraw`'s description from `DESCRIPTION`:** a `Description` or version change needs
+  `roxygen2::roxygenise()` and `man/pedkindraw-package.Rd` in the same commit (S95's GREEN 7 missed it; GREEN 8).
 - **Carried:** on Windows, R CMD check waits for every process the tests start (dragon 35); Rscript started inside
-  `tests/testthat/` does not load the project's renv (run from the root); a test that repeats rows stops at the
-  repeated-id check; `rm -rf "$VAR/..."` is refused (write `"${VAR:?}"`); backslashes in `Rscript -e` (put such
-  code in a file); a shell command file must hold its file list on one line; one-off scripts as `Rscript
-  --no-init-file` with `R_LIBS` and `R_LIBS_USER` set to renv's library; the 5-file cap splits commits; the
-  ratchet's suite gate times out at 300 s (the full suite takes 10-11 min; `:159`); `testthat::test_file()` can
-  leave `tests/testthat/_problems/` (never commit it); `CLAUDE.md` is over its budget (learnings go to the plans'
-  dragons; the cran plan's section 9 now ends at 37); `methodology/HANDOFFS.md` 234,522 B at S94's claim, 27,622 B
-  under the 262,144 B size where a default read returns nothing; at 1.8-2.7 KB a receipt, about 10-14 more
-  sessions (backlog `:303`, NEEDS DECISION): keep the receipt short; lint forbids `options()` (`nolint` with the reason,
-  as `.startChrome()` has: withr is only in Suggests); a push whose head commit's message holds the skip marker
-  anywhere runs no workflow (write it in words).
+  `tests/testthat/` does not load the project's renv (run from the root); `rm -rf "$VAR/..."` is refused (write
+  `"${VAR:?}"`; S95 met it once); backslashes in `Rscript -e` (put such code in a file); one-off scripts as `Rscript
+  --no-init-file` with `R_LIBS` and `R_LIBS_USER` set to renv's library; the 5-file cap splits commits;
+  `testthat::test_file()` can leave `tests/testthat/_problems/` (never commit it); `CLAUDE.md` is over its budget
+  (learnings go to the plans' dragons; the cran plan's section 9 now ends at 39); `methodology/HANDOFFS.md` about
+  238 KB after S95, about 24 KB under the 262,144 B size where a default read returns nothing, about 9-12 more
+  receipts (backlog `:288`, NEEDS DECISION): keep the receipt short; a push whose head commit's message holds the
+  skip marker anywhere runs no workflow (write it in words); the full suite takes 10.6 min, the ratchet's run 11.7.
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
-- 17l: `docs/planning/cran-submission-plan.md:970` (17l), `:1041` (D7), `:192` (2.2, spelling, `Depends`), `:210`
-  (2.3, the Suggests in the tests), `:289` (section 3), `:1096` (dragon 6); `DESCRIPTION:15` (`Depends`), `:27`
-  (`Suggests`), `:43` (`Language`); `methodology/.quality-gates.json:37` (the suite gate, its limit `:43`);
-  `methodology/BACKLOG.md:159`, `:171`, `:197`; `.github/workflows/R-CMD-check.yaml:27`-`:33` (the matrix), `:110`
-  (the check step).
-- 17k (DONE): `docs/planning/cran-submission-plan.md:880` (17k), `:949` (S94's reading), `:169` (section 2.1's 17k
-  table), `:1224` (dragon 36); R165 `docs/planning/standalone-pedigree-package-plan.md:346`; the cut
-  `tests/testthat.R:4`-`:8`, `tests/testthat/slowTestFiles.txt`.
-- The Chrome item (`:214`): `R/savePedigreeDiagram.R:367` (`.startChrome()`), `:290` (`.renderPicture()`, every CI
-  start failure), `:392` (`.closeChrome()`); R166 `docs/planning/standalone-pedigree-package-plan.md:347`; dragon 37
-  `docs/planning/cran-submission-plan.md:1235`.
+- 17m: `docs/planning/cran-submission-plan.md:1016` (17m), `:1076` (D8), `:282` (2.5, the version's places);
+  `DESCRIPTION:4` (`Version`); `NEWS.md:1` (the heading), `NEWS.md` `## Requirements` and `## Documentation` (S95);
+  `README.Rmd:40`-`:44` (Installation), `:57` (`library(pedkindraw)`); `R/pedkindraw-package.R:70` (`"_PACKAGE"`);
+  `docs/planning/pedkindraw-api-contract.md:303` section 6 (versions and deprecation).
+- 17l (DONE): `docs/planning/cran-submission-plan.md:981` (17l and its DONE paragraph), dragons 38-39 (`:1281`,
+  `:1288`); R167 `docs/planning/standalone-pedigree-package-plan.md:349`; `tests/testthat/helper-suggestsGuarded.R`,
+  `tests/testthat/test_suggestsGuarded.R`; `inst/WORDLIST`; `.aspell/defaults.R`; `methodology/.quality-gates.json`
+  (gate `spelling-words-zero`; the suite gate's `timeout_seconds` 1200).
+- CI: `.github/workflows/R-CMD-check.yaml:28`-`:33` (the matrix), `:40` (`actions/checkout@v5`), `:78`
+  (setup-chrome's `install-dependencies`, backlog `:186`).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -119,13 +107,58 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 95 Did
-**Deliverable:** Phase 17l (`docs/planning/cran-submission-plan.md:970`): static hygiene and noSuggests (spelling,
-`Depends: R`, the DOI, `.Rbuildignore`; the depends-only check without kinship2, Pedixplorer, mockery and withr;
-backlog `:159`, `:171`, `:197`). Strict TDD where tests change. (IN PROGRESS)
-**Started:** 2026-11-25 21:59 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 17l (Recommended)"
-(orient picker).
-**Status:** Session claimed. Re-measuring sections 2.2 and 2.3 before D7's picker.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+**Deliverable:** Phase 17l (`docs/planning/cran-submission-plan.md:981`), strict TDD where tests changed. DONE: the
+spelling check 0 words, the check without suggested packages passing in CRAN mode and with the full suite, the
+suite gate measured (7/7), the stale renv copy gone, CI's four jobs that reach pedkindraw OK (R167).
+**Started:** 2026-11-25 21:59 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option):**
+"Phase 17l (Recommended)" (orient); D7 and noSuggests: "US spelling throughout", "R 4.5.0, oldest tested", "Add the
+sentence", "Guards plus a guard test"; "Yes, proceed to RED"; "Yes, proceed to GREEN"; mid-GREEN, after CRAN's
+DESCRIPTION spell check was found to flag the sentence's 4 words, "Sentence + package word list"; "Yes, REFACTOR";
+at the close, "Phase 17m next (Recommended)".
+**Commits:** claim `4f35b4c`; RED `41e45a9`; GREEN `dd3a13f` (messages, guards), `c51b6eb`, `314a291`, `01f6b9f`,
+`ee4d680`, `8194375` (US spelling, the word list), `1366d59` (`DESCRIPTION`, `.aspell/`, `.Rbuildignore`), `6a68b99`
+(`?pedkindraw`); the suite gate's limit `84c8587`; checkout v5 `51b1361`; REFACTOR `39b5da9` (pushed: run
+45760561429, its Windows job rerun once); close-out 1 `310b74a`; close-out 2 (these notes, the receipt, the ledger),
+pushed after it. Not a commit: renv's stale pedkindraw 0.0.1 removed.
+**Measured:** R 4.6.2's own check code (`tools:::setRlibs()`: a depends-only check keeps Depends, Imports, the
+VignetteBuilder and testthat with their hard dependencies, and hides nothing in R's own library) and CRAN's README
+for noSuggests; a scratch R home of R's 29 standard packages: CRAN mode passed at the claim (testthat skips a missing
+package only on CRAN), the full suite failed 4 (mockery); the spelling check 97 words (13 British forms; en-GB 80);
+the imports' R floors (Matrix 1.7-6 needs 4.4); the DOI by Crossref and doi.org's handle API; CRAN's DESCRIPTION
+spell check emulated with hunspell (0 words, 4 with the sentence, 0 with `.aspell/`); drafts of RED and a
+prototype GREEN in a scratch copy before each gate.
+**Verified:** RED: the guard test 1 failure naming 12 blocks, `test_conditionColors.R` 3 errors, WARN 0. GREEN:
+the full suite (`NOT_CRAN=true`) 106 files, 1,213 tests, 17,281 expectations, 0 failed, 0 skipped, WARN 0 (10.6
+min); lint 0; roxygen unchanged; `R CMD check --as-cran` Status 1 NOTE (R16's), CRAN-mode `PASS 2695`, 98.5 s;
+depends-only Status 1 NOTE, `[ FAIL 0 | WARN 0 | SKIP 57 | PASS 1343 ]` and, full suite, `[ FAIL 0 | WARN 0 | SKIP
+211 | PASS 11780 ]`; spelling 0; drift 91 / 23 / 0. REFACTOR: `hiddenSuggests()` identical, the file 0 failed.
+quality_ratchet 7/7 at `39b5da9`. CI: Ubuntu release `PASS 17045`, macOS `17056`, oldrel-1 `17045`, Windows `17044`
+at its rerun (attempt 1 failed `test_savePedigreeDiagram.R:184`, one SVG legend); Ubuntu devel S4Vectors.
+
+#### Session 94 Handoff Evaluation (by Session 95)
+**Score: 9/10.** ROI high: Orient, 17l's reading and the first measurements ran from its notes.
+- **What helped:** Mark's pick under the orient picker's "(Recommended)"; What You Must Do 1 (91 / 23 / 0, the 4
+  commits, `3e06730c5`, each exact); 2's reading list with every line where it said (`:970`, `:1041`, `:192`, `:210`,
+  `:1096`), its warning that sections 2.2 and 2.3 were S32's counts with the fresh ones (13 Suggests, mockery in 7
+  files, withr in 51, no `inst/WORDLIST`), and "find what CRAN's no-Suggests check leaves out before the picker",
+  which led to R's own `setRlibs()`; the gotchas on `"${VAR:?}"` and backslashes in `Rscript -e` (each met once).
+- **What was missing:** that nprcgenekeepr had solved the same check (S1098: a scratch R home, not a scratch
+  library); and that the `:197` item also held the only record of Ubuntu devel's S4Vectors failure, so removing it
+  needed a new item. Each found in minutes.
+- **What was wrong:** "the check needs a scratch library with only the Imports and their dependencies (dragon 6)":
+  a library cannot hide R's own, which still holds 11 of the 13 Suggests; it takes a scratch R home.
+- **ROI:** high.
+
+**Self-assessment: 8/10.**
++ Orient in full, the claim before any work; every picker option measured first (R's check code, both checks
+  without suggested packages, en-GB, the floors, the DOI), the drafts and a prototype GREEN run before each gate;
+  the 12-versus-4 count told to Mark at the RED gate; the DOI sentence's spell-check cost found before it was
+  committed and put to Mark with a measured fix; every DONE item verified here and on CI.
+- **The DOI picker's recommended option did not say what the sentence costs in CRAN's spell check** (found mid-GREEN;
+  one more picker); and the noSuggests picker said "4 guards" before the static count, which read 12.
+- **Slips not reaching Mark:** an `rm -rf` on unguarded variables (refused by the safety check; the handoff warned);
+  zsh's word splitting emptied the first conversion dry run; a backslash in `Rscript -e`; GREEN 7 left
+  `man/pedkindraw-package.Rd` behind (caught by roxygen at verification, GREEN 8).
 
 ### What Session 94 Did
 **Deliverable:** finish Phase 17k (`docs/planning/cran-submission-plan.md:880`; R85, R86). DONE: win-builder
@@ -228,55 +261,3 @@ S4Vectors. REFACTOR: the same suite counts (10.5 min) and check (29.2 s, 116 s);
 - **Slips not reaching Mark:** the trace's first run lost 20 of 21 files to a line break in a command file (rerun);
   one command wrote a stray file outside the scratchpad (removed); a `gh run watch` returned before the rerun's job
   started (watched the job instead).
-
-### What Session 92 Did
-**Deliverable:** finish Phase 17k (`docs/planning/cran-submission-plan.md:857`; R85, R86). IN PROGRESS: the first
-reading read 980 s, so the cut was made (R165) and the second reading uploaded; it waits in win-builder's queue.
-**Started:** 2026-11-25 14:45 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option):** "It
-came: finish 17k" (he pasted the email); after stopping the first cut picker to ask whether a r-package-devel report
-(secr's Windows check time) helped, "Only what each export needs" and "One list, copied from nprcgenekeepr"; "Yes,
-proceed to RED"; "Yes, proceed to GREEN"; "Skip REFACTOR"; "Claude uploads it now". He also asked how to watch
-win-builder's queue (answered: the FTP listing, What You Must Do 2).
-**Commits:** claim `a657d3a`; the reading `80c3d86`; R165 `9985f92`; RED `e2cd4a2`; GREEN `23a6186` (pushed with the
-others: run 45705867740); close-out 1 `f23d00c` (the plans, roadmap, dragon 36, the backlog item `:214`); close-out 2 (these
-notes, the receipt, the ledger), pushed after it; close-out 2b (the push entry).
-**Measured:** the folder's logs (check 980 s: tests 788.1 s elapsed for 784.2 s CPU; R code 34 s, vignettes 30 s,
-PDF 29 s, examples 16 s, incoming 10 s; installation 18 s); the same check here (295 s, tests 219 s); the CRAN-mode
-tests file by file here (103 files, 197.0 s); the secr report's two points (installation 18 s; pedkindraw loads in
-0.39 s here, `Matrix` 0.37 s of it); a trace of the 38 exports over the CRAN-mode tests (0 failures; 19 files by
-"own code calls it", 12 by any call); the drafts in a scratch copy (RED: 7 + 1 failing for the planned reasons) and
-a GREEN prototype (passing; the export check failing with the 12-file list); the upload tarball against the checked
-one (the same files but the `Packaged:` line and two vignettes' widget ids).
-**Verified:** RED: `test_slowTestFiles.R` 7 of 7 failing, `test_slowTestFilesExports.R` 1 of 3 (the reader's 2
-pass), WARN 0, lint 0. GREEN: the two files 25 expectations, 0 failed; the full suite (`NOT_CRAN=true`) 105 files,
-1,202 tests, 17,258 expectations, 0 failed, 0 skipped, WARN 0 (10.2 min); `R CMD check --as-cran` Status 1 NOTE
-(R16's), CRAN-mode tests `[ FAIL 0 | WARN 0 | SKIP 24 | PASS 2695 ]` 29.8 s, the check 100 s; lint 0; roxygen
-unchanged; CI run 45705867740: Windows OK `PASS 17031`, macOS OK `PASS 17033`, Ubuntu oldrel-1 OK `PASS 17022`
-(each S91's plus 25), Ubuntu release failed once on Chrome's start-up (`test_savePedigreeDiagram.R:426`), rerun:
-OK `PASS 17022`; Ubuntu devel S4Vectors. Uploaded 21:36:03 UTC (226). Drift 91 / 23 / 0. quality_ratchet at close-out
-(the receipt).
-
-#### Session 91 Handoff Evaluation (by Session 92)
-**Score: 9/10.** ROI high: Orient and the reading ran from its notes, and every cited line was where it said.
-- **What helped:** the ACTIVE TASK's "ask Mark first whether the email has come" with the pick's condition (the
-  orient picker followed it); What You Must Do 1 (91 / 23 / 0, the 4 commits, `3e06730c5`, each exact); 3, the
-  folder's files by name (`00check.log`, `examples_and_tests/tests/testthat.Rout`), the 17k lines `:857`-`:883`,
-  dragon 8, section 2.1, and "over: a picker on the test files to skip on CRAN, re-measured, in TDD", which was the
-  session's path; the gotcha "the 540 s is the email's check time".
-- **What was missing:** where nprcgenekeepr's slow-file list and its S1095 trace rule are (D6 named the list; found
-  in nprcgenekeepr's plan section 3.5 in minutes).
-- **What was wrong:** "S91 found it gone from the R-devel queue at 16:49 UTC ... so its check ran then": the check
-  began at 18:03:51 UTC (`00check.log`), 1 h 14 min after it left the list. Leaving the list is not the start.
-- **ROI:** high.
-
-**Self-assessment: 7/10.**
-+ Orient in full, the claim before any work; the reading recorded and committed before any picker; every option
-  measured first (per file and per step here, the trace two ways, the secr report's points against pedkindraw);
-  the drafts and a GREEN prototype run in scratch before each gate, so each gate stated counts; RED's failures read
-  for their reasons; the export check shown to fail on the looser list; the upload tarball proved against the one
-  checked; CI read job by job, the start-up failure matched to the gotcha and rerun.
-- **The deliverable is not done:** the second reading waits in win-builder's queue, outside the session's reach.
-- **Slips:** the first cut picker called 25 Nov a slow day from two readings ("a 1.7x spread"); Mark stopped it to
-  bring the secr report, which pointed the other way (his load 3.8x), and the picker was rewritten (one more
-  picker). Not reaching Mark: the first timing script called testthat functions that are not exported, and one run
-  started in `tests/testthat/` without renv (two reruns).

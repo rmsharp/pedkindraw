@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S95
 date: 2026-11-25
-status: pending
-active_task: Phase 17l (cran plan :970): static hygiene and noSuggests. Claimed.
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17l DONE (R167): US spelling and inst/WORDLIST (spelling 0), Depends R >= 4.5.0, the DOI with .aspell/, every test calling a hidden suggested package guarded. Next by Mark's pick: Phase 17m.
+what_was_done: claim 4f35b4c; RED 41e45a9; GREEN dd3a13f..6a68b99 (8 commits); gate limit 84c8587; checkout v5 51b1361; REFACTOR 39b5da9 (pushed, run 45760561429); close-out 1 310b74a; renv's stale copy removed.
+next_steps: Phase 17m (cran plan :1016): D8's picker (:1076, 0.1.0 or 1.0.0), NEWS's release heading and items checked, README install section rendered twice the same; SESSION_NOTES.md What You Must Do 2.
+key_files: docs/planning/cran-submission-plan.md:1016, :1076, :282, :981; DESCRIPTION:4; NEWS.md:1; README.Rmd:40, :57; R/pedkindraw-package.R:70.
+gotchas: the README render needs pedkindraw installed and none is (a scratch library, not renv's); Ubuntu devel's S4Vectors (BACKLOG :178) is due before 17n; HANDOFFS.md about 24 KB under the 262,144 B hard limit (:288).
+runtime_smoke: quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1
+changelog_ref: CHANGELOG.md "2026-11-26 · [BL-Phase 17] S95: Phase 17l DONE" and its action entries
 commit: pending
 ```
 ```handoff
