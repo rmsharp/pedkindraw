@@ -5,7 +5,9 @@
 ## docs/planning/pedigree-app-plan.md sections 4, 7 and 11; .appViewsPed() and
 ## .appClickNode() pedkindraw S75, Phase G17b, R150, section 12; .appCsv()'s
 ## name and .appSetFile() pedkindraw S76, Phase G17c, R151, section 13;
-## .startPedigreeApp()'s childEnv pedkindraw S77, Phase G17d, R152, section 14).
+## .startPedigreeApp()'s childEnv pedkindraw S77, Phase G17d, R152, section 14;
+## .appSeparated() pedkindraw S97, backlog item "What 17m's check of NEWS found
+## outside NEWS").
 ## Not copied from nprcgenekeepr.
 ##
 ## The server tests run shiny::testServer() on small typed pedigrees with no
@@ -76,6 +78,15 @@
   }
   data.frame(name = name, size = file.size(path),
              type = "text/csv", datapath = path, stringsAsFactors = FALSE)
+}
+
+#' A pedigree's lines with its values separated by `sep`, an empty cell for
+#' NA, for .appCsv()'s `lines` (pedkindraw S97: a file separated by tabs or
+#' semicolons)
+.appSeparated <- function(ped, sep) {
+  cells <- as.matrix(ped)
+  cells[is.na(cells)] <- ""
+  c(paste(names(ped), collapse = sep), apply(cells, 1L, paste, collapse = sep))
 }
 
 #' Choose the four columns in a testServer() session

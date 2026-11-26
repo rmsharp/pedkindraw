@@ -10,6 +10,13 @@
 ## the call it is about, as test_savePedigreeDiagramDocs.R does (S72); its
 ## helpers are in helper-docs.R. The documents are read from the source tree,
 ## and each test skips without it.
+##
+## pedkindraw S97 (backlog item "What 17m's check of NEWS found outside NEWS";
+## Mark's picks "Read all three" and "More words; name the rest"): the help
+## and NEWS say the app reads a file separated by commas, tabs or semicolons,
+## and which words its deceased mark reads; NEWS no longer says the mark reads
+## any other value as not deceased. Spaces and line breaks are made one space
+## before a phrase is looked for.
 
 test_that("the README says runPedigreeApp() draws a file in an app and saves
            the drawing and the animals, in the source and in the page made
@@ -71,4 +78,22 @@ test_that("NEWS says the app saves the drawing and the animals", {
                       700L),
            c("SVG", "PDF", "PNG", "CSV", "Animals tab", "chromote"),
            "NEWS.md")
+})
+
+test_that("the help of runPedigreeApp() and NEWS say the app reads a file whose
+           values are separated by commas, tabs or semicolons, and which words
+           its deceased mark reads (S97)", {
+  text <- gsub("\\s+", " ", .docsText("man", "runPedigreeApp.Rd"))
+  .docsSay(.docsAfter(text, "\\strong{Open}", 300L),
+           "commas, tabs or semicolons", "runPedigreeApp.Rd's Open")
+  .docsSay(.docsAfter(text, "deceased reads", 400L),
+           c("died", "shipped", "unknown"), "runPedigreeApp.Rd's marks")
+  news <- gsub("\\s+", " ", .docsText("NEWS.md"))
+  .docsSay(.docsAfter(news, "`runPedigreeApp(ped, port, launch.browser)`",
+                      300L),
+           "commas, tabs or semicolons", "NEWS.md's app item")
+  marks <- .docsAfter(news, "chooses what it draws", 1600L)
+  .docsSay(marks, c("died", "shipped", "unknown"), "NEWS.md's marks item")
+  expect_false(grepl("reads any other value as not deceased", marks,
+                     fixed = TRUE))
 })

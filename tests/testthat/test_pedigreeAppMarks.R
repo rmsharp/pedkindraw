@@ -20,6 +20,17 @@
 ## own names there (expected, withGen, fresh, script, expectedTwins) are none
 ## of the server's. The Chrome test gives the page its files through
 ## DevTools, as a file dialog does (section 13.3).
+##
+## pedkindraw S97 (backlog item "What 17m's check of NEWS found outside NEWS";
+## Mark's picks "More words; name the rest" and "Read all three"): the
+## deceased mark reads nprcgenekeepr's status words without its numbers (its
+## convertStatusCodes(): died and D as deceased; alive, A, shipped, sold, sale,
+## S, unknown and U as living), and a status or deceased column holding any
+## other value is left out and named as the other marks are, so a file coded
+## 1 = alive, 2 = deceased (nprcgenekeepr's numbers) is no longer drawn with
+## its animals' status reversed; and a tab-separated pedigree and twins file
+## are drawn as the same files separated by commas. Each value was computed
+## first on a scratch prototype (Learning 18).
 
 ## The five animals every mark is drawn on: o3 is a miscarriage.
 .appMarksFive <- function() {
@@ -177,6 +188,16 @@ test_that(".appDeceased() reads DECEASED, deceased, dead and the yes-words as
   expect_identical(.appDeceased(c(1, 0)), c("DECEASED", NA_character_))
 })
 
+test_that(".appDeceased() reads nprcgenekeepr's status words too: died and D
+           as deceased; alive, A, shipped, sold, sale, S, unknown and U as not
+           deceased (S97)", {
+  expect_identical(.appDeceased(c("died", "D", " d ", "DIED")),
+                   rep("DECEASED", 4L))
+  living <- c("ALIVE", "a", "Shipped", "sold", "SALE", "s", "Unknown", "u",
+              "no", "F", "0", NA, "")
+  expect_identical(.appDeceased(living), rep(NA_character_, length(living)))
+})
+
 test_that(".appReadTwins() finds id1, id2 and code in any case, reads
            Pedixplorer's codes, and says what is missing or empty (R151)", {
   rows <- data.frame(ID_1 = c("a", "b", "c", "d", "e", "f", "g", "h"),
@@ -281,6 +302,39 @@ test_that(".appDrawnPedigree() makes the drawing's data frame: the four
                               affected_sick = c(0, NA, 1, 0)))
   expect_identical(drawn$thresholds, c(affected_glucose = ">= 126"))
   expect_identical(drawn$notes, character(0L))
+})
+
+test_that("a status or deceased column holding a value the app cannot read as
+           deceased or living is not drawn, and the page names it and the
+           values, as for the other marks (S97)", {
+  rows <- data.frame(id = c("s1", "d1", "o1", "o2"),
+                     sire = c(NA, NA, "s1", "s1"), dam = c(NA, NA, "d1", "d1"),
+                     sex = c("M", "F", "F", "M"),
+                     status = c("1", "2", "1", "4"),
+                     Deceased = c("dead", "alive", "D", "shipped"))
+  four <- data.frame(id = rows$id, sire = rows$sire, dam = rows$dam,
+                     sex = rows$sex)
+  drawn <- .appDrawnPedigree(rows, character(0L), character(0L),
+                             c(status = "status"))
+  expect_identical(drawn$ped, four)
+  expect_identical(drawn$notes, paste0(
+    "The column 'status' is not drawn: the app cannot read '2', '4' as ",
+    "deceased or living."))
+  drawn <- .appDrawnPedigree(rows, character(0L), character(0L),
+                             c(status = "Deceased"))
+  expect_identical(drawn$ped$status, c("DECEASED", NA, "DECEASED", NA))
+  expect_identical(drawn$notes, character(0L))
+  numbers <- four
+  numbers$status <- c(0, 1, 2, NA)
+  expect_identical(
+    .appDrawnPedigree(numbers, character(0L), character(0L),
+                      c(status = "status"))$notes,
+    "The column 'status' is not drawn: the app cannot read 2 as deceased or living.")
+  numbers$status <- factor(c("x", "alive", "x", NA))
+  expect_identical(
+    .appDrawnPedigree(numbers, character(0L), character(0L),
+                      c(status = "status"))$notes,
+    "The column 'status' is not drawn: the app cannot read 'x' as deceased or living.")
 })
 
 test_that(".appDraw() passes the lines, the twins and the cut-offs on, and
@@ -503,6 +557,27 @@ test_that("a twins file with kinship2's code numbers is read and drawn, a
     session$setInputs(twins = emptyFile)
     expect_identical(output$twinsProblem,
                      "The twins file has an empty cell in row 1.")
+    expect_identical(output$drawn, "13 animals drawn")
+  })
+})
+
+test_that("the app draws a tab-separated pedigree and twins file as it draws
+           the same files separated by commas (S97)", {
+  skip_if_not_installed("shiny")
+  ped <- .appViewsPed()
+  pedFile <- .appCsv(lines = .appSeparated(ped, "\t"), name = "pedigree.txt")
+  twinsFile <- .appCsv(lines = c("id1\tid2\tcode", "o1\to2\t2"),
+                       name = "twins.txt")
+  .appTestServer(.pedigreeAppServer(), {
+    session$setInputs(file = pedFile)
+    .setAppColumns(session)
+    session$setInputs(twins = twinsFile)
+    expectedTwins <- data.frame(id1 = "o1", id2 = "o2", code = "DZ twin")
+    expect_identical(output$twinsNote, "1 twin pair read from twins.txt.")
+    expect_identical(output$twinsProblem, "")
+    expect_identical(output$problem, "")
+    expect_identical(drawing()$layout, suppressMessages(
+      makePedigreeMatingLayout(.withAppGen(ped), twinRelations = expectedTwins)))
     expect_identical(output$drawn, "13 animals drawn")
   })
 })
