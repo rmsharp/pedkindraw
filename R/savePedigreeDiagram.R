@@ -5,7 +5,8 @@
 ## rulings R142 and R143, docs/planning/picture-files-plan.md section 11; the
 ## .pdf and .png files and dpi: pedkindraw S71, Phase G16b, ruling R144,
 ## section 12; .closeChrome(): pedkindraw S91, backlog item "A Windows job
-## that does not end after its tests finish").
+## that does not end after its tests finish"; .startChrome(): pedkindraw S93,
+## backlog item "A CI job fails now and then while Chrome starts").
 
 #' Save a pedigree diagram as a picture file
 #'
@@ -172,19 +173,9 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
                                        package = "pedkindraw"),
                            warn = FALSE), collapse = "\n")
 
-  # A fresh Chrome on a slow or busy machine can take longer than chromote's
-  # 10 s to open its port (3 of 80 CI jobs, pedkindraw S93): the start waits
-  # 60 s, as the commands below do, and the caller's option is put back after.
-  # nolint start: undesirable_function_linter. withr is only in Suggests, and
-  # `finally` puts the option back whether the start succeeds or fails.
-  startup <- options(chromote.timeout = max(getOption("chromote.timeout",
-                                                      10.0), 60.0))
-  chrome <- tryCatch(chromote::Chromote$new(), finally = options(startup))
-  # nolint end
+  chrome <- .startChrome()
   # The browser closes first, then the folder it reads goes.
   on.exit(.closeChrome(chrome), add = TRUE, after = FALSE)
-  # Chrome's answers to the commands below get 60 s too, not chromote's 10 s.
-  chrome$default_timeout <- max(chrome$default_timeout, 60.0)
   # A window with room round the widget.
   windowWidth <- max(1200L, as.integer(.widgetPixels(diagram$width, 960.0)) +
                        200L)
@@ -307,19 +298,10 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
   picture <- file.path(folder, "picture.svg")
   writeLines(recorded$svg, picture, useBytes = TRUE)
 
-  # The start waits 60 s, as .recordDiagramSvg()'s does.
-  # nolint start: undesirable_function_linter. As in .recordDiagramSvg().
-  startup <- options(chromote.timeout = max(getOption("chromote.timeout",
-                                                      10.0), 60.0))
-  chrome <- tryCatch(
-    chromote::Chromote$new(browser = chromote::Chrome$new(
-      args = unique(c(chromote::default_chrome_args(), "--disable-lcd-text"))
-    )),
-    finally = options(startup)
+  chrome <- .startChrome(
+    unique(c(chromote::default_chrome_args(), "--disable-lcd-text"))
   )
-  # nolint end
   on.exit(.closeChrome(chrome), add = TRUE, after = FALSE)
-  chrome$default_timeout <- max(chrome$default_timeout, 60.0)
   session <- chromote::ChromoteSession$new(
     parent = chrome, width = as.integer(ceiling(pageWidth * 96.0)) + 50L,
     height = as.integer(ceiling(pageHeight * 96.0)) + 50L
@@ -369,6 +351,31 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
 .stopTooSlow <- function(timeout) {
   stop("savePedigreeDiagram() did not finish drawing within ",
        format(timeout), " seconds.", call. = FALSE)
+}
+
+#' Start a headless Chrome and connect to it, waiting 60 seconds
+#'
+#' A fresh Chrome on a slow or busy machine can take longer than chromote's
+#' 10 seconds to open its port (3 of 80 CI jobs, pedkindraw S93), so the start
+#' waits 60 seconds, and the caller's \code{chromote.timeout} is put back
+#' whether the start succeeds or fails. Chrome's answers to later commands get
+#' 60 seconds too, not chromote's 10.
+#'
+#' @param args the arguments Chrome starts with; chromote's own by default.
+#' @return A \code{chromote::Chromote}, connected.
+#' @noRd
+.startChrome <- function(args = chromote::get_chrome_args()) {
+  # nolint start: undesirable_function_linter. withr is only in Suggests, and
+  # `finally` puts the option back whether the start succeeds or fails.
+  startup <- options(chromote.timeout = max(getOption("chromote.timeout",
+                                                      10.0), 60.0))
+  chrome <- tryCatch(
+    chromote::Chromote$new(browser = chromote::Chrome$new(args = args)),
+    finally = options(startup)
+  )
+  # nolint end
+  chrome$default_timeout <- max(chrome$default_timeout, 60.0)
+  chrome
 }
 
 #' Close a browser and end each of its processes the close leaves running
