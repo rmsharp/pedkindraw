@@ -118,6 +118,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 95 Did
+**Deliverable:** Phase 17l (`docs/planning/cran-submission-plan.md:970`): static hygiene and noSuggests (spelling,
+`Depends: R`, the DOI, `.Rbuildignore`; the depends-only check without kinship2, Pedixplorer, mockery and withr;
+backlog `:159`, `:171`, `:197`). Strict TDD where tests change. (IN PROGRESS)
+**Started:** 2026-11-25 21:59 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Phase 17l (Recommended)"
+(orient picker).
+**Status:** Session claimed. Re-measuring sections 2.2 and 2.3 before D7's picker.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the rest.
+
 ### What Session 94 Did
 **Deliverable:** finish Phase 17k (`docs/planning/cran-submission-plan.md:880`; R85, R86). DONE: win-builder
 R-devel's second reading, of the package as at `23a6186` (R165's cut), read 321 s, 219 s under 540 s.

@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-25 · [BL-Phase 17] S95 (in progress): Phase 17l, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S95's stub), `methodology/HANDOFFS.md` (S95's `status: pending` receipt) and this entry. The deliverable is Phase 17l (`docs/planning/cran-submission-plan.md:970`): static hygiene and noSuggests. Mark's pick: "Phase 17l (Recommended)" (orient picker).
+- **Commit/PR:** the S95 claim commit · **Session:** S95 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits, nothing on S92's copies, a clean tree; ledgers current at `a2c3de5`, no ghost session, no merge; S94's receipt complete, its gate citation equal to the results file `534fea217641`; 34 backlog items at the handoff's lines; dashboard 93/100; 0 open issues).
+
 ### 2026-11-25 · [BL-Phase 17] S94 push: the session to GitHub, no CI run
 - **Change:** pushed `f3f2009..ac0c009` (claim, the reading, close-out 2), documents only, each commit carrying the skip marker, so no workflow ran; CI on master stays as S93's REFACTOR left it (run 45737321097).
 - **Commit/PR:** the push of `ac0c009`; close-out 2b (this entry) · **Session:** S94 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `ac0c009`; `gh run list` showed no new run.
