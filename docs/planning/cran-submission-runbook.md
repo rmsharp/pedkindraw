@@ -8,11 +8,16 @@ uploads (17a and 17k sent tarballs to win-builder by FTP) and ruling R173.
 receives the tarball or reads the repository on GitHub; nothing here submits to CRAN. **Do not submit from this
 runbook: that is Phase 17p, and it is Mark's.**
 
-**Who runs them (D9):** to be decided at the end of S101.
+**Who runs them (D9, R173):** Claude, with Mark's approval in the session (his pick, "Claude starts them now").
+**Already started, S101, 2026-11-27:** win-builder's three uploads (19:11:52-19:12:05 UTC) and R-hub run
+46055056615; the macOS builder answered 502 to both uploads (19:12:25 and 19:58:51 UTC), so it
+has not run. Run them again only if a shipped path changes (step 1), which needs a new
+tarball too; then each section below is the recipe.
 
 **How long.** win-builder usually answers within an hour of a check starting, but its R-devel queue held a pedkindraw
 upload 3 h 47 min before the check began (S90-S92, dragon 34); its result folder is removed about 72 hours after the
-check. R-hub took about 33 minutes for nprcgenekeepr (its July run). The macOS builder's results appear at its link,
+check. R-hub took about 33 minutes for nprcgenekeepr (its July run) and 45 minutes for pedkindraw (S101: its Intel macOS
+job built 116 packages from source; Linux and Windows took about 4 minutes each). The macOS builder's results appear at its link,
 in about 5-10 minutes by nprcgenekeepr's runbook; pedkindraw has not used it before.
 
 Run everything from the repository root.

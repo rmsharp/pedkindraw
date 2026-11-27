@@ -287,6 +287,29 @@ issues).*
 
 ## Later
 
+- [ ] **The CI guard test cannot see R-hub's install step** (READY after the release, Effort S; found S101, R173,
+      the CRAN plan's dragon 46) -- `tests/testthat/test_ciWorkflows.R`'s `.jobsStartingRenv()` looks for
+      `r-lib/actions/setup-r-dependencies` in a workflow's text, and `.github/workflows/rhub.yaml` (S101) reaches
+      that action only inside `r-hub/actions/setup-deps`, so the guard flags 0 of its jobs (measured S101 on R-hub's
+      published file, whose jobs run that action in the checked-out folder, where `.Rprofile` starts renv; read from
+      R-hub's actions, not run). S101 turned renv off in both of its check jobs by hand. Extend the guard,
+      test-first, to every action known to call r-lib's (R-hub's `setup-deps` at least). After 17q: `tests/` is in
+      the tarball, so a change before then reopens 17n.
+
+- [ ] **Copy nprcgenekeepr's README badges that fit pedkindraw** (READY at 17q, after acceptance, Effort S; Mark's
+      request, S101; the CRAN plan's D10) -- **Hold off: make no change to `README.Rmd`, `README.md` or any badge until
+      CRAN has accepted pedkindraw (Mark, S101).** nprcgenekeepr's `README.Rmd:16`-`:25` shows 10 badges; pedkindraw's
+      `README.Rmd:18` shows 1 of them, R-CMD-check. The other 9, read S101: **after acceptance only** (dragon 10: a CRAN
+      link before then is a 404 the incoming check reports): CRAN version (r-pkg.org), CRAN downloads per month and in
+      total (cranlogs), and the DOI CRAN gives a published package (`10.32614/CRAN.package.pedkindraw`); **usable as
+      they are:** Project Status "Active" (repostatus.org), lifecycle "stable", License MIT (it links `LICENSE`, which
+      ships in the tarball); **need setup first:** REUSE status (nprcgenekeepr has `LICENSES/` and `REUSE.toml`;
+      pedkindraw has neither) and Codecov (nprcgenekeepr's `test-coverage.yaml` uploads covr's results with a
+      `CODECOV_TOKEN` secret; pedkindraw has no such workflow, and covr takes about 13 min here). `README.Rmd` and the
+      `README.md` rendered from it ship in the tarball, so a badge added before acceptance reopens 17n and needs a new
+      tarball and new uploads; 17q re-renders the README with D10's badges anyway. Whether to set up REUSE and Codecov
+      is Mark's call at 17q.
+
 - [ ] **`findPedigreeNumber()`'s speed** (READY, Effort M) -- 12.9 s for 100,000 animals, close to the square of the
       size (contract section 7); new work after the copy (contract section 10 item 5). A faster version here is a
       divergence from nprcgenekeepr: a `DIVERGENCE.md` row marked "at the switch" (R98, R101). S82's record
