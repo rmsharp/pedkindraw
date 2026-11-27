@@ -25,6 +25,9 @@ jobs:
       group: pkgdown
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # renv stays off on CI, so the job installs one Bioconductor release
+      # (backlog :178, S98; R-CMD-check.yaml says why).
+      RENV_CONFIG_AUTOLOADER_ENABLED: "false"
     permissions:
       contents: write
     steps:

@@ -35,6 +35,14 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      # renv stays off on CI (backlog :178, S98; test_ciWorkflows.R): started
+      # by .Rprofile, it added renv.lock's repositories, Bioconductor 3.23
+      # among them, beside the release pak picks for the job's R version, and
+      # the R-devel job got S4Vectors 0.50.3 (3.23) with BiocGenerics 0.60.0
+      # (3.24), which do not build together. Off, each job installs current
+      # CRAN packages and one Bioconductor release, as CRAN's machines do.
+      # nprcgenekeepr's copy of this workflow starts renv.
+      RENV_CONFIG_AUTOLOADER_ENABLED: "false"
 
     steps:
       - uses: actions/checkout@v5
