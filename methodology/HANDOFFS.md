@@ -202,6 +202,14 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S98
+date: 2026-11-26
+status: pending
+active_task: backlog :178, Ubuntu devel's CI job fails building S4Vectors before pedkindraw is checked. Claimed.
+what_was_done: pending
+commit: pending
+```
+```handoff
 session: S97
 date: 2026-11-26
 status: complete

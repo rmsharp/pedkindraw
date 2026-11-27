@@ -98,6 +98,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 98 Did
+**Deliverable:** backlog `:178` (`methodology/BACKLOG.md`), Ubuntu devel's CI job failing to build S4Vectors before
+pedkindraw is checked: measure, Mark's decision, then the change if any, strict TDD where tests change (IN PROGRESS)
+**Started:** 2026-11-26 20:16 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** ":178 S4Vectors (Recommended)"
+(orient).
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 97 Did
 **Deliverable:** backlog `:186`, what 17m's check of NEWS found outside NEWS (five findings), strict TDD. DONE (R169):
 the app reads files separated by commas, tabs or semicolons; its deceased mark reads nprcgenekeepr's status words and

@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-26 · [BL-Phase 17] S98 (in progress): backlog :178, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S98's stub), `methodology/HANDOFFS.md` (S98's `status: pending` receipt) and this entry. The deliverable is backlog `:178`: Ubuntu devel's CI job fails building S4Vectors (which Pedixplorer, a suggested package, imports) before pedkindraw is checked; 17n needs CI 5/5. Mark's pick: ":178 S4Vectors (Recommended)" (orient picker).
+- **Commit/PR:** the S98 claim commit · **Session:** S98 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `9cb1bb2`, no ghost session, no merge; S97's receipt complete, its gate citation equal to the results file `dd3bb45ce615`; 34 backlog items; dashboard 93/100; 0 open issues).
+
 ### 2026-11-26 · [BL-Phase 17] S97 push 2: the close-out to GitHub, no CI run
 - **Change:** pushed `b464c80..cf67720` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `b464c80` (push 1).
 - **Commit/PR:** the push of `cf67720`; close-out 2b (this entry) · **Session:** S97 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `cf67720`; `gh run list` showed no new run.
