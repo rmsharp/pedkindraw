@@ -93,6 +93,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 103 Did
+**Deliverable:** Hand testing before the CRAN upload (Mark's request, ahead of 17p): Mark runs the package in RStudio,
+Claude reads the output with him, and the session records what was run and what was found (IN PROGRESS). No package
+file changes: the tree is frozen (R172); a problem found becomes a backlog item, and a fix its own strict-TDD session.
+**Started:** 2026-11-27 14:37 CST · **Model:** Claude Opus 5.5 · **Mark's words:** "prior to the upload I want to do
+some manaual testing with your help." He started the suite in RStudio (his `pedkindraw.Rproj`) during Orient.
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 102 Did
 **Deliverable:** Phase 17o's second session: the cross-platform results folded into `cran-comments.md` and the plan.
 DONE, so 17o DONE (R174).

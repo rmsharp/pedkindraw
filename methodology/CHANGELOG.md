@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-27 · [BL-Phase 17] S103 (in progress): hand testing before the CRAN upload, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S103's stub), `methodology/HANDOFFS.md` (S103's `status: pending` receipt) and this entry. The deliverable is Mark's request before he uploads (17p): hand testing of the package in RStudio, Claude reading the output with him and recording what was run and found. No package file changes (frozen, R172).
+- **Commit/PR:** the S103 claim commit · **Session:** S103 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `2b5e04c`, no ghost session, no merge; S102's receipt complete; quality-gate citation matches the results file; the tarball's SHA-256 `abb78758…22dcfe3c`).
+
 ### 2026-11-27 · [BL-Phase 17] S102 push: the session to GitHub, no CI run
 - **Change:** pushed `1ea0d0a..cfeec37` (claim, work, close-out 1 and 2), documents only (`cran-comments.md` is in `.Rbuildignore`; no shipped path changed), the head commit carrying the skip marker, so no workflow ran.
 - **Commit/PR:** the push of `cfeec37`; close-out 2b (this entry) · **Session:** S102 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `cfeec37`; `gh run list` showed no new run.
