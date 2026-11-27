@@ -233,12 +233,14 @@ test_that("a file separated by tabs or by semicolons is read as the same file
 test_that("the separator is the one that splits the first line into the most
            columns, outside quotes, commas on a tie; a file of one column is
            said '1 column' (S97)", {
-  quoted <- .appCsv(lines = c('id,sire,dam,sex,"weight; kg; at; one; year"',
+  ## Five semicolons in the quoted name: counted without the quotes, the
+  ## semicolons would split the line into 6 columns and the commas into 5.
+  name <- "weight; kg; at; one; year; mean"
+  quoted <- .appCsv(lines = c(sprintf('id,sire,dam,sex,"%s"', name),
                               's1,,,M,"10;5"', 'd1,,,F,"9\t2"'))
   read <- .readAppFile(quoted$datapath)
   expect_identical(read$problem, "")
-  expect_identical(names(read$data), c("id", "sire", "dam", "sex",
-                                       "weight; kg; at; one; year"))
+  expect_identical(names(read$data), c("id", "sire", "dam", "sex", name))
   expect_identical(read$data[[5L]], c("10;5", "9\t2"))
   tie <- .readAppFile(.appCsv(lines = c("a,b;c", "1,2;3"))$datapath)
   expect_identical(tie$data, data.frame(a = "1", "b;c" = "2;3",
