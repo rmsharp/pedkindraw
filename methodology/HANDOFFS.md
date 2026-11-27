@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S101
 date: 2026-11-27
-status: pending
-active_task: Phase 17o, session one (docs/planning/cran-submission-plan.md section 17o): cran-comments.md and the run list, then D9. Claimed.
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17o's first session DONE (R173): cran-comments.md (nprcgenekeepr up front; 7 marked lines), docs/planning/cran-submission-runbook.md (with the record), .github/workflows/rhub.yaml (renv off); runs started on Mark's D9 pick: win-builder x3 (FTP 226), R-hub run 46055056615 Status OK x3; the macOS builder 502, not run. Next: 17o's second session (fold in).
+what_was_done: claim 47c5f86; work 1d04ba0 (pushed, skip marker); close-out 1 3de6881; backlog :299 (README badges, hold off until CRAN accepts: Mark).
+next_steps: fold in the results with Mark's three win-builder emails (runbook section 7; SESSION_NOTES.md What You Must Do 2); retry the macOS builder; grep 0 on the markers; HARD STOP before 17p.
+key_files: cran-comments.md:31, :42, :58, :63; docs/planning/cran-submission-plan.md:1111, :1116, :1441; docs/planning/standalone-pedigree-package-plan.md:358; .github/workflows/rhub.yaml:68; methodology/BACKLOG.md:299.
+gotchas: never rebuild the tarball (pedkindraw_1.0.0.tar.gz, abb78758...22dcfe3c); cran-comments.md is pasted whole (R173); never re-upload because no email came; no README change before acceptance; a shipped-path change reopens 17n.
+runtime_smoke: R-hub's new workflow ran: Status OK on linux, windows, macos, renv off in each. quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1
+changelog_ref: CHANGELOG.md "2026-11-27 · [BL-Phase 17] S101: Phase 17o's first session DONE" and its action entries
 commit: pending
 ```
 ```handoff

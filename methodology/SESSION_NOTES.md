@@ -9,93 +9,88 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 ---
 
 ## ACTIVE TASK
-**Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17m DONE (S33-S96); the gap
-phases G1-G17 DONE (S42-S77); S97-S99's items DONE (R169-R171). **Phase 17n, the full local gate, DONE (S100,
-R172):** every item of its list met on the package files as at `2456253` (17n's DONE paragraph,
-`docs/planning/cran-submission-plan.md:1062`), Bioconductor 3.24 checked beside the lock's 3.23, the speed page's
-times unmoved (A/B of every changed timed cell), and `R/savePedigreeDiagram.R:410`-`:411` (`.closeChrome()`'s kill
-and wait, reached only on Windows) recorded as covr's 8th and 9th unrun statements by Mark's pick. **The tree is
-frozen:** after 17n only 17o's results and 17q's version move change it; any change to `R/`, `tests/`, `vignettes/`,
-`man/`, `inst/` or `DESCRIPTION` reopens 17n (its suite, checks and coverage again, about 1.5 h).
-**Next:** Phase 17o, session one (`docs/planning/cran-submission-plan.md:1104`): write `cran-comments.md` (a new
-submission; the R CMD check results; the test environments; no reverse dependencies; R16's NOTE explained; marked
-lines for the runs' results) and the run list (win-builder R-devel, R-release, R-oldrelease; the macOS builder;
-R-hub), then D9 (who runs them: Mark, or Claude with his approval) as a picker. Session two folds in the results.
-**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed `93d7819` (close-out 1,
-without the skip marker): R-CMD-check run 46043167677 5/5 Status OK, macOS at its rerun (`:239`'s flake,
-two pushes in a row); pkgdown and the site's deployment success. Close-out 2 pushed after it (the skip marker, no
-run).
-**The orient picker:** "(Recommended)" on 17o (the plan's order; no pick of Mark's names a task before it). The
-lock move `:178` no longer has to come first (`renv.lock` is outside the tarball), but it changes every local run
-after the freeze: name it on its own. The rest grouped and named (34 items, `grep -n '^- \[ \]'
-methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:159`, `:168`, `:193`, `:246`, `:253`,
-`:259`, `:273`, `:278`, `:290`, `:306`, `:325`; READY by Mark's pick `:199` (the Chrome diagnostic); NEEDS DECISION
-`:64`, `:72`, `:81`, `:94`, `:221`, `:239`, `:296`, `:316`; "Waiting on Mark" `:122`, `:129`, `:136`, `:148`. Not
-offered: `:105` (a session Mark starts in nprcgenekeepr, R101's exception), `:20` and `:116` (BLOCKED). Say that a
-code item now reopens 17n. Name every item.
-**Session boundary:** one session, then close out.
+**Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17n DONE (S33-S100); the gap
+phases G1-G17 DONE (S42-S77). **The tree is frozen since 17n (R172):** a change to any path the tarball ships
+(`docs/planning/cran-submission-runbook.md` section 1 lists the 11) reopens 17n (about 1.5 h) and needs a new
+tarball. **Phase 17o's first session DONE (S101, R173):** `cran-comments.md` (a new submission; nprcgenekeepr named
+up front; 7 lines "to be run before submission", one per line), the run list `docs/planning/cran-submission-runbook.md`
+(the record, R173, is there, not in `cran-comments.md`), `.github/workflows/rhub.yaml` (R-hub's file, renv off), and
+the runs started by Claude on Mark's D9 pick: win-builder R-devel, R-release and R-oldrelease by FTP at
+19:11:52-19:12:05 UTC 2026-11-27 (reply 226 each; R-devel's queue held 2 before it); R-hub run 46055056615
+(linux, windows, macos on `1d04ba0`): `Status: OK` on all three (linux and macos `[ FAIL 0 | WARN 0 | SKIP 26 |
+PASS 2697 ]`, windows `SKIP 27 | PASS 2696`), renv off in each; the macOS builder answered 502 to both uploads
+(19:12:25 and 19:58:51 UTC): not started.
+**Next:** Phase 17o's second session, the results folded in (runbook section 7; plan 17o's DONE list,
+`docs/planning/cran-submission-plan.md:1111`). It needs Mark's three win-builder emails, pasted or forwarded: each
+holds its result folder's link, which win-builder removes about 72 hours after the check (by about 2026-11-30).
+**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's); `pedkindraw_1.0.0.tar.gz` at
+the root is git-ignored (17n's checked tarball, SHA-256 `abb78758…22dcfe3c`). Pushed through close-out 2 with the
+skip marker each time: no R-CMD-check or pkgdown run since S100's (run 46043167677, 5/5 Status OK).
+**The orient picker:** "(Recommended)" on "fold in the 17o results" when Mark has the emails (no other task of his
+comes first: 17p, the submission, waits on it). If no email has come, say so and offer to wait (close). The rest
+grouped and named (36 items, `grep -n '^- \[ \]' methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`,
+`:88`, `:159`, `:168`, `:178` (the lock move, outside the tarball), `:193`, `:246`, `:253`, `:259`, `:273`, `:278`,
+`:313`, `:329`, `:348`; READY by Mark's pick `:199`; READY after the release `:290` (the R-hub guard) and `:299`
+(README badges: Mark, S101, "hold off" until CRAN accepts); NEEDS DECISION `:64`, `:72`, `:81`, `:94`, `:221`, `:239`,
+`:319`, `:339`; "Waiting on Mark" `:122`, `:129`, `:136`, `:148`. Not offered: `:105` (an nprcgenekeepr session,
+R101), `:20` and `:116` (BLOCKED). A code item reopens 17n and the uploads already made. Name every item.
+**Session boundary:** one session, then close out. **HARD STOP before 17p** (Mark submits).
 **Priority:** HIGH (17o-17q are the submission).
 
 ### What You Must Do
 1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**); nprcgenekeepr's log on the copied files,
    `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R
    tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`,
-   `392dd347e`, `471589138`) and nprcgenekeepr at `3e06730c5`, unless Mark has run `:105` or `:246` there (then
-   `DIVERGENCE.md` as R101 says, and say whether it touches the frozen tree).
-2. **17o** (if picked): read `docs/planning/cran-submission-plan.md:1104` (17o), 17n's DONE paragraph (`:1062`, the
-   check results and environments `cran-comments.md` states), section 4.4 (the nprcgenekeepr notes "for the record,
-   not for CRAN"), dragons 8, 10, 11 and 34-36 (win-builder's spread and queue; URLs; pkgdown skips
-   `cran-comments.md`), and D9 in section 7. `.Rbuildignore` already lists `cran-comments.md` and `CRAN-SUBMISSION`
-   (17l). Build the tarball to upload from a `git archive` of the frozen commit (17n's recipe), and give its SHA-256.
-   nprcgenekeepr's `cran-comments.md` (3,328 B, in the clone) is a model, but it opens "This is an update from 2.0.0":
-   pedkindraw's is a new submission.
-3. **CI on every push:** five jobs, without renv (current CRAN; Bioconductor by pak). Known flakes: `:199` (a hung
-   Chrome start), `:221` (a blank PDF), `:239` (the app's click, macOS). Rerun a failed job once (`gh run rerun <run>
-   --job <id>`, after the run ends), list the rerun's jobs by attempt (`gh api
-   repos/rmsharp/pedkindraw/actions/runs/<run>/attempts/2/jobs`), read logs through the jobs API; watch with a
-   Monitor loop on `gh run view <run> --json status,conclusion,jobs` (45 s).
-4. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
+   `392dd347e`, `471589138`), nprcgenekeepr at `3e06730c5`. Both are 17o's DONE items: record them in its paragraph.
+2. **Fold in** (runbook sections 6-7). Runbook section 1 first (the shipped paths unchanged since `2456253`; use an
+   array in zsh). For each win-builder email: open its link; read `00check.log`, the NOTE's text (spelling words IBD,
+   Schaid, Sinnwell, Therneau mean CRAN did not read `.aspell/`, dragon 39; a URL, dragon 10) and
+   `examples_and_tests/tests/testthat.Rout`'s `proc.time()` (elapsed against CPU, dragon 8); R-devel's "Check time in
+   seconds" (540 or less, R85; 17k read 321). R-hub: `gh run view 46055056615 --json jobs`, each job's log through the
+   jobs API (`Status:`, the tests' line). The macOS builder (not started: 502 twice at S101): runbook section 4 again;
+   if it still answers 502, a picker: drop its line (nprcgenekeepr's S1105 precedent) or keep trying. R-hub's results
+   are already in 17o's paragraph (`:1116`): copy them into `cran-comments.md:63`. Fill the 7 lines (`grep -c 'to be
+   run before submission' cran-comments.md` prints 0), keep every marker's replacement on its own lines, correct the
+   NOTE list to what win-builder printed; 17o's DONE paragraph (after S101's, `:1116`, before 17p's heading `:1146`),
+   the status line (`:39`), the standalone plan's Next (`:118`), ROADMAP (`:120`).
+3. Any ERROR, WARNING or other NOTE: stop, no submission; a fix is a strict-TDD session that reopens 17n.
+4. **CI on every push:** five jobs, without renv. Known flakes `:199`, `:221`, `:239` (rerun a failed job once, `gh
+   run rerun <run> --job <id>` after the run ends; list the rerun's jobs by attempt through the jobs API).
 
 ### Gotchas
-- **Say why before running a check the plan does not list** (S100: Mark asked "Why are we testing on bioconductor?"
-  mid-run). The 3.24 check's reason: Pedixplorer is a Bioconductor package in Suggests; CRAN's R 4.6 machines
-  install Bioconductor's current release (3.24), the lock has 3.23, and no CI job pairs R 4.6 with 3.24.
-- **The depends-only check needs a scratch R home** (dragons 6 and 45): inside renv `.Library` is renv's sandbox (29
-  packages), while R's own library holds 257. Recipe (S100): symlinks to `R.home()`'s entries but `bin` and
-  `library`; `bin/` links but a copy of `bin/R` with `R_HOME_DIR` set to the scratch home; `library/` links to the 29
-  standard packages; run `<home>/bin/R CMD check` with `RHOME=<home>` (or a check's `Rscript` children start R's own
-  home), `_R_CHECK_DEPENDS_ONLY_=true`, `R_LIBS`/`R_LIBS_USER` renv's library, `RENV_PROJECT` unset.
-- **Local runs use renv's lock (Bioconductor 3.23); CI does not.** The 3.24 check (17n's DONE paragraph): the three
-  tarballs from `https://bioconductor.org/packages/3.24/bioc/src/contrib/`, MD5 against its `PACKAGES`, `R CMD
-  INSTALL -l <lib>` BiocGenerics first, then Rscript from the project's folder with `R_LIBS`/`R_LIBS_USER`
-  `<lib>:<renv library>`, `RENV_CONFIG_AUTOLOADER_ENABLED=false`, `RENV_PROJECT` unset. About 10 minutes in all.
-- **The timing harness's `timeOne.R` and `drawOne.R` time one cell of any build** (`PKD_LIB=<lib> Rscript
-  tools/timing/timeOne.R <case> <pedigree>`); `runTiming.R`/`runDrawingTiming.R` refuse a build that is not the
-  checked-out commit. S100's A/B script is in its scratchpad (gone with it); the timing plan's amendments say how.
-- **covr's `tally_coverage(by = "expression")` has no `line` column** (`first_line`); `as.data.frame()` of a coverage
-  object needs covr's namespace loaded.
-- **R CMD check's URL check can read a transient 503 from GitHub** (S99): rerun before calling the NOTE new.
-- **chromote prints "[warning] got non-close frame while closing"** after a Chrome test; testthat counts no warning.
-- **Carried:** write `"${VAR:?}"` in `rm -rf`; zsh does not split an unquoted variable (use an array); a calling
-  handler set outside `try()` never runs; the README render needs a scratch install; the skip marker (a push whose
-  head commit holds it runs no workflow); a Chrome test can error under load, so run the full suite alone; CRAN's
-  DESCRIPTION spell check reads `.aspell/` (dragon 39); a CRAN check runs only 21 test files (list a new test file in
-  `tests/testthat/slowTestFiles.txt`); Rscript inside `tests/testthat/` loads no renv; backslashes in `Rscript -e`
-  go in a file; the 5-file cap splits commits; never commit `tests/testthat/_problems/`; `CLAUDE.md` is over its
-  budget (learnings go to the cran plan's dragons, now 45); `methodology/HANDOFFS.md` 245,081 B after S100,
-  about 17 KB under the 262,144 B size where a default read returns nothing (backlog `:316`): keep the
-  receipt short; the full suite takes about 10 min, the ratchet's run about 12, covr about 13.
+- **`cran-comments.md` is pasted whole into CRAN's comment box (R173):** nothing for the record goes in it; the
+  record is the runbook's last section and 17o's paragraph.
+- **Do not rebuild the tarball:** a rebuild stamps a new time and a new SHA-256; every upload so far, and 17p, use
+  `pedkindraw_1.0.0.tar.gz` (`abb78758…22dcfe3c`). If it is lost, the runbook's section 2 says what then.
+- **win-builder gives no receipt:** never upload again because no email has come (runbook section 3); `curl -sS
+  ftp://win-builder.r-project.org/R-devel/` lists what still waits (UTC+1).
+- **R-hub runs in CRAN mode:** R-hub's `setup-r` sets `NOT_CRAN` false, so 21 test files; its check step
+  (`check-r-package`) turns the incoming check off, so `Status: OK`, not R16's NOTE (read S101 in r-hub/actions and
+  r-lib/actions).
+- **A guard that greps workflow text cannot see inside a composite action** (dragon 46; backlog `:290`, after the
+  release).
+- **A push with `.github/` or a root `.md` changed starts both workflows** unless the head commit has the skip
+  marker (dragon 12); pkgdown's current source skips `cran-comments.md` (its `no_render` list), as dragon 11 says.
+- **No README change until CRAN accepts pedkindraw** (Mark, S101; backlog `:299`): the README ships in the tarball.
+- **R-hub's Intel macOS job takes about 45 min** (pak builds 116 of 119 packages from source); Linux and Windows
+  about 4. The macOS builder answered 502 all through S101 (19:12-19:59 UTC), its form page 200.
+- **Say why before running a check the plan does not list** (S100).
+- **Carried:** `"${VAR:?}"` in `rm -rf`; zsh does not split an unquoted variable (S101 got a vacuous empty `git
+  diff` from it); the depends-only check's scratch R home needs `RHOME` (dragon 45); local runs use renv's lock
+  (Bioconductor 3.23), CI does not; a Chrome test can error under load, so run the full suite alone; backslashes in
+  `Rscript -e` go in a file; the 5-file cap splits commits; `CLAUDE.md` is over its budget (learnings go to the cran
+  plan's dragons, now 46); `methodology/HANDOFFS.md` 246,687 B after S101, under the 262,144 B size where a default
+  read returns nothing (backlog `:339`): keep the receipt short; the ratchet's run takes about 12 min.
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
-- S100 (DONE): 17n's DONE paragraph `docs/planning/cran-submission-plan.md:1062`; dragon 45 `:1403`; the timing
-  plan's 17n list `docs/planning/pedkindraw-timing-plan.md:687`; R172
-  `docs/planning/standalone-pedigree-package-plan.md:357`; the two Windows-only lines `R/savePedigreeDiagram.R:410`
-  (in `.closeChrome()`, `:401`), their test `tests/testthat/test_savePedigreeDiagram.R:627`.
-- 17o: `docs/planning/cran-submission-plan.md:1104`; D9 in section 7; dragon 11 `:1214` (pkgdown and
-  `cran-comments.md`); `.Rbuildignore`.
-- `:178`, the lock move: `methodology/BACKLOG.md:178`; `renv.lock` (its `Bioconductor` block, 3.23);
-  `renv/settings.json` (`bioconductor.version: null`).
+- `cran-comments.md`: the 7 markers `:31` (win-builder's spelling step), `:42` (the R-devel check time), `:58`-`:61`
+  (win-builder x3, the macOS builder), `:63` (R-hub); nprcgenekeepr's paragraph `:9`-`:17`.
+- `docs/planning/cran-submission-runbook.md`: sections 1-8 and the record (the tarball's proof; nprcgenekeepr's state).
+- `.github/workflows/rhub.yaml:68`, `:96` (renv off; header `:1`-`:9`).
+- The CRAN plan: 17o `docs/planning/cran-submission-plan.md:1105`, its DONE list `:1111`, S101's paragraph `:1116`;
+  section 4.4 `:381`; D9 `:1176`; D10 `:1177` (points to backlog `:299`); dragon 46 `:1441`. R173
+  `docs/planning/standalone-pedigree-package-plan.md:358`. Backlog `:290` (R-hub guard), `:299` (README badges).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -110,13 +105,50 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 101 Did
-**Deliverable:** Phase 17o, session one (`docs/planning/cran-submission-plan.md` section 17o): `cran-comments.md`
-and the run list, then D9 (who runs them) as a picker (IN PROGRESS)
-**Started:** 2026-11-27 12:51 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17o: CRAN notes and run list
-(Recommended)" (orient).
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+**Deliverable:** Phase 17o's first session: `cran-comments.md`, the run list, R-hub's workflow, and D9. DONE
+(R173); the runs started by Claude on Mark's D9 pick (the macOS builder answered 502 and has not run).
+**Started:** 2026-11-27 12:51 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option):**
+"17o: CRAN notes and run list" (orient); "Say it up front", "In the runbook and plan", "Add the file, renv off"
+(framing); "Claude starts them now" (D9). **Mark's requests:** a backlog item to copy nprcgenekeepr's README badges
+that fit (`:299`), then "hold off making changes until after acceptance by CRAN" added to it. He asked whether R-hub's
+macOS job taking about 10 times as long was unusual: answered from the logs (Intel macOS builds 116 of 119 packages
+from source; nprcgenekeepr's macOS job was its slowest too, 34 min).
+**Commits:** claim `47c5f86`; work `1d04ba0` (pushed mid-session, the skip marker, so R-hub's workflow was on GitHub;
+no CI run); close-out 1 (plans, runbook, roadmap, backlog); close-out 2 (these notes, the receipt, the ledger),
+pushed after.
+**Measured:** 17n's tarball (`abb78758…22dcfe3c`) against HEAD: the 276 tracked files the build keeps all in it, 275
+byte-identical, `DESCRIPTION` equal field by field, plus 10 built; the 11 shipped paths unchanged since `2456253` (a
+control diff lists changes); 22 of the 38 exports share nprcgenekeepr's names (both `NAMESPACE`s); the CI guard
+flags 0 jobs in R-hub's published file (its `setup-deps` calls r-lib's `setup-r-dependencies`); pkgdown's source
+skips `cran-comments.md`; the macOS builder's form offers R-devel only. **Runs:** win-builder x3 by FTP, reply 226,
+19:11:52-19:12:05 UTC; R-hub run 46055056615 `Status: OK` x3, renv off in each (the install step's no-renv branch);
+the macOS builder 502 at 19:12:25 and 19:58:51 UTC. quality_ratchet 7/7 at `1d04ba0` (results `dd3bb45ce615`), 11
+min, load 2.0-11.1.
+
+#### Session 100 Handoff Evaluation (by Session 101)
+**Score: 9/10.** ROI high: Orient, the orient picker and 17o's reading ran from its notes.
+- **What helped:** What You Must Do 1 (91 / 23 / 0, the 4 commits, `3e06730c5`, each exact); the orient picker's 34
+  items, each at its line; 2's reading list: 17o `:1104`, 17n's DONE paragraph `:1062` (the results
+  `cran-comments.md` states), section 4.4, dragons 8, 10, 11 and 34-36 (34's queue warning made D9's "start them
+  now" the recommendation), D9; nprcgenekeepr's `cran-comments.md` with "an update, not new"; "build the tarball from
+  a `git archive`" pointed at 17n's recipe, and so at 17n's own tarball, still in S100's scratchpad.
+- **What was missing:** that pedkindraw has no R-hub workflow and that R-hub's install step would start renv (S98's
+  failure), found by reading R-hub's actions; nprcgenekeepr's Phase 8 runbook
+  (`docs/planning/cran-3.0.0-phase8-runbook.md`), the closest model for the run list; that section 4.4's "for the
+  record (not for CRAN)" conflicts with sending the whole file to CRAN (R173's second ruling).
+- **What was wrong:** nothing found; every cited line was exact at `e2c63e4`.
+- **ROI:** high.
+
+**Self-assessment: 8/10.**
++ Orient in full, the claim before any work; a framing picker before filling, its options stating measured facts
+  (22 shared exports, the guard's 0, the tarball proved by machine); R-hub's renv trap found by reading the actions at
+  their pinned refs before any run, and R-hub's run then showed renv off in all three jobs; the runs started early
+  (dragon 34) on Mark's D9 pick, each recorded with its time and reply.
+- **Slips caught before commit:** the 3.24 line first said "the same tarball" (17n built that one separately); two
+  markers wrapped across lines (`grep -c` read 6 of 7); a zsh unsplit variable gave an empty `git diff` that proved
+  nothing (redone with an array and a control); dragon 46 first gave an inferred count, and "would start renv" read
+  as measured (reworded as read).
+- **Not reached:** the macOS builder (502 throughout).
 
 ### What Session 100 Did
 **Deliverable:** Phase 17n, the full local gate. DONE (R172): every item of its list met; the tree is frozen.
@@ -220,53 +252,3 @@ failed `test_pedigreeAppBrowser.R:103` at attempt 1 (the click flake, `:236`) an
 - **Slips caught before commit:** zsh's unsplit variable, warned of in the handoff; a capture by `registerS3method()`
   alone caught 0 calls (the namespace binding wins); a wrong prototype that failed for an unrelated reason
   (IRanges missing), replaced by six that fail on the behaviour.
-
-### What Session 98 Did
-**Deliverable:** backlog `:178`, Ubuntu devel's CI job failing to build S4Vectors, strict TDD. DONE (R170): the cause
-was two Bioconductor releases in one install (renv's lock's 3.23 beside pak's 3.24); every CI job that installs
-packages keeps renv off. Found while measuring: `asPedFrame()` stops on Bioconductor 3.24 (backlog `:178`, next).
-**Started:** 2026-11-26 20:16 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option where
-one was):** ":178 S4Vectors (Recommended)" (orient); "CI fix now; converter next (Recommended)"; "Yes, proceed to
-RED"; "Yes, proceed to GREEN"; "Skip REFACTOR (Recommended)".
-**Commits:** claim `542b47a`; RED `b28302b`; GREEN `b3d54c8`; close-out 1 `19e8dea` (pushed without the skip marker:
-run 45930893462, its Ubuntu release job rerun once); close-out 2 (these notes, the receipt, the ledger), pushed after.
-**Measured:** S97's devel log: pak's `Repo status` listed Bioconductor 3.23 (renv's, "cranlike") and 3.24 (pak's) for
-R 4.7, and installed S4Vectors 0.50.3 and Pedixplorer 1.8.0 from 3.23 and BiocGenerics 0.60.0 from 3.24; R 4.6 jobs
-got 3.23 from both, oldrel-1 3.22's S4Vectors 0.48.1 with 3.23's BiocGenerics 0.58.1 (a pair that builds). On R 4.6.2
-in scratch libraries: BiocGenerics 0.60.0 + S4Vectors 0.50.3 stops with CI's error; 0.58.1 + 0.50.3 and 0.60.0 +
-0.52.0 build (BiocGenerics 0.60.0 adds an S4 `transform()` generic). S4Vectors' `transform` code is the same in
-0.50.3, 0.52.0 and 0.53.0; R-universe built 0.53.0 on R-devel r90959. Bioconductor's devel report ran R-devel r90887.
-pkgcache 2.2.5 maps R 4.6.2 to 3.24 and R 4.7.0 to 3.25. 8 of the 69 CRAN packages DESCRIPTION reaches are newer on
-current CRAN than the lock's snapshot (shiny 1.15.0 the only direct one). Pedixplorer 1.10.0 on S4Vectors 0.52.0: 28
-test files, 363 tests, 0 failed, 21 errors (0 on the lock's set); Pedixplorer 1.8.0 on 0.52.0 stops too; the
-`?asPedFrame` example stops on 3.24 and runs on 3.23. nprcgenekeepr's lock has no Bioconductor package.
-**Verified:** RED: 3 tests, 13 expectations, 2 failed (both jobs), WARN 0; on scratch copies the right prototype 0
-failed and 4 wrong ones 1, 2, 2, 2. GREEN: both workflows parsed by `yaml::read_yaml()`; the file 13 of 13; full
-suite (`NOT_CRAN=true`) 108 files, 1,228 tests, 17,344 expectations, 0 failed, 0 errors, 0 skipped, WARN 0 (10.2
-min); `R CMD check --as-cran` Status 1 NOTE (R16's), CRAN-mode `[ FAIL 0 | WARN 0 | SKIP 26 | PASS 2697 ]`, 93 s;
-lint 0; roxygen unchanged; quality_ratchet 7/7 at `19e8dea` (results `dd3bb45ce615`). CI: as in the Status line;
-the devel job as predicted at the RED->GREEN gate (one release, S4Vectors built, then the converter), except that
-it stopped earlier than the predicted example, at the vignette in `R CMD build`. No R code changed: no coverage run.
-
-#### Session 97 Handoff Evaluation (by Session 98)
-**Score: 9/10.** ROI high: Orient and the first finding ran from its notes.
-- **What helped:** Mark's pick under "Next"; What You Must Do 1 (91 / 23 / 0, the 4 commits, `3e06730c5`, each
-  exact); 2's "read S97's Ubuntu devel job log first (run 45921649070, job 140253524152)": the log's repository
-  table showed the cause within minutes; the workflow lines `:31` and `:50`-`:53` exact; every backlog item at its
-  stated line; the CI step (rerun once, logs through the jobs API, a Monitor loop) used as written.
-- **What was missing:** that renv starts on the runner from `.Rprofile` (the documentation plan said so, "On the
-  runner renv starts from `.Rprofile`", as at S97; no handoff did), which was the cause.
-- **What was wrong:** the item's premise, carried since S49 and S95, that S4Vectors "does not build on R-devel"; 2's
-  "find whether Bioconductor has an S4Vectors newer than 0.50.3 that builds on R-devel" followed it, and a newer one
-  would not have helped while renv's 3.23 stayed in the install. Not S97's finding, but its handoff relayed it as fact.
-- **ROI:** high.
-
-**Self-assessment: 8/10.**
-+ Orient in full, the claim before any work; the log read before any theory; the cause reproduced on R 4.6.2 with
-  three version pairs before the picker; what each option would change measured (the CRAN delta, pak's map, the
-  Pedixplorer tests on 3.24), which found the converter bug before the decision; RED run against 4 wrong prototypes
-  (dragon 42); GREEN verified by the full suite and `R CMD check`; CI read as predicted at the gate.
-- **A first theory cost time:** I read R-devel's NEWS for a `transform` change before comparing the installed
-  versions, the comparison the log already offered.
-- **Slips caught before commit:** dragon 43 said "S19" (S20, `c43b36a`, added Bioconductor 3.23) and "9 weeks" (8
-  days since S49); a calling handler placed outside `try()` caught nothing; a backslash in `Rscript -e`, warned of.
