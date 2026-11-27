@@ -236,7 +236,8 @@ issues).*
 - [ ] **The app's click test times out on macOS now and then** (DECISION NEEDED, Effort S, a guess; found S88,
       S93) -- `test_pedigreeAppBrowser.R:103` ("a click on a repeat or an animal makes it the focal animal"):
       `.appWaitFor()` waited 60 s for the focal box to read `g1`, on macOS only: run 45519040454 (S88) and both
-      attempts of run 45737321097 (S93). The browser had started; the click did not take. Not read further.
+      attempts of run 45737321097 (S93), and attempt 1 of run 45946860858 (S99, job 140333435751; Status OK at its
+      rerun, `PASS 17099`). The browser had started; the click did not take. Not read further.
 
 - [ ] **Tell nprcgenekeepr: its help says a re-routed marked mate line falls back** (READY, Effort S; found S96,
       checked S97) -- nprcgenekeepr's `?makePedigreeMatingLayout` (`R/makePedigreeDiagramData.R:1622` at

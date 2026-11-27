@@ -204,11 +204,23 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S99
 date: 2026-11-26
-status: pending
-active_task: backlog :178, asPedFrame() stops on every Pedixplorer object with Bioconductor 3.24's S4Vectors 0.52.0. Claimed.
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: backlog :178 DONE (R171): asPedFrame() reads a Pedixplorer object's twin and spouse rows with Pedixplorer's accessors, so it converts on Bioconductor 3.24's S4Vectors 0.52.0; a stand-in test copies 0.52.0's stop on the lock's 3.23. Moving renv.lock to 3.24 is the new backlog :178. Next: 17n.
+what_was_done: claim 5347bb3; RED 80c620a; GREEN 304eb3f; REFACTOR 1f0a780; close-out 1 2456253 (pushed: run 45946860858 5/5 Status OK, macOS rerun once; devel on 3.24 passed).
+next_steps: Phase 17n (docs/planning/cran-submission-plan.md:1052), with S99's 3.24 check repeated beside the local gate; the lock move (BACKLOG :178) only if Mark wants it before 17n; SESSION_NOTES.md What You Must Do 2-3.
+key_files: R/asPedFrame.R:417, :477, :485; tests/testthat/test_asPedFrameS4Vectors.R:21; methodology/BACKLOG.md:178; docs/planning/cran-submission-plan.md:1052, :1353.
+gotchas: local runs use renv's 3.23 (test 3.24 in a scratch library); 3.22's S4Vectors 0.48.1 cannot be built here, only CI's oldrel-1 checks it; UseMethod() finds a namespace binding before the S3 table (dragon 44).
+runtime_smoke: R CMD build and check --as-cran with Bioconductor 3.24 in front: drawing.Rmd's Pedixplorer chunk built, ?asPedFrame's example ran, Status 1 NOTE (R16's); CI devel on 3.24 Status OK. quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1
+changelog_ref: CHANGELOG.md "2026-11-26 · [BL-Phase 17] S99: backlog :178 DONE" and its push entries
 commit: pending
 ```
+S99 fixed the converter by reading Pedixplorer's documented accessors instead of passing its Rel to a base generic
+that S4Vectors' parent-class method intercepts; measured on three Bioconductor sets before every gate, proved on the
+build that failed on CI. +: candidates and wrong prototypes measured first; 550 identical outputs for the REFACTOR.
+-: about 10 minutes on an R 4.5 build of 3.22 that cannot work here; zsh's unsplit variable again; a first capture
+caught 0 calls.
 ```handoff
 session: S98
 date: 2026-11-26

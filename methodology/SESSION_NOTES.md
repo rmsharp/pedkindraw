@@ -10,90 +10,92 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17m DONE (S33-S96); the gap
-phases G1-G17 DONE (S42-S77); the findings 17m left outside NEWS DONE (S97, R169). **Backlog `:178`, Ubuntu devel's
-S4Vectors failure, DONE (S98, R170):** not R-devel's fault but two Bioconductor releases in one install: the
-project's `.Rprofile` started renv on the runner, renv added `renv.lock`'s repositories (CRAN of 2026-10-31,
-Bioconductor 3.23) beside the release pak picks for the job's R version, and R-devel got S4Vectors 0.50.3 (3.23) with
-BiocGenerics 0.60.0 (3.24), which do not build together (reproduced on R 4.6.2). Every CI job that installs packages
-now sets `RENV_CONFIG_AUTOLOADER_ENABLED: "false"` (`.github/workflows/R-CMD-check.yaml:45`, `pkgdown.yaml:30`;
-`tests/testthat/test_ciWorkflows.R`), so it installs current CRAN and one Bioconductor release, as CRAN does.
-**Found while measuring, a CRAN blocker:** with Bioconductor 3.24's S4Vectors 0.52.0, `asPedFrame()` stops on every
-Pedixplorer object (backlog **`:178`**, the new item at the old item's place): 21 test errors, `?asPedFrame`'s
-example, and `vignettes/drawing.Rmd:593`'s chunk, which stopped CI's R-devel build at S98.
-**Next, by Mark's pick** ("CI fix now; converter next (Recommended)"): backlog **`:178`**, the converter on S4Vectors
-0.52.0 (strict TDD); then 17n, which freezes the tree.
-**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed `19e8dea` (close-out 1,
-without the skip marker): R-CMD-check run 45930893462: macOS, Windows, Ubuntu oldrel-1 Status OK (`PASS 17090`,
-`17078`, `17079`); Ubuntu release failed `test_savePedigreeDiagram.R:575` at attempt 1 (a hung Chrome at the
-recording's start, `:207`) and read Status OK at its rerun (`PASS 17079`); Ubuntu devel installed Bioconductor 3.24
-alone, S4Vectors 0.52.0 built, and `R CMD build` stopped at `drawing.Rmd:593`-`:602` (the converter, `:178`); pkgdown
-passed. Close-out 2 pushed after it (the skip marker, no run).
-**The orient picker:** "(Recommended)" on `:178` (Mark's pick above); the rest grouped and named (34 items, `grep -n
-'^- \[ \]' methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:159`, `:168`, `:201`, `:252`,
-`:259`, `:265`, `:279`, `:284`, `:296`, `:312`, `:331`; READY by Mark's pick `:207` (the Chrome diagnostic); NEEDS
-DECISION `:64`, `:72`, `:81`, `:94`, `:229`, `:247`, `:302`, `:322`; "Waiting on Mark" `:122`, `:129`, `:136`, `:148`.
-Not offered: `:105` (a session Mark starts in nprcgenekeepr, R101's exception), `:20` and `:116` (BLOCKED). Name every
-item.
+phases G1-G17 DONE (S42-S77); S97's and S98's items DONE (R169, R170). **Backlog `:178`, `asPedFrame()` on
+Bioconductor 3.24's S4Vectors 0.52.0, DONE (S99, R171):** a Pedixplorer `Rel` extends S4Vectors' `Vector`, and a
+plain `as.data.frame()` on it went through S4Vectors' S3 method for `Vector`, which stops on it from 0.52.0;
+`.asPedFramePedixplorer()` now builds the relation table from Pedixplorer's accessors `id1()`, `id2()`, `code()`
+(`R/asPedFrame.R:417`-`:421`), and a stand-in test copies 0.52.0's stop on the lock's 3.23
+(`tests/testthat/test_asPedFrameS4Vectors.R`). On 3.24 the 29 test files naming Pedixplorer read 0 errors (21
+before) and `R CMD build`/`check --as-cran` R16's NOTE. No NEWS line (Mark's pick: no released version stopped).
+`renv.lock` stays at 3.23; **moving it to 3.24 is backlog `:178`** (the new item at the old one's place).
+**Next:** Phase 17n, the full local gate (`docs/planning/cran-submission-plan.md:1052`), which freezes the tree;
+the lock move, if Mark wants it before the submission, has to come before 17n (it changes `renv.lock`).
+**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed `2456253` (close-out 1,
+without the skip marker): R-CMD-check run 45946860858 5/5 Status OK, macOS at its rerun (`:236`'s flake); Ubuntu
+devel on Bioconductor 3.24 built `drawing.Rmd` and passed, where S98's run stopped. Close-out 2 pushed after it
+(the skip marker, no run).
+**The orient picker:** "(Recommended)" on 17n (the plan's order; no pick of Mark's names a task before it); then the
+lock move `:178` named on its own as the one item that must precede 17n if wanted; the rest grouped and named (34
+items, `grep -n '^- \[ \]' methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:159`,
+`:168`, `:190`, `:242`, `:249`, `:255`, `:269`, `:274`, `:286`, `:302`, `:321`; READY by Mark's pick `:196` (the
+Chrome diagnostic); NEEDS DECISION `:64`, `:72`, `:81`, `:94`, `:218`, `:236`, `:292`, `:312`; "Waiting on Mark"
+`:122`, `:129`, `:136`, `:148`. Not offered: `:105` (a session Mark starts in nprcgenekeepr, R101's exception),
+`:20` and `:116` (BLOCKED). Name every item.
 **Session boundary:** one session, then close out.
-**Priority:** HIGH (`:178` blocks 17n-17q: CRAN's machines install the current Bioconductor).
+**Priority:** HIGH (17n-17q are the submission).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**; S98 changed no copied file);
-   nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l
-   'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
-   (`4283e3502`, `a85311021`, `392dd347e`, `471589138`) and nprcgenekeepr at `3e06730c5`, unless Mark has run `:105`
-   or `:252` there (then update `DIVERGENCE.md` as R101 says).
-2. **`:178`, the converter** (if picked): read the item first (cause, counts, recipe). Build the scratch library of
-   Bioconductor 3.24 (BiocGenerics 0.60.0, S4Vectors 0.52.0, Pedixplorer 1.10.0) by its recipe; the RED tests must
-   fail there and pass on the lock's 3.23 set too (run both: the fix has to work on both releases, and on 3.22's
-   S4Vectors 0.48.1 that CI's oldrel-1 installs). The stop is `as.data.frame(Pedixplorer::rel(x))` at
-   `R/asPedFrame.R:412` (in `.asPedFramePedixplorer()`, `:383`). Measure each fix before the picker (Learning 17):
-   Pedixplorer's own S4 method for `Rel` called directly, or the table built from `rel(x)`'s slots; and whether
-   `renv.lock` moves to Bioconductor 3.24 (Learning 3's traps; a picker of its own). NEWS needs a line (a user on
-   Bioconductor 3.24 meets it).
-3. **17n** (`docs/planning/cran-submission-plan.md:1052`) only after `:178`: it freezes the tree.
-4. **CI on every push:** five jobs, now without renv (current CRAN; Bioconductor by pak: R 4.6 had 3.23 at S98, R-devel
-   3.24, oldrel-1 3.22). Known flakes: `:207` (a hung Chrome start; S98's at the recording's start, a first),
-   `:229` (a blank PDF), `:247` (the app's click, macOS). Rerun a failed job once (`gh run rerun <run> --job <id>`,
-   after the run ends), then list the rerun's jobs by attempt (`gh api
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**; S99 changed no copied file:
+   `R/asPedFrame.R` is pedkindraw's own); nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log
+   --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename
+   | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`) and nprcgenekeepr at
+   `3e06730c5`, unless Mark has run `:105` or `:242` there (then update `DIVERGENCE.md` as R101 says).
+2. **17n** (if picked): read `docs/planning/cran-submission-plan.md:1052` in full first, and dragons 43 and 44
+   (`:1343`, `:1353`): the local gate runs on renv's Bioconductor 3.23, so repeat S99's 3.24 check beside it
+   (BACKLOG `:178`'s recipe; the 29 files naming Pedixplorer, then `R CMD build` and `check --as-cran` with the
+   scratch library in front of renv's).
+3. **`:178`, the lock move** (if picked, before 17n): read the item; Learning 3's traps in order (the dated CRAN
+   repository set first, each package by name with `rebuild = TRUE`, `renv::snapshot(dev = TRUE)`, the
+   `renv-lock-no-latest-repository` gate); renv's way of changing the Bioconductor release is unmeasured, so
+   measure it in a scratch copy of the project before the picker (Learning 17).
+4. **CI on every push:** five jobs, without renv (current CRAN; Bioconductor by pak). Known flakes: `:196` (a hung
+   Chrome start), `:218` (a blank PDF), `:236` (the app's click, macOS). Rerun a failed job once (`gh run rerun
+   <run> --job <id>`, after the run ends), then list the rerun's jobs by attempt (`gh api
    repos/rmsharp/pedkindraw/actions/runs/<run>/attempts/2/jobs`); read logs through the jobs API (`curl -sSL -H
    "Authorization: Bearer $(gh auth token)" https://api.github.com/repos/rmsharp/pedkindraw/actions/jobs/<id>/logs`);
-   a failing install's `Repo status` table and its `+ <pkg> <version>` lines say which repository gave each package
-   (dragon 43). Watch a run with a Monitor loop on `gh run view <run> --json status,conclusion,jobs` (45 s).
+   a failing install's `Repo status` table names each package's repository (dragon 43). Watch a run with a Monitor
+   loop on `gh run view <run> --json status,conclusion,jobs` (45 s).
 5. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
-- **Local runs still use renv's lock (Bioconductor 3.23)**; CI no longer does. A local pass says nothing about
-  Bioconductor 3.24 or current CRAN: test both (dragon 43). Start a scratch Rscript from the project's folder with
-  `RENV_CONFIG_AUTOLOADER_ENABLED=false`, `RENV_PROJECT` unset and `R_LIBS`/`R_LIBS_USER` set, or `.Rprofile` takes over.
-- **pak's Bioconductor map lags Bioconductor's:** pkgcache 2.2.5 (scratch install) reads R 4.6.2 as 3.24 and R 4.7.0
-  as 3.25, but CI's pak gave 3.23 and 3.24 at S98. When CI's R 4.6 jobs move to 3.24, Windows, macOS and Ubuntu
-  release meet the converter too, until `:178` is fixed.
-- **Run each RED test against a deliberately wrong prototype too (dragon 42):** S98's workflow test was run against 4
-  (one file only, a step's env, commented out, set to true); each failed.
+- **Local runs use renv's lock (Bioconductor 3.23); CI does not.** A local pass says nothing about 3.24: S99's
+  scratch recipe (BACKLOG `:178`) took under 2 minutes. Start a scratch Rscript from the project's folder with
+  `RENV_CONFIG_AUTOLOADER_ENABLED=false`, `RENV_PROJECT` unset and `R_LIBS`/`R_LIBS_USER` set, or `.Rprofile` takes
+  over.
+- **Bioconductor 3.22 cannot be built here:** S4Vectors 0.48.1 needs `Rf_findVar`, gone from R 4.6's API, and R
+  4.5's framework launcher (`/Library/Frameworks/R.framework/Versions/4.5-arm64`) points `R_HOME_DIR` at the
+  current R, so even a launcher copy with its own `R_HOME` compiled against 4.6's headers. CI's oldrel-1 is the
+  only 3.22 check (dragon 44). Pedixplorer 1.6.0 does install on R 4.6.2 over the lock's S4Vectors 0.50.3.
+- **`UseMethod()` finds a method in the generic's own namespace before the S3 table:** to wrap or stand in for a
+  method of pedkindraw's, replace the namespace binding (`unlockBinding()`, `assign()`); `registerS3method()` alone
+  caught 0 of 550 calls. For another package's method (S4Vectors' `as.data.frame.Vector`), the S3 table is what
+  dispatch reads, so `registerS3method()` works (S99's stand-in).
+- **R CMD check's URL check can read a transient 503 from GitHub** (S99, once, README's `DIVERGENCE.md` link; 200
+  three times after): rerun before calling the NOTE new.
 - **chromote prints "[warning] got non-close frame while closing"** and sometimes "Unhandled promise error: ...
-  Browser.close" to the console after a Chrome test; testthat counts no warning for either (WARN 0).
-- **Carried:** write `"${VAR:?}"` in `rm -rf`; zsh does not split an unquoted variable; a calling handler set outside
-  `try()` never runs (put `withCallingHandlers()` inside it); the README render needs a scratch install; the skip
-  marker (a push whose head commit holds it runs no workflow); a Chrome test can error under load; the check without
-  suggested packages needs a scratch R home; CRAN's DESCRIPTION spell check reads `.aspell/` (dragon 39); a CRAN check
-  runs only 21 test files (list a new test file in `tests/testthat/slowTestFiles.txt`); Rscript inside
-  `tests/testthat/` loads no renv; backslashes in `Rscript -e` go in a file (S98 met it once); the 5-file cap splits
-  commits; never commit `tests/testthat/_problems/`; `CLAUDE.md` is over its budget (learnings go to the cran plan's
-  dragons, now 43); `methodology/HANDOFFS.md` about 242 KB after S98, about 20 KB under the 262,144 B size where a
-  default read returns nothing (backlog `:322`): keep the receipt short; the full suite takes 10.2-10.9 min, the
-  ratchet's run about 12.
+  Browser.close" after a Chrome test; testthat counts no warning for either (WARN 0).
+- **Carried:** write `"${VAR:?}"` in `rm -rf`; zsh does not split an unquoted variable (S99 met it again: use an
+  array, `"${FILES[@]}"`); a calling handler set outside `try()` never runs; the README render needs a scratch
+  install; the skip marker (a push whose head commit holds it runs no workflow); a Chrome test can error under load,
+  so run the full suite alone; the check without suggested packages needs a scratch R home; CRAN's DESCRIPTION
+  spell check reads `.aspell/` (dragon 39); a CRAN check runs only 21 test files (list a new test file in
+  `tests/testthat/slowTestFiles.txt`); Rscript inside `tests/testthat/` loads no renv; backslashes in `Rscript -e`
+  go in a file; the 5-file cap splits commits; never commit `tests/testthat/_problems/`; `CLAUDE.md` is over its
+  budget (learnings go to the cran plan's dragons, now 44); `methodology/HANDOFFS.md` 243,744 B after S99, about
+  18 KB under the 262,144 B size where a default read returns nothing (backlog `:312`): keep the receipt short; the
+  full suite takes about 10.2 min, the ratchet's run about 12.
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
-- S98 (DONE): `.github/workflows/R-CMD-check.yaml:38`-`:45` (the comment and the line), `pkgdown.yaml:28`-`:30`;
-  `tests/testthat/test_ciWorkflows.R` (`.jobsStartingRenv()`); R170
-  `docs/planning/standalone-pedigree-package-plan.md:355`; dragon 43 `docs/planning/cran-submission-plan.md:1343`.
-- `:178`, the converter: `methodology/BACKLOG.md:178`; `R/asPedFrame.R:383` (`.asPedFramePedixplorer()`), `:412`
-  (the `as.data.frame()` call), `:194` (the help example), `:232` (`asPedFrame.Pedigree()`);
-  `vignettes/drawing.Rmd:593`-`:602`; the tests `tests/testthat/test_asPedFramePedixplorer.R`,
-  `test_asPedFrameMatings.R`, `test_asPedFrameHints.R`, `test_infertileMark.R`, `test_miscarriageMark.R`.
-- 17n: `docs/planning/cran-submission-plan.md:1052`; CI `.github/workflows/R-CMD-check.yaml:28`-`:33` (the matrix).
+- S99 (DONE): `R/asPedFrame.R:417`-`:421` (the table from the accessors, its comment at `:414`), `:477`
+  (`.asPedFramePxTwins()`), `:485` (`.asPedFramePxMatings()`), `:385` (`.asPedFramePedixplorer()`);
+  `tests/testthat/test_asPedFrameS4Vectors.R:21` (`.localStoppingVectorDataFrame()`), its tests `:48`, `:63`, `:84`,
+  `:105`; `tests/testthat/slowTestFiles.txt:22`; R171 `docs/planning/standalone-pedigree-package-plan.md:356`;
+  dragon 44 `docs/planning/cran-submission-plan.md:1353`.
+- `:178`, the lock move: `methodology/BACKLOG.md:178`; `renv.lock` (its `Bioconductor` block, 3.23);
+  `renv/settings.json` (`bioconductor.version: null`).
+- 17n: `docs/planning/cran-submission-plan.md:1052`; CI `.github/workflows/R-CMD-check.yaml:27`-`:33` (the matrix),
+  `:45` (renv off).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -108,13 +110,60 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 99 Did
-**Deliverable:** backlog `:178` (`methodology/BACKLOG.md`), `asPedFrame()` stopping on every Pedixplorer object
-with Bioconductor 3.24's S4Vectors 0.52.0: measure the fixes, Mark's picks, then the fix, strict TDD (IN PROGRESS)
-**Started:** 2026-11-26 22:09 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** ":178 converter fix
-(Recommended)" (orient).
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+**Deliverable:** backlog `:178`, `asPedFrame()` stopping on every Pedixplorer object with Bioconductor 3.24's
+S4Vectors 0.52.0, strict TDD. DONE (R171): the relation rows are read with Pedixplorer's accessors.
+**Started:** 2026-11-26 22:09 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option):**
+":178 converter fix (Recommended)" (orient); "Pedixplorer's accessors", "Stand-in test; keep lock", "No NEWS line";
+"Yes, proceed to RED"; "Yes, proceed to GREEN"; "Yes, REFACTOR".
+**Commits:** claim `5347bb3`; RED `80c620a`; GREEN `304eb3f`; REFACTOR `1f0a780`; close-out 1 `2456253` (pushed
+without the skip marker: R-CMD-check run 45946860858, pkgdown run 45946860903); close-out 2 (these notes, the
+receipt, the ledger), pushed after.
+**Measured:** in scratch libraries on R 4.6.2 (3.24: BiocGenerics 0.60.0, S4Vectors 0.52.0, Pedixplorer 1.10.0; the
+lock's 3.23; "3.22": Pedixplorer 1.6.0 and BiocGenerics 0.56.0 over S4Vectors 0.50.3, since 0.48.1 does not
+compile): `Rel` extends `Vector` with the same slots in all three Pedixplorers; `as.data.frame.Vector` is registered
+in all three and stops only on 0.52.0; the accessors, Pedixplorer's exported `as.data.frame()` and the slots each
+gave today's rows on 5 objects on all three; on 3.24, HEAD's five converter files 69 tests, 21 errors, the accessor
+prototype 0; the stand-in on the lock: HEAD fails, the prototype passes, `mcols()`'s read (`:395`) untouched.
+**Verified:** RED: the new file 4 tests, 3 errors (each at `R/asPedFrame.R:412`), on 3.23 and 3.24; the six files on
+3.24 24 errors; the right prototype 0 failing, 6 wrong ones 1-3 each (dragon 42). GREEN: the six files 73 tests,
+2,568 expectations, 0 errors on all three sets; the 29 files naming Pedixplorer on 3.24 367 tests, 0 errors; full
+suite (`NOT_CRAN=true`) 109 files, 1,232 tests, 17,353 expectations, 0 failed, 0 errors, 0 skipped, WARN 0 (611 s);
+`R CMD build` and `check --as-cran` with 3.24 in front: `drawing.Rmd`'s Pedixplorer chunk built, the example ran,
+Status 1 NOTE (R16's), CRAN-mode `PASS 2697`; on the lock the same at the second run (the first also listed a 503 for
+a GitHub link); covr: the changed statements run 546 times; lint 0; roxygen unchanged; spelling 0. REFACTOR:
+`asPedFrame()`'s output on the 550 Pedixplorer objects the 29 files build `identical()` before and after on 3.23 and
+3.24 (and 3.23 against 3.24), the full suite again as above. CI: R-CMD-check run 45946860858: Ubuntu devel (R-devel
+r90991, Bioconductor 3.24 alone: BiocGenerics 0.60.0, S4Vectors 0.52.0, Pedixplorer 1.10.0) built the vignettes and
+read Status OK, `PASS 17088`, where S98's run stopped; oldrel-1 (R 4.5.3, Bioconductor 3.22: S4Vectors 0.48.1,
+Pedixplorer 1.6.0) Status OK, `PASS 17088`; Ubuntu release `17088` and Windows `17087` (both 3.23) Status OK; macOS
+failed `test_pedigreeAppBrowser.R:103` at attempt 1 (the click flake, `:236`) and read Status OK at its rerun (`PASS
+17099`); pkgdown run 45946860903 success. quality_ratchet 7/7 at `2456253` (results `dd3bb45ce615`).
+
+#### Session 98 Handoff Evaluation (by Session 99)
+**Score: 9/10.** ROI high: Orient, the scratch library and the first measurement ran from its notes.
+- **What helped:** Mark's pick under "Next"; What You Must Do 1 (91 / 23 / 0, the 4 commits, `3e06730c5`, each
+  exact); the backlog item's recipe for 3.24 (three sources, BiocGenerics first, the four environment variables),
+  which built the library first time; its counts (21 errors: 11, 4, 4, 1, 1 in five named files), reproduced
+  exactly; the stop at `R/asPedFrame.R:412`; "measure each fix before the picker" and dragon 42's wrong prototypes;
+  every key-file line exact.
+- **What was missing:** that 3.22's S4Vectors 0.48.1 does not compile on R 4.6.2 (2 asked to "run both ... and on
+  3.22's S4Vectors 0.48.1"; about 10 minutes went to trying R 4.5, which cannot build it here either); that the
+  file's header holds R14's rule (written from the help pages, neither package's source read), which shaped the
+  fix's measurement.
+- **What was wrong:** "NEWS needs a line (a user on Bioconductor 3.24 meets it)": 1.0.0 is the first release and
+  `asPedFrame()` new, so no released version stopped (Mark picked no line); the item's "`drawing.Rmd:593`'s chunk ...
+  (not run)" read as if the chunk is never run, where it meant S98 did not run it.
+- **ROI:** high.
+
+**Self-assessment: 8/10.**
++ Orient in full, the claim before any work; every candidate measured on three Bioconductor sets before the picker,
+  with the test counts the options quoted; the stand-in test drafted and run on HEAD, the right prototype and 6
+  wrong ones before the RED gate; GREEN shown on the surface that failed (the build of `drawing.Rmd` with 3.24),
+  plus the full suite, both checks and coverage; the REFACTOR proved by 550 `identical()` outputs on two sets.
+- **The 3.22 attempt cost about 10 minutes** (two R 4.5 installs) for a set only CI can build; recorded as dragon 44.
+- **Slips caught before commit:** zsh's unsplit variable, warned of in the handoff; a capture by `registerS3method()`
+  alone caught 0 calls (the namespace binding wins); a wrong prototype that failed for an unrelated reason
+  (IRanges missing), replaced by six that fail on the behaviour.
 
 ### What Session 98 Did
 **Deliverable:** backlog `:178`, Ubuntu devel's CI job failing to build S4Vectors, strict TDD. DONE (R170): the cause
@@ -220,57 +269,3 @@ after. quality_ratchet 7/7 at `b464c80` (results `dd3bb45ce615`).
 - **Slips caught before commit:** an unguarded `rm -f` refused once and a zsh `set -- $pair` loop, both warned of in
   the handoff; a server draft placed where `.withAppGen()` is not defined; the JavaScript comment's first wording
   ("their legends") said more than the plan's line 550; two key-file citations off by 1 and 4, re-found.
-
-### What Session 96 Did
-**Deliverable:** Phase 17m (`docs/planning/cran-submission-plan.md:1020`), the release text and the version, strict
-TDD where tests changed. DONE: version `1.0.0`, NEWS and the README readied, `R CMD check --as-cran` R16's NOTE
-only, the README rendered twice the same, `git grep 0.0.1` only the 4 lines Mark chose to leave (R168).
-**Started:** 2026-11-26 09:15 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option):**
-"Phase 17m (Recommended)" (orient); "1.0.0 (Recommended)", "Check; reword 4 (Recommended)", "GitHub install only
-(Recommended)", "Add test; leave 4 (Recommended)"; "Yes, proceed to RED"; "Yes, GREEN + 2 twins (Recommended)";
-after the full suite failed S2's version test, "Back to RED for it (Recommended)"; "Skip REFACTOR (Recommended)";
-at the close, "17m's findings :186 (Recommended)". Mark also asked whether nprcgenekeepr could now resolve the
-divergences: not before the switch (R98, R101); the one exception, a fix its users need before it (backlog `:105`,
-a session Mark starts there, after this one and before 17n), was explained step by step.
-**Commits:** claim `cd1369a`; RED `949842c`, `70ea1ec`; GREEN `d4e8637` (version, NEWS), `e4fc598` (README),
-`f90ddac` (`?removeAnimals`, the speed vignette); RED 3 `87fae59` (S2's version test); close-out 1 `b0eb2e7`
-(pushed without the skip marker: run 45888606992, its Ubuntu release job rerun once); close-out 2 (these notes, the
-receipt, the ledger, CI in 17m's paragraph and backlog `:232`), pushed after it.
-**Measured:** R's NEWS reader on both headings; nprcgenekeepr's first CRAN version (1.0, 2020-04-15); CRAN's
-package page (visNetwork's: "Materials: README, NEWS"); the NEWS check: three read-only agents over its 54 items
-(about 440 claims), 12 contradicted, each re-checked here by code, run or log (vis-network's `width = 2 * size`,
-`conditionColors = 2`'s message, CI oldrel-1's R 4.5.3, `.layoutHintsUsedMate()`, `speedCheck()`); the copied
-files' share of `R/` (49.7% of code lines); the site's three articles; each test drafted in scratch copies (HEAD 8
-failed; a prototype GREEN and 17q's form 0; 17q's form without its words 1; RED 3 on `70ea1ec`'s tree 1, HEAD 0).
-**Verified:** RED 3 tests, 12 expectations, 8 failed, WARN 0; GREEN the file 12 passed. Full suite (`NOT_CRAN=true`)
-107 files, 1,216 tests: 17,293 expectations, 1 failed (S2's version test), then, after RED 3, 17,244, 0 failed, 1
-error (a Chrome test under load; the file alone 235 of 235), WARN 0 both. Lint 0; roxygen unchanged but
-`man/removeAnimals.Rd`; spelling 0; `tools/checkSpeedTables.R` 0 problems; `R CMD check --as-cran` Status 1 NOTE
-(R16's), CRAN-mode `PASS 2695`, 112 s; `utils::news()` 9 sections, all 1.0.0; the README's two renders identical;
-drift 91 / 23 / 0; quality_ratchet 7/7 at `b0eb2e7`. CI as in the Status line above.
-
-#### Session 95 Handoff Evaluation (by Session 96)
-**Score: 9/10.** ROI high: Orient, 17m's reading and the first pickers ran from its notes.
-- **What helped:** Mark's pick under "Next"; What You Must Do 1 (91 / 23 / 0, the 4 commits, `3e06730c5`, each
-  exact); 2's reading list with every line where it said (`:1016`, `:1076`, `:282`, `DESCRIPTION:4`, `NEWS.md:1`,
-  `README.Rmd:42`, the contract's `:303`) and its warning against a CRAN link before acceptance; the gotchas on the
-  README render needing an install (a scratch library, used), the skip marker (it shaped the push) and the 21
-  CRAN-run files (the new test listed); the 33 items at their stated lines.
-- **What was missing:** that S2's `tests/testthat/test_package.R:28` already held the version below 1.0.0 (2's "a
-  version test, if any" left it open; my own truncated search missed it too); that the README's "two articles" had
-  been stale since 17i.
-- **What was wrong:** nothing in the notes. The cran plan's section 2.5, which they cited, said no other file
-  names `0.0.1`; 4 lines do (S32's count).
-- **ROI:** high.
-
-**Self-assessment: 7/10.**
-+ Orient in full, the claim before any work; every picker measured first (both headings parsed, CRAN's page,
-  nprcgenekeepr's precedent, the drafts on HEAD, a prototype GREEN and 17q's form); the NEWS check delegated to three
-  read-only reviews and every finding re-checked before it reached a gate, one (the app's "CSV or text") reversed
-  on evidence before GREEN; DONE verified here, on CI and on the site; Mark's nprcgenekeepr question answered from
-  the rulings, with counts and steps.
-- **A truncated search missed S2's version test** (dragon 40): the full suite found it after GREEN, costing a RED 3,
-  one more gate and a second 11-minute suite run.
-- **RED 1's README check would have forced odd wording** ("The README" mid-sentence); fixed in RED 2 before GREEN.
-- **Slips caught before commit:** the rewrap script dropped NEWS's blank line after the heading; "60 items" for 54;
-  the suite script kept no error message, so the Chrome error's cause is not recorded.
