@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-27 · [BL-Phase 17] S100 (in progress): Phase 17n, the full local gate, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S100's stub), `methodology/HANDOFFS.md` (S100's `status: pending` receipt) and this entry. The deliverable is Phase 17n (`docs/planning/cran-submission-plan.md` section 17n): every check from a clean scratch copy, with S99's Bioconductor 3.24 check beside it; after it the tree freezes. Mark's pick: "17n: full local gate (Recommended)" (orient picker).
+- **Commit/PR:** the S100 claim commit · **Session:** S100 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `335ad2f`, no ghost session, no merge; S99's receipt complete, its gate citation equal to the results file `dd3bb45ce615`; 34 backlog items at the handoff's lines; dashboard 93/100; 0 open issues).
+
 ### 2026-11-27 · [BL-Phase 17] S99 push 2: the close-out to GitHub, no CI run
 - **Change:** pushed `2456253..2701fd3` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `2456253` (push 1).
 - **Commit/PR:** the push of `2701fd3`; close-out 2b (this entry) · **Session:** S99 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `2701fd3`; `gh run list` showed no new run.

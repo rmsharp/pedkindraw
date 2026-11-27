@@ -109,6 +109,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 100 Did
+**Deliverable:** Phase 17n, the full local gate (`docs/planning/cran-submission-plan.md` section 17n), with S99's
+Bioconductor 3.24 check beside it; after it the tree freezes (IN PROGRESS)
+**Started:** 2026-11-27 10:23 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17n: full local gate
+(Recommended)" (orient).
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 99 Did
 **Deliverable:** backlog `:178`, `asPedFrame()` stopping on every Pedixplorer object with Bioconductor 3.24's
 S4Vectors 0.52.0, strict TDD. DONE (R171): the relation rows are read with Pedixplorer's accessors.
