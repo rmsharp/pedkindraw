@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-26 · [BL-Phase 17] S97 push 2: the close-out to GitHub, no CI run
+- **Change:** pushed `b464c80..cf67720` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `b464c80` (push 1).
+- **Commit/PR:** the push of `cf67720`; close-out 2b (this entry) · **Session:** S97 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `cf67720`; `gh run list` showed no new run.
+
 ### 2026-11-26 · [BL-Phase 17] S97 push 1: the :186 work to GitHub, CI run and one rerun
 - **Change:** pushed `0201a46..b464c80` (claim, RED 1-3, GREEN 1-3, REFACTOR, close-out 1), the head without the skip marker: R-CMD-check run 45921649070, pkgdown 45921649082 (speed-tables not triggered: none of its files changed); the Ubuntu oldrel-1 job rerun once (attempt 1 failed `test_savePedigreeDiagram.R:381`, "Chrome debugging port not open after 60 seconds" at `.renderPicture()`'s start, an `org.chromium.Chromium.*` folder left: backlog `:192`'s first on oldrel-1).
 - **Commit/PR:** the push of `b464c80`; the oldrel-1 job's rerun (job 140260387956) · **Session:** S97 · **Model:** Claude Opus 5.5 · **Verified:** each job's log through the jobs API: Windows `PASS 17069`, macOS `17081`, Ubuntu release `17070`, Ubuntu oldrel-1 `17070` at its rerun (detritus OK), each Status OK with FAIL 0, WARN 0; Ubuntu devel "unable to load R code in package 'S4Vectors'" (backlog `:178`); pkgdown success.
