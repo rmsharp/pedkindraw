@@ -370,10 +370,10 @@ and 5); \code{label} is added
 when \code{twinRelations} is supplied), and \code{duplicateToReal} (a
 named character vector, duplicate node id -> real individual id).
 Under \code{edgeStyle = "rectilinear"}, an already-set edge
-\code{color} (e.g. the twin connector's or the consanguinity
-marker's) is preserved when the edge is kept as-is; a marked mate edge
-that gets replaced by a right-angle projection currently falls back to
-the generic routing color and width. Also \code{isolatedIds}, a
+\code{color} and \code{width} (e.g. the twin connector's color, the
+consanguinity marker's color and width) are kept, and a marked mate
+line re-routed through a right-angle projection keeps them on both of
+its new edges. Also \code{isolatedIds}, a
 character vector of ids suppressed from \code{nodes}/\code{edges}
 because they have no known parent, are never a parent, are not
 connected by \code{twinRelations}, and have no mating in

@@ -9,9 +9,12 @@
 // widget drew as one SVG: the widget's own drawing, with no second version to
 // keep alike.
 //
-// Measured against the live widget (section 11.2): the four-animal drawing
-// and legend, and each of 12 typed shapes, 0.0% of their ink differing; an
-// 18-animal pedigree with every mark 0.4% (drawing) and 0.2% (legend).
+// Measured against the live widget, on the layer as built (section 11's
+// record of the real code): the four animals and the 12 typed shapes, 0 of
+// 892-4,207 drawing pixels and 1 of 3,926 legend pixels (0.03%) differing;
+// an 18-animal pedigree with every mark 0.26% (drawing) and 0.07% (legend).
+// The scratch layer's figures of section 11.2 (0.4% and 0.2%) are
+// superseded.
 //
 // What each part is for:
 //  - drawImage() honours the SOURCE rectangle. vis.js keeps each legend icon

@@ -117,7 +117,14 @@
 ## draws no line from a parent with no row of its own;
 ## .positionMatingUnitForest() starts at every animal with no line in, as
 ## at a founder; makePedigreeMatingLayout() stops on an id on more than one
-## row, naming it; and the help (DIVERGENCE.md rows).
+## row, naming it; and the help (DIVERGENCE.md rows). Help text and comments
+## only (pedkindraw S97, backlog item "What 17m's check of NEWS found outside
+## NEWS"): makePedigreeMatingLayout()'s help said a marked mate line re-routed
+## through a right-angle projection "currently falls back to the generic
+## routing color and width", and two comments in .addRectilinearWaypoints()
+## said the same; the code keeps them (nprcgenekeepr's S563 fix, in the copy;
+## tests/testthat/test_addRectilinearWaypointsDogleg.R). nprcgenekeepr's help
+## and comments say the same as the copy did.
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -2185,10 +2192,10 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #'   when \code{twinRelations} is supplied), and \code{duplicateToReal} (a
 #'   named character vector, duplicate node id -> real individual id).
 #'   Under \code{edgeStyle = "rectilinear"}, an already-set edge
-#'   \code{color} (e.g. the twin connector's or the consanguinity
-#'   marker's) is preserved when the edge is kept as-is; a marked mate edge
-#'   that gets replaced by a right-angle projection currently falls back to
-#'   the generic routing color and width. Also \code{isolatedIds}, a
+#'   \code{color} and \code{width} (e.g. the twin connector's color, the
+#'   consanguinity marker's color and width) are kept, and a marked mate
+#'   line re-routed through a right-angle projection keeps them on both of
+#'   its new edges. Also \code{isolatedIds}, a
 #'   character vector of ids suppressed from \code{nodes}/\code{edges}
 #'   because they have no known parent, are never a parent, are not
 #'   connected by \code{twinRelations}, and have no mating in
@@ -3103,10 +3110,9 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   ## makePedigreeMatingLayout() since S555). A KEPT mate edge (both
   ## parents already at the unit's own gen, no D2 dogleg) keeps its width
   ## unchanged, same as color. A marked mate edge that DOES get D2-dogged
-  ## currently falls back to the generic width below (edgeStyle =
-  ## "rectilinear" propagation onto dogleg replacement edges is a
-  ## deferred follow-up, BACKLOG.md Housekeeping -- narrowed to direct
-  ## style only this session, owner-directed).
+  ## keeps its color and width too, on both of its new edges: the D2 loop
+  ## above records them by projId and the Track C override below applies
+  ## them (fixed S563; this comment corrected pedkindraw S97).
   if (!"width" %in% names(keptEdges)) {
     keptEdges$width <- rep(NA_real_, nrow(keptEdges))
   }
@@ -3123,8 +3129,8 @@ makePedigreeMatingLayout <- function(ped, edgeStyle = c("rectilinear",
   ## Harmless when twinRelations is absent: `names(keptEdges)` then has no
   ## `label` to select, so this extra column is simply never picked up.
   ## `width` (S549 Finding #2, fixed S555) is stamped NA here for the same
-  ## reason -- a new waypoint edge never inherits a marked mate edge's own
-  ## width (see the guard above and its own comment).
+  ## reason; the Track C override just below then gives a marked dogleg's
+  ## two edges the mate edge's own color and width (pedkindraw S97).
   newEdges <- if (length(newEdgeList) > 0L) {
     ne <- do.call(rbind, newEdgeList)
     ne$dashes <- rep(FALSE, nrow(ne))
