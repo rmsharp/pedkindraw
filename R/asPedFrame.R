@@ -3,7 +3,9 @@
 ## pedkindraw's own code, not copied from nprcgenekeepr (plan Phase 14,
 ## rulings R55-R57, pedkindraw S19; rulings R58-R59, pedkindraw S20; plan
 ## Phase 15c, the layout hints, rulings R62 and R73, pedkindraw S24; plan
-## Phase G15c, the declared matings, ruling R141, pedkindraw S67). New
+## Phase G15c, the declared matings, ruling R141, pedkindraw S67; backlog
+## :178, the relation rows read with Pedixplorer's accessors on S4Vectors
+## 0.52.0, ruling R171, pedkindraw S99). New
 ## code (R7), written from kinship2's help pages for pedigree(), autohint()
 ## and align.pedigree(), Pedixplorer's help pages for Pedigree(), Ped, Rel,
 ## Scales, Hints, auto_hint() and align(), and the objects each was measured
@@ -409,7 +411,14 @@ asPedFrame.Pedigree <- function(x, ...) {
   for (name in names(added)) ped[[name]] <- added[[name]]
   for (name in extraNames) ped[[name]] <- extra[[name]]
   rownames(ped) <- NULL
-  rel <- as.data.frame(Pedixplorer::rel(x))
+  ## Pedixplorer's accessors (?Rel), not as.data.frame(): a Rel extends
+  ## S4Vectors' Vector, and S4Vectors 0.52.0's as.data.frame() method for
+  ## Vector stops on it (Bioconductor 3.24; pedkindraw S99).
+  relRows <- Pedixplorer::rel(x)
+  rel <- data.frame(id1 = Pedixplorer::id1(relRows),
+                    id2 = Pedixplorer::id2(relRows),
+                    code = as.character(Pedixplorer::code(relRows)),
+                    stringsAsFactors = FALSE)
   matings <- .asPedFramePxMatings(rel, ped)
   list(ped = ped, twinRelations = .asPedFramePxTwins(rel),
        hints = .asPedFramePxHints(Pedixplorer::hints(x), ped, matings),
