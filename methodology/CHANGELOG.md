@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-27 · [BL-Phase 17] S102 (in progress): Phase 17o, session two, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S102's stub), `methodology/HANDOFFS.md` (S102's `status: pending` receipt) and this entry. The deliverable is Phase 17o's second session (`docs/planning/cran-submission-plan.md` section 17o; runbook sections 6-7): the cross-platform results folded into `cran-comments.md` and the plan. Documents only; the frozen package files are not touched.
+- **Commit/PR:** the S102 claim commit · **Session:** S102 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `1ea0d0a`, no ghost session, no merge; S101's receipt complete, its ratchet citation `dd3bb45ce615` matching the results file; win-builder's three queues held no pedkindraw file at 20:04 UTC).
+
 ### 2026-11-27 · [BL-Phase 17] S101 push 2: the close-out to GitHub, no CI run
 - **Change:** pushed `1d04ba0..3d0e5e4` (close-out 1 and 2), documents only, the head commit carrying the skip marker, so no workflow ran; R-hub's run (46055056615) had read the package files on GitHub, unchanged since `2456253`.
 - **Commit/PR:** the push of `3d0e5e4`; close-out 2b (this entry) · **Session:** S101 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `3d0e5e4`; `gh run list` showed no new run.

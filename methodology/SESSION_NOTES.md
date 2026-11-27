@@ -104,6 +104,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 102 Did
+**Deliverable:** Phase 17o, session two (`docs/planning/cran-submission-plan.md` section 17o; runbook sections 6-7):
+the cross-platform results folded into `cran-comments.md` and the plan (IN PROGRESS)
+**Started:** 2026-11-27 14:06 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "Fold in 17o results
+(Recommended)" (orient). Mark pasted win-builder's R-release email (folder `VGDuwIP07s13`, 1 NOTE, 219 s).
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 101 Did
 **Deliverable:** Phase 17o's first session: `cran-comments.md`, the run list, R-hub's workflow, and D9. DONE
 (R173); the runs started by Claude on Mark's D9 pick (the macOS builder answered 502 and has not run).
