@@ -194,7 +194,9 @@ issues).*
       (dragon 43). The fix's form (Pedixplorer's method called directly, or the table built from `rel(x)`'s slots)
       is a guess until measured, as is whether `renv.lock` moves to Bioconductor 3.24 (Learning 3's traps). CI: since
       S98 the jobs install one Bioconductor release each (`:178`, done), so a job meets this when pak gives its R
-      version Bioconductor 3.24 (R-devel did at S98; R 4.6 still had 3.23, Bioconductor's own map says 3.24).
+      version Bioconductor 3.24 (R 4.6 still had 3.23 at S98; Bioconductor's own map says 3.24). R-devel did at S98
+      (run 45930893462, job 140283002458, r90991): S4Vectors 0.52.0 built, then `R CMD build` stopped re-building
+      `vignettes/drawing.Rmd` at its chunk `:593`-`:602` with this error, before the check began.
 
 - [ ] **The Windows CI job warns that `install-dependencies` is for Linux only** (READY, Effort S; found S11; moved
       here S95 from the CI-notices item, done) -- `browser-actions/setup-chrome@v2`'s `install-dependencies: true`
@@ -213,6 +215,11 @@ issues).*
       S97: the first on oldrel-1 (run 45921649070, job 140253524596, attempt 1): `test_savePedigreeDiagram.R:381`,
       a PDF save at `width = 7`, "port not open after 60 seconds" at `.renderPicture()`'s start (`:310`), an
       `org.chromium.Chromium.*` folder left (Chrome for Testing 158.0.8127.88); so 5 of 6 on Ubuntu, 1 on oldrel-1.
+      S98: **the first at a save's first start**, the recording's (run 45930893462, job 140283002437, Ubuntu release,
+      attempt 1): `test_savePedigreeDiagram.R:575`, `.recordDiagramSvg()` (`R/savePedigreeDiagram.R:137`) to
+      `.startChrome()` (`:185`, `chromote::Chrome$new()` at `:381`), "port not open after 60 seconds", a folder left
+      (the same Chrome); so 6 of 7 at `.renderPicture()`'s start, 1 at the recording's, and the title's "second
+      start" no longer covers every case.
       S93 added a 60 s start wait (R166): an 11-s-slow stand-in passes, a hung Chrome does not. **Next (Mark's
       pick):** a diagnostic push, as S91's for the Windows hang (`89e28f1`; dragon 35): on the runners, many starts
       of each kind (with and without `--disable-lcd-text`, right after a close and alone), on release and oldrel-1,

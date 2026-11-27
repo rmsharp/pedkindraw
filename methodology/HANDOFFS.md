@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S98
 date: 2026-11-26
-status: pending
-active_task: backlog :178, Ubuntu devel's CI job fails building S4Vectors before pedkindraw is checked. Claimed.
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: backlog :178 DONE (R170): two Bioconductor releases in one install (renv's lock's 3.23 beside pak's 3.24); every CI job that installs packages keeps renv off. Found: asPedFrame() stops on Bioconductor 3.24's S4Vectors 0.52.0 (backlog :178, a CRAN blocker). Next by Mark's pick: :178 (the converter), then 17n.
+what_was_done: claim 542b47a; RED b28302b; GREEN b3d54c8; close-out 1 19e8dea (pushed: run 45930893462, Ubuntu release rerun once).
+next_steps: BACKLOG :178 (the converter): build the Bioconductor 3.24 scratch library by its recipe, RED tests failing there, the fix measured on 3.22, 3.23 and 3.24 before the picker; SESSION_NOTES.md What You Must Do 2.
+key_files: methodology/BACKLOG.md:178; R/asPedFrame.R:383, :412; vignettes/drawing.Rmd:593; .github/workflows/R-CMD-check.yaml:45; docs/planning/cran-submission-plan.md:1052, :1343.
+gotchas: local runs use renv's Bioconductor 3.23, CI current CRAN and pak's release (dragon 43); pak's map lags Bioconductor's, so CI's R 4.6 jobs meet the converter when it moves; S98's Chrome hang was at a save's first start (:207).
+runtime_smoke: CI run 45930893462: R-devel installed Bioconductor 3.24 alone and S4Vectors 0.52.0 built, then stopped at drawing.Rmd's Pedixplorer chunk (the converter). quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1
+changelog_ref: CHANGELOG.md "2026-11-26 · [BL-Phase 17] S98: backlog :178 DONE" and its push entries
 commit: pending
 ```
 ```handoff
