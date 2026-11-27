@@ -1094,8 +1094,12 @@ session re-runs section 2.4's parse of the calls on its own tree first (the coun
   `timeOne.R` and `drawOne.R`, a fresh process per run, a warm-up and 3 measured runs per build, the builds
   alternated: every cell of 0.3 s or more within -2.6% to +3.0%, inside its own runs' spread (up to 6.0%), the
   millisecond cells within 1 ms; so no time on the page moves (the A/B's load average 2.0-8.8). `uptime` with every
-  run: load average 2.0-14.8 across them (covr's end the highest). **CI:** run on this phase's close-out 1 push (its
-  reading in the next line).
+  run: load average 2.0-14.8 across them (covr's end the highest). **CI** (close-out 1 `93d7819`, pushed without the
+  skip marker; the package files as checked here): R-CMD-check run 46043167677 5/5 Status OK: Ubuntu release
+  (Bioconductor 3.23) `PASS 17088`, Ubuntu devel (3.24: S4Vectors 0.52.0, Pedixplorer 1.10.0) `17088`, Ubuntu
+  oldrel-1 (3.22) `17088`, Windows `17087`; macOS failed `test_pedigreeAppBrowser.R:103` at attempt 1 (the click
+  flake, backlog `:239`) and read Status OK at its rerun (`PASS 17099`). pkgdown run 46043167481 and the site's
+  deployment 46043477801 success. quality_ratchet 7/7 at `93d7819` (results `dd3bb45ce615`).
 
 ### Phase 17o. `cran-comments.md` and the cross-platform runs (two sessions and Mark's runs)
 

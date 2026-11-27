@@ -10,92 +10,92 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17m DONE (S33-S96); the gap
-phases G1-G17 DONE (S42-S77); S97's and S98's items DONE (R169, R170). **Backlog `:178`, `asPedFrame()` on
-Bioconductor 3.24's S4Vectors 0.52.0, DONE (S99, R171):** a Pedixplorer `Rel` extends S4Vectors' `Vector`, and a
-plain `as.data.frame()` on it went through S4Vectors' S3 method for `Vector`, which stops on it from 0.52.0;
-`.asPedFramePedixplorer()` now builds the relation table from Pedixplorer's accessors `id1()`, `id2()`, `code()`
-(`R/asPedFrame.R:417`-`:421`), and a stand-in test copies 0.52.0's stop on the lock's 3.23
-(`tests/testthat/test_asPedFrameS4Vectors.R`). On 3.24 the 29 test files naming Pedixplorer read 0 errors (21
-before) and `R CMD build`/`check --as-cran` R16's NOTE. No NEWS line (Mark's pick: no released version stopped).
-`renv.lock` stays at 3.23; **moving it to 3.24 is backlog `:178`** (the new item at the old one's place).
-**Next:** Phase 17n, the full local gate (`docs/planning/cran-submission-plan.md:1052`), which freezes the tree;
-the lock move, if Mark wants it before the submission, has to come before 17n (it changes `renv.lock`).
-**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed `2456253` (close-out 1,
-without the skip marker): R-CMD-check run 45946860858 5/5 Status OK, macOS at its rerun (`:236`'s flake); Ubuntu
-devel on Bioconductor 3.24 built `drawing.Rmd` and passed, where S98's run stopped. Close-out 2 pushed after it
-(the skip marker, no run).
-**The orient picker:** "(Recommended)" on 17n (the plan's order; no pick of Mark's names a task before it); then the
-lock move `:178` named on its own as the one item that must precede 17n if wanted; the rest grouped and named (34
-items, `grep -n '^- \[ \]' methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:159`,
-`:168`, `:190`, `:242`, `:249`, `:255`, `:269`, `:274`, `:286`, `:302`, `:321`; READY by Mark's pick `:196` (the
-Chrome diagnostic); NEEDS DECISION `:64`, `:72`, `:81`, `:94`, `:218`, `:236`, `:292`, `:312`; "Waiting on Mark"
-`:122`, `:129`, `:136`, `:148`. Not offered: `:105` (a session Mark starts in nprcgenekeepr, R101's exception),
-`:20` and `:116` (BLOCKED). Name every item.
+phases G1-G17 DONE (S42-S77); S97-S99's items DONE (R169-R171). **Phase 17n, the full local gate, DONE (S100,
+R172):** every item of its list met on the package files as at `2456253` (17n's DONE paragraph,
+`docs/planning/cran-submission-plan.md:1062`), Bioconductor 3.24 checked beside the lock's 3.23, the speed page's
+times unmoved (A/B of every changed timed cell), and `R/savePedigreeDiagram.R:410`-`:411` (`.closeChrome()`'s kill
+and wait, reached only on Windows) recorded as covr's 8th and 9th unrun statements by Mark's pick. **The tree is
+frozen:** after 17n only 17o's results and 17q's version move change it; any change to `R/`, `tests/`, `vignettes/`,
+`man/`, `inst/` or `DESCRIPTION` reopens 17n (its suite, checks and coverage again, about 1.5 h).
+**Next:** Phase 17o, session one (`docs/planning/cran-submission-plan.md:1104`): write `cran-comments.md` (a new
+submission; the R CMD check results; the test environments; no reverse dependencies; R16's NOTE explained; marked
+lines for the runs' results) and the run list (win-builder R-devel, R-release, R-oldrelease; the macOS builder;
+R-hub), then D9 (who runs them: Mark, or Claude with his approval) as a picker. Session two folds in the results.
+**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed `93d7819` (close-out 1,
+without the skip marker): R-CMD-check run 46043167677 5/5 Status OK, macOS at its rerun (`:239`'s flake,
+two pushes in a row); pkgdown and the site's deployment success. Close-out 2 pushed after it (the skip marker, no
+run).
+**The orient picker:** "(Recommended)" on 17o (the plan's order; no pick of Mark's names a task before it). The
+lock move `:178` no longer has to come first (`renv.lock` is outside the tarball), but it changes every local run
+after the freeze: name it on its own. The rest grouped and named (34 items, `grep -n '^- \[ \]'
+methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:159`, `:168`, `:193`, `:246`, `:253`,
+`:259`, `:273`, `:278`, `:290`, `:306`, `:325`; READY by Mark's pick `:199` (the Chrome diagnostic); NEEDS DECISION
+`:64`, `:72`, `:81`, `:94`, `:221`, `:239`, `:296`, `:316`; "Waiting on Mark" `:122`, `:129`, `:136`, `:148`. Not
+offered: `:105` (a session Mark starts in nprcgenekeepr, R101's exception), `:20` and `:116` (BLOCKED). Say that a
+code item now reopens 17n. Name every item.
 **Session boundary:** one session, then close out.
-**Priority:** HIGH (17n-17q are the submission).
+**Priority:** HIGH (17o-17q are the submission).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**; S99 changed no copied file:
-   `R/asPedFrame.R` is pedkindraw's own); nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log
-   --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename
-   | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`) and nprcgenekeepr at
-   `3e06730c5`, unless Mark has run `:105` or `:242` there (then update `DIVERGENCE.md` as R101 says).
-2. **17n** (if picked): read `docs/planning/cran-submission-plan.md:1052` in full first, and dragons 43 and 44
-   (`:1343`, `:1353`): the local gate runs on renv's Bioconductor 3.23, so repeat S99's 3.24 check beside it
-   (BACKLOG `:178`'s recipe; the 29 files naming Pedixplorer, then `R CMD build` and `check --as-cran` with the
-   scratch library in front of renv's).
-3. **`:178`, the lock move** (if picked, before 17n): read the item; Learning 3's traps in order (the dated CRAN
-   repository set first, each package by name with `rebuild = TRUE`, `renv::snapshot(dev = TRUE)`, the
-   `renv-lock-no-latest-repository` gate); renv's way of changing the Bioconductor release is unmeasured, so
-   measure it in a scratch copy of the project before the picker (Learning 17).
-4. **CI on every push:** five jobs, without renv (current CRAN; Bioconductor by pak). Known flakes: `:196` (a hung
-   Chrome start), `:218` (a blank PDF), `:236` (the app's click, macOS). Rerun a failed job once (`gh run rerun
-   <run> --job <id>`, after the run ends), then list the rerun's jobs by attempt (`gh api
-   repos/rmsharp/pedkindraw/actions/runs/<run>/attempts/2/jobs`); read logs through the jobs API (`curl -sSL -H
-   "Authorization: Bearer $(gh auth token)" https://api.github.com/repos/rmsharp/pedkindraw/actions/jobs/<id>/logs`);
-   a failing install's `Repo status` table names each package's repository (dragon 43). Watch a run with a Monitor
-   loop on `gh run view <run> --json status,conclusion,jobs` (45 s).
-5. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**); nprcgenekeepr's log on the copied files,
+   `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R
+   tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`,
+   `392dd347e`, `471589138`) and nprcgenekeepr at `3e06730c5`, unless Mark has run `:105` or `:246` there (then
+   `DIVERGENCE.md` as R101 says, and say whether it touches the frozen tree).
+2. **17o** (if picked): read `docs/planning/cran-submission-plan.md:1104` (17o), 17n's DONE paragraph (`:1062`, the
+   check results and environments `cran-comments.md` states), section 4.4 (the nprcgenekeepr notes "for the record,
+   not for CRAN"), dragons 8, 10, 11 and 34-36 (win-builder's spread and queue; URLs; pkgdown skips
+   `cran-comments.md`), and D9 in section 7. `.Rbuildignore` already lists `cran-comments.md` and `CRAN-SUBMISSION`
+   (17l). Build the tarball to upload from a `git archive` of the frozen commit (17n's recipe), and give its SHA-256.
+   nprcgenekeepr's `cran-comments.md` (3,328 B, in the clone) is a model, but it opens "This is an update from 2.0.0":
+   pedkindraw's is a new submission.
+3. **CI on every push:** five jobs, without renv (current CRAN; Bioconductor by pak). Known flakes: `:199` (a hung
+   Chrome start), `:221` (a blank PDF), `:239` (the app's click, macOS). Rerun a failed job once (`gh run rerun <run>
+   --job <id>`, after the run ends), list the rerun's jobs by attempt (`gh api
+   repos/rmsharp/pedkindraw/actions/runs/<run>/attempts/2/jobs`), read logs through the jobs API; watch with a
+   Monitor loop on `gh run view <run> --json status,conclusion,jobs` (45 s).
+4. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
-- **Local runs use renv's lock (Bioconductor 3.23); CI does not.** A local pass says nothing about 3.24: S99's
-  scratch recipe (BACKLOG `:178`) took under 2 minutes. Start a scratch Rscript from the project's folder with
-  `RENV_CONFIG_AUTOLOADER_ENABLED=false`, `RENV_PROJECT` unset and `R_LIBS`/`R_LIBS_USER` set, or `.Rprofile` takes
-  over.
-- **Bioconductor 3.22 cannot be built here:** S4Vectors 0.48.1 needs `Rf_findVar`, gone from R 4.6's API, and R
-  4.5's framework launcher (`/Library/Frameworks/R.framework/Versions/4.5-arm64`) points `R_HOME_DIR` at the
-  current R, so even a launcher copy with its own `R_HOME` compiled against 4.6's headers. CI's oldrel-1 is the
-  only 3.22 check (dragon 44). Pedixplorer 1.6.0 does install on R 4.6.2 over the lock's S4Vectors 0.50.3.
-- **`UseMethod()` finds a method in the generic's own namespace before the S3 table:** to wrap or stand in for a
-  method of pedkindraw's, replace the namespace binding (`unlockBinding()`, `assign()`); `registerS3method()` alone
-  caught 0 of 550 calls. For another package's method (S4Vectors' `as.data.frame.Vector`), the S3 table is what
-  dispatch reads, so `registerS3method()` works (S99's stand-in).
-- **R CMD check's URL check can read a transient 503 from GitHub** (S99, once, README's `DIVERGENCE.md` link; 200
-  three times after): rerun before calling the NOTE new.
-- **chromote prints "[warning] got non-close frame while closing"** and sometimes "Unhandled promise error: ...
-  Browser.close" after a Chrome test; testthat counts no warning for either (WARN 0).
-- **Carried:** write `"${VAR:?}"` in `rm -rf`; zsh does not split an unquoted variable (S99 met it again: use an
-  array, `"${FILES[@]}"`); a calling handler set outside `try()` never runs; the README render needs a scratch
-  install; the skip marker (a push whose head commit holds it runs no workflow); a Chrome test can error under load,
-  so run the full suite alone; the check without suggested packages needs a scratch R home; CRAN's DESCRIPTION
-  spell check reads `.aspell/` (dragon 39); a CRAN check runs only 21 test files (list a new test file in
+- **Say why before running a check the plan does not list** (S100: Mark asked "Why are we testing on bioconductor?"
+  mid-run). The 3.24 check's reason: Pedixplorer is a Bioconductor package in Suggests; CRAN's R 4.6 machines
+  install Bioconductor's current release (3.24), the lock has 3.23, and no CI job pairs R 4.6 with 3.24.
+- **The depends-only check needs a scratch R home** (dragons 6 and 45): inside renv `.Library` is renv's sandbox (29
+  packages), while R's own library holds 257. Recipe (S100): symlinks to `R.home()`'s entries but `bin` and
+  `library`; `bin/` links but a copy of `bin/R` with `R_HOME_DIR` set to the scratch home; `library/` links to the 29
+  standard packages; run `<home>/bin/R CMD check` with `RHOME=<home>` (or a check's `Rscript` children start R's own
+  home), `_R_CHECK_DEPENDS_ONLY_=true`, `R_LIBS`/`R_LIBS_USER` renv's library, `RENV_PROJECT` unset.
+- **Local runs use renv's lock (Bioconductor 3.23); CI does not.** The 3.24 check (17n's DONE paragraph): the three
+  tarballs from `https://bioconductor.org/packages/3.24/bioc/src/contrib/`, MD5 against its `PACKAGES`, `R CMD
+  INSTALL -l <lib>` BiocGenerics first, then Rscript from the project's folder with `R_LIBS`/`R_LIBS_USER`
+  `<lib>:<renv library>`, `RENV_CONFIG_AUTOLOADER_ENABLED=false`, `RENV_PROJECT` unset. About 10 minutes in all.
+- **The timing harness's `timeOne.R` and `drawOne.R` time one cell of any build** (`PKD_LIB=<lib> Rscript
+  tools/timing/timeOne.R <case> <pedigree>`); `runTiming.R`/`runDrawingTiming.R` refuse a build that is not the
+  checked-out commit. S100's A/B script is in its scratchpad (gone with it); the timing plan's amendments say how.
+- **covr's `tally_coverage(by = "expression")` has no `line` column** (`first_line`); `as.data.frame()` of a coverage
+  object needs covr's namespace loaded.
+- **R CMD check's URL check can read a transient 503 from GitHub** (S99): rerun before calling the NOTE new.
+- **chromote prints "[warning] got non-close frame while closing"** after a Chrome test; testthat counts no warning.
+- **Carried:** write `"${VAR:?}"` in `rm -rf`; zsh does not split an unquoted variable (use an array); a calling
+  handler set outside `try()` never runs; the README render needs a scratch install; the skip marker (a push whose
+  head commit holds it runs no workflow); a Chrome test can error under load, so run the full suite alone; CRAN's
+  DESCRIPTION spell check reads `.aspell/` (dragon 39); a CRAN check runs only 21 test files (list a new test file in
   `tests/testthat/slowTestFiles.txt`); Rscript inside `tests/testthat/` loads no renv; backslashes in `Rscript -e`
   go in a file; the 5-file cap splits commits; never commit `tests/testthat/_problems/`; `CLAUDE.md` is over its
-  budget (learnings go to the cran plan's dragons, now 44); `methodology/HANDOFFS.md` 243,744 B after S99, about
-  18 KB under the 262,144 B size where a default read returns nothing (backlog `:312`): keep the receipt short; the
-  full suite takes about 10.2 min, the ratchet's run about 12.
+  budget (learnings go to the cran plan's dragons, now 45); `methodology/HANDOFFS.md` 245,081 B after S100,
+  about 17 KB under the 262,144 B size where a default read returns nothing (backlog `:316`): keep the
+  receipt short; the full suite takes about 10 min, the ratchet's run about 12, covr about 13.
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
-- S99 (DONE): `R/asPedFrame.R:417`-`:421` (the table from the accessors, its comment at `:414`), `:477`
-  (`.asPedFramePxTwins()`), `:485` (`.asPedFramePxMatings()`), `:385` (`.asPedFramePedixplorer()`);
-  `tests/testthat/test_asPedFrameS4Vectors.R:21` (`.localStoppingVectorDataFrame()`), its tests `:48`, `:63`, `:84`,
-  `:105`; `tests/testthat/slowTestFiles.txt:22`; R171 `docs/planning/standalone-pedigree-package-plan.md:356`;
-  dragon 44 `docs/planning/cran-submission-plan.md:1353`.
+- S100 (DONE): 17n's DONE paragraph `docs/planning/cran-submission-plan.md:1062`; dragon 45 `:1403`; the timing
+  plan's 17n list `docs/planning/pedkindraw-timing-plan.md:687`; R172
+  `docs/planning/standalone-pedigree-package-plan.md:357`; the two Windows-only lines `R/savePedigreeDiagram.R:410`
+  (in `.closeChrome()`, `:401`), their test `tests/testthat/test_savePedigreeDiagram.R:627`.
+- 17o: `docs/planning/cran-submission-plan.md:1104`; D9 in section 7; dragon 11 `:1214` (pkgdown and
+  `cran-comments.md`); `.Rbuildignore`.
 - `:178`, the lock move: `methodology/BACKLOG.md:178`; `renv.lock` (its `Bioconductor` block, 3.23);
   `renv/settings.json` (`bioconductor.version: null`).
-- 17n: `docs/planning/cran-submission-plan.md:1052`; CI `.github/workflows/R-CMD-check.yaml:27`-`:33` (the matrix),
-  `:45` (renv off).
 
 ### How You Will Be Evaluated
 The user rates every session's handoff. Your handoff will be scored on:
@@ -110,13 +110,51 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 100 Did
-**Deliverable:** Phase 17n, the full local gate (`docs/planning/cran-submission-plan.md` section 17n), with S99's
-Bioconductor 3.24 check beside it; after it the tree freezes (IN PROGRESS)
-**Started:** 2026-11-27 10:23 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17n: full local gate
-(Recommended)" (orient).
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+**Deliverable:** Phase 17n, the full local gate. DONE (R172): every item of its list met; the tree is frozen.
+**Started:** 2026-11-27 10:23 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option):**
+"17n: full local gate (Recommended)" (orient); "Record them; 17n done (Recommended)" (coverage). Mark asked mid-run
+"Why are we testing on bioconductor?"; answered (Gotchas, first item), the run kept.
+**Commits:** claim `fa799c5`; close-out 1 `93d7819` (pushed without the skip marker: R-CMD-check run 46043167677,
+pkgdown run 46043167481); close-out 2 (these notes, the receipt, the ledger), pushed after.
+**Measured (all on a `git archive` of `fa799c5`, the package files as at `2456253`):** `R CMD check --as-cran`
+Status 1 NOTE (R16's), CRAN-mode `[ FAIL 0 | WARN 0 | SKIP 26 | PASS 2697 ]` 27.9 s, the check 93 s, tarball SHA-256
+`abb78758…22dcfe3c`; depends-only under a scratch R home, CRAN mode Status 1 NOTE (`SKIP 58`, `PASS 1343`) and
+`NOT_CRAN=true` Status 1 NOTE (`SKIP 225`, `PASS 11807`); suite (`NOT_CRAN=true`) 109 files, 1,232 tests, 17,353
+expectations, 0 failed, 0 errors, 0 skipped, WARN 0, 603 s; lint 0; roxygen unchanged; covr 9 of 3,802 never run
+(17j's 7, now `R/makePedigreeDiagramData.R:821`, `:1241`, `:1548`, `:1600`, `:3014`, `R/orderRootSubtrees.R:118`,
+`:131`; and `R/savePedigreeDiagram.R:410`-`:411`); drift 91 / 23 / 0 and nprcgenekeepr's 4 commits at Orient and
+end; fidelity 600 of 600, kinship difference 0; Bioconductor 3.24 (scratch library): 29 Pedixplorer test files 367
+tests 0 failed, `R CMD build` ran `drawing.Rmd`'s Pedixplorer chunk, check Status 1 NOTE, `PASS 2697`; the speed
+page: 18 files changed since `14145a4`, sorted by parsing (12 help only, 2 code outside timed calls, 3 in timed
+calls), the changed timed cells A/B at `7f13d98` and HEAD -2.6% to +3.0% for cells of 0.3 s or more, inside their
+runs' spread, millisecond cells within 1 ms. Load average 2.0-14.8 across the runs. quality_ratchet 7/7 at `93d7819` (results `dd3bb45ce615`).
+**CI:** R-CMD-check run 46043167677: Ubuntu release (Bioconductor 3.23) `PASS 17088`, Ubuntu devel (3.24) `17088`,
+Ubuntu oldrel-1 (3.22) `17088`, Windows `17087`, each Status OK; macOS failed `test_pedigreeAppBrowser.R:103` at
+attempt 1 (the click flake, `:239`) and read Status OK at its rerun (`PASS 17099`); pkgdown run 46043167481 and the
+site's deployment 46043477801 success.
+
+#### Session 99 Handoff Evaluation (by Session 100)
+**Score: 9/10.** ROI high: Orient, the orient picker and the gate's plan ran from its notes.
+- **What helped:** What You Must Do 1 (91 / 23 / 0, the 4 commits, `3e06730c5`, each exact); the orient picker's 34
+  items, each at its stated line, and the "(Recommended)" on 17n; "read `:1052` in full first, and dragons 43 and
+  44" (both lines exact); the 3.24 check named as the one thing 17n's list lacks; the gotcha on starting a scratch
+  Rscript (`RENV_CONFIG_AUTOLOADER_ENABLED=false`, `RENV_PROJECT` unset), which worked first time; "the
+  check without suggested packages needs a scratch R home".
+- **What was missing:** where the scratch R home's recipe is (the cran plan's `:1001` gives it in one clause; the
+  steps are in nprcgenekeepr's plan, its Phase 4); that `17h2's commit` is `14145a4` (found in the timing plan); why
+  the 3.24 check runs, in words Mark could read (he asked).
+- **What was wrong:** "BACKLOG `:178`'s recipe": S99's close-out 1 replaced that item, so `:178` holds no recipe; it
+  was in `git show 2456253^:methodology/BACKLOG.md`, found in a minute.
+- **ROI:** high.
+
+**Self-assessment: 8/10.**
++ Orient in full, the claim before any work; every 17n item measured, each run alone where Chrome or timing was
+  involved; renv's sandbox caught before it made the depends-only check unfaithful, and `RHOME` added to the recipe
+  (dragon 45); the speed page's "can a time change" answered by an A/B of every changed timed cell, not by reading;
+  the coverage gap put to Mark with what was measured and what only inferred.
+- **The 3.24 check ran without a word on why** until Mark asked; a gotcha now says to state it first.
+- **Slips caught before commit:** covr's summary used a column that does not exist (the saved object listed the 9);
+  the plan's first draft said load 2.0-8.8 for all runs (covr ended at 14.8) and left out `DESCRIPTION`'s changes.
 
 ### What Session 99 Did
 **Deliverable:** backlog `:178`, `asPedFrame()` stopping on every Pedixplorer object with Bioconductor 3.24's
@@ -223,58 +261,3 @@ it stopped earlier than the predicted example, at the vignette in `R CMD build`.
   versions, the comparison the log already offered.
 - **Slips caught before commit:** dragon 43 said "S19" (S20, `c43b36a`, added Bioconductor 3.23) and "9 weeks" (8
   days since S49); a calling handler placed outside `try()` caught nothing; a backslash in `Rscript -e`, warned of.
-
-### What Session 97 Did
-**Deliverable:** backlog `:186`, what 17m's check of NEWS found outside NEWS (five findings), strict TDD. DONE (R169):
-the app reads files separated by commas, tabs or semicolons; its deceased mark reads nprcgenekeepr's status words and
-names any other value; `savePedigreeDiagram()` takes the widget's pixel width; a stale help sentence, two comments and
-a JavaScript comment's figures corrected.
-**Started:** 2026-11-26 16:12 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option where
-one was):** ":186 NEWS findings (Recommended)" (orient); "Read all three", "More words; name the rest", "Use the
-widget's width"; "Yes, proceed to RED"; "Yes, proceed to GREEN"; after the RED gate, before any GREEN code, "Back to
-RED for it" (the quote rule's test passed on a tie); "Yes, REFACTOR".
-**Commits:** claim `1a39485`; RED `019e9d4` (items 1, 4), `73290fb` (5, 2); RED 3 `7812fd0`; GREEN `3fb71fb` (1, 4),
-`3433daf` (5), `4f2f571` (2, 3: help and comments only); REFACTOR `4684b76` (one status reader); close-out 1 `b464c80`
-(pushed without the skip marker: run 45921649070, its oldrel-1 job rerun once); close-out 2 (these notes, the receipt, the ledger), pushed after it.
-**Measured:** a tab- or semicolon-separated `.txt` or `.csv` read as 1 column; nprcgenekeepr's app asks for the
-separator (Comma, Semicolon, Tab) and its `convertStatusCodes()` reads 1 as alive and 2 as deceased, which the app
-read reversed, its D and A both living; a scratch reader that splits by the first line's most columns read the sample
-written three ways `identical()`, the app's 5 test files passing on it (69 tests); in Chrome, a widget of 1400 px
-saved 10 in and with the prototype 14.58 in; S88's dogleg tests (4, 18 expectations) and R162 answered item 2 without
-a new drawing (a sire-daughter mating drew the sire twice, no dogleg); R's `count.fields()` and `scan()` honour a quote
-mid-field; a reader ignoring quotes passed RED 1's quote test and failed RED 3's.
-**Verified:** RED: 9 new tests failing (26 expectations and an error), the 90 already in their files passing, WARN 0;
-RED 3 on this tree, the prototype and the quote-ignoring reader (fail, pass, fail). GREEN: full suite (`NOT_CRAN=true`)
-107 files, 1,225 tests, 17,331 expectations, 0 failed, 0 errors, 0 skipped, WARN 0 (10.2 min); `R CMD check --as-cran`
-Status 1 NOTE (R16's), CRAN-mode `[ FAIL 0 | WARN 0 | SKIP 26 | PASS 2697 ]`, 95 s; the real app in Chrome (a scratch
-test, 5 expectations): the sample tab-separated with a 1/2 status column, 375 drawn, 3 twin pairs from `twins.txt`,
-the column left out naming '2', 0 deceased; semicolon-separated with died/alive, 37 of 37 deceased, no note; covr: 18
-of 18 statements on the lines S97 changed run; lint 0; roxygen unchanged; spelling 0; drift 91 / 23 / 0, the copied
-file's parsed code `identical()` to HEAD's. REFACTOR: outputs on 16 columns and 11 drawings `identical()` before and
-after. quality_ratchet 7/7 at `b464c80` (results `dd3bb45ce615`).
-
-#### Session 96 Handoff Evaluation (by Session 97)
-**Score: 9/10.** ROI high: Orient, the item's reading and the first measurements ran from its notes.
-- **What helped:** Mark's pick under "Next" (the orient picker followed it); What You Must Do 1 (91 / 23 / 0, the 4
-  commits, `3e06730c5`, each exact) and 2's sorting of the five findings (1, 4 and 5 Mark's, 2 drawn first, 3 a
-  comment, the test and NEWS lines a word change touches); every key-file line exact at `0201a46` (`R/pedigreeApp.R:124`,
-  `:752`, `:755`, `:458`, `R/runPedigreeApp.R:19`, `R/savePedigreeDiagram.R:124`, `R/makePedigreeDiagramData.R:2189`,
-  `:3105`, the "fixed S563" comments at `:3028` and `:3137`, `recordCanvas.js:12`-`:14`); the gotchas on `"${VAR:?}"`,
-  zsh's word splitting and the six NEWS-word test files.
-- **What was missing:** that S88's `test_addRectilinearWaypointsDogleg.R` and R162 already show item 2: a re-routed
-  mate line keeps its marker, and no drawing re-routes one, so "draw one before changing the words" could not be done
-  by drawing (my first drawing did not reach the dogleg). Found in minutes by searching the tests.
-- **What was wrong:** nothing.
-- **ROI:** high.
-
-**Self-assessment: 8/10.**
-+ Orient in full, the claim before any work; every picker measured first (nprcgenekeepr's app and status words, a
-  scratch reader on the app's own tests, the widths in Chrome, the dogleg's tests); all 9 tests drafted and run on
-  HEAD and on a prototype, the help and NEWS wording included, before the RED gate; the quote test's tie found before
-  any GREEN code and put to Mark; GREEN verified by the full suite, `R CMD check`, the real app in Chrome and coverage
-  of every changed line; the REFACTOR proved by `identical()` outputs.
-- **RED 1's quote test checked less than its title said** (a tie): its draft was run against HEAD and the right
-  prototype, not a wrong one (dragon 42); cost RED 3 and one picker.
-- **Slips caught before commit:** an unguarded `rm -f` refused once and a zsh `set -- $pair` loop, both warned of in
-  the handoff; a server draft placed where `.withAppGen()` is not defined; the JavaScript comment's first wording
-  ("their legends") said more than the plan's line 550; two key-file citations off by 1 and 4, re-found.

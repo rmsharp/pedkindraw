@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S100
 date: 2026-11-27
-status: pending
-active_task: Phase 17n, the full local gate (docs/planning/cran-submission-plan.md section 17n). Claimed.
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: Phase 17n DONE (R172): the full local gate met on the package files as at 2456253; Bioconductor 3.24 checked beside 3.23; the speed page's times unmoved; R/savePedigreeDiagram.R:410-411 (Windows-only) recorded by Mark's pick. The tree is frozen. Next: 17o.
+what_was_done: claim fa799c5; close-out 1 93d7819 (pushed: run 46043167677 5/5 Status OK, macOS rerun once; pkgdown OK).
+next_steps: Phase 17o session one (docs/planning/cran-submission-plan.md:1104): cran-comments.md and the run list, then D9 as a picker; SESSION_NOTES.md What You Must Do 2.
+key_files: docs/planning/cran-submission-plan.md:1062, :1104, :1403; docs/planning/pedkindraw-timing-plan.md:687; R/savePedigreeDiagram.R:410.
+gotchas: any change to R/, tests/, vignettes/ or DESCRIPTION reopens 17n; the depends-only check needs the scratch R home with RHOME set (dragon 45); say why before a check the plan does not list.
+runtime_smoke: R CMD check --as-cran Status 1 NOTE (R16's); depends-only and Bioconductor 3.24 checks 1 NOTE; CI 5/5. quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1
+changelog_ref: CHANGELOG.md "2026-11-27 · [BL-Phase 17] S100: Phase 17n DONE" and its push entries
 commit: pending
 ```
 ```handoff
