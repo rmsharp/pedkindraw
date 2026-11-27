@@ -684,6 +684,25 @@ copy). Commands run from the root with renv's library and `RENV_PROJECT` unset u
   with whether it can change a time on the page.
   S86 (17i2, GREEN 1 `4940df9`) moved `R/`'s tree from `ac123b7` to `3bab425`: help text in `R/drawPedigreeDiagram.R`
   and `R/pedkindraw-package.R` only, the parsed code identical, so no time on the page can change.
+  **17n's list (S100, at `fa799c5`, `R/` tree `6417138`):** `git diff 14145a4 -- R DESCRIPTION NAMESPACE`, 18 files,
+  each `R/` file's top-level code parsed at both commits and compared. Help or comments only (parsed code identical),
+  so no time can change: `R/affectedConditions.R`, `R/carrierMark.R`, `R/deceasedSlash.R`, `R/drawPedigreeDiagram.R`,
+  `R/evaluatedMark.R`, `R/markColumns.R`, `R/miscarriageMark.R`, `R/pedkindraw-package.R`, `R/probandMark.R`,
+  `R/removeAnimals.R`, `R/runPedigreeApp.R`, `R/spacing.R`. Code changed, but in no timed call: `R/conditionColors.R`
+  (S95: `.checkConditionColors()`'s error messages, US spelling); `R/pedigreeApp.R` (S97: the app's file reader and
+  deceased column; no case runs the app). Code changed in timed calls, so a time could change: `R/asPedFrame.R` (S99:
+  the relation rows read with Pedixplorer's accessors; `pkd_frame_pdx`); `R/makePedigreeDiagramData.R` (S89, R163:
+  `makePedigreeMatingLayout()`, `.buildMatingUnitForest()`, `.positionMatingUnitForest()`, a parent with no row and
+  a repeated id; `pkd_page`, `pkd_page_direct` and the saves' prepared widgets); `R/savePedigreeDiagram.R` (S91's
+  `.closeChrome()`, S93's `.startChrome()`, S97's width from the widget, which the timed widgets, having no pixel
+  width, leave at 960 px; `pkd_svg`, `pkd_pdf`, `pkd_png`). `DESCRIPTION`: the version, the Description text, `Depends:
+  R (>= 4.5.0)`, `ps` in Suggests; `NAMESPACE` unchanged. **Measured:** those cells at the record's code (`7f13d98`)
+  and at HEAD, each with the harness's `timeOne.R` or `drawOne.R` (the R part) in a fresh process, one warm-up and 3
+  measured runs per build, the builds alternated; `pkd_frame_pdx` at 300, 1,000, 10,000 and 100,000, the page cases
+  at rhesus375, 300 and 1,000, the saves at rhesus375 and 300, `pkd_data` at 3,000 (load average 2.0-8.8). Every cell
+  of 0.3 s or more within -2.6% to +3.0% (the page at 1,000: 15.139 s and 15.112 s; direct, 7.490 s and 7.446 s),
+  inside each build's own spread over its 3 runs (up to 6.0%); the millisecond cells within 1 ms. So no time on the
+  page moves; not run: the sizes over 1,000 (the direct page at 2,000 takes 105 s a run).
 - **17j** (full coverage) and **17k** (the CRAN-mode test time) change tests only, so they do not move the timed code.
 
 ---

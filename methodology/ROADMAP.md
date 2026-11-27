@@ -60,7 +60,7 @@ is done, and with it every gap phase, G1-G17. 17g, the timing plan, is done (S78
 `docs/planning/pedkindraw-timing-plan.md`: 37 of the 38 exports timed beside kinship2's and Pedixplorer's functions,
 by a copy of the November study's harness in `tools/timing/`). 17h1, the computation harness, is done (S79, R154: 78
 cases in `tools/timing/`, 108 tests passing), and so are 17h1b (S80, R155: each run's free memory and `record.csv`,
-126 tests passing) and 17h1c (S81, R156: each run's `started` is when it launched, 129 tests passing). 17h2, the computation runs, is done (S82, `14145a4`: 78 cases at six sizes, 416 cells `ok`, 22 failed sizes). 17h3, the drawing harness, is done (S83, R157: 11 drawing cases in `tools/timing/`, 169 tests passing). 17h4, the drawing runs, is done (S84, `a4b41da`, R158: 43 cells, 33 `ok`; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in). 17i1, the speed vignette and its check, is done (S85, R159: 8 tables from the two records, checked cell for cell by `tools/checkSpeedTables.R`). 17i2, the pointers to it, `?drawPedigreeDiagram`'s measured size and the contract, is done (S86, R160), so 17i is done. 17j, tests for full coverage, is done (S87-S88, R161-R162: 7 of 3,772 statements left, each recorded unreachable). Next is 17k.
+126 tests passing) and 17h1c (S81, R156: each run's `started` is when it launched, 129 tests passing). 17h2, the computation runs, is done (S82, `14145a4`: 78 cases at six sizes, 416 cells `ok`, 22 failed sizes). 17h3, the drawing harness, is done (S83, R157: 11 drawing cases in `tools/timing/`, 169 tests passing). 17h4, the drawing runs, is done (S84, `a4b41da`, R158: 43 cells, 33 `ok`; pedkindraw's page drew 1,000 animals within 120 s, its direct-line page 2,000; readable up to 1,000, zoomed in). 17i1, the speed vignette and its check, is done (S85, R159: 8 tables from the two records, checked cell for cell by `tools/checkSpeedTables.R`). 17i2, the pointers to it, `?drawPedigreeDiagram`'s measured size and the contract, is done (S86, R160), so 17i is done. 17j, tests for full coverage, is done (S87-S88, R161-R162: 7 of 3,772 statements left, each recorded unreachable). 17k-17n are done (S90-S100; the Planned list below). Next is 17o.
 
 | Phase | Slice | State |
 |---|---|---|
@@ -117,7 +117,7 @@ session each unless marked. They follow the copy slices.
   (S98, R170: renv's lock added Bioconductor 3.23 beside pak's 3.24 on the runner; CI's jobs that install packages
   keep renv off). `asPedFrame()` on Bioconductor 3.24's S4Vectors 0.52.0 is done (S99, R171: it reads a
   Pedixplorer object's twin and spouse rows with Pedixplorer's accessors; moving `renv.lock` to 3.24 is a backlog
-  item). Next 17n, then 17o-17q. The Windows CI hang is done (S91, R164: the stuck-page
+  item). 17n, the full local gate, is done (S100, R172: every check of its list met on the package files as at `2456253`, Bioconductor 3.24 checked beside the lock's 3.23, the speed page's times unmoved, two Windows-only statements of `.closeChrome()` recorded by Mark's pick); the tree is frozen. Next 17o, then 17p-17q. The Windows CI hang is done (S91, R164: the stuck-page
   tests' Chrome renderers outlived their browsers and R CMD check waited for them; `.closeChrome()` ends them).
   The CI jobs that fail while Chrome starts are still open (S93, R166): a 60 s start wait added
   (`.startChrome()`), but Chromes at a PDF or PNG save's second start still hang on Ubuntu; next, a diagnostic on

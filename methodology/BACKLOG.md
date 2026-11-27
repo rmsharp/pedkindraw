@@ -176,7 +176,10 @@ issues).*
       raise the ceiling only by plan-mode approval.
 
 - [ ] **Move `renv.lock` to Bioconductor 3.24** (READY, Effort S-M, a guess; Mark's pick at S99, "Stand-in test;
-      keep lock (Recommended)", made it an item of its own; whether before 17n is Mark's to say) -- the lock names
+      keep lock (Recommended)", made it an item of its own; S100's orient pick ran 17n first, on the lock's 3.23 with
+      3.24 checked beside it in a scratch library (17n's DONE paragraph); `renv.lock` is not in the tarball
+      (`.Rbuildignore:4`), so the move changes no package file, but it changes every local run after the freeze,
+      so it waits for Mark's word) -- the lock names
       Bioconductor 3.23 (BiocGenerics 0.58.1, BiocVersion 3.23.1, Pedixplorer 1.8.0, S4Vectors 0.50.3), so every
       local run reads a release CRAN's machines no longer install (dragon 43); 3.24 is the release for R 4.6.2.
       Pedixplorer 1.10.0 imports the same packages as 1.8.0, so the move is those 4 packages and no CRAN package
