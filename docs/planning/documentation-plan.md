@@ -221,9 +221,10 @@ repos/rmsharp/pedkindraw/pages`, with Mark's approval); then the `URL` field and
 Built S31 (`4c389e7`, `d00ebda`): as above, the menu (Get started, Reference, Articles, Changelog, GitHub) and the
 index's seven groups as Mark approved them from an outline before the file was written. `check_pkgdown()` stops at
 its URL check, before the index, until `DESCRIPTION`'s `URL` names the site, so the index was checked on a scratch
-copy carrying it until the site answered. pkgdown 2.2.1 publishes every root `.md` file but README, NEWS and
-LICENSE, with no setting to exclude one, hence the workflow's `rm -f`. On the runner renv starts from `.Rprofile`
-and `setup-r-dependencies` installs into its library, as for R-CMD-check; a local build in a scratch copy needs
+copy carrying it until the site answered. pkgdown 2.2.1 publishes every root `.md` file but README, NEWS and LICENSE,
+with no setting to exclude one, hence the workflow's `rm -f`. On the runner renv started from `.Rprofile` and
+`setup-r-dependencies` installed into its library, as for R-CMD-check, until S98 turned renv off in both workflows'
+jobs (R170: its lock added Bioconductor 3.23 beside pak's release); a local build in a scratch copy needs the same
 `RENV_CONFIG_AUTOLOADER_ENABLED=false`. On the site each article's widget is 776 px wide (its drawing's canvas 559
 px, the rest the legend), wider than the vignettes' 700 px column. CI makes one page more than this Mac,
 `reference/asPedFrame.Pedigree.html`, which a case-insensitive disk merges with `asPedFrame.pedigree.html`.

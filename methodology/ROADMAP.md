@@ -113,8 +113,10 @@ session each unless marked. They follow the copy slices.
   calls a package a check without suggested packages hides guarded). 17m is done (S96, R168: version 1.0.0; NEWS
   checked against the code and readied; the README's install section). The findings 17m left outside NEWS are
   done (S97, R169: the app reads files separated by commas, tabs or semicolons and names a status column it
-  cannot read; `savePedigreeDiagram()` takes the widget's pixel width); next Ubuntu devel's S4Vectors item, then
-  17n, then 17o-17q. The Windows CI hang is done (S91, R164: the stuck-page
+  cannot read; `savePedigreeDiagram()` takes the widget's pixel width). Ubuntu devel's S4Vectors item is done
+  (S98, R170: renv's lock added Bioconductor 3.23 beside pak's 3.24 on the runner; CI's jobs that install packages
+  keep renv off). Next `asPedFrame()` on Bioconductor 3.24's S4Vectors 0.52.0 (found S98), then 17n, then
+  17o-17q. The Windows CI hang is done (S91, R164: the stuck-page
   tests' Chrome renderers outlived their browsers and R CMD check waited for them; `.closeChrome()` ends them).
   The CI jobs that fail while Chrome starts are still open (S93, R166): a 60 s start wait added
   (`.startChrome()`), but Chromes at a PDF or PNG save's second start still hang on Ubuntu; next, a diagnostic on

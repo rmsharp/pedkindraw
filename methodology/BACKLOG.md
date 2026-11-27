@@ -175,13 +175,26 @@ issues).*
       S18's Learning 21; `context_budget.py --check` exits 2): move, archive or delete rows as the tool lists, or
       raise the ceiling only by plan-mode approval.
 
-- [ ] **Ubuntu devel's CI job fails building S4Vectors before pedkindraw is checked** (DECISION NEEDED before 17n,
-      Effort S; found S49; moved here S95 from the CI-notices item, done) -- Bioconductor's S4Vectors 0.50.3, which
-      Pedixplorer (Suggests) imports, does not build on R-devel: "unable to load R code in package 'S4Vectors'" (S95,
-      run 45760561429, job 139709282740; first S49, run 44481480808, R-devel r90935 of 2026-11-18, a `transform`
-      method's formals). Not pedkindraw's code, and every R-CMD-check run since S49 has it. 17n needs CI 5/5: wait for
-      a Bioconductor release that builds, or leave Pedixplorer out of that one job's install (its matrix entry),
-      which skips the converter tests there.
+- [ ] **`asPedFrame()` stops on every Pedixplorer object with Bioconductor 3.24's S4Vectors 0.52.0** (READY, Effort
+      S-M, a guess; found S98 measuring `:178`, R170; before 17n, by Mark's pick: CRAN's check machines install the
+      current Bioconductor, and `R CMD check` there would stop in `?asPedFrame`'s example) --
+      `.asPedFramePedixplorer()` calls `as.data.frame(Pedixplorer::rel(x))`; S4Vectors 0.52.0's `as.data.frame()`
+      method for `Vector` (its `R/Vector-class.R:389`-`:399`) now takes that call before Pedixplorer's own S4 method
+      for `Rel` (its `R/AllGeneric.R:242`, the same in 1.8.0 and 1.10.0) and stops in `as.vector(x)`: "no method for
+      coercing this S4 class to a vector". Measured on R 4.6.2 in scratch libraries (S98): Pedixplorer 1.10.0 with
+      S4Vectors 0.52.0 and BiocGenerics 0.60.0 (Bioconductor 3.24, the release): of the 28 test files that name
+      Pedixplorer, 363 tests, 0 failed and 21 errors (`test_asPedFramePedixplorer.R` 11, `test_asPedFrameMatings.R`
+      4, `test_asPedFrameHints.R` 4, `test_infertileMark.R` 1, `test_miscarriageMark.R` 1; all five are left out of
+      a CRAN check), against 0 on the lock's 1.8.0 and 0.50.3; Pedixplorer 1.8.0 on S4Vectors 0.52.0 stops the same
+      way, so S4Vectors is the cause; `?asPedFrame`'s example stops (on 3.23 it runs); `vignettes/drawing.Rmd:593`'s
+      chunk calls `asPedFrame()` on a Pedixplorer object (not run). Recipe: the three sources from
+      `https://bioconductor.org/packages/3.24/bioc/src/contrib/`, each `R CMD INSTALL -l <scratch lib>` with
+      `R_LIBS` and `R_LIBS_USER` set to `<scratch lib>:<renv library>` and `RENV_PROJECT` unset (BiocGenerics first),
+      then Rscript from the project's folder with the same variables and `RENV_CONFIG_AUTOLOADER_ENABLED=false`
+      (dragon 43). The fix's form (Pedixplorer's method called directly, or the table built from `rel(x)`'s slots)
+      is a guess until measured, as is whether `renv.lock` moves to Bioconductor 3.24 (Learning 3's traps). CI: since
+      S98 the jobs install one Bioconductor release each (`:178`, done), so a job meets this when pak gives its R
+      version Bioconductor 3.24 (R-devel did at S98; R 4.6 still had 3.23, Bioconductor's own map says 3.24).
 
 - [ ] **The Windows CI job warns that `install-dependencies` is for Linux only** (READY, Effort S; found S11; moved
       here S95 from the CI-notices item, done) -- `browser-actions/setup-chrome@v2`'s `install-dependencies: true`
