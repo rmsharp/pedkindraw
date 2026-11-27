@@ -278,23 +278,24 @@ repository says how and why.
   zoom to: the widget draws an id only when it would be 4 pixels tall, so its
   375 rhesus animals show none until zoomed in, and the file has all 545 id
   labels (375 distinct, the rest repeat appearances). `width` and `height` are
-  the page in inches; left out, 10 inches wide and the widget's own height. The
-  PDF is that drawing on one page of that size, still vector with its ids as
-  text; each dashed line is written as a row of short strokes, because Chrome
-  would otherwise write every dash as an outline (the 375 animals on a 14 by 7
-  inch page: 1.0 MB, 5.8 MB without). The PNG is the page at `dpi` pixels per
-  inch, 300 unless told (a 7 by 5 inch page is 2100 by 1500 pixels). Measured
-  against the live widget in Chrome 157 on macOS, over the pixels that are not
-  white in either, for the SVG and for the PNG at 96 dpi: on the four animals
-  none of the drawing's and 0.03% of the legend's differ by more than 100 in a
-  color channel, on an 18-animal pedigree with all seven marks 0.26% and 0.07%.
-  It stops, saying what is missing, without chromote (in Suggests) or Chrome.
-  It ends every process of the Chrome it starts, on Windows too, where the
-  renderer of a page that never finishes drawing outlives its browser's close.
-  It waits up to 60 seconds for each Chrome it starts to open its port, as it
-  waits for Chrome's answers: chromote's own 10 seconds can pass for a fresh
-  Chrome on a busy computer; a larger `chromote.timeout` option is kept.
-  nprcgenekeepr has no such function.
+  the page in inches; left out, the widget's own width and height, 10 inches
+  wide when its width is not a number of pixels (`drawPedigreeDiagram()` sets
+  none). The PDF is that drawing on one page of that size, still vector with
+  its ids as text; each dashed line is written as a row of short strokes,
+  because Chrome would otherwise write every dash as an outline (the 375
+  animals on a 14 by 7 inch page: 1.0 MB, 5.8 MB without). The PNG is the page
+  at `dpi` pixels per inch, 300 unless told (a 7 by 5 inch page is 2100 by 1500
+  pixels). Measured against the live widget in Chrome 157 on macOS, over the
+  pixels that are not white in either, for the SVG and for the PNG at 96 dpi:
+  on the four animals none of the drawing's and 0.03% of the legend's differ by
+  more than 100 in a color channel, on an 18-animal pedigree with all seven
+  marks 0.26% and 0.07%. It stops, saying what is missing, without chromote (in
+  Suggests) or Chrome. It ends every process of the Chrome it starts, on
+  Windows too, where the renderer of a page that never finishes drawing
+  outlives its browser's close. It waits up to 60 seconds for each Chrome it
+  starts to open its port, as it waits for Chrome's answers: chromote's own 10
+  seconds can pass for a fresh Chrome on a busy computer; a larger
+  `chromote.timeout` option is kept. nprcgenekeepr has no such function.
 * New: the 375 rhesus animals of the example pedigree, with their 3 twin pairs,
   are one page of `savePedigreeDiagram()`'s SVG or PDF on a 14 by 7 inch page or
   on letter paper (8.5 by 11 inches), with every id written: 545 id labels, 375

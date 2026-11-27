@@ -6,7 +6,9 @@
 ## .pdf and .png files and dpi: pedkindraw S71, Phase G16b, ruling R144,
 ## section 12; .closeChrome(): pedkindraw S91, backlog item "A Windows job
 ## that does not end after its tests finish"; .startChrome(): pedkindraw S93,
-## backlog item "A CI job fails now and then while Chrome starts").
+## backlog item "A CI job fails now and then while Chrome starts"; the
+## widget's own width when width is left out: pedkindraw S97, backlog item
+## "What 17m's check of NEWS found outside NEWS").
 
 #' Save a pedigree diagram as a picture file
 #'
@@ -31,10 +33,12 @@
 #' the function writes every id: it lowers that limit on a copy of the widget,
 #' and the widget \code{diagram} itself is not changed.
 #'
-#' The picture is the widget's size in the browser, 10 inches (960 pixels)
-#' wide, unless \code{width} or \code{height} say otherwise. The drawing and
-#' its legend are drawn for that page, and the file's own size is the page, so
-#' it prints at that size.
+#' The picture has the widget's own height and, when the widget's width is a
+#' number of pixels, the widget's own width; otherwise it is 10 inches (960
+#' pixels) wide, as for every widget \code{\link{drawPedigreeDiagram}}
+#' returns, which sets no width. \code{width} and \code{height} replace them.
+#' The drawing and its legend are drawn for that page, and the file's own size
+#' is the page, so it prints at that size.
 #'
 #' The function starts its own headless Chrome for each call (two for a
 #' \code{.pdf} or \code{.png}), waits up to 60 seconds for each to start
@@ -47,7 +51,8 @@
 #'   chooses the kind of file: \code{.svg}, \code{.pdf} or \code{.png}. The
 #'   folder must exist.
 #' @param width,height the page, in inches: a positive number, or \code{NULL}
-#'   (the default) for the size the widget has in the browser, 10 inches wide.
+#'   (the default) for the widget's own height and width, 10 inches wide when
+#'   its width is not a number of pixels.
 #'   The widget is drawn at \code{width * 96} by \code{height * 96} pixels, so
 #'   the drawing fills the page, with its legend at the right.
 #' @param dpi the pixels per inch of the page in a \code{.png} file, one
@@ -121,7 +126,11 @@ savePedigreeDiagram <- function(diagram, file, width = NULL, height = NULL,
   copy <- visNetwork::visNodes(
     diagram, scaling = list(label = list(drawThreshold = 0.0))
   )
-  copy$width <- if (is.null(width)) 960.0 else round(width * 96.0)
+  copy$width <- if (is.null(width)) {
+    .widgetPixels(diagram$width, 960.0)
+  } else {
+    round(width * 96.0)
+  }
   if (!is.null(height)) copy$height <- sprintf("%dpx", round(height * 96.0))
   timeout <- getOption("pedkindraw.saveTimeout", 60.0)
   deadline <- Sys.time() + timeout
