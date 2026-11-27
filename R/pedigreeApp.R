@@ -477,37 +477,41 @@
 ## "More words; name the rest"): nprcgenekeepr's status words
 ## (convertStatusCodes()) without its numbers, whose 1 is alive where
 ## kinship2's and Pedixplorer's is dead; with the yes-words as deceased and the
-## no-words as living. Compared as .appDeceased() compares them.
+## no-words as living. Compared as .appReadDeceased() compares them.
 .appDeceasedWords <- c("deceased", "dead", "died", "d")
 .appLivingWords <- c("alive", "a", "shipped", "sold", "sale", "s", "unknown",
                      "u")
 
+#' Read a status or deceased column (R151; S97)
+#'
+#' S97's REFACTOR: one reader returning both, as \code{.appReadValues()} does
+#' for a condition or a yes-or-no mark (GREEN had \code{.appUnreadStatus()}
+#' beside \code{.appDeceased()}, each computing the same key).
+#' @param x the column.
+#' @return A list: \code{values}, \code{"DECEASED"} for
+#'   \code{.appDeceasedWords} (DECEASED, dead, died, D) and the yes-words, in
+#'   any case and with the spaces at either end removed, and \code{NA} for
+#'   anything else; and \code{unread}, each value neither deceased nor living
+#'   (\code{.appLivingWords}, the no-words, an empty cell), once, as the
+#'   column holds it (a factor's as text).
+#' @noRd
+.appReadDeceased <- function(x) {
+  if (is.factor(x)) x <- as.character(x)
+  key <- tolower(trimws(as.character(x)))
+  deceased <- key %in% c(.appDeceasedWords, .appYesWords)
+  read <- is.na(x) | !nzchar(key) | deceased |
+    key %in% c(.appLivingWords, .appNoWords)
+  list(values = ifelse(deceased, "DECEASED", NA_character_),
+       unread = unique(x[!read]))
+}
+
 #' Read a deceased column (R151)
 #'
 #' @param x the column.
-#' @return \code{"DECEASED"} for \code{.appDeceasedWords} (DECEASED, dead,
-#'   died, D) and the yes-words, in any case and with the spaces at either end
-#'   removed; \code{NA} for anything else.
+#' @return \code{.appReadDeceased()}'s \code{values}.
 #' @noRd
 .appDeceased <- function(x) {
-  key <- tolower(trimws(as.character(x)))
-  ifelse(key %in% c(.appDeceasedWords, .appYesWords), "DECEASED",
-         NA_character_)
-}
-
-#' The values of a status or deceased column the app cannot read (S97)
-#'
-#' @param x the column.
-#' @return Each value that is neither deceased nor living (\code{.appDeceased()}
-#'   and \code{.appLivingWords}, the yes- and no-words, an empty cell), once,
-#'   as the column holds it (a factor's as text).
-#' @noRd
-.appUnreadStatus <- function(x) {
-  if (is.factor(x)) x <- as.character(x)
-  key <- tolower(trimws(as.character(x)))
-  read <- is.na(x) | !nzchar(key) |
-    key %in% c(.appDeceasedWords, .appYesWords, .appLivingWords, .appNoWords)
-  unique(x[!read])
+  .appReadDeceased(x)$values
 }
 
 #' The values of a fertility or miscarriage column pedkindraw cannot read
@@ -645,8 +649,9 @@
       unread <- .appUnreadWords(x, mark)
       value <- x
     } else if (mark == "status") {
-      unread <- .appUnreadStatus(x)
-      value <- .appDeceased(x)
+      read <- .appReadDeceased(x)
+      unread <- read$unread
+      value <- read$values
       how <- " as deceased or living"
     } else if (mark == "name") {
       value <- as.character(x)
