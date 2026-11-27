@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-27 · [BL-Phase 17] S100 push 2: the close-out to GitHub, no CI run
+- **Change:** pushed `93d7819..559a4bb` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `93d7819` (push 1).
+- **Commit/PR:** the push of `559a4bb`; close-out 2b (this entry) · **Session:** S100 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `559a4bb`; `gh run list` showed no new run.
+
 ### 2026-11-27 · [BL-Phase 17] S100 push 1: close-out 1 to GitHub, CI run and one rerun
 - **Change:** pushed `335ad2f..93d7819` (claim, close-out 1), the head without the skip marker, so CI read the frozen tree: R-CMD-check run 46043167677, pkgdown 46043167481; the macOS job rerun once (attempt 1 failed `test_pedigreeAppBrowser.R:103`, the app's click timing out after 60 s: backlog `:239`'s flake, as at S99's push).
 - **Commit/PR:** the push of `93d7819`; the macOS job's rerun (job 140666293388) · **Session:** S100 · **Model:** Claude Opus 5.5 · **Verified:** each job's log through the jobs API: Ubuntu release (Bioconductor 3.23) `PASS 17088`, Ubuntu devel (3.24: S4Vectors 0.52.0, Pedixplorer 1.10.0) `17088`, Ubuntu oldrel-1 (3.22) `17088`, Windows `17087`, each Status OK; macOS Status OK at its rerun (`PASS 17099`); pkgdown and the site's deployment (46043477801) success; the run's conclusion success.
