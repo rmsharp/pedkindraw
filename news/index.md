@@ -345,24 +345,27 @@ pedkindraw. Where the copy now differs from nprcgenekeepr’s code,
   pixels tall, so its 375 rhesus animals show none until zoomed in, and
   the file has all 545 id labels (375 distinct, the rest repeat
   appearances). `width` and `height` are the page in inches; left out,
-  10 inches wide and the widget’s own height. The PDF is that drawing on
-  one page of that size, still vector with its ids as text; each dashed
-  line is written as a row of short strokes, because Chrome would
-  otherwise write every dash as an outline (the 375 animals on a 14 by 7
-  inch page: 1.0 MB, 5.8 MB without). The PNG is the page at `dpi`
-  pixels per inch, 300 unless told (a 7 by 5 inch page is 2100 by 1500
-  pixels). Measured against the live widget in Chrome 157 on macOS, over
-  the pixels that are not white in either, for the SVG and for the PNG
-  at 96 dpi: on the four animals none of the drawing’s and 0.03% of the
-  legend’s differ by more than 100 in a color channel, on an 18-animal
-  pedigree with all seven marks 0.26% and 0.07%. It stops, saying what
-  is missing, without chromote (in Suggests) or Chrome. It ends every
-  process of the Chrome it starts, on Windows too, where the renderer of
-  a page that never finishes drawing outlives its browser’s close. It
-  waits up to 60 seconds for each Chrome it starts to open its port, as
-  it waits for Chrome’s answers: chromote’s own 10 seconds can pass for
-  a fresh Chrome on a busy computer; a larger `chromote.timeout` option
-  is kept. nprcgenekeepr has no such function.
+  the widget’s own width and height, 10 inches wide when its width is
+  not a number of pixels
+  ([`drawPedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
+  sets none). The PDF is that drawing on one page of that size, still
+  vector with its ids as text; each dashed line is written as a row of
+  short strokes, because Chrome would otherwise write every dash as an
+  outline (the 375 animals on a 14 by 7 inch page: 1.0 MB, 5.8 MB
+  without). The PNG is the page at `dpi` pixels per inch, 300 unless
+  told (a 7 by 5 inch page is 2100 by 1500 pixels). Measured against the
+  live widget in Chrome 157 on macOS, over the pixels that are not white
+  in either, for the SVG and for the PNG at 96 dpi: on the four animals
+  none of the drawing’s and 0.03% of the legend’s differ by more than
+  100 in a color channel, on an 18-animal pedigree with all seven marks
+  0.26% and 0.07%. It stops, saying what is missing, without chromote
+  (in Suggests) or Chrome. It ends every process of the Chrome it
+  starts, on Windows too, where the renderer of a page that never
+  finishes drawing outlives its browser’s close. It waits up to 60
+  seconds for each Chrome it starts to open its port, as it waits for
+  Chrome’s answers: chromote’s own 10 seconds can pass for a fresh
+  Chrome on a busy computer; a larger `chromote.timeout` option is kept.
+  nprcgenekeepr has no such function.
 - New: the 375 rhesus animals of the example pedigree, with their 3 twin
   pairs, are one page of
   [`savePedigreeDiagram()`](https://rmsharp.github.io/pedkindraw/reference/savePedigreeDiagram.md)’s
@@ -376,19 +379,19 @@ pedkindraw. Where the copy now differs from nprcgenekeepr’s code,
   bigger). The drawing vignette’s “Saving a drawing” and “A colony-size
   drawing” show the files.
 - New: `runPedigreeApp(ped, port, launch.browser)` starts an app in the
-  web browser that draws a pedigree from a CSV or text file, with no
-  code, for someone who keeps a pedigree in a spreadsheet. It opens the
-  file, the 375 rhesus animals of the sample pedigree, or a `ped` data
-  frame from R; recognizes the id, sire, dam and sex columns by
-  pedkindraw’s names and common others (ego, egoid, indid; father,
-  fatherid, dadid; mother, motherid, momid; gender), in any case and
-  with or without spaces, dots or underscores, and lets you choose each;
-  reads the sex codes m, f, h and u, male, female, hermaphrodite and
-  unknown, and 1 and 2 (male and female, as kinship2 and PLINK files
-  code them) as M, F, H and U, and says so; adds `gen`; and draws
-  everyone. What the layout says (a warning, an animal it leaves out) is
-  shown on the page, and a pedigree that cannot be drawn is said so. The
-  Checks tab lists
+  web browser that draws a pedigree from a CSV or text file, its values
+  separated by commas, tabs or semicolons, with no code, for someone who
+  keeps a pedigree in a spreadsheet. It opens the file, the 375 rhesus
+  animals of the sample pedigree, or a `ped` data frame from R;
+  recognizes the id, sire, dam and sex columns by pedkindraw’s names and
+  common others (ego, egoid, indid; father, fatherid, dadid; mother,
+  motherid, momid; gender), in any case and with or without spaces, dots
+  or underscores, and lets you choose each; reads the sex codes m, f, h
+  and u, male, female, hermaphrodite and unknown, and 1 and 2 (male and
+  female, as kinship2 and PLINK files code them) as M, F, H and U, and
+  says so; adds `gen`; and draws everyone. What the layout says (a
+  warning, an animal it leaves out) is shown on the page, and a pedigree
+  that cannot be drawn is said so. The Checks tab lists
   [`checkPedigree()`](https://rmsharp.github.io/pedkindraw/reference/checkPedigree.md)’s
   problems and the Animals tab the animals chosen. It needs the shiny
   package (in Suggests). Pedixplorer’s `ped_shiny()` is such an app;
@@ -426,10 +429,13 @@ pedkindraw. Where the copy now differs from nprcgenekeepr’s code,
   kinship2’s 1, 2 and 3), checked with
   [`checkTwinRelations()`](https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.md),
   a pair drawn when both its animals are. A file’s yes-or-no values are
-  read as TRUE, T, yes, Y or 1 and FALSE, F, no, N or 0, in any case. A
-  condition or mark column with any other value is left out and named,
-  except the deceased mark, which reads any other value as not deceased.
-  The sample pedigree opens with its file of 3 twin pairs.
+  read as TRUE, T, yes, Y or 1 and FALSE, F, no, N or 0, in any case.
+  The deceased mark reads deceased, dead, died, D and the yes-words as
+  deceased, and alive, A, shipped, sold, sale, S, unknown, U and the
+  no-words as living (nprcgenekeepr’s status words without its numbers,
+  whose 1 is alive). A condition or mark column with any other value is
+  left out and named. The sample pedigree opens with its file of 3 twin
+  pairs.
 - New:
   [`runPedigreeApp()`](https://rmsharp.github.io/pedkindraw/reference/runPedigreeApp.md)’s
   app saves what it shows. On the Diagram tab, the SVG, PDF and PNG

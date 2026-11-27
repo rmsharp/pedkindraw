@@ -32,9 +32,10 @@ savePedigreeDiagram(diagram, file, width = NULL, height = NULL, dpi = 300)
 - width, height:
 
   the page, in inches: a positive number, or `NULL` (the default) for
-  the size the widget has in the browser, 10 inches wide. The widget is
-  drawn at `width * 96` by `height * 96` pixels, so the drawing fills
-  the page, with its legend at the right.
+  the widget's own height and width, 10 inches wide when its width is
+  not a number of pixels. The widget is drawn at `width * 96` by
+  `height * 96` pixels, so the drawing fills the page, with its legend
+  at the right.
 
 - dpi:
 
@@ -62,10 +63,13 @@ a large pedigree shows no ids until a reader zooms in. A file has no
 zoom, so the function writes every id: it lowers that limit on a copy of
 the widget, and the widget `diagram` itself is not changed.
 
-The picture is the widget's size in the browser, 10 inches (960 pixels)
-wide, unless `width` or `height` say otherwise. The drawing and its
-legend are drawn for that page, and the file's own size is the page, so
-it prints at that size.
+The picture has the widget's own height and, when the widget's width is
+a number of pixels, the widget's own width; otherwise it is 10 inches
+(960 pixels) wide, as for every widget
+[`drawPedigreeDiagram`](https://rmsharp.github.io/pedkindraw/reference/drawPedigreeDiagram.md)
+returns, which sets no width. `width` and `height` replace them. The
+drawing and its legend are drawn for that page, and the file's own size
+is the page, so it prints at that size.
 
 The function starts its own headless Chrome for each call (two for a
 `.pdf` or `.png`), waits up to 60 seconds for each to start (chromote's

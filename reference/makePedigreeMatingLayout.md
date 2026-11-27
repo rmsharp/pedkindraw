@@ -390,31 +390,31 @@ times it, and each dash pattern times it, `TRUE` as vis.js's 5 and 5);
 `label` is added when `twinRelations` is supplied), and
 `duplicateToReal` (a named character vector, duplicate node id -\> real
 individual id). Under `edgeStyle = "rectilinear"`, an already-set edge
-`color` (e.g. the twin connector's or the consanguinity marker's) is
-preserved when the edge is kept as-is; a marked mate edge that gets
-replaced by a right-angle projection currently falls back to the generic
-routing color and width. Also `isolatedIds`, a character vector of ids
-suppressed from `nodes`/`edges` because they have no known parent, are
-never a parent, are not connected by `twinRelations`, and have no mating
-in `matings`; it is `character(0)` when nothing was suppressed. When
-every individual in `ped` is isolated, `nodes`/`edges` are both 0-row
-and `duplicateToReal` is empty. Also `conditions`, a data frame with one
-row per drawn condition (`column`, `label` such as “Affected” or
-“Affected (diabetes)”, and its `color`, from `conditionColors` as a
-`"#RRGGBB"` code), 0-row when `ped` has no such column, and
-`conditionsNotDrawn`, the names of any such columns past the fourth.
-Last, `hints`, the hints the layout used, in the form the argument
-`hints` takes, so that passing them back gives the same layout: `order`
-numbers each animal drawn that has a parent by its row in the rows the
-layout drew from (an order hint applied, the animals left out not
-counted), and a founder only where an order hint named it, since naming
-a founder turns off the layout's own ordering of founder lines; `mate`
-holds the rows of a mate hint as given, then a row for each other mating
-whose sire and dam both have rows in `ped`, `left` and `right` as drawn
-and `anchor` the partner the offspring hang under, except the matings of
-an animal that anchors three or more matings or that the given rows
-place, where a row can change how far its mates are drawn. With every
-animal left out, `order` has no numbers and `mate` no rows.
+`color` and `width` (e.g. the twin connector's color, the consanguinity
+marker's color and width) are kept, and a marked mate line re-routed
+through a right-angle projection keeps them on both of its new edges.
+Also `isolatedIds`, a character vector of ids suppressed from
+`nodes`/`edges` because they have no known parent, are never a parent,
+are not connected by `twinRelations`, and have no mating in `matings`;
+it is `character(0)` when nothing was suppressed. When every individual
+in `ped` is isolated, `nodes`/`edges` are both 0-row and
+`duplicateToReal` is empty. Also `conditions`, a data frame with one row
+per drawn condition (`column`, `label` such as “Affected” or “Affected
+(diabetes)”, and its `color`, from `conditionColors` as a `"#RRGGBB"`
+code), 0-row when `ped` has no such column, and `conditionsNotDrawn`,
+the names of any such columns past the fourth. Last, `hints`, the hints
+the layout used, in the form the argument `hints` takes, so that passing
+them back gives the same layout: `order` numbers each animal drawn that
+has a parent by its row in the rows the layout drew from (an order hint
+applied, the animals left out not counted), and a founder only where an
+order hint named it, since naming a founder turns off the layout's own
+ordering of founder lines; `mate` holds the rows of a mate hint as
+given, then a row for each other mating whose sire and dam both have
+rows in `ped`, `left` and `right` as drawn and `anchor` the partner the
+offspring hang under, except the matings of an animal that anchors three
+or more matings or that the given rows place, where a row can change how
+far its mates are drawn. With every animal left out, `order` has no
+numbers and `mate` no rows.
 
 ## Details
 

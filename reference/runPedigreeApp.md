@@ -39,10 +39,12 @@ returns when the app is closed, invisibly.
 
 In the app:
 
-- **Open** a CSV or text file with one row per animal, or the sample
-  pedigree (375 rhesus macaques, with its file of 3 twin pairs), or the
-  `ped` given here; and, if you have one, a twins file with the columns
-  id1, id2 and code, one pair per row.
+- **Open** a CSV or text file with one row per animal, its values
+  separated by commas, tabs or semicolons (the app takes the one that
+  splits the first line into the most columns), or the sample pedigree
+  (375 rhesus macaques, with its file of 3 twin pairs), or the `ped`
+  given here; and, if you have one, a twins file with the columns id1,
+  id2 and code, one pair per row, read the same way.
 
 - **Say which columns** are the animal's id, its sire, its dam and its
   sex. The app recognizes pedkindraw's names and common others (ego,
@@ -65,11 +67,14 @@ In the app:
   status (or deceased) and name, and the app lists those it found. A
   condition or a yes-or-no mark reads TRUE, T, yes, Y and 1 as yes and
   FALSE, F, no, N and 0 as no, in any case; deceased reads DECEASED,
-  deceased, dead and the yes-words. A column holding any other value is
-  not drawn, and the app names it and the values. Lines are drawn at
-  right angles or straight. A twins file's codes may be MZ twin, DZ twin
-  and UZ twin or 1, 2 and 3, as kinship2 numbers them; the file is
-  checked with
+  deceased, dead, died, D and the yes-words as deceased, and alive, A,
+  shipped, sold, sale, S, unknown, U, the no-words and an empty cell as
+  living (nprcgenekeepr's status words without its numbers, whose 1 is
+  alive where kinship2's and Pedixplorer's is dead). A column holding
+  any other value is not drawn, and the app names it and the values.
+  Lines are drawn at right angles or straight. A twins file's codes may
+  be MZ twin, DZ twin and UZ twin or 1, 2 and 3, as kinship2 numbers
+  them; the file is checked with
   [`checkTwinRelations`](https://rmsharp.github.io/pedkindraw/reference/checkTwinRelations.md),
   its problem shown and the pedigree drawn without twins until it is
   corrected, and a pair is drawn when both its animals are.

@@ -82,7 +82,8 @@ folder must exist.</p></dd>
 
 <dt id="arg-width-height">width, height<a class="anchor" aria-label="anchor" href="#arg-width-height"></a></dt>
 <dd><p>the page, in inches: a positive number, or <code>NULL</code>
-(the default) for the size the widget has in the browser, 10 inches wide.
+(the default) for the widget's own height and width, 10 inches wide when
+its width is not a number of pixels.
 The widget is drawn at <code>width * 96</code> by <code>height * 96</code> pixels, so
 the drawing fills the page, with its legend at the right.</p></dd>
 
@@ -112,10 +113,12 @@ the same drawing at <code>dpi</code> pixels per inch of the page.</p>
 large pedigree shows no ids until a reader zooms in. A file has no zoom, so
 the function writes every id: it lowers that limit on a copy of the widget,
 and the widget <code>diagram</code> itself is not changed.</p>
-<p>The picture is the widget's size in the browser, 10 inches (960 pixels)
-wide, unless <code>width</code> or <code>height</code> say otherwise. The drawing and
-its legend are drawn for that page, and the file's own size is the page, so
-it prints at that size.</p>
+<p>The picture has the widget's own height and, when the widget's width is a
+number of pixels, the widget's own width; otherwise it is 10 inches (960
+pixels) wide, as for every widget <code><a href="drawPedigreeDiagram.html">drawPedigreeDiagram</a></code>
+returns, which sets no width. <code>width</code> and <code>height</code> replace them.
+The drawing and its legend are drawn for that page, and the file's own size
+is the page, so it prints at that size.</p>
 <p>The function starts its own headless Chrome for each call (two for a
 <code>.pdf</code> or <code>.png</code>), waits up to 60 seconds for each to start
 (<span class="pkg">chromote</span>'s own wait is 10; a larger <code>chromote.timeout</code> option is
