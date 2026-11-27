@@ -19,6 +19,7 @@ test_asPedFrame.R
 test_asPedFrameHints.R
 test_asPedFrameMatings.R
 test_asPedFramePedixplorer.R
+test_asPedFrameS4Vectors.R
 test_bitSize.R
 test_buildMatingUnitForest.R
 test_carrierMark.R
