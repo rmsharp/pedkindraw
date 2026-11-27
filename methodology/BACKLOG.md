@@ -197,6 +197,9 @@ issues).*
       push (run 45737321097, attempts 1 and 2, `:366` and `:653`), "port not open after **60** seconds", each leaving
       an `org.chromium.Chromium.*` folder (a detritus NOTE). `:653` stubs the recording, so no browser had just
       closed. 4 of the 5 on Ubuntu with R release, 0 on oldrel-1 (the same Chrome for Testing 158.0.8127.88).
+      S97: the first on oldrel-1 (run 45921649070, job 140253524596, attempt 1): `test_savePedigreeDiagram.R:381`,
+      a PDF save at `width = 7`, "port not open after 60 seconds" at `.renderPicture()`'s start (`:310`), an
+      `org.chromium.Chromium.*` folder left (Chrome for Testing 158.0.8127.88); so 5 of 6 on Ubuntu, 1 on oldrel-1.
       S93 added a 60 s start wait (R166): an 11-s-slow stand-in passes, a hung Chrome does not. **Next (Mark's
       pick):** a diagnostic push, as S91's for the Windows hang (`89e28f1`; dragon 35): on the runners, many starts
       of each kind (with and without `--disable-lcd-text`, right after a close and alone), on release and oldrel-1,

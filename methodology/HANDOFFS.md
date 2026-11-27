@@ -204,9 +204,16 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S97
 date: 2026-11-26
-status: pending
-active_task: backlog :186, what 17m's check of NEWS found outside NEWS (five sub-items). Claimed.
-what_was_done: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: backlog :186 DONE (R169): the app reads files separated by commas, tabs or semicolons; its deceased mark reads nprcgenekeepr's status words and names any other value; savePedigreeDiagram() takes the widget's pixel width; stale help, comments and figures corrected. Next by Mark's S96 pick: backlog :178, then 17n.
+what_was_done: claim 1a39485; RED 019e9d4, 73290fb, 7812fd0 (RED 3); GREEN 3fb71fb, 3433daf, 4f2f571; REFACTOR 4684b76; close-out 1 b464c80 (pushed: run 45921649070, oldrel-1 rerun once).
+next_steps: BACKLOG :178 (S4Vectors on Ubuntu devel): read job 140253524152's log, check for a newer S4Vectors, then the picker; SESSION_NOTES.md What You Must Do 2.
+key_files: methodology/BACKLOG.md:178; .github/workflows/R-CMD-check.yaml:31; R/pedigreeApp.R:126, :498; R/savePedigreeDiagram.R:129; docs/planning/cran-submission-plan.md:1052, :1337.
+gotchas: run each RED test against a wrong prototype too (dragon 42); a status column of nprcgenekeepr's 1s alone is drawn all deceased (1 is a yes-word); a hung Chrome start hit oldrel-1 for the first time (:192); HANDOFFS.md near its read limit (:302).
+runtime_smoke: the real app in Chrome: a tab-separated sample (375 drawn, 3 twin pairs) and a 1/2 status column left out naming '2'; semicolon-separated died/alive, 37 of 37 deceased. quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1
+changelog_ref: CHANGELOG.md "2026-11-26 · [BL-Phase 17] S97: backlog :186 DONE" and its push entries
 commit: pending
 ```
 ```handoff

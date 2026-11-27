@@ -10,87 +10,80 @@ At close-out, distill the durable outcome into a `CHANGELOG.md` entry — do not
 
 ## ACTIVE TASK
 **Task:** Phase 17, the CRAN submission (`docs/planning/cran-submission-plan.md`). 17a-17m DONE (S33-S96); the gap
-phases G1-G17 DONE (S42-S77); the crash item DONE (S89, R163); the Windows CI hang DONE (S91, R164). **17m DONE
-(S96, R168):** version `1.0.0`; NEWS readied for the release, each of its 54 items and its opening checked against
-the code (12 statements corrected, 4 comparisons with behavior no release had reworded, the Documentation section
-completed); the README's install section ("Install the development version from GitHub:") and its three
-articles; `?removeAnimals` and the speed vignette's opening corrected with NEWS; `tests/testthat/test_releaseTextDocs.R`
-holds the release text to the version; S2's version test now `>= "1.0.0"`.
-**Next, by Mark's pick:** backlog `:186`, what 17m's check of NEWS found outside NEWS (Mark's pick at S96's close, "17m's
-findings :186 (Recommended)", over the S4Vectors decision `:178`, the picture flake `:232` and another item);
-then `:178`; then 17n, which freezes the tree.
-**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed `b0eb2e7` (close-out 1,
-without the skip marker): run 45888606992: Windows, macOS and Ubuntu oldrel-1 Status OK (`PASS 17044`, `17056`, `17045`); Ubuntu release failed `test_savePedigreeDiagram.R:184` at attempt 1 (the feature pedigree's legend 50.2% differing, bound 1%; backlog `:232`) and read Status OK at its rerun (`PASS 17045`); Ubuntu devel failed building S4Vectors (`:178`). pkgdown and speed-tables passed; the site's NEWS page shows 1.0.0 and its home page the new install text. Close-out 2 pushed after it (the skip marker, no run).
-**The orient picker:** "(Recommended)" on Mark's pick above; the rest grouped and named (34 items, `grep -n '^- \[ \]'
-methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:159`, `:168`, `:212`, `:255`, `:261`,
-`:275`, `:280`, `:292`, `:308`, `:327`; NEEDS DECISION `:64`, `:72`, `:81`, `:94`, `:178` (S4Vectors, before 17n),
-`:186` (17m's findings, before 17n), `:232`, `:250`, `:298`, `:318`; READY by Mark's pick `:218` (the Chrome
-diagnostic); "Waiting on Mark" `:122`, `:129`, `:136`, `:148`. Not offered: `:105` (a session Mark starts in
-nprcgenekeepr, R101's exception; S96 told Mark what it involves), `:20` and `:116` (BLOCKED). Name every item.
+phases G1-G17 DONE (S42-S77); the crash item DONE (S89, R163); the Windows CI hang DONE (S91, R164). **Backlog
+`:186`, the findings 17m left outside NEWS, DONE (S97, R169):** the app reads a file separated by commas, tabs or
+semicolons (the one splitting the first line into the most columns, quotes honoured, commas on a tie), the twins file
+too, and says "1 column"; its deceased mark reads nprcgenekeepr's status words without its numbers (died, D; alive,
+A, shipped, sold, sale, S, unknown, U) and leaves out, naming them, a status column's other values;
+`savePedigreeDiagram(width = NULL)` takes the widget's pixel width, else 10 in; `?makePedigreeMatingLayout` and two
+comments no longer say a re-routed marked mate line falls back; `inst/js/recordCanvas.js`'s comment gives 0.26% and
+0.07%.
+**Next, by Mark's pick at S96's close** ("`:186`, then `:178`, then 17n"): backlog **`:178`**, Ubuntu devel's
+S4Vectors failure, a decision; then 17n, which freezes the tree.
+**Status:** no work in progress. The tree is clean but `pedkindraw.Rproj` (Mark's). Pushed `b464c80` (close-out 1, without the skip marker): run 45921649070: Windows, macOS and Ubuntu release Status OK (`PASS 17069`, `17081`, `17070`); Ubuntu oldrel-1 failed `test_savePedigreeDiagram.R:381` at attempt 1 (a hung Chrome start, backlog `:192`, its first on oldrel-1) and read Status OK at its rerun (`PASS 17070`); Ubuntu devel failed building S4Vectors (`:178`). pkgdown passed; speed-tables did not run (none of its files changed). Close-out 2 pushed after it (the skip marker, no run).
+**The orient picker:** "(Recommended)" on `:178` (Mark's pick above); the rest grouped and named (34 items, `grep -n
+'^- \[ \]' methodology/BACKLOG.md`): READY `:11`, `:29`, `:39`, `:45`, `:55`, `:88`, `:159`, `:168`, `:186`, `:232`
+(new, S97: tell nprcgenekeepr its mate-line help is stale), `:239`, `:245`, `:259`, `:264`, `:276`, `:292`, `:311`;
+NEEDS DECISION `:64`, `:72`, `:81`, `:94`, `:178` (S4Vectors, before 17n), `:209`, `:227`, `:282`, `:302`; READY by
+Mark's pick `:192` (the Chrome diagnostic); "Waiting on Mark" `:122`, `:129`, `:136`, `:148`. Not offered: `:105` (a
+session Mark starts in nprcgenekeepr, R101's exception), `:20` and `:116` (BLOCKED). Name every item.
 **Session boundary:** one session, then close out.
-**Priority:** HIGH (17n-17q; `:178` and `:186` before 17n).
+**Priority:** HIGH (17n-17q; `:178` before 17n).
 
 ### What You Must Do
-1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**; S96 changed no copied function);
-   nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr log --oneline baef1e12c..HEAD -- $(grep -l
-   'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1 basename | sed 's#^#*/#')`: the same 4 commits
-   (`4283e3502`, `a85311021`, `392dd347e`, `471589138`) and nprcgenekeepr at `3e06730c5`, unless Mark has run the
-   `:105` port there (then update the three `DIVERGENCE.md` rows it touches, R101).
-2. **`:186`, 17m's findings outside NEWS** (if picked): five sub-items; 1, 4 and 5 are Mark's decisions (a picker
-   each, measured first), 2 must be drawn before any words change (Learning 18), 3 is a comment. A decision that
-   changes behavior is strict TDD; a change to app words also changes `tests/testthat/test_pedigreeAppMarks.R:320`
-   and NEWS (`NEWS.md:309`, "CSV or text").
-3. **`:178`, S4Vectors** (if picked): read the devel job's log first (it failed again on S96's run); the two choices
-   are in the item.
-4. **17n** (`docs/planning/cran-submission-plan.md:1052`) only after `:178` and `:186`: it freezes the tree.
-5. **CI on every push:** five jobs; Ubuntu devel fails building S4Vectors (`:178`). Known flakes: `:218` (a hung
-   Chrome start, Ubuntu release), `:232` (a blank PDF on Windows; the SVG-legend comparison, Windows in S95 and Ubuntu release in S96), `:250` (the app's
-   click, macOS). Rerun a failed job once (`gh run rerun <run> --job <id>`, after the run ends), then list the
-   rerun's jobs by attempt (`gh api repos/rmsharp/pedkindraw/actions/runs/<run>/attempts/2/jobs`); read logs through
-   the jobs API (`curl -sSL -H "Authorization: Bearer $(gh auth token)"
-   https://api.github.com/repos/rmsharp/pedkindraw/actions/jobs/<id>/logs`). Watch a run with a Monitor loop on
-   `gh run view <run> --json status,conclusion,jobs` (45 s), as S95 and S96 did.
-6. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
+1. Orient; drift tool (expect **91 functions, 23 differ, 0 without a row**; S97 changed only the help and comments
+   of a copied file, its parsed code `identical()`); nprcgenekeepr's log on the copied files, `git -C ../nprcgenekeepr
+   log --oneline baef1e12c..HEAD -- $(grep -l 'Copied from nprcgenekeepr' R/*.R tests/testthat/*.R | xargs -n1
+   basename | sed 's#^#*/#')`: the same 4 commits (`4283e3502`, `a85311021`, `392dd347e`, `471589138`) and
+   nprcgenekeepr at `3e06730c5`, unless Mark has run `:105` or `:232` there (then update `DIVERGENCE.md` as R101 says).
+2. **`:178`, S4Vectors** (if picked): read S97's Ubuntu devel job log first (run 45921649070, job 140253524152); find whether
+   Bioconductor has an S4Vectors newer than 0.50.3 that builds on R-devel before the picker (Learning 17); the two
+   choices are in the item; the devel entry is `.github/workflows/R-CMD-check.yaml:31`, the install step `:50`-`:53`.
+   A change to the workflow is tested only by a push (dragon 37: a CI fix is a guess until CI has run it).
+3. **17n** (`docs/planning/cran-submission-plan.md:1052`) only after `:178`: it freezes the tree.
+4. **CI on every push:** five jobs. Known flakes: `:192` (a hung Chrome start, Ubuntu release), `:209` (a blank PDF;
+   the SVG-legend comparison, Windows in S95, Ubuntu release in S96), `:227` (the app's click, macOS). Rerun a failed
+   job once (`gh run rerun <run> --job <id>`, after the run ends), then list the rerun's jobs by attempt (`gh api
+   repos/rmsharp/pedkindraw/actions/runs/<run>/attempts/2/jobs`); read logs through the jobs API (`curl -sSL -H
+   "Authorization: Bearer $(gh auth token)" https://api.github.com/repos/rmsharp/pedkindraw/actions/jobs/<id>/logs`).
+   Watch a run with a Monitor loop on `gh run view <run> --json status,conclusion,jobs` (45 s).
+5. A code session runs TDD: declare the phase; each transition one `AskUserQuestion` (CLAUDE.md "Phase-gate format").
 
 ### Gotchas
-- **Read a search whole before a picker states its result (dragon 40):** S96's pre-RED search for a version test
-  ended in `| head` and missed `tests/testthat/test_package.R:28`; the full suite found it after GREEN (RED 3).
-- **Version tests:** `tests/testthat/test_package.R:25`-`:36` (`>= "1.0.0"`; no part of 1234 or more; no leading
-  zero) and `tests/testthat/test_releaseTextDocs.R` (NEWS's first heading names the version, "(development
-  version)" only for a `.9000` one). 17q's `1.0.0.9000` fails test_package's 1234 rule: change it then, test-first
-  (17q's work line says so).
-- **NEWS words other tests hold:** `test_makePedigreeMatingLayoutNoRowParentDocs.R`, `test_runPedigreeAppDocs.R`,
-  `test_savePedigreeDiagramDocs.R` ("letter paper", "overlap"), `test_speedPointersDocs.R`,
-  `test_speedVignetteDocs.R`, `test_releaseTextDocs.R` (the README item must begin "New: the README" or "The
-  README"). Run all six after any NEWS edit.
-- **The README render needs pedkindraw installed, and none is:** `R CMD INSTALL --library=<scratch> .`, then
-  `Rscript --no-init-file` with `R_LIBS` and `R_LIBS_USER` set to `<scratch>:<renv library>` and
-  `rmarkdown::render("README.Rmd")`; S96's two renders were byte-identical.
-- **The skip marker:** a push whose head commit's message holds it runs no workflow, and R-CMD-check has no manual
-  trigger; S96 pushed close-out 1 without it to run CI and the site on the release text.
-- **A Chrome test can error under load:** S96's second full run had 1 error in `test_savePedigreeDiagram.R`'s
-  live-widget test at load average 9-10 (other processes on this Mac); the file alone passed 235 of 235. Its
-  message was not kept (the suite script printed only names): print `conditionMessage()` of each error next time.
-- **Carried:** the check without suggested packages needs a scratch R home (17l's DONE paragraph); CRAN's
-  DESCRIPTION spell check reads `.aspell/` (dragon 39); zsh does not split an unquoted variable (pipe through
-  `xargs`); a CRAN check runs only 21 test files, so list a new test file in `tests/testthat/slowTestFiles.txt`
-  (S96 listed `test_releaseTextDocs.R`); roxygen builds `?pedkindraw` from `DESCRIPTION`; on Windows R CMD check
-  waits for every process the tests start (dragon 35); Rscript inside `tests/testthat/` loads no renv (run from the
-  root); write `"${VAR:?}"` in `rm -rf`; backslashes in `Rscript -e` go in a file; the 5-file cap splits commits;
-  never commit `tests/testthat/_problems/`; `CLAUDE.md` is over its budget (learnings go to the cran plan's
-  dragons, now 41); `methodology/HANDOFFS.md` about 238 KB after S96, about 24 KB under the 262,144 B size where a
-  default read returns nothing (backlog `:318`): keep the receipt short; the full suite takes 10.4-10.9 min, the
-  ratchet's run about 12.
+- **Run each RED test against a deliberately wrong prototype too (dragon 42):** S97's quote-rule test passed a reader
+  that ignored quotes (a tie went to commas); found after the RED gate, before GREEN code; RED 3 by Mark's pick.
+- **The deceased mark's one gap, by the rule Mark picked:** 1 is a yes-word (kinship2's and Pedixplorer's dead), so a
+  status column in nprcgenekeepr's numbers holding only 1s (all alive) is drawn all deceased with no note; any 2, 3 or
+  4 in it leaves the column out, named (`.appReadDeceased()`, `R/pedigreeApp.R:498`).
+- **The separator is read from the first line only** (`.appSeparator()`, `R/pedigreeApp.R:126`): a header of one
+  column reads with commas.
+- **Words tests now hold:** `test_runPedigreeAppDocs.R` ("commas, tabs or semicolons" after `\strong{Open}` and in
+  NEWS's app item; died, shipped, unknown after "deceased reads" and in NEWS's marks item, and not "reads any other
+  value as not deceased"); `test_savePedigreeDiagramDocs.R` ("the widget's own width", help and NEWS);
+  `test_addRectilinearWaypointsDogleg.R` (`?makePedigreeMatingLayout` says "re-routed", not "falls back to the
+  generic"). With S96's six NEWS-word files, run all after any NEWS or help edit.
+- **chromote prints "[warning] got non-close frame while closing"** to the console after a Chrome test; testthat
+  counts no warning for it (WARN 0 in every S97 run).
+- **Carried:** write `"${VAR:?}"` in `rm -rf` (S97 was refused once); zsh does not split an unquoted variable (S97's
+  `set -- $pair` failed once; use Python or `xargs`); the README render needs a scratch install (17m's gotcha); the
+  skip marker (a push whose head commit holds it runs no workflow); a Chrome test can error under load (print
+  `conditionMessage()`: `fullsuite.R` in S97's scratchpad did); the check without suggested packages needs a scratch
+  R home; CRAN's DESCRIPTION spell check reads `.aspell/` (dragon 39); a CRAN check runs only 21 test files (list a new
+  test file in `tests/testthat/slowTestFiles.txt`); Rscript inside `tests/testthat/` loads no renv; backslashes in
+  `Rscript -e` go in a file; the 5-file cap splits commits; never commit `tests/testthat/_problems/`; `CLAUDE.md` is
+  over its budget (learnings go to the cran plan's dragons, now 42); `methodology/HANDOFFS.md` about 240 KB after S97, about 22 KB under the 262,144 B size where a
+  default read returns nothing
+  (backlog `:302`): keep the receipt short; the full suite takes 10.2-10.9 min, the ratchet's run about 12.
 - **Words:** describe each result by what it measured, never call one "real" (memory, S84).
 
 ### Key files
-- 17m (DONE): `docs/planning/cran-submission-plan.md:1020` (17m and its DONE paragraph), `:282` (2.5), `:1104`
-  (D8), dragons 40-41 (`:1323`, `:1328`); R168 `docs/planning/standalone-pedigree-package-plan.md:351`; contract
-  `docs/planning/pedkindraw-api-contract.md:323`; `DESCRIPTION:4`; `NEWS.md:1`, `## Documentation`;
-  `README.Rmd:34`-`:43`; `tests/testthat/test_releaseTextDocs.R`, `tests/testthat/test_package.R:25`.
-- `:186`'s places: `R/pedigreeApp.R:124` (`read.csv`), `:752`, `:755`, `:458` (`.appDeceased()`);
-  `R/runPedigreeApp.R:19`; `R/makePedigreeDiagramData.R:2189`-`:2191`, `:3105`-`:3109`, `:3027`-`:3035`,
-  `:3137`-`:3143`; `inst/js/recordCanvas.js:12`-`:14`; `R/savePedigreeDiagram.R:124`.
+- S97 (DONE): `R/pedigreeApp.R:126` (`.appSeparator()`), `:145` (`.readAppFile()`), `:164` (`.appTableProblem()`),
+  `:481` (the deceased and living words), `:498` (`.appReadDeceased()`), `:651` (the status branch of
+  `.appDrawnPedigree()`); `R/savePedigreeDiagram.R:129`; `R/makePedigreeDiagramData.R:2197` (the help) and its header;
+  `inst/js/recordCanvas.js:12`-`:17`; the tests `tests/testthat/test_pedigreeAppServer.R:221`, `:233`,
+  `test_pedigreeAppMarks.R:191`, `:307`, `:564`, `test_savePedigreeDiagram.R:135`; R169
+  `docs/planning/standalone-pedigree-package-plan.md:353`; dragon 42 `docs/planning/cran-submission-plan.md:1337`.
+- `:178`: `methodology/BACKLOG.md:178`; `.github/workflows/R-CMD-check.yaml:31`, `:50`-`:53`.
 - 17n: `docs/planning/cran-submission-plan.md:1052`; CI `.github/workflows/R-CMD-check.yaml:28`-`:33` (the matrix).
 
 ### How You Will Be Evaluated
@@ -106,13 +99,59 @@ The user rates every session's handoff. Your handoff will be scored on:
 
 *Session history accumulates below this line. Newest session at the top.*
 ### What Session 97 Did
-**Deliverable:** backlog `:186` (`methodology/BACKLOG.md`), what 17m's check of NEWS found outside NEWS: five
-sub-items, strict TDD for any behavior change (IN PROGRESS)
-**Started:** 2026-11-26 16:12 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** ":186 NEWS findings
-(Recommended)" (orient).
-**Status:** Session claimed. Work beginning.
-**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
-rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+**Deliverable:** backlog `:186`, what 17m's check of NEWS found outside NEWS (five findings), strict TDD. DONE (R169):
+the app reads files separated by commas, tabs or semicolons; its deceased mark reads nprcgenekeepr's status words and
+names any other value; `savePedigreeDiagram()` takes the widget's pixel width; a stale help sentence, two comments and
+a JavaScript comment's figures corrected.
+**Started:** 2026-11-26 16:12 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option where
+one was):** ":186 NEWS findings (Recommended)" (orient); "Read all three", "More words; name the rest", "Use the
+widget's width"; "Yes, proceed to RED"; "Yes, proceed to GREEN"; after the RED gate, before any GREEN code, "Back to
+RED for it" (the quote rule's test passed on a tie); "Yes, REFACTOR".
+**Commits:** claim `1a39485`; RED `019e9d4` (items 1, 4), `73290fb` (5, 2); RED 3 `7812fd0`; GREEN `3fb71fb` (1, 4),
+`3433daf` (5), `4f2f571` (2, 3: help and comments only); REFACTOR `4684b76` (one status reader); close-out 1 `b464c80`
+(pushed without the skip marker: run 45921649070, its oldrel-1 job rerun once); close-out 2 (these notes, the receipt, the ledger), pushed after it.
+**Measured:** a tab- or semicolon-separated `.txt` or `.csv` read as 1 column; nprcgenekeepr's app asks for the
+separator (Comma, Semicolon, Tab) and its `convertStatusCodes()` reads 1 as alive and 2 as deceased, which the app
+read reversed, its D and A both living; a scratch reader that splits by the first line's most columns read the sample
+written three ways `identical()`, the app's 5 test files passing on it (69 tests); in Chrome, a widget of 1400 px
+saved 10 in and with the prototype 14.58 in; S88's dogleg tests (4, 18 expectations) and R162 answered item 2 without
+a new drawing (a sire-daughter mating drew the sire twice, no dogleg); R's `count.fields()` and `scan()` honour a quote
+mid-field; a reader ignoring quotes passed RED 1's quote test and failed RED 3's.
+**Verified:** RED: 9 new tests failing (26 expectations and an error), the 90 already in their files passing, WARN 0;
+RED 3 on this tree, the prototype and the quote-ignoring reader (fail, pass, fail). GREEN: full suite (`NOT_CRAN=true`)
+107 files, 1,225 tests, 17,331 expectations, 0 failed, 0 errors, 0 skipped, WARN 0 (10.2 min); `R CMD check --as-cran`
+Status 1 NOTE (R16's), CRAN-mode `[ FAIL 0 | WARN 0 | SKIP 26 | PASS 2697 ]`, 95 s; the real app in Chrome (a scratch
+test, 5 expectations): the sample tab-separated with a 1/2 status column, 375 drawn, 3 twin pairs from `twins.txt`,
+the column left out naming '2', 0 deceased; semicolon-separated with died/alive, 37 of 37 deceased, no note; covr: 18
+of 18 statements on the lines S97 changed run; lint 0; roxygen unchanged; spelling 0; drift 91 / 23 / 0, the copied
+file's parsed code `identical()` to HEAD's. REFACTOR: outputs on 16 columns and 11 drawings `identical()` before and
+after. quality_ratchet 7/7 at `b464c80` (results `dd3bb45ce615`).
+
+#### Session 96 Handoff Evaluation (by Session 97)
+**Score: 9/10.** ROI high: Orient, the item's reading and the first measurements ran from its notes.
+- **What helped:** Mark's pick under "Next" (the orient picker followed it); What You Must Do 1 (91 / 23 / 0, the 4
+  commits, `3e06730c5`, each exact) and 2's sorting of the five findings (1, 4 and 5 Mark's, 2 drawn first, 3 a
+  comment, the test and NEWS lines a word change touches); every key-file line exact at `0201a46` (`R/pedigreeApp.R:124`,
+  `:752`, `:755`, `:458`, `R/runPedigreeApp.R:19`, `R/savePedigreeDiagram.R:124`, `R/makePedigreeDiagramData.R:2189`,
+  `:3105`, the "fixed S563" comments at `:3028` and `:3137`, `recordCanvas.js:12`-`:14`); the gotchas on `"${VAR:?}"`,
+  zsh's word splitting and the six NEWS-word test files.
+- **What was missing:** that S88's `test_addRectilinearWaypointsDogleg.R` and R162 already show item 2: a re-routed
+  mate line keeps its marker, and no drawing re-routes one, so "draw one before changing the words" could not be done
+  by drawing (my first drawing did not reach the dogleg). Found in minutes by searching the tests.
+- **What was wrong:** nothing.
+- **ROI:** high.
+
+**Self-assessment: 8/10.**
++ Orient in full, the claim before any work; every picker measured first (nprcgenekeepr's app and status words, a
+  scratch reader on the app's own tests, the widths in Chrome, the dogleg's tests); all 9 tests drafted and run on
+  HEAD and on a prototype, the help and NEWS wording included, before the RED gate; the quote test's tie found before
+  any GREEN code and put to Mark; GREEN verified by the full suite, `R CMD check`, the real app in Chrome and coverage
+  of every changed line; the REFACTOR proved by `identical()` outputs.
+- **RED 1's quote test checked less than its title said** (a tie): its draft was run against HEAD and the right
+  prototype, not a wrong one (dragon 42); cost RED 3 and one picker.
+- **Slips caught before commit:** an unguarded `rm -f` refused once and a zsh `set -- $pair` loop, both warned of in
+  the handoff; a server draft placed where `.withAppGen()` is not defined; the JavaScript comment's first wording
+  ("their legends") said more than the plan's line 550; two key-file citations off by 1 and 4, re-found.
 
 ### What Session 96 Did
 **Deliverable:** Phase 17m (`docs/planning/cran-submission-plan.md:1020`), the release text and the version, strict
@@ -221,48 +260,3 @@ at its rerun (attempt 1 failed `test_savePedigreeDiagram.R:184`, one SVG legend)
 - **Slips not reaching Mark:** an `rm -rf` on unguarded variables (refused by the safety check; the handoff warned);
   zsh's word splitting emptied the first conversion dry run; a backslash in `Rscript -e`; GREEN 7 left
   `man/pedkindraw-package.Rd` behind (caught by roxygen at verification, GREEN 8).
-
-### What Session 94 Did
-**Deliverable:** finish Phase 17k (`docs/planning/cran-submission-plan.md:880`; R85, R86). DONE: win-builder
-R-devel's second reading, of the package as at `23a6186` (R165's cut), read 321 s, 219 s under 540 s.
-**Started:** 2026-11-25 21:35 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option where
-one was):** the email "Yes, it came" (then pasted: `ZYsFyCy5GM5z`, installation 19 s, check 321 s, Status 1
-NOTE); "S93's pick, by the email (Recommended)"; at the close, "Phase 17l next (Recommended)".
-**Commits:** claim `5bd91b8`; the reading `d77c569` (the cran plan's 17k, section 2.1, dragon 36 and status line;
-the standalone plan's status block and Next; the roadmap); close-out 2 (these notes, the receipt, the ledger),
-pushed after it; close-out 2b (the push entry). No package code; no CI run (documents only, the skip marker).
-**Measured:** the folder's logs, each in its own scratchpad folder: the check started 23:11:00 UTC (1 h 35 min after
-the upload); incoming 10 s, R code 35 s, examples 17 s, tests 126 s, vignettes 30 s, PDF manual 29 s, the untimed
-steps about 56 s; the tests' `proc.time()` 125.4 s elapsed for 124.2 s CPU; `[ FAIL 0 | WARN 0 | SKIP 25 | PASS
-2694 ]` (here 24 and 2,695: `test_savePedigreeDiagram.R:499`, one expectation, skips on Windows). Against S92's check
-of the same package here (100 s, tests 29.8 s): 3.2× and 4.2×; R165's estimate 312 s, 3% under. The cut took 663 s
-off the tests; the rest of the check 196 s (192 s at the first reading). The margin: a check 1.68× this one reaches
-540 s; nprcgenekeepr's slower day would read about 381-389 s. HEAD's package differs from `23a6186`'s by S93's 5
-files (the changed files against `.Rbuildignore`); the list of 84 slow files unchanged. For 17l: `Suggests` 13
-packages (the plan says 9), `mockery::` in 7 test files, `withr::` in 51, no `inst/WORDLIST`.
-**Verified:** at HEAD, `test_slowTestFiles.R` 7 tests, 19 expectations and `test_slowTestFilesExports.R` 3 tests, 6
-expectations, 0 failed; every number in the plan computed by a script; drift 91 / 23 / 0. quality_ratchet at
-close-out (the receipt).
-
-#### Session 93 Handoff Evaluation (by Session 94)
-**Score: 9/10.** ROI high: Orient and the reading ran from its notes, and every cited line was where it said.
-- **What helped:** "ask Mark first whether the email has come" with the pick under each answer (the orient picker
-  followed it); What You Must Do 1 (91 / 23 / 0, the 4 commits, `3e06730c5`, each exact); 3, the folder's files by
-  name, the five plan lines (each exact at `f3f2009`), the guess at the counts (SKIP 25 exact), HEAD's CRAN-mode
-  figures beside `23a6186`'s, and "540 s or less: 17k DONE"; the 34 items at their stated lines.
-- **What was missing:** that S92 recorded the first reading in 17k but not in section 2.1, which the plan's "Left"
-  asked for; and where S92's local check of `23a6186` was recorded (100 s, 29.8 s, load 6.6-5.5: in GREEN's commit
-  message only). Each found in minutes.
-- **What was wrong:** nothing; the guess PASS 2693 read 2694 (labelled a guess).
-- **ROI:** high.
-
-**Self-assessment: 8/10.**
-+ Orient in full, the claim before any work; the reading fetched and recorded with every derived number computed
-  by a script, beside both earlier readings; DONE's other two parts checked at HEAD by running them, not assumed;
-  S92's missing section 2.1 record added; the inputs 17l rests on re-measured for the handoff (three stale counts);
-  the next session's task put to Mark at the close (answered first try).
-- **Slips caught before commit:** "HEAD differs only by S93's start wait" first named 3 of the 5 changed package
-  files (`NEWS.md` and a helper missed by a `git diff` over named folders); and the first `.Rbuildignore` filter
-  matched each file, not each folder, so it listed `docs/` and `methodology/` as shipped. Both corrected from a
-  second listing before `d77c569`.
-- The orient picker asked for the email in the notes box; the answer came without it and Mark pasted it separately.
