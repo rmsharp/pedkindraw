@@ -471,21 +471,20 @@ asPedFrame.Pedigree <- function(x, ...) {
   out
 }
 
-## The MZ, DZ and UZ twin pairs of a Pedixplorer relation table, spouses left
-## out; NULL when no pair is left (plan R58).
+## The MZ, DZ and UZ twin pairs of a Pedixplorer relation table (id1, id2 and
+## code as text, from Pedixplorer's accessors), spouses left out; NULL when
+## no pair is left (plan R58).
 .asPedFramePxTwins <- function(rel) {
-  code <- as.character(rel$code)
-  twin <- code %in% c("MZ twin", "DZ twin", "UZ twin")
-  .asPedFrameTwinTable(as.character(rel$id1[twin]),
-                       as.character(rel$id2[twin]), code[twin])
+  twin <- rel$code %in% c("MZ twin", "DZ twin", "UZ twin")
+  .asPedFrameTwinTable(rel$id1[twin], rel$id2[twin], rel$code[twin])
 }
 
-## The declared matings of a Pedixplorer relation table, its "Spouse" rows;
-## NULL when there is none (plan Phase G15c).
+## The declared matings of a Pedixplorer relation table (as for
+## .asPedFramePxTwins()), its "Spouse" rows; NULL when there is none (plan
+## Phase G15c).
 .asPedFramePxMatings <- function(rel, ped) {
-  spouse <- which(as.character(rel$code) == "Spouse")
-  .asPedFrameMatings(as.character(rel$id1[spouse]),
-                     as.character(rel$id2[spouse]), ped)
+  spouse <- which(rel$code == "Spouse")
+  .asPedFrameMatings(rel$id1[spouse], rel$id2[spouse], ped)
 }
 
 ## The layout hints of a kinship2 object (x$hints: order, one number per
