@@ -27,8 +27,9 @@ that the two packages no longer define functions of the same name.
 
 This is the NOTE for a new package.
 
-* win-builder's incoming check, which also spell-checks DESCRIPTION:
-  to be run before submission.
+* win-builder's incoming check, which also spell-checks DESCRIPTION, gives
+  this NOTE alone, with no misspelled words, on R-devel, R-release and
+  R-oldrelease.
 
 ## Check time
 
@@ -39,7 +40,8 @@ the 21 kept were chosen by a run-time trace so that every one of the 38
 exported functions is still called by a test that CRAN runs. Continuous
 integration and local runs set `NOT_CRAN=true` and run all 109 files.
 
-* win-builder R-devel "Check time in seconds": to be run before submission.
+* win-builder R-devel "Check time in seconds": 207 (R-release 219,
+  R-oldrelease 242).
 
 ## Test environments
 
@@ -55,12 +57,13 @@ integration and local runs set `NOT_CRAN=true` and run all 109 files.
   (aarch64), R 4.6.2; Windows Server 2022 x64 (build 26100), R 4.6.2; Ubuntu
   26.04.1, R-devel (2026-11-26 r90998), R 4.6.2 and R 4.5.3. `Status: OK` on
   each.
-* win-builder R-devel: to be run before submission.
-* win-builder R-release: to be run before submission.
-* win-builder R-oldrelease: to be run before submission.
-* macOS builder, R-devel (Apple silicon): to be run before submission.
-* R-hub, R-devel on Linux, Windows and macOS (Intel):
-  to be run before submission.
+* win-builder (Windows Server 2022 x64), R-devel (2026-11-17 r90926 ucrt):
+  1 NOTE (above); the tests a CRAN check runs
+  `[ FAIL 0 | WARN 0 | SKIP 27 | PASS 2696 ]`.
+* win-builder, R-release (4.6.2): the same.
+* win-builder, R-oldrelease (4.5.3): the same.
+* R-hub, R-devel on Linux (Ubuntu 26.04.1, r90998), Windows (r90926) and
+  macOS 15.7.9 (Intel, r90998): `Status: OK` on each.
 
 ## Downstream dependencies
 
