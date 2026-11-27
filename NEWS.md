@@ -306,10 +306,11 @@ repository says how and why.
   drawing vignette's "Saving a drawing" and "A colony-size drawing" show the
   files.
 * New: `runPedigreeApp(ped, port, launch.browser)` starts an app in the web
-  browser that draws a pedigree from a CSV or text file, with no code, for
-  someone who keeps a pedigree in a spreadsheet. It opens the file, the 375
-  rhesus animals of the sample pedigree, or a `ped` data frame from R;
-  recognizes the id, sire, dam and sex columns by pedkindraw's names and
+  browser that draws a pedigree from a CSV or text file, its values separated
+  by commas, tabs or semicolons, with no code, for someone who keeps a
+  pedigree in a spreadsheet. It opens the file, the 375 rhesus animals of the
+  sample pedigree, or a `ped` data frame from R; recognizes the id, sire, dam
+  and sex columns by pedkindraw's names and
   common others (ego, egoid, indid; father, fatherid, dadid; mother,
   motherid, momid; gender), in any case and with or without spaces, dots or
   underscores, and lets you choose each; reads the sex codes m, f, h and u,
@@ -348,9 +349,11 @@ repository says how and why.
   MZ twin, DZ twin and UZ twin, or kinship2's 1, 2 and 3), checked with
   `checkTwinRelations()`, a pair drawn when both its animals are. A file's
   yes-or-no values are read as TRUE, T, yes, Y or 1 and FALSE, F, no, N or 0,
-  in any case. A condition or mark column with any other value is left out
-  and named, except the deceased mark, which reads any other value as not
-  deceased. The sample pedigree
+  in any case. The deceased mark reads deceased, dead, died, D and the
+  yes-words as deceased, and alive, A, shipped, sold, sale, S, unknown, U and
+  the no-words as living (nprcgenekeepr's status words without its numbers,
+  whose 1 is alive). A condition or mark column with any other value is left
+  out and named. The sample pedigree
   opens with its file of 3 twin pairs.
 * New: `runPedigreeApp()`'s app saves what it shows. On the Diagram tab, the
   SVG, PDF and PNG buttons save the drawing through `savePedigreeDiagram()`,

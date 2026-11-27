@@ -6,7 +6,9 @@
 ## choosing the animals pedkindraw S75, Phase G17b, R150, section 12; what is
 ## drawn, the conditions, marks, lines and twins, pedkindraw S76, Phase G17c,
 ## R151, section 13; saving the drawing and the animals, pedkindraw S77, Phase
-## G17d, R152, section 14).
+## G17d, R152, section 14; a file separated by tabs or semicolons, and the
+## deceased mark's words, pedkindraw S97, backlog item "What 17m's check of
+## NEWS found outside NEWS").
 ## The app runPedigreeApp() starts: its page and its server, internal so they
 ## can change (R148). shiny is in Suggests, so every shiny call is written
 ## shiny:: and runs only after runPedigreeApp() has found shiny.
@@ -112,8 +114,29 @@
               package = "pedkindraw")
 }
 
+#' The separator of a pedigree file
+#'
+#' pedkindraw S97 (backlog item "What 17m's check of NEWS found outside
+#' NEWS"; Mark's pick "Read all three"): of a comma, a tab and a semicolon,
+#' the one that splits the file's first line into the most columns, outside
+#' quotes; a comma on a tie and for a file with no line.
+#' @param path the file.
+#' @return \code{","}, \code{"\t"} or \code{";"}.
+#' @noRd
+.appSeparator <- function(path) {
+  first <- readLines(path, n = 1L, warn = FALSE)
+  separators <- c(",", "\t", ";")
+  columns <- vapply(separators, function(sep) {
+    length(scan(text = first, what = "", sep = sep, quote = "\"",
+                comment.char = "", quiet = TRUE))
+  }, 1L)
+  separators[[which.max(columns)]]
+}
+
 #' Read a pedigree file as text
 #'
+#' Its values separated by commas, tabs or semicolons
+#' (\code{.appSeparator()}, S97).
 #' @param path the file.
 #' @return A list: \code{data}, the file's rows with every column as text and
 #'   empty cells as \code{NA} (\code{NULL} when it could not be read), and
@@ -121,7 +144,7 @@
 #' @noRd
 .readAppFile <- function(path) {
   data <- tryCatch(
-    utils::read.csv(path, colClasses = "character",
+    utils::read.csv(path, sep = .appSeparator(path), colClasses = "character",
                     na.strings = c("", "NA"), check.names = FALSE),
     error = function(e) e
   )
@@ -143,8 +166,9 @@
     return(readProblem)
   }
   if (ncol(data) < 4L) {
-    return(sprintf(paste0("The file has %d columns; the app needs at least ",
-                          "four: id, sire, dam and sex."), ncol(data)))
+    columns <- ngettext(ncol(data), "%d column", "%d columns")
+    return(sprintf(paste0("The file has ", columns, "; the app needs at ",
+                          "least four: id, sire, dam and sex."), ncol(data)))
   }
   if (nrow(data) == 0L) {
     return("The file has no animals.")
@@ -449,16 +473,41 @@
   paste0("Marks from the file: ", toString(shown), ".")
 }
 
+## The words a status or deceased column is read by (R151; S97, Mark's pick
+## "More words; name the rest"): nprcgenekeepr's status words
+## (convertStatusCodes()) without its numbers, whose 1 is alive where
+## kinship2's and Pedixplorer's is dead; with the yes-words as deceased and the
+## no-words as living. Compared as .appDeceased() compares them.
+.appDeceasedWords <- c("deceased", "dead", "died", "d")
+.appLivingWords <- c("alive", "a", "shipped", "sold", "sale", "s", "unknown",
+                     "u")
+
 #' Read a deceased column (R151)
 #'
 #' @param x the column.
-#' @return \code{"DECEASED"} for \code{DECEASED}, \code{deceased}, \code{dead}
-#'   and the yes-words, in any case; \code{NA} for anything else.
+#' @return \code{"DECEASED"} for \code{.appDeceasedWords} (DECEASED, dead,
+#'   died, D) and the yes-words, in any case and with the spaces at either end
+#'   removed; \code{NA} for anything else.
 #' @noRd
 .appDeceased <- function(x) {
   key <- tolower(trimws(as.character(x)))
-  ifelse(key %in% c("deceased", "dead", .appYesWords), "DECEASED",
+  ifelse(key %in% c(.appDeceasedWords, .appYesWords), "DECEASED",
          NA_character_)
+}
+
+#' The values of a status or deceased column the app cannot read (S97)
+#'
+#' @param x the column.
+#' @return Each value that is neither deceased nor living (\code{.appDeceased()}
+#'   and \code{.appLivingWords}, the yes- and no-words, an empty cell), once,
+#'   as the column holds it (a factor's as text).
+#' @noRd
+.appUnreadStatus <- function(x) {
+  if (is.factor(x)) x <- as.character(x)
+  key <- tolower(trimws(as.character(x)))
+  read <- is.na(x) | !nzchar(key) |
+    key %in% c(.appDeceasedWords, .appYesWords, .appLivingWords, .appNoWords)
+  unique(x[!read])
 }
 
 #' The values of a fertility or miscarriage column pedkindraw cannot read
@@ -596,7 +645,9 @@
       unread <- .appUnreadWords(x, mark)
       value <- x
     } else if (mark == "status") {
+      unread <- .appUnreadStatus(x)
       value <- .appDeceased(x)
+      how <- " as deceased or living"
     } else if (mark == "name") {
       value <- as.character(x)
     } else {
