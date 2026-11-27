@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-26 · [BL-Phase 17] S98 push 2: the close-out to GitHub, no CI run
+- **Change:** pushed `19e8dea..c3ca4ed` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `19e8dea` (push 1).
+- **Commit/PR:** the push of `c3ca4ed`; close-out 2b (this entry) · **Session:** S98 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `c3ca4ed`; `gh run list` showed no new run.
+
 ### 2026-11-26 · [BL-Phase 17] S98 push 1: the :178 work to GitHub, CI run and one rerun
 - **Change:** pushed `9cb1bb2..19e8dea` (claim, RED, GREEN, close-out 1), the head without the skip marker: R-CMD-check run 45930893462, pkgdown 45930893335; the Ubuntu release job rerun once (attempt 1 failed `test_savePedigreeDiagram.R:575`, "Chrome debugging port not open after 60 seconds" at `.recordDiagramSvg()`'s start, an `org.chromium.Chromium.*` folder left: backlog `:207`'s first at a save's first start).
 - **Commit/PR:** the push of `19e8dea`; the Ubuntu release job's rerun (job 140290935225) · **Session:** S98 · **Model:** Claude Opus 5.5 · **Verified:** each job's log through the jobs API: renv not started (no "Project ... loaded"), one Bioconductor release per job; macOS `PASS 17090`, Windows `17078`, Ubuntu oldrel-1 `17079` (Bioconductor 3.22), each Status OK; Ubuntu release Status OK at its rerun (`PASS 17079`, detritus OK); Ubuntu devel (R-devel r90991, Bioconductor 3.24 alone): S4Vectors 0.52.0 built, then `R CMD build` stopped re-building `drawing.Rmd` at `:593`-`:602` ("no method for coercing this S4 class to a vector", the converter, backlog `:178`); pkgdown success.
