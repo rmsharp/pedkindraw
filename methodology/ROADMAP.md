@@ -111,7 +111,10 @@ session each unless marked. They follow the copy slices.
   21 test files a trace of the 38 exports needs (S92, R165); the second read 321 s (S94), 219 s under 540 s. 17l
   is done (S95, R167: US spelling with a word list, `Depends: R (>= 4.5.0)`, the methods' DOI, every test that
   calls a package a check without suggested packages hides guarded). 17m is done (S96, R168: version 1.0.0; NEWS
-  checked against the code and readied; the README's install section); next 17n, then 17o-17q. The Windows CI hang is done (S91, R164: the stuck-page
+  checked against the code and readied; the README's install section). The findings 17m left outside NEWS are
+  done (S97, R169: the app reads files separated by commas, tabs or semicolons and names a status column it
+  cannot read; `savePedigreeDiagram()` takes the widget's pixel width); next Ubuntu devel's S4Vectors item, then
+  17n, then 17o-17q. The Windows CI hang is done (S91, R164: the stuck-page
   tests' Chrome renderers outlived their browsers and R CMD check waited for them; `.closeChrome()` ends them).
   The CI jobs that fail while Chrome starts are still open (S93, R166): a 60 s start wait added
   (`.startChrome()`), but Chromes at a PDF or PNG save's second start still hang on Ubuntu; next, a diagnostic on
