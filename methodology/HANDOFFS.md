@@ -204,10 +204,17 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S102
 date: 2026-11-27
-status: pending
-active_task: Phase 17o, session two (docs/planning/cran-submission-plan.md section 17o): the cross-platform results folded into cran-comments.md and the plan. Claimed.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 9
+predecessor_score: 9
+active_task: Phase 17o DONE (R174): cran-comments.md's 7 lines filled (win-builder R-devel, R-release, R-oldrelease 1 NOTE each, the new-submission one; R-devel 207 s; R-hub Status OK x3); the macOS builder down (502 x3), its line dropped by Mark's pick. Next: 17p, Mark's submission.
+what_was_done: claim f243562; work 1aca927 (cran-comments.md); close-out 1 f06b896 (CRAN plan 17o paragraph and status, runbook record, R174, roadmap); dragon 47.
+next_steps: Mark submits (runbook section 8; no session uploads); a later session records 17p in the ledger and reads CRAN's replies (SESSION_NOTES.md What You Must Do 2-3).
+key_files: cran-comments.md:30, :43, :60; docs/planning/cran-submission-runbook.md:134, :153; docs/planning/cran-submission-plan.md:1145, :1166, :1471; docs/planning/standalone-pedigree-package-plan.md:359.
+gotchas: never rebuild the tarball (abb78758...22dcfe3c); cran-comments.md pasted whole; a shipped-path change reopens 17n; a control diff needs a commit before the last package-file change (dragon 47); R172/R173 rows lack 2 cells.
+runtime_smoke: n/a, documents only (no package file changed). quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1 (at `f06b896`, 20:23 UTC)
+changelog_ref: CHANGELOG.md "2026-11-27 · [BL-Phase 17] S102: Phase 17o DONE (R174)" and its action entries
+commit: close-out 2 (the commit holding this receipt)
 ```
 ```handoff
 session: S101

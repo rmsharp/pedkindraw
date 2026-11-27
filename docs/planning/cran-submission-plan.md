@@ -1468,6 +1468,14 @@ pedkindraw's own:
     tarball. And a marker that a later session counts with `grep` must sit on one line: two of `cran-comments.md`'s
     first drafts wrapped "to be run before submission" across lines: `grep -c 'to be run before'` read 6 of the 7,
     and neither wrapped line held the whole phrase.
+47. **A control for an empty diff must start before a change the diff can see; and `gh api` holds back a coloured
+    job log** (S102, 17o): runbook section 1's `git diff --stat 2456253 ...` prints nothing when the package files are
+    unchanged, and so does a broken command (S101's unsplit zsh variable). S102's first control, `2456253^`, printed
+    nothing too: `2456253` (S99's close-out 1) changed documents only, so its parent holds the same package files.
+    Take the parent of the last commit that changed them: `c=$(git log -1 --format=%h -- "${paths[@]}")`, then `git
+    diff --stat "$c^" HEAD -- "${paths[@]}"` (S102: `1f0a780`, 1 file). And `gh api
+    repos/<owner>/<repo>/actions/jobs/<id>/logs` printed only "the response contains terminal escape sequences" for
+    each R-hub job; `--allow-escape-sequences`, piped through `sed -E 's/\x1b\[[0-9;]*m//g'`, gave the logs.
 
 ---
 
