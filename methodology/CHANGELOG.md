@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-26 · [BL-Phase 17] S99 (in progress): backlog :178, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S99's stub), `methodology/HANDOFFS.md` (S99's `status: pending` receipt) and this entry. The deliverable is backlog `:178`: `asPedFrame()` stops on every Pedixplorer object with Bioconductor 3.24's S4Vectors 0.52.0 (a CRAN blocker, before 17n). Mark's pick: ":178 converter fix (Recommended)" (orient picker).
+- **Commit/PR:** the S99 claim commit · **Session:** S99 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `f8f4fff`, no ghost session, no merge; S98's receipt complete, its gate citation equal to the results file `dd3bb45ce615`; 34 backlog items; dashboard 93/100; 0 open issues).
+
 ### 2026-11-26 · [BL-Phase 17] S98 push 2: the close-out to GitHub, no CI run
 - **Change:** pushed `19e8dea..c3ca4ed` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `19e8dea` (push 1).
 - **Commit/PR:** the push of `c3ca4ed`; close-out 2b (this entry) · **Session:** S98 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `c3ca4ed`; `gh run list` showed no new run.

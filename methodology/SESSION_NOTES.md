@@ -107,6 +107,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 99 Did
+**Deliverable:** backlog `:178` (`methodology/BACKLOG.md`), `asPedFrame()` stopping on every Pedixplorer object
+with Bioconductor 3.24's S4Vectors 0.52.0: measure the fixes, Mark's picks, then the fix, strict TDD (IN PROGRESS)
+**Started:** 2026-11-26 22:09 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** ":178 converter fix
+(Recommended)" (orient).
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 98 Did
 **Deliverable:** backlog `:178`, Ubuntu devel's CI job failing to build S4Vectors, strict TDD. DONE (R170): the cause
 was two Bioconductor releases in one install (renv's lock's 3.23 beside pak's 3.24); every CI job that installs
