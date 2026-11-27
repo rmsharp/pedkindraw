@@ -9,10 +9,11 @@ receives the tarball or reads the repository on GitHub; nothing here submits to 
 runbook: that is Phase 17p, and it is Mark's.**
 
 **Who runs them (D9, R173):** Claude, with Mark's approval in the session (his pick, "Claude starts them now").
-**Already started, S101, 2026-11-27:** win-builder's three uploads (19:11:52-19:12:05 UTC) and R-hub run
-46055056615; the macOS builder answered 502 to both uploads (19:12:25 and 19:58:51 UTC), so it
-has not run. Run them again only if a shipped path changes (step 1), which needs a new
-tarball too; then each section below is the recipe.
+**Already run, 2026-11-27 (S101 started them, S102 read them):** win-builder's three checks, 1 NOTE each (the
+new-submission one), and R-hub run 46055056615, `Status: OK` on its three platforms; the results are in
+`cran-comments.md` and the record below. The macOS builder answered 502 to all three uploads (19:12:25 and 19:58:51
+UTC, S101; 20:07:45 UTC, S102), so its line was dropped (Mark, R174). Run them again only if a shipped path changes
+(step 1), which needs a new tarball too; then each section below is the recipe.
 
 **How long.** win-builder usually answers within an hour of a check starting, but its R-devel queue held a pedkindraw
 upload 3 h 47 min before the check began (S90-S92, dragon 34); its result folder is removed about 72 hours after the
@@ -104,7 +105,7 @@ and Intel macOS runners (R-hub's `platforms.json`). Results are in the Actions t
 |---|---|
 | win-builder R-devel | 0 errors, 0 warnings, 1 NOTE (Maintainer; "New submission"); "Check time in seconds" 540 or less (R85; 17k's reading was 321 s) |
 | win-builder R-release and R-oldrelease | 0 errors, 0 warnings, the same NOTE |
-| macOS builder | 0 errors, 0 warnings; not used before, so read any NOTE |
+| macOS builder | 0 errors, 0 warnings; not used before, so read any NOTE (S102: down all three tries, its line dropped, R174) |
 | R-hub linux, windows, macos | `Status: OK` (its check step is r-lib's `check-r-package`, as CI's is, which turns the incoming check off); its tests in CRAN mode, 21 files (R-hub's `setup-r` step sets `NOT_CRAN` to false; nprcgenekeepr's R-hub run read its CRAN-mode count) |
 
 - **Words in the NOTE.** If win-builder's NOTE lists "Possibly misspelled words in DESCRIPTION" (IBD, Schaid,
@@ -149,3 +150,16 @@ file holds only what CRAN reads), then confirm by the link CRAN emails to the ma
 - **nprcgenekeepr at S101's Orient:** `3e06730c5`, its tree clean; the same 4 commits on the copied files since
   `baef1e12c` (`4283e3502`, `a85311021`, `392dd347e`, `471589138`); the drift tool 91 copied functions, 23 differ,
   0 without a `DIVERGENCE.md` row. The fold-in session repeats both.
+- **The results (S102, 2026-11-27; read from each folder's files, which win-builder removes about 72 hours after the
+  check):** win-builder R-devel (2026-11-17 r90926 ucrt; folder `lxX7xipRS4YJ`, check started 19:21:52 UTC), R-release
+  (4.6.2; `VGDuwIP07s13`, 19:25:14 UTC) and R-oldrelease (4.5.3; `yiYlDkG2174D`), each on Windows Server 2022 x64:
+  `00check.log` `Status: 1 NOTE`, the incoming check's Maintainer line and "New submission" alone (no misspelled
+  words, no URL), every other check OK, the three logs the same but for timings and R 4.5.3's missing `current time`
+  line; "Check time in seconds" 207, 219 and 242 (R85's limit 540); `tests/testthat.Rout`
+  `[ FAIL 0 | WARN 0 | SKIP 27 | PASS 2696 ]` on each, `proc.time()` elapsed 78.95, 84.57 and 95.06 s against CPU
+  (user + system) 78.93, 84.60 and 95.07 s (dragon 8). R-hub run 46055056615, read from its job logs: linux (Ubuntu
+  26.04.1, R-devel r90998) and macos (Sequoia 15.7.9, Intel, r90998) `[ FAIL 0 | WARN 0 | SKIP 26 | PASS 2697 ]`,
+  windows (Server 2022 build 26100, r90926) `SKIP 27 | PASS 2696`, `Status: OK` on each. The macOS builder: 502 at
+  20:07:45 UTC (its `/v1/` address 502, its form page 200), the third try; its line dropped (R174).
+- **nprcgenekeepr at the fold-in (S102, 20:10 UTC):** unchanged: `3e06730c5`, its tree clean, the same 4 commits on
+  the copied files; the drift tool 91 / 23 / 0.
