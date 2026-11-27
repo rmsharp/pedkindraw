@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-27 · [BL-Phase 17] S99 push 2: the close-out to GitHub, no CI run
+- **Change:** pushed `2456253..2701fd3` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `2456253` (push 1).
+- **Commit/PR:** the push of `2701fd3`; close-out 2b (this entry) · **Session:** S99 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `2701fd3`; `gh run list` showed no new run.
+
 ### 2026-11-27 · [BL-Phase 17] S99 push 1: the :178 work to GitHub, CI run and one rerun
 - **Change:** pushed `f8f4fff..2456253` (claim, RED, GREEN, REFACTOR, close-out 1), the head without the skip marker: R-CMD-check run 45946860858, pkgdown 45946860903; the macOS job rerun once (attempt 1 failed `test_pedigreeAppBrowser.R:103`, the app's click timing out after 60 s: backlog `:236`'s flake).
 - **Commit/PR:** the push of `2456253`; the macOS job's rerun (job 140346438251) · **Session:** S99 · **Model:** Claude Opus 5.5 · **Verified:** each job's log through the jobs API: Ubuntu devel (R-devel r90991, Bioconductor 3.24 alone: BiocGenerics 0.60.0, S4Vectors 0.52.0, Pedixplorer 1.10.0) "creating vignettes ... OK", Status OK, `PASS 17088`, where S98's run stopped at `drawing.Rmd`; oldrel-1 (R 4.5.3, Bioconductor 3.22: S4Vectors 0.48.1, Pedixplorer 1.6.0) Status OK, `PASS 17088`; Ubuntu release `17088` and Windows `17087` (Bioconductor 3.23) Status OK; macOS Status OK at its rerun (`PASS 17099`); pkgdown success; the run's conclusion success.
