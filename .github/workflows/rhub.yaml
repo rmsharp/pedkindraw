@@ -1,0 +1,115 @@
+# pedkindraw's copy (S101, CRAN plan Phase 17o, ruling R173): R-hub's file as
+# published at r-hub/actions 1ab0e3be1 (2026-09-09), with one change. Each job
+# that checks the package sets RENV_CONFIG_AUTOLOADER_ENABLED to false, as
+# R-CMD-check.yaml's jobs do (S98, R170). R-hub's setup-deps step runs R in
+# the checked-out folder, where .Rprofile would start renv, and renv adds
+# renv.lock's Bioconductor release beside the one pak picks for the job's R:
+# on R-devel CI that paired packages from two releases that do not build
+# together. Started by hand only (workflow_dispatch), with rhub::rhub_check()
+# or `gh workflow run rhub.yaml`; the platforms are R-hub's names.
+
+# R-hub's generic GitHub Actions workflow file. Its canonical location is at
+# https://github.com/r-hub/actions/blob/v1/workflows/rhub.yaml
+# You can update this file to a newer version using the rhub2 package:
+#
+# rhub::rhub_setup()
+#
+# It is unlikely that you need to modify this file manually.
+
+name: R-hub
+run-name: >-
+  ${{ github.event.inputs.id || format('Manual run by @{0}', github.triggering_actor) }}:
+  ${{ github.event.inputs.name || github.event.inputs.config }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: >-
+          Comma-separated list of R-hub platforms to use.
+          Full list: summary(rhub::rhub_platforms())
+        type: string
+        default: 'linux,windows,macos'
+      name:
+        description: 'Run name. You can leave this empty.'
+        type: string
+      id:
+        description: 'Unique ID. You can leave this empty.'
+        type: string
+
+jobs:
+
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      containers: ${{ steps.rhub-setup.outputs.containers }}
+      platforms: ${{ steps.rhub-setup.outputs.platforms }}
+
+    steps:
+    # NO NEED TO CHECKOUT HERE
+    - uses: r-hub/actions/setup@v1
+      with:
+        config: ${{ github.event.inputs.config }}
+      id: rhub-setup
+
+  linux-containers:
+    needs: setup
+    if: ${{ needs.setup.outputs.containers != '[]' }}
+    runs-on: ubuntu-latest
+    name: ${{ matrix.config.label }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config: ${{ fromJson(needs.setup.outputs.containers) }}
+    container:
+      image: ${{ matrix.config.container }}
+
+    env:
+      RENV_CONFIG_AUTOLOADER_ENABLED: "false"
+
+    steps:
+      - uses: r-hub/actions/checkout@v1
+      - uses: r-hub/actions/platform-info@v1
+        with:
+          token: ${{ secrets.RHUB_TOKEN }}
+          job-config: ${{ matrix.config.job-config }}
+      - uses: r-hub/actions/setup-deps@v1
+        with:
+          token: ${{ secrets.RHUB_TOKEN }}
+          job-config: ${{ matrix.config.job-config }}
+      - uses: r-hub/actions/run-check@v1
+        with:
+          token: ${{ secrets.RHUB_TOKEN }}
+          job-config: ${{ matrix.config.job-config }}
+
+  other-platforms:
+    needs: setup
+    if: ${{ needs.setup.outputs.platforms != '[]' }}
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.label }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config: ${{ fromJson(needs.setup.outputs.platforms) }}
+
+    env:
+      RENV_CONFIG_AUTOLOADER_ENABLED: "false"
+
+    steps:
+      - uses: r-hub/actions/checkout@v1
+      - uses: r-hub/actions/setup-r@v1
+        with:
+          job-config: ${{ matrix.config.job-config }}
+          token: ${{ secrets.RHUB_TOKEN }}
+      - uses: r-hub/actions/platform-info@v1
+        with:
+          token: ${{ secrets.RHUB_TOKEN }}
+          job-config: ${{ matrix.config.job-config }}
+      - uses: r-hub/actions/setup-deps@v1
+        with:
+          job-config: ${{ matrix.config.job-config }}
+          token: ${{ secrets.RHUB_TOKEN }}
+      - uses: r-hub/actions/run-check@v1
+        with:
+          job-config: ${{ matrix.config.job-config }}
+          token: ${{ secrets.RHUB_TOKEN }}
