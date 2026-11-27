@@ -23,6 +23,7 @@ test_bitSize.R
 test_buildMatingUnitForest.R
 test_carrierMark.R
 test_checkPedigree.R
+test_ciWorkflows.R
 test_comparePedigreeStructure.R
 test_comparePedigreeStructureOneMate.R
 test_conditionColors.R
