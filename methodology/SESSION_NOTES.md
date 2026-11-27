@@ -109,6 +109,15 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 101 Did
+**Deliverable:** Phase 17o, session one (`docs/planning/cran-submission-plan.md` section 17o): `cran-comments.md`
+and the run list, then D9 (who runs them) as a picker (IN PROGRESS)
+**Started:** 2026-11-27 12:51 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "17o: CRAN notes and run list
+(Recommended)" (orient).
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 100 Did
 **Deliverable:** Phase 17n, the full local gate. DONE (R172): every item of its list met; the tree is frozen.
 **Started:** 2026-11-27 10:23 CST · **Model:** Claude Opus 5.5 · **Mark's picks (each the recommended option):**

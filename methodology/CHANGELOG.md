@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-27 · [BL-Phase 17] S101 (in progress): Phase 17o, session one, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S101's stub), `methodology/HANDOFFS.md` (S101's `status: pending` receipt) and this entry. The deliverable is Phase 17o's first session (`docs/planning/cran-submission-plan.md` section 17o): `cran-comments.md` and the run list, then D9 (who runs them) as a picker. Documents only; the frozen package files are not touched.
+- **Commit/PR:** the S101 claim commit · **Session:** S101 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `e2c63e4`, no ghost session, no merge; S100's receipt complete, its ratchet citation `dd3bb45ce615` matching the results file).
+
 ### 2026-11-27 · [BL-Phase 17] S100 push 2: the close-out to GitHub, no CI run
 - **Change:** pushed `93d7819..559a4bb` (close-out 2), documents only, its message carrying the skip marker, so no workflow ran; the package's CI was read at `93d7819` (push 1).
 - **Commit/PR:** the push of `559a4bb`; close-out 2b (this entry) · **Session:** S100 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `559a4bb`; `gh run list` showed no new run.
