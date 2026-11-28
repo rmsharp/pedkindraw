@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-28 · [BL-H1] S104 push 2: the close-out to GitHub, no CI run
+- **Change:** pushed `aa62798..acfda5f` (close-out 1 and 2), documents only (`docs/` and `methodology/` are in `.Rbuildignore`; no shipped path changed), the head commit carrying the skip marker, so no workflow ran; the package's CI was read at `aa62798` (push 1).
+- **Commit/PR:** the push of `acfda5f`; close-out 2b (this entry) · **Session:** S104 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `acfda5f`; `gh run list` showed no new run.
+
 ### 2026-11-28 · [BL-H1] S104 push 1: H1's code to GitHub, CI run
 - **Change:** pushed `8fb67c1..aa62798` (claim, RED, GREEN 1 and 2, REFACTOR), the head without the skip marker, so H1's code ran on CI before the close-out followed: R-CMD-check run 46124789964 and pkgdown 46124789934, both success on the first attempt.
 - **Commit/PR:** the push of `aa62798` · **Session:** S104 · **Model:** Claude Opus 5.5 · **Verified:** each job's log through `gh run view --job`: macOS release `[ FAIL 0 | WARN 0 | SKIP 42 | PASS 17121 ]`, Ubuntu oldrel-1, release and devel `SKIP 44 | PASS 17110`, Windows release `SKIP 46 | PASS 17109`, each `Status: OK`; the run's conclusion success (23 min 33 s); pkgdown success.
