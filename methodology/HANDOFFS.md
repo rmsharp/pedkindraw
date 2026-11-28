@@ -204,10 +204,17 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S103
 date: 2026-11-27
-status: pending
-active_task: Hand testing before the CRAN upload (Mark's request, ahead of 17p): Mark runs the package in RStudio; Claude reads the output with him and records what was run and found. No package file changes (frozen, R172). Claimed.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 7
+predecessor_score: 9
+active_task: The hand test DONE (R175): Mark ran the 1.0.0 tarball, installed outside the project, in RStudio, every part of docs/planning/cran-handtest-1.0.0.R; four findings; his pick "Fix all four first", so H1-H4 (each strict TDD), then 17n and 17o again on a new tarball, then 17p. abb78758...22dcfe3c will not be submitted.
+what_was_done: claim 58a9cc9; close-out 1 7fd8ac0 (runbook record, CRAN plan H1-H4 and dragon 48, R175, roadmap, backlog); close-out 2 (the script and the crossing counter, notes, receipt, ledger).
+next_steps: Mark picks one of H1-H4 (suggested H1, the ED5PDV drawing's crossings and the overridden order hint); measure it pre-RED (SESSION_NOTES.md What You Must Do 2-4); after all four, 17n again then 17o again.
+key_files: docs/planning/cran-submission-plan.md:1167, :1174, :1204, :1529; docs/planning/cran-submission-runbook.md:168; methodology/BACKLOG.md:9; R/makePedigreeDiagramData.R:1318, :1400; docs/planning/cran-handtest-crossings.R:1.
+gotchas: the tree is open for H1-H4 only; no rebuild before 17n again; H1 changes a copied function (DIVERGENCE row, fidelity set-aside); RStudio cannot open the scratchpad; answer Mark mid-test, no close-out picker until he says he has finished.
+runtime_smoke: n/a, documents only (no package file changed); the crossing counter run on the tree at 7fd8ac0. quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1 (at `7fd8ac0`, 05:51 UTC)
+changelog_ref: CHANGELOG.md "2026-11-27 · [BL-Phase 17] S103: the hand test DONE (R175)"
+commit: close-out 2 (the commit holding this receipt)
 ```
 
 ```handoff
