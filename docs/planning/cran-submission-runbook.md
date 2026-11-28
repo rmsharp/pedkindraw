@@ -13,7 +13,9 @@ runbook: that is Phase 17p, and it is Mark's.**
 new-submission one), and R-hub run 46055056615, `Status: OK` on its three platforms; the results are in
 `cran-comments.md` and the record below. The macOS builder answered 502 to all three uploads (19:12:25 and 19:58:51
 UTC, S101; 20:07:45 UTC, S102), so its line was dropped (Mark, R174). Run them again only if a shipped path changes
-(step 1), which needs a new tarball too; then each section below is the recipe.
+(step 1), which needs a new tarball too; then each section below is the recipe. **They will run again (R175, S103):**
+Mark's hand test found four things he chose to fix before the upload (the record below), each fix changes shipped
+paths, so after the fixes come a new tarball, 17n's gate again and these runs again, before 17p.
 
 **How long.** win-builder usually answers within an hour of a check starting, but its R-devel queue held a pedkindraw
 upload 3 h 47 min before the check began (S90-S92, dragon 34); its result folder is removed about 72 hours after the
@@ -163,3 +165,30 @@ file holds only what CRAN reads), then confirm by the link CRAN emails to the ma
   20:07:45 UTC (its `/v1/` address 502, its form page 200), the third try; its line dropped (R174).
 - **nprcgenekeepr at the fold-in (S102, 20:10 UTC):** unchanged: `3e06730c5`, its tree clean, the same 4 commits on
   the copied files; the drift tool 91 / 23 / 0.
+- **The hand test (S103, 2026-11-27; Mark's request before 17p; R175).** First, RStudio's Test Package on the source
+  (`devtools::test()`, `NOT_CRAN` true): `[ FAIL 0 | WARN 0 | SKIP 0 | PASS 17354 ]` (S100's suite read 17,353; the
+  one more not traced). Then Mark installed the tarball above as a user would, outside the project, into a library of
+  its own (`~/pedkindraw-handtest/lib`, with quadprog 1.5-8 and kinship2 1.9.6.2 from CRAN), and ran
+  `docs/planning/cran-handtest-1.0.0.R` in RStudio, every part: 0 and A (the install, the help, the 3 vignettes), B
+  (the analysis functions on the sample pedigree), C (drawings in RStudio, and saving them as SVG, PDF, PNG and HTML),
+  D (a kinship2 pedigree converted and drawn) and E (the app). Claude ran each "should show" call first on the same
+  tarball, installed the same way (18:54-18:56 CST), and the app headless for E3. Mark reported no value different
+  from its line; the six files his saves wrote (C7, 20:33) have the measured sizes to the byte. **Four findings**, each
+  fixed before the upload by Mark's pick "Fix all four first" (each a backlog item; the CRAN plan's H1-H4):
+  (1) "Unhandled promise error: Chromote: timed out waiting for response to command Browser.close", printed twice
+  during the RStudio test run; no test failed or warned; not seen in S100's runs (`testthat::test_local()` from
+  `Rscript`); cause not traced. (2) `vignette("speed")`: the first table, "The computations the packages share", is
+  the November study's computations (R153), and the second, "The other functions kinship2 or Pedixplorer also has",
+  holds 9 computations all three packages share (`bitSize()` among them); the page does not say why they are split.
+  The numbers are right (`tools/checkSpeedTables.R`). (3) "Getting started"'s drawing of ED5PDV and its 15 ancestors
+  has 2 line crossings that 3 of the 6 orders of its founder couples avoid: after the couple-centring shift
+  (`R/makePedigreeDiagramData.R:1400`) two anchors share an x (RKBTHH and 5A6DFT at 0.5; one row lower YPHFHF and
+  WFGRY3, H16XSK and 81MJXH, at 1.5), and `sweepMinSepBackstop()` (`:1322`) breaks the tie by id, which reverses
+  two couples against their offspring. An order hint naming RKBTHH first is overridden by the same tie, against
+  `?makePedigreeMatingLayout`'s "founder couples are drawn left to right in increasing order of their numbers";
+  `hints = list(order = c(ZK6NM2 = 1, I8ABQE = 2, RKBTHH = 3))` gives 0 crossings. nprcgenekeepr at `3e06730c5` has
+  the same code. (4) Moving around a drawing: a two-finger touchpad swipe zooms (visNetwork's default; pedkindraw sets
+  no `visInteraction()`), a drag on blank space pans, a drag that starts on an animal moves that symbol alone; the
+  app says none of this, and `vignettes/drawing.Rmd:20`'s "drag to move the picture" does not say to start on blank
+  space. Not findings: two of the script's comments, corrected while Mark ran it (B2's on `checkTwinRelations()`;
+  E3's on where the app shows the 72-collision warning, the line under "375 animals drawn").

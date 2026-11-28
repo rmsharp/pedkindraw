@@ -6,6 +6,42 @@ section 4. Each item is tagged (READY | BLOCKED | DECISION NEEDED, Effort S | M 
 commit whose `methodology/CHANGELOG.md` entry records it done (plan R23: open work lives here, not in GitHub
 issues).*
 
+## Before the CRAN upload (R175; Mark's pick "Fix all four first", S103)
+
+*S103's hand test of the 1.0.0 tarball found these (`docs/planning/cran-submission-runbook.md`, the record). Each is
+its own strict-TDD session and changes shipped paths; after all four, a new tarball, 17n's gate and 17o's runs again,
+then 17p. Scope, measurements to make first and DONE: `docs/planning/cran-submission-plan.md` "Phases H1-H4".
+Suggested order H1, H2, H3, H4 (Mark picks).*
+
+- [ ] **H1. The ED5PDV drawing's avoidable crossings, and the order hint a tie overrides** (READY, Effort M-L, a
+      guess; finding 3) -- `"Getting started"`'s drawing of ED5PDV and its 15 ancestors has 2 crossings that 3 of the
+      6 orders of its founder couples avoid: `sweepMinSepBackstop()` (`R/makePedigreeDiagramData.R:1318`) breaks a
+      tie in x by id after the couple-centring shift (`:1400`), reversing two couples against their offspring, and an
+      order hint naming RKBTHH first loses to the same tie, against `?makePedigreeMatingLayout`
+      (`man/makePedigreeMatingLayout.Rd:141`). Workaround today: `hints = list(order = c(ZK6NM2 = 1, I8ABQE = 2,
+      RKBTHH = 3))`. A copied function (a `DIVERGENCE.md` row; the fidelity tool's set-aside); nprcgenekeepr has the
+      same code. Measure first how many layouts in the tests and the fidelity cases move.
+
+- [ ] **H2. The Chrome timeout message while the tests run** (READY, Effort S-M, a guess; finding 1) -- RStudio's
+      Test Package (`devtools::test()`) printed "Unhandled promise error: Chromote: timed out waiting for response to
+      command Browser.close" twice; no test failed or warned; `testthat::test_local()` from `Rscript` never printed it
+      (S100). Reproduce, find the test and the close (`R/savePedigreeDiagram.R:401`, `.closeChrome()`, or a test's
+      own browser), then fix test-first or record by Mark's pick. Trace too why RStudio counted 17,354 expectations
+      and S100 17,353.
+
+- [ ] **H3. The speed page's two tables say what each holds** (READY, Effort S, documentation; finding 2) --
+      `vignettes/speed.Rmd`'s first table, "The computations the packages share", is the November study's
+      computations (R153); the second, "The other functions kinship2 or Pedixplorer also has", holds 9 that all three
+      packages share (`bitSize()` among them), and the page does not say why. New headings and a sentence, the words
+      by picker; `tools/checkSpeedTables.R` passes unchanged.
+
+- [ ] **H4. Say how to move around a drawing** (READY, Effort S, a guess; finding 4) -- a two-finger swipe zooms
+      (visNetwork's default), a drag on blank space moves the picture, a drag that starts on an animal moves that
+      symbol alone, a click puts the animal in the app's focal box; the app says none of it, `vignettes/drawing.Rmd:20`
+      says "drag to move the picture", `README.md:125` and `vignettes/pedkindraw.Rmd:185` name zooming only. Picker
+      first: a line under the app's drawing (`R/pedigreeApp.R:860`), the documents' sentences, visNetwork's
+      navigation buttons; the README ships, so ask before changing it (Mark's S101 hold was on its badges).
+
 ## Up Next
 
 - [ ] **Reword `DIVERGENCE.md`'s older rows to R98's "at the switch"** (READY, Effort S, documentation only; R98)
