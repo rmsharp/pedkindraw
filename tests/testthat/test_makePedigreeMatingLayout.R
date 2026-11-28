@@ -16,8 +16,13 @@
 ## lines 948, 2182 and 2197), and marked "?", not "0", in affectedSections with
 ## two or more (lines 2214, 2222, 2291 and 2298). pedkindraw S51 (plan Phase
 ## G10, R127-R128, DIVERGENCE.md) adds "hints", the hints the layout used, to
-## the names the trio's layout is checked for (the source's lines 51-53). The
-## comments below name nprcgenekeepr's documents, sessions and files.
+## the names the trio's layout is checked for (the source's lines 51-53).
+## pedkindraw S104 (H1, R175, DIVERGENCE.md) changed 2 checks, a test name and
+## 2 comments: the QC'd fixture's rectilinear layout has 1,410 nodes and 140
+## __jog_ waypoints, not 1,412 and 142, since a tie the founder couples'
+## centring leaves keeps the order the row had before it (the source's lines
+## 812, 827, 828, 2064 and 2355). The comments below name nprcgenekeepr's
+## documents, sessions and files.
 
 ## Tests for makePedigreeMatingLayout() -- Pedigree Diagram Option 2, Slice 3
 ## (docs/planning/pedigree-diagram-option2-layout-design-plan.md, Migration
@@ -824,7 +829,7 @@ test_that(
 
 test_that(
   "makePedigreeMatingLayout on the QC'd bundled fixture (what the live app
-   draws) produces 1,412 nodes under edgeStyle = \"rectilinear\" (142
+   draws) produces 1,410 nodes under edgeStyle = \"rectilinear\" (140
    __jog_ waypoints) and 782 under \"direct\"; the raw-CSV row order gives
    1,460 and 782, so row order alone moves only the rectilinear count", {
   qcd <- qcdRhesusPed()
@@ -839,8 +844,8 @@ test_that(
       invokeRestart("muffleWarning")
     }
   )
-  expect_equal(nrow(rectilinear$nodes), 1412L)
-  expect_equal(sum(grepl("^__jog_", rectilinear$nodes$id)), 142L)
+  expect_equal(nrow(rectilinear$nodes), 1410L)
+  expect_equal(sum(grepl("^__jog_", rectilinear$nodes$id)), 140L)
   expect_false(any(is.na(rectilinear$nodes$x)))
   expect_false(any(is.na(rectilinear$nodes$y)))
 })
@@ -2075,7 +2080,7 @@ test_that(
 
 ## S1028 mutation gap: the collision repair adds __jog_ waypoint nodes through
 ## .matchColumns(), which backfills a column the new node lacks; a logical
-## column used to be backfilled with NA, so the jog nodes (142 on the QC'd
+## column used to be backfilled with NA, so the jog nodes (140 on the QC'd
 ## bundled fixture under the default style) read deceased NA, not FALSE. No
 ## other fixture here produces a jog node.
 
@@ -2375,7 +2380,7 @@ test_that(
 ## The collision repair adds __jog_ waypoint nodes through .matchColumns(),
 ## which backfills a column the new node lacks (S1028 found it gave a logical
 ## column NA). Only the QC'd bundled fixture makes jog nodes under the default
-## style (142 of them), so a section string that went missing there would be
+## style (140 of them), so a section string that went missing there would be
 ## NA, not "".
 
 test_that(
