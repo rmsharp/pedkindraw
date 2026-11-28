@@ -204,10 +204,17 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 ```handoff
 session: S104
 date: 2026-11-28
-status: pending
-active_task: H1 (R175): the ED5PDV drawing's 2 avoidable crossings and the order hint a tie overrides, fixed under strict TDD; measured first in a scratch copy, then the pre-RED picker. Claimed.
-what_was_done: pending
-commit: pending
+status: complete
+self_score: 8
+predecessor_score: 9
+active_task: H1 DONE (R176): a tie the founder couples' centring leaves keeps the order the row had before it; ED5PDV's drawing 0 crossings, every order hint of its founder dams followed. Next H2-H4 (Mark picks), then 17n and 17o again, then 17p.
+what_was_done: claim 6c63a84; RED 7cc5eaf; GREEN 6157bec (the rule), ac2020d (fidelity tool's second run, DIVERGENCE row); REFACTOR aa62798 (sweepMinSepBackstop(tieX)); close-out 1 34b8a70; close-out 2.
+next_steps: Mark picks one of H2-H4 (suggested H2: reproduce the Chrome message first, SESSION_NOTES.md What You Must Do 2); after H4, 17n again then 17o again.
+key_files: R/makePedigreeDiagramData.R:1332, :1347, :1425; tests/testthat/test_layoutTieOrder.R:44; tools/compareResultsWithNprcgenekeepr.R:620; docs/planning/cran-submission-plan.md:1174, :1202, :1557; methodology/BACKLOG.md:16.
+gotchas: H1's code passed CI run 46124789964 (5/5 OK); the fidelity tool stops if sweepMinSepBackstop()'s order() call changes text; scratch copies need renv's library and --no-init-file; H2's websocket notices seen in S104's runs.
+runtime_smoke: ED5PDV's drawing saved as PNG through savePedigreeDiagram() before (7cc5eaf) and after; read: each founder couple's line straight down, no solid lines crossing. quality_ratchet: 7/7 pass · 0 fail · 0 unmeasured · results dd3bb45ce615 · manifest 4127d978ffc1 (package files of aa62798, 08:12 UTC)
+changelog_ref: CHANGELOG.md "2026-11-28 · [BL-H1] S104: H1 DONE (R176)"
+commit: close-out 2 (the commit holding this receipt)
 ```
 
 ```handoff
