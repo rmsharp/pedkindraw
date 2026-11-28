@@ -124,7 +124,11 @@
 ## routing color and width", and two comments in .addRectilinearWaypoints()
 ## said the same; the code keeps them (nprcgenekeepr's S563 fix, in the copy;
 ## tests/testthat/test_addRectilinearWaypointsDogleg.R). nprcgenekeepr's help
-## and comments say the same as the copy did.
+## and comments say the same as the copy did. H1 (pedkindraw S104, R175):
+## .positionMatingUnitForest()'s sweepMinSepBackstop(), on its second run,
+## orders animals at one x by the x they had before the S666 shift, where it
+## ordered them by id; its comment and .solveJointQP()'s note on the
+## tie-break say so (a DIVERGENCE.md row).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -1301,7 +1305,8 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 
   ## S3.1.1: reinstated sweepMinSep() backstop, gen-grouped, real
   ## individuals only -- same push semantics as the shipped sweepMinSep()
-  ## above, including its exact order(x, ids, method = "radix") tie-break.
+  ## above, including (on its first run) its exact order(x, ids, method =
+  ## "radix") tie-break.
   ## Factored into a closure (S666) so it can run a SECOND time, after the
   ## conditional-shift correction pass below -- that pass can move a real
   ## Tier 1 individual (a shifted child's whole subtree) into an exact tie
@@ -1314,12 +1319,21 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   ## generalized from the B1 case it names to this Tier 1 case (found live
   ## this session: 8 new exact ties on the real 375-individual fixture
   ## without this second pass).
+  ## pedkindraw H1 (S104, R175): the second run orders a tie by the x the
+  ## row had before the shift (beforeShiftX, set after the first run; every
+  ## row's x differ there), not by id. The shift moves a founder couple's
+  ## anchor half a place towards its offspring, so two couples can meet at
+  ## one x; by id, the one whose id sorts first went left, whatever side its
+  ## offspring were on, and an order hint lost to it (ED5PDV's drawing, the
+  ## hand test's finding 3). The first run still breaks a tie by id.
   dispGenOf <- genOf[names(tier1X)]
+  beforeShiftX <- tier1X
   sweepMinSepBackstop <- function() {
     for (g in sort(unique(dispGenOf))) {
       rowIds <- names(tier1X)[dispGenOf == g]
       if (length(rowIds) < 2L) next
-      rowIds <- rowIds[order(tier1X[rowIds], rowIds, method = "radix")]
+      rowIds <- rowIds[order(tier1X[rowIds], beforeShiftX[rowIds], rowIds,
+                             method = "radix")]
       for (i in 2L:length(rowIds)) {
         prevX <- tier1X[[rowIds[i - 1L]]]
         if (tier1X[[rowIds[i]]] < prevX + minSep) {
@@ -1329,6 +1343,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
     }
   }
   sweepMinSepBackstop()
+  beforeShiftX <- tier1X
 
   ## ---- S666: conditional-shift rule (Option 3, chain-case) --------------
   ## docs/planning/pedigree-diagram-parent-symmetric-placement-plan.md's
@@ -1733,7 +1748,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
 #' B1 free-pass, and duplicate nodes all render as the same 25px shape and
 #' share one clearance value). \strong{Decision 3 (constraints):} within
 #' each row, sorted by \code{provisionalPos$x} (ties broken by id, radix --
-#' the same tie-break \code{sweepMinSepBackstop()} uses), each adjacent
+#' the tie-break of \code{sweepMinSepBackstop()}'s first run), each adjacent
 #' pair gets one hard inequality \code{x[i+1] - x[i] >= minSepFor(kind_i,
 #' kind_{i+1})}. \strong{Decision 3 as amended at Migration Path Phase 3
 #' (S675, owner-ratified):} the floors are SPACING values keyed to the
