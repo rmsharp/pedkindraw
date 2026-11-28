@@ -11,16 +11,7 @@ issues).*
 *S103's hand test of the 1.0.0 tarball found these (`docs/planning/cran-submission-runbook.md`, the record). Each is
 its own strict-TDD session and changes shipped paths; after all four, a new tarball, 17n's gate and 17o's runs again,
 then 17p. Scope, measurements to make first and DONE: `docs/planning/cran-submission-plan.md` "Phases H1-H4".
-Suggested order H1, H2, H3, H4 (Mark picks).*
-
-- [ ] **H1. The ED5PDV drawing's avoidable crossings, and the order hint a tie overrides** (READY, Effort M-L, a
-      guess; finding 3) -- `"Getting started"`'s drawing of ED5PDV and its 15 ancestors has 2 crossings that 3 of the
-      6 orders of its founder couples avoid: `sweepMinSepBackstop()` (`R/makePedigreeDiagramData.R:1318`) breaks a
-      tie in x by id after the couple-centring shift (`:1400`), reversing two couples against their offspring, and an
-      order hint naming RKBTHH first loses to the same tie, against `?makePedigreeMatingLayout`
-      (`man/makePedigreeMatingLayout.Rd:141`). Workaround today: `hints = list(order = c(ZK6NM2 = 1, I8ABQE = 2,
-      RKBTHH = 3))`. A copied function (a `DIVERGENCE.md` row; the fidelity tool's set-aside); nprcgenekeepr has the
-      same code. Measure first how many layouts in the tests and the fidelity cases move.
+Suggested order H1, H2, H3, H4 (Mark picks). H1 DONE (S104, R176; `methodology/CHANGELOG.md`).*
 
 - [ ] **H2. The Chrome timeout message while the tests run** (READY, Effort S-M, a guess; finding 1) -- RStudio's
       Test Package (`devtools::test()`) printed "Unhandled promise error: Chromote: timed out waiting for response to
@@ -285,6 +276,15 @@ Suggested order H1, H2, H3, H4 (Mark picks).*
       routing color and width", and its comment at `:2339` says the same; its own code keeps them (its S563 fix),
       and its issues #143 and #144 left no drawing that re-routes one (R162). pedkindraw corrected its copy's help
       and comments in S97 (R169; the copy's header lists it; help text is not drift). For an nprcgenekeepr session.
+
+- [ ] **Tell nprcgenekeepr: its layout breaks a founder couples' tie by id** (READY, Effort S; found S103, fixed
+      here S104, R176) -- nprcgenekeepr's `.positionMatingUnitForest()` at `3e06730c5`
+      (`R/makePedigreeDiagramData.R:1031`, `sweepMinSepBackstop()`'s `order(tier1X[rowIds], rowIds, method =
+      "radix")`) puts two animals the S666 centring step leaves at one x in id order, which can draw a founder couple
+      on the far side of another from its offspring, the lines crossing, and override an order hint (pedkindraw's
+      hand test, ED5PDV's drawing). pedkindraw's copy keeps the order the row had before the step (`DIVERGENCE.md`,
+      the `.positionMatingUnitForest()` row; `tests/testthat/test_layoutTieOrder.R`), and its fidelity tool compares
+      a run with nprcgenekeepr's rule put back. For an nprcgenekeepr session (R98: at the switch it takes the copy's).
 
 - [ ] **Report a vacuous test to nprcgenekeepr** (READY, Effort S) -- the first expectation of
       `test_findPedigreeNumber.R` checks the ids containing "1", and the Lacy pedigree's ids are letters, so it
