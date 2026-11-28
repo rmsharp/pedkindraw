@@ -39,7 +39,13 @@
 ## (see withoutUnknownStatus() below). A fifth (S51, plan Phase G10,
 ## R127-R128): pedkindraw's layout returns the hints it used, an element
 ## nprcgenekeepr's layout does not have; it is taken out of pedkindraw's
-## layouts before the comparison (see withoutLayoutHints() below).
+## layouts before the comparison (see withoutLayoutHints() below). A sixth
+## (S104, H1, R175): pedkindraw's layout orders two animals that the founder
+## couples' centring leaves at one place by the order they had before it,
+## where nprcgenekeepr's orders them by id; pedkindraw's cases run a second
+## time with nprcgenekeepr's rule put back, that run is the one compared, and
+## the results the rule changes are counted (see putBackNprcgenekeeprTie()
+## below).
 ##
 ## pedkindraw's getProbandPedigree(), getDescendantPedigree(), trimPedigree()
 ## and hasBothParents() take the pedigree first, nprcgenekeepr's the ids first
@@ -604,11 +610,55 @@ runCases <- function(ns, dataDir) {
   results
 }
 
+## pedkindraw S104 (H1, R175, DIVERGENCE.md): pedkindraw's
+## .positionMatingUnitForest() orders a row in sweepMinSepBackstop() by x,
+## then by the x the row had before the S666 shift, then by id, where
+## nprcgenekeepr's orders it by x, then by id. This puts nprcgenekeepr's call
+## in place of pedkindraw's in the loaded namespace of `pkgName`, and stops
+## unless it finds pedkindraw's call exactly once. Remove this when
+## nprcgenekeepr has the change, or at the switch (R98).
+putBackNprcgenekeeprTie <- function(pkgName) {
+  ns <- asNamespace(pkgName)
+  ours <- quote(order(tier1X[rowIds], beforeShiftX[rowIds], rowIds,
+                      method = "radix"))
+  theirs <- quote(order(tier1X[rowIds], rowIds, method = "radix"))
+  found <- 0L
+  swap <- function(e) {
+    if (identical(e, ours)) {
+      found <<- found + 1L
+      return(theirs)
+    }
+    if (is.call(e)) {
+      for (i in seq_along(e)) {
+        ## An empty argument (x[, 1]) or a NULL is left alone: neither can
+        ## hold the call, and assigning NULL would drop the element.
+        if (is.null(e[[i]]) ||
+              (is.symbol(e[[i]]) && !nzchar(as.character(e[[i]])))) {
+          next
+        }
+        e[[i]] <- swap(e[[i]])
+      }
+    }
+    e
+  }
+  layoutFn <- get(".positionMatingUnitForest", envir = ns)
+  body(layoutFn) <- swap(body(layoutFn))
+  if (found != 1L) {
+    stop("found pedkindraw's tie-break ", found, " times in ",
+         ".positionMatingUnitForest(), not once", call. = FALSE)
+  }
+  utils::assignInNamespace(".positionMatingUnitForest", layoutFn, ns = ns)
+}
+
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) >= 1L && identical(args[[1L]], "--child")) {
   ## Child mode: --child <package folder> <data folder> <output .rds>
+  ## [--nprcgenekeepr-tie]
   pkgload::load_all(args[[2L]], quiet = TRUE, export_all = TRUE)
   pkgName <- read.dcf(file.path(args[[2L]], "DESCRIPTION"), "Package")[[1L]]
+  if (length(args) >= 5L && identical(args[[5L]], "--nprcgenekeepr-tie")) {
+    putBackNprcgenekeeprTie(pkgName)
+  }
   started <- proc.time()[["elapsed"]]
   saveRDS(runCases(asNamespace(pkgName), args[[3L]]), args[[4L]])
   cat(sprintf("  %s: %.1f s\n", pkgName, proc.time()[["elapsed"]] - started))
@@ -699,14 +749,14 @@ childEnv <- renvFreeEnv()
 
 ## The child runs in `folder` (and so in its renv) and loads the package in
 ## `package`.
-runChild <- function(folder, outFile, package = folder) {
+runChild <- function(folder, outFile, package = folder, extra = NULL) {
   ## One change of folder for one child process; withr is only a test
   ## dependency (Suggests).
   old <- setwd(folder) # nolint: undesirable_function_linter.
   on.exit(setwd(old)) # nolint: undesirable_function_linter.
   status <- system2("env", c(
     childEnv, "Rscript", shQuote(script), "--child", shQuote(package),
-    shQuote(dataDir), shQuote(outFile)
+    shQuote(dataDir), shQuote(outFile), extra
   ))
   if (!identical(status, 0L)) {
     stop("the run in ", folder, " failed", call. = FALSE)
@@ -714,13 +764,39 @@ runChild <- function(folder, outFile, package = folder) {
   readRDS(outFile)
 }
 cat("Running the cases (", length(list.files(dataDir, "\\.csv$")) - 1L,
-  " pedigrees) in each package:\n", sep = "")
+  " pedigrees) in each package, and in pedkindraw again with",
+  " nprcgenekeepr's tie rule:\n", sep = "")
 theirs <- runChild(clone, tempfile(fileext = ".rds"), theirPackage)
 ours <- runChild(here, tempfile(fileext = ".rds"))
+oursTheirTie <- runChild(here, tempfile(fileext = ".rds"),
+                         extra = "--nprcgenekeepr-tie")
 
-if (!identical(names(ours), names(theirs))) {
-  stop("the two runs produced different cases", call. = FALSE)
+if (!identical(names(ours), names(theirs)) ||
+      !identical(names(oursTheirTie), names(theirs))) {
+  stop("the runs produced different cases", call. = FALSE)
 }
+## pedkindraw S104 (H1, R175, DIVERGENCE.md): pedkindraw's layout orders two
+## animals the founder couples' centring leaves at one place by the order
+## they had before it, nprcgenekeepr's by id (putBackNprcgenekeeprTie()
+## above). Until nprcgenekeepr has the change (at the switch, R98), the run
+## with nprcgenekeepr's rule put back is the one compared below, and the
+## results the rule changes are counted, by pedigree. Measured S104: 24 of
+## the 600, the 8 layout and drawing cases of examplePedigree,
+## synthetic_30000 and synthetic_100000, each moved layout with fewer
+## crossing lines. Remove this when nprcgenekeepr has the change.
+tieMoved <- names(ours)[!unlist(Map(identical, ours, oursTheirTie))]
+tiePedigrees <- table(sub(" :: .*$", "", tieMoved))
+tieWhere <- if (length(tieMoved) == 0L) {
+  "none"
+} else {
+  toString(paste(names(tiePedigrees), tiePedigrees))
+}
+cat(sprintf(paste(
+  "results pedkindraw's tie rule changes: %d (%s), compared as run with",
+  "nprcgenekeepr's rule (DIVERGENCE.md, R175)\n"
+), length(tieMoved), tieWhere))
+ours <- oursTheirTie
+rm(oursTheirTie)
 ## `x` with f() applied to every drawing (a visNetwork widget) in it: a
 ## result, a list of results or one drawing, each list's attributes kept. The
 ## three set-asides below each change one drawing at a time (pedkindraw S39
