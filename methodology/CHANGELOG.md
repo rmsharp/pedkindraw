@@ -25,6 +25,10 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 
 ## 2026-11
 
+### 2026-11-28 · [BL-H1] S104 (in progress): H1, the ED5PDV drawing's avoidable crossings, claimed
+- **Change:** the claim commit: `methodology/SESSION_NOTES.md` (S104's stub), `methodology/HANDOFFS.md` (S104's `status: pending` receipt) and this entry. The deliverable is H1 (R175, Mark's orient pick): the 2 crossings in `"Getting started"`'s ED5PDV drawing and the order hint that the same tie in `sweepMinSepBackstop()` overrides, fixed under strict TDD.
+- **Commit/PR:** the S104 claim commit · **Session:** S104 · **Model:** Claude Opus 5.5 · **Verified:** Orient (drift 91 / 23 / 0; nprcgenekeepr at `3e06730c5` with the same 4 commits on the copied files, a clean tree; ledgers current at `8fb67c1`, no ghost session, no merge; S103's receipt complete; quality-gate citation matches the results file, `dd3bb45ce615`).
+
 ### 2026-11-27 · [BL-Phase 17] S103 push: the session to GitHub, no CI run
 - **Change:** pushed `2b5e04c..e6769b9` (claim, close-out 1 and 2), documents only (`docs/` and `methodology/` are in `.Rbuildignore`; no shipped path changed), the head commit carrying the skip marker, so no workflow ran.
 - **Commit/PR:** the push of `e6769b9`; close-out 2b (this entry) · **Session:** S103 · **Model:** Claude Opus 5.5 · **Verified:** `git log origin/master -1` was `e6769b9`; `gh run list` showed no new run.

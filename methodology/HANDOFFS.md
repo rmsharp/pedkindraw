@@ -202,6 +202,15 @@ than trusting this sentence. Written by `methodology_trim.py` v1.8.1.
 <!-- Receipts go below, newest on top. Delete the seed-sentinel line above when you add the first one. -->
 
 ```handoff
+session: S104
+date: 2026-11-28
+status: pending
+active_task: H1 (R175): the ED5PDV drawing's 2 avoidable crossings and the order hint a tie overrides, fixed under strict TDD; measured first in a scratch copy, then the pre-RED picker. Claimed.
+what_was_done: pending
+commit: pending
+```
+
+```handoff
 session: S103
 date: 2026-11-27
 status: complete

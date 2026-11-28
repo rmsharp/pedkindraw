@@ -107,6 +107,16 @@ The user rates every session's handoff. Your handoff will be scored on:
 ## Session History
 
 *Session history accumulates below this line. Newest session at the top.*
+### What Session 104 Did
+**Deliverable:** H1 (R175; plan "Phases H1-H4"): the ED5PDV drawing's 2 avoidable crossings, and the order hint a
+tie overrides, fixed under strict TDD (IN PROGRESS). Measure first in a scratch copy what the fix changes (tests,
+fidelity cases, C1's crossings with and without the hint), then the pre-RED picker.
+**Started:** 2026-11-28 00:01 CST · **Model:** Claude Opus 5.5 · **Mark's pick:** "H1: drawing crossings
+(Recommended)" (orient picker).
+**Status:** Session claimed. Work beginning.
+**Ledger:** `CHANGELOG: pending` -- the claim commit's `CHANGELOG.md` entry says (in progress); Phase 3F records the
+rest. Until close-out, this line is the crash breadcrumb for the next session's reconcile.
+
 ### What Session 103 Did
 **Deliverable:** Hand testing before the CRAN upload (Mark's request, ahead of 17p). DONE (R175): Mark ran the
 installed tarball in RStudio, every part of the script; four findings, which he chose to fix before the upload (H1-H4).
