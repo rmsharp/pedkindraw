@@ -611,15 +611,15 @@ runCases <- function(ns, dataDir) {
 }
 
 ## pedkindraw S104 (H1, R175, DIVERGENCE.md): pedkindraw's
-## .positionMatingUnitForest() orders a row in sweepMinSepBackstop() by x,
-## then by the x the row had before the S666 shift, then by id, where
-## nprcgenekeepr's orders it by x, then by id. This puts nprcgenekeepr's call
-## in place of pedkindraw's in the loaded namespace of `pkgName`, and stops
-## unless it finds pedkindraw's call exactly once. Remove this when
-## nprcgenekeepr has the change, or at the switch (R98).
+## .positionMatingUnitForest() orders a row in sweepMinSepBackstop(tieX) by
+## x, then by tieX (on the second run the x the row had before the S666
+## shift), then by id, where nprcgenekeepr's orders it by x, then by id. This
+## puts nprcgenekeepr's call in place of pedkindraw's in the loaded namespace
+## of `pkgName`, and stops unless it finds pedkindraw's call exactly once.
+## Remove this when nprcgenekeepr has the change, or at the switch (R98).
 putBackNprcgenekeeprTie <- function(pkgName) {
   ns <- asNamespace(pkgName)
-  ours <- quote(order(tier1X[rowIds], beforeShiftX[rowIds], rowIds,
+  ours <- quote(order(tier1X[rowIds], tieX[rowIds], rowIds,
                       method = "radix"))
   theirs <- quote(order(tier1X[rowIds], rowIds, method = "radix"))
   found <- 0L

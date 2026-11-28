@@ -127,8 +127,9 @@
 ## and comments say the same as the copy did. H1 (pedkindraw S104, R175):
 ## .positionMatingUnitForest()'s sweepMinSepBackstop(), on its second run,
 ## orders animals at one x by the x they had before the S666 shift, where it
-## ordered them by id; its comment and .solveJointQP()'s note on the
-## tie-break say so (a DIVERGENCE.md row).
+## ordered them by id, and takes each run's tie key as its argument, tieX;
+## its comment and .solveJointQP()'s note on the tie-break say so (a
+## DIVERGENCE.md row).
 ## Its comments name nprcgenekeepr's documents, sessions and app.
 
 #' Convert a pedigree data frame into visNetwork-ready diagram data
@@ -1319,20 +1320,21 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
   ## generalized from the B1 case it names to this Tier 1 case (found live
   ## this session: 8 new exact ties on the real 375-individual fixture
   ## without this second pass).
-  ## pedkindraw H1 (S104, R175): the second run orders a tie by the x the
-  ## row had before the shift (beforeShiftX, set after the first run; every
-  ## row's x differ there), not by id. The shift moves a founder couple's
-  ## anchor half a place towards its offspring, so two couples can meet at
-  ## one x; by id, the one whose id sorts first went left, whatever side its
-  ## offspring were on, and an order hint lost to it (ED5PDV's drawing, the
-  ## hand test's finding 3). The first run still breaks a tie by id.
+  ## pedkindraw H1 (S104, R175): a row is ordered by x, then by tieX, then
+  ## by id. The first run passes tier1X itself, so a tie is broken by id;
+  ## the second passes beforeShiftX, the x after the first run (every row's
+  ## x differ there), so a tie keeps the order the row had before the shift.
+  ## The shift moves a founder couple's anchor half a place towards its
+  ## offspring, so two couples can meet at one x; by id, the one whose id
+  ## sorts first went left, whatever side its offspring were on, and an order
+  ## hint lost to it (ED5PDV's drawing, the hand test's finding 3).
   dispGenOf <- genOf[names(tier1X)]
-  beforeShiftX <- tier1X
-  sweepMinSepBackstop <- function() {
+  sweepMinSepBackstop <- function(tieX) {
+    force(tieX)
     for (g in sort(unique(dispGenOf))) {
       rowIds <- names(tier1X)[dispGenOf == g]
       if (length(rowIds) < 2L) next
-      rowIds <- rowIds[order(tier1X[rowIds], beforeShiftX[rowIds], rowIds,
+      rowIds <- rowIds[order(tier1X[rowIds], tieX[rowIds], rowIds,
                              method = "radix")]
       for (i in 2L:length(rowIds)) {
         prevX <- tier1X[[rowIds[i - 1L]]]
@@ -1342,7 +1344,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
       }
     }
   }
-  sweepMinSepBackstop()
+  sweepMinSepBackstop(tier1X)
   beforeShiftX <- tier1X
 
   ## ---- S666: conditional-shift rule (Option 3, chain-case) --------------
@@ -1420,7 +1422,7 @@ makePedigreeDiagramData <- function(ped, twinRelations = NULL,
       tier1X[[p]] <- tier1X[[p]] + shift
     }
   }
-  sweepMinSepBackstop()
+  sweepMinSepBackstop(beforeShiftX)
 
   ## ---- Tier 2: union-point derivation + exact-tie sweep (S3.3.3/S3.4) --
   ## Includes every unit with >=1 real child -- not just anchoredUnits --
